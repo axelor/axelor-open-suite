@@ -70,16 +70,18 @@
 						</viewer>
 				</field>
 			</panel>
-			<panel name="seqPanel" colSpan="2" if="__config__.app.getApp('project')?.generateProjectSequence">
-				<field name="projectSeq" showTitle="false" colSpan="12" css="label-bold bold large" readonly="true"/>
-			</panel>
+			
 			<panel name="informationPanel" colSpan="10">
 				<field name="fullName" showTitle="false" colSpan="12"
 					css="label-bold bold large">
 					<editor x-show-titles="false">
-						<field name="code" showTitle="false" colSpan="3" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
+						<panel name="seq" colSpan="3">
+						<field name="code" showTitle="false" colSpan="12" required="true" if="__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
-						<field name="name" showTitle="false" colSpan="9" required="true"
+						<field name="code" showTitle="false" colSpan="12" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
+							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
+						</panel>
+						<field name="name" showTitle="false" colSpan="6" required="true"
 							css="label-bold bold large" />
 					</editor>
 				</field>

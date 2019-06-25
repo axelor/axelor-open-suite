@@ -26,6 +26,8 @@ import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -33,15 +35,21 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+
+
 import java.util.LinkedHashMap;
 
 @Singleton
 public class ProjectTemplateController {
 
-  @Inject ProjectTemplateRepository projectTemplateRepo;
-  @Inject ProjectService projectService;
-  @Inject AppProjectService appProjectService;
-  @Inject PartnerRepository partnerRepo;
+  @Inject
+  ProjectTemplateRepository projectTemplateRepo;
+  @Inject
+  ProjectService projectService;
+  @Inject
+  AppProjectService appProjectService;
+  @Inject
+  PartnerRepository partnerRepo;
 
   public void createProjectFromTemplate(ActionRequest request, ActionResponse response) {
 
@@ -50,15 +58,21 @@ public class ProjectTemplateController {
 
     if (appProject.getGenerateProjectSequence() && !projectTemplate.getIsBusinessProject()) {
 
-      Project project = projectService.createProjectFromTemplate(projectTemplate, null, null);
-
-      response.setView(
-          ActionView.define(I18n.get("Project"))
-              .model(Project.class.getName())
-              .add("form", "project-form")
-              .add("grid", "project-grid")
-              .context("_showRecord", project.getId())
-              .map());
+      Project project;
+      try {
+        project = projectService.createProjectFromTemplate(projectTemplate, null, null);
+        response.setView(
+            ActionView.define(I18n.get("Project"))
+                .model(Project.class.getName())
+                .add("form", "project-form")
+                .add("grid", "project-grid")
+                .context("_showRecord", project.getId())
+                .map());
+        
+      } catch (AxelorException e) {
+        TraceBackService.trace(response,e);
+      }
+     
     } else {
       response.setView(
           ActionView.define(I18n.get("Create project from this template"))
@@ -89,27 +103,33 @@ public class ProjectTemplateController {
     ProjectTemplate projectTemplate = projectTemplateRepo.find(Long.parseLong(projectTemplateId));
 
     String projectCode = (String) context.get("code");
+    
+        Object clientPartnerContext = context.get("clientPartner");
+        Partner clientPartner = null;
 
-    Object clientPartnerContext = context.get("clientPartner");
-    Partner clientPartner = null;
+        if (clientPartnerContext != null) {
+          String clientPartnerId =
+              ((LinkedHashMap<String, Object>) clientPartnerContext).get("id").toString();
+          clientPartner = partnerRepo.find(Long.parseLong(clientPartnerId));
+        }
 
-    if (clientPartnerContext != null) {
-      String clientPartnerId =
-          ((LinkedHashMap<String, Object>) clientPartnerContext).get("id").toString();
-      clientPartner = partnerRepo.find(Long.parseLong(clientPartnerId));
-    }
+        Project project;
+        try {
+          project = projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+          response.setCanClose(true);
 
-    Project project =
-        projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+          response.setView(
+              ActionView.define(I18n.get("Project"))
+                  .model(Project.class.getName())
+                  .add("form", "project-form")
+                  .add("grid", "project-grid")
+                  .context("_showRecord", project.getId())
+                  .map());
+        } catch (AxelorException e) {
+          TraceBackService.trace(response,e);
+        }
 
-    response.setCanClose(true);
-
-    response.setView(
-        ActionView.define(I18n.get("Project"))
-            .model(Project.class.getName())
-            .add("form", "project-form")
-            .add("grid", "project-grid")
-            .context("_showRecord", project.getId())
-            .map());
-  }
+      } 
+     
+  
 }

@@ -8,13 +8,12 @@
 		<field name="assignedTo"/>
 	</grid>
 
-	<form name="project-template-form" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate" onLoad="action-project-template-on-load-group" onNew="action-project-group-on-new-project">
+	<form name="project-template-form" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate" onNew="action-project-group-on-new-project">
 
 		<panel name="mainPanel">
 			<panel name="informationPanel" colSpan="12">
 				<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
 					<editor x-show-titles="false">
-						<field name="code" showTitle="false" colSpan="3" css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
 						<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" />
 					</editor>
 				</field>
@@ -86,13 +85,6 @@
 			<button name="createProjectBtn" title="Create project from this template" colSpan="5" if="!_businessProject" readonlyIf="!code" onClick="action-project-template-method-generate-project-from-wizard"/>			
 		</panel>
 	</form>
-
-	<action-group name="action-project-template-on-load-group">
-		<action name="action-project-attrs-scale-and-precision" />
-		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
-		<action name="action-project-attrs-project-planning-time-cancel-remove" />
-		<action name="action-project-attrs-project-planning-time-spent-cancel-remove"/>
-	</action-group>
 
 	<action-method name="action-project-template-method-generate-project">
 		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromTemplate"/>

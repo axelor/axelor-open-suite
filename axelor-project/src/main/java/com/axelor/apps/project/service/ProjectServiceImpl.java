@@ -26,6 +26,7 @@ import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -161,10 +162,20 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   @Transactional
   public Project createProjectFromTemplate(
-      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) throws AxelorException{
 
     Project project = new Project();
     project.setName(projectTemplate.getName());
+    if (Beans.get(ProjectRepository.class)
+        .all()
+        .filter("self.code = ?", projectCode)
+        .count() >0)
+    {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          ITranslation.PROJECT_CODE_ERROR);
+    }
+    else {
     project.setCode(projectCode);
     project.setClientPartner(clientPartner);
     project.setDescription(projectTemplate.getDescription());
@@ -205,6 +216,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     return project;
+    }
   }
 
   public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
