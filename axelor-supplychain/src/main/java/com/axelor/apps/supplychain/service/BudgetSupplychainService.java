@@ -27,8 +27,10 @@ import com.axelor.apps.account.db.repo.BudgetLineRepository;
 import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.BudgetService;
+import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.script.ImportPurchaseOrder;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -40,9 +42,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class BudgetSupplychainService extends BudgetService {
-
-  private static final int STATUS_VALIDATED = 3;
-  private static final int STATUS_FINISHED = 4;
 
   @Inject
   public BudgetSupplychainService(BudgetLineRepository budgetLineRepository, BudgetRepository budgetRepository) {
@@ -64,8 +63,8 @@ public class BudgetSupplychainService extends BudgetService {
               .filter(
                   "self.budget.id = ?1 AND self.purchaseOrderLine.purchaseOrder.statusSelect in (?2,?3)",
                   budget.getId(),
-                  STATUS_VALIDATED,
-                  STATUS_FINISHED)
+                      IPurchaseOrder.STATUS_VALIDATED,
+                      IPurchaseOrder.STATUS_FINISHED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         LocalDate orderDate =
