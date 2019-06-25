@@ -7,10 +7,23 @@
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
+- Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
+- App Object : fix typo.
+- Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
+- BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- PROJECT : display the cancel button even if the status is draft
+- BANKORDERLINE : grid view sorting on bankOrderDate
+- CHEQUE REJECTION : fix payment voucher selection.
+- PAYMENT VOUCHER : trace exceptions happening on save in repository
+- ACCOUNT/STOCK : add more french translation.
+- PURCHASEORDERLINE : corrected potential injection error when calling service
+- SALE ORDER LINE: Fix NPE in groovy script.
+- PACKING LIST : address not readable on printing
+- HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
