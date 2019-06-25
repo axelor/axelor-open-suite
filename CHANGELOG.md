@@ -11,6 +11,7 @@
 - App Object : fix typo.
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
 - BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
