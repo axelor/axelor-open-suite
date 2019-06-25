@@ -30,21 +30,19 @@ import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.script.ImportPurchaseOrder;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class BudgetSupplychainService extends BudgetService {
 
   @Inject
-  public BudgetSupplychainService(BudgetLineRepository budgetLineRepository, BudgetRepository budgetRepository) {
+  public BudgetSupplychainService(
+      BudgetLineRepository budgetLineRepository, BudgetRepository budgetRepository) {
     super(budgetLineRepository, budgetRepository);
   }
 
@@ -63,8 +61,8 @@ public class BudgetSupplychainService extends BudgetService {
               .filter(
                   "self.budget.id = ?1 AND self.purchaseOrderLine.purchaseOrder.statusSelect in (?2,?3)",
                   budget.getId(),
-                      IPurchaseOrder.STATUS_VALIDATED,
-                      IPurchaseOrder.STATUS_FINISHED)
+                  IPurchaseOrder.STATUS_VALIDATED,
+                  IPurchaseOrder.STATUS_FINISHED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         LocalDate orderDate =
@@ -95,34 +93,35 @@ public class BudgetSupplychainService extends BudgetService {
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         Optional<LocalDate> optionaldate = getDate(budgetDistribution);
-        optionaldate.ifPresent(date -> {
-          for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-            LocalDate fromDate = budgetLine.getFromDate();
-            LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(date) || fromDate.isEqual(date))
+        optionaldate.ifPresent(
+            date -> {
+              for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+                LocalDate fromDate = budgetLine.getFromDate();
+                LocalDate toDate = budgetLine.getToDate();
+                if ((fromDate.isBefore(date) || fromDate.isEqual(date))
                     && (toDate.isAfter(date) || toDate.isEqual(date))) {
-              budgetLine.setAmountRealized(
+                  budgetLine.setAmountRealized(
                       budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-              break;
-            }
-          }
-        });
+                  break;
+                }
+              }
+            });
       }
     }
     return budget.getBudgetLineList();
   }
 
   @Override
-  protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution){
+  protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution) {
     InvoiceLine invoiceLine = budgetDistribution.getInvoiceLine();
 
-    if(invoiceLine == null){
+    if (invoiceLine == null) {
       return Optional.empty();
     }
 
     Invoice invoice = invoiceLine.getInvoice();
 
-    if(invoice.getPurchaseOrder() != null){
+    if (invoice.getPurchaseOrder() != null) {
       return Optional.of(invoice.getPurchaseOrder().getOrderDate());
     }
 
@@ -137,7 +136,8 @@ public class BudgetSupplychainService extends BudgetService {
       return BigDecimal.ZERO;
     }
 
-    BigDecimal totalAmountCommitted = budgetLineList
+    BigDecimal totalAmountCommitted =
+        budgetLineList
             .stream()
             .map(BudgetLine::getAmountCommitted)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -150,15 +150,18 @@ public class BudgetSupplychainService extends BudgetService {
   public void updateBudgetLinesFromPurchaseOrder(PurchaseOrder purchaseOrder) {
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
 
-    if(purchaseOrderLineList == null){
+    if (purchaseOrderLineList == null) {
       return;
     }
 
-    purchaseOrderLineList.stream().flatMap(x -> x.getBudgetDistributionList().stream()).forEach(budgetDistribution -> {
-      Budget budget = budgetDistribution.getBudget();
-      updateLines(budget);
-      computeTotalAmountCommitted(budget);
-    });
-
+    purchaseOrderLineList
+        .stream()
+        .flatMap(x -> x.getBudgetDistributionList().stream())
+        .forEach(
+            budgetDistribution -> {
+              Budget budget = budgetDistribution.getBudget();
+              updateLines(budget);
+              computeTotalAmountCommitted(budget);
+            });
   }
 }

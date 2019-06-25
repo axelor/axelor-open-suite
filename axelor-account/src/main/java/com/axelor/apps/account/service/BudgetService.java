@@ -43,8 +43,8 @@ public class BudgetService {
   protected BudgetRepository budgetRepository;
 
   @Inject
-  public BudgetService(BudgetLineRepository budgetLineRepository,
-                       BudgetRepository budgetRepository) {
+  public BudgetService(
+      BudgetLineRepository budgetLineRepository, BudgetRepository budgetRepository) {
     this.budgetLineRepository = budgetLineRepository;
     this.budgetRepository = budgetRepository;
   }
@@ -67,10 +67,11 @@ public class BudgetService {
       return BigDecimal.ZERO;
     }
 
-    BigDecimal totalAmountRealized =  budgetLineList
-        .stream()
-        .map(BudgetLine::getAmountRealized)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal totalAmountRealized =
+        budgetLineList
+            .stream()
+            .map(BudgetLine::getAmountRealized)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     budget.setTotalAmountRealized(totalAmountRealized);
 
@@ -94,34 +95,34 @@ public class BudgetService {
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         Optional<LocalDate> optionaldate = getDate(budgetDistribution);
-        optionaldate.ifPresent(date -> {
-          for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-            LocalDate fromDate = budgetLine.getFromDate();
-            LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(date) || fromDate.isEqual(date))
+        optionaldate.ifPresent(
+            date -> {
+              for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+                LocalDate fromDate = budgetLine.getFromDate();
+                LocalDate toDate = budgetLine.getToDate();
+                if ((fromDate.isBefore(date) || fromDate.isEqual(date))
                     && (toDate.isAfter(date) || toDate.isEqual(date))) {
-              budgetLine.setAmountRealized(
+                  budgetLine.setAmountRealized(
                       budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-              break;
-            }
-          }
-        });
+                  break;
+                }
+              }
+            });
       }
     }
     return budget.getBudgetLineList();
   }
 
   /**
-   *
    * @param budgetDistribution
-   * @return returns an {@code Optional} because in some cases the child implementations can return a null value.
-   *
+   * @return returns an {@code Optional} because in some cases the child implementations can return
+   *     a null value.
    */
-  protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution){
+  protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution) {
     Invoice invoice = budgetDistribution.getInvoiceLine().getInvoice();
 
     LocalDate invoiceDate = invoice.getInvoiceDate();
-    if(invoiceDate != null){
+    if (invoiceDate != null) {
       return Optional.of(invoiceDate);
     }
 
@@ -217,14 +218,18 @@ public class BudgetService {
   public void updateBudgetLinesFromInvoice(Invoice invoice) {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
 
-    if(invoiceLineList == null){
+    if (invoiceLineList == null) {
       return;
     }
 
-    invoiceLineList.stream().flatMap(x -> x.getBudgetDistributionList().stream()).forEach(budgetDistribution -> {
-      Budget budget = budgetDistribution.getBudget();
-      updateLines(budget);
-      computeTotalAmountRealized(budget);
-    });
+    invoiceLineList
+        .stream()
+        .flatMap(x -> x.getBudgetDistributionList().stream())
+        .forEach(
+            budgetDistribution -> {
+              Budget budget = budgetDistribution.getBudget();
+              updateLines(budget);
+              computeTotalAmountRealized(budget);
+            });
   }
 }

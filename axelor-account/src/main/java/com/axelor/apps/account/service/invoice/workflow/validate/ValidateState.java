@@ -100,13 +100,13 @@ public class ValidateState extends WorkflowInvoice {
       invoice.setJournal(invoiceService.getJournal(invoice));
     }
 
-    if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE && appAccountService.isApp("budget")){
-      if(!appAccountService.getAppBudget().getManageMultiBudget()){
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        && appAccountService.isApp("budget")) {
+      if (!appAccountService.getAppBudget().getManageMultiBudget()) {
         this.generateBudgetDistribution(invoice);
       }
       budgetService.updateBudgetLinesFromInvoice(invoice);
     }
-
 
     workflowValidationService.afterValidation(invoice);
   }
@@ -115,7 +115,7 @@ public class ValidateState extends WorkflowInvoice {
     if (invoice.getInvoiceLineList() != null) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
         if (invoiceLine.getBudget() != null
-                && (invoiceLine.getBudgetDistributionList() == null
+            && (invoiceLine.getBudgetDistributionList() == null
                 || invoiceLine.getBudgetDistributionList().isEmpty())) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(invoiceLine.getBudget());

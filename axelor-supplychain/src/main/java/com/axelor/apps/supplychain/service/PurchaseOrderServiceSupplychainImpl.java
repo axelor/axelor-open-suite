@@ -356,7 +356,6 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
 
     budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
-
   }
 
   @Override
