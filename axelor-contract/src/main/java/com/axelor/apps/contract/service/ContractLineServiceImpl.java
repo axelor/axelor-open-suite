@@ -143,7 +143,8 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine) {
+  public ContractLine createAnalyticDistributionWithTemplate(
+      ContractLine contractLine, Contract contract) {
 
     AppAccountService appAccountService = Beans.get(AppAccountService.class);
 
