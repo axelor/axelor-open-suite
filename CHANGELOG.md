@@ -7,6 +7,7 @@
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
+- INVOICE : optimisation of injections in invoice services in order to improve their performance
 - SALEORDER/PURCHASE ORDER/INVOICE : add the possibility to copy a line
 - App Object : fix typo.
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
