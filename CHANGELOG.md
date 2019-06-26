@@ -15,6 +15,7 @@
 - BUDGET : added status, committed total amount, realized total amount and boolean for budget checking
 - INVOICE : budget lines generation process moved from InvoiceService to ValidateState
 - Updated translations in management app
+- SALE CONFIG DEMO DATA : update demo data.
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
