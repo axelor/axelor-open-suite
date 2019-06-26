@@ -37,6 +37,7 @@
 - ACCOUNTING REPORT : now filter "journal" is working for analytic balance report.
 - SALE ORDER : line delivery dates not editable if availability request = true
 - MOVE : NPE when click on validation button in move-grid
+- SALE ORDER : hide and rename some field in advance search.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
