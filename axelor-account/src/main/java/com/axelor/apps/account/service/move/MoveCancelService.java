@@ -65,10 +65,7 @@ public class MoveCancelService {
       }
     }
 
-    Period period =
-        Beans.get(PeriodService.class)
-            .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
-    if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+    if (move.getPeriod() == null || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -16,7 +16,7 @@
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived"/>
 	</panel>
 	<panel-tabs name="mainPanelTab">
@@ -62,7 +62,7 @@
 <!-- 		TODO FILTER ON STATUS -->
 			<field name="closeYear"/>
 			<field name="openYear"/>
-			<field name="year" canEdit="false"/>		
+			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" canEdit="false"/>		
 			<field name="allocatePerPartner"/>
     		<field name="year.toDate" showIf="closeYear" hidden="true"/>
     		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>

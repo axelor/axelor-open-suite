@@ -27,6 +27,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ public class AccountService {
   /** Credit balance = credit - debit */
   public static final Integer BALANCE_TYPE_CREDIT_BALANCE = 2;
 
-  public static final int MAX_LEVEL_OF_ACCOUNT = 10;
+  public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
 
@@ -86,7 +88,7 @@ public class AccountService {
 
   public List<Long> getAllAccountsSubAccountIncluded(List<Long> accountList) {
 
-    return getAllAccountsSubAccountIncluded(accountList, MAX_LEVEL_OF_ACCOUNT);
+    return getAllAccountsSubAccountIncluded(accountList, 0);
   }
 
   public List<Long> getAllAccountsSubAccountIncluded(List<Long> accountList, int counter) {
@@ -111,19 +113,14 @@ public class AccountService {
 
   public List<Long> getSubAccounts(Long accountId) {
 
-    List<Long> idLists = Lists.newArrayList();
-
-    List<Map> resultMap =
-        accountRepository
+    return accountRepository
             .all()
             .filter("self.parentAccount.id = ?1", accountId)
             .select("id")
-            .fetch(0, 0);
+            .fetch(0, 0)
+            .stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
-    for (Map map : resultMap) {
-      idLists.add(Long.valueOf(map.get("id").toString()));
-    }
-
-    return idLists;
   }
 }
