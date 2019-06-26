@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -247,28 +246,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     compute(invoice);
 
     validateFactory.getValidator(invoice).process();
-    if (appAccountService.isApp("budget")
-        && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      this.generateBudgetDistribution(invoice);
-    }
+
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
     if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       ventilate(invoice);
-    }
-  }
-
-  @Override
-  public void generateBudgetDistribution(Invoice invoice) {
-    if (invoice.getInvoiceLineList() != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        if (invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()) {
-          BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(invoiceLine.getBudget());
-          budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
-          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-        }
-      }
     }
   }
 
