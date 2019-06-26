@@ -67,7 +67,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     LocalDate reportedBalanceDate = year.getReportedBalanceDate();
     String origin = accountingBatch.getCode();
     String moveDescription = accountingBatch.getMoveDescription();
-    
+
     List<Long> accountIdList =
         accountingCloseAnnualService.getAllAccountOfYear(accountingBatch.getAccountSet(), year);
 
@@ -83,9 +83,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
         account = accountRepository.find(accountAndPartnerPair.getLeft());
         if (accountAndPartnerPair.getRight() != null) {
           partner = partnerRepository.find(accountAndPartnerPair.getRight());
-        }
-        else  {
-        	partner = null;
+        } else {
+          partner = null;
         }
 
         List<Move> generateMoves =

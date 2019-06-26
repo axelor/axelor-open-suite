@@ -72,8 +72,7 @@ public class PeriodServiceImpl implements PeriodService {
     LOG.debug("Period : {}", period);
     return period;
   }
-  
-  
+
   public Period getPeriod(LocalDate date, Company company, int typeSelect) {
 
     return periodRepo
@@ -127,7 +126,7 @@ public class PeriodServiceImpl implements PeriodService {
 
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
-    
+
     periodRepo.save(period);
   }
 

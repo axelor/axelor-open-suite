@@ -178,7 +178,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     counter = 0;
 
-    this.generateCloseAnnualMoveLine(move, origin, account, moveDescription, originDate, balance.negate());
+    this.generateCloseAnnualMoveLine(
+        move, origin, account, moveDescription, originDate, balance.negate());
 
     this.generateCloseAnnualMoveLine(
         move,

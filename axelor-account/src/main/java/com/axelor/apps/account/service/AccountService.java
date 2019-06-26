@@ -20,15 +20,12 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.db.JPA;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,13 +111,12 @@ public class AccountService {
   public List<Long> getSubAccounts(Long accountId) {
 
     return accountRepository
-            .all()
-            .filter("self.parentAccount.id = ?1", accountId)
-            .select("id")
-            .fetch(0, 0)
-            .stream()
-            .map(m -> (Long) m.get("id"))
-            .collect(Collectors.toList());
-
+        .all()
+        .filter("self.parentAccount.id = ?1", accountId)
+        .select("id")
+        .fetch(0, 0)
+        .stream()
+        .map(m -> (Long) m.get("id"))
+        .collect(Collectors.toList());
   }
 }

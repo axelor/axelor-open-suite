@@ -172,20 +172,19 @@ public class MoveCreateService {
     move.setIgnoreInAccountingOk(ignoreInAccountingOk);
     move.setAutoYearClosureMove(autoYearClosureMove);
 
-    if(autoYearClosureMove)  {
-        move.setPeriod(periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL));
-        if (move.getPeriod() == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.PERIOD_1),
-                company.getName(),
-                date.toString());
-          }
+    if (autoYearClosureMove) {
+      move.setPeriod(periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL));
+      if (move.getPeriod() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.PERIOD_1),
+            company.getName(),
+            date.toString());
+      }
+    } else {
+      move.setPeriod(periodService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));
     }
-    else  {
-        move.setPeriod(periodService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));
-    }
-    
+
     move.setDate(date);
     move.setMoveLineList(new ArrayList<MoveLine>());
 
