@@ -305,4 +305,14 @@ public class SaleOrderLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkInvoicedOrDeliveredOrderQty(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    BigDecimal qty =
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+
+    response.setValue("qty", qty);
+  }
 }
