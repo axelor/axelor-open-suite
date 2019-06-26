@@ -9,6 +9,8 @@
             <field name="isVentilationSkipped" widget="boolean-switch"/>
 			<field name="isEnabledProductDescriptionCopyForCustomers" widget="boolean-switch"/>
 			<field name="isEnabledProductDescriptionCopyForSuppliers" widget="boolean-switch"/>
+			<field name="autoGenerateInvoicePrintingFileOnSaleInvoice" widget="boolean-switch"/>
+			<field name="autoGenerateInvoicePrintingFileOnPurchaseInvoice" widget="boolean-switch"/>
 		</panel>
 		
 		<panel-mail name="mailPanel">

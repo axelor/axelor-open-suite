@@ -77,6 +77,11 @@
 	  eventStart="startDateTime" eventStop="endDateTime" colorBy="calendar">
         <field name="subject" />
     </calendar>
+    
+    <calendar name="calendar-event-leave-request" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"
+	  eventStart="startDateTime" eventStop="endDateTime" colorBy="user">
+        <field name="subject" />
+    </calendar>
 	
     <action-view name="action-icalendar-view-ievent-dashlet" title="Events" model="com.axelor.apps.base.db.ICalendarEvent">
         <view type="grid" name="calendar-event-calendar-grid"/>

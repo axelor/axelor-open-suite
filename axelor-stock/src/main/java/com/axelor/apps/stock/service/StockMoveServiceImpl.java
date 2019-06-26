@@ -1249,7 +1249,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (ids != null && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
       for (Long id : ids) {
         StockMove stockMove = stockMoveRepo.find(id);
-        setPickingStockMoveEditDate(stockMove, userType);
+        if (stockMove != null) {
+          setPickingStockMoveEditDate(stockMove, userType);
+        }
       }
     }
   }

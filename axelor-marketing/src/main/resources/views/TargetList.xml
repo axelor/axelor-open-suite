@@ -31,7 +31,7 @@
                 <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="4" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
                 <field name="targetTitle" colSpan="8" readonly="true"/>
 	              <field name="targetMetaField" requiredIf="targetType == 'ManyToOne' || targetType == 'ManyToMany'"
-                  readonlyIf="(targetMetaField != null &amp;&amp; targetMetaField.relationship == null) || (metaTargetFieldDomain == null &amp;&amp; targetField.includes('.'))"
+                  readonlyIf="(targetMetaField != null &amp;&amp; targetMetaField.relationship == null) || (metaTargetFieldDomain == null &amp;&amp; $contains(targetField,'.'))"
                   title="Select target field" target="com.axelor.meta.db.MetaField" type="many-to-one" showIf="metaField.relationship != null"
                   onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain" onChange="action-filter-method-update-target-meta-field"/>
 	              <button name="clearSelection" colSpan="4" title="Clear Selection" icon="fa-arrow-left" showIf="metaField.relationship != null" onClick="action-filter-method-clear-selection"/>
@@ -63,7 +63,7 @@
                 <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="4" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
                 <field name="targetTitle" colSpan="8" readonly="true"/>
                 <field name="targetMetaField" requiredIf="targetType == 'ManyToOne' || targetType == 'ManyToMany'"
-                  readonlyIf="(targetMetaField != null &amp;&amp; targetMetaField.relationship == null) || (metaTargetFieldDomain == null &amp;&amp; targetField.includes('.'))"
+                  readonlyIf="(targetMetaField != null &amp;&amp; targetMetaField.relationship == null) || (metaTargetFieldDomain == null &amp;&amp; $contains(targetField,'.'))"
                   title="Select target field" target="com.axelor.meta.db.MetaField" type="many-to-one" showIf="metaField.relationship != null"
                   onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain" onChange="action-filter-method-update-target-meta-field"/>
                 <button name="clearSelection" colSpan="4" title="Clear Selection" icon="fa-arrow-left" showIf="metaField.relationship != null" onClick="action-filter-method-clear-selection"/>
