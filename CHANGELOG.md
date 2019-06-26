@@ -27,6 +27,7 @@
 - SALE ORDER LINE: Fix NPE in groovy script.
 - PACKING LIST : address not readable on printing
 - HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
+- ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
