@@ -35,21 +35,15 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-
 import java.util.LinkedHashMap;
 
 @Singleton
 public class ProjectTemplateController {
 
-  @Inject
-  ProjectTemplateRepository projectTemplateRepo;
-  @Inject
-  ProjectService projectService;
-  @Inject
-  AppProjectService appProjectService;
-  @Inject
-  PartnerRepository partnerRepo;
+  @Inject ProjectTemplateRepository projectTemplateRepo;
+  @Inject ProjectService projectService;
+  @Inject AppProjectService appProjectService;
+  @Inject PartnerRepository partnerRepo;
 
   public void createProjectFromTemplate(ActionRequest request, ActionResponse response) {
 
@@ -68,11 +62,11 @@ public class ProjectTemplateController {
                 .add("grid", "project-grid")
                 .context("_showRecord", project.getId())
                 .map());
-        
+
       } catch (AxelorException e) {
-        TraceBackService.trace(response,e);
+        TraceBackService.trace(response, e);
       }
-     
+
     } else {
       response.setView(
           ActionView.define(I18n.get("Create project from this template"))
@@ -103,33 +97,31 @@ public class ProjectTemplateController {
     ProjectTemplate projectTemplate = projectTemplateRepo.find(Long.parseLong(projectTemplateId));
 
     String projectCode = (String) context.get("code");
-    
-        Object clientPartnerContext = context.get("clientPartner");
-        Partner clientPartner = null;
 
-        if (clientPartnerContext != null) {
-          String clientPartnerId =
-              ((LinkedHashMap<String, Object>) clientPartnerContext).get("id").toString();
-          clientPartner = partnerRepo.find(Long.parseLong(clientPartnerId));
-        }
+    Object clientPartnerContext = context.get("clientPartner");
+    Partner clientPartner = null;
 
-        Project project;
-        try {
-          project = projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
-          response.setCanClose(true);
+    if (clientPartnerContext != null) {
+      String clientPartnerId =
+          ((LinkedHashMap<String, Object>) clientPartnerContext).get("id").toString();
+      clientPartner = partnerRepo.find(Long.parseLong(clientPartnerId));
+    }
 
-          response.setView(
-              ActionView.define(I18n.get("Project"))
-                  .model(Project.class.getName())
-                  .add("form", "project-form")
-                  .add("grid", "project-grid")
-                  .context("_showRecord", project.getId())
-                  .map());
-        } catch (AxelorException e) {
-          TraceBackService.trace(response,e);
-        }
+    Project project;
+    try {
+      project =
+          projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+      response.setCanClose(true);
 
-      } 
-     
-  
+      response.setView(
+          ActionView.define(I18n.get("Project"))
+              .model(Project.class.getName())
+              .add("form", "project-form")
+              .add("grid", "project-grid")
+              .context("_showRecord", project.getId())
+              .map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

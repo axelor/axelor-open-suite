@@ -46,5 +46,6 @@ public interface ProjectService {
   Project generateProject(Partner partner);
 
   public Project createProjectFromTemplate(
-      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) throws AxelorException;
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
+      throws AxelorException;
 }

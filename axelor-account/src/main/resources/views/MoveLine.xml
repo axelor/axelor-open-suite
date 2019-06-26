@@ -6,7 +6,7 @@
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
   	<toolbar>
   		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
-      <button name="calculateBtn" title="Calculation" onClick="action-account-move-line-method-calculate-balance"/>
+      <button name="calculateBtn" title="Calculation of totals" onClick="action-account-move-line-method-calculate-balance"/>
   	</toolbar>
   	<hilite color="info" if="$get('move.statusSelect') == 1"/>
   	<hilite color="danger" if="$get('move.statusSelect') == 4"/>

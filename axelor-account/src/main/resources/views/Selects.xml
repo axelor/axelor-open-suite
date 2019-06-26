@@ -398,9 +398,13 @@
 		<option value="doc">Word</option>
 		<option value="pdf">PDF</option>
 	</selection>
-
 	<selection name="account.tax.type.select">
 		<option value="1">Collection</option>
 		<option value="2">Debit</option>
+	</selection>
+
+	<selection name="account.budget.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
 	</selection>
 </object-views>

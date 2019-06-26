@@ -69,7 +69,7 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Override
   public Project save(Project project) {
-    
+
     ProjectManagementRepository.setAllProjectMembersUserSet(project);
 
     if (project.getSynchronize()) {
