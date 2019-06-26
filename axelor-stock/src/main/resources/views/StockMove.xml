@@ -9,7 +9,7 @@
     	</toolbar>
     	<hilite if="statusSelect == 2 &amp;&amp; $moment(__date__).diff(estimatedDate, 'days') &gt; 0" color="danger"/>
   		<hilite if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff(todayDate, 'days') &lt; 10" color="warning"/>
-        <field name="stockMoveSeq"/>
+        <field name="stockMoveSeq" width="120"/>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
@@ -17,7 +17,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="statusSelect"/>
-        <field name="origin"/>
+        <field name="origin" width="120"/>
         <field name="availableStatusSelect">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
@@ -34,7 +34,7 @@
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
-		<field name="stockMoveSeq">
+		<field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="pickingIsEdited"/>
 		</field>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -46,7 +46,7 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
-        <field name="origin"/>
+        <field name="origin" width="120"/>
         <field name="availableStatusSelect">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
@@ -59,7 +59,7 @@
     </grid>
     
     <grid name="stock-move-mass-invoicing-out-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-		<field name="stockMoveSeq"/>
+		<field name="stockMoveSeq" width="120"/>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="realDate"/>
         <field name="fromAddressStr" hidden="true"/>
@@ -67,7 +67,7 @@
         <field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="origin"/>
+        <field name="origin" width="120"/>
     </grid>
 
      <grid name="stock-move-out-availability-req-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
@@ -75,7 +75,7 @@
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     	</toolbar>
-        <field name="stockMoveSeq">
+        <field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
 		</field>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -87,7 +87,7 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
-        <field name="origin"/>
+        <field name="origin" width="120"/>
         <field name="availableStatusSelect">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
@@ -104,7 +104,7 @@
     	<toolbar>
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
     	</toolbar>
-        <field name="stockMoveSeq"/>
+        <field name="stockMoveSeq" width="120"/>
         <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="estimatedDate"/>
         <field name="realDate"/>
@@ -115,14 +115,14 @@
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="statusSelect"/>
         <field name="supplierShipmentRef"/>
-        <field name="origin"/>
+        <field name="origin" width="120"/>
         <field name="typeSelect" hidden="true" />
         <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
         <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
     </grid>
     
     <grid name="stock-move-mass-invoicing-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
-        <field name="stockMoveSeq"/>
+        <field name="stockMoveSeq" width="120"/>
         <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="realDate"/>
         <field name="fromAddressStr"/>
@@ -131,7 +131,7 @@
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="supplierShipmentRef"/>
-        <field name="origin"/>
+        <field name="origin" width="120"/>
     </grid>
     
     
@@ -142,39 +142,39 @@
     </calendar>
     
     <form name="stock-move-customer-deliveries-form" title="Customer delivery" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
     	<panel-include view="stock-move-form"/>
 	</form>
 	
 	<form name="stock-move-customer-returns-form" title="Customer return" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
     	<panel-include view="stock-move-form"/>
 	</form>
 	
 	<form name="stock-move-supplier-returns-form" title="Supplier return" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
     	<panel-include view="stock-move-form"/>
 	</form>
 	
 	<form name="stock-move-internal-move-form" title="Internal Stock Move" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
     	<panel-include view="stock-move-form"/>
 	</form>
 	
 	
 	<form name="stock-move-availability-requests-form" title="Availability request" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
     	<panel-include view="stock-move-form"/>
 	</form>
        
        
 	<form name="stock-move-supplier-arrivals-form" title="Supplier Arrival" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
     	<panel-include view="stock-move-form"/>
 	</form>
 
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
+					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
         <menubar>
             <menu title="Reports" icon="fa-files-o">
                 <item title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
@@ -429,7 +429,7 @@
     	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"
     	 onNew="action-stock-move-wizard-stock-per-day-defaults">
     	<toolbar>
-    		<button icon="img/16px/create_16px.png" name="runWizardBtn" title="Run" onClick="action-stock-move-method-open-stock-per-day" readonlyIf="stockFromDate == null || stockToDate == null || stockLocation == null" />
+    		<button icon="fa-play" name="runWizardBtn" title="Run" onClick="action-stock-move-method-open-stock-per-day" readonlyIf="stockFromDate == null || stockToDate == null || stockLocation == null" />
     	</toolbar>
     	<panel name="mainPanel">
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
@@ -775,7 +775,7 @@
 	</action-method>
 	
 	<action-method name="action-stock-move-method-verify-product-stock">
-		<call class="com.axelor.apps.stock.web.StockMoveController" method="verifyProductStock"/>
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="verifyProductStock"/>
 	</action-method>
 
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
@@ -885,6 +885,10 @@
 	<action-method name="action-method-print-conformity-certificate">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="printConformityCertificate"/>
 	</action-method>
+
+  <action-method name="action-stock-move-method-update-stocks">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="updateStocks"/>
+  </action-method>
 
 	<action-record name="action-stock-move-record-freight-carrier" model="com.axelor.apps.stock.db.StockMove">
 		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>

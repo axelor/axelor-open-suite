@@ -5,7 +5,7 @@
 
 	<grid name="payment-schedule-line-grid" title="Schedule lines"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
-		<field name="paymentSchedule" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
+		<field name="paymentSchedule" width="120" form-view="payment-schedule-form" grid-view="payment-schedule-grid" />
 		<field name="scheduleLineSeq" />
 		<field name="inTaxAmount" aggregate="sum"/>
 		<field name="inTaxAmountPaid" aggregate="sum"/>

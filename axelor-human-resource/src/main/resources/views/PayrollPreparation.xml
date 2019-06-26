@@ -11,12 +11,12 @@
 	
     <form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" onNew="action-payroll-preparation-group-on-new">
         <panel>
-            <panel name="mainPanel">
+            <panel name="mainPanel" colSpan="12">
                 <field name="company" onChange="action-payroll-preparation-record-company-onchange" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="4" />
                 <field name="employee" colSpan="4" domain="self.employmentContractList.payCompany = :company" onChange="action-payroll-preparation-record-fill-contract, action-payroll-preparation-group-fill-in" canNew="false" canEdit="false" canView="false" />
                 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in" canEdit="false" />
                 <field name="period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1 AND self.year.company = :company" grid-view="period-hr-grid" form-view="period-hr-form" onChange="action-payroll-preparation-group-fill-in" colSpan="4" canView="false" />
-                <button name="refreshBtn" title="Refresh" onClick="action-payroll-preparation-group-fill-in,action-payroll-preparation-method-fill-in-leaves,save" colSpan="4" colOffset="4" />
+                <button name="refreshBtn" title="Refresh" onClick="validate,action-payroll-preparation-group-fill-in,action-payroll-preparation-method-fill-in-leaves,save" colSpan="4" colOffset="4" />
                 <field name="$payrollLeavesList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12" />
                 <panel-related name="extraHoursLineListPanel" field="extraHoursLineList" readonly="true" colSpan="12" />
                 <field name="duration" />

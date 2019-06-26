@@ -11,7 +11,7 @@
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
@@ -35,7 +35,7 @@
 	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
-	    <field name="partnerSeq"/>
+	    <field name="partnerSeq" width="120"/>
 	    <field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -60,7 +60,7 @@
 	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
-	    <field name="partnerSeq"/>
+	    <field name="partnerSeq" width="120" />
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -79,7 +79,7 @@
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -92,7 +92,7 @@
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
