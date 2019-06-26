@@ -1,9 +1,9 @@
 # Changelog
 
-##[Unreleased 5.1.8]
-##Features
+## [Unreleased 5.1.8]
+## Features
 
-##Improvements
+## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
@@ -19,7 +19,7 @@
 - SALE CONFIG DEMO DATA : update demo data.
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
-##Bug Fixes
+## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
@@ -28,6 +28,7 @@
 - PAYMENT VOUCHER : trace exceptions happening on save in repository
 - ACCOUNT/STOCK : add more french translation.
 - PURCHASEORDERLINE : corrected potential injection error when calling service
+- SALEORDER : companyBankDetails can no longer be edited in form view.
 - SALE ORDER LINE: Fix NPE in groovy script.
 - PACKING LIST : address not readable on printing
 - HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
