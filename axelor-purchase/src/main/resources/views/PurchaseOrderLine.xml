@@ -121,7 +121,7 @@
 				<panel-related name="purchaseOrderSupplierLineListPanel" field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 			</panel>
 			<panel name="budgetDistributionPanel" title="Budget" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
-				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" domain="self.statusSelect = 2"/>
 				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" hidden="true" colSpan="12">

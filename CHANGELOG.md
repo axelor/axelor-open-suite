@@ -2,19 +2,26 @@
 
 ##[Unreleased 5.1.8]
 ##Features
-- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
+- INVOICE : optimisation of injections in invoice services in order to improve their performance
+- SALEORDER/PURCHASE ORDER/INVOICE : add the possibility to copy a line
 - App Object : fix typo.
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
 - BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking
+- INVOICE : budget lines generation process moved from InvoiceService to ValidateState
+- Updated translations in management app
+- SALE CONFIG DEMO DATA : update demo data.
+- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
 - BANKORDERLINE : grid view sorting on bankOrderDate
 - CHEQUE REJECTION : fix payment voucher selection.
@@ -25,6 +32,9 @@
 - PACKING LIST : address not readable on printing
 - HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
 - TRANSLATION : fix french translation of "start date".
+- ACCOUNTING REPORT : now filter "journal" is working for analytic balance report.
+- SALE ORDER : line delivery dates not editable if availability request = true
+- MOVE : NPE when click on validation button in move-grid
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
@@ -460,7 +470,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
-
 
 ## [5.1.2] - 2019-02-11
 ## Features
@@ -1091,7 +1100,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-
+[Unreleased 5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...dev
 [5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
 [5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
