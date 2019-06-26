@@ -9,6 +9,12 @@
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
 - App Object : fix typo.
+- Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
+- BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking
+- INVOICE : budget lines generation process moved from InvoiceService to ValidateState
+- Updated translations in management app
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -21,7 +27,8 @@
 - SALE ORDER LINE: Fix NPE in groovy script.
 - PACKING LIST : address not readable on printing
 - HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
-- SALE ORDER : line not editable if availability request = true
+- ACCOUNTING REPORT : now filter "journal" is working for analytic balance report.
+- SALE ORDER : line delivery dates not editable if availability request = true
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
@@ -457,7 +464,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
-
 
 ## [5.1.2] - 2019-02-11
 ## Features
