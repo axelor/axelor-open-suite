@@ -80,6 +80,7 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccountImpl;
 import com.axelor.apps.account.service.ReconcileGroupSequenceService;
 import com.axelor.apps.account.service.ReconcileGroupSequenceServiceImpl;
@@ -239,5 +240,7 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
 
     bind(AccountingCloseAnnualService.class).to(AccountingCloseAnnualServiceImpl.class);
+
+    bind(PeriodServiceAccount.class).to(PeriodServiceAccountImpl.class);
   }
 }

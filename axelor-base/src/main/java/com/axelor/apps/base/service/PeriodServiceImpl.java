@@ -117,13 +117,15 @@ public class PeriodServiceImpl implements PeriodService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void close(Period period) {
-
+  public void close(Period period) throws AxelorException {
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);
     }
+    this.updateClosePeriod(period);
+  }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void updateClosePeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
 
