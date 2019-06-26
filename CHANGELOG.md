@@ -27,6 +27,8 @@
 - SALE ORDER LINE: Fix NPE in groovy script.
 - PACKING LIST : address not readable on printing
 - HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
+- ACCOUNTING REPORT : now filter "journal" is working for analytic balance report.
+- SALE ORDER : line delivery dates not editable if availability request = true
 - MOVE : NPE when click on validation button in move-grid
 
 ## [5.1.7] - 2019-06-17
