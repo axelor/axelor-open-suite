@@ -2,12 +2,12 @@
 
 ##[Unreleased 5.1.8]
 ##Features
-- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
+- SALEORDER/PURCHASE ORDER/INVOICE : add the possibility to copy a line
 - App Object : fix typo.
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
 - BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
@@ -16,6 +16,7 @@
 - INVOICE : budget lines generation process moved from InvoiceService to ValidateState
 - Updated translations in management app
 - SALE CONFIG DEMO DATA : update demo data.
+- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -1096,7 +1097,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-
+[Unreleased 5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...dev
 [5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
 [5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
