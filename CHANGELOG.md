@@ -20,6 +20,7 @@
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
 - BANKORDERLINE : grid view sorting on bankOrderDate
 - CHEQUE REJECTION : fix payment voucher selection.
