@@ -19,7 +19,7 @@
 			<field name="fetchLimit" widget="Integer" required="true" min="1"
 				colSpan="4" />
 			<button-group name="mainBtnGroup" colSpan="3">
-			<button name="backToDraftBtn" title="Back To Draft"
+			<button name="backToDraftBtn" title="Return to draft status"
 				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
 				colSpan="4" onClick="data.create.backup.set.draft.status" />
 			<button name="createBtn" title="Create"
