@@ -162,7 +162,7 @@ public class LeadServiceImpl implements LeadService {
               + "' target='_blank' />");
       urlMap.put(
           "google",
-          "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
               + companyName
               + "+"
               + searchName
@@ -175,7 +175,7 @@ public class LeadServiceImpl implements LeadService {
               + "' target='_blank' />");
       urlMap.put(
           "google",
-          "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
               + searchName
               + "' target='_blank' />");
     }

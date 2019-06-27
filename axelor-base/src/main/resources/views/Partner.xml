@@ -152,7 +152,7 @@
 					</viewer>
 				</field>
 				<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
-					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="googleLabel" title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
@@ -452,7 +452,7 @@
 					</viewer>
 				</field>
 				<panel name="socialNetworkPanel" colSpan="12">
-					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="googleLabel" title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
@@ -638,7 +638,7 @@
 			<panel name="imagePanel" colSpan="3">
 				<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
 				<panel colSpan="12" name="socialNetworkPanel">
-					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="googleLabel" title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
