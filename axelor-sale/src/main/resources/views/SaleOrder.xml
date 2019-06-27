@@ -534,7 +534,7 @@
 	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
 	      <panel name="financialTermsPanel" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-	        <field name="paymentMode" canEdit="flase" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	        <field name="paymentMode" canEdit="false" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 	        <field name="paymentCondition" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
 	      <panel name="stockLocationPanel" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
