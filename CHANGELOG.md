@@ -38,6 +38,7 @@
 - SALE ORDER : line delivery dates not editable if availability request = true
 - MOVE : NPE when click on validation button in move-grid
 - SALE ORDER : hide and rename some field in advance search.
+- STOCK MOVE : Printing address at bottom-left of Report.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
