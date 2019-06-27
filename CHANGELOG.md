@@ -22,7 +22,7 @@
 - SALE ORDER LINE: Fix NPE in groovy script.
 - PACKING LIST : address not readable on printing
 - HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
-- STOCKMOVE : catch NPE when print with icon a deleted move.
+- STOCKMOVE : catch NPE when printing a deleted move.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
