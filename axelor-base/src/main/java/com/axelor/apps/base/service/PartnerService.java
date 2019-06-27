@@ -140,7 +140,7 @@ public class PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+        "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
             + name
             + "' target='_blank' />");
     urlMap.put(
