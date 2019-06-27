@@ -430,7 +430,7 @@
     	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"
     	 onNew="action-stock-move-wizard-stock-per-day-defaults">
     	<toolbar>
-    		<button icon="img/16px/create_16px.png" name="runWizardBtn" title="Run" onClick="action-stock-move-method-open-stock-per-day" readonlyIf="stockFromDate == null || stockToDate == null || stockLocation == null" />
+    		<button icon="fa-play" name="runWizardBtn" title="Run" onClick="action-stock-move-method-open-stock-per-day" readonlyIf="stockFromDate == null || stockToDate == null || stockLocation == null" />
     	</toolbar>
     	<panel name="mainPanel">
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>

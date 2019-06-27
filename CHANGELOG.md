@@ -91,8 +91,11 @@
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
+- SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
 - ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
 - PROJECT : Add new feature 'Project template'
+- Contract : Add analytic information to contract lines.
+- MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -129,6 +132,8 @@
 - CONTRACT : Set project on generated invoices
 - LEAVE REQUEST : Set message for leave reason has no unit
 - LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
+- ACCOUNT MOVE REVERSE: Selected reverse move date must not be after the date of the day
+- ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation  
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -153,6 +158,10 @@
 - Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 - INVOICE : Reduce font size of tax table in Invoice printing
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- Transactionnal : correction and standardisation of rollback.
+- ACCOUNT MOVE REVERSE: add translation
+- SALEORDER : fix action with obsolete name
+- ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
 - Transactionnal : correction and standardisation of rollback.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

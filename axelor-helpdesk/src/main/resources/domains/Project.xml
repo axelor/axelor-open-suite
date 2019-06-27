@@ -6,7 +6,7 @@
     <module name="project" package="com.axelor.apps.project.db"/>
 
     <entity name="Project">
-        <string name="name" required="true" unique="true"/>
+        <string name="name" required="true"/>
         <string name="code" title="Code" />
         <string name="fullName" namecolumn="true" title="Name"/>
     </entity>

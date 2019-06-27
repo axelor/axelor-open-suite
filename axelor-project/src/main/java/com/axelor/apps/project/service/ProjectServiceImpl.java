@@ -26,6 +26,7 @@ import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -161,50 +162,58 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   @Transactional
   public Project createProjectFromTemplate(
-      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
+      throws AxelorException {
 
     Project project = new Project();
     project.setName(projectTemplate.getName());
-    project.setCode(projectCode);
-    project.setClientPartner(clientPartner);
-    project.setDescription(projectTemplate.getDescription());
-    project.setTeam(projectTemplate.getTeam());
-    project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
-    project.setAssignedTo(projectTemplate.getAssignedTo());
-    project.setProjectCategorySet(new HashSet<>(projectTemplate.getProjectCategorySet()));
-    project.setSynchronize(projectTemplate.getSynchronize());
-    project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
-    project.setImputable(projectTemplate.getImputable());
-    project.setCompany(projectTemplate.getCompany());
-    project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
-    project.setExcludePlanning(projectTemplate.getExcludePlanning());
-    project.setIsProject(projectTemplate.getIsProject());
-    project.setProjectTypeSelect(ProjectRepository.TYPE_PROJECT);
 
-    List<Wiki> wikiList = projectTemplate.getWikiList();
+    if (projectRepository.all().filter("self.code = ?", projectCode).count() > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, ITranslation.PROJECT_CODE_ERROR);
+    } else {
 
-    if (wikiList != null && !wikiList.isEmpty()) {
+      project.setCode(projectCode);
+      project.setClientPartner(clientPartner);
+      project.setDescription(projectTemplate.getDescription());
+      project.setTeam(projectTemplate.getTeam());
+      project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
+      project.setAssignedTo(projectTemplate.getAssignedTo());
+      project.setProjectCategorySet(new HashSet<>(projectTemplate.getProjectCategorySet()));
+      project.setSynchronize(projectTemplate.getSynchronize());
+      project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
+      project.setImputable(projectTemplate.getImputable());
+      project.setCompany(projectTemplate.getCompany());
+      project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
+      project.setExcludePlanning(projectTemplate.getExcludePlanning());
+      project.setIsProject(projectTemplate.getIsProject());
+      project.setProjectTypeSelect(ProjectRepository.TYPE_PROJECT);
 
-      for (Wiki wiki : wikiList) {
-        wiki = wikiRepo.copy(wiki, false);
-        wiki.setProjectTemplate(null);
-        project.addWikiListItem(wiki);
+      List<Wiki> wikiList = projectTemplate.getWikiList();
+
+      if (wikiList != null && !wikiList.isEmpty()) {
+
+        for (Wiki wiki : wikiList) {
+          wiki = wikiRepo.copy(wiki, false);
+          wiki.setProjectTemplate(null);
+          project.addWikiListItem(wiki);
+        }
       }
-    }
 
-    projectRepository.save(project);
+      projectRepository.save(project);
 
-    Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
+      Set<TaskTemplate> taskTemplateSet = projectTemplate.getTaskTemplateSet();
 
-    if (taskTemplateSet != null) {
-      Iterator<TaskTemplate> taskTemplateItr = taskTemplateSet.iterator();
+      if (taskTemplateSet != null) {
+        Iterator<TaskTemplate> taskTemplateItr = taskTemplateSet.iterator();
 
-      while (taskTemplateItr.hasNext()) {
-        createTask(taskTemplateItr.next(), project);
+        while (taskTemplateItr.hasNext()) {
+          createTask(taskTemplateItr.next(), project);
+        }
       }
-    }
 
-    return project;
+      return project;
+    }
   }
 
   public TeamTask createTask(TaskTemplate taskTemplate, Project project) {

@@ -3,18 +3,16 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate" title="Project template">
-		<field name="code"/>
 		<field name="name"/>
 		<field name="assignedTo"/>
 	</grid>
 
-	<form name="project-template-form" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate" onLoad="action-project-template-on-load-group" onNew="action-project-group-on-new-project">
+	<form name="project-template-form" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate" onNew="action-project-group-on-new-project">
 
 		<panel name="mainPanel">
 			<panel name="informationPanel" colSpan="12">
 				<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
 					<editor x-show-titles="false">
-						<field name="code" showTitle="false" colSpan="3" css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
 						<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" />
 					</editor>
 				</field>
@@ -75,24 +73,18 @@
 		</panel>
 	</form>
 
-	<form model="com.axelor.apps.base.db.Wizard" title="Create project from this template" name="project-template-wizard-form">
+
+	<form model="com.axelor.apps.base.db.Wizard" title="Create project from this template" name="project-template-wizard-form" onNew="action-attrs-project-template-set-wizard-hidden" onLoad="action-attrs-project-template-set-wizard-hidden">
 		<panel name="mainPanel" colSpan="12">
 			<panel name="infoPanel" colSpan="12">
-				<field name="code" title="Code" type="string" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"/>
-				<field name="clientPartner" title="Customer" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isCustomer = true" if="_businessProject" required="true"/>
+					<field name="code" title="Code" type="string" required="true"/>
+					<field name="clientPartner" title="Customer" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isCustomer = true" required="true"/>
 			</panel>
-			<button name="createBusinessProjectBtn" title="Create business project from this template" colSpan="5" if="_businessProject &amp;&amp; !_bothFieldsRequired" readonlyIf="!clientPartner" onClick="action-project-template-method-generate-project-from-wizard"/>
-			<button name="createBusinessProjectBtn" title="Create business project from this template" colSpan="5" if="_bothFieldsRequired" readonlyIf="!clientPartner || !code" onClick="action-project-template-method-generate-project-from-wizard"/>
-			<button name="createProjectBtn" title="Create project from this template" colSpan="5" if="!_businessProject" readonlyIf="!code" onClick="action-project-template-method-generate-project-from-wizard"/>			
+			<button name="createBusinessProjectBtn" title="Create business project from this template" colSpan="5" readonlyIf="!clientPartner" onClick="action-project-template-method-generate-project-from-wizard"/>
+			<spacer name="createProjectBtnSpacer" />
+			<button name="createProjectBtn" title="Create project from this template" colSpan="5"  readonlyIf="!code" onClick="action-project-template-method-generate-project-from-wizard"/>			
 		</panel>
 	</form>
-
-	<action-group name="action-project-template-on-load-group">
-		<action name="action-project-attrs-scale-and-precision" />
-		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
-		<action name="action-project-attrs-project-planning-time-cancel-remove" />
-		<action name="action-project-attrs-project-planning-time-spent-cancel-remove"/>
-	</action-group>
 
 	<action-method name="action-project-template-method-generate-project">
 		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromTemplate"/>
@@ -102,4 +94,11 @@
 		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromWizard"/>
 	</action-method>
 
+	<action-attrs name="action-attrs-project-template-set-wizard-hidden">
+	  <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
+	  <attribute name="hidden" expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
+	  <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
+	  <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
+	</action-attrs>
+	
 </object-views>

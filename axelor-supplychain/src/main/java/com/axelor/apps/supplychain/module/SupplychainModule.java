@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseProductService;
@@ -147,7 +146,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockRulesServiceImpl.class).to(StockRulesServiceSupplychainImpl.class);
     bind(StockMoveService.class).to(StockMoveServiceImpl.class);
     bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
-    bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
     bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(SaleOrderCreateServiceImpl.class).to(SaleOrderCreateServiceSupplychainImpl.class);
     bind(SaleOrderComputeServiceImpl.class).to(SaleOrderComputeServiceSupplychainImpl.class);

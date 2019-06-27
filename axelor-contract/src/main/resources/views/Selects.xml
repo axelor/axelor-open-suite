@@ -49,5 +49,9 @@
 		<option value="3">Current version activation</option>
 		<option value="4">Next version activation</option>
 	</selection>
+	
+	<selection name="account.analytic.move.line.type.select" id="contract.account.analytic.move.line.type.select">
+		<option value="4">Forecast (contract)</option>
+	</selection>
 
 </object-views>

@@ -26,6 +26,8 @@ import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -50,15 +52,21 @@ public class ProjectTemplateController {
 
     if (appProject.getGenerateProjectSequence() && !projectTemplate.getIsBusinessProject()) {
 
-      Project project = projectService.createProjectFromTemplate(projectTemplate, null, null);
+      Project project;
+      try {
+        project = projectService.createProjectFromTemplate(projectTemplate, null, null);
+        response.setView(
+            ActionView.define(I18n.get("Project"))
+                .model(Project.class.getName())
+                .add("form", "project-form")
+                .add("grid", "project-grid")
+                .context("_showRecord", project.getId())
+                .map());
 
-      response.setView(
-          ActionView.define(I18n.get("Project"))
-              .model(Project.class.getName())
-              .add("form", "project-form")
-              .add("grid", "project-grid")
-              .context("_showRecord", project.getId())
-              .map());
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e);
+      }
+
     } else {
       response.setView(
           ActionView.define(I18n.get("Create project from this template"))
@@ -71,10 +79,6 @@ public class ProjectTemplateController {
               .param("popup-save", "false")
               .context("_projectTemplate", projectTemplate)
               .context("_businessProject", projectTemplate.getIsBusinessProject())
-              .context(
-                  "_bothFieldsRequired",
-                  projectTemplate.getIsBusinessProject()
-                      && !appProject.getGenerateProjectSequence())
               .map());
     }
   }
@@ -99,17 +103,21 @@ public class ProjectTemplateController {
       clientPartner = partnerRepo.find(Long.parseLong(clientPartnerId));
     }
 
-    Project project =
-        projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+    Project project;
+    try {
+      project =
+          projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+      response.setCanClose(true);
 
-    response.setCanClose(true);
-
-    response.setView(
-        ActionView.define(I18n.get("Project"))
-            .model(Project.class.getName())
-            .add("form", "project-form")
-            .add("grid", "project-grid")
-            .context("_showRecord", project.getId())
-            .map());
+      response.setView(
+          ActionView.define(I18n.get("Project"))
+              .model(Project.class.getName())
+              .add("form", "project-form")
+              .add("grid", "project-grid")
+              .context("_showRecord", project.getId())
+              .map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

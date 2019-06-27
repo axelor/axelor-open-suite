@@ -146,8 +146,6 @@ public interface InvoiceService {
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
 
-  public void generateBudgetDistribution(Invoice invoice);
-
   public Invoice mergeInvoiceProcess(
       List<Invoice> invoiceList,
       Company company,

@@ -50,7 +50,11 @@
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
 		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
-	
+		
+		// REVERSE DATE OF REVERSION
+		public static final int DATE_OF_REVERSION_TODAY = 1;
+		public static final int DATE_OF_REVERSION_ORIGINAL_MOVE_DATE = 2;
+		public static final int DATE_OF_REVERSION_CHOOSE_DATE = 3;
 	]]></extra-code>
     
     <track>
