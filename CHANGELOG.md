@@ -40,6 +40,7 @@
 - SALE ORDER : hide and rename some field in advance search.
 - STOCK MOVE : Printing address at bottom-left of Report.
 - INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
+- EVENTREMINDER : Made the batch work as intended.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form

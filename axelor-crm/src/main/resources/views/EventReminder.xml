@@ -23,6 +23,7 @@
     
     <action-record name="action-event-reminder-record-default" model="com.axelor.apps.crm.db.EventReminder">
     	<field name="typeSelect" expr="1"/>
+    	<field name="user" expr="eval: __user__"/>
     	<field name="duration" expr="1"/>
     	<field name="durationTypeSelect" expr="3"/>
     	<field name="assignToSelect" expr="1"/>
