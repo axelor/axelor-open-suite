@@ -167,10 +167,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     Project project = new Project();
     project.setName(projectTemplate.getName());
-    if (Beans.get(ProjectRepository.class).all().filter("self.code = ?", projectCode).count() > 0) {
+
+    if (projectRepository.all().filter("self.code = ?", projectCode).count() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, ITranslation.PROJECT_CODE_ERROR);
     } else {
+
       project.setCode(projectCode);
       project.setClientPartner(clientPartner);
       project.setDescription(projectTemplate.getDescription());
