@@ -412,7 +412,7 @@ InvoiceSet.length > 0))"
 					<field name="company.accountConfig.isManagePassedForPayment"/>
 				</panel>
 			</panel>
-            <panel name="budgetPanel" title="Budget" showIf="statusSelect &gt;= 2 &amp;&amp; statusSelect &lt; 4">
+            <panel name="budgetPanel" title="Budget" showIf="operationTypeSelect == 1 &amp;&amp; statusSelect >= 2 &amp;&amp; statusSelect &lt; 4">
                 <panel-dashlet name="budgetDistributionPanel" title="Budget distribution" action="action-budget-distribution-view-budget-distribution" colSpan="12" readonly="true"/>
             </panel>
 
