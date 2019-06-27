@@ -1441,18 +1441,31 @@ order by StockMoveLine.sequence]]></xml-property>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="topMargin">0.47625cm</property>
-            <property name="leftMargin">0.3958333333333333in</property>
+            <property name="leftMargin">0.4in</property>
             <property name="rightMargin">0.15625in</property>
             <property name="headerHeight">0in</property>
             <property name="footerHeight">0.2in</property>
             <page-footer>
                 <grid id="5275">
+                    <property name="marginTop">0pt</property>
                     <property name="dataSet">StockMoveDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
                             <property name="name">pdf_footer</property>
                             <text-property name="displayName">pdf_footer</text-property>
                             <expression name="expression" type="javascript">dataSetRow["pdf_footer"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">type_select</property>
+                            <text-property name="displayName">type_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["type_select"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">to_address_str</property>
+                            <text-property name="displayName">to_address_str</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["to_address_str"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                     </list-property>
@@ -1466,6 +1479,58 @@ order by StockMoveLine.sequence]]></xml-property>
                     <column id="5278">
                         <property name="width">7%</property>
                     </column>
+                    <row id="5375">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <cell id="5376">
+                            <property name="colSpan">4</property>
+                            <property name="rowSpan">1</property>
+                            <text id="5309">
+                                <property name="fontWeight">normal</property>
+                                <property name="textUnderline">underline</property>
+                                <property name="marginLeft">0pt</property>
+                                <property name="marginBottom">1pt</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'StockMove.deliveryAddress'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">key</property>
+                                        <text-property name="displayName">key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
+                            <text id="5333">
+                                <structure name="toc"/>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if (row["type_select"] == 2) {
+    row["to_address_str"].replace(/\n/g, "<br>")
+} else if (row["type_select"] == 3) {
+    row["from_address_str"].replace(/\n/g, "<br>")
+} else if (row["type_select"] == 1) {
+	row["to_stock_location_address"].replace(/\n/g, "<br>")
+}</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
                     <row id="5279">
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
@@ -1725,6 +1790,7 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <structure name="toc"/>
             <column id="5232"/>
             <column id="5233">
                 <property name="width">3.8893750000000002cm</property>
@@ -3193,74 +3259,6 @@ row["to_rack"]
                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["note"] != null) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-            </row>
-            <row id="5288">
-                <property name="height">1.031875cm</property>
-                <cell id="5289"/>
-                <cell id="5290"/>
-                <cell id="5291"/>
-                <cell id="5292"/>
-                <cell id="5293"/>
-                <cell id="5294"/>
-            </row>
-            <row id="5295">
-                <property name="verticalAlign">bottom</property>
-                <property name="pageBreakInside">avoid</property>
-                <property name="height">0.8cm</property>
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["type_select"] != 2</expression>
-                    </structure>
-                </list-property>
-                <cell id="5296">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="5309">
-                        <property name="fontWeight">normal</property>
-                        <property name="textUnderline">underline</property>
-                        <property name="marginLeft">0pt</property>
-                        <property name="marginBottom">1pt</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'StockMove.deliveryAddress'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                    </text>
-                    <text id="5333">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if (row["type_select"] == 2) {
-    row["to_address_str"].replace(/\n/g, "<br>")
-} else if (row["type_select"] == 3) {
-    row["from_address_str"].replace(/\n/g, "<br>")
-} else if (row["type_select"] == 1) {
-	row["to_stock_location_address"].replace(/\n/g, "<br>")
-}</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="5299"/>
-                <cell id="5300"/>
-                <cell id="5301"/>
             </row>
         </grid>
     </body>
