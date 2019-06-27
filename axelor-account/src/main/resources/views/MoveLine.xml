@@ -122,7 +122,7 @@
 
 	<form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
 	onNew="action-account-move-line-onnew-group"
-	canNew="false" canDelete="false" onLoad="action-account-move-moveline-onload-group,action-move-line-update-conditionTax">
+	canNew="false" canDelete="false" onLoad="action-account-move-moveline-onload-group">
 		<panel name="mainPanel" readonly="true">
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">
@@ -155,8 +155,7 @@
 			<field name="amountPaid" colSpan="3"/>
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
-			<field name="taxAmount" showIf="$conditionTax"/>
-            <field name="$conditionTax" type="boolean" hidden="true"/>
+			<field name="taxAmount" hidden="true"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
@@ -218,7 +217,7 @@
 	</form>
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
-	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group,action-move-line-update-conditionTax" width="large">
+	onNew="action-account-move-line-onnew-group" onLoad="action-account-move-moveline-onload-group" width="large">
 		<panel name="informationsPanel" title="Informations" colSpan="12">
 
 			<field name="name" colSpan="8" showTitle="false">
@@ -252,9 +251,8 @@
 			<field name="amountPaid" colSpan="3"/>
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
-			<field name="taxAmount" showIf="$conditionTax"/>
+			<field name="taxAmount" hidden="true"/>
 			<field name="move.statusSelect" hidden="true"/>
-            <field name="$conditionTax" type="boolean" hidden="true"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
@@ -335,6 +333,7 @@
     
      <action-group name="action-account-move-moveline-onload-group">
 		<action name="action-move-line-attrs-readonly"/>
+		<action name="action-move-line-update-conditionTax"/>
 	</action-group>
     
     <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -441,9 +440,9 @@
 		<domain>self.account.id = :_id</domain>
 	</action-view>
 	
-	<action-record name="action-move-line-update-conditionTax" model="com.axelor.apps.account.db.MoveLine">
-        <field name="$conditionTax" expr="eval: (account.reconcileOk) &amp;&amp; (account.useForPartnerBalance)"/>    
-    </action-record>
+	<action-attrs name="action-move-line-update-conditionTax" model="com.axelor.apps.account.db.MoveLine">
+		<attribute name="hidden" for="taxAmount" expr="eval: !( account?.reconcileOk &amp;&amp; account.useForPartnerBalance)"/>
+    </action-attrs>
 
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
 		<field name="move.period" title="Period"/>
