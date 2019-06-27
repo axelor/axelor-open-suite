@@ -855,6 +855,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
+  @Transactional
   public BigDecimal computePeriodTotal(Timesheet timesheet) {
     BigDecimal periodTotal = BigDecimal.ZERO;
 
