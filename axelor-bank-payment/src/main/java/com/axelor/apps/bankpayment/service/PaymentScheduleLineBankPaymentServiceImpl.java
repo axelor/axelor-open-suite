@@ -104,7 +104,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void reject(
       PaymentScheduleLine paymentScheduleLine, InterbankCodeLine rejectionReason, boolean represent)
       throws AxelorException {
@@ -161,7 +161,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     return interbankCodeLineRepo.findByCode("A3");
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Move createRejectionMove(PaymentScheduleLine paymentScheduleLine)
       throws AxelorException {
     MoveValidateService moveValidateService = moveService.getMoveValidateService();
@@ -182,7 +182,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     return rejectionMove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void cancelInvoicePayments(PaymentScheduleLine paymentScheduleLine)
       throws AxelorException {
     MoveLineService moveLineService = moveService.getMoveLineService();

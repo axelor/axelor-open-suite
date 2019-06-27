@@ -48,7 +48,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl {
     this.moveRepository = moveRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void close(Period period) {
 
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {

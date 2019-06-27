@@ -40,7 +40,7 @@ public class ImportInventoryLine {
 
   @Inject private AppBaseService appBaseService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importInventoryLine(Object bean, Map<String, Object> values)
       throws AxelorException {
 

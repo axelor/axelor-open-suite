@@ -77,15 +77,10 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @throws AxelorException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
-   * @throws ClassNotFoundException
-   * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void runAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+      throws AxelorException {
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
     Partner partner = debtRecovery.getAccountingSituation().getPartner();
@@ -176,15 +171,10 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @throws AxelorException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
-   * @throws ClassNotFoundException
-   * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void runManualAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+      throws AxelorException{
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -241,7 +231,7 @@ public class DebtRecoveryActionService {
    * @throws InstantiationException
    * @throws IllegalAccessException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
           IllegalAccessException {
@@ -267,10 +257,9 @@ public class DebtRecoveryActionService {
    * @param debtRecoveryMethodLine La ligne de relance que l'on souhaite déplacer
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void moveDebtRecoveryMethodLine(
-      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine)
-      throws AxelorException {
+      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine) {
 
     debtRecovery.setWaitDebtRecoveryMethodLine(debtRecoveryMethodLine);
 

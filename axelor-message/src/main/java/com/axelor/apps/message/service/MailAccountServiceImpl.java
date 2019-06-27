@@ -319,7 +319,7 @@ public class MailAccountServiceImpl implements MailAccountService {
     return count;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date)
       throws MessagingException, IOException {
 

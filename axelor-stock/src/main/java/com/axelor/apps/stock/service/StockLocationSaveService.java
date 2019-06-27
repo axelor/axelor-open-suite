@@ -34,7 +34,7 @@ public class StockLocationSaveService {
    *
    * @param defaultStockLocation
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void removeForbiddenDefaultStockLocation(StockLocation defaultStockLocation) {
     Partner currentPartner = defaultStockLocation.getPartner();
     Company currentCompany = defaultStockLocation.getCompany();

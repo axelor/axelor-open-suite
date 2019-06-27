@@ -46,38 +46,38 @@ public interface ExpenseService {
 
   public Expense compute(Expense expense);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException;
 
   public Message sendConfirmationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Expense expense) throws AxelorException;
 
   public Message sendValidationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Expense expense) throws AxelorException;
 
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move ventilate(Expense expense) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException;
 
   public Message sendCancellationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException;
 
   public void addPayment(Expense expense) throws AxelorException;
@@ -89,7 +89,7 @@ public interface ExpenseService {
    * @param expense
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(Expense expense) throws AxelorException;
 
   public List<InvoiceLine> createInvoiceLines(

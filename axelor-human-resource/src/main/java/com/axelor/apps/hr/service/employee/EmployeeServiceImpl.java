@@ -202,7 +202,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Long generateNewDPAE(Employee employee) throws AxelorException {
     EmploymentContract mainEmploymentContract = employee.getMainEmploymentContract();
     if (mainEmploymentContract == null) {

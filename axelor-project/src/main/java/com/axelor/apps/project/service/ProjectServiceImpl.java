@@ -94,7 +94,7 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Project generateProject(Partner partner) {
     Preconditions.checkNotNull(partner);
     User user = AuthUtils.getUser();

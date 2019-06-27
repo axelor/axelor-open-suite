@@ -184,7 +184,7 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
       throws AxelorException, JSONException {
     Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
@@ -198,7 +198,7 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
       throws AxelorException, JSONException {
     Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));

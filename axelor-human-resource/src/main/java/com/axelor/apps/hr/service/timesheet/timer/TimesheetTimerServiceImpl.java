@@ -51,7 +51,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     calculateDuration(timer);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void stop(TSTimer timer) throws AxelorException {
     timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
     calculateDuration(timer);

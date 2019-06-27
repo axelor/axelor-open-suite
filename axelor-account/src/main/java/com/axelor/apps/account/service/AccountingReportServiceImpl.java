@@ -320,14 +320,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setStatus(AccountingReport accountingReport) {
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_VALIDATED);
     accountingReportRepo.save(accountingReport);
   }
 
   /** @param accountingReport */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setPublicationDateTime(AccountingReport accountingReport) {
     accountingReport.setPublicationDateTime(appBaseService.getTodayDateTime());
     accountingReportRepo.save(accountingReport);

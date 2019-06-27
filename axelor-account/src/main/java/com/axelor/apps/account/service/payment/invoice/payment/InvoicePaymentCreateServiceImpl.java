@@ -239,7 +239,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails) {
     InvoicePayment invoicePayment =
         createInvoicePayment(
@@ -253,7 +253,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     return invoicePaymentRepository.save(invoicePayment);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicePayment createInvoicePayment(
       Invoice invoice,
       PaymentMode paymentMode,
@@ -276,7 +276,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<InvoicePayment> createMassInvoicePayment(
       List<Long> invoiceList,
       PaymentMode paymentMode,

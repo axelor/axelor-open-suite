@@ -64,7 +64,7 @@ public class LeadServiceImpl implements LeadService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
       throws AxelorException {
 
@@ -230,7 +230,7 @@ public class LeadServiceImpl implements LeadService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void loseLead(Lead lead, LostReason lostReason) {
     lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
     lead.setLostReason(lostReason);

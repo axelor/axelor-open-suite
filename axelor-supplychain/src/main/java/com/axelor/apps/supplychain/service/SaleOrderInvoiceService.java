@@ -46,7 +46,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
 
   /**
@@ -58,7 +58,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected)
       throws AxelorException;
 
@@ -72,7 +72,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLinesSelected,
@@ -274,7 +274,7 @@ public interface SaleOrderInvoiceService {
 
   void fillInLines(Invoice invoice);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company cmpany,

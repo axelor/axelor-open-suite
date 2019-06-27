@@ -162,7 +162,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPayrollPreparation(Employee employee) throws AxelorException {
 
     List<PayrollPreparation> payrollPreparationList =

@@ -94,7 +94,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
     boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
 
@@ -178,7 +178,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
     super.validateChanges(saleOrder);
 

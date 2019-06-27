@@ -107,7 +107,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(
       SaleOrder saleOrder,
       int operationSelect,
@@ -208,7 +208,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateAdvancePayment(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
@@ -388,7 +388,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder);
@@ -401,7 +401,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected)
       throws AxelorException {
 
@@ -415,7 +415,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLinesSelected,
@@ -779,7 +779,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company company,

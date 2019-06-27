@@ -28,7 +28,7 @@ import java.util.List;
 
 public interface TimetableService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(Timetable timetable) throws AxelorException;
 
   public Invoice createInvoice(Timetable timetable) throws AxelorException;

@@ -77,7 +77,7 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateSubscriptionInvoice(SaleOrder saleOrder) throws AxelorException {
 
     TemporalUnit temporalUnit = ChronoUnit.MONTHS;

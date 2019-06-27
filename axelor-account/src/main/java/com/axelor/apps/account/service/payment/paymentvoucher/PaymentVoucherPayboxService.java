@@ -39,7 +39,7 @@ public class PaymentVoucherPayboxService {
    *
    * @param paymentVoucher Une saisie paiement
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void authorizeConfirmPaymentVoucher(
       PaymentVoucher paymentVoucher, String bankCardTransactionNumber, String payboxAmountPaid) {
 

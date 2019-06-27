@@ -223,7 +223,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateAndVentilate(Invoice invoice) throws AxelorException {
     validate(invoice);
     ventilate(invoice);
@@ -236,7 +236,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
 
     log.debug("Validation de la facture");
@@ -259,7 +259,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
@@ -317,7 +317,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException {
 
     log.debug("Annulation de la facture {}", invoice.getInvoiceId());
@@ -406,7 +406,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException {
 
     log.debug("Créer un avoir pour la facture {}", new Object[] {invoice.getInvoiceId()});
@@ -450,7 +450,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company company,

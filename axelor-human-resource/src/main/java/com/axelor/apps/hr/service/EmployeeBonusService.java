@@ -56,7 +56,7 @@ public class EmployeeBonusService {
 
   private static final char TEMPLATE_DELIMITER = '$';
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void compute(EmployeeBonusMgt bonus) throws AxelorException {
     Map<Employee, EmployeeBonusMgtLine> employeeStatus = new HashMap<>();
     for (EmployeeBonusMgtLine line : bonus.getEmployeeBonusMgtLineList()) {

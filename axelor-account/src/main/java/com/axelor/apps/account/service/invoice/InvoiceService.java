@@ -118,7 +118,7 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException;
 
   /**
@@ -141,7 +141,7 @@ public interface InvoiceService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException;
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;

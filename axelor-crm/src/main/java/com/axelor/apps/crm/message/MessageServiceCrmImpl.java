@@ -42,7 +42,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
     super(metaAttachmentRepository, messageRepository, userService);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message createMessage(Event event) throws AxelorException, Exception {
 
     // Get template depending on event type

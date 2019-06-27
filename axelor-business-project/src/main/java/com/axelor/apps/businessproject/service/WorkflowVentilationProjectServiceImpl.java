@@ -71,7 +71,7 @@ public class WorkflowVentilationProjectServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void afterVentilation(Invoice invoice) throws AxelorException {
     super.afterVentilation(invoice);
     InvoicingProject invoicingProject =

@@ -88,7 +88,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public boolean validate(StockCorrection stockCorrection) throws AxelorException {
     AppBaseService baseService = Beans.get(AppBaseService.class);
     StockMove stockMove = generateStockMove(stockCorrection);

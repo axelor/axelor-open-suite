@@ -156,7 +156,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     return saleOrder;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrderList,
       Currency currency,

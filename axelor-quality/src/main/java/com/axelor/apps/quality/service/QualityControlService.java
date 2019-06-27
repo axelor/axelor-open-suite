@@ -26,7 +26,7 @@ import java.util.List;
 
 public interface QualityControlService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(QualityControl control, QualityProcess qualityProcess)
       throws AxelorException;
 

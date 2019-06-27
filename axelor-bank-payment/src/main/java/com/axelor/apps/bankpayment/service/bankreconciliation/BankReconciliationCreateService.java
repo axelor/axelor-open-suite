@@ -48,7 +48,7 @@ public class BankReconciliationCreateService {
     this.companyRepository = companyRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement)
       throws IOException {
 

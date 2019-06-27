@@ -157,7 +157,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
       Currency currency,
@@ -237,7 +237,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     // budget control
     if (appAccountService.isApp("budget")
@@ -335,7 +335,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 

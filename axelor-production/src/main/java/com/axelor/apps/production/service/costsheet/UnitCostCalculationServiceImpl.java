@@ -236,7 +236,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void calculationProductProcess(UnitCostCalculation unitCostCalculation, Product product)
       throws AxelorException {
 

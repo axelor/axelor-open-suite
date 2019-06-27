@@ -39,7 +39,7 @@ public class PurchaseOrderSupplierLineService {
 
   @Inject PurchaseOrderSupplierLineRepository poSupplierLineRepo;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine) throws AxelorException {
 
     PurchaseOrderLine purchaseOrderLine = purchaseOrderSupplierLine.getPurchaseOrderLine();

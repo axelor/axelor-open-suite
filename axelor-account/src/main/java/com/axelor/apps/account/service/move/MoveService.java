@@ -129,7 +129,7 @@ public class MoveService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMove(Invoice invoice) throws AxelorException {
     Move move = null;
 
@@ -420,7 +420,7 @@ public class MoveService {
     return oDmove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(
       Move move,
       boolean isAutomaticReconcile,

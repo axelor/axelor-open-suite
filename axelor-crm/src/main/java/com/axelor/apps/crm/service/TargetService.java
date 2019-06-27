@@ -125,7 +125,7 @@ public class TargetService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Target createTarget(
       TargetConfiguration targetConfiguration, LocalDate fromDate, LocalDate toDate) {
     Target target = new Target();
@@ -147,7 +147,7 @@ public class TargetService {
     return targetRepo.save(target);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void update(Target target) {
     User user = target.getUser();
     Team team = target.getTeam();

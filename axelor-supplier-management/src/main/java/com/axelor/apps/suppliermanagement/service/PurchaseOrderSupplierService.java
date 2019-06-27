@@ -63,7 +63,7 @@ public class PurchaseOrderSupplierService {
 
   @Inject protected PurchaseOrderRepository poRepo;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) {
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
@@ -81,12 +81,12 @@ public class PurchaseOrderSupplierService {
    *
    * @param purchaseOrderLine
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine) {
     this.generateSuppliersRequests(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateSuppliersRequests(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
 
@@ -116,7 +116,7 @@ public class PurchaseOrderSupplierService {
     Beans.get(PurchaseOrderLineRepository.class).save(purchaseOrderLine);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateSuppliersPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
     if (purchaseOrder.getPurchaseOrderLineList() == null) {
@@ -163,7 +163,7 @@ public class PurchaseOrderSupplierService {
     return purchaseOrderLinesBySupplierPartner;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createPurchaseOrder(
       Partner supplierPartner,
       List<PurchaseOrderLine> purchaseOrderLineList,

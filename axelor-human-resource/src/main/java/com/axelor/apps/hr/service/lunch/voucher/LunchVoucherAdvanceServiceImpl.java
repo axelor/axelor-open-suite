@@ -37,7 +37,7 @@ public class LunchVoucherAdvanceServiceImpl implements LunchVoucherAdvanceServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException {
 
     HRConfig config =

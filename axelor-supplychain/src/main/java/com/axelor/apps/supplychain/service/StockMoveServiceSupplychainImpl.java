@@ -94,7 +94,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
     LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realize(stockMove, check);
@@ -154,7 +154,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
       if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
@@ -172,7 +172,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
     super.plan(stockMove);
     if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
@@ -181,7 +181,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
@@ -242,7 +242,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePurchaseOrderOnCancel(StockMove stockMove) throws AxelorException {
     PurchaseOrder po = purchaseOrderRepo.find(stockMove.getOriginId());
 

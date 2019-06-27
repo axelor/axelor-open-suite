@@ -176,7 +176,7 @@ public class BatchLeaveManagement extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createLeaveManagement(Employee employee) throws AxelorException {
 
     batch = batchRepo.find(batch.getId());

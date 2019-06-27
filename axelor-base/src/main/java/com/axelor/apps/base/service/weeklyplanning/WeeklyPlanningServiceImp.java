@@ -33,7 +33,7 @@ import java.util.List;
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public WeeklyPlanning initPlanning(WeeklyPlanning planning) {
     String[] dayTab =
         new String[] {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};

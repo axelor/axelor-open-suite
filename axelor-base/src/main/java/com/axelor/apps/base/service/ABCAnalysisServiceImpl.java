@@ -193,7 +193,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createABCAnalysisLineForEachProduct(ABCAnalysis abcAnalysis, Product product)
       throws AxelorException {
     Optional<ABCAnalysisLine> optionalAbcAnalysisLine = createABCAnalysisLine(abcAnalysis, product);
@@ -208,7 +208,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
         });
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Optional<ABCAnalysisLine> createABCAnalysisLine(
       ABCAnalysis abcAnalysis, Product product) throws AxelorException {
     ABCAnalysisLine abcAnalysisLine = new ABCAnalysisLine();

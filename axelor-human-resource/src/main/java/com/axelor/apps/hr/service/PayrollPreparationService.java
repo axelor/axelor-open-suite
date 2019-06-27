@@ -288,7 +288,7 @@ public class PayrollPreparationService {
     return employeeBonusAmount;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public String exportSinglePayrollPreparation(PayrollPreparation payrollPreparation)
       throws IOException {
 
@@ -354,7 +354,7 @@ public class PayrollPreparationService {
     return filePath + System.getProperty("file.separator") + fileName;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void exportNibelis(PayrollPreparation payrollPreparation, List<String[]> list)
       throws AxelorException {
 
@@ -461,7 +461,7 @@ public class PayrollPreparationService {
    *
    * @param payrollPreparation
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void closePayPeriodIfExported(PayrollPreparation payrollPreparation) {
     Company company = payrollPreparation.getCompany();
     Period payPeriod = payrollPreparation.getPeriod();
