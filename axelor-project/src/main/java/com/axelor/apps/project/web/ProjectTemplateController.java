@@ -79,10 +79,6 @@ public class ProjectTemplateController {
               .param("popup-save", "false")
               .context("_projectTemplate", projectTemplate)
               .context("_businessProject", projectTemplate.getIsBusinessProject())
-              .context(
-                  "_bothFieldsRequired",
-                  projectTemplate.getIsBusinessProject()
-                      && !appProject.getGenerateProjectSequence())
               .map());
     }
   }
