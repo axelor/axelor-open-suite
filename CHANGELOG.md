@@ -158,7 +158,6 @@
 - Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
 - INVOICE : Reduce font size of tax table in Invoice printing
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
-- Transactionnal : correction and standardisation of rollback.
 - ACCOUNT MOVE REVERSE: add translation
 - SALEORDER : fix action with obsolete name
 - ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
