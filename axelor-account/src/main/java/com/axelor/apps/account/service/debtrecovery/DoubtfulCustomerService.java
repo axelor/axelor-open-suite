@@ -413,8 +413,8 @@ public class DoubtfulCustomerService {
             + date.toString()
             + "' AND ml.account.id != "
             + doubtfulCustomerAccount.getId()
-            +"AND m.invoice.operationTypeSelect = "
-            +InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+            + " AND m.invoice.operationTypeSelect = "
+            + InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 
     log.debug("Requete : {} ", request);
 
