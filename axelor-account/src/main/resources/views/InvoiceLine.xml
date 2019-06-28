@@ -8,7 +8,7 @@
        	<field name="product.code" width="120"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
-        <field name="price" x-scale="2"/>
+        <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal" aggregate="sum"/>
@@ -30,7 +30,7 @@
   		<field name="product.code" title="product.code" width="120"/>
   		<field name="productName" width="170"/>
   		<field name="qty" width="50" aggregate="sum"/>
-  		<field name="price" x-scale="2"/>
+  		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
   		<field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="exTaxTotal" aggregate="sum"/>
   		<field name="invoice.currency" width="85"/>
