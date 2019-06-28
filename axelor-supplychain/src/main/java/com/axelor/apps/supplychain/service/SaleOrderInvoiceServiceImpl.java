@@ -961,7 +961,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
-                " self.saleOrder.id = :saleOrderId AND operationSubTypeSelect = :operationSubTypeSelect AND self.statusSelect != :invoiceStatus AND "
+                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.statusSelect != :invoiceStatus AND "
                     + "(self.archived = NULL OR self.archived = false)")
             .bind("saleOrderId", saleOrder.getId())
             .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
