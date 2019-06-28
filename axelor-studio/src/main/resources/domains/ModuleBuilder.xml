@@ -7,13 +7,18 @@
   
 	<entity name="ModuleBuilder" cachable="true">
 	    <string name="name" title="Name" required="true"/>
+	    <integer name="typeSelect" title="Type" selection="studio.module.builder.type.select"/>
 	    <many-to-one name="importMetaFile" ref="com.axelor.meta.db.MetaFile" title="Import file" />
 	    <many-to-one name="exportMetaFile" ref="com.axelor.meta.db.MetaFile" title="Export file" />
 	    <many-to-one name="generatedFile" ref="com.axelor.meta.db.MetaFile" title="Generated file" />
-	    <string name="fileTypeSelect" title="Type" selection="studio.module.builder.file.type.select" required="true"/>
+	    <string name="fileTypeSelect" title="File type" selection="studio.module.builder.file.type.select" required="true"/>
 	    
 	    <extra-code><![CDATA[
-			    
+	    	//TYPE SELECT
+	    	public static final int TYPE_EXPORT = 1;
+	    	public static final int TYPE_IMPORT = 2;
+	    	
+			// FILE TYPE SELECT
 	    	public static final String FILE_TYPE_ZIP = "zip";
 	    	public static final String FILE_TYPE_EXCEL = "excel";
 	    	

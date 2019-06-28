@@ -135,7 +135,7 @@ public class ModuleExportJsonModelService {
     String fileName = modulePrefix + MetaJsonModel.class.getSimpleName() + ".csv";
     CSVInput input =
         moduleExportDataInitService.createCSVInput(
-            fileName, MetaJsonModel.class.getName(), null, "self.name = :name");
+            fileName, MetaJsonModel.class.getName(), null, "self.name = :name", false);
     csvConfig.getInputs().add(input);
 
     moduleExportDataInitService.addCsv(zipOut, fileName, JSON_HEADER, data);
@@ -231,7 +231,8 @@ public class ModuleExportJsonModelService {
             fileName,
             MetaJsonField.class.getName(),
             null,
-            "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)");
+            "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)",
+            false);
     CSVBind bind =
         moduleExportDataInitService.createCSVBind(
             "roleNames", "roles", "self.name in :roleNames", "roleNames.split('|') as List", true);
@@ -256,7 +257,11 @@ public class ModuleExportJsonModelService {
       String fileName = modulePrefix + MetaJsonModel.class.getSimpleName() + ".csv";
       CSVInput input =
           moduleExportDataInitService.createCSVInput(
-              fileName, MetaJsonModel.class.getName(), null, "self.name = :name");
+              fileName,
+              MetaJsonModel.class.getName(),
+              "com.axelor.studio.service.ImportService:importMetaJsonModel",
+              "self.name = :name",
+              false);
       csvConfig.getInputs().add(input);
 
       moduleExportDataInitService.addCsv(zipOut, fileName, JSON_HEADER, jsonModelData);
@@ -277,8 +282,10 @@ public class ModuleExportJsonModelService {
           moduleExportDataInitService.createCSVInput(
               fileName,
               MetaJsonField.class.getName(),
-              null,
-              "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)");
+              "com.axelor.studio.service.ImportService:importMetaJsonField",
+              "self.name = :name AND (self.jsonModel.name = :jsonModelName OR self.model = :model AND self.modelField = :modelField)",
+              false);
+
       CSVBind bind =
           moduleExportDataInitService.createCSVBind(
               "roleNames",
@@ -294,6 +301,26 @@ public class ModuleExportJsonModelService {
       csvConfig.getInputs().add(input);
 
       moduleExportDataInitService.addCsv(zipOut, fileName, JSON_FIELD_HEADER, jsonFieldData);
+    }
+  }
+
+  public void addJsonModelBindAgain(
+      String modulePrefix,
+      List<String[]> jsonModelData,
+      ZipOutputStream zipOut,
+      CSVConfig csvConfig)
+      throws IOException {
+
+    if (!jsonModelData.isEmpty()) {
+      String fileName = modulePrefix + MetaJsonModel.class.getSimpleName() + ".csv";
+      CSVInput input =
+          moduleExportDataInitService.createCSVInput(
+              fileName,
+              MetaJsonModel.class.getName(),
+              "com.axelor.studio.service.ImportService:importMetaJsonModel",
+              "self.name = :name",
+              true);
+      csvConfig.getInputs().add(input);
     }
   }
 }

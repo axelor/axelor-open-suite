@@ -17,20 +17,19 @@
  */
 package com.axelor.studio.service.validator;
 
+import com.axelor.i18n.I18n;
+import com.axelor.studio.service.excel.importer.DataReaderService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.axelor.i18n.I18n;
-import com.axelor.studio.service.excel.importer.DataReaderService;
-
 public class MenuValidator {
 
-  public static final int OBJECT = 1;
-  public static final int NAME = 3;
-  public static final int TITLE = 4;
-  public static final int TITLE_FR = 5;
-  public static final int ORDER = 7;
+  private static final int OBJECT = 1;
+  private static final int NAME = 3;
+  private static final int TITLE = 4;
+  private static final int TITLE_FR = 5;
+  private static final int ORDER = 7;
 
   private ValidatorService validatorService;
 

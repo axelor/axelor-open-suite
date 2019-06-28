@@ -105,10 +105,21 @@ public class ModuleBuilderController {
         MetaFile file =
             excelImporterService.importExcel(moduleBuilder.getName(), reader, importFile);
 
-        response.setValue("generatedFile", file);
-
         if (!file.getFileName().startsWith("Log")) {
+          response.setValue("generatedFile", file);
           response.setFlash(I18n.get(IExceptionMessage.MODULE_IMPORTED));
+        } else {
+          response.setView(
+              ActionView.define(I18n.get("Import error log"))
+                  .model(App.class.getName())
+                  .add(
+                      "html",
+                      "ws/rest/com.axelor.meta.db.MetaFile/"
+                          + file.getId()
+                          + "/content/download?v="
+                          + file.getVersion())
+                  .param("download", "true")
+                  .map());
         }
       }
     } catch (Exception e) {

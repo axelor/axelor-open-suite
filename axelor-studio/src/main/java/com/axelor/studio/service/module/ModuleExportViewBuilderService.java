@@ -101,7 +101,7 @@ public class ModuleExportViewBuilderService {
     String fileName = modulePrefix + ViewBuilder.class.getSimpleName() + ".csv";
     CSVInput input =
         moduleExportDataInitService.createCSVInput(
-            fileName, ViewBuilder.class.getName(), null, "self.name = :name");
+            fileName, ViewBuilder.class.getName(), null, "self.name = :name", false);
     csvConfig.getInputs().add(input);
 
     moduleExportDataInitService.addCsv(zipOut, fileName, VIEW_BUILDER_HEADER, data);
@@ -143,7 +143,8 @@ public class ModuleExportViewBuilderService {
             fileName,
             ViewItem.class.getName(),
             null,
-            "self.name = :name and self.viewBuilder.name = :viewBuilder_name");
+            "self.name = :name and self.viewBuilder.name = :viewBuilder_name",
+            false);
     csvConfig.getInputs().add(input);
 
     CSVBind bind =

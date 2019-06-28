@@ -65,9 +65,13 @@ public class ExcelImporterService {
 
   private List<String[]> jsonModelData = new ArrayList<>();
 
+  private Map<String, List<String[]>> wkfData = new HashMap<>();
+
   private List<String> customModels = new ArrayList<>();
 
   private List<String> realModels = new ArrayList<>();
+
+  private List<String> wkfList = new ArrayList<>();
 
   private List<Map<String, String>> menuList = new ArrayList<>();
 
@@ -84,6 +88,8 @@ public class ExcelImporterService {
   @Inject private CustomImporter customImporter;
 
   @Inject private RealImporter realImporter;
+
+  @Inject private WkfImporter wkfImporter;
 
   @Inject private ViewBuilderService viewBuilderService;
 
@@ -162,6 +168,11 @@ public class ExcelImporterService {
         continue;
       }
 
+      if (CommonService.WKF_KEYS.contains(key)) {
+        wkfList.add(key);
+        continue;
+      }
+
       String modelType = key.substring(key.indexOf("(") + 1, key.lastIndexOf(")"));
       key = key.substring(0, key.indexOf("("));
 
@@ -188,7 +199,7 @@ public class ExcelImporterService {
     processSheet(reader, module, zipOut);
 
     Beans.get(ModuleExportDataInitService.class)
-        .exportExcelDataInit(module, jsonFieldData, jsonModelData, zipOut);
+        .exportExcelDataInit(module, jsonFieldData, jsonModelData, wkfData, zipOut);
 
     zipOut.close();
 
@@ -209,6 +220,10 @@ public class ExcelImporterService {
       viewMap =
           realImporter.realImporter(
               this, module, reader, jsonFieldData, realModels, customModels, menuList, zipOut);
+    }
+
+    if (!CollectionUtils.isEmpty(wkfList)) {
+      wkfImporter.wkfImport(module, reader, wkfData, wkfList, realModels, zipOut);
     }
 
     addView(module, zipOut, viewMap);

@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.apps.tool.NammingTool;
 import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
@@ -145,6 +146,9 @@ public class ModelBuilderService {
       builder.append("<");
       builder.append(type);
       builder.append(" name=\"" + field.getName() + "\"");
+      if (NammingTool.isKeyword(field.getName())) {
+        builder.append(" column=\"" + field.getName() + "_val\"");
+      }
       builder.append(" title=\"" + field.getTitle() + "\"");
       if (type.contains("-to-")) {
         addRelationalAtts(builder, field, module);

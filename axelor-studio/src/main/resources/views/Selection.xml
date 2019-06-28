@@ -104,5 +104,10 @@
 		<option value="zip">moduleBuilder.Zip</option>
 		<option value="excel">Excel</option>
 	</selection>
+	
+	<selection name="studio.module.builder.type.select">
+		<option value="1">Export</option>		
+		<option value="2">Import</option>
+	</selection>
     
 </object-views>

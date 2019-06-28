@@ -36,6 +36,7 @@ public class CommonService {
         "Title FR",
         "Selection",
         "Selection FR",
+        "Wkf",
         "Menu",
         "Menu FR",
         "Context Field",
@@ -80,6 +81,7 @@ public class CommonService {
   public static final String TITLE_FR = "Title FR";
   public static final String SELECT = "Selection";
   public static final String SELECT_FR = "Selection FR";
+  public static final String WKF = "Wkf";
   public static final String MENU = "Menu";
   public static final String MENU_FR = "Menu FR";
   public static final String CONTEXT_FIELD = "Context Field";
@@ -197,6 +199,92 @@ public class CommonService {
 
   public static final List<String> RELATIONAL_JSON_FIELD_TYPES =
       Arrays.asList(new String[] {"json-many-to-one", "json-one-to-many", "json-many-to-many"});
+
+  public static final String[] WKF_HEADER =
+      new String[] {
+        "Name", "Model", "Json field", "Json", "Status", "Display type", "Xml", "App", "Description"
+      };
+
+  public static final String WKF_NAME = "Name";
+  public static final String WKF_MODEL = "Model";
+  public static final String WKF_JSON_FIELD = "Json field";
+  public static final String WKF_JSON = "Json";
+  public static final String WKF_STATUS = "Status";
+  public static final String WKF_DISPLAY = "Display type";
+  public static final String WKF_XML = "Xml";
+  public static final String WKF_APP = "App";
+  public static final String WKF_DESC = "Description";
+
+  public static final String[] WKF_NODE_HEADER =
+      new String[] {
+        "Name",
+        "Title",
+        "Xml id",
+        "Wkf",
+        "Field",
+        "Field model",
+        "Sequence",
+        "Start node",
+        "End node",
+        "Actions"
+      };
+
+  public static final String WKF_NODE_NAME = "Name";
+  public static final String WKF_NODE_TITLE = "Title";
+  public static final String WKF_NODE_XML = "Xml id";
+  public static final String WKF_NODE_WKF = "Wkf";
+  public static final String WKF_NODE_FIELD = "Field";
+  public static final String WKF_NODE_FIELD_MODEL = "Field model";
+  public static final String WKF_NODE_SEQ = "Sequence";
+  public static final String WKF_NODE_START = "Start node";
+  public static final String WKF_NODE_END = "End node";
+  public static final String WKF_NODE_ACTIONS = "Actions";
+
+  public static final String[] WKF_TRANSITION_HEADER =
+      new String[] {
+        "Name",
+        "Xml id",
+        "Button",
+        "Button title",
+        "Wkf",
+        "Source node",
+        "Target node",
+        "Alert type",
+        "Alert msg",
+        "Success msg"
+      };
+
+  public static final String WKF_TRANS_NAME = "Name";
+  public static final String WKF_TRANS_XML = "Xml id";
+  public static final String WKF_TRANS_BUTTON = "Button";
+  public static final String WKF_TRANS_BUTTON_TITLE = "Button title";
+  public static final String WKF_TRANS_WKF = "Wkf";
+  public static final String WKF_TRANS_SOURCE_NODE = "Source node";
+  public static final String WKF_TRANS_TARGET_NODE = "Target node";
+  public static final String WKF_TRANS_ALERT_TYPE = "Alert type";
+  public static final String WKF_TRANS_ALERT_MSG = "Alert msg";
+  public static final String WKF_TRANS_SUCCESS_MSG = "Success msg";
+
+  public static final List<String> IGNORE_KEYS;
+
+  static {
+    List<String> keys = new ArrayList<String>();
+    keys.add("Menu");
+    keys.add("Wkf");
+    keys.add("WkfNode");
+    keys.add("WkfTransition");
+    IGNORE_KEYS = Collections.unmodifiableList(keys);
+  }
+
+  public static final List<String> WKF_KEYS;
+
+  static {
+    List<String> keys = new ArrayList<String>();
+    keys.add("Wkf");
+    keys.add("WkfNode");
+    keys.add("WkfTransition");
+    WKF_KEYS = Collections.unmodifiableList(keys);
+  }
 
   public final Inflector inflector = Inflector.getInstance();
 

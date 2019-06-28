@@ -24,10 +24,15 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.studio.db.Wkf;
+import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.db.WkfTransition;
+import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.CommonService;
 import com.axelor.studio.service.excel.importer.DataReaderService;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,6 +59,10 @@ public class ExcelExporterService {
 
   @Inject private MetaModelRepository metaModelRepo;
 
+  @Inject private WkfExporter wkfExporter;
+
+  @Inject private WkfRepository wkfRepo;
+
   public MetaFile export(String moduleName, DataWriter writer, DataReaderService reader)
       throws AxelorException {
 
@@ -66,6 +75,8 @@ public class ExcelExporterService {
     processCustom();
 
     process();
+
+    processWkf(moduleName);
 
     return this.writer.export(null);
   }
@@ -116,6 +127,30 @@ public class ExcelExporterService {
     }
   }
 
+  private void processWkf(String moduleName) {
+    writerKey = "Wkf";
+    writer.write(writerKey, null, CommonService.WKF_HEADER);
+
+    List<Wkf> wkfs = wkfRepo.all().fetch();
+
+    List<WkfNode> nodes = new ArrayList<>();
+    List<WkfTransition> transitions = new ArrayList<>();
+
+    for (Wkf wkf : wkfs) {
+      wkfExporter.exportWkf(moduleName, wkf, this);
+      nodes.addAll(wkf.getNodes());
+      transitions.addAll(wkf.getTransitions());
+    }
+
+    writerKey = "WkfNode";
+    writer.write(writerKey, null, CommonService.WKF_NODE_HEADER);
+    wkfExporter.exportWkfNodes(nodes);
+
+    writerKey = "WkfTransition";
+    writer.write(writerKey, null, CommonService.WKF_TRANSITION_HEADER);
+    wkfExporter.exportWkfTransition(transitions);
+  }
+
   public boolean isViewProcessed(String name) {
     return viewProcessed.contains(name);
   }
@@ -125,6 +160,11 @@ public class ExcelExporterService {
   }
 
   public void writeRow(Map<String, String> valMap) {
+
+    writer.write(writerKey, null, valMap, headers);
+  }
+
+  public void writeWkfRow(Map<String, String> valMap, String[] headers) {
 
     writer.write(writerKey, null, valMap, headers);
   }

@@ -122,11 +122,22 @@
 
 	<menuitem title="Selections" name="app-builder-config-selections" parent="app-builder-config" action="action-meta-select" order="46"/>
 	
-    <menuitem name="app-builder-module-builders" title="Module builders" parent="app-builder-config" order="50" action="action.module.builders.view"/>
+    <menuitem name="app-builder-module-exporter" title="Module exporter" parent="app-builder-config" order="50" action="action.module.builders.view"/>
   
-  	<action-view name="action.module.builders.view" title="Module builders" model="com.axelor.studio.db.ModuleBuilder">
+  	<action-view name="action.module.builders.view" title="Module exporter" model="com.axelor.studio.db.ModuleBuilder">
   		<view type="grid" name="module-builder-grid"/>
     	<view type="form" name="module-builder-form"/>
+    	<domain>self.typeSelect = :_typeSelect</domain>
+    	<context name="_typeSelect" expr="eval: __repo__(ModuleBuilder).TYPE_EXPORT"/>
+  	</action-view>
+  	
+  	<menuitem name="app-builder-module-importer" title="Module importer" parent="app-builder-config" order="51" action="action.module.importer.view"/>
+  
+  	<action-view name="action.module.importer.view" title="Module importer" model="com.axelor.studio.db.ModuleBuilder">
+  		<view type="grid" name="module-builder-grid"/>
+    	<view type="form" name="module-builder-form"/>
+    	<domain>self.typeSelect = :_typeSelect</domain>
+    	<context name="_typeSelect" expr="eval: __repo__(ModuleBuilder).TYPE_IMPORT"/>
   	</action-view>
 
 </object-views>

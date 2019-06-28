@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipOutputStream;
 
@@ -127,7 +128,7 @@ public class ModuleExportWkfService {
 
       CSVInput input =
           exportDataInitService.createCSVInput(
-              fileName, Wkf.class.getName(), null, "self.name = :name");
+              fileName, Wkf.class.getName(), null, "self.name = :name", false);
 
       CSVBind bind =
           exportDataInitService.createCSVBind(
@@ -185,7 +186,11 @@ public class ModuleExportWkfService {
 
     CSVInput input =
         exportDataInitService.createCSVInput(
-            fileName, WkfNode.class.getName(), null, "self.name = :name and self.wkf.name = :wkf");
+            fileName,
+            WkfNode.class.getName(),
+            null,
+            "self.name = :name and self.wkf.name = :wkf",
+            false);
 
     CSVBind bind =
         exportDataInitService.createCSVBind(
@@ -228,8 +233,8 @@ public class ModuleExportWkfService {
             transition.getIsButton().toString(),
             transition.getButtonTitle(),
             transition.getWkf().getName(),
-            transition.getSource().getName(),
-            transition.getTarget().getName(),
+            transition.getSource() != null ? transition.getSource().getName() : null,
+            transition.getTarget() != null ? transition.getTarget().getName() : null,
             transition.getAlertTypeSelect().toString(),
             transition.getAlertMsg(),
             transition.getSuccessMsg()
@@ -244,10 +249,142 @@ public class ModuleExportWkfService {
             fileName,
             WkfTransition.class.getName(),
             null,
-            "self.name = :name and self.wkf.name = :wkf");
+            "self.name = :name and self.wkf.name = :wkf",
+            false);
 
     CSVBind bind = exportDataInitService.createCSVBind("wkf", "wkf", "self.name =:wkf", null, true);
     input.getBindings().add(bind);
+
+    csvConfig.getInputs().add(input);
+  }
+
+  public void addWkfFromExcel(
+      String module,
+      Map<String, List<String[]>> wkfData,
+      ZipOutputStream zipOut,
+      CSVConfig csvConfig)
+      throws IOException {
+
+    if (!wkfData.isEmpty()) {
+      addWkf(module, wkfData.get("Wkf"), zipOut, csvConfig);
+      addWkfNode(module, wkfData.get("WkfNode"), zipOut, csvConfig);
+      addWkfTransition(module, wkfData.get("WkfTransition"), zipOut, csvConfig);
+      addWkfAgain(module, wkfData.get("Wkf"), zipOut, csvConfig);
+    }
+  }
+
+  private void addWkf(
+      String module, List<String[]> wkfData, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException {
+
+    String fileName =
+        exportDataInitService.getModulePrefix(module) + Wkf.class.getSimpleName() + ".csv";
+
+    CSVInput input =
+        exportDataInitService.createCSVInput(
+            fileName, Wkf.class.getName(), null, "self.name = :name", false);
+
+    CSVBind bind =
+        exportDataInitService.createCSVBind(
+            "status",
+            "statusField",
+            "self.name = :status AND (self.model = :model OR self.jsonModel.name = :model)",
+            null,
+            true);
+
+    input.getBindings().add(bind);
+    csvConfig.getInputs().add(input);
+
+    exportDataInitService.addCsv(zipOut, fileName, WKF_HEADER, wkfData);
+  }
+
+  private void addWkfNode(
+      String module, List<String[]> wkfNodeData, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException {
+
+    String fileName =
+        exportDataInitService.getModulePrefix(module) + WkfNode.class.getSimpleName() + ".csv";
+
+    CSVInput input =
+        exportDataInitService.createCSVInput(
+            fileName,
+            WkfNode.class.getName(),
+            null,
+            "self.name = :name and self.wkf.name = :wkf",
+            false);
+
+    CSVBind bind =
+        exportDataInitService.createCSVBind(
+            "field",
+            "metaField",
+            "self.name = :field AND self.metaModel.name = :fieldModel",
+            null,
+            true);
+    input.getBindings().add(bind);
+
+    bind =
+        exportDataInitService.createCSVBind(
+            "actions",
+            "metaActionSet",
+            "self.name in :actions",
+            "actions.split('|') as List",
+            true);
+    input.getBindings().add(bind);
+
+    bind = exportDataInitService.createCSVBind("wkf", "wkf", "self.name =:wkf", null, true);
+    input.getBindings().add(bind);
+
+    csvConfig.getInputs().add(input);
+
+    exportDataInitService.addCsv(zipOut, fileName, WKF_NODE_HEADER, wkfNodeData);
+  }
+
+  private void addWkfTransition(
+      String module, List<String[]> wkfTransitionData, ZipOutputStream zipOut, CSVConfig csvConfig)
+      throws IOException {
+
+    String fileName =
+        exportDataInitService.getModulePrefix(module)
+            + WkfTransition.class.getSimpleName()
+            + ".csv";
+
+    CSVInput input =
+        exportDataInitService.createCSVInput(
+            fileName,
+            WkfTransition.class.getName(),
+            null,
+            "self.name = :name and self.wkf.name = :wkf",
+            false);
+
+    CSVBind bind = exportDataInitService.createCSVBind("wkf", "wkf", "self.name =:wkf", null, true);
+    input.getBindings().add(bind);
+    bind =
+        exportDataInitService.createCSVBind(
+            "sourceNode", "source", "self.name =:sourceNode and self.wkf.name = :wkf", null, true);
+    input.getBindings().add(bind);
+    bind =
+        exportDataInitService.createCSVBind(
+            "targetNode", "target", "self.name =:targetNode and self.wkf.name = :wkf", null, true);
+    input.getBindings().add(bind);
+
+    csvConfig.getInputs().add(input);
+
+    exportDataInitService.addCsv(zipOut, fileName, WKF_TRANSITION_HEADER, wkfTransitionData);
+  }
+
+  private void addWkfAgain(
+      String module, List<String[]> wkfData, ZipOutputStream zipOut, CSVConfig csvConfig) {
+
+    String fileName =
+        exportDataInitService.getModulePrefix(module) + Wkf.class.getSimpleName() + ".csv";
+
+    CSVInput input =
+        exportDataInitService.createCSVInput(
+            fileName,
+            Wkf.class.getName(),
+            "com.axelor.studio.service.ImportService:importWkf",
+            "self.name = :name",
+            true);
 
     csvConfig.getInputs().add(input);
   }

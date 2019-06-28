@@ -29,6 +29,7 @@ import com.axelor.studio.service.builder.ModelBuilderService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -39,6 +40,8 @@ public class CustomImporter {
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private Inflector inflector = Inflector.getInstance();
+
+  private List<String> fieldList;
 
   private DataReaderService reader;
 
@@ -66,6 +69,8 @@ public class CustomImporter {
 
       log.debug("Importing sheet: {}", key);
       key += "(Custom)";
+
+      fieldList = new ArrayList<>();
 
       int totalLines = reader.getTotalLines(key);
       if (totalLines == 0) {
@@ -164,7 +169,8 @@ public class CustomImporter {
       if ((valMap.get(CommonService.TYPE).equals("panel")
               && valMap.get(CommonService.NAME).contains("end"))
           || valMap.get(CommonService.TYPE).equals("onnew")
-          || valMap.get(CommonService.TYPE).equals("onsave")) {
+          || valMap.get(CommonService.TYPE).equals("onsave")
+          || fieldList.contains(valMap.get(CommonService.NAME))) {
         continue;
       }
 
@@ -301,6 +307,8 @@ public class CustomImporter {
           valMap.get(CommonService.WIDGET),
           valMap.get(CommonService.WIDGET_ATTRS)
         });
+
+    fieldList.add(name);
   }
 
   private String findAttrsFromView(MetaModel metaModel, Map<String, String> valMap) {
