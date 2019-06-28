@@ -16,6 +16,7 @@
 - INVOICE : budget lines generation process moved from InvoiceService to ValidateState
 - Updated translations in management app
 - SALE CONFIG DEMO DATA : update demo data.
+- SALE CONFIG : Sale order legal note and  sale order client box are now translatable.
 
 ##Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
