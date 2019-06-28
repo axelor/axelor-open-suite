@@ -405,10 +405,10 @@ public class DoubtfulCustomerService {
     log.debug("Date de créance prise en compte : {} ", date);
 
     String request =
-        "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND ml.company.id = "
+        "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND m.company.id = "
             + company.getId()
             + " AND ml.account.useForPartnerBalance = 'true' "
-            + "AND ml.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"
+            + "AND m.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"
             + date.toString()
             + "' AND ml.account.id != "
             + doubtfulCustomerAccount.getId();
@@ -455,7 +455,7 @@ public class DoubtfulCustomerService {
             moveLineRepo
                 .all()
                 .filter(
-                    "self.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                         + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
                         + "AND self.account != ?3",
                     company,
@@ -474,7 +474,7 @@ public class DoubtfulCustomerService {
             moveLineRepo
                 .all()
                 .filter(
-                    "self.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                         + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
                         + "AND self.account != ?3",
                     company,

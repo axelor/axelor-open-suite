@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -360,17 +361,27 @@ public class MoveValidateService {
     if (moveList == null) {
       return error;
     }
-    for (Move move : moveList) {
-      try {
+    try {
+      for (Move move : moveList) {
+
         validate(moveRepository.find(move.getId()));
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-        error = true;
-      } finally {
         JPA.clear();
       }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      error = true;
+      JPA.clear();
     }
     return error;
+  }
+
+  public void validateMultiple(Query<Move> moveListQuery) throws AxelorException {
+    Move move;
+
+    while (!((move = moveListQuery.fetchOne()) == null)) {
+      validate(move);
+      JPA.clear();
+    }
   }
 
   private String getPartnerFullName(Partner partner) {

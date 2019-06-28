@@ -52,6 +52,21 @@
 		<field name="desiredDelivDate"/>
 		<field name="estimatedDelivDate"/>
 	</grid>
+  
+   <grid name="purchase-order-line-menu-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" canNew="false" canDelete="false" canEdit="false">
+      <field name="purchaseOrder"/>
+      <field name="purchaseOrder.company"/>
+      <field name="purchaseOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
+      <field name="purchaseOrder.clientPartner"/>
+      <field name="product.code"/>
+      <field name="productName"/>
+      <field name="qty" aggregate="sum"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="price" x-scale="2"/>
+      <field name="inTaxPrice" x-scale="2"/>
+	  <field name="desiredDelivDate"/>
+	  <field name="estimatedDelivDate"/>
+  </grid>
 
     <form name="purchase-order-line-project-form" title="PO line" model="com.axelor.apps.purchase.db.PurchaseOrderLine" onLoad="action-group-purchase-purchase-orderline-onload" readonlyIf="true" canEdit="false">
         <panel-include view="purchase-order-line-form"/>

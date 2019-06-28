@@ -169,6 +169,24 @@ public class AccountingBatchController {
     response.setReload(true);
   }
 
+  public void actionRealizeFixedAssetLines(ActionRequest request, ActionResponse response) {
+
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+    Batch batch = accountingBatchService.realizeFixedAssetLines(accountingBatch);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
+
+  public void actionCloseAnnualAccounts(ActionRequest request, ActionResponse response) {
+
+    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+    accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
+    Batch batch = accountingBatchService.closeAnnualAccounts(accountingBatch);
+    if (batch != null) response.setFlash(batch.getComments());
+    response.setReload(true);
+  }
+
   // WS
 
   /**
@@ -184,14 +202,5 @@ public class AccountingBatchController {
     Map<String, Object> mapData = new HashMap<String, Object>();
     mapData.put("anomaly", batch.getAnomaly());
     response.setData(mapData);
-  }
-
-  public void actionRealizeFixedAssetLines(ActionRequest request, ActionResponse response) {
-
-    AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
-    accountingBatch = accountingBatchRepo.find(accountingBatch.getId());
-    Batch batch = accountingBatchService.realizeFixedAssetLines(accountingBatch);
-    if (batch != null) response.setFlash(batch.getComments());
-    response.setReload(true);
   }
 }

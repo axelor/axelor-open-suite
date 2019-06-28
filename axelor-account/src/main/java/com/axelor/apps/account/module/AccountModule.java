@@ -54,6 +54,8 @@ import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountingCloseAnnualService;
+import com.axelor.apps.account.service.AccountingCloseAnnualServiceImpl;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -78,6 +80,7 @@ import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.PaymentScheduleServiceImpl;
+import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccountImpl;
 import com.axelor.apps.account.service.ReconcileGroupSequenceService;
 import com.axelor.apps.account.service.ReconcileGroupSequenceServiceImpl;
@@ -239,5 +242,9 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
 
     bind(ExtractContextMoveService.class).to(ExtractContextMoveServiceImpl.class);
+
+    bind(AccountingCloseAnnualService.class).to(AccountingCloseAnnualServiceImpl.class);
+
+    bind(PeriodServiceAccount.class).to(PeriodServiceAccountImpl.class);
   }
 }
