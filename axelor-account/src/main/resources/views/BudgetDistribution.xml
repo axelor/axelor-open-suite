@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="budget-distribution-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
-        <field name="budget"/>
+        <field name="budget" domain="self.statusSelect = 2"/>
         <field name="amount" aggregate="sum"/>
     </grid>
     
     <form name="budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
        <panel name="mainPanel" >
-	   		<field name="budget" required="true"/>
+	   		<field name="budget" required="true" domain="self.statusSelect = 2"/>
        		<field name="amount"/>
        </panel>
     </form>

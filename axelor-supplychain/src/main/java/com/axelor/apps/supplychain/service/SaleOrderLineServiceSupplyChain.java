@@ -52,4 +52,11 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLineList
    */
   void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
+
+  /**
+   * check qty when modifying saleOrderLine which is invoiced or delivered
+   *
+   * @param saleOrderLine
+   */
+  BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
 }
