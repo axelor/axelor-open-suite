@@ -603,8 +603,8 @@
             	<panel itemSpan="3">
 	            	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
 	                <field name="trackingNumber" />
+   					<field name="modeOfTransport" />
 	                <field name="deliveryCondition" height="3" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
-					<field name="modeOfTransport" />
 				</panel>
             	
             	<panel itemSpan="3">

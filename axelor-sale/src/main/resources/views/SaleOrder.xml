@@ -302,19 +302,19 @@
 	    <panel name="taxPanel" title="Tax">
 	      <panel-related name="saleOrderLineTaxListPanel" colSpan="12" field="saleOrderLineTaxList" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
-	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery information" colSpan="12">
-	      <field name="specificPackage" colSpan="12"/>
+	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery information" itemSpan="3" colSpan="12">
+	      <field name="specificPackage" colSpan="6" height="3"/>
+	      <field name="deliveryCondition" colSpan="6" height="3"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
-	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
 	      <field name="carrierPartner" canEdit="false" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="forwarderPartner" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 	      <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
-	      <field name="isNeedingConformityCertificate" colSpan="3"/>
-	      <field name="isIspmRequired" readonly="true" colSpan="3"/>
-	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
+	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="3" onClick="action-view-show-stock-move-line"/>
+	      <field name="isNeedingConformityCertificate" />
+	      <field name="isIspmRequired" readonly="true" />
 	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
 	    </panel>
 	    <panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 2" action="action-view-show-invoices-from-sale-order"/>
