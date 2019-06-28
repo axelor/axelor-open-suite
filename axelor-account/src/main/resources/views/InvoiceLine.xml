@@ -5,7 +5,7 @@
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <hilite strong="true" color="default" if="typeSelect != 0"/>
-       	<field name="product.code"/>
+       	<field name="product.code" width="120"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
         <field name="price" x-scale="2"/>
@@ -21,14 +21,13 @@
      <hilite color="danger" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') &gt; 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &lt; 0"/>
      <hilite color="warning" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') &gt; 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &lt;= 5"/>
      <hilite color="success" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') == 0"/>
-     
-  		<field name="invoice.partner.partnerSeq" title="Partner code"/>
+  		<field name="invoice.partner.partnerSeq" width="120" title="Partner code"/>
   		<field name="invoice.partner.simpleFullName" title="Partner"/>
-  		<field name="invoice.invoiceId" width="110"/>
+  		<field name="invoice.invoiceId" width="120"/>
  		<field name="invoice.invoiceDate" title="Date"/>
   		<field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
   		<field name="invoice.address.addressL7Country"/>
-  		<field name="product.code" title="product.code"/>
+  		<field name="product.code" title="product.code" width="120"/>
   		<field name="productName" width="170"/>
   		<field name="qty" width="50" aggregate="sum"/>
   		<field name="price" x-scale="2"/>
@@ -100,7 +99,7 @@
 			</panel>
 
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
-				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
+				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false" domain="self.statusSelect = 2"/>
 				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >

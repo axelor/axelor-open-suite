@@ -237,7 +237,7 @@
 "Next invoicing end period date","Date de fin de la prochaine période de facturation",,
 "Next invoicing start period date","Date de début de la prochaine période de facturation",,
 "No Of Units","Nbr. D'unités",,
-"No client selected, a new one will be created from the lead, do you agree?","Aucun client sélectionné, un nouveau va être créé depuis la piste, acceptez-vous ?",,
+"No client selected, a new one will be created from the lead, do you agree?","Aucun client sélectionné, un nouveau va être créé depuis la piste, acceptez-vous ?",,
 "Not delivered","Non Livré",,
 "Not invoiced","Non facturé",,
 "Notice period in days","Période de préavis en jours",,
@@ -314,6 +314,8 @@
 "Register a deposit","Enregistrer un acompte",,
 "Reportings","Rapports",,
 "Reports",,,
+"Request reservation","Demander la réservation",,
+"Reservation requested","Réservation demandée",,
 "Reserve all","Tout réserver",,
 "SO Tax line","Ligne de TVA",,
 "SO Tax lines","Les lignes de TVA",,
@@ -525,3 +527,4 @@
 "{{ company.name }}",,,
 "{{ stockLocation.name }}",,,
 "{{ tradingName.name }}",,,
+

@@ -63,4 +63,11 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @return the query.
    */
   String getSaleOrderLineListForAProduct(Long productId, Long companyId, Long stockLocationId);
+
+  /**
+   * check qty when modifying saleOrderLine which is invoiced or delivered
+   *
+   * @param saleOrderLine
+   */
+  BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
 }

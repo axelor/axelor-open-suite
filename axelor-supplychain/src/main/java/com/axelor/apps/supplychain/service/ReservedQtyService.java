@@ -217,6 +217,22 @@ public interface ReservedQtyService {
   void updateRequestedReservedQty(StockLocationLine stockLocationLine) throws AxelorException;
 
   /**
+   * Request quantity for a sale order line.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void requestQty(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
+   * Cancel the reservation for a sale order line.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void cancelReservation(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
    * Update reserved qty for sale order line from already updated stock move.
    *
    * @param saleOrderLine

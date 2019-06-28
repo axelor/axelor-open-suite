@@ -18,7 +18,7 @@
         <field name="date" width="90"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
-        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+        <field name="invoice"  form-view="invoice-form" grid-view="invoice-grid" width="140"/>
         <field name="statusSelect" width="90"/>
     </grid>
     

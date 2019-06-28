@@ -1,24 +1,63 @@
 # Changelog
 
-## [Unreleased 5.1.7]
+## [Unreleased 5.1.8]
 ## Features
-- AVAILABITY REQUEST : error message if availableStock is less than qty - reservedQty on saleOrderLine
+
+## Improvements
+- DEMO DATA : Reduce padding in sequence for all modules.
+- PURCHASE REQUEST : fill stockLocation automatically
+- Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
+- INVOICE : optimisation of injections in invoice services in order to improve their performance
+- SALEORDER/PURCHASE ORDER/INVOICE : add the possibility to copy a line
+- App Object : fix typo.
+- Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
+- BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking
+- INVOICE : budget lines generation process moved from InvoiceService to ValidateState
+- Updated translations in management app
+- SALE CONFIG DEMO DATA : update demo data.
+- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
+- EMPLOYEE CARD : add tag for rh, company and department field.
+- STOCK MOVES : updating filterOnAvailableProducts field display conditions
+
+## Bug Fixes
+- SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- ACCOUNTING BATCH : doubtful customer action is now working.
+- PROJECT : display the cancel button even if the status is draft
+- BANKORDERLINE : grid view sorting on bankOrderDate
+- CHEQUE REJECTION : fix payment voucher selection.
+- PAYMENT VOUCHER : trace exceptions happening on save in repository
+- ACCOUNT/STOCK : add more french translation.
+- PURCHASEORDERLINE : corrected potential injection error when calling service
+- SALEORDER : companyBankDetails can no longer be edited in form view.
+- SALE ORDER LINE: Fix NPE in groovy script.
+- PACKING LIST : address not readable on printing
+- HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
+- TRANSLATION : fix french translation of "start date".
+- ACCOUNTING REPORT : now filter "journal" is working for analytic balance report.
+- SALE ORDER : line delivery dates not editable if availability request = true
+- MOVE : NPE when click on validation button in move-grid
+- SALE ORDER : hide and rename some field in advance search.
+- STOCK MOVE : Printing address at bottom-left of Report.
+- INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
+
+## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
-- MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
-- TRACKING : Added all fields for all apps and also for company's configuration
+- AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
 - Project : Reset the progression when we copy a Project
 - EMPLOYEE : disable canEdit on kilometricAllowParam and put validation on vehicle dates
 - Sale Order: allow sale order line deletion for non delivered lines even with a realized stock move.
-- STOCK MOVE : Added fr translation for 'Not Invoiced' tag
 - SaleOrderLine : Set discount type to 'No Discount' if no discount to apply on product change
-- Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
 - Stock Move: generate a draft customer returns from an outgoing stock move and reorganize stock move tabs in form view
 - Timesheet : Set conditions on dates for generate lines automatically
 - Debt Recovery : delete canEdit from fields
-- Configurator Prod Process and BOM: add new fields.
+- Configurator Prod Process and BOM: add new fields : code, codeFormula, defCodeAsFormula, stockLocationFormula, 
+defStockLocationAsFormula, producedProductStockLocation, producedProductStockLocationFormula, defProducedProductStockLocationAsFormula, 
+workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsFormula
 - Availability Request: cannot lower reserved quantity.
 - PURCHASE REQUEST : Rename supplier field, Add new fields sequence,stockLocation and fix NPE on Generate PO
 - FIXED ASSET : Change in the process of calculation
@@ -26,25 +65,36 @@
 - Sale Order Line: improve the logic of requested quantity.
 - MRP: Add the start date time and end date time
 - FIXED ASSET : Change in disposal process
-- MoveLine:The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
+- MoveLine : The irrecoverable panel in move line form view should be hidden when everything inside it is  hidden.
 - LOCATION FINANCIAL DATA : Change report design
 - PURCHASE ORDER : Updated Error Message for delivery date
 - INVENTORY : new selection for formatSelect
 - Reserved Qty: Add tracking for allocated and requested quantity.
 - Sale Order Line: new buttons to allocate and deallocate a line in grid view.
-- FIXED ASSET : management (Validate disposal date,Modify disposal move amount calculation)
-- CRM : lead description in opportunity description
+- FIXED ASSET : management (Validate disposal date, Modify disposal move amount calculation)
+- CRM : copy lead description in opportunity description
+- Mass Cust./Suppl. Stock Move Invoicing : add more lines in table.
 - ACCOUNT FORM : tracking added in form fields.
 - PURCHASE REQUEST : display stockLocation on purchase-request-grid
-- TOOL : test class to allow to run it on windows environment.
 - Invoice Line : canEdit = false on saleOrderLine and purchaseOrderLine.
-- INVOICE : Set accounting panel hidden for advance invoice
-- PROJECT : display title of membersUserSet Field 
 - STOCK : filter product according to stochManage = true
+- GRID : sequences in column grid are now completely displayed 
 - Stock Move: update future quantity from real quantity in planned stock moves.
-
+- Invoice : add the possibility to enable/disable the pdf generation on ventilation for customers or suppliers in invoice application configuration
+- Sale Order Line: new buttons to create/cancel a reservation for a given line.
+- EVENTSPLANNING : update demo data with 2018/2019 event days.
+- INVOICE : Reduce padding in sequence for invoice number.
+- INVOICE : Concatenate content of 'note' field instead of override.
+- MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
+- SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
+- TRACKING : Added all fields for all apps and also for company's configuration
 
 ## Bug Fixes
+- STOCK MOVE : Added fr translation for 'Not Invoiced' tag
+- TOOL : test class to allow to run it on windows environment.
+- Appraisal : Change mistyped field name 'statusSelected' to 'statusSelect'
+- PROJECT : display title of membersUserSet Field 
+- INVOICE : Set accounting panel hidden for advance invoice
 - SaleOrder : show error message on click of generateInvoice button if saleOrder is already paid
 - SaleOrder: fix error message of advanced payment with 0 amount to invoice
 - SaleOrder : display error message when total Amount = 0 and saleOrderLineList is not empty
@@ -79,13 +129,35 @@
 - Sale Order: do not notify stock move creation when stock move generation fails.
 - Requested quantity: do not block when having negative quantity in stock move lines.
 - SALE ORDER : user can generate a purchase order from a saleOrder with just a productName on its saleOrderLine.
+- Ticket : corrected appearance behavior of cancel button in the ticket form. 
 - Prod Process : Corrected display of the field Stock move realize order select.
 - DELIVERY CONDITION : hide mention in BIRT if deliveryCondition = null
 - PURCHASE REQUEST : Fix generating PO for null stock location
+- INVOICE : rename and hide field for advance search.
+- QUALITY PROCESS : order controlPointModeList by priority DESC
 - FIXED ASSET :  Remove all lines in the depreciations table
 - PURCHASE ORDER : Remove completedBtn
 - Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- Payroll preparation : fixed bug on triggering the "refresh" button
+- SALE MANAGER : issue with currency conversion on turnover per saleman dashboard
+- TRAINING : translate "skill"
+- PACKING LIST : display productName instead of product on printing
+- Tool : Increase of time in Unit Test.
+- LEAVE REQUEST : grid-view is now order by fromDateT DESC. 
+- INCOMING STOCK MOVE : Allow empty product of partner product quality rating
+- Account : correction of the french account codification in accordance to the FEC
+- Sale order : fix printing issues on subscription sale quotations & orders
+- LEAVE REQUEST CALENDAR : colorBy is now set to user.
+- INCOMING STOCK MOVE : Allow empty product of partner product quality rating 
+- Currency Conversion : Fix divideByZero arithmetic exception
+- PROJECT/TEAMWORK : corrected error in enumeration when the value PROJECT_ALONE is selected
+- Employee : the category formation chart is now correctly centered on the employee
+- Picking Stock Move : Fix NPE if stockMove is null on setting his editDate
+- Reconcile : set company currency if move's currency is null
+- Team Task : Removed adding new task from Kanban view through "Add" button
+- INVOICE : NPE when companyBankDetails is null
+- SALE ORDER : Update discount calculation in sale order report
 
 ## [5.1.6] - 2019-04-29
 ## Features
@@ -293,7 +365,6 @@ This behavior is wrong for direct debit, only direct debit in incoming payment m
 - ACCOUNT CONFIG : Remove fields allowNonExportedMoveEditing and supplierAccount.Reorganize form view.
 - Removed some duplicated unused Beans.get injections in PurchaseOrderStockServiceImpl.java and StockMoveLineServiceImpl.java
 
-
 ## [5.1.4] - 2019-03-11
 ## Features
 - MARKETING CAMPAIGN : Manage guests and attendees
@@ -409,7 +480,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
-
 
 ## [5.1.2] - 2019-02-11
 ## Features
@@ -1040,8 +1110,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-
-[Unreleased 5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...dev
+[Unreleased 5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...dev
+[5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
 [5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
 [5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4

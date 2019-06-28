@@ -21,7 +21,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
@@ -54,7 +54,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
@@ -87,7 +87,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
         <field name="supplierInvoiceNb"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -124,7 +124,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
    		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
         <field name="supplierInvoiceNb"/>
 		<field name="operationTypeSelect"/>
@@ -158,7 +158,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
 		<field name="operationSubTypeSelect"/>
@@ -175,7 +175,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
 		<field name="exTaxTotal" aggregate="sum"/>
@@ -302,14 +302,14 @@
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
-			   showIf="[6, 7].includes(operationSubTypeSelect)">
+			   showIf="$contains([6, 7],operationSubTypeSelect)">
 			<field name="subscriptionFromDate" />
 			<field name="subscriptionToDate" />
 		</panel>
 
 		<panel-tabs name="mainPanelTab" hideIf="partner == null">
 			<panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
-				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence"/>
+				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence" x-can-copy="statusSelect == 1"/>
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
@@ -593,7 +593,7 @@ InvoiceSet.length > 0))"
 
 		<panel-tabs name="invoiceDetails">
 			<panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
-				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence" x-can-copy="statusSelect == 1"/>
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 		</panel-tabs>
@@ -721,8 +721,8 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
-		<field name="invoiceId" />
-		<field name="partner.partnerSeq" />
+		<field name="invoiceId" width="120"/>
+		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
 		<field name="invoiceDate" />
 		<field name="dueDate" />
@@ -946,7 +946,7 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: companyBankDetails?.specificNoteOnInvoice"/>
+		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + companyBankDetails?.specificNoteOnInvoice"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
@@ -1258,6 +1258,16 @@ InvoiceSet.length > 0))"
 	</action-view>
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -1282,6 +1292,16 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -1297,6 +1317,16 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="supplier-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
@@ -1315,6 +1345,16 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="supplier-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
