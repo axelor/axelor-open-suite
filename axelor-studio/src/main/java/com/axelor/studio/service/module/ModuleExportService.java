@@ -157,7 +157,6 @@ public class ModuleExportService {
 
     StringBuilder builder = new StringBuilder();
     builder.append("apply plugin: \"com.axelor.app-module\"\n\n");
-    builder.append("spotless { \n" + "	java {  \n" + "		googleJavaFormat()\n" + "	} \n" + "}\n\n");
     builder.append("axelor {\n" + "	title \"" + module + "\"\n" + "}\n\n");
     builder.append("dependencies {\n");
 

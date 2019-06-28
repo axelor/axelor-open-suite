@@ -17,17 +17,18 @@
  */
 package com.axelor.studio.service.excel.importer;
 
+import com.axelor.apps.tool.NammingTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.schema.ObjectViews;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.MenuItem;
 import com.axelor.meta.schema.views.Selection;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.service.CommonService;
 import com.axelor.studio.service.builder.FormBuilderService;
+import com.axelor.studio.service.builder.GridBuilderService;
 import com.axelor.studio.service.builder.ModelBuilderService;
 import com.axelor.studio.service.module.ModuleExportService;
 import com.google.common.base.Strings;
@@ -40,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +53,8 @@ public class RealImporter {
 
   public static final String VIEW_DIR = "src/main/resources/views/";
 
+  private List<String> fieldList;
+
   private ExcelImporterService excelImporterService;
 
   private StringBuilder fieldBuilder = null;
@@ -60,6 +64,8 @@ public class RealImporter {
   @Inject private ModuleExportService moduleExportService;
 
   @Inject private FormBuilderService formBuilderService;
+
+  @Inject private GridBuilderService gridBuilderService;
 
   public Map<String, ObjectViews> realImporter(
       ExcelImporterService excelImporterService,
@@ -81,6 +87,7 @@ public class RealImporter {
       log.debug("Importing sheet: {}", key);
       key += "(Real)";
 
+      fieldList = new ArrayList<>();
       fieldBuilder = new StringBuilder();
       List<Map<String, String>> fieldValues = new ArrayList<Map<String, String>>();
 
@@ -119,7 +126,10 @@ public class RealImporter {
           continue;
         }
 
-        createField(module, valMap);
+        if (!fieldList.contains(valMap.get(CommonService.NAME))) {
+          createField(module, valMap);
+          fieldList.add(valMap.get(CommonService.NAME));
+        }
       }
 
       addMetaModel(module, model, zipOut, viewMap, fieldValues);
@@ -137,7 +147,13 @@ public class RealImporter {
       List<String> customModels) {
 
     String type = valMap.get(CommonService.TYPE);
-    if (type.contains("-to-")) {
+    String wkf = valMap.get(CommonService.WKF);
+
+    if (!Strings.isNullOrEmpty(wkf) && wkf.equals("x")) {
+      createJsonField(module, model, valMap, jsonFieldData);
+      return true;
+
+    } else if (type.contains("-to-")) {
       String targetModel = type.substring(type.indexOf("(") + 1, type.indexOf(")"));
       Object targetObj = excelImporterService.getModelFromName(targetModel);
 
@@ -163,7 +179,12 @@ public class RealImporter {
       builder.append(type);
     }
     builder.append(" name=\"" + valMap.get(CommonService.NAME) + "\"");
-    builder.append(" title=\"" + valMap.get(CommonService.TITLE) + "\"");
+    if (NammingTool.isKeyword(valMap.get(CommonService.NAME))) {
+      builder.append(" column=\"" + valMap.get(CommonService.NAME) + "_val\"");
+    }
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.TITLE))) {
+      builder.append(" title=\"" + valMap.get(CommonService.TITLE) + "\"");
+    }
     if (type.contains("-to-")) {
       addRelationalAttr(module, builder, type);
     }
@@ -213,8 +234,24 @@ public class RealImporter {
 
     String fileText = modelBuilderService.buildFromExcel(module, model, fieldBuilder);
     moduleExportService.addZipEntry(DOMAIN_DIR + model + ".xml", fileText, zipOut);
-    FormView formView = formBuilderService.buildFromExcel(module, model, fieldValues);
-    moduleExportService.updateViewMap(model, viewMap, formView);
+
+    if (fieldValues
+        .stream()
+        .filter(
+            fieldVal ->
+                (!fieldVal.get(CommonService.TYPE).equals("panel")
+                        || !fieldVal.get(CommonService.TYPE).equals("onnew")
+                        || !fieldVal.get(CommonService.TYPE).equals("onsave"))
+                    && !Strings.isNullOrEmpty(fieldVal.get(CommonService.VISIBLE_IN_GRID))
+                    && fieldVal.get(CommonService.VISIBLE_IN_GRID).equals("x"))
+        .findAny()
+        .isPresent()) {
+
+      moduleExportService.updateViewMap(
+          model, viewMap, gridBuilderService.buildFromExcel(module, model, fieldValues));
+    }
+    moduleExportService.updateViewMap(
+        model, viewMap, formBuilderService.buildFromExcel(module, model, fieldValues));
     addSelectionFromExcel(fieldValues, viewMap);
   }
 
@@ -280,21 +317,23 @@ public class RealImporter {
       List<Map<String, String>> menuList,
       Map<String, ObjectViews> viewMap) {
 
-    ObjectViews views = viewMap.get("Menu");
-    if (views == null) {
-      views = new ObjectViews();
-      views.setMenus(new ArrayList<>());
-      views.setActions(new ArrayList<>());
-      viewMap.put("Menu", views);
-    }
+    if (!CollectionUtils.isEmpty(menuList)) {
+      ObjectViews views = viewMap.get("Menu");
+      if (views == null) {
+        views = new ObjectViews();
+        views.setMenus(new ArrayList<>());
+        views.setActions(new ArrayList<>());
+        viewMap.put("Menu", views);
+      }
 
-    for (Map<String, String> menuValMap : menuList) {
-      if (model.equals(menuValMap.get(CommonService.OBJECT))) {
-        if (!Strings.isNullOrEmpty(menuValMap.get(CommonService.PARENT))) {
-          addParentMenu(module, model, menuValMap, menuList, viewMap);
+      for (Map<String, String> menuValMap : menuList) {
+        if (model.equals(menuValMap.get(CommonService.OBJECT))) {
+          if (!Strings.isNullOrEmpty(menuValMap.get(CommonService.PARENT))) {
+            addParentMenu(module, model, menuValMap, menuList, viewMap);
+          }
+          addMenu(module, model, menuValMap, viewMap);
+          break;
         }
-        addMenu(module, model, menuValMap, viewMap);
-        break;
       }
     }
   }
@@ -394,8 +433,11 @@ public class RealImporter {
 
     String name = valMap.get(CommonService.NAME);
     String type = valMap.get(CommonService.TYPE);
-    String targetJsonModelName = type.substring(type.indexOf("(") + 1, type.indexOf(")"));
-    type = "json-" + type.substring(0, type.indexOf("("));
+    String targetJsonModelName = null;
+    if (type.contains("-to-")) {
+      targetJsonModelName = type.substring(type.indexOf("(") + 1, type.indexOf(")"));
+      type = "json-" + type.substring(0, type.indexOf("("));
+    }
 
     String model = modelBuilderService.getModelFullName(moduleName, modelName);
     String modelField = "attrs";

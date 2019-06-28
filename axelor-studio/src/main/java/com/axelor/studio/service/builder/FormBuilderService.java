@@ -634,21 +634,25 @@ public class FormBuilderService {
       item.setTitle(valMap.get(CommonService.TITLE));
     }
 
-    if (valMap.get(CommonService.READONLY) != null
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.READONLY))
         && valMap.get(CommonService.READONLY).equals("x")) {
       item.setReadonly(true);
     }
-    if (valMap.get(CommonService.READONLY) != null
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.READONLY))
         && !valMap.get(CommonService.READONLY).equals("x")) {
       item.setReadonlyIf(valMap.get(CommonService.READONLY));
     }
-    if (valMap.get(CommonService.HIDDEN) != null && valMap.get(CommonService.HIDDEN).equals("x")) {
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.HIDDEN))
+        && valMap.get(CommonService.HIDDEN).equals("x")) {
       item.setHidden(true);
     }
-    if (valMap.get(CommonService.HIDDEN) != null && !valMap.get(CommonService.HIDDEN).equals("x")) {
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.HIDDEN))
+        && !valMap.get(CommonService.HIDDEN).equals("x")) {
       item.setHideIf(valMap.get(CommonService.HIDDEN));
     }
-    item.setShowIf(valMap.get(CommonService.SHOW_IF));
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.SHOW_IF))) {
+      item.setShowIf(valMap.get(CommonService.SHOW_IF));
+    }
 
     if (widgetAttrs.containsKey("colSpan")) {
       Integer colSpan = Integer.parseInt(widgetAttrs.get("colSpan").toString());
@@ -680,7 +684,9 @@ public class FormBuilderService {
 
   private SimpleWidget createButton(Map<String, String> valMap) {
     Button button = new Button();
-    button.setOnClick(valMap.get(CommonService.ON_CLICK));
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.ON_CLICK))) {
+      button.setOnClick(valMap.get(CommonService.ON_CLICK));
+    }
 
     return button;
   }
@@ -731,13 +737,17 @@ public class FormBuilderService {
     if (!Strings.isNullOrEmpty(valMap.get(CommonService.DOMAIN))) {
       field.setDomain(valMap.get(CommonService.DOMAIN));
     }
-    field.setWidget(valMap.get(CommonService.WIDGET));
-    field.setOnChange(valMap.get(CommonService.ON_CHANGE));
-    if (valMap.get(CommonService.REQUIRED) != null
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.WIDGET))) {
+      field.setWidget(valMap.get(CommonService.WIDGET));
+    }
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.ON_CHANGE))) {
+      field.setOnChange(valMap.get(CommonService.ON_CHANGE));
+    }
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.REQUIRED))
         && valMap.get(CommonService.REQUIRED).equals("x")) {
       field.setRequired(true);
     }
-    if (valMap.get(CommonService.REQUIRED) != null
+    if (!Strings.isNullOrEmpty(valMap.get(CommonService.REQUIRED))
         && !valMap.get(CommonService.REQUIRED).equals("x")) {
       field.setRequiredIf(valMap.get(CommonService.REQUIRED));
     }

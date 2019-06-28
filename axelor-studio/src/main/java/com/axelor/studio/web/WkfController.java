@@ -182,7 +182,7 @@ public class WkfController {
     //
     List<Option> select = getSelect(statusField);
 
-    if (!select.isEmpty()) {
+    if (select != null && !select.isEmpty()) {
       StringBuilder elements = new StringBuilder();
       StringBuilder designs = new StringBuilder();
       int count = 1;

@@ -20,7 +20,9 @@ package com.axelor.studio.service.excel.exporter;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
@@ -37,7 +39,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.lang.StringUtils;
 
@@ -48,6 +49,8 @@ public class MenuExporter {
   @Inject private ViewBuilderService viewBuilderService;
 
   @Inject private TranslationService translationService;
+
+  @Inject private MetaJsonModelRepository metaJsonModelRepo;
 
   List<MetaMenu> menus = null;
 
@@ -64,29 +67,15 @@ public class MenuExporter {
 
     menus = new ArrayList<MetaMenu>();
 
-    List<MetaMenu> parentMenus =
+    List<MetaMenu> customMenus =
         metaMenuRepo
             .all()
-            .filter(
-                "self.left = true AND self.module is null AND self.parent is null AND self.xmlId is not null")
+            .filter("self in (SELECT menu FROM MetaJsonModel WHERE isReal = true)")
             .order("order")
             .order("id")
             .fetch();
 
-    addMenu(parentMenus.iterator());
-
-    List<String> menuNames =
-        menus.stream().map(menu -> menu.getName()).collect(Collectors.toList());
-
-    List<MetaMenu> parentOtherMenus =
-        metaMenuRepo
-            .all()
-            .filter(
-                "self.left = true AND self.module is null AND self.parent is null AND self.xmlId is null AND self.name not in (:menuNames)")
-            .bind("menuNames", menuNames)
-            .fetch();
-
-    addMenu(parentOtherMenus.iterator());
+    addMenu(customMenus.iterator());
   }
 
   private void addMenu(Iterator<MetaMenu> menuIter) {
@@ -142,7 +131,12 @@ public class MenuExporter {
       ObjectViews objectViews = XMLViews.fromXML(metaAction.getXml());
       ActionView action = (ActionView) objectViews.getActions().get(0);
       String jsonModel = getJsonModel(action);
-      if (Strings.isNullOrEmpty(jsonModel)) {
+      MetaJsonModel metaJsonModel = metaJsonModelRepo.findByName(jsonModel);
+      if (metaJsonModel != null) {
+        if (!metaJsonModel.getIsReal()) {
+          jsonModel = getModelName(action.getModel());
+        }
+      } else {
         jsonModel = getModelName(action.getModel());
       }
       values.put(CommonService.OBJECT, jsonModel);
@@ -200,7 +194,11 @@ public class MenuExporter {
       e.printStackTrace();
     }
 
-    return StringUtils.substringBetween(jsonModel, "'", "'");
+    if (!Strings.isNullOrEmpty(jsonModel) && jsonModel.contains("'")) {
+      return StringUtils.substringBetween(jsonModel, "'", "'");
+    }
+
+    return jsonModel;
   }
 
   private String getModelName(String name) {

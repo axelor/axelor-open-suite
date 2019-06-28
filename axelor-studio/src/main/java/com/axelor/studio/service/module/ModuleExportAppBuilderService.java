@@ -71,7 +71,9 @@ public class ModuleExportAppBuilderService {
             fileName,
             AppBuilder.class.getName(),
             "com.axelor.studio.csv.script.ImportAppBuilder:importAppBuilder",
-            "self.code = :code");
+            "self.code = :code",
+            false);
+
     CSVBind bind =
         moduleExportDataInitService.createCSVBind(
             "depends", "dependsOnSet", "self.code in :depends", "depends.split('|') as List", true);

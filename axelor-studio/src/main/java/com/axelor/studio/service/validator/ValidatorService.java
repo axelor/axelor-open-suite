@@ -27,7 +27,6 @@ import com.axelor.studio.service.excel.importer.DataReaderService;
 import com.axelor.studio.service.excel.importer.ExcelImporterService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,7 +35,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -59,6 +57,8 @@ public class ValidatorService {
 
   @Inject private MenuValidator menuValidator;
 
+  @Inject private WkfValidator wkfValidator;
+
   public File validate(DataReaderService reader) throws IOException {
 
     modelMap = new HashMap<String, List<String>>();
@@ -71,7 +71,7 @@ public class ValidatorService {
     }
 
     for (String key : keys) {
-      if (key.equals("Menu")) {
+      if (CommonService.IGNORE_KEYS.contains(key)) {
         continue;
       }
 
@@ -110,6 +110,7 @@ public class ValidatorService {
     checkInvalid();
 
     menuValidator.validate(this, reader, "Menu");
+    wkfValidator.validate(this, reader);
 
     if (logBook != null) {
       logBook.write(new FileOutputStream(logFile));
@@ -231,23 +232,23 @@ public class ValidatorService {
         addLog(e.getMessage(), key, rowNum);
       }
 
-      if (name.contains("(")) {
+      if (name.contains("(") && type.equals("panel")) {
         String[] ref = name.split("\\(");
         name = ref[0];
-      }
 
-      try {
-        if (!name.matches("([a-z][a-zA-Z0-9_]+)|([A-Z][A-Z0-9_]+)")) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get("Please follow standard field naming convension"));
+      } else {
+        try {
+          if (!name.matches("([a-z][a-zA-Z0-9_]+)|([A-Z][A-Z0-9_]+)")) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get("Please follow standard field naming convension"));
+          }
+        } catch (AxelorException e) {
+          addLog(e.getMessage(), key, rowNum);
         }
-      } catch (AxelorException e) {
-        addLog(e.getMessage(), key, rowNum);
       }
-
     } else if (type != null && !CommonService.VIEW_ELEMENTS.contains(type)) {
-      addLog(I18n.get("Name and title empty or name is invalid."), key, rowNum);
+      addLog(I18n.get("Name is empty or type is invalid."), key, rowNum);
     }
   }
 

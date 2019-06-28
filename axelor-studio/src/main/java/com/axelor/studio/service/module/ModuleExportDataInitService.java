@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 public class ModuleExportDataInitService {
@@ -92,6 +93,7 @@ public class ModuleExportDataInitService {
       String module,
       List<String[]> jsonFieldData,
       List<String[]> jsonModelData,
+      Map<String, List<String[]>> wkfData,
       ZipOutputStream zipOut)
       throws IOException {
 
@@ -106,12 +108,20 @@ public class ModuleExportDataInitService {
     Beans.get(ModuleExportJsonModelService.class)
         .addJsonFieldsFromExcel(module, jsonFieldData, zipOut, csvConfig);
 
+    Beans.get(ModuleExportJsonModelService.class)
+        .addJsonModelBindAgain(modulePrefix, jsonModelData, zipOut, csvConfig);
+
+    Beans.get(ModuleExportWkfService.class).addWkfFromExcel(module, wkfData, zipOut, csvConfig);
+
     addInputConfig(csvConfig, zipOut);
   }
 
-  public CSVInput createCSVInput(String fileName, String typeName, String callable, String search) {
+  public CSVInput createCSVInput(
+      String fileName, String typeName, String callable, String search, boolean update) {
 
-    CSVInput input = new CSVInput();
+    XStream stream = new XStream();
+    stream.processAnnotations(CSVInput.class);
+    CSVInput input = (CSVInput) stream.fromXML("<input update=\"" + update + "\" />");
     input.setFileName(fileName);
     input.setSeparator(CSV_SEPRATOR);
     input.setTypeName(typeName);

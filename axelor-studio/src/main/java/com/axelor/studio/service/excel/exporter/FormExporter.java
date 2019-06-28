@@ -232,6 +232,11 @@ public class FormExporter {
     } else {
       valMap.put(CommonService.HIDDEN, panel.getHideIf());
     }
+
+    if (panel.getIsWkf() != null && panel.getIsWkf()) {
+      valMap.put(CommonService.WKF, "x");
+    }
+
     valMap.put(CommonService.SEQUENCE, panel.getSequence().toString());
     valMap.put(CommonService.SHOW_IF, panel.getShowIf());
     valMap.put(CommonService.ON_CHANGE, panel.getOnChange());
@@ -286,6 +291,9 @@ public class FormExporter {
         valMap.put(CommonService.SELECT, selects[0]);
         valMap.put(CommonService.SELECT_FR, selects[1]);
       }
+    }
+    if (field.getIsWkf() != null && field.getIsWkf()) {
+      valMap.put(CommonService.WKF, "x");
     }
     addExtraAttributes(field, valMap);
 
