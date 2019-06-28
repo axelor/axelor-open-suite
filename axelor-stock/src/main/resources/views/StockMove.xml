@@ -494,22 +494,20 @@
 		</panel>        
 
         <panel name="stockMoveInformationPanel" title="Stock move information">
-        	<panel name="internalMove" hideIf="typeSelect != 1" colSpan="12" >
-	            <field name="company" colSpan="3" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+        	<panel name="internalMove" showIf="typeSelect == 1" colSpan="12" itemSpan="3">
+	            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
 	            
-	            <field name="toStockLocation" colSpan="3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
- 				<field name="fromStockLocation" colSpan="3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
+	            <field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
+ 				<field name="fromStockLocation"  canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
             
-				<panel stacked="true" colSpan="3">
-		        	<field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
-				</panel>
-		       	 	
-				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" colSpan="3"/>
+		       	<field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
+			   	 	
+				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
 		        
-		        <field name="fromAddress" colSpan="3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
-                <field name="toAddress" colSpan="3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+		        <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+                <field name="toAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 				
-		       	<field name="exTaxTotal" colSpan="3" css="order-subtotal" showIf="statusSelect &gt; 1" readonly="true" showTitle="false">
+		       	<field name="exTaxTotal" css="order-subtotal" showIf="statusSelect &gt; 1" readonly="true" showTitle="false">
 		            <viewer>
 		                    <![CDATA[
 		                        <dl class="dl-horizontal" style="float: none;">
@@ -521,27 +519,24 @@
 		    	</field>
             </panel>
             
-	        <panel name="outgoingMove" hideIf="typeSelect != 2"  colSpan="12">
-	            <field name="company" colSpan="3" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
-	            <field name="partner" colSpan="3" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
+	        <panel name="outgoingMove" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
+	            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+	            <field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
 	
-	            <field name="fromStockLocation" colSpan="3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+	            <field name="fromStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
 	
-				<field name="toAddress" colSpan="3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+				<field name="toAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
 	             	
-				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" colSpan="3"/>
+				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
 		        
-		        <panel stacked="true" colSpan="3">
+		        <panel stacked="true">
 		        	<field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
 					<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" onChange="action-stock-move-method-verify-product-stock"/>
 		       	</panel>
 		       	
-		        <panel stacked="true" colSpan="3">	
-		       		<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
-		       </panel>
-				
+		       	<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
 	            
-				<panel stacked="true" colSpan="3">    
+				<panel stacked="true">    
 		            <field name="toAddressStr" height="3" hideIf="statusSelect &gt; 1" >
 		            	<viewer>{{record.toAddressStr}}</viewer>
 		            </field>
@@ -559,25 +554,21 @@
 	            </panel>
             </panel>
             
-            <panel name="incomingMove" hideIf="typeSelect != 3" colSpan="12">
-	            <field name="company" colSpan="3" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
-	            <field name="partner" colSpan="3" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
-				<field name="toStockLocation" colSpan="3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <panel name="incomingMove" showIf="typeSelect == 3" itemSpan="3" colSpan="12">
+	            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+	            <field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
+				<field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
  			
-	            <field name="fromAddress" colSpan="3" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+	            <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
                 
-				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" colSpan="3"/>
+				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" />
 		        
-		        <panel stacked="true" colSpan="3">
-						<field name="supplierShipmentDate" showIf="!isReversion" />
-				</panel>
+			    <field name="supplierShipmentDate" showIf="!isReversion" />
 		       	
-		        <panel stacked="true" colSpan="3">
-					<field name="supplierShipmentRef" showIf="!isReversion" />
-				</panel>
+				<field name="supplierShipmentRef" showIf="!isReversion" />
 				
 	            
-				<panel stacked="true" colSpan="3">    
+				<panel stacked="true">    
 		            <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 1" >
 	                    <viewer>{{record.fromAddressStr}}</viewer>
 	                </field>
@@ -597,44 +588,49 @@
         </panel>
 
         <panel-tabs name="mainPanelTab">
-			<panel-related name="stockMoveLineListPanel" field="stockMoveLineList" title="Stock move lines" height="6"
+			<panel-related name="stockMoveLineListPanel" field="stockMoveLineList" title="Stock move lines" height="12"
               readonlyIf="company == null || fromStockLocation == null || statusSelect == 3" onChange="action-stock-move-line-change-group"
               onNew="action-stock-move-line-record-filter-on-available-products" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
               orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true" />
-            <panel name="freightCarrierPanel" title="Freight Carrier">
-                <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
-				<field name="freightCarrierMode" canEdit="false" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
-                <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
-            	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
-            	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
-                
-                <field name="trackingNumber" colSpan="4"/>
-                <field name="deliveryCondition" colSpan="6" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
-                <spacer name="deliveryConditionSpacer" colSpan="6" showIf="typeSelect == 2"/>
-
-                <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
-                <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
-                <field name="grossMass" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
-
-                <field name="specificPackage" readonly="true" colSpan="12" showIf="specificPackage" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-                <panel name="freightDetailPanel" stacked="true" colSpan="8">
-                    <field name="isIspmRequired" showIf="!$readonly()"/>
-                    <field name="$IspmTag" showTitle="false" showIf="$readonly()">
-                        <viewer>
-                            <![CDATA[
-                                <h4 class="text-left">
-                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isIspmRequired" x-translate>ISPM standard required</span>
-                                </h4>
-                            ]]>
-                        </viewer>
-                    </field>
+            <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">
+                <panel itemSpan="3">
+	                <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
+					<field name="freightCarrierMode" canEdit="false" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
+	                <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
+	            	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
+            	</panel>
+            	
+            	<panel itemSpan="3">
+	            	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
+	                <field name="trackingNumber" />
+	                <field name="deliveryCondition" height="3" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
+					<field name="modeOfTransport" />
+				</panel>
+            	
+            	<panel itemSpan="3">
+	                <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+	                <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+	                <field name="grossMass" readonlyIf="statusSelect == 3 || statusSelect == 4" />
+	                <panel name="freightDetailPanel" stacked="true" >
+	                    <field name="isIspmRequired" showIf="!$readonly()"/>
+	                    <field name="$IspmTag" showTitle="false" showIf="$readonly()">
+	                        <viewer>
+	                            <![CDATA[
+	                                <h4 class="text-left">
+	                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isIspmRequired" x-translate>ISPM standard required</span>
+	                                </h4>
+	                            ]]>
+	                        </viewer>
+	                    </field>
+	                </panel>
                 </panel>
-				<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
-				<field name="signatoryUser" canEdit="false" />
-				<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
-				<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
-
-              <field name="modeOfTransport" />
+            	
+            	<panel itemSpan="3">
+					<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
+					<field name="signatoryUser" canEdit="false" />
+					<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
+					<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
+				</panel>
             </panel>
             <panel name="notePanel" title="Note" colSpan="12">
         		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
@@ -653,25 +649,28 @@
                 <panel-dashlet name="viewAccountMovesPanel" action="action-stock-move-view-account-moves" colSpan="12" title="Moves" if-module="axelor-supplychain"/>
             </panel>
             
-            <panel name="configPanel" title="Configuration">
-            	<field name="isWithBackorder" colSpan="6"/>
-                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false" colSpan="6"/>
-                <field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="6"/>
+            <panel name="datesPanel" title="Dates">
+				<field name="realDate" colSpan="4"/>
+	            <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+			</panel>
+            
+            <panel name="configPanel" title="Configuration" itemSpan="6">
+            	<field name="isWithBackorder"/>
+                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
+                <field name="isWithReturnSurplus" showIf="typeSelect == 3"/>
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
                 <panel name="plannedStockMovePanel" colSpan="12" showIf="typeSelect == 2">
                     <field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
                     <field name="realStockMoveAutomaticMail"/>
                 </panel>
+                <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
+                <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
                 <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
                     <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                 </panel>
+                
             </panel>
-            
-            <panel name="datesPanel" title="Dates">
-				<field name="realDate" colSpan="4"/>
-	            <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
-			</panel>
             
         </panel-tabs>
         <panel-mail name="mailPanel">
