@@ -1,13 +1,14 @@
 # Changelog
 
-##[Unreleased 5.1.8]
-##Features
-- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
+## [Unreleased 5.1.8]
+## Features
 
-##Improvements
+## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
+- INVOICE : optimisation of injections in invoice services in order to improve their performance
+- SALEORDER/PURCHASE ORDER/INVOICE : add the possibility to copy a line
 - App Object : fix typo.
 - Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
 - BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
@@ -17,21 +18,31 @@
 - Updated translations in management app
 - SALE CONFIG DEMO DATA : update demo data.
 - SALE CONFIG : Sale order legal note and  sale order client box are now translatable.
+- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
+- EMPLOYEE CARD : add tag for rh, company and department field.
+- STOCK MOVES : updating filterOnAvailableProducts field display conditions
 
-##Bug Fixes
+
+## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
 - BANKORDERLINE : grid view sorting on bankOrderDate
 - CHEQUE REJECTION : fix payment voucher selection.
 - PAYMENT VOUCHER : trace exceptions happening on save in repository
 - ACCOUNT/STOCK : add more french translation.
 - PURCHASEORDERLINE : corrected potential injection error when calling service
+- SALEORDER : companyBankDetails can no longer be edited in form view.
 - SALE ORDER LINE: Fix NPE in groovy script.
 - PACKING LIST : address not readable on printing
 - HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
+- TRANSLATION : fix french translation of "start date".
 - ACCOUNTING REPORT : now filter "journal" is working for analytic balance report.
 - SALE ORDER : line delivery dates not editable if availability request = true
 - MOVE : NPE when click on validation button in move-grid
+- SALE ORDER : hide and rename some field in advance search.
+- STOCK MOVE : Printing address at bottom-left of Report.
+- INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
@@ -1097,7 +1108,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-
+[Unreleased 5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...dev
 [5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
 [5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
