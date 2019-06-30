@@ -138,7 +138,10 @@
 				<field name="subjectTeam" hidden="true"/>
 				<field name="computedAttendeeList" hidden="true"/>
 			</panel>
-			<panel-related name="eventReminderListPanel" field="eventReminderList" colSpan="12" showTitle="false" form-view="event-reminder-form" grid-view="event-reminder-grid"/>
+			<panel name="eventRemindersPanel" title="Reminders">
+				<button name="addReminderButton" title="Create a new reminder" onClick="save,action-crm-event-reminder-view-create-reminder" colSpan="4" colOffset="4"/>
+				<panel-dashlet name="eventReminderListPanel" action="action-crm-event-reminder-view-active-user-reminders" colSpan="12"/>
+			</panel>
 		</panel-tabs>
 
 		<panel title="Guests" name="addGuestsPanel" sidebar="true" canCollapse="true">
