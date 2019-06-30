@@ -102,7 +102,7 @@ public class MoveController {
   @SuppressWarnings("unchecked")
   public void validateMultipleMoves(ActionRequest request, ActionResponse response) {
     List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-    if (moveIds!= null && !moveIds.isEmpty()) {
+    if (moveIds != null && !moveIds.isEmpty()) {
 
       List<? extends Move> moveList =
           moveRepo
