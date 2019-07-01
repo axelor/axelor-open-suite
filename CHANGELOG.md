@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.8]
 ## Features
+- PROJECT : Translate Total real hours
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -22,6 +23,7 @@
 - STOCK MOVES : updating filterOnAvailableProducts field display conditions
 - DEBT RECOVERY : process rollbacked when message sending fails.
 - MESSAGE SERVICE : exception message improved. 
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -45,6 +47,7 @@
 - INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
 - EVENTREMINDER : Made the batch work as intended.
 - SALE ORDER : Fix generate invoice error
+- OPPORTUNITY : Error message 'Parent lead is missing' is removed onchange of lead
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
