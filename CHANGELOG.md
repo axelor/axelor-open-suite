@@ -43,6 +43,7 @@
 - INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
 - EVENTREMINDER : Made the batch work as intended.
 - SALE ORDER : Fix generate invoice error
+- SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form

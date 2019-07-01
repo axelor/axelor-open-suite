@@ -30,9 +30,9 @@ import java.util.List;
 import javax.mail.MessagingException;
 
 public class ICalendarEventServiceImpl implements ICalendarEventService {
-  
+
   @Inject protected UserRepository userRepository;
-  
+
   @Override
   public List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
@@ -47,7 +47,11 @@ public class ICalendarEventServiceImpl implements ICalendarEventService {
         calUser.setEmail(email.getAddress());
         calUser.setName(email.getName());
         if (email.getPartner() != null) {
-          calUser.setUser(userRepository.all().filter("self.partner.id = ?1", email.getPartner().getId()).fetchOne());
+          calUser.setUser(
+              userRepository
+                  .all()
+                  .filter("self.partner.id = ?1", email.getPartner().getId())
+                  .fetchOne());
         }
         event.addAttendee(calUser);
       }
