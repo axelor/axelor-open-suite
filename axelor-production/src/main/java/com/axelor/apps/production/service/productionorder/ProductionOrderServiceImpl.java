@@ -107,6 +107,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         qtyRequested,
         startDate,
         null,
+        null,
         ManufOrderService.ORIGIN_TYPE_OTHER);
 
     return productionOrderRepo.save(productionOrder);
@@ -120,6 +121,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       LocalDateTime startDate,
+      LocalDateTime endDate,
       SaleOrder saleOrder,
       int originType)
       throws AxelorException {
@@ -132,6 +134,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             ManufOrderService.IS_TO_INVOICE,
             billOfMaterial,
             startDate,
+            endDate,
             originType);
 
     if (manufOrder != null) {

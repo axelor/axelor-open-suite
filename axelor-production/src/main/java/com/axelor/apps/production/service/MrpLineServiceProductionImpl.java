@@ -91,6 +91,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             ManufOrderService.IS_TO_INVOICE,
             null,
             mrpLine.getMaturityDate().atStartOfDay(),
+            null,
             ManufOrderServiceImpl
                 .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
     // correct day

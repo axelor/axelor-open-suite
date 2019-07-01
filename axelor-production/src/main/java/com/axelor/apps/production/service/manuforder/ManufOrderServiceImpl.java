@@ -108,6 +108,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       boolean isToInvoice,
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT,
       int originType)
       throws AxelorException {
 
@@ -121,7 +122,14 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     ManufOrder manufOrder =
         this.createManufOrder(
-            product, qty, priority, IS_TO_INVOICE, company, billOfMaterial, plannedStartDateT);
+            product,
+            qty,
+            priority,
+            IS_TO_INVOICE,
+            company,
+            billOfMaterial,
+            plannedStartDateT,
+            plannedEndDateT);
 
     if (originType == ORIGIN_TYPE_SALE_ORDER
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
@@ -242,7 +250,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       boolean isToInvoice,
       Company company,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
       throws AxelorException {
 
     logger.debug("Création d'un OF {}", priority);
@@ -260,6 +269,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             product,
             prodProcess,
             plannedStartDateT,
+            plannedEndDateT,
             ManufOrderRepository.STATUS_DRAFT);
 
     if (appProductionService.getAppProduction().getManageWorkshop()) {

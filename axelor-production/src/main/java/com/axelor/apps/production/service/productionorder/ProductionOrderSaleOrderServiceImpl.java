@@ -142,6 +142,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
           billOfMaterial,
           qty,
           LocalDateTime.now(),
+          null,
           saleOrderLine.getSaleOrder(),
           ManufOrderService.ORIGIN_TYPE_SALE_ORDER);
     }

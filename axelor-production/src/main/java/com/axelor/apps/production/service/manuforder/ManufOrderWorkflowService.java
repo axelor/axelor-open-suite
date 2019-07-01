@@ -116,9 +116,9 @@ public class ManufOrderWorkflowService {
     for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
       operationOrderWorkflowService.plan(operationOrder);
     }
-
-    manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
-
+    if (manufOrder.getPlannedEndDateT() == null) {
+      manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
+    }
     if (manufOrder.getBillOfMaterial() != null) {
       manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
     }

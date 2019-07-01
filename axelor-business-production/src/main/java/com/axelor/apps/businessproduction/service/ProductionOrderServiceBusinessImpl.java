@@ -49,6 +49,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
       BigDecimal qtyRequested,
       Project project,
       LocalDateTime startDate,
+      LocalDateTime endDate,
       SaleOrder saleOrder)
       throws AxelorException {
 
@@ -61,6 +62,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
         billOfMaterial,
         qtyRequested,
         startDate,
+        endDate,
         saleOrder,
         ManufOrderService.ORIGIN_TYPE_OTHER);
 
