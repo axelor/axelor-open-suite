@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.8]
 ## Features
+- PROJECT : Translate Total real hours
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
