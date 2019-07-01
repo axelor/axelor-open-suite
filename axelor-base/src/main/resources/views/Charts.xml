@@ -150,8 +150,8 @@
 			    AND so.confirmationDateTime = (SELECT min(so.confirmationDateTime)
 			     FROM so.confirmationDateTime
 			     WHERE so.clientPartner = self.id)
-			    AND so.confirmationDateTime > :startDate
-			    AND :endDate > so.confirmationDateTime
+			    AND so.confirmationDateTime > :fromDate
+			    AND :toDate > so.confirmationDateTime
 			]]>
 			</dataset>
 				<category  key="title" type="text" />
