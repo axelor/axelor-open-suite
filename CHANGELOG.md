@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.8]
 ## Features
+- PROJECT : Translate Total real hours
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -19,6 +20,7 @@
 - SALE CONFIG DEMO DATA : update demo data.
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 - EMPLOYEE CARD : add tag for rh, company and department field.
+- STOCK MOVES : updating filterOnAvailableProducts field display conditions
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 
 ## Bug Fixes
@@ -39,6 +41,11 @@
 - SALE ORDER : line delivery dates not editable if availability request = true
 - MOVE : NPE when click on validation button in move-grid
 - SALE ORDER : hide and rename some field in advance search.
+- STOCK MOVE : Printing address at bottom-left of Report.
+- INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
+- EVENTREMINDER : Made the batch work as intended.
+- SALE ORDER : Fix generate invoice error
+- OPPORTUNITY : Error message 'Parent lead is missing' is removed onchange of lead
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
