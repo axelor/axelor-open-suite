@@ -122,7 +122,7 @@ public class AccountClearanceService {
   }
 
   @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void setExcessPayment(AccountClearance accountClearance) throws AxelorException {
     accountClearance.setMoveLineSet(new HashSet<MoveLine>());
     List<MoveLine> moveLineList = (List<MoveLine>) this.getExcessPayment(accountClearance);
@@ -132,7 +132,7 @@ public class AccountClearanceService {
     accountClearanceRepo.save(accountClearance);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateAccountClearance(AccountClearance accountClearance) throws AxelorException {
     Company company = accountClearance.getCompany();
     AccountConfig accountConfig = company.getAccountConfig();

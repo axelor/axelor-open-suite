@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import static com.axelor.apps.tool.StringTool.getIdListString;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -44,6 +46,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -82,24 +86,28 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected SaleOrderLineService saleOrderLineService;
 
+  protected StockMoveRepository stockMoveRepository;
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceService invoiceService,
-      SaleOrderLineService saleOrderLineService) {
+      SaleOrderLineService saleOrderLineService,
+      StockMoveRepository stockMoveRepository) {
 
     this.appSupplychainService = appSupplychainService;
 
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
+    this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(
       SaleOrder saleOrder,
       int operationSelect,
@@ -200,7 +208,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateAdvancePayment(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
@@ -380,7 +388,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder);
@@ -393,7 +401,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected)
       throws AxelorException {
 
@@ -407,7 +415,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLinesSelected,
@@ -771,7 +779,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company company,
@@ -820,6 +828,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         invoiceMerged.setSaleOrder(null);
       }
       invoiceRepo.save(invoiceMerged);
+      swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     } else {
@@ -834,20 +843,41 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 priceList,
                 paymentMode,
                 paymentCondition);
+        swapStockMoveInvoices(invoiceList, invoiceMerged);
+        invoiceService.deleteOldInvoices(invoiceList);
         this.fillInLines(invoiceMerged);
         return invoiceMerged;
       } else {
-        return invoiceService.mergeInvoice(
-            invoiceList,
-            company,
-            currency,
-            partner,
-            contactPartner,
-            priceList,
-            paymentMode,
-            paymentCondition);
+        Invoice invoiceMerged =
+            invoiceService.mergeInvoice(
+                invoiceList,
+                company,
+                currency,
+                partner,
+                contactPartner,
+                priceList,
+                paymentMode,
+                paymentCondition);
+        swapStockMoveInvoices(invoiceList, invoiceMerged);
+        invoiceService.deleteOldInvoices(invoiceList);
+        return invoiceMerged;
       }
     }
+  }
+
+  @Transactional
+  public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
+    com.axelor.db.Query<StockMove> stockMoveQuery =
+        stockMoveRepository
+            .all()
+            .filter("self.invoice.id in (" + getIdListString(invoiceList) + ")");
+    stockMoveQuery
+        .fetch()
+        .forEach(
+            stockMove -> {
+              stockMove.setInvoice(newInvoice);
+              stockMoveRepository.save(stockMove);
+            });
   }
 
   @Override

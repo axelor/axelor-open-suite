@@ -124,7 +124,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
     this.fillToDate(timesheet);
     this.validateDates(timesheet);
@@ -134,7 +134,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -150,7 +150,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -168,7 +168,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -185,7 +185,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -203,7 +203,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -220,7 +220,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -229,7 +229,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void cancel(Timesheet timesheet) {
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
   }
@@ -241,7 +241,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -258,7 +258,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -968,7 +968,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
     User user = timesheet.getUser();
@@ -1034,7 +1034,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     return planningList;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException {
     List<ProjectPlanningTime> planningList = getRealisedProjectPlanningTimeList(timesheet);

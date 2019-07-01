@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
   @Inject private MetaFiles metaFiles;
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void updateProductPrice(Product product) {
 
     this.updateSalePrice(product);
@@ -162,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateProductVariants(Product productModel) {
 
     List<ProductVariant> productVariantList =

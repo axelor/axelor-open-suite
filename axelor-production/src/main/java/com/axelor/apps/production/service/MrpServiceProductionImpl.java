@@ -144,7 +144,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createManufOrderMrpLines(
       Mrp mrp,
       ManufOrder manufOrder,

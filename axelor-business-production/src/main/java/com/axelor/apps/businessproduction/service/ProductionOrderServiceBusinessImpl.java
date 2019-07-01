@@ -42,7 +42,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
     super(manufOrderService, sequenceService, productionOrderRepo);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder generateProductionOrder(
       Product product,
       BillOfMaterial billOfMaterial,

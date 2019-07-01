@@ -176,7 +176,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     return query.order("id").fetch();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCutOffMoves(
       StockMove stockMove,
       LocalDate moveDate,
@@ -617,26 +617,29 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
 
-    Query<StockMoveLine> stockMoveLineQuery =
-        stockMoveLineRepository
-            .all()
-            .filter("self.stockMove.id IN :stockMoveIdList")
-            .bind("stockMoveIdList", stockMoveIdList)
-            .order("id");
+    if (stockMoveIdList.isEmpty()) {
+      stockMoveLineIdList.add(0L);
+    } else {
+      Query<StockMoveLine> stockMoveLineQuery =
+          stockMoveLineRepository
+              .all()
+              .filter("self.stockMove.id IN :stockMoveIdList")
+              .bind("stockMoveIdList", stockMoveIdList)
+              .order("id");
 
-    while (!(stockMoveLineList = stockMoveLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      offset += stockMoveLineList.size();
+      while (!(stockMoveLineList = stockMoveLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+        offset += stockMoveLineList.size();
 
-      for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        Product product = stockMoveLine.getProduct();
-        if (!checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
-          stockMoveLineIdList.add(stockMoveLine.getId());
+        for (StockMoveLine stockMoveLine : stockMoveLineList) {
+          Product product = stockMoveLine.getProduct();
+          if (!checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
+            stockMoveLineIdList.add(stockMoveLine.getId());
+          }
         }
+
+        JPA.clear();
       }
-
-      JPA.clear();
     }
-
     return stockMoveLineIdList;
   }
 }

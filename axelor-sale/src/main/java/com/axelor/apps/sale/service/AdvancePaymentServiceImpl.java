@@ -27,7 +27,7 @@ public class AdvancePaymentServiceImpl implements AdvancePaymentService {
 
   @Inject protected AdvancePaymentRepository advancePaymentRepository;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void cancelAdvancePayment(AdvancePayment advancePayment) {
 
     advancePayment.setStatusSelect(AdvancePaymentRepository.STATUS_CANCELED);

@@ -201,7 +201,7 @@ public class MoveValidateService {
    * @param move
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Move move, boolean updateCustomerAccount) throws AxelorException {
 
     log.debug("Validation de l'écriture comptable {}", move.getReference());
@@ -284,7 +284,7 @@ public class MoveValidateService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateInDayBookMode(Move move) throws AxelorException {
 
     this.checkPreconditions(move);

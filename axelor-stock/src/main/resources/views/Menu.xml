@@ -241,6 +241,17 @@
 		<view type="grid" name="stock-correction-grid"/>
 		<view type="form" name="stock-correction-form"/>
 	</action-view>
+
+	<menuitem name="stock-root-abc-analysis" title="ABC analysis" order="27"
+		action="stock.root.abc.analysis" parent="stock-root"/>
+
+	<action-view name="stock.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.typeSelect = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"/>
+	</action-view>
 		
 	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 		

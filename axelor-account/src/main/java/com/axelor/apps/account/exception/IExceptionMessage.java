@@ -786,4 +786,8 @@ public interface IExceptionMessage {
       "Disposal date must be after the date of the last depreciation." /*)*/;
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
       "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+
+  /* MOVE REVERSE*/
+  static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
+      "There is no reverse date select value of value %d" /*)*/;
 }

@@ -116,7 +116,7 @@ public class PeriodServiceImpl implements PeriodService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void close(Period period) {
 
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
@@ -128,7 +128,7 @@ public class PeriodServiceImpl implements PeriodService {
     periodRepo.save(period);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void adjust(Period period) {
     period = periodRepo.find(period.getId());
 

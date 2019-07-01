@@ -98,7 +98,7 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Notification notification) throws AxelorException {
 
     for (NotificationItem notificationItem : notification.getNotificationItemList()) {
@@ -121,7 +121,7 @@ public class NotificationServiceImpl implements NotificationService {
     return account;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Move createPaymentMove(NotificationItem notificationItem) throws AxelorException {
 
     Notification notification = notificationItem.getNotification();

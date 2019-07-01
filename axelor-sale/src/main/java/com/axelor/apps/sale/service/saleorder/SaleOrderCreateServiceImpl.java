@@ -151,7 +151,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrderList,
       Currency currency,
@@ -223,7 +223,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrder(
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
       throws AxelorException {

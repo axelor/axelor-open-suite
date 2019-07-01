@@ -40,7 +40,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generate(
       Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
       throws AxelorException {

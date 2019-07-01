@@ -217,4 +217,7 @@ public interface IExceptionMessage {
 
   static final String SUPPLYCHAIN_MRP_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for MRP" /*)*/;
+
+  static final String STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR = /*$$(*/
+      "Product stock for %s is not enough for availability request" /*)*/;
 }

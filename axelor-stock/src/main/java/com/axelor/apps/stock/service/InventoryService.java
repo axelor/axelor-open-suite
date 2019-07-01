@@ -143,7 +143,7 @@ public class InventoryService {
     return ref;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Path importFile(Inventory inventory) throws AxelorException {
 
     List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
@@ -276,7 +276,7 @@ public class InventoryService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public StockMove validateInventory(Inventory inventory) throws AxelorException {
     AppBaseService baseService = Beans.get(AppBaseService.class);
     StockMove stockMove = generateStockMove(inventory);
@@ -423,7 +423,7 @@ public class InventoryService {
     return stockMove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public StockMove cancel(Inventory inventory) throws AxelorException {
     StockMove stockMove = stockMoveRepo.findByName(inventory.getInventorySeq());
 
@@ -464,7 +464,7 @@ public class InventoryService {
     return stockMove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Boolean fillInventoryLineList(Inventory inventory) throws AxelorException {
 
     if (inventory.getStockLocation() == null) {
@@ -574,7 +574,7 @@ public class InventoryService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile exportInventoryAsCSV(Inventory inventory) throws IOException {
 
     List<String[]> list = new ArrayList<>();

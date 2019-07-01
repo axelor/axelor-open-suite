@@ -30,7 +30,7 @@ import java.util.List;
 
 public interface StockLocationLineService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -43,7 +43,7 @@ public interface StockLocationLineService {
       TrackingNumber trackingNumber)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -63,7 +63,7 @@ public interface StockLocationLineService {
       boolean future)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
@@ -101,7 +101,7 @@ public interface StockLocationLineService {
       LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException;
 

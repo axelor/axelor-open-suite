@@ -78,7 +78,7 @@ public class BatchEmploymentContractExport extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile employmentContractExportSilae(List<EmploymentContract> employmentContractList)
       throws IOException {
 

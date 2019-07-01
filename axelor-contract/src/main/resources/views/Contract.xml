@@ -5,7 +5,7 @@
               http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
-		<field name="contractId"/>
+		<field name="contractId" width="120"/>
 		<field name="name"/>
 		<field name="targetTypeSelect"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>

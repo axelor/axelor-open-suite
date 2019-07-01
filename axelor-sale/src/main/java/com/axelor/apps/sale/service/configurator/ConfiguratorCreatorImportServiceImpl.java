@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.configurator;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -34,13 +51,13 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
   private static final String CONFIG_FILE_PATH =
       "/data-import/import-configurator-creator-config.xml";
 
-  @Transactional(rollbackOn = {IOException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public String importConfiguratorCreators(String filePath) throws IOException {
     return importConfiguratorCreators(filePath, CONFIG_FILE_PATH);
   }
 
-  @Transactional(rollbackOn = {IOException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public String importConfiguratorCreators(String filePath, String configFilePath)
       throws IOException {

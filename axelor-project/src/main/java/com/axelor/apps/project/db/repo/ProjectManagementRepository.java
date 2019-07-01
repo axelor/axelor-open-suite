@@ -31,8 +31,8 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import java.lang.invoke.MethodHandles;
-import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
+import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Override
   public Project save(Project project) {
-    setAllProjectFullName(project);
+
     ProjectManagementRepository.setAllProjectMembersUserSet(project);
 
     if (project.getSynchronize()) {
@@ -83,8 +83,7 @@ public class ProjectManagementRepository extends ProjectRepository {
     try {
       AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
 
-      if (Strings.isNullOrEmpty(project.getProjectSeq())
-          && appProject.getGenerateProjectSequence()) {
+      if (Strings.isNullOrEmpty(project.getCode()) && appProject.getGenerateProjectSequence()) {
         Company company = project.getCompany();
         String seq =
             Beans.get(SequenceService.class)
@@ -98,12 +97,12 @@ public class ProjectManagementRepository extends ProjectRepository {
               company.getName());
         }
 
-        project.setProjectSeq(seq);
+        project.setCode(seq);
       }
     } catch (AxelorException e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
-
+    setAllProjectFullName(project);
     return super.save(project);
   }
 

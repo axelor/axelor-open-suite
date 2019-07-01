@@ -39,7 +39,7 @@ import java.util.List;
 public class DepositSlipServiceImpl implements DepositSlipService {
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void loadPayments(DepositSlip depositSlip) throws AxelorException {
     if (depositSlip.getPublicationDate() != null) {
       throw new AxelorException(
@@ -55,7 +55,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public String publish(DepositSlip depositSlip) throws AxelorException {
     confirmPayments(depositSlip);
 

@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 
 public interface WeightedAveragePriceService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void computeAvgPriceForProduct(Product product);
 
   public BigDecimal computeAvgPriceForCompany(Product product, Company company);

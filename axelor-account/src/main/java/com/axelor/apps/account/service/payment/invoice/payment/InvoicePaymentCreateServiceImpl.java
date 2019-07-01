@@ -103,6 +103,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
     int typePaymentMove = this.determineType(paymentMove);
     Currency currency = paymentMove.getCurrency();
+    if (currency == null) {
+      currency = paymentMove.getCompanyCurrency();
+    }
     PaymentMode paymentMode;
     InvoicePayment invoicePayment;
     if (typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE
@@ -236,7 +239,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails) {
     InvoicePayment invoicePayment =
         createInvoicePayment(
@@ -250,7 +253,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     return invoicePaymentRepository.save(invoicePayment);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicePayment createInvoicePayment(
       Invoice invoice,
       PaymentMode paymentMode,
@@ -273,7 +276,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<InvoicePayment> createMassInvoicePayment(
       List<Long> invoiceList,
       PaymentMode paymentMode,

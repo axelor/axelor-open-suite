@@ -15,6 +15,18 @@
   	<many-to-one name="meetingGuestAddedTemplate" ref="com.axelor.apps.message.db.Template" title="Meeting's guest added template"/>
   	<many-to-one name="meetingGuestDeletedTemplate" ref="com.axelor.apps.message.db.Template" title="Meeting's guest deleted template"/>
     <boolean name="sendMail" title="Send mail"/>
+    
+    <track>
+    	<field name="company" on="UPDATE"/>
+    	<field name="taskTemplate" on="UPDATE"/>
+    	<field name="meetingTemplate" on="UPDATE"/>
+    	<field name="callTemplate" on="UPDATE"/>
+    	<field name="meetingDateChangeTemplate" on="UPDATE"/>
+    	<field name="meetingGuestAddedTemplate" on="UPDATE"/>
+    	<field name="meetingGuestDeletedTemplate" on="UPDATE"/>
+    	<field name="sendMail" on="UPDATE"/>
+    </track>
+    
   </entity>
   
 </domain-models>

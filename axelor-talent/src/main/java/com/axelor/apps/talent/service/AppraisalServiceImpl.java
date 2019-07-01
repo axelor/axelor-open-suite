@@ -48,7 +48,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 
   @Inject private MessageService messageService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void send(Appraisal appraisal)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
@@ -110,7 +110,7 @@ public class AppraisalServiceImpl implements AppraisalService {
     appraisalRepo.save(appraisal);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Set<Long> createAppraisals(
       Appraisal appraisalTemplate, Set<Employee> employees, Boolean send)

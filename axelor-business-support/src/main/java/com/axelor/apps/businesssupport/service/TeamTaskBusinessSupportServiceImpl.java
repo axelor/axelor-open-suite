@@ -3,10 +3,14 @@ package com.axelor.apps.businesssupport.service;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectServiceImpl;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class TeamTaskBusinessSupportServiceImpl extends TeamTaskBusinessProjectServiceImpl {
 
@@ -34,5 +38,15 @@ public class TeamTaskBusinessSupportServiceImpl extends TeamTaskBusinessProjectS
     nextTeamTask.setAssignment(TeamTaskRepository.ASSIGNMENT_PROVIDER);
     nextTeamTask.setIsPrivate(teamTask.getIsPrivate());
     nextTeamTask.setTargetVersion(teamTask.getTargetVersion());
+  }
+
+  @Override
+  public TeamTask create(
+      TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty) {
+
+    TeamTask task = super.create(template, project, date, qty);
+    task.setInternalDescription(template.getInternalDescription());
+
+    return task;
   }
 }

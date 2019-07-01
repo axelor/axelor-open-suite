@@ -411,7 +411,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional
   public void addRequiredFormulas(ConfiguratorCreator creator) {
     for (Field field : Product.class.getDeclaredFields()) {
       if (field.getAnnotation(NotNull.class) != null) {

@@ -108,7 +108,7 @@ public class PaymentVoucherLoadService {
     return moveLines;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void searchDueElements(PaymentVoucher paymentVoucher) throws AxelorException {
 
     if (paymentVoucher.getPayVoucherElementToPayList() != null) {
@@ -156,7 +156,7 @@ public class PaymentVoucherLoadService {
     return payVoucherDueElement;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void loadSelectedLines(PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext)
       throws AxelorException {
 
@@ -256,7 +256,7 @@ public class PaymentVoucherLoadService {
     return payVoucherElementToPay;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
 
     paymentVoucher.getPayVoucherElementToPayList().clear();

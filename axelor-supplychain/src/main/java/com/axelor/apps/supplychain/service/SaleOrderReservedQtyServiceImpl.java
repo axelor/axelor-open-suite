@@ -36,7 +36,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void allocateAll(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList =
         saleOrder.getSaleOrderLineList() == null
@@ -49,7 +49,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void deallocateAll(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList =
         saleOrder.getSaleOrderLineList() == null
@@ -61,26 +61,26 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void reserveAll(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList =
         saleOrder.getSaleOrderLineList() == null
             ? new ArrayList<>()
             : saleOrder.getSaleOrderLineList();
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      reservedQtyService.updateReservedQty(saleOrderLine, saleOrderLine.getQty());
+      reservedQtyService.requestQty(saleOrderLine);
     }
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelReservation(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList =
         saleOrder.getSaleOrderLineList() == null
             ? new ArrayList<>()
             : saleOrder.getSaleOrderLineList();
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      reservedQtyService.updateRequestedReservedQty(saleOrderLine, BigDecimal.ZERO);
+      reservedQtyService.cancelReservation(saleOrderLine);
     }
   }
 }

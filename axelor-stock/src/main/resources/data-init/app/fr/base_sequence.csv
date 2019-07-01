@@ -1,10 +1,10 @@
 "importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
-200;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Serveur Classique";1;5;"F4";;1;1
-201;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Classique Pack";1;5;"F2";;1;1
-202;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Imprimante Jet d’encre";1;5;"A5";;1;1
+200;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Serveur Classique";1;4;"F4";;1;1
+201;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Classique Pack";1;4;"F2";;1;1
+202;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Imprimante Jet d’encre";1;4;"A5";;1;1
 5;"intStockMove";"Mouvement de stock interne";1;4;"ISM";;1;0
 6;"outStockMove";"Bon de livraison N°";1;4;"DO";;1;0
 7;"inStockMove";"Bon de réception de bien N°";1;4;"RO";;1;0
 8;"inventory";"Inventaire N°";1;4;"INV%M%YY";;1;0
-9;"productTrackingNumber";"Numéro de suivi";1;5;"TN";;1;0
-203;"logisticalForm";"Fiche logistique";1;5;"FL";;1;0
+9;"productTrackingNumber";"Numéro de suivi";1;4;"TN";;1;0
+203;"logisticalForm";"Fiche logistique";1;4;"FL";;1;0

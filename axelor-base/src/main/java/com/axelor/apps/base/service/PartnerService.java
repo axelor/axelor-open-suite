@@ -140,7 +140,7 @@ public class PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+        "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
             + name
             + "' target='_blank' />");
     urlMap.put(
@@ -342,7 +342,7 @@ public class PartnerService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public String getSIRENNumber(Partner partner) throws AxelorException {
     char[] Str = new char[9];
     if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
@@ -361,7 +361,7 @@ public class PartnerService {
     return new String(Str);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void convertToIndividualPartner(Partner partner) {
     partner.setIsContact(false);
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);

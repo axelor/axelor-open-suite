@@ -47,9 +47,9 @@
 				</panel>
 				<panel name="recipientsPanel" title="Recipients"
 					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4" colSpan="12">
-					<field name="toRecipients" colSpan="12" height="2" />
-					<field name="ccRecipients" colSpan="12" height="2" />
-					<field name="bccRecipients" colSpan="12" height="2" />
+					<field name="toRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
+					<field name="ccRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
+					<field name="bccRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
 				</panel>
 				<panel name="subjectContentPanel" title="Content" colSpan="12">
 					<field name="subject" colSpan="12" height="2" />

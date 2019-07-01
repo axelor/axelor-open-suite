@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="direct-debit-management-grid" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement">
-        <field name="debitNumber"/>
+        <field name="debitNumber" width="120"/>
     </grid>
     
     <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default" width="large">

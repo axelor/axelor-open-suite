@@ -267,7 +267,7 @@
 		</search-fields>
 		<dataset type="sql">
 			SELECT
-			  sum(self.ex_tax_total) as amount,
+			  sum(self.company_ex_tax_total) as amount,
 			  saleman.full_name as saleman_name
 			FROM
 			  sale_sale_order self
@@ -284,7 +284,7 @@
 			GROUP BY
 			  saleman_name
 			HAVING
-			 	sum(self.ex_tax_total) > 0
+			 	sum(self.company_ex_tax_total) > 0
 		</dataset>
 		<category key="saleman_name" type="text" title="Salesman"/>
 		<series key="amount" type="bar" title="Amount"/>

@@ -60,7 +60,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Inject protected StockMoveLineRepository stockMoveLineRepository;
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -98,7 +98,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -230,7 +230,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
@@ -518,7 +518,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException {
 
@@ -585,8 +585,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           unitConversionService.convert(
               incomingStockMoveLine.getUnit(),
               stockLocationLine.getUnit(),
-              incomingStockMoveLine.getQty(),
-              incomingStockMoveLine.getQty().scale(),
+              incomingStockMoveLine.getRealQty(),
+              incomingStockMoveLine.getRealQty().scale(),
               product);
       futureQty = futureQty.add(qtyToAdd);
     }
@@ -596,8 +596,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           unitConversionService.convert(
               outgoingStockMoveLine.getUnit(),
               stockLocationLine.getUnit(),
-              outgoingStockMoveLine.getQty(),
-              outgoingStockMoveLine.getQty().scale(),
+              outgoingStockMoveLine.getRealQty(),
+              outgoingStockMoveLine.getRealQty().scale(),
               product);
       futureQty = futureQty.subtract(qtyToSubtract);
     }

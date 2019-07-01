@@ -20,6 +20,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
@@ -43,4 +44,8 @@ public interface ProjectService {
    * @return
    */
   Project generateProject(Partner partner);
+
+  public Project createProjectFromTemplate(
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
+      throws AxelorException;
 }

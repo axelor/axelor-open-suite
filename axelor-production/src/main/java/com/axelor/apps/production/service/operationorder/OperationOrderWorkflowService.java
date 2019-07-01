@@ -76,7 +76,7 @@ public class OperationOrderWorkflowService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder plan(OperationOrder operationOrder) throws AxelorException {
 
     if (CollectionUtils.isEmpty(operationOrder.getToConsumeProdProductList())) {
@@ -110,7 +110,7 @@ public class OperationOrderWorkflowService {
    * @return
    * @throws AxelorException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder replan(OperationOrder operationOrder) throws AxelorException {
 
     operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
@@ -191,7 +191,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
     if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS) {
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
@@ -229,7 +229,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void pause(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
 
@@ -243,7 +243,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void resume(OperationOrder operationOrder) {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
@@ -258,7 +258,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void finish(OperationOrder operationOrder) throws AxelorException {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_FINISHED);
     operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
@@ -269,7 +269,7 @@ public class OperationOrderWorkflowService {
     operationOrderRepo.save(operationOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
     finish(operationOrder);
     Beans.get(ManufOrderWorkflowService.class).allOpFinished(operationOrder.getManufOrder());
@@ -280,7 +280,7 @@ public class OperationOrderWorkflowService {
    *
    * @param operationOrder An operation order
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void cancel(OperationOrder operationOrder) throws AxelorException {
     int oldStatus = operationOrder.getStatusSelect();
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_CANCELED);
@@ -392,7 +392,7 @@ public class OperationOrderWorkflowService {
    * @param plannedEndDateT
    * @return
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public OperationOrder setPlannedDates(
       OperationOrder operationOrder,
       LocalDateTime plannedStartDateT,
@@ -411,7 +411,7 @@ public class OperationOrderWorkflowService {
    * @param realEndDateT
    * @return
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public OperationOrder setRealDates(
       OperationOrder operationOrder, LocalDateTime realStartDateT, LocalDateTime realEndDateT) {
 

@@ -90,7 +90,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder generateProductionOrder(
       Product product,
       BillOfMaterial billOfMaterial,
@@ -114,7 +114,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder addManufOrder(
       ProductionOrder productionOrder,
       Product product,

@@ -389,7 +389,7 @@ public class PayboxService {
    * @param email Une adresse email
    * @param toSaveOk L'adresse email doit-elle être enregistré pour le contact
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addPayboxEmail(Partner partner, String email, boolean toSaveOk) {
     if (toSaveOk) {
 

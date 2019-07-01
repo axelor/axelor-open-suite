@@ -18,6 +18,14 @@
    			public static final Integer INVOICING_LOG_TIMES_EMPLOYEE_ACTIVITY = 2;
    		]]>
    	</extra-code>
+   		
+   		<track>
+   			<field name="dailyWorkHours" on="UPDATE"/>
+   			<field name="advanceManagement" on="UPDATE"/>
+   			<field name="payrollPreparation" on="UPDATE"/>
+   			<field name="lunchVoucher" on="UPDATE"/>
+   			<field name="employeeBonus" on="UPDATE"/>
+   		</track>
 	</entity>
 
 </domain-models>
