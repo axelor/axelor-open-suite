@@ -136,6 +136,7 @@
 - ACCOUNT MOVE REVERSE: Selected reverse move date must not be after the date of the day
 - ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation  
 - Change google-plus icon by google one.
+- Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
