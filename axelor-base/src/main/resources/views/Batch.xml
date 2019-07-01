@@ -62,6 +62,7 @@
 
     	<attribute name="hidden" for="showStockMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
     	<attribute name="hidden" for="showStockMoveLinesBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
+    	<attribute name="hidden" for="showAccountMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
     	<attribute name="hidden" for="showAccountMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
 
     </action-attrs>

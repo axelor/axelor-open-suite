@@ -372,6 +372,30 @@ public class AccountConfigService {
     return accountConfig.getDoubtfulCustomerAccount();
   }
 
+  public Account getYearOpeningAccount(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getYearOpeningAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_43),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getYearOpeningAccount();
+  }
+
+  public Account getYearClosureAccount(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getYearClosureAccount() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_44),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getYearClosureAccount();
+  }
+
   /** ****************************** TVA ******************************************* */
   public Tax getIrrecoverableStandardRateTax(AccountConfig accountConfig) throws AxelorException {
 

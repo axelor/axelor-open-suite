@@ -50,18 +50,19 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   /**
-   * Fetches the right period with the date in parameter
+   * Fetches the active period with the date, company and type in parameter
    *
    * @param date
    * @param company
+   * @param typeSelect
    * @return
    * @throws AxelorException
    */
-  public Period rightPeriod(LocalDate date, Company company, int typeSelect)
+  public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
       throws AxelorException {
 
     Period period = this.getPeriod(date, company, typeSelect);
-    if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+    if (period == null || (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PERIOD_1),
@@ -116,15 +117,18 @@ public class PeriodServiceImpl implements PeriodService {
     }
   }
 
-  @Transactional
-  public void close(Period period) {
-
+  public void close(Period period) throws AxelorException {
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);
     }
+    this.updateClosePeriod(period);
+  }
 
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void updateClosePeriod(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
     period.setClosureDateTime(LocalDateTime.now());
+
     periodRepo.save(period);
   }
 

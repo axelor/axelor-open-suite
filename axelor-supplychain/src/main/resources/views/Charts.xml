@@ -105,5 +105,11 @@
 		<series key="_num_prod" groupBy="_label" type="bar" title="Products"/>
 		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
+  
+  <chart name="chart.projected.stock" title="Projected stock">
+    <dataset type="rpc">com.axelor.apps.supplychain.web.ProjectedStockController:showChartProjectedStock</dataset>
+    <category key="name" type="date" title="Date"/>
+    <series key="cumulativeQty" type="line" title="Cumulative qty"/>
+ </chart>
 
 </object-views>

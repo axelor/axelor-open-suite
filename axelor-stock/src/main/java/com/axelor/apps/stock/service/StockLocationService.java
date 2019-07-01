@@ -44,11 +44,14 @@ public interface StockLocationService {
    */
   StockLocation getPickupDefaultStockLocation(Company company);
 
-  public BigDecimal getQty(Long productId, Long locationId, String qtyType) throws AxelorException;
+  public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
+      throws AxelorException;
 
-  public BigDecimal getRealQty(Long productId, Long locationId) throws AxelorException;
+  public BigDecimal getRealQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException;
 
-  public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException;
+  public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException;
 
   public List<Long> getBadStockLocationLineId();
 
@@ -58,4 +61,7 @@ public interface StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude);
 
   public BigDecimal getStockLocationValue(StockLocation stockLocation);
+
+  public List<Long> getAllLocationAndSubLocationId(
+      StockLocation stockLocation, boolean isVirtualInclude);
 }

@@ -45,9 +45,13 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -726,5 +730,93 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
     return consumedQty.subtract(prodProduct.getQty());
+  }
+
+  @Override
+  public String getConsumeAndMissingQtyForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+    List<Integer> statusList = getMOFiltersOnProductionConfig();
+    String statusListQuery =
+        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.stockMove.statusSelect = "
+            + StockMoveRepository.STATUS_PLANNED
+            + " AND self.stockMove.fromStockLocation.typeSelect != "
+            + StockLocationRepository.TYPE_VIRTUAL
+            + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
+            + statusListQuery
+            + "))"
+            + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN ( "
+            + statusListQuery
+            + ") ) ) ";
+    if (companyId != 0L) {
+      query += " AND self.stockMove.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        if (stockLocationId != 0L) {
+          StockLocation stockLocation =
+              Beans.get(StockLocationRepository.class).find(stockLocationId);
+          List<StockLocation> stockLocationList =
+              Beans.get(StockLocationService.class)
+                  .getAllLocationAndSubLocation(stockLocation, false);
+          if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+            query +=
+                " AND self.stockMove.fromStockLocation.id IN ("
+                    + StringTool.getIdListString(stockLocationList)
+                    + ") ";
+          }
+        }
+      }
+    }
+
+    return query;
+  }
+
+  @Override
+  public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId) {
+    List<Integer> statusList = getMOFiltersOnProductionConfig();
+    String statusListQuery =
+        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.stockMove.statusSelect = "
+            + StockMoveRepository.STATUS_PLANNED
+            + " AND self.stockMove.toStockLocation.typeSelect != "
+            + StockLocationRepository.TYPE_VIRTUAL
+            + " AND self.producedManufOrder IS NOT NULL "
+            + " AND self.producedManufOrder.statusSelect IN ( "
+            + statusListQuery
+            + " )";
+    if (companyId != 0L) {
+      query += "AND self.stockMove.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        StockLocation stockLocation =
+            Beans.get(StockLocationRepository.class).find(stockLocationId);
+        List<StockLocation> stockLocationList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocation(stockLocation, false);
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+          query +=
+              " AND self.stockMove.toStockLocation.id IN ("
+                  + StringTool.getIdListString(stockLocationList)
+                  + ") ";
+        }
+      }
+    }
+
+    return query;
+  }
+
+  private List<Integer> getMOFiltersOnProductionConfig() {
+    List<Integer> statusList = new ArrayList<>();
+    statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
+    statusList.add(ManufOrderRepository.STATUS_STANDBY);
+    String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
+    if (!StringUtils.isBlank(status)) {
+      statusList = StringTool.getIntegerList(status);
+    }
+    return statusList;
   }
 }

@@ -439,7 +439,8 @@ public class MoveService {
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
             move.getIgnoreInDebtRecoveryOk(),
-            move.getIgnoreInAccountingOk());
+            move.getIgnoreInAccountingOk(),
+            move.getAutoYearClosureMove());
 
     move.setInvoice(move.getInvoice());
     move.setPaymentVoucher(move.getPaymentVoucher());

@@ -79,7 +79,7 @@
 	          	<field name="expiresOn" validIf="!expiresOn || (!activateOn &amp;&amp; expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
 	        </panel>
     	</panel>
-    	
+
     	<panel name="mainPanel" sidebar="true" showIf="stepStatusSelect == 5">
 			<field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<!--	<field name="timesheetPeriodConfig"/> -->
@@ -125,7 +125,7 @@
 	          </panel>
 	        </panel>
         </panel>
-        
+
         <panel-tabs name="PermisionsPanelTab" showIf="[1,5].indexOf(stepStatusSelect) > -1">
           <panel-related name="rolesPanel" field="roles" form-view="role-form" grid-view="role-grid" showIf="[1,5].indexOf(stepStatusSelect) > -1"/>
           <panel name="parentPermissionsPanel" title="Permissions" showIf="[1,5].indexOf(stepStatusSelect) > -1">
@@ -166,6 +166,14 @@
 		    </panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
 		    <panel-related name="projectSetPanel" field="projectSet" canEdit="false" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
+        	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()" showIf="activeCompany.accountConfig.isManagePassedForPayment">
+				<field name="isPfpValidator" widget="boolean-switch"/>
+        		<field name="isSuperPfpUser" widget="boolean-switch"/>
+				<button name="delegateRightsOfPfpValidatorBtn" title="Delegate Rights of Pfp Validator" onClick="action-user-view-delegate-rights-pfp-validator" colSpan="6"/>
+        		<panel-related field="substitutePfpValidatorList" name="substitutePfpValidatorListPanel" title="Substitute PFP Validator" showIf="isPfpValidator" colSpan="12"/>
+        		<field name="activeCompany.accountConfig" hidden="true"/>
+			<field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true"/>
+        	</panel>
         </panel-tabs>
 
         <panel name="transientPasswordPanel" hidden="true" colSpan="12">
@@ -243,17 +251,17 @@
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
     </action-record>
-    
+
     <action-record name="action-user-record-step-status-next" model="com.axelor.auth.db.User">
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
     </action-record>
-    
+
     <action-record name="action-user-record-step-status-previous" model="com.axelor.auth.db.User">
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 2" if="stepStatusSelect == 4 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 1" if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
     </action-record>
-    
+
     <action-validate name="action-user-check-company">
         <notify message="Please select active company"  if="__repo__(Company).all().fetch().size != 1"/>
     </action-validate>

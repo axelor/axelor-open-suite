@@ -79,8 +79,7 @@ public class DebtRecoveryActionService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void runAction(DebtRecovery debtRecovery)
-      throws AxelorException {
+  public void runAction(DebtRecovery debtRecovery) throws AxelorException {
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
     Partner partner = debtRecovery.getAccountingSituation().getPartner();
@@ -173,8 +172,7 @@ public class DebtRecoveryActionService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void runManualAction(DebtRecovery debtRecovery)
-      throws AxelorException{
+  public void runManualAction(DebtRecovery debtRecovery) throws AxelorException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();

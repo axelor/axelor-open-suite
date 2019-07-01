@@ -315,8 +315,8 @@ public class AccountCustomerService {
       AccountingSituation accountingSituation,
       boolean updateCustAccount,
       boolean updateDueCustAccount,
-      boolean updateDueDebtRecoveryCustAccount) throws AxelorException 
-  {
+      boolean updateDueDebtRecoveryCustAccount)
+      throws AxelorException {
     Partner partner = accountingSituation.getPartner();
     Company company = accountingSituation.getCompany();
 
