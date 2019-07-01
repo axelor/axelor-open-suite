@@ -21,6 +21,7 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 - EMPLOYEE CARD : add tag for rh, company and department field.
 - STOCK MOVES : updating filterOnAvailableProducts field display conditions
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
