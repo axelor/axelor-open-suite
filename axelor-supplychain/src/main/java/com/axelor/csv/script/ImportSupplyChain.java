@@ -106,14 +106,13 @@ public class ImportSupplyChain {
       }
 
       if (status == IPurchaseOrder.STATUS_FINISHED) {
-        purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
-        StockMove stockMove =
-            stockMoveRepo.all().filter("self.originId = ?1", purchaseOrder.getId()).fetchOne();
-        if (stockMove != null) {
-          stockMoveService.copyQtyToRealQty(stockMove);
-          stockMoveService.realize(stockMove);
-          stockMove.setRealDate(purchaseOrder.getDeliveryDate());
-        }
+        List<Long> idList = purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
+        for (Long id : idList) {
+        	StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+        	stockMoveService.copyQtyToRealQty(stockMove);
+            stockMoveService.realize(stockMove);
+            stockMove.setRealDate(purchaseOrder.getDeliveryDate());
+		}
         purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
         purchaseOrder.setSupplierPartner(
