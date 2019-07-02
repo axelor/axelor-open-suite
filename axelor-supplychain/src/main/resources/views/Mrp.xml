@@ -16,7 +16,7 @@
 	 </grid>
     
 	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large"
-		onLoad="action-attrs-mrp-generate-all-proposals">
+		onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew">
 	    <toolbar>
 	        <button name="runCalculationBtn" title="Run calculation" onClick="save,action-method-mrp-run-calculation" showIf="statusSelect != 1" prompt="Are you sure you want run the calculation ? Calculation can take a long time."/>
    	        <button name="generateAllProposalsBtn" title="Generate all proposals" onClick="save,action-method-mrp-generate-all-proposal" showIf="statusSelect == 2" prompt="Are you sure you want generate all proposals ?"/>
@@ -44,9 +44,13 @@
 	        <field name="startDateTime" colSpan="4" readonly="true"/>
 	        <field name="endDateTime" colSpan="4" readonly="true"/>
 	        <field name="createdBy"/>
-	        <field name="endDate" colSpan="6"/>
+	        <field name="mrpType" hidden="true"/>
+	        <field name="endDate" colSpan="6" hideIf="mrpType == 2"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3" canEdit="false"/>
 	        <field name="stockLocation.company"/>
+	        <spacer name="companySpacer"/>
+	        <field name="year" showIf="mrpType == 2" domain="self.typeSelect = 3" onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form" grid-view="year-account-grid"/>
+	        <field name="period" showIf="mrpType == 2" domain="self.year = :year" form-view="period-form" grid-view="period-grid"/>
 	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
 	        <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
 	        <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
@@ -93,6 +97,10 @@
 	<action-attrs name="action-mrp-attrs-sale-order-domain">
   		<attribute name="domain" for="saleOrderLineSet" expr="eval: &quot;self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.product.stockManaged = true AND self.deliveryState != 3 AND self.saleOrder.company.id = ${stockLocation?.company?.id} AND self.saleOrder.stockLocation is not null&quot;"/>
 	</action-attrs>
+	
+	<action-record name="action-mrp-record-onnew" model="com.axelor.apps.supplychain.db.Mrp">
+		<field name="mrpType" expr="eval:1"/>
+	</action-record>
 	
 </object-views>
 

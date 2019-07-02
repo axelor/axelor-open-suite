@@ -157,7 +157,7 @@ public class OperationOrderWorkflowService {
             .fetchOne();
 
     if (lastOperationOrder != null) {
-      if (lastOperationOrder.getPriority() == operationOrder.getPriority()) {
+      if (lastOperationOrder.getPriority().equals(operationOrder.getPriority())) {
         if (lastOperationOrder.getPlannedStartDateT() != null
             && lastOperationOrder
                 .getPlannedStartDateT()
@@ -331,13 +331,7 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      WorkCenter machineWorkCenter = operationOrder.getMachineWorkCenter();
-      Machine machine = null;
-      if (machineWorkCenter != null) {
-        machine = machineWorkCenter.getMachine();
-      } else if (operationOrder.getWorkCenter() != null) {
-        machine = operationOrder.getWorkCenter().getMachine();
-      }
+      Machine machine = operationOrder.getMachineWorkCenter();
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }

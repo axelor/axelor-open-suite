@@ -151,7 +151,15 @@ public class ManufOrderController {
     }
   }
 
-  public void plan(ActionRequest request, ActionResponse response) {
+  public void quickPlan(ActionRequest request, ActionResponse response) {
+    plan(request, response, true);
+  }
+
+  public void slowPlan(ActionRequest request, ActionResponse response) {
+    plan(request, response, false);
+  }
+
+  private void plan(ActionRequest request, ActionResponse response, boolean quickSolve) {
 
     try {
       Context context = request.getContext();
@@ -189,10 +197,8 @@ public class ManufOrderController {
    */
   public void consumeStockMove(ActionRequest request, ActionResponse response) {
     try {
-
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = manufOrderRepo.find(manufOrder.getId());
-
       Beans.get(ManufOrderStockMoveService.class).consumeInStockMoves(manufOrder);
       response.setReload(true);
     } catch (Exception e) {

@@ -16,6 +16,8 @@
       <datetime name="startDateTime" title="Calculation Start Date"/>
       <datetime name="endDateTime" title="Calculation End Date"/>
       <string name="mrpSeq" title="MRP number" readonly="true"/>
+      <integer name="mrpType" title="MRP Type" selection="supplychain.mrp.mrp.type"/>
+      
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
