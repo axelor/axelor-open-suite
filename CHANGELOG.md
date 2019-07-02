@@ -24,6 +24,7 @@
 - DEBT RECOVERY : process rollbacked when message sending fails.
 - MESSAGE SERVICE : exception message improved. 
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- UNIT CONVERSION : Set to two the number of decimal on grid view.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
