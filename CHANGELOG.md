@@ -52,6 +52,7 @@
 - DEBT RECOVERY LEVEL : label field is now required.
 - ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
 - INVOICE : add in demo data more information for demo supplier invoices.
+- DEMO DATA : clean and corrected errors from import demo data.
 
 
 ## [5.1.7] - 2019-06-17
