@@ -95,8 +95,6 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - TRACKING : Added all fields for all apps and also for company's configuration
 - REPORTING : new indicator for qualified leads on Lead Dashboard One.
 
-
-
 ## Bug Fixes
 - STOCK MOVE : Added fr translation for 'Not Invoiced' tag
 - TOOL : test class to allow to run it on windows environment.
