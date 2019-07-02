@@ -120,6 +120,21 @@ public class ImportSupplyChain {
             purchaseOrderServiceSupplychainImpl.validateSupplier(purchaseOrder));
         Invoice invoice =
             Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
+
+        String prefixSupplierSeq = "INV000";
+        invoice.setSupplierInvoiceNb(prefixSupplierSeq + purchaseOrder.getImportId());
+
+        invoice.setInternalReference(purchaseOrder.getInternalReference());
+
+        LocalDate date;
+        if (purchaseOrder.getValidationDate() != null) {
+          date = purchaseOrder.getValidationDate();
+        } else {
+          date = LocalDate.now();
+        }
+        invoice.setInvoiceDate(date);
+        invoice.setOriginDate(date.minusDays(15));
+
         invoiceService.validateAndVentilate(invoice);
         purchaseOrderServiceSupplychainImpl.finishPurchaseOrder(purchaseOrder);
       }

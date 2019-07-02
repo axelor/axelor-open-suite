@@ -40,7 +40,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
@@ -65,22 +64,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
-    invoice.setSupplierInvoiceNb(generateRamdomSupplierInvoiceNb());
-    invoice.setInternalReference(purchaseOrder.getInternalReference());
-
-    LocalDate date;
-    if (purchaseOrder.getValidationDate() != null) {
-      date = purchaseOrder.getValidationDate();
-    } else {
-      date = LocalDate.now();
-    }
-    invoice.setInvoiceDate(date);
-    invoice.setOriginDate(date.minusDays(15));
 
     if (invoice != null) {
       purchaseOrder.setInvoice(invoice);
       purchaseOrderRepo.save(purchaseOrder);
     }
+
     return invoice;
   }
 
@@ -281,20 +270,5 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     } else {
       return BigDecimal.ZERO;
     }
-  }
-
-  protected String generateRamdomSupplierInvoiceNb() {
-    String ALPHA_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    String NUMERIC_STRING = "0123456789";
-    StringBuilder builder = new StringBuilder();
-    for (int i = 0; i <= 2; i++) {
-      int character = (int) (Math.random() * ALPHA_STRING.length());
-      builder.append(ALPHA_STRING.charAt(character));
-    }
-    for (int i = 0; i <= 4; i++) {
-      int character = (int) (Math.random() * NUMERIC_STRING.length());
-      builder.append(NUMERIC_STRING.charAt(character));
-    }
-    return builder.toString();
   }
 }
