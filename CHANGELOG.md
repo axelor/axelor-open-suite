@@ -53,6 +53,7 @@
 - ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
 - INVOICE : add in demo data more information for demo supplier invoices.
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
+- DEMO DATA : clean and corrected errors from import demo data.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
