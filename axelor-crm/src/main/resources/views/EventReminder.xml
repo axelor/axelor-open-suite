@@ -23,9 +23,28 @@
     
     <action-record name="action-event-reminder-record-default" model="com.axelor.apps.crm.db.EventReminder">
     	<field name="typeSelect" expr="1"/>
+    	<field name="user" expr="eval: __user__"/>
     	<field name="duration" expr="1"/>
     	<field name="durationTypeSelect" expr="3"/>
     	<field name="assignToSelect" expr="1"/>
+    	<field name="event" expr="eval: _event" if="_event != null"/>
     </action-record>
+    
+    <action-view name="action-crm-event-reminder-view-active-user-reminders" title="Reminders" model="com.axelor.apps.crm.db.EventReminder">
+    	<view type="grid" name="event-reminder-grid"/>
+    	<view type="form" name="event-reminder-form"/>
+    	<view-param name="popup" value="reload"/>
+    	<view-param name="show-toolbar" value="false"/>
+    	<domain>self.user = :user AND self.event = :event</domain>
+    	<context name="user" expr="eval: __user__"/>
+    	<context name="event" expr="eval: __self__"/>
+    </action-view>
+    
+    <action-view name="action-crm-event-reminder-view-create-reminder" title="Reminder" model="com.axelor.apps.crm.db.EventReminder">
+    	<view type="form" name="event-reminder-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<context name="_event" expr="eval: __self__"/>
+    </action-view>
     
 </object-views>
