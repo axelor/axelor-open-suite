@@ -29,9 +29,9 @@
 					<field name="sendingDateT" colSpan="12" requiredIf="modeSelect == 2"/>
 				</panel> 
 			</panel>
+			<button name="deleteBtn" title="Cancel this reminder" showIf="id" readonlyIf="isReminded" onClick="action-event-reminder-method-delete"/>
+			<field name="isReminded" hidden="true"/>
         </panel>
-        
-        <!-- // TODO : ajouter un moyen de supprimer le rappel. Les traductions aussi-->
     </form>
     
     <action-record name="action-event-reminder-record-default" model="com.axelor.apps.crm.db.EventReminder">
@@ -67,5 +67,9 @@
 		<view-param name="show-toolbar" value="false"/>
 		<context name="_event" expr="eval: __self__"/>
     </action-view>
+    
+    <action-method name="action-event-reminder-method-delete">
+    	<call method="deleteReminder" class="com.axelor.apps.crm.web.EventController"/>
+    </action-method>
     
 </object-views>

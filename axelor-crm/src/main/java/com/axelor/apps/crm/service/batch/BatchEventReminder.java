@@ -100,8 +100,7 @@ public class BatchEventReminder extends BatchStrategy {
               || eventStatusSelect == EventRepository.STATUS_NOT_STARTED
               || eventStatusSelect == EventRepository.STATUS_ON_GOING
               || eventStatusSelect == EventRepository.STATUS_PENDING;
-          if (this.isExpired(eventReminder) && !eventReminder.getIsReminded() && eventIsNotFinished) {
-            eventReminder.setIsReminded(true);
+          if (!eventReminder.getIsReminded() && isExpired(eventReminder) && eventIsNotFinished) {
             updateEventReminder(eventReminder);
             i++;
           }
