@@ -48,6 +48,7 @@
 - EVENTREMINDER : Made the batch work as intended.
 - SALE ORDER : Fix generate invoice error
 - OPPORTUNITY : Error message 'Parent lead is missing' is removed onchange of lead
+- DEBT RECOVERY METHOD : name field is now required.
 - DEBT RECOVERY LEVEL : label field is now required.
 - ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
 
