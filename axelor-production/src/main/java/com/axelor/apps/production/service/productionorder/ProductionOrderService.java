@@ -44,7 +44,7 @@ public interface ProductionOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder generateProductionOrder(
       Product product,
       BillOfMaterial billOfMaterial,
@@ -66,13 +66,14 @@ public interface ProductionOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder addManufOrder(
       ProductionOrder productionOrder,
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       LocalDateTime startDate,
+      LocalDateTime endDate,
       SaleOrder saleOrder,
       int originType)
       throws AxelorException;

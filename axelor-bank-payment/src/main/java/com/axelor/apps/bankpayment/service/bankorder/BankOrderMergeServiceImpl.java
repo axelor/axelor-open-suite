@@ -38,8 +38,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -79,7 +79,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     this.paymentScheduleLineRepository = paymentScheduleLineRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
 
     if (bankOrders == null || bankOrders.size() <= 1) {
@@ -324,7 +324,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments)
       throws AxelorException {
 

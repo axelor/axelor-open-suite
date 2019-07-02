@@ -59,7 +59,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
     return productionOrder;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createSaleOrder(ProductionOrder productionOrder) throws AxelorException {
 
     logger.debug(

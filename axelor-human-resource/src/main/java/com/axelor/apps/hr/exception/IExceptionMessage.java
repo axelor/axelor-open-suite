@@ -62,6 +62,8 @@ public interface IExceptionMessage {
       "Please configure the lunch voucher export path in HR config for the company %s" /*)*/;
   static final String HR_CONFIG_NO_EXPENSE_SEQUENCE = /*$$(*/
       "Company %s does not have any expense's sequence" /*)*/;
+  static final String HR_CONFIG_FORMULA_VARIABLE_MISSING = /*$$(*/
+      "Please configure Formula Variables for human resource for the company %s" /*)*/;
 
   static final String TIMESHEET_FROM_DATE = /*$$(*/ "Please add a start date for generation" /*)*/;
   static final String TIMESHEET_TO_DATE = /*$$(*/ "Please add an end date for generation" /*)*/;
@@ -190,4 +192,7 @@ public interface IExceptionMessage {
 
   static final String BATCH_EMPLOYMENT_CONTRACT_EXPORT_RECAP = /*$$(*/
       "Employment contracts exported : %s" /*)*/;
+
+  static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
+      "Please configure the unit for this type of absence" /*)*/;
 }

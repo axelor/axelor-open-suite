@@ -67,7 +67,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
 
   @Inject protected MoveCancelService moveCancelService;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(AdvancePayment advancePayment) throws AxelorException {
 
     if (advancePayment.getStatusSelect() != AdvancePaymentRepository.STATUS_DRAFT) {
@@ -86,7 +86,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     advancePaymentRepository.save(advancePayment);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(AdvancePayment advancePayment) throws AxelorException {
 
     moveCancelService.cancel(advancePayment.getMove());
@@ -125,7 +125,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     //		}
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMoveForAdvancePayment(AdvancePayment advancePayment) throws AxelorException {
 
     SaleOrder saleOrder = advancePayment.getSaleOrder();
@@ -193,7 +193,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     return move;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePayment(
       AdvancePayment advancePayment, Invoice invoice, BigDecimal amount) throws AxelorException {
 

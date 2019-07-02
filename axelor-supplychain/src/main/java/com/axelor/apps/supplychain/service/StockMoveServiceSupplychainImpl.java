@@ -35,17 +35,23 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.StringJoiner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
+public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
+    implements StockMoveServiceSupplychain {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -54,6 +60,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
   protected SaleOrderRepository saleOrderRepo;
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
+
+  @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
@@ -83,10 +91,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
-    LOG.debug(
-        "Réalisation du mouvement de stock : {} ", new Object[] {stockMove.getStockMoveSeq()});
+    LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realize(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
 
@@ -126,11 +133,25 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
           .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_REALIZED);
     }
 
+    detachNonDeliveredStockMoveLines(stockMove);
+
     return newStockSeq;
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void detachNonDeliveredStockMoveLines(StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() == null) {
+      return;
+    }
+    stockMove
+        .getStockMoveLineList()
+        .stream()
+        .filter(line -> line.getRealQty().signum() == 0)
+        .forEach(line -> line.setSaleOrderLine(null));
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
       if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
@@ -148,7 +169,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
     super.plan(stockMove);
     if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
@@ -157,7 +178,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
@@ -218,7 +239,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePurchaseOrderOnCancel(StockMove stockMove) throws AxelorException {
     PurchaseOrder po = purchaseOrderRepo.find(stockMove.getOriginId());
 
@@ -306,5 +327,32 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl {
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
     return newStockMoveLine;
+  }
+
+  @Override
+  public void verifyProductStock(StockMove stockMove) throws AxelorException {
+    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
+    if (stockMove.getAvailabilityRequest()
+        && stockMove.getStockMoveLineList() != null
+        && appSupplychain.getIsVerifyProductStock()
+        && stockMove.getFromStockLocation() != null) {
+      StringJoiner notAvailableProducts = new StringJoiner(",");
+      int counter = 1;
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        boolean isAvailableProduct =
+            stockMoveLineServiceSupplychain.isAvailableProduct(stockMove, stockMoveLine);
+        if (!isAvailableProduct && counter <= 10) {
+          notAvailableProducts.add(stockMoveLine.getProduct().getFullName());
+          counter++;
+        }
+      }
+      if (!Strings.isNullOrEmpty(notAvailableProducts.toString())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
+                notAvailableProducts.toString()));
+      }
+    }
   }
 }

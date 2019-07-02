@@ -56,7 +56,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
-      InvoiceLineService invoiceLineService) {
+      InvoiceLineService invoiceLineService,
+      AccountConfigService accountConfigService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -65,7 +66,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
         invoiceRepo,
         appAccountService,
         partnerService,
-        invoiceLineService);
+        invoiceLineService,
+        accountConfigService);
   }
 
   @Override

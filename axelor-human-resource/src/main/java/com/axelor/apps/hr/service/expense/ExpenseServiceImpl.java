@@ -218,7 +218,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
@@ -243,7 +243,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Expense expense) throws AxelorException {
 
     Employee employee = expense.getUser().getEmployee();
@@ -303,7 +303,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Expense expense) throws AxelorException {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
@@ -329,7 +329,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move ventilate(Expense expense) throws AxelorException {
 
     Move move = null;
@@ -471,7 +471,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException {
     Move move = expense.getMove();
     if (move == null) {
@@ -513,7 +513,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
 
     expense.setPaymentDate(appAccountService.getTodayDate());
@@ -560,7 +560,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(Expense expense) throws AxelorException {
     BankOrder bankOrder = expense.getBankOrder();
 

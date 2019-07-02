@@ -212,7 +212,7 @@ public class ICalendarService {
    * @param text the raw calendar text
    * @throws ParserException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void load(ICalendar calendar, String text) throws ParserException {
     Preconditions.checkNotNull(calendar, "calendar can't be null");
     Preconditions.checkNotNull(text, "calendar source can't be null");
@@ -231,7 +231,7 @@ public class ICalendarService {
    * @throws IOException
    * @throws ParserException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void load(ICalendar calendar, File file) throws IOException, ParserException {
     Preconditions.checkNotNull(calendar, "calendar can't be null");
     Preconditions.checkNotNull(file, "input file can't be null");
@@ -253,7 +253,7 @@ public class ICalendarService {
    * @throws IOException
    * @throws ParserException
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void load(ICalendar calendar, Reader reader) throws IOException, ParserException {
     Preconditions.checkNotNull(calendar, "calendar can't be null");
     Preconditions.checkNotNull(reader, "reader can't be null");
@@ -619,7 +619,7 @@ public class ICalendarService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected void sync(ICalendar calendar, LocalDateTime startDate, LocalDateTime endDate)
       throws ICalendarException, MalformedURLException {
     PathResolver RESOLVER = getPathResolver(calendar.getTypeSelect());
@@ -651,7 +651,7 @@ public class ICalendarService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected ICalendar doSync(
       ICalendar calendar,
       CalDavCalendarCollection collection,

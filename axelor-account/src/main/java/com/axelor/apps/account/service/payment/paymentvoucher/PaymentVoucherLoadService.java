@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
@@ -86,7 +87,8 @@ public class PaymentVoucherLoadService {
             + "and self.amountRemaining > 0 "
             + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
             + "and self.move.ignoreInDebtRecoveryOk = 'f' "
-            + "and self.move.company = ?2 ";
+            + "and self.move.company = ?2 "
+            + "and self.move.invoice.pfpValidateStatusSelect != ?5";
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
       query += " and self.debit > 0 ";
@@ -102,13 +104,14 @@ public class PaymentVoucherLoadService {
                 paymentVoucher.getPartner(),
                 paymentVoucher.getCompany(),
                 MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK)
+                MoveRepository.STATUS_DAYBOOK,
+                InvoiceRepository.PFP_STATUS_LITIGATION)
             .fetch();
 
     return moveLines;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void searchDueElements(PaymentVoucher paymentVoucher) throws AxelorException {
 
     if (paymentVoucher.getPayVoucherElementToPayList() != null) {
@@ -156,7 +159,7 @@ public class PaymentVoucherLoadService {
     return payVoucherDueElement;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void loadSelectedLines(PaymentVoucher paymentVoucher, PaymentVoucher paymentVoucherContext)
       throws AxelorException {
 
@@ -256,7 +259,7 @@ public class PaymentVoucherLoadService {
     return payVoucherElementToPay;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void resetImputation(PaymentVoucher paymentVoucher) throws AxelorException {
 
     paymentVoucher.getPayVoucherElementToPayList().clear();

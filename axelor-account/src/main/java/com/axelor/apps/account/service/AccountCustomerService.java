@@ -294,7 +294,7 @@ public class AccountCustomerService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void flagPartners(List<Partner> partnerList, Company company) throws AxelorException {
     for (Partner partner : partnerList) {
       AccountingSituation accountingSituation =
@@ -310,7 +310,7 @@ public class AccountCustomerService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public AccountingSituation updateAccountingSituationCustomerAccount(
       AccountingSituation accountingSituation,
       boolean updateCustAccount,

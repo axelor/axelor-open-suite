@@ -178,7 +178,8 @@ public class SaleOrderController {
           Partner supplierPartner = null;
           List<Long> saleOrderLineIdSelected = new ArrayList<>();
 
-          // Check if supplier partners of each sale order line are the same. If it is, send the
+          // Check if supplier partners of each sale order line are the same. If it is,
+          // send the
           // partner id to view to load this partner by default into select
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.isSelected()) {
@@ -239,6 +240,9 @@ public class SaleOrderController {
       boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
       BigDecimal amountToInvoice =
           new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
+
+      Beans.get(SaleOrderInvoiceService.class)
+          .displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
@@ -309,7 +313,8 @@ public class SaleOrderController {
         fromPopup = true;
       }
     }
-    // Check if currency, clientPartner and company are the same for all selected sale orders
+    // Check if currency, clientPartner and company are the same for all selected
+    // sale orders
     Currency commonCurrency = null;
     Partner commonClientPartner = null;
     Company commonCompany = null;
@@ -317,13 +322,16 @@ public class SaleOrderController {
     Team commonTeam = null;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
-    // Useful to determine if a difference exists between contact partners of all sale orders
+    // Useful to determine if a difference exists between contact partners of all
+    // sale orders
     boolean existContactPartnerDiff = false;
     PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all sale orders
+    // Useful to determine if a difference exists between price lists of all sale
+    // orders
     boolean existPriceListDiff = false;
     StockLocation commonLocation = null;
-    // Useful to determine if a difference exists between stock locations of all sale orders
+    // Useful to determine if a difference exists between stock locations of all
+    // sale orders
     boolean existLocationDiff = false;
 
     SaleOrder saleOrderTemp;
@@ -624,10 +632,10 @@ public class SaleOrderController {
         stockMoveRepo
             .all()
             .filter(
-                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect != ?3",
+                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect = ?3",
                 "com.axelor.apps.sale.db.SaleOrder",
                 saleOrder.getId(),
-                StockMoveRepository.STATUS_CANCELED)
+                StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
     if (stockMove != null) {
       response.setNotify(
@@ -704,6 +712,27 @@ public class SaleOrderController {
       saleOrder = saleOrderRepo.find(saleOrder.getId());
       Beans.get(SaleOrderReservedQtyService.class).cancelReservation(saleOrder);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showPopUpInvoicingWizard(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      response.setView(
+          ActionView.define("Invoicing")
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-invoicing-wizard-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(saleOrder.getId()))
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

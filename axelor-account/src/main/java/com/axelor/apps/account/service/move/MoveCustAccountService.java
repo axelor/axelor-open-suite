@@ -57,7 +57,7 @@ public class MoveCustAccountService {
    * @param company
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateCustomerAccount(List<Partner> partnerList, Company company)
       throws AxelorException {
 

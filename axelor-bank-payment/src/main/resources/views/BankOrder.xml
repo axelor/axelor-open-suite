@@ -10,7 +10,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="orderTypeSelect"/>
         <field name="bankOrderDate"/>
 		<field name="confirmationDateTime"/>
@@ -30,7 +30,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
@@ -49,7 +49,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="orderTypeSelect"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
@@ -69,7 +69,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="generatedMetaFile"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>

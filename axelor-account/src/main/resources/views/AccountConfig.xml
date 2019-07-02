@@ -57,9 +57,15 @@
 					<panel name="accountFactorPanel" if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
 						<field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 						<field name="factorCreditAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					</panel>
+					<panel name="accountGeneralPanel" colSpan="12">
+						<field name="yearOpeningAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="yearClosureAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 						<field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 						<field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 					</panel>
+					
+					
 				</panel>
 				<panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
@@ -98,7 +104,11 @@
 				<field name="invoiceInAtiSelect"/>
 				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
-
+				
+				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()">	
+					<field name="isManagePassedForPayment" widget="boolean-switch"/>		
+				</panel>
+				
 				<panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
 					<field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
 					<field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
@@ -122,6 +132,7 @@
 					<field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
 					<field name="termsAndConditions" widget="html" colSpan="12"/>
 				</panel>
+				
 			</panel>
 
 			<panel name="journalsPanel" title="Journals">
@@ -238,6 +249,11 @@
 				<field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
 		</panel-tabs>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 
 	</form>
 

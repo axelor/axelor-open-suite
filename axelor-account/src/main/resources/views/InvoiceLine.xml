@@ -5,34 +5,39 @@
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <hilite strong="true" color="default" if="typeSelect != 0"/>
-       	<field name="product.code"/>
+       	<field name="product.code" width="120"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
-        <field name="price" x-scale="2"/>
+        <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
 	    <field name="typeSelect" hidden="true"/>
     </grid>
-
-	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine"
-		  canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false">
-		<field name="invoice.partner.partnerSeq" title="Partner code"/>
+	
+	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false" edit-icon="true" orderBy="-invoice.invoiceDate">
+  	 <hilite color="primary" if="$get('invoice.statusSelect') == 1"/>
+     <hilite color="danger" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') &gt; 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &lt; 0"/>
+     <hilite color="warning" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') &gt; 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &lt;= 5"/>
+     <hilite color="success" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') == 0"/>
+  		<field name="invoice.partner.partnerSeq" width="120" title="Partner code"/>
   		<field name="invoice.partner.simpleFullName" title="Partner"/>
- 	    <field name="invoice.invoiceId"/>
- 	    <field name="invoice.invoiceDate" title="Date"/>
+  		<field name="invoice.invoiceId" width="120"/>
+ 		<field name="invoice.invoiceDate" title="Date"/>
   		<field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
   		<field name="invoice.address.addressL7Country"/>
-  		<field name="product.code" title="product.code"/>
-  		<field name="productName"/>
-  		<field name="qty" aggregate="sum"/>
-  		<field name="price" x-scale="2"/>
-  		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+  		<field name="product.code" title="product.code" width="120"/>
+  		<field name="productName" width="170"/>
+  		<field name="qty" width="50" aggregate="sum"/>
+  		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+  		<field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="exTaxTotal" aggregate="sum"/>
-  		<field name="inTaxTotal" aggregate="sum"/>
-  		<field name="invoice.currency"/>
-  		<field name="invoice.companyExTaxTotal" title="WT amount in company currency" aggregate="sum"/> 
+  		<field name="invoice.currency" width="85"/>
+  		<field name="companyExTaxTotal" title="WT amount in company currency" aggregate="sum" hidden="false"/>
+  		<field name="invoice.company.currency" title="Company currency" width="125"/>
+  		<field name="invoice.amountRemaining" hidden="true"/>
+  		<field name="invoice.dueDate" hidden="true"/>
 	</grid>
 
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large" readonlyIf="$isReadOnly"
@@ -95,7 +100,7 @@
 					</viewer>
 				</field>
 				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
-				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
+				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false" domain="self.statusSelect = 2"/>
 				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
 				<field name="$currencySymbol" hidden="true"/>
 			</panel>
@@ -111,8 +116,8 @@
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
 				<field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-				<field name="saleOrderLine" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
-				<field name="purchaseOrderLine" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+				<field name="saleOrderLine" canEdit="false" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
+				<field name="purchaseOrderLine" canEdit="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
 			</panel>
 		</panel-tabs>
 	</form>
@@ -315,6 +320,7 @@
 		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
 		<attribute name="hidden" for="budgetPanel" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')" />
 		<attribute name="hidden" for="$isFilterOnSupplier" expr="eval: __parent__?.operationTypeSelect &gt; 2" />
+		<attribute name="hidden" for="accountingPanel" expr="eval:_parent?.operationSubTypeSelect==2"/>
 		
 		<!-- Scale and Precision -->
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>

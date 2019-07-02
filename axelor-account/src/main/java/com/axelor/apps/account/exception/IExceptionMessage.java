@@ -153,6 +153,8 @@ public interface IExceptionMessage {
       "Account missing on the tax line : %s (company : %s)" /*)*/;
   static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
+  static final String MOVE_LINE_7 = /*$$(*/
+      "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -311,6 +313,15 @@ public interface IExceptionMessage {
   /** Batch realize fixed asset lines */
   static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
 
+  /** Batch close / open the year account */
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
+      "Report for close/open annual accounts batch:" /*)*/;
+
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_SINGULAR = /*$$(*/
+      "%d account treated successfully," /*)*/;
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
+      "%d accounts treated successfully," /*)*/;
+
   /** Cfonb export service */
   static final String CFONB_EXPORT_1 = /*$$(*/
       "You must configure a RIB for the reimbursement" /*)*/;
@@ -441,6 +452,10 @@ public interface IExceptionMessage {
       "%s : You must configure a factor credit account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_42 = /*$$(*/
       "%s : You must configure a factor debit account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_43 = /*$$(*/
+      "%s : You must configure a year opening account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_44 = /*$$(*/
+      "%s : You must configure a year closure account for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -527,6 +542,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_ACTION_2 = /*$$(*/ "Debt recovery line missing." /*)*/;
   static final String DEBT_RECOVERY_ACTION_3 = /*$$(*/
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
+      "Email is not sent. Please check email account configuration." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
@@ -565,6 +582,8 @@ public interface IExceptionMessage {
       "The sale order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
+      "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
   /** Invoice line generator */
   static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
@@ -772,9 +791,27 @@ public interface IExceptionMessage {
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
 
+  /** User */
+  static final String USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL = /*$$(*/
+      "%s has not exaclty the same internal companies as %s." /*)*/;
+
+  static final String USER_PFP_VALIDATOR_UPDATED = /*$$(*/
+      "Pfp validator changed successfully" /*)*/;
+  static final String USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION = /*$$(*/
+      "No Accounting Situation related to %s." /*)*/;
+
   /* Check refunds */
   String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
       "Note: there are existing not imputed client refunds."; /*)*/
   String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
       "Note: there are existing not imputed supplier refunds."; /*)*/
+
+  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_1 = /*$$(*/
+      "Disposal date must be after the date of the last depreciation." /*)*/;
+  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
+      "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+
+  /* MOVE REVERSE*/
+  static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
+      "There is no reverse date select value of value %d" /*)*/;
 }

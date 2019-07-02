@@ -26,7 +26,7 @@
 			</field>
 			<field name="mediaTypeSelect" colSpan="6" />
 			<field name="metaModel" canEdit="false" form-view="meta-model-form"
-				grid-view="meta-model-grid" />
+				grid-view="meta-model-grid" onSelect="action-template-attrs-meta-model-domain" />
 			<field name="target" hidden="true" />
 			<field name="templateContext" canEdit="false" form-view="template-context-form"
 				grid-view="template-context-grid" hidden="true" />
@@ -47,9 +47,9 @@
 				</panel>
 				<panel name="recipientsPanel" title="Recipients"
 					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4" colSpan="12">
-					<field name="toRecipients" colSpan="12" height="2" />
-					<field name="ccRecipients" colSpan="12" height="2" />
-					<field name="bccRecipients" colSpan="12" height="2" />
+					<field name="toRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
+					<field name="ccRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
+					<field name="bccRecipients" colSpan="12" height="2" help="Please use ',' ';' or '|' as separator between two email addresses."/>
 				</panel>
 				<panel name="subjectContentPanel" title="Content" colSpan="12">
 					<field name="subject" colSpan="12" height="2" />

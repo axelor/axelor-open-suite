@@ -69,7 +69,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException {
 
     Product product = billOfMaterial.getProduct();
@@ -94,7 +94,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine)
       throws AxelorException {
 
@@ -103,14 +103,14 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial)
       throws AxelorException {
     return customizeBillOfMaterial(billOfMaterial, 0);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException {
     if (depth > 1000) {

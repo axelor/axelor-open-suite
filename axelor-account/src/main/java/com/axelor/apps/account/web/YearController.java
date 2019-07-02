@@ -35,7 +35,7 @@ public class YearController {
     Year year = request.getContext().asType(Year.class);
 
     try {
-      yearServiceAccountImpl.closeYear(year);
+      yearServiceAccountImpl.closeYearProcess(year);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -67,7 +67,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, IOException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType)
       throws AxelorException {
 

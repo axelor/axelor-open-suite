@@ -58,6 +58,20 @@
 		<view type="form" name="wiki-form"/>
 	</action-view>
 
+	<menuitem name="project-template" parent="menu-project-root" order="38" title="Template"/>
+
+	<menuitem name="project-task-template" parent="project-template" title="Task template" action="project.task.template"/>
+	<action-view name="project.task.template" title="Task template" model="com.axelor.apps.project.db.TaskTemplate">
+		<view type="grid" name="task-template-grid"/>
+		<view type="form" name="task-template-form"/>
+	</action-view>
+
+	<menuitem name="project-project-template" parent="project-template" title="Project template" action="project.project.template"/>
+	<action-view name="project.project.template" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate">
+		<view type="grid" name="project-template-grid"/>
+		<view type="form" name="project-template-form"/>
+	</action-view>
+
 	<menuitem title="Historical" name="project-historical" parent="menu-project-root" order="39" icon="fa-clock-o"/>
 
 	<menuitem name="project-task-history" parent="project-historical" title="Task history" action="all.tasks.history"/>

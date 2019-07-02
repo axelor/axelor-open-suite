@@ -3,7 +3,7 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-    <module name="sale" package="com.axelor.apps.base.db"/>
+    <module name="base" package="com.axelor.apps.base.db"/>
 
     <entity name="CancelReason">
         <string name="name" namecolumn="true" required="true"/>

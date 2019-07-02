@@ -57,6 +57,7 @@
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
    
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="Assigned to" index="false" massUpdate="true"/>
+    <one-to-one name="linkedUser" ref="com.axelor.auth.db.User" title="User" mappedBy="partner"/>
 	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" index="false" massUpdate="true"/>
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" index="false"/>
     <string name="description" title="Description"  large="true"/>

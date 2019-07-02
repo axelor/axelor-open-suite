@@ -58,8 +58,8 @@
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
-	<boolean name="priceDisplay" title="Display price on requested purchase printing"/>
-  	
+	<boolean name="displayPriceOnQuotationRequest" title="Display price on requested purchase printing"/>
+    
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
 
 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>

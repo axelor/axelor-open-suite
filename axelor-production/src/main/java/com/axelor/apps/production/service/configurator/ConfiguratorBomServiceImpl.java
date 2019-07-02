@@ -60,7 +60,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial generateBillOfMaterial(
       ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
       throws AxelorException {
@@ -123,7 +123,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     } else if (configuratorBOM.getDefProdProcessAsConfigurator()) {
       prodProcess =
           confProdProcessService.generateProdProcessService(
-              configuratorBOM.getConfiguratorProdProcess(), attributes);
+              configuratorBOM.getConfiguratorProdProcess(), attributes, product);
     } else {
       prodProcess = configuratorBOM.getProdProcess();
     }
@@ -135,6 +135,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     billOfMaterial.setQty(qty);
     billOfMaterial.setUnit(unit);
     billOfMaterial.setProdProcess(prodProcess);
+    billOfMaterial.setStatusSelect(configuratorBOM.getStatusSelect());
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {

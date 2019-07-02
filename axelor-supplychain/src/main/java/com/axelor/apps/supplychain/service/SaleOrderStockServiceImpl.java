@@ -92,7 +92,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!this.isSaleOrderWithProductsToDeliver(saleOrder)) {
@@ -319,7 +319,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
-      BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
+      BigDecimal requestedReservedQty =
+          saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
       BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {

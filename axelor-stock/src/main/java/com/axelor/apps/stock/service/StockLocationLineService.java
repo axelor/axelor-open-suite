@@ -30,7 +30,7 @@ import java.util.List;
 
 public interface StockLocationLineService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -43,7 +43,7 @@ public interface StockLocationLineService {
       TrackingNumber trackingNumber)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -63,7 +63,7 @@ public interface StockLocationLineService {
       boolean future)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
@@ -101,7 +101,7 @@ public interface StockLocationLineService {
       LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException;
 
@@ -199,4 +199,33 @@ public interface StockLocationLineService {
    * @return the future quantity of the stock location line.
    */
   BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
+
+  /**
+   * Create a query to find stock location line of a product of a specific/all company and a
+   * specific/all stock location
+   *
+   * @param productId, companyId and stockLocationId
+   * @return the query.
+   */
+  public String getStockLocationLineListForAProduct(
+      Long productId, Long companyId, Long stockLocationId);
+
+  /**
+   * Create a query to find product's available qty of a specific/all company and a specific/all
+   * stock location
+   *
+   * @param productId, companyId and stockLocationId
+   * @return the query.
+   */
+  public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId);
+
+  /**
+   * Create a query to find product's requested reserved qty of a specific/all company and a
+   * specific/all stock location
+   *
+   * @param productId, companyId and stockLocationId
+   * @return the query.
+   */
+  public String getRequestedReservedQtyForAProduct(
+      Long productId, Long companyId, Long stockLocationId);
 }

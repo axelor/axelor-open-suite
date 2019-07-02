@@ -36,10 +36,10 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -162,7 +162,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPayrollPreparation(Employee employee) throws AxelorException {
 
     List<PayrollPreparation> payrollPreparationList =

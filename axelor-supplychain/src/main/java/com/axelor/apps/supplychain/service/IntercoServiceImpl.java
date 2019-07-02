@@ -71,7 +71,7 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -145,7 +145,7 @@ public class IntercoServiceImpl implements IntercoService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder generateIntercoPurchaseFromSale(SaleOrder saleOrder) throws AxelorException {
 
     PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
@@ -157,7 +157,7 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrder.setContactPartner(saleOrder.getContactPartner());
     purchaseOrder.setCurrency(saleOrder.getCurrency());
     purchaseOrder.setDeliveryDate(saleOrder.getDeliveryDate());
-    purchaseOrder.setOrderDate(saleOrder.getOrderDate());
+    purchaseOrder.setOrderDate(saleOrder.getCreationDate());
     purchaseOrder.setPriceList(saleOrder.getPriceList());
     purchaseOrder.setTradingName(saleOrder.getTradingName());
     purchaseOrder.setPurchaseOrderLineList(new ArrayList<>());
@@ -171,8 +171,6 @@ public class IntercoServiceImpl implements IntercoService {
 
     // in ati
     purchaseOrder.setInAti(saleOrder.getInAti());
-    // copy date
-    purchaseOrder.setOrderDate(saleOrder.getOrderDate());
 
     // copy payments
     PaymentMode intercoPaymentMode =

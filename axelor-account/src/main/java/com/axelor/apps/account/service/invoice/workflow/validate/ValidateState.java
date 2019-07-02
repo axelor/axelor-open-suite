@@ -17,10 +17,14 @@
  */
 package com.axelor.apps.account.service.invoice.workflow.validate;
 
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.BudgetService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -40,6 +44,8 @@ public class ValidateState extends WorkflowInvoice {
   protected WorkflowValidationService workflowValidationService;
   protected AppBaseService appBaseService;
   protected InvoiceService invoiceService;
+  protected AppAccountService appAccountService;
+  protected BudgetService budgetService;
 
   @Inject
   public ValidateState(
@@ -47,12 +53,16 @@ public class ValidateState extends WorkflowInvoice {
       BlockingService blockingService,
       WorkflowValidationService workflowValidationService,
       AppBaseService appBaseService,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      AppAccountService appAccountService,
+      BudgetService budgetService) {
     this.userService = userService;
     this.blockingService = blockingService;
     this.workflowValidationService = workflowValidationService;
     this.appBaseService = appBaseService;
     this.invoiceService = invoiceService;
+    this.appAccountService = appAccountService;
+    this.budgetService = budgetService;
   }
 
   public void init(Invoice invoice) {
@@ -80,6 +90,7 @@ public class ValidateState extends WorkflowInvoice {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
+
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate());
@@ -90,6 +101,29 @@ public class ValidateState extends WorkflowInvoice {
       invoice.setJournal(invoiceService.getJournal(invoice));
     }
 
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        && appAccountService.isApp("budget")) {
+      if (!appAccountService.getAppBudget().getManageMultiBudget()) {
+        this.generateBudgetDistribution(invoice);
+      }
+      budgetService.updateBudgetLinesFromInvoice(invoice);
+    }
+
     workflowValidationService.afterValidation(invoice);
+  }
+
+  private void generateBudgetDistribution(Invoice invoice) {
+    if (invoice.getInvoiceLineList() != null) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        if (invoiceLine.getBudget() != null
+            && (invoiceLine.getBudgetDistributionList() == null
+                || invoiceLine.getBudgetDistributionList().isEmpty())) {
+          BudgetDistribution budgetDistribution = new BudgetDistribution();
+          budgetDistribution.setBudget(invoiceLine.getBudget());
+          budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
+          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+        }
+      }
+    }
   }
 }

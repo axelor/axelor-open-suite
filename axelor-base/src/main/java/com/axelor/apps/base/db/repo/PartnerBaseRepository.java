@@ -23,11 +23,12 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
@@ -142,5 +143,19 @@ public class PartnerBaseRepository extends PartnerRepository {
     copy.setBankDetailsList(null);
 
     return copy;
+  }
+
+  @Override
+  public void remove(Partner partner) {
+    if (partner.getLinkedUser() != null) {
+      UserBaseRepository userRepo = Beans.get(UserBaseRepository.class);
+      User user = userRepo.find(partner.getLinkedUser().getId());
+      if (user != null) {
+        user.setPartner(null);
+        userRepo.save(user);
+      }
+    }
+
+    super.remove(partner);
   }
 }

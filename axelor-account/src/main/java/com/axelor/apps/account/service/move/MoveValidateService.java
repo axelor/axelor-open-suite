@@ -31,10 +31,12 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -143,6 +145,8 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
     }
 
+    MoveLineService moveLineService = Beans.get(MoveLineService.class);
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       Account account = moveLine.getAccount();
       if (account.getIsTaxAuthorizedOnMoveLine()
@@ -174,6 +178,8 @@ public class MoveValidateService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.VENTILATE_STATE_7));
       }
+
+      moveLineService.validateMoveLine(moveLine);
     }
 
     this.validateWellBalancedMove(move);
@@ -196,7 +202,7 @@ public class MoveValidateService {
    * @param move
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Move move, boolean updateCustomerAccount) throws AxelorException {
 
     log.debug("Validation de l'écriture comptable {}", move.getReference());
@@ -279,7 +285,7 @@ public class MoveValidateService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateInDayBookMode(Move move) throws AxelorException {
 
     this.checkPreconditions(move);
@@ -355,17 +361,27 @@ public class MoveValidateService {
     if (moveList == null) {
       return error;
     }
-    for (Move move : moveList) {
-      try {
+    try {
+      for (Move move : moveList) {
+
         validate(moveRepository.find(move.getId()));
-      } catch (Exception e) {
-        TraceBackService.trace(e);
-        error = true;
-      } finally {
         JPA.clear();
       }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      error = true;
+      JPA.clear();
     }
     return error;
+  }
+
+  public void validateMultiple(Query<Move> moveListQuery) throws AxelorException {
+    Move move;
+
+    while (!((move = moveListQuery.fetchOne()) == null)) {
+      validate(move);
+      JPA.clear();
+    }
   }
 
   private String getPartnerFullName(Partner partner) {

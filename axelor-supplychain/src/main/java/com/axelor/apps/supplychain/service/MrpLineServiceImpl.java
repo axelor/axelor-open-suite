@@ -101,7 +101,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void generatePurchaseProposal(
       MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders)
       throws AxelorException {

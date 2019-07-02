@@ -36,7 +36,7 @@ public class WorkflowValidationServiceProjectImpl extends WorkflowValidationServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void afterValidation(Invoice invoice) throws AxelorException {
     super.afterValidation(invoice);
 

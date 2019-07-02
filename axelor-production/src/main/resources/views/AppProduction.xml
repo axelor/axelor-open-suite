@@ -42,12 +42,19 @@
 			</panel>
 			<panel name="stockLocationPanel" title="Stock Location">
 				<field name="manageWorkshop" widget="boolean-switch"/>
+                <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4" selection="production.manuf.order.status.select"/>
 			</panel>
 		</panel>
 		<panel name="actionsPanel">
 			<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
 			<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+		
 	</form>
 	
 	<action-view name="admin.root.conf.production.config" title="Production configurations"

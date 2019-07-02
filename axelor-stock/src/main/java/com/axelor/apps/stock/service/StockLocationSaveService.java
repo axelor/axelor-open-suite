@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -34,7 +33,7 @@ public class StockLocationSaveService {
    *
    * @param defaultStockLocation
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void removeForbiddenDefaultStockLocation(StockLocation defaultStockLocation) {
     Partner currentPartner = defaultStockLocation.getPartner();
     Company currentCompany = defaultStockLocation.getCompany();

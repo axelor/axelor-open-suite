@@ -70,7 +70,14 @@
 			<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
 			<field name="displayLineDetailsOnPrinting" widget="boolean-switch"/>
 			<field name="pickingOrderPrintingDetailed" widget="boolean-switch"/>
+			<field name="isDisplaySaleValueInPrinting" widget="boolean-switch"/>
+			<field name="isDisplayAccountingValueInPrinting" widget="boolean-switch"/>
 		</panel>
+				
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">

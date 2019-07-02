@@ -77,15 +77,9 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @throws AxelorException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
-   * @throws ClassNotFoundException
-   * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void runAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+  @Transactional(rollbackOn = {Exception.class})
+  public void runAction(DebtRecovery debtRecovery) throws AxelorException {
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
     Partner partner = debtRecovery.getAccountingSituation().getPartner();
@@ -176,15 +170,9 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @throws AxelorException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
-   * @throws ClassNotFoundException
-   * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void runManualAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+  @Transactional(rollbackOn = {Exception.class})
+  public void runManualAction(DebtRecovery debtRecovery) throws AxelorException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -241,14 +229,22 @@ public class DebtRecoveryActionService {
    * @throws InstantiationException
    * @throws IllegalAccessException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
           IllegalAccessException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
+
     for (Message message : messageSet) {
-      Beans.get(MessageRepository.class).save(message);
-      Beans.get(MessageService.class).sendMessage(message);
+      message = Beans.get(MessageRepository.class).save(message);
+      message = Beans.get(MessageService.class).sendMessage(message);
+
+      if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
+          && message.getMailAccount() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_4));
+      }
     }
   }
 
@@ -259,10 +255,9 @@ public class DebtRecoveryActionService {
    * @param debtRecoveryMethodLine La ligne de relance que l'on souhaite déplacer
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void moveDebtRecoveryMethodLine(
-      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine)
-      throws AxelorException {
+      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine) {
 
     debtRecovery.setWaitDebtRecoveryMethodLine(debtRecoveryMethodLine);
 

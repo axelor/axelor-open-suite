@@ -290,7 +290,7 @@ public class InvoiceController {
 
   /** Method to generate invoice as a Pdf */
   @SuppressWarnings("unchecked")
-  public void showInvoices(ActionRequest request, ActionResponse response) {
+  public void showInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     String fileLink;
     String title;
@@ -328,7 +328,7 @@ public class InvoiceController {
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
-      response.setReload(true);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -600,7 +600,7 @@ public class InvoiceController {
     }
     try {
       Invoice invoice =
-          invoiceService.mergeInvoice(
+          invoiceService.mergeInvoiceProcess(
               invoiceList,
               commonCompany,
               commonCurrency,
@@ -715,6 +715,12 @@ public class InvoiceController {
         response.setValue("invoiceAutomaticMail", accountingSituation.getInvoiceAutomaticMail());
         response.setValue(
             "invoiceMessageTemplate", accountingSituation.getInvoiceMessageTemplate());
+        response.setValue(
+            "invoiceAutomaticMailOnValidate",
+            accountingSituation.getInvoiceAutomaticMailOnValidate());
+        response.setValue(
+            "invoiceMessageTemplateOnValidate",
+            accountingSituation.getInvoiceMessageTemplateOnValidate());
       }
     }
   }
@@ -823,6 +829,8 @@ public class InvoiceController {
         Currency currency = null;
 
         List<Long> invoiceToPay = new ArrayList<>();
+        Boolean isActivatePassedForPayment =
+            Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment();
 
         for (Long invoiceId : invoiceIdList) {
           Invoice invoice = invoiceRepo.find(invoiceId);
@@ -858,7 +866,11 @@ public class InvoiceController {
             response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
             return;
           }
-
+          if (isActivatePassedForPayment
+              && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
+            response.setError(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION);
+            return;
+          }
           invoiceToPay.add(invoiceId);
         }
 
@@ -889,5 +901,36 @@ public class InvoiceController {
         "$partnerBankDetailsListWarning",
         "hidden",
         invoiceService.checkPartnerBankDetailsList(invoice));
+  }
+
+  public void refusalToPay(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoiceService.refusalToPay(
+        invoiceRepo.find(invoice.getId()),
+        invoice.getReasonOfRefusalToPay(),
+        invoice.getReasonOfRefusalToPayStr());
+    response.setCanClose(true);
+  }
+
+  public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setValue("pfpValidatorUser", invoiceService.getPfpValidatorUser(invoice));
+  }
+
+  public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setAttr(
+        "pfpValidatorUser", "domain", invoiceService.getPfpValidatorUserDomain(invoice));
+  }
+
+  public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    if (invoice.getPfpValidatorUser() == null) {
+      return;
+    }
+    response.setAttr(
+        "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
+        "value",
+        invoice.getPfpValidatorUser().equals(invoiceService.getPfpValidatorUser(invoice)));
   }
 }

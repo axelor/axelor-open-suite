@@ -321,9 +321,9 @@
     </action-view>
 
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
-		title="Product families" action="referential.conf.product.family" order="180"/>
+		title="Product accounting families" action="referential.conf.product.family" order="180"/>
 
-	<action-view name="referential.conf.product.family" title="Product families"
+	<action-view name="referential.conf.product.family" title="Product accounting families"
 		model="com.axelor.apps.base.db.ProductFamily" >
 		<view type="grid" name="product-family-grid"/>
 		<view type="form" name="product-family-form"/>
@@ -405,7 +405,17 @@
 		<view type="grid" name="territory-grid"/>
 		<view type="form" name="territory-form"/>
 	</action-view>
+    
+    <menuitem name="admin-root-organisation-territory-street"
+        parent="admin-root-organisation-territory" title="Streets"
+        action="admin.root.organisation.territory.street" if="__config__.app.getApp('base').getStoreStreets()" />
 
+    <action-view name="admin.root.organisation.territory.street"
+        title="Streets" model="com.axelor.apps.base.db.Street" >
+        <view type="grid" name="street-grid"/>
+        <view type="form" name="street-form"/>
+    </action-view>
+    
 	<menuitem name="admin-root-organisation-territory-city"
 		parent="admin-root-organisation-territory" title="Cities"
 		action="admin.root.organisation.territory.city" />

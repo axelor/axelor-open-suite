@@ -26,7 +26,6 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaMenu;
@@ -42,7 +41,7 @@ public class CalendarConfigurationService {
 
   @Inject protected CalendarConfigurationRepository calendarConfigurationRepo;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void createEntryMenu(CalendarConfiguration calendarConfiguration) {
 
     String menuName =
@@ -75,7 +74,7 @@ public class CalendarConfigurationService {
     calendarConfigurationRepo.save(calendarConfiguration);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void deleteEntryMenu(CalendarConfiguration calendarConfiguration) {
 
     MetaAction metaAction = calendarConfiguration.getMetaAction();

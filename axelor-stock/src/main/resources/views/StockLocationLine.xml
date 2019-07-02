@@ -46,6 +46,9 @@
         <panel name="stockCorrectionPanel" sidebar="true">
 			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
         </panel>
+        <panel-mail name="mailsPanel">
+          <mail-messages />
+        </panel-mail>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -148,6 +151,9 @@
 		<panel name="stockCorrectionPanel" sidebar="true">
 			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
 		</panel>
+  		<panel-mail name="mailsPanel">
+    		<mail-messages />
+    	</panel-mail>
     </form>
     
     <action-group name="action-stock-location-line-group-onload">
@@ -201,9 +207,9 @@
     </action-record>
         
     <action-record name="action-stock-location-line-record-total-quantities" model="com.axelor.apps.stock.db.StockLocationLine">
-    	<field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id)"/>
-        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id)"/>
-        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id)" if="__config__.app.isApp('supplychain')" />
+    	<field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id, null)"/>
+        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id, null)"/>
+        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id, null)" if="__config__.app.isApp('supplychain')" />
     </action-record>
     
     <action-view name="action-stock-location-line-view-stock-rule" title="Stock Rules" model="com.axelor.apps.stock.db.StockRules">

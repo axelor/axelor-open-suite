@@ -15,21 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.service.AddressServiceImpl;
-import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.db.JPA;
+import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.exception.AxelorException;
+import com.axelor.rpc.Context;
+import java.util.List;
+import java.util.Map;
 
-public class AddressServicePurchaseImpl extends AddressServiceImpl {
-  static {
-    registerCheckUsedFunc(AddressServicePurchaseImpl::checkAddressUsedPurchase);
-  }
+public interface ProjectedStockService {
 
-  private static boolean checkAddressUsedPurchase(Long addressId) {
-    return JPA.all(PurchaseRequest.class)
-            .filter("self.deliveryAddress.id = ?1", addressId)
-            .fetchOne()
-        != null;
-  }
+  List<MrpLine> createProjectedStock(Long productId, Long companyId, Long stockLocationId)
+      throws AxelorException;
+
+  Map<String, Long> getProductIdCompanyIdStockLocationIdFromContext(Context context);
 }

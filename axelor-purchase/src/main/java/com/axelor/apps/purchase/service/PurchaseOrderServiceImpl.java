@@ -94,7 +94,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
     this.initPurchaseOrderLineTax(purchaseOrder);
@@ -242,7 +242,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Partner validateSupplier(PurchaseOrder purchaseOrder) {
 
     Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
@@ -279,7 +279,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
     Partner partner = purchaseOrder.getSupplierPartner();
@@ -307,7 +307,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
       Currency currency,
@@ -389,7 +389,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
@@ -445,7 +445,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     computePurchaseOrder(purchaseOrder);
 
@@ -461,7 +461,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public void finishPurchaseOrder(PurchaseOrder purchaseOrder) {
-
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
     purchaseOrderRepo.save(purchaseOrder);
   }
@@ -469,7 +468,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
-
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_CANCELED);
     purchaseOrderRepo.save(purchaseOrder);
   }

@@ -54,7 +54,7 @@ public interface ManufOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
@@ -62,6 +62,7 @@ public interface ManufOrderService {
       boolean isToInvoice,
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT,
       int originType)
       throws AxelorException;
 
@@ -89,10 +90,11 @@ public interface ManufOrderService {
       boolean isToInvoice,
       Company company,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
       throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
   public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;
@@ -218,4 +220,23 @@ public interface ManufOrderService {
    */
   void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove)
       throws AxelorException;
+
+  /**
+   * Create a query to find product's consume and missing qty of a specific/all company and a
+   * specific/all stock location in a Manuf Order
+   *
+   * @param productId, companyId and stockLocationId
+   * @return the query.
+   */
+  public String getConsumeAndMissingQtyForAProduct(
+      Long productId, Long companyId, Long stockLocationId);
+
+  /**
+   * Create a query to find product's building qty of a specific/all company and a specific/all
+   * stock location in a Manuf Order
+   *
+   * @param productId, companyId and stockLocationId
+   * @return the query.
+   */
+  public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 }

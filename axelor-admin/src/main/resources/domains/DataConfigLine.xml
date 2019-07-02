@@ -11,12 +11,14 @@
     ]]>
     <many-to-one name="metaModel" title="Object" ref="com.axelor.meta.db.MetaModel"/>
     <integer name="typeSelect" title="Query/path" selection="data.config.line.type.select" />
-    <string name="path" title="Path" />
-    <many-to-many name="toExportMetaFieldSet" ref="com.axelor.meta.db.MetaField"  title="Fields to export" />
+    <string name="path" title="Query" />
+    <many-to-one name="metaFieldPath" ref="com.axelor.meta.db.MetaField" title="Path Field"/>
+    <many-to-many name="toExportMetaFieldSet" ref="com.axelor.meta.db.MetaField" title="Fields to export" />
     <many-to-one name="objectDataConfig" ref="ObjectDataConfig" />
-    <integer name="resetPathSelect" title="Reset Path" selection="data.config.line.reset.path.select" />
-    <string name="record" title="Record" />
-    <many-to-many name="toDeleteMetaFieldSet" ref="com.axelor.meta.db.MetaField"  title="Fields to delete" />
+    <integer name="resetPathSelect" title="Action to perform" selection="data.config.line.reset.path.select" />
+    <string name="record" title="Record" selection="object.data.config.model.select"/>
+    <long name="recordSelectId" />
+    <many-to-many name="toDeleteMetaFieldSet" ref="com.axelor.meta.db.MetaField" title="Fields to delete" />
     <string name="tabName" title="Tab name" required="true"/>
     <unique-constraint columns="objectDataConfig,tabName"/>
     <extra-code>

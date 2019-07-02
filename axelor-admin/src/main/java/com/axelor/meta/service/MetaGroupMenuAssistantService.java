@@ -105,7 +105,7 @@ public class MetaGroupMenuAssistantService {
     return bundle;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createGroupMenuFile(MetaGroupMenuAssistant groupMenuAssistant) throws IOException {
 
     setBundle(new Locale(groupMenuAssistant.getLanguage()));

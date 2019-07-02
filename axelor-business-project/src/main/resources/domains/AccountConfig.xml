@@ -8,7 +8,11 @@
 	
 		<boolean name="displayTimesheetOnPrinting" title="Display timesheet lines on printing"/>
 	  	<boolean name="displayExpenseOnPrinting" title="Display expense lines on printing"/>
-	
+
+		<track>
+			<field name="displayTimesheetOnPrinting" on="UPDATE"/>
+			<field name="displayExpenseOnPrinting" on="UPDATE"/>
+		</track>	
   </entity>
   
 </domain-models>

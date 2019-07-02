@@ -95,7 +95,7 @@ public class InvoicingProjectService {
 
   protected static final String DATE_FORMAT_YYYYMMDDHHMM = "YYYYMMddHHmm";
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
     Project project = invoicingProject.getProject();
     Partner customer = project.getClientPartner();

@@ -304,7 +304,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {

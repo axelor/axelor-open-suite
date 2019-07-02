@@ -20,6 +20,8 @@ package com.axelor.apps.base.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.repo.ABCAnalysisBaseRepository;
+import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.AddressBaseRepository;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AlarmEngineBatchBaseRepository;
@@ -50,6 +52,8 @@ import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.service.ABCAnalysisService;
+import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -165,5 +169,7 @@ public class BaseModule extends AxelorModule {
     bind(TeamTaskService.class).to(TeamTaskServiceImpl.class);
     bind(FrequencyService.class).to(FrequencyServiceImpl.class);
     bind(MailingListMessageRepository.class).to(MailingListMessageBaseRepository.class);
+    bind(ABCAnalysisService.class).to(ABCAnalysisServiceImpl.class);
+    bind(ABCAnalysisRepository.class).to(ABCAnalysisBaseRepository.class);
   }
 }

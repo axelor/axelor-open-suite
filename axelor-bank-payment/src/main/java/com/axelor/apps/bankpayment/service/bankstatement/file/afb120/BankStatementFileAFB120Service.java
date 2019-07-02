@@ -34,8 +34,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
-import com.beust.jcommander.internal.Maps;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -108,7 +108,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     JPA.clear();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void createBankStatementLine(Map<String, Object> structuredContentLine, int sequence) {
 
     String description = (String) structuredContentLine.get("description");

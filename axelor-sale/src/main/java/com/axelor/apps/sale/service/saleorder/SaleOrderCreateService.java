@@ -80,7 +80,7 @@ public interface SaleOrderCreateService {
   @Transactional
   public SaleOrder createTemplate(SaleOrder context);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrder(
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList) throws AxelorException;
 

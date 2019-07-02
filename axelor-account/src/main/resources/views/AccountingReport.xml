@@ -6,7 +6,7 @@
 <!--     ACCOUNTING REPORT -->
     
 	<grid name="accounting-report-grid" title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
-		<field name="ref"/>
+		<field name="ref" width="120"/>
 		<field name="date"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="currency"/>
@@ -73,7 +73,7 @@
 <!--     MOVE LINE EXPORT -->
     
     <grid name="accounting-report-export-grid" title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport">
-        <field name="ref"/>
+        <field name="ref" width="120"/>
         <field name="date"/>
 		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="typeSelect" selection="accounting.report.type.select.export"/>

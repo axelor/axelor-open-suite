@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="quality-control-grid" title="Quality controls" model="com.axelor.apps.quality.db.QualityControl">
-		<field name="reference"/>
+		<field name="reference" width="120"/>
 		<field name="name"/>
 		<field name="project"/>
 		<field name="team"/>
@@ -72,7 +72,7 @@
 			<button name="preFillControlPointsBtn" colSpan="4" title="Pre-fill control points" readonlyIf="optionalControlPointSet == null" onClick="action-quality-control-method-pre-fill-operations-from-optionals"/>
 		</panel>
 	</form>
-	
+
 	<kanban columnBy="statusSelect" sequenceBy="sequence"
 	 name="quality-control-kanban" title="Quality control" model="com.axelor.apps.quality.db.QualityControl">
 		<field name="reference"/>
@@ -96,7 +96,7 @@
 	<action-group name="action-quality-control-group-onload-actions">
 		<action name="action-quality-control-attrs-readonly-plan-button"/>
 	</action-group>
-    
+
 	<action-record name="action-quality-control-record-default" model="com.axelor.apps.quality.db.QualityControl">
 		<field name="statusSelect" expr="eval: 1"/>
 	</action-record>
@@ -165,8 +165,8 @@
 
 	<action-validate name="action-quality-control-validate-control-points-on-finish">
 		<error message="Please complete all control points" if="controlPointList != null &amp;&amp; controlPointList.any{it?.statusSelect != 2}"/>
-	</action-validate>	
-	
+	</action-validate>
+
 	<search-filters name="quality-control-filters" model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
 		<filter title="My quality controls">
 			<domain>self.responsible.user.id = :_userId</domain>

@@ -86,7 +86,6 @@ public class ICalendarController {
             .model("com.axelor.apps.base.db.ImportConfiguration")
             .add("form", "import-icalendar-form")
             .param("popup", "reload")
-            .param("forceEdit", "true")
             .param("show-toolbar", "false")
             .param("show-confirm", "false")
             .param("popup-save", "false")

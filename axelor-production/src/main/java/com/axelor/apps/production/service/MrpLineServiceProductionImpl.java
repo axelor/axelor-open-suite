@@ -78,7 +78,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void generateManufacturingProposal(MrpLine mrpLine) throws AxelorException {
 
     Product product = mrpLine.getProduct();
@@ -91,6 +91,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             ManufOrderService.IS_TO_INVOICE,
             null,
             mrpLine.getMaturityDate().atStartOfDay(),
+            null,
             ManufOrderServiceImpl
                 .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
     // correct day

@@ -20,7 +20,7 @@
     	<toolbar>
     		<button name="printBtn" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
-    	<field name="manufOrder" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
+    	<field name="manufOrder" width="120" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="prodProcessLine.outsourcing"/>
@@ -75,7 +75,7 @@
 		<panel name="mainPanel">
 			<field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
 			<field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
-			<field name="manufOrder" colSpan="3" hideIf="$popup()" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
+			<field name="manufOrder"  colSpan="3" hideIf="$popup()" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
 			<field name="prodProcessLine" colSpan="3" onSelect="action-operation-order-attrs-domain-prod-process-line" required="true" readonlyIf="statusSelect == 6" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			<field name="prodProcessLine.outsourcing" colSpan="3"/>
 			<field name="isToInvoice" colSpan="3"/>

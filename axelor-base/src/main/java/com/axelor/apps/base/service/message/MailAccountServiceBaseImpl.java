@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAccount;
@@ -84,7 +85,8 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
   @Override
   public EmailAccount getDefaultSender() {
 
-    if (appBaseService.getAppBase().getEmailAccountByUser()) {
+    AppBase appBase = appBaseService.getAppBase();
+    if (appBase != null && appBase.getEmailAccountByUser()) {
       return mailAccountRepo
           .all()
           .filter(

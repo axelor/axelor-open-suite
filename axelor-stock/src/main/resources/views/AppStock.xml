@@ -17,6 +17,11 @@
         <panel name="customPanel" title="Customs">
           <field name="economicArea"/>
         </panel> 
+        		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-view name="admin.root.conf.stock.config" title="Stock configurations"

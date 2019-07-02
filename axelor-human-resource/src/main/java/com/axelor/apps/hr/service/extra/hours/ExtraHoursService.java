@@ -26,28 +26,28 @@ import javax.mail.MessagingException;
 
 public interface ExtraHoursService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(ExtraHours extraHours) throws AxelorException;
 
   public Message sendCancellationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(ExtraHours extraHours) throws AxelorException;
 
   public Message sendConfirmationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(ExtraHours extraHours) throws AxelorException;
 
   public Message sendValidationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(ExtraHours extraHours) throws AxelorException;
 
   public Message sendRefusalEmail(ExtraHours extraHours)

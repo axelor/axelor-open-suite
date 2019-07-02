@@ -45,7 +45,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void calculate(StockMove stockMove) throws AxelorException {
     Partner partner = stockMove.getPartner();
 
@@ -69,7 +69,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void undoCalculation(StockMove stockMove) throws AxelorException {
     Partner partner = stockMove.getPartner();
 
@@ -111,11 +111,20 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
       return Optional.empty();
     }
 
-    return partnerProductQualityRatingList
-        .stream()
-        .filter(
-            PartnerProductQualityRating -> PartnerProductQualityRating.getProduct().equals(product))
-        .findFirst();
+    Optional<PartnerProductQualityRating> productQualityRating =
+        partnerProductQualityRatingList
+            .stream()
+            .filter(
+                PartnerProductQualityRating ->
+                    PartnerProductQualityRating.getProduct() != null
+                        && PartnerProductQualityRating.getProduct().equals(product))
+            .findFirst();
+
+    if (productQualityRating == null) {
+      productQualityRating = Optional.empty();
+    }
+
+    return productQualityRating;
   }
 
   /**

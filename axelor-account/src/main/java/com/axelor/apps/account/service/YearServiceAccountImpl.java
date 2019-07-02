@@ -18,14 +18,13 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReportedBalanceLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReportedBalanceLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -56,23 +55,23 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected AccountConfigService accountConfigService;
   protected ReportedBalanceLineRepository reportedBalanceLineRepo;
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
+  protected PeriodServiceAccountImpl periodServiceAccountImpl;
 
   @Inject
   public YearServiceAccountImpl(
-      AccountConfigService accountConfigService,
       PartnerRepository partnerRepository,
       ReportedBalanceLineRepository reportedBalanceLineRepo,
-      YearRepository yearRepo,
-      AdjustHistoryService adjustHistoryService) {
-    super(yearRepo);
-    this.accountConfigService = accountConfigService;
+      YearRepository yearRepository,
+      AdjustHistoryService adjustHistoryService,
+      PeriodServiceAccountImpl periodServiceAccountImpl) {
+    super(yearRepository);
     this.partnerRepository = partnerRepository;
     this.reportedBalanceLineRepo = reportedBalanceLineRepo;
     this.adjustHistoryService = adjustHistoryService;
+    this.periodServiceAccountImpl = periodServiceAccountImpl;
   }
 
   /**
@@ -81,9 +80,8 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @param year Un exercice comptable
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void closeYear(Year year) throws AxelorException {
-    year = yearRepo.find(year.getId());
+  public void closeYearProcess(Year year) throws AxelorException {
+    year = yearRepository.find(year.getId());
 
     for (Period period : year.getPeriodList()) {
       if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
@@ -110,14 +108,23 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       q =
           JPA.em()
               .createQuery(
-                  "select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3 AND ml.move.adjustingMove = true");
-      q.setParameter(1, adjustHistory.getStartDate().toLocalDate());
-      q.setParameter(2, adjustHistory.getEndDate().toLocalDate());
+                  "select DISTINCT(ml.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.year = ?1 "
+                      + "AND self.move.statusSelect = ?2 AND self.move.adjustingMove = true AND self.date >= ?3 AND self.date <= ?4");
+
+      q.setParameter(1, year);
+      q.setParameter(2, MoveRepository.STATUS_VALIDATED);
+      q.setParameter(3, adjustHistory.getStartDate().toLocalDate());
+      q.setParameter(4, adjustHistory.getEndDate().toLocalDate());
     } else {
+
       q =
           JPA.em()
               .createQuery(
-                  "select DISTINCT(ml.partner) FROM MoveLine as ml WHERE ml.date >= ?1 AND ml.date <= ?2 AND ml.move.company = ?3");
+                  "select DISTINCT(ml.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.year = ?1 "
+                      + "AND self.move.statusSelect = ?2 AND self.date >= ?3 AND self.date <= ?4");
+
+      q.setParameter(1, year);
+      q.setParameter(2, MoveRepository.STATUS_VALIDATED);
       q.setParameter(1, year.getFromDate());
       q.setParameter(2, year.getToDate());
     }
@@ -131,43 +138,33 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     log.debug("Nombre total de tiers : {}", partnerListAll.size());
     log.debug("Nombre de tiers récupéré : {}", partnerList.size());
 
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-    Account customerAccount = accountConfigService.getCustomerAccount(accountConfig);
-    Account doubtfulCustomerAccount =
-        accountConfigService.getDoubtfulCustomerAccount(accountConfig);
-
     for (Partner partner : partnerList) {
       partner = partnerRepository.find(partner.getId());
+      year = yearRepository.find(year.getId());
       log.debug("Tiers en cours de traitement : {}", partner.getName());
 
       for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
-        if (accountingSituation.getCompany().equals(company)) {
+        if (accountingSituation.getCompany().equals(year.getCompany())) {
           log.debug("On ajoute une ligne à la Situation comptable trouvée");
 
           BigDecimal reportedBalanceAmount =
-              this.computeReportedBalance(
-                  year.getFromDate(),
-                  year.getToDate(),
-                  partner,
-                  customerAccount,
-                  doubtfulCustomerAccount);
-          ReportedBalanceLine reportedBalanceLine =
-              this.createReportedBalanceLine(reportedBalanceAmount, year);
-          log.debug("ReportedBalanceLine : {}", reportedBalanceLine);
-
-          accountingSituation.addReportedBalanceLineListItem(reportedBalanceLine);
-          //					year.getReportedBalanceLineList().add(reportedBalanceLine);
-          //					reportedBalance.save();
+              this.computeReportedBalance(year.getFromDate(), year.getToDate(), partner, year);
+          this.createReportedBalanceLine(accountingSituation, reportedBalanceAmount, year);
 
           break;
         }
       }
-
-      partnerRepository.save(partner);
+      JPA.clear();
     }
+
+    closeYear(year);
+  }
+
+  @Transactional
+  public void closeYear(Year year) {
     year.setStatusSelect(YearRepository.STATUS_CLOSED);
     year.setClosureDateTime(LocalDateTime.now());
-    yearRepo.save(year);
+    yearRepository.save(year);
   }
 
   /**
@@ -176,50 +173,44 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @param year Un exercice comptable
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void adjust(Year year) {
-    year = yearRepo.find(year.getId());
+    year = yearRepository.find(year.getId());
 
     adjustHistoryService.setStartDate(year);
 
     year.setStatusSelect(YearRepository.STATUS_ADJUSTING);
-    yearRepo.save(year);
+    yearRepository.save(year);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public ReportedBalanceLine createReportedBalanceLine(BigDecimal amount, Year year) {
+  @Transactional
+  public ReportedBalanceLine createReportedBalanceLine(
+      AccountingSituation accountingSituation, BigDecimal amount, Year year) {
     ReportedBalanceLine reportedBalanceLine = new ReportedBalanceLine();
+    accountingSituation.addReportedBalanceLineListItem(reportedBalanceLine);
     reportedBalanceLine.setAmount(amount);
     reportedBalanceLine.setYear(year);
     reportedBalanceLineRepo.save(reportedBalanceLine);
     return reportedBalanceLine;
   }
 
-  /**
-   * Fonction permettant de calculer le solde rapporté
-   *
-   * @param fromDate La date de début d'exercice comptable
-   * @param toDate La date de fin d'exercice comptable
-   * @param partner Un client payeur
-   * @param account Le compte client
-   * @return Le solde rapporté
-   */
   public BigDecimal computeReportedBalance(
-      LocalDate fromDate, LocalDate toDate, Partner partner, Account account, Account account2) {
+      LocalDate fromDate, LocalDate toDate, Partner partner, Year year) {
     Query q =
         JPA.em()
             .createQuery(
-                "select SUM(ml.debit-ml.credit) FROM MoveLine as ml "
-                    + "WHERE ml.partner = ?1 AND ml.move.ignoreInAccountingOk = false AND ml.date >= ?2 AND ml.date <= ?3 AND (ml.account = ?4 OR ml.account = ?5) ",
+                "select SUM(self.debit - self.credit) FROM MoveLine as self "
+                    + "WHERE self.partner = ?1 AND self.move.ignoreInAccountingOk = false AND self.date >= ?2 AND self.date <= ?3 "
+                    + "AND self.move.year = ?4 AND self.move.statusSelect = ?5 AND self.account.useForPartnerBalance is true",
                 BigDecimal.class);
     q.setParameter(1, partner);
     q.setParameter(2, fromDate);
     q.setParameter(3, toDate);
-    q.setParameter(4, account);
-    q.setParameter(5, account2);
+    q.setParameter(4, year);
+    q.setParameter(5, MoveRepository.STATUS_VALIDATED);
 
     BigDecimal result = (BigDecimal) q.getSingleResult();
-    log.debug("Solde rapporté (result) : {}", result);
+    log.debug("Annual balance : {} for partner : {}", result, partner.getPartnerSeq());
 
     if (result != null) {
       return result;
