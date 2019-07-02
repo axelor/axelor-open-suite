@@ -17,23 +17,30 @@
  */
 package com.axelor.apps.crm.service.batch;
 
+import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.IEventReminder;
+import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.message.MessageServiceCrmImpl;
+import com.axelor.apps.crm.service.config.CrmConfigService;
+import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,12 +49,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BatchEventReminder extends BatchStrategy {
-
+  
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private boolean stop = false;
 
   @Inject private EventRepository eventRepo;
+
+  @Inject private EmailAddressRepository emailAddressRepo;
+  
+  @Inject private EventReminderRepository eventReminderRepo;
 
   @Inject
   public BatchEventReminder(
@@ -83,7 +94,12 @@ public class BatchEventReminder extends BatchStrategy {
 
           eventReminder = eventReminderRepo.find(eventReminder.getId());
 
-          if (this.isExpired(eventReminder)) {
+          Integer eventStatusSelect = eventReminder.getEvent().getStatusSelect();
+          boolean eventIsNotFinished = eventStatusSelect == EventRepository.STATUS_PLANNED
+              || eventStatusSelect == EventRepository.STATUS_NOT_STARTED
+              || eventStatusSelect == EventRepository.STATUS_ON_GOING
+              || eventStatusSelect == EventRepository.STATUS_PENDING;
+          if (this.isExpired(eventReminder) && !eventReminder.getIsReminded() && eventIsNotFinished) {
             eventReminder.setIsReminded(true);
             updateEventReminder(eventReminder);
             i++;
@@ -162,22 +178,46 @@ public class BatchEventReminder extends BatchStrategy {
       Query q =
           JPA.em()
               .createQuery(
-                  "select event FROM EventReminder as er WHERE er.isReminded = true and ?1 MEMBER OF er.batchSet");
+                  " SELECT er FROM EventReminder as er WHERE er.isReminded = true and ?1 MEMBER OF er.batchSet");
       q.setParameter(1, batch);
 
       @SuppressWarnings("unchecked")
-      List<Event> eventList = q.getResultList();
+      List<EventReminder> eventReminderList = q.getResultList();
 
-      for (Event event : eventList) {
+      for (EventReminder eventReminder : eventReminderList) {
         try {
-          Message message = messageServiceCrmImpl.createMessage(event);
+          eventReminder = eventReminderRepo.find(eventReminder.getId());
+          Message message = messageServiceCrmImpl.createMessage(eventReminder.getEvent());
+          
+          // Send reminder to owner of the reminder in any case
+          if (eventReminder.getUser().getPartner() != null && eventReminder.getUser().getPartner().getEmailAddress() != null) {
+            message.addToEmailAddressSetItem(eventReminder.getUser().getPartner().getEmailAddress());
+          } else if (eventReminder.getUser().getEmail() != null) {
+            message.addToEmailAddressSetItem(findOrCreateEmailAddress(eventReminder.getUser().getEmail(), "[" + eventReminder.getUser().getEmail() + "]"));
+          } else {
+            throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.CRM_CONFIG_USER_EMAIL),
+                eventReminder.getUser().getName());
+          }
+          
+          // Also send to attendees if needed
+          if (eventReminder.getAssignToSelect() == EventReminderRepository.ASSIGN_TO_ALL && eventReminder.getEvent().getAttendees() != null) {
+            for (ICalendarUser iCalUser : eventReminder.getEvent().getAttendees()) {
+              if (iCalUser.getUser() != null && iCalUser.getUser().getPartner() != null) {
+                message.addToEmailAddressSetItem(iCalUser.getUser().getPartner().getEmailAddress());
+              } else {
+                message.addToEmailAddressSetItem(findOrCreateEmailAddress(iCalUser.getEmail(), iCalUser.getName()));
+              }
+            }
+          }
+          
           message = Beans.get(MessageService.class).sendByEmail(message);
         } catch (Exception e) {
 
           TraceBackService.trace(
               new Exception(
                   String.format(
-                      I18n.get("Event") + " %s", eventRepo.find(event.getId()).getSubject()),
+                      I18n.get("Event") + " %s", eventRepo.find(eventReminder.getEvent().getId()).getSubject()),
                   e),
               IException.CRM,
               batch.getId());
@@ -186,7 +226,7 @@ public class BatchEventReminder extends BatchStrategy {
 
           LOG.error(
               "Bug(Anomalie) généré(e) pour l'évènement {}",
-              eventRepo.find(event.getId()).getSubject());
+              eventRepo.find(eventReminder.getEvent().getId()).getSubject());
 
         } finally {
 
@@ -216,5 +256,18 @@ public class BatchEventReminder extends BatchStrategy {
 
     super.stop();
     addComment(comment);
+  }
+  
+  @Transactional
+  protected EmailAddress findOrCreateEmailAddress(String email, String name) {
+    EmailAddress emailAddress = emailAddressRepo.all().filter("self.name = '" + name + "'").fetchOne();
+
+    if (emailAddress == null) {
+      emailAddress = new EmailAddress();
+      emailAddress.setAddress(email);
+      emailAddress = emailAddressRepo.save(emailAddress);
+    }
+    
+    return emailAddress;
   }
 }
