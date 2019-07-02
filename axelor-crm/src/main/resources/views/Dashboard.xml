@@ -228,7 +228,7 @@
 
 	<!-- Lead Dashboard 1 -->
 
-	<dashboard title="Lead Dashboard 1" name="crm.lead.dashboard.one"  >
+	<dashboard title="Lead Dashboard 1" name="crm.lead.dashboard.one" >
 		<dashlet action="dashlet.salesman.dashboard.leads" height="350" canSearch="true"/>
 		<dashlet action="dashlet.leads.by.source" height="350" />
 		<dashlet action="dashlet.leads.by.country" height="350" />
@@ -239,7 +239,7 @@
 		<dashlet action="dashlet.team.leads" height="350"/>		
 		<dashlet action="dashlet.created.leads.per.month" height="350" />
 		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
-		<dashlet action="chart:chart.lead.new.opportunity" height="350"/>
+		<dashlet action="dashlet.lead.new.opportunity" height="350"/>
 	</dashboard>
 
 	<action-view name="dashlet.salesman.dashboard.leads" title="My Current Leads" model="com.axelor.apps.crm.db.Lead">
@@ -482,4 +482,9 @@
   		<view type="chart" name="chart.customer.crm.activities"/>  		
 	</action-view>
 	
+	<action-view name="dashlet.lead.new.opportunity" title="New opportunities">
+			<view type="chart" name="chart.lead.new.opportunity" />
+			<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	</action-view>
+		
 </object-views>

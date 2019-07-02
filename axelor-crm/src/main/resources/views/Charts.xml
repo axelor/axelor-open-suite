@@ -1425,12 +1425,19 @@
 		  <category key="_type" type="text" title="Type"/>
 		  <series key="_num_event" type="bar" title="Activities"/>
 		</chart>
+
+		<action-record model="com.axelor.apps.base.db.AppBase"
+				name="action.base.chart.set.date.1m">
+				<field name="toDate" expr="eval:LocalDate.parse(todayDate)" />
+				<field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(1)" />
+				<field name="monthSelect" expr="eval:1" />
+		</action-record>
 		
 		
-		<chart name="chart.lead.new.opportunity" title="New opportunities">
+		<chart name="chart.lead.new.opportunity" title="New opportunities" onInit="action.base.chart.set.date.1m">
 		  <search-fields>
-		    <field name="dateFrom" title="Date from" type="datetime"/>
-		    <field name="dateTo" title="Date to" type="datetime"/>
+		    <field name="fromDate" title="Date from" type="datetime"/>
+		    <field name="toDate" title="Date to" type="datetime"/>
 		  </search-fields>
 		  <dataset type="jpql"><![CDATA[
 		
@@ -1445,8 +1452,8 @@
 			    AND op.createdOn = (SELECT min(op.createdOn)
 			     FROM op.createdOn
 			     WHERE op.lead = self.id)
-			    AND op.createdOn > :dateFrom
-			    AND :dateTo > op.createdOn
+			    AND op.createdOn > :fromDate
+			    AND :toDate > op.createdOn
 		
 			]]></dataset>
 		  <category key="title" type="text"/>
