@@ -18,6 +18,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 
 public class BankPaymentMoveServiceImpl extends MoveService {
 
@@ -53,12 +54,24 @@ public class BankPaymentMoveServiceImpl extends MoveService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public Move generateReverse(Move move) throws AxelorException {
     Move newMove = super.generateReverse(move);
-    move = this.updateBankAmountReconcile(move);
-    newMove = this.updateBankAmountReconcile(newMove);
+    this.updateBankAmountReconciletoMaxAmount(move);
     return newMove;
   }
 
-  protected Move updateBankAmountReconcile(Move move) {
+  protected MoveLine generateReverseMoveLine(
+      Move reverseMove, MoveLine orgineMoveLine, LocalDate todayDate, boolean isDebit)
+      throws AxelorException {
+    MoveLine reverseMoveLine =
+        super.generateReverseMoveLine(reverseMove, orgineMoveLine, todayDate, isDebit);
+    reverseMoveLine.setBankReconciledAmount(
+        reverseMoveLine
+            .getDebit()
+            .add(reverseMoveLine.getCredit().subtract(orgineMoveLine.getBankReconciledAmount())));
+    return reverseMoveLine;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  protected Move updateBankAmountReconciletoMaxAmount(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLine.setBankReconciledAmount(moveLine.getDebit().add(moveLine.getCredit()));
     }
