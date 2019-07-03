@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.8]
 ## Features
+- ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
