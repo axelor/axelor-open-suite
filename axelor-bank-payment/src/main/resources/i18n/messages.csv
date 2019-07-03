@@ -191,6 +191,7 @@
 "Bank payment config (${ name })",,,
 "Bank payment configuration",,,
 "Bank payment configurations",,,
+"Bank reconcile amount must be inferior or equal to credit or debit.",,,
 "Bank reconciled amount",,,
 "Bank reconciliation",,,
 "Bank reconciliation Line",,,
