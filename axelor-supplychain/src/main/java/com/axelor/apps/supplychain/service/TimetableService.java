@@ -33,8 +33,6 @@ public interface TimetableService {
 
   public Invoice createInvoice(Timetable timetable) throws AxelorException;
 
-  public void fillInLines(Invoice invoice);
-
   public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable)
       throws AxelorException;
 

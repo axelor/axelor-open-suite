@@ -135,19 +135,6 @@ public interface SaleOrderInvoiceService {
       throws AxelorException;
 
   /**
-   * Allows to partially invoice a {@link SaleOrder} by creating an {@link Invoice} with one line
-   * per different tax lines in the {@link SaleOrder}.
-   *
-   * @param saleOrder
-   * @param amountToInvoice
-   * @param isPercent
-   * @return the generated invoice
-   * @throws AxelorException
-   */
-  Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent)
-      throws AxelorException;
-
-  /**
    * Allows to create an advance payment from a sale order. Creates a one line invoice with the
    * advance payment product.
    *
@@ -271,8 +258,6 @@ public interface SaleOrderInvoiceService {
    * @return A possibly empty list of invoices related to this order.
    */
   List<Invoice> getInvoices(SaleOrder saleOrder);
-
-  void fillInLines(Invoice invoice);
 
   @Transactional(rollbackOn = {Exception.class})
   Invoice mergeInvoice(

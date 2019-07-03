@@ -185,7 +185,6 @@ public class InvoicingProjectService {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       invoiceLine.setSequence(sequence);
       sequence++;
-      invoiceLine.setSaleOrder(invoiceLine.getInvoice().getSaleOrder());
     }
 
     return invoiceLineList;
