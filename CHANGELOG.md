@@ -25,6 +25,7 @@
 - MESSAGE SERVICE : exception message improved. 
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 - APP PURCHASE : change title of supplierRequestMgt field
+- OPPORTUNITY : delete canEdit on partner and lead
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
