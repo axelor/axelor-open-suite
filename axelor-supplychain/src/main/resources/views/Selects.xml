@@ -95,7 +95,7 @@
 		<option value="mrp">MRP</option>
 	</selection>
 
-	<selection name="supplychain.mrp.mrp.type">
+	<selection name="supplychain.mrp.mrp.type.select">
 		<option value="1">MRP</option>
 		<option value="2">MPS</option>
 	</selection>

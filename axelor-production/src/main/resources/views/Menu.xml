@@ -141,7 +141,7 @@
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<view type="grid" name="mrp-grid"/>
 		<view type="form" name="mrp-manuf-order-form"/>
-		<domain>self.mrpType = 2</domain>
+		<domain>self.mrpTypeSelect = 2</domain>
 	</action-view>
 	
 	<menuitem name="manufacturing-mps-forecast" parent="manufacturing-mps" title="Forecasts" action="manufacturing.mps.forecast" order="2"/>

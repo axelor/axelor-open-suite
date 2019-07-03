@@ -8,6 +8,7 @@
         <field name="name"/>
         <field name="elementSelect"/>
         <field name="typeSelect"/>
+		<field name="applicationFieldSelect" widget="MultiSelect"/>
         <field name="sequence"/>
     </grid>
     

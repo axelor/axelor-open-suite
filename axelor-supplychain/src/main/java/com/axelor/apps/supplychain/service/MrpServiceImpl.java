@@ -338,6 +338,10 @@ public class MrpServiceImpl implements MrpService {
 
       MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules, product);
 
+      if (mrpLineTypeProposal == null) {
+        return false;
+      }
+
       this.createProposalMrpLine(
           mrpLine.getMrp(),
           product,
@@ -561,6 +565,11 @@ public class MrpServiceImpl implements MrpService {
 
     MrpLineType purchaseOrderMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
+
+    if (purchaseOrderMrpLineType == null) {
+      return;
+    }
+
     String statusSelect = purchaseOrderMrpLineType.getStatusSelect();
     List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
@@ -640,6 +649,11 @@ public class MrpServiceImpl implements MrpService {
 
     MrpLineType saleOrderMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
+
+    if (saleOrderMrpLineType == null) {
+      return;
+    }
+
     String statusSelect = saleOrderMrpLineType.getStatusSelect();
     List<Integer> statusList = StringTool.getIntegerList(statusSelect);
 
@@ -738,6 +752,10 @@ public class MrpServiceImpl implements MrpService {
     MrpLineType saleForecastMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_FORECAST);
 
+    if (saleForecastMrpLineType == null) {
+      return;
+    }
+
     List<MrpForecast> mrpForecastList = new ArrayList<>();
 
     mrp = mrpRepository.find(mrp.getId());
@@ -826,6 +844,10 @@ public class MrpServiceImpl implements MrpService {
     MrpLineType availableStockMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK);
 
+    if (availableStockMrpLineType == null) {
+      return;
+    }
+
     for (Long productId : this.productMap.keySet()) {
 
       for (StockLocation stockLocation : this.stockLocationList) {
@@ -862,22 +884,32 @@ public class MrpServiceImpl implements MrpService {
             mrp, product, availableStockMrpLineType, qty, today, qty, stockLocation, null));
   }
 
-  protected MrpLineType getMrpLineType(int elementSelect) throws AxelorException {
+  protected MrpLineType getMrpLineType(int elementSelect) {
+
+    int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
 
     MrpLineType mrpLineType =
-        mrpLineTypeRepository.all().filter("self.elementSelect = ?1", elementSelect).fetchOne();
+        mrpLineTypeRepository
+            .all()
+            .filter(
+                "self.elementSelect = ?1 and self.applicationFieldSelect LIKE ?2",
+                elementSelect,
+                "%" + applicationFieldSelect + "%")
+            .fetchOne();
 
-    if (mrpLineType != null) {
-      return mrpLineType;
+    return mrpLineType;
+  }
+
+  protected int getApplicationField(int mrpTypeSelect) {
+
+    switch (mrpTypeSelect) {
+      case MrpRepository.MRP_TYPE_MRP:
+        return MrpLineTypeRepository.APPLICATION_FIELD_MRP;
+      case MrpRepository.MRP_TYPE_MPS:
+        return MrpLineTypeRepository.APPLICATION_FIELD_MPS;
+      default:
+        return 0;
     }
-
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE),
-        elementSelect);
-
-    // TODO get the right label in fact of integer value
-
   }
 
   protected StockLocationLine getStockLocationLine(Product product, StockLocation stockLocation) {
@@ -906,9 +938,11 @@ public class MrpServiceImpl implements MrpService {
           productRepository
               .all()
               .filter(
-                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true",
+                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true AND (?3 is true OR self.productSubTypeSelect = ?4)",
                   mrp.getProductCategorySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE)
+                  ProductRepository.PRODUCT_TYPE_STORABLE,
+                  mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
+                  ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT)
               .fetch());
     }
 
@@ -918,9 +952,11 @@ public class MrpServiceImpl implements MrpService {
           productRepository
               .all()
               .filter(
-                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true",
+                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true AND (?3 is true OR self.productSubTypeSelect = ?4)",
                   mrp.getProductFamilySet(),
-                  ProductRepository.PRODUCT_TYPE_STORABLE)
+                  ProductRepository.PRODUCT_TYPE_STORABLE,
+                  mrp.getMrpTypeSelect() == MrpRepository.MRP_TYPE_MRP,
+                  ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT)
               .fetch());
     }
     if (mrp.getSaleOrderLineSet() != null) {

@@ -9,7 +9,7 @@
 	</form>
 	
 	<action-record name="action-mrp-manuf-order-record-onnew" model="com.axelor.apps.supplychain.db.Mrp">
-		<field name="mrpType" expr="eval:2"/>
+		<field name="mrpTypeSelect" expr="eval:2"/>
 	</action-record>
 	
 	<action-record name="action-mrp-manuf-order-record-reset-period" model="com.axelor.apps.supplychain.db.Mrp">
