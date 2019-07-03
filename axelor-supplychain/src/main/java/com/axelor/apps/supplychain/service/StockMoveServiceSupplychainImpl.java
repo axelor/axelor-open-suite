@@ -47,6 +47,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -410,6 +411,24 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
                 notAvailableProducts.toString()));
       }
+    }
+  }
+  
+  @Override
+  public LocalDate getEstimatedDate(StockMove stockMove) {
+    if (stockMove.getEstimatedDate() == null) {
+      AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
+      if(appSupplychain.getDefaultEstimatedDate() != 1)
+      {
+        return appSupplychain.getOtherDate();
+      }
+      else {
+        return appBaseService.getTodayDate();
+      }
+    }
+    else
+    {
+      return stockMove.getEstimatedDate();
     }
   }
 }
