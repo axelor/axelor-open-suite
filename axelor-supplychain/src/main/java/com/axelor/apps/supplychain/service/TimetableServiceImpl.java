@@ -86,7 +86,7 @@ public class TimetableServiceImpl implements TimetableService {
           };
       Invoice invoice = invoiceGenerator.generate();
       invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
-      this.fillInLines(invoice);
+
       return invoice;
     }
 
@@ -114,14 +114,6 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     return null;
-  }
-
-  @Override
-  public void fillInLines(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      invoiceLine.setSaleOrder(invoice.getSaleOrder());
-    }
   }
 
   @Override
