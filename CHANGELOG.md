@@ -57,6 +57,8 @@
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- PRICE LIST LINE : No Discount value of base.price.list.line.amount.type.select changed to 0.
+- ORDER LINE & INVOICE LINE : discountTypeSelect cannot be empty.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
