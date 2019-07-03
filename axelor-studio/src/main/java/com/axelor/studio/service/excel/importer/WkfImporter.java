@@ -129,14 +129,7 @@ public class WkfImporter {
           valMap.get(CommonService.WKF_NODE_FIELD),
           valMap.get(CommonService.WKF_NODE_FIELD_MODEL),
           valMap.get(CommonService.WKF_NODE_SEQ),
-          (valMap.get(CommonService.WKF_NODE_START) != null
-                  && valMap.get(CommonService.WKF_NODE_START).equals("x"))
-              ? "true"
-              : "false",
-          (valMap.get(CommonService.WKF_NODE_END) != null
-                  && valMap.get(CommonService.WKF_NODE_END).equals("x"))
-              ? "true"
-              : "false",
+          valMap.get(CommonService.WKF_NODE_TYPE),
           valMap.get(CommonService.WKF_NODE_ACTIONS)
         });
 

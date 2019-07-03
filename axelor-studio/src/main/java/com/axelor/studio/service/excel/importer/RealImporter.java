@@ -17,7 +17,7 @@
  */
 package com.axelor.studio.service.excel.importer;
 
-import com.axelor.apps.tool.NammingTool;
+import com.axelor.apps.tool.NamingTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.schema.ObjectViews;
@@ -179,7 +179,7 @@ public class RealImporter {
       builder.append(type);
     }
     builder.append(" name=\"" + valMap.get(CommonService.NAME) + "\"");
-    if (NammingTool.isKeyword(valMap.get(CommonService.NAME))) {
+    if (NamingTool.isKeyword(valMap.get(CommonService.NAME))) {
       builder.append(" column=\"" + valMap.get(CommonService.NAME) + "_val\"");
     }
     if (!Strings.isNullOrEmpty(valMap.get(CommonService.TITLE))) {

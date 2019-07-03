@@ -100,8 +100,7 @@ public class WkfExporter {
           CommonService.WKF_NODE_FIELD_MODEL,
           node.getMetaField() != null ? node.getMetaField().getMetaModel().getName() : null);
       valMap.put(CommonService.WKF_NODE_SEQ, node.getSequence().toString());
-      valMap.put(CommonService.WKF_NODE_START, node.getStartNode() ? "x" : null);
-      valMap.put(CommonService.WKF_NODE_END, node.getEndNode() ? "x" : null);
+      valMap.put(CommonService.WKF_NODE_TYPE, node.getNodeType().toString());
       valMap.put(CommonService.WKF_NODE_ACTIONS, Joiner.on(",").join(actions));
 
       excelExporterService.writeWkfRow(valMap, CommonService.WKF_NODE_HEADER);

@@ -217,16 +217,7 @@ public class CommonService {
 
   public static final String[] WKF_NODE_HEADER =
       new String[] {
-        "Name",
-        "Title",
-        "Xml id",
-        "Wkf",
-        "Field",
-        "Field model",
-        "Sequence",
-        "Start node",
-        "End node",
-        "Actions"
+        "Name", "Title", "Xml id", "Wkf", "Field", "Field model", "Sequence", "Node type", "Actions"
       };
 
   public static final String WKF_NODE_NAME = "Name";
@@ -236,8 +227,7 @@ public class CommonService {
   public static final String WKF_NODE_FIELD = "Field";
   public static final String WKF_NODE_FIELD_MODEL = "Field model";
   public static final String WKF_NODE_SEQ = "Sequence";
-  public static final String WKF_NODE_START = "Start node";
-  public static final String WKF_NODE_END = "End node";
+  public static final String WKF_NODE_TYPE = "Node type";
   public static final String WKF_NODE_ACTIONS = "Actions";
 
   public static final String[] WKF_TRANSITION_HEADER =

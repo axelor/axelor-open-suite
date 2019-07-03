@@ -61,16 +61,7 @@ public class ModuleExportWkfService {
 
   private static final String[] WKF_NODE_HEADER =
       new String[] {
-        "name",
-        "title",
-        "xmlId",
-        "wkf",
-        "field",
-        "fieldModel",
-        "sequence",
-        "startNode",
-        "endNode",
-        "actions"
+        "name", "title", "xmlId", "wkf", "field", "fieldModel", "sequence", "nodeType", "actions"
       };
 
   private static final String[] WKF_TRANSITION_HEADER =
@@ -175,8 +166,7 @@ public class ModuleExportWkfService {
             node.getMetaField() != null ? node.getMetaField().getName() : null,
             node.getMetaField() != null ? node.getMetaField().getMetaModel().getName() : null,
             node.getSequence().toString(),
-            node.getStartNode().toString(),
-            node.getEndNode().toString(),
+            node.getNodeType().toString(),
             Joiner.on("|").join(actions)
           });
     }
