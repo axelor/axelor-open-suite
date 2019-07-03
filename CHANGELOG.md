@@ -3,7 +3,7 @@
 ## [Unreleased 6.0]
 ## Features
 - Production : Remove stockLocation from Machine Type object.
-- SupplyChain : Addition of multiselect field in MrpLineType object.
+- Production : Manage MPS (Master Production Schedule) process.
 - MANUFACTURING : New object S&OP (PIC)
 
 ## Improvements
