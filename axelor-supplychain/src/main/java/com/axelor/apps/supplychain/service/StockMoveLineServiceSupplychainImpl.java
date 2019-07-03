@@ -430,4 +430,33 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     }
     return true;
   }
+
+  @Override
+  protected List<String> checkTrackingNumberAndGenerateErrors(StockMove stockMove)
+      throws AxelorException {
+    List<String> productsWithErrors = super.checkTrackingNumberAndGenerateErrors(stockMove);
+
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine.getProduct() == null) {
+        continue;
+      }
+
+      TrackingNumberConfiguration trackingNumberConfig =
+          stockMoveLine.getProduct().getTrackingNumberConfiguration();
+
+      if (stockMoveLine.getProduct() != null
+          && trackingNumberConfig != null
+          && ((trackingNumberConfig.getIsPurchaseTrackingManaged()
+                  && stockMove.getOriginTypeSelect() == StockMoveRepository.ORIGIN_PURCHASE_ORDER)
+              || (trackingNumberConfig.getIsSaleTrackingManaged()
+                  && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+                  && stockMove.getOriginTypeSelect() == StockMoveRepository.ORIGIN_SALE_ORDER))
+          && stockMoveLine.getTrackingNumber() == null
+          && stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) != 0) {
+
+        productsWithErrors.add(stockMoveLine.getProduct().getName());
+      }
+    }
+    return productsWithErrors;
+  }
 }

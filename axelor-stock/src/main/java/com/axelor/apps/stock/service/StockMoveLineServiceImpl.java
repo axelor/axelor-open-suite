@@ -632,28 +632,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   @Override
   public void checkTrackingNumber(StockMove stockMove) throws AxelorException {
-    List<String> productsWithErrors = new ArrayList<>();
 
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      if (stockMoveLine.getProduct() == null) {
-        continue;
-      }
-
-      TrackingNumberConfiguration trackingNumberConfig =
-          stockMoveLine.getProduct().getTrackingNumberConfiguration();
-
-      if (stockMoveLine.getProduct() != null
-          && trackingNumberConfig != null
-          && (trackingNumberConfig.getIsPurchaseTrackingManaged()
-              || trackingNumberConfig.getIsProductionTrackingManaged()
-              || (trackingNumberConfig.getIsSaleTrackingManaged()
-                  && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING))
-          && stockMoveLine.getTrackingNumber() == null
-          && stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) != 0) {
-
-        productsWithErrors.add(stockMoveLine.getProduct().getName());
-      }
-    }
+    List<String> productsWithErrors = checkTrackingNumberAndGenerateErrors(stockMove);
 
     if (!productsWithErrors.isEmpty()) {
       String productWithErrorsStr = productsWithErrors.stream().collect(Collectors.joining(", "));
@@ -662,6 +642,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           I18n.get(IExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_TRACKING_NUMBER),
           productWithErrorsStr);
     }
+  }
+
+  protected List<String> checkTrackingNumberAndGenerateErrors(StockMove stockMove)
+      throws AxelorException {
+    List<String> productsWithErrors = new ArrayList<>();
+    return productsWithErrors;
   }
 
   @Override
