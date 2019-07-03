@@ -48,7 +48,6 @@ public class StockMoveLineServiceProductionImpl extends StockMoveLineServiceSupp
         trackingNumberRepo,
         accountManagementService,
         priceListService);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
