@@ -55,6 +55,7 @@
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
