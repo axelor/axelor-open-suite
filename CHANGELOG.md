@@ -137,6 +137,7 @@
 - ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation  
 - Change google-plus icon by google one.
 - Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
+- SUPPLY CHAIN : delete boolean manageInvoicedAmountByLine.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

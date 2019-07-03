@@ -121,10 +121,10 @@
 				<field name="account.analyticDistributionAuthorized" hidden="true" />
 			</panel>
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
-				<field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-				<field name="saleOrderLine" canEdit="false" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
-				<field name="purchaseOrderLine" canEdit="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+
+				<field name="saleOrderLine" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
+				<field name="purchaseOrderLine" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+
 			</panel>
 		</panel-tabs>
 	</form>
@@ -224,7 +224,6 @@
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
 	    <action name="action-invoice-line-record-new"/>
-	    <action name="action-invoice-line-record-order" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
 	    <action name="action-invoice-line-record-project"/>
 	    <action name="action-invoice-line-record-operation-type"/>
 	    <action name="action-attrs-account-invoice-line-onnew-onload"/>
@@ -401,11 +400,6 @@
 	
 	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
 		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
-	</action-record>
-
-	<action-record name="action-invoice-line-record-order" model="com.axelor.apps.account.db.InvoiceLine">
-		<field name="saleOrder" expr="eval: _parent?.saleOrder" if="_parent?.operationTypeSelect == 3 || _parent?.operationTypeSelect == 4"/>
-		<field name="purchaseOrder" expr="eval: _parent?.purchaseOrder" if="_parent?.operationTypeSelect == 1 || _parent?.operationTypeSelect == 2"/>
 	</action-record>
 
 	<action-attrs name="action-invoice-line-attrs-compute-total-pack">
