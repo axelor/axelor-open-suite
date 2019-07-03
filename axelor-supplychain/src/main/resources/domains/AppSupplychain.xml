@@ -46,8 +46,6 @@
     	<boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
     	<boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
-    	<integer name="defaultEstimatedDate" title="Default estimated date" selection="supplychain.estimated.date.select" default="1"/>
-    	<date name="otherDate" title="Other date"/>
     	
     	<extra-code><![CDATA[
 	

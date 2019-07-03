@@ -18,6 +18,9 @@
     <boolean name="autoAllocateOnAllocation" title="Auto allocate stock on other stock moves" help="If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves."/>
     <boolean name="autoRequestReservedQty" title="Auto request reserved qty" help="If true, the requested quantity for reservation will be equal to the quantity of the given sale order line."/>
     
+    <integer name="defaultEstimatedDate" title="Default estimated date" selection="supplychain.estimated.date.select" default="1"/>
+    <date name="otherDate" title="Other date"/>
+    
     <track>
     	<field name="hasOutSmForStorableProduct" on="UPDATE"/>
     	<field name="hasOutSmForNonStorableProduct" on="UPDATE"/>

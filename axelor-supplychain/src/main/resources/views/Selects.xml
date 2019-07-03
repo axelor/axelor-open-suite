@@ -90,5 +90,10 @@
 		<option value="2">Confirmed</option>
 		<option value="3">Cancelled</option>
 	</selection>
+	
+	<selection name="supplychain.estimated.date.select">
+	    <option value="1">Current date</option>
+		<option value="2">Other date</option>
+	</selection>
 
 </object-views>

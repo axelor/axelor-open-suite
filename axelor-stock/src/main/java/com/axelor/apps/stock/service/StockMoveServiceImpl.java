@@ -307,7 +307,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
   }
   
-  public LocalDate getEstimatedDate(StockMove stockMove)
+  public LocalDate getEstimatedDate(StockMove stockMove) throws AxelorException
   {
     if ( stockMove.getEstimatedDate() == null)
     {

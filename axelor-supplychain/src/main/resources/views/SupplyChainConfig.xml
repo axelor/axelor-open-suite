@@ -20,6 +20,11 @@
 				<field name="autoAllocateOnAllocation" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 				<field name="autoRequestReservedQty" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 	  	</panel>
+	  	
+	  	<panel name="datePanel">
+		    <field name="defaultEstimatedDate" colSpan="3"/>
+		    <field name="otherDate" hidden="true" showIf="defaultEstimatedDate != 1" widget="date" colSpan="3"/>
+		</panel>
 	
         	<panel-mail name="mailPanel">
 		    	<mail-messages limit="4"/>

@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -38,6 +39,8 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -415,12 +418,15 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
   
   @Override
-  public LocalDate getEstimatedDate(StockMove stockMove) {
+  public LocalDate getEstimatedDate(StockMove stockMove) throws AxelorException {
     if (stockMove.getEstimatedDate() == null) {
-      AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
-      if(appSupplychain.getDefaultEstimatedDate() != 1)
+      
+      Company company = stockMove.getCompany();
+      SupplyChainConfig supplyChainConfig =
+          Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
+      if(supplyChainConfig.getDefaultEstimatedDate() != 1)
       {
-        return appSupplychain.getOtherDate();
+        return supplyChainConfig.getOtherDate();
       }
       else {
         return appBaseService.getTodayDate();
