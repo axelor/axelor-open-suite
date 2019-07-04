@@ -356,8 +356,7 @@
 		       	
 				<field name="supplierShipmentRef" showIf="!isReversion" />
 				
-	            
-				<panel stacked="true" itemSpan="12>    
+				<panel stacked="true" itemSpan="12">    
 		            <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2" >
 	                    <viewer>{{record.fromAddressStr}}</viewer>
 	                </field>
