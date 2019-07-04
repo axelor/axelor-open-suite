@@ -47,7 +47,11 @@ public class ICalendarEventServiceImpl implements ICalendarEventService {
         calUser.setEmail(email.getAddress());
         calUser.setName(email.getName());
         if (email.getPartner() != null) {
-          calUser.setUser(userRepository.all().filter("self.partner.id = ?1", email.getPartner().getId()).fetchOne());
+          calUser.setUser(
+              userRepository
+                  .all()
+                  .filter("self.partner.id = ?1", email.getPartner().getId())
+                  .fetchOne());
         }
         event.addAttendee(calUser);
       }

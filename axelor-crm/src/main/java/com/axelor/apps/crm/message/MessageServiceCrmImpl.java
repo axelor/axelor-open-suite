@@ -77,7 +77,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
                 .getCrmConfig(event.getUser().getActiveCompany())
                 .getTaskTemplate();
         break;
-        
+
       default:
         break;
     }
