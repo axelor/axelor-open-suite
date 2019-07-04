@@ -325,7 +325,7 @@
 		       	
 		       	<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
 	            
-				<panel stacked="true">    
+				<panel stacked="true" itemSpan="12>    
 		            <field name="toAddressStr" height="3" hideIf="statusSelect &gt; 2" >
 		            	<viewer>{{record.toAddressStr}}</viewer>
 		            </field>
@@ -348,7 +348,7 @@
 	            <field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
 				<field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
  			
-	            <field name="fromAddress" showIf="!$readonly() &amp;&amp; statusSelect &lt; 3" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+	            <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
                 
 				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" />
 		        
@@ -357,8 +357,8 @@
 				<field name="supplierShipmentRef" showIf="!isReversion" />
 				
 	            
-				<panel stacked="true">    
-		            <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; Z" >
+				<panel stacked="true" itemSpan="12>    
+		            <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2" >
 	                    <viewer>{{record.fromAddressStr}}</viewer>
 	                </field>
 				
