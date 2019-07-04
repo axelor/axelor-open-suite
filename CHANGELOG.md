@@ -2,6 +2,7 @@
 
 ## [5.0.10] - unreleased
 ## Improvements
+- YEAR : disable canEdit on company field in year-form.
 
 ## Bug Fixes
 - STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
