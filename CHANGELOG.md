@@ -29,6 +29,7 @@
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- SALE ORDER COPY : order being edited tag removed from copy sale Order
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
