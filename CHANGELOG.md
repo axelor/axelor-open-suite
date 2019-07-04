@@ -29,6 +29,7 @@
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
