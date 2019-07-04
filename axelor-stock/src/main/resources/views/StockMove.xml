@@ -323,6 +323,7 @@
 					<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" onChange="action-stock-move-method-verify-product-stock"/>
 		       	</panel>
 		       	
+		       	<field name="pickingIsNotEditedSpacer" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
 		       	<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
 	            
 				<panel stacked="true" itemSpan="12">    
@@ -356,8 +357,7 @@
 		       	
 				<field name="supplierShipmentRef" showIf="!isReversion" />
 				
-	            
-				<panel stacked="true" itemSpan="12>    
+				<panel stacked="true" itemSpan="12">    
 		            <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2" >
 	                    <viewer>{{record.fromAddressStr}}</viewer>
 	                </field>
