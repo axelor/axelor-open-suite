@@ -27,6 +27,7 @@
 - APP PURCHASE : change title of supplierRequestMgt field
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
+- CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
