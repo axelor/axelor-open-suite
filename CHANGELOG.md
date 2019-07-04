@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.1.8]
 ## Features
+- PROJECT : Translate Total real hours
 - ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
 
 ## Improvements
@@ -21,6 +22,13 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 - EMPLOYEE CARD : add tag for rh, company and department field.
 - STOCK MOVES : updating filterOnAvailableProducts field display conditions
+- DEBT RECOVERY : process rollbacked when message sending fails.
+- MESSAGE SERVICE : exception message improved. 
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- APP PURCHASE : change title of supplierRequestMgt field
+- OPPORTUNITY : delete canEdit on partner and lead
+- SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
+- CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -42,6 +50,17 @@
 - SALE ORDER : hide and rename some field in advance search.
 - STOCK MOVE : Printing address at bottom-left of Report.
 - INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
+- EVENTREMINDER : Made the batch work as intended.
+- SALE ORDER : Fix generate invoice error
+- OPPORTUNITY : Error message 'Parent lead is missing' is removed onchange of lead
+- DEBT RECOVERY METHOD : name field is now required.
+- DEBT RECOVERY LEVEL : label field is now required.
+- ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
+- INVOICE : add in demo data more information for demo supplier invoices.
+- PURCHASE REQUEST : seq number is retrieved depending on the company.
+- DEMO DATA : clean and corrected errors from import demo data.
+- DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- OPPORTUNITY : do not allows select both customer and lead at same time.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
