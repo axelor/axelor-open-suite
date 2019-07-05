@@ -18,7 +18,6 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -39,8 +38,6 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -50,7 +47,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -414,27 +410,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
                 notAvailableProducts.toString()));
       }
-    }
-  }
-  
-  @Override
-  public LocalDate getEstimatedDate(StockMove stockMove) throws AxelorException {
-    if (stockMove.getEstimatedDate() == null) {
-      
-      Company company = stockMove.getCompany();
-      SupplyChainConfig supplyChainConfig =
-          Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
-      if(supplyChainConfig.getDefaultEstimatedDate() != 1)
-      {
-        return supplyChainConfig.getOtherDate();
-      }
-      else {
-        return appBaseService.getTodayDate();
-      }
-    }
-    else
-    {
-      return stockMove.getEstimatedDate();
     }
   }
 }

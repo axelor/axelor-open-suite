@@ -22,8 +22,7 @@
 	  	</panel>
 	  	
 	  	<panel name="datePanel">
-		    <field name="defaultEstimatedDate" colSpan="3"/>
-		    <field name="otherDate" hidden="true" showIf="defaultEstimatedDate != 1" widget="date" colSpan="3"/>
+		    <field name="defaultEstimatedDate" colSpan="12"/>
 		</panel>
 	
         	<panel-mail name="mailPanel">

@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.CancelReason;
@@ -72,6 +59,19 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StockMoveServiceImpl implements StockMoveService {
 
@@ -290,8 +290,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setName(stockMoveToolService.computeName(stockMove));
     }
 
-    stockMove.setEstimatedDate(getEstimatedDate(stockMove));
-    
     int initialStatus = stockMove.getStatusSelect();
 
     setPlannedStatus(stockMove);
@@ -304,18 +302,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
         && stockMove.getPlannedStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
-    }
-  }
-  
-  public LocalDate getEstimatedDate(StockMove stockMove) throws AxelorException
-  {
-    if ( stockMove.getEstimatedDate() == null)
-    {
-      return appBaseService.getTodayDate();
-    }
-    else
-    {
-      return stockMove.getEstimatedDate();
     }
   }
 

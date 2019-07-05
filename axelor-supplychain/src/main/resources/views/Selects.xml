@@ -92,8 +92,8 @@
 	</selection>
 	
 	<selection name="supplychain.estimated.date.select">
-	    <option value="1">Current date</option>
-		<option value="2">Other date</option>
+		<option value="0">Current date</option>
+		<option value="1">Left empty</option>
 	</selection>
 
 </object-views>

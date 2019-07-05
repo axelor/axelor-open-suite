@@ -31,7 +31,7 @@
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
 - YEAR : disable canEdit on company field in year-form.
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
-- SUPPLYCHAIN : add config for default delivery date.
+- Stock Move: add config for default delivery date from sale order.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
