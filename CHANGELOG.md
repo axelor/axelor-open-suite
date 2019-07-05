@@ -31,6 +31,7 @@
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
 - YEAR : disable canEdit on company field in year-form.
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
+- OPPORTUNITY : convert into quotation error when no customer selected on opportunity
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
