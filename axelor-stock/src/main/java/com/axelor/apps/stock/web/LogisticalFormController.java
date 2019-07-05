@@ -126,4 +126,15 @@ public class LogisticalFormController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void refreshProductNetMass(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+      logisticalFormService.updateProductNetMass(logisticalForm);
+      response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
