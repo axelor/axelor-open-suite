@@ -4,6 +4,7 @@
 ## Features
 - PROJECT : Translate Total real hours
 - ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
+- LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
