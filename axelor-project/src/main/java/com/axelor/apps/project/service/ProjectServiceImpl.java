@@ -175,6 +175,10 @@ public class ProjectServiceImpl implements ProjectService {
 
       project.setCode(projectCode);
       project.setClientPartner(clientPartner);
+      if (clientPartner != null && clientPartner.getContactPartnerSet() != null
+          && !clientPartner.getContactPartnerSet().isEmpty()) {
+        project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
+      }
       project.setDescription(projectTemplate.getDescription());
       project.setTeam(projectTemplate.getTeam());
       project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));

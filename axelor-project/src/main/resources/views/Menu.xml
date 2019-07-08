@@ -70,6 +70,7 @@
 	<action-view name="project.project.template" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate">
 		<view type="grid" name="project-template-grid"/>
 		<view type="form" name="project-template-form"/>
+		<context name="_fromProject" expr="eval:true"/>
 	</action-view>
 
 	<menuitem title="Historical" name="project-historical" parent="menu-project-root" order="39" icon="fa-clock-o"/>

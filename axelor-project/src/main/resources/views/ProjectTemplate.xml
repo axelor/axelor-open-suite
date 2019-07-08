@@ -7,7 +7,7 @@
 		<field name="assignedTo"/>
 	</grid>
 
-	<form name="project-template-form" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate" onNew="action-project-group-on-new-project">
+	<form name="project-template-form" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate" onNew="action-project-group-on-new-project-template" onSave="action-project-template-attrs-set-boolean">
 
 		<panel name="mainPanel">
 			<panel name="informationPanel" colSpan="12">
@@ -63,8 +63,8 @@
 		</panel-tabs>
 
 		<panel name="characteristicsPanel" title="Characteristics" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="12" sidebar="true" canCollapse="true">
-			<field name="isProject" colSpan="6" widget="boolean-switch" />
-			<field name="isBusinessProject" colSpan="6" widget="boolean-switch" />
+			<field name="isProject" colSpan="6" widget="boolean-switch" onChange="action-project-template-attrs-set-boolean"/>
+			<field name="isBusinessProject" colSpan="6" widget="boolean-switch" onChange="action-project-template-attrs-set-boolean"/>
 			<field name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 		</panel>
 
@@ -100,5 +100,16 @@
 	  <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
 	  <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
 	</action-attrs>
-	
+
+	<action-attrs name="action-project-template-attrs-set-boolean">
+		<attribute name="value" for="isProject" expr="eval: true" if="!isProject &amp;&amp; !isBusinessProject"/>
+		<attribute name="readonly" for="isProject" expr="eval:false"/>
+	</action-attrs>
+
+	<action-group name="action-project-group-on-new-project-template">
+		<action name="action-project-group-on-new-project"/>
+		<action name="action-project-template-attrs-set-boolean"/>
+	</action-group>
+
+
 </object-views>
