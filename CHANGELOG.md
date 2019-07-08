@@ -66,6 +66,7 @@
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
 - OPPORTUNITY : do not allows select both customer and lead at same time.
 - STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
+- TEAMTASK: task history show only canceled and closed task.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
