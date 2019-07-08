@@ -290,7 +290,7 @@
 "The minimum order quantity of %s to the supplier is not respected.","La quantité minimum de commande de %s auprès du fournisseur n’est pas respectée.",,
 "The supplier Partner is required and must be the same for all purchase orders","Le fournisseur est requis et doit être le même pour toutes les commandes d'achat",,
 "The trading name must be the same for all purchase orders",,,
-"There is no sequence set for the purchase requests","Aucune séquence configurée pour les Demandes d'achats",,
+"There is no sequence set for the purchase requests for the company %s","Aucune séquence n'est définie pour les demandes d'achats portant sur la société %s",,
 "This product is not available from the supplier.","Ce produit n’est pas disponible auprès du fournisseur.",,
 "This supplier is blocked:","Ce fournisseur est bloqué :",,
 "Timetable","Echéancier",,

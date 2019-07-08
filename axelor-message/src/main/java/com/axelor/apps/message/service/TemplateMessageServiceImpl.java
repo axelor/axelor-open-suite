@@ -91,7 +91,10 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       if (!model.equals(metaModel.getFullName())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            String.format(I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), metaModel.getFullName(), model));
+            String.format(
+                I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL),
+                metaModel.getFullName(),
+                model));
       }
       initMaker(objectId, model, tag);
     }
