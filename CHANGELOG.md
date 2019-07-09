@@ -29,6 +29,10 @@
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- YEAR : disable canEdit on company field in year-form.
+- SALE ORDER COPY : order being edited tag removed from copy sale Order
+- OPPORTUNITY : convert into quotation error when no customer selected on opportunity
+- EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
 - ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
 
 ## Bug Fixes
@@ -62,6 +66,9 @@
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
 - OPPORTUNITY : do not allows select both customer and lead at same time.
+- STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
+- TEAMTASK: task history show only canceled and closed task.
+- Sale Order: fix NPE on clicking allocate all button.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form

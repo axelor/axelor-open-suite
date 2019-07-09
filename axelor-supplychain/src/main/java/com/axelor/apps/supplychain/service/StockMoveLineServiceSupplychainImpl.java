@@ -181,7 +181,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
-        unitPriceUntaxed = saleOrderLine.getPrice();
+        unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
         unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }

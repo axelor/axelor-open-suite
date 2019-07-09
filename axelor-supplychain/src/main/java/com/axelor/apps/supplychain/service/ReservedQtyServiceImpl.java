@@ -857,6 +857,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     requestQty(saleOrderLine);
     StockMoveLine stockMoveLine = getPlannedStockMoveLine(saleOrderLine);
 
+    if (stockMoveLine == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_NO_STOCK_MOVE));
+    }
     // search for the maximum quantity that can be allocated.
     StockLocationLine stockLocationLine =
         stockLocationLineService.getStockLocationLine(
