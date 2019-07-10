@@ -18,9 +18,11 @@
 package com.axelor.apps.account.service.umr;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.meta.CallMethod;
 
 public interface UmrNumberService {
 
+  @CallMethod
   public String getUmrNumber(Partner partner);
 
   public String getUmrNumber(Partner partner, boolean isRecovery);

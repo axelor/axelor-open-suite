@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
    		<hilite strong="true" color="default" if="typeSelect != 0"/>
@@ -26,7 +26,7 @@
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
 	</grid>
 
-    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" canEdit="false">
+    <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" >
       	<field name="saleOrder"/>
       	<field name="saleOrder.company"/>
       	<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
@@ -56,7 +56,7 @@
 	</grid>
 
     <form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client" 
-    		readonlyIf="true" canEdit="false">
+    		readonlyIf="true" >
         <panel name="mainPanel" title="Sale order">
             <field name="saleOrder.saleOrderSeq" title="Reference" colSpan="4"/>
             <field name="saleOrder.creationDate" colSpan="4"/>
@@ -127,8 +127,8 @@
 				<field name="product.isUnrenewed" hidden="true"/>	
         		<field name="product.isPrototype" hidden="true"/>
        			<spacer name="viewerSpacer"  if="__config__.app.isApp('supplychain')"/>
-				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
-				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+				<field name="product"  onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+				<field name="product"  onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
 				<field name="typeSelect" colSpan="2" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
 				<field name="packPriceSelect" showIf="typeSelect == 2 &amp;&amp; product != null" colSpan="4" onChange="action-group-sale-order-line-pack-price-select-onchange"  if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12"/>
@@ -136,7 +136,7 @@
 			</panel>
 				<panel name="productDetailPanel" colSpan="12">
 					<field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="isSubLine || ($get('saleOrder.statusSelect') &gt; 1 &amp;&amp; !$get('saleOrder.orderBeingEdited'))" validIf="$qtyValid != false"/>
-					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || isSubLine || $isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || isSubLine || $isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1"  form-view="unit-form" grid-view="unit-grid"/>
 					<field name="price" colSpan="3" readonlyIf="$isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<field name="inTaxPrice" colSpan="3" readonlyIf="$isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<panel name="discountPanel" colSpan="12" readonlyIf="$isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1">
@@ -149,7 +149,7 @@
 				</panel>
 
 				<panel name="taxPanel" colSpan="12">
-					<field name="taxLine" canEdit="false" colSpan="6" readonlyIf="$isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+					<field name="taxLine"  colSpan="6" readonlyIf="$isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 					<field name="exTaxTotal" readonly="true" colSpan="3"/>
 					<field name="inTaxTotal" readonly="true" colSpan="3"/>
 					<field name="isSubLine" hideIf="!isSubLine" readonlyIf="$isReadOnly !== false" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
@@ -209,12 +209,12 @@
 				<panel-dashlet name="invoiceLinesFromSOLinePanel" action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Business Project" readonlyIf="$isReadOnly !== false" if-module="axelor-business-project">
-				<field name="project" title="Business Project" canEdit="false" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
+				<field name="project" title="Business Project"  onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
 				<field name="toInvoice" colSpan="3" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
 				<panel-dashlet name="teamTaskListPanel" title="Related tasks" action="action-sale-order-line-view-team-tasks" colSpan="12"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
+				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"  onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
 				<panel-related name="analyticMoveLineListPanel" readonlyIf="$isReadOnly !== false" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
 			<panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration" >
@@ -247,7 +247,7 @@
 			</panel>
 		</panel>
 		<panel name="product2Panel" hideIf="typeSelect == 1">
-			<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
+			<field name="product"  onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid"/>
 			<panel name="typeSelect2Panel" colSpan="3">
 				<field name="typeSelect" onChange="action-sale-order-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
 				<field name="typeSelect" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="12"/>
@@ -256,7 +256,7 @@
 			<field name="productName"/>
 			<panel name="productDetailsPanel" colSpan="12">
 				<field name="qty"  onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="isSubLine"/>
-				<field name="unit" readonlyIf="isSubLine || typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="unit" readonlyIf="isSubLine || typeSelect == 2"  form-view="unit-form" grid-view="unit-grid"/>
 				<field name="price"  onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 				<field name="inTaxPrice" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 				<panel name="discountPanel" title="Discount">
@@ -265,7 +265,7 @@
 					<field name="priceDiscounted" colSpan="4" hidden="true"/>
 				</panel>
 			</panel>
-			<field name="taxLine" canEdit="false"  colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			<field name="taxLine"   colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="exTaxTotal" readonly="true"/>
 			<field name="inTaxTotal" readonly="true"/>
 			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
@@ -290,7 +290,7 @@
 				<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 			<panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
-				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
+				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"  onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
 				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings">
@@ -325,7 +325,7 @@
 		<panel-include view="sale-order-line-form"/>
 	</form>
 
-	<form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" name="sale-order-line-all-form" width="large" canNew="false" canDelete="false" canEdit="false">
+	<form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" name="sale-order-line-all-form" width="large" canNew="false" canDelete="false" >
 		<panel name="mainPanel">
 			<field name="saleOrder.company" colSpan="3"/>
 			<spacer name="saleOrderCompanySpacer" colSpan="9"/>

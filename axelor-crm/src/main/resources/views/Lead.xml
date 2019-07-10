@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
       <!--
@@ -98,7 +98,7 @@
 					<editor x-show-titles="false">
 						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
 						<field name="jobTitle" colSpan="6" placeholder="Function"/>
-						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
+						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" />
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
 				</field>
@@ -165,14 +165,14 @@
 		</panel>
 	
 		<panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
-			<field name="user" canNew="false" canEdit="false" canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-			<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+			<field name="user" canNew="false"  canView="false" colSpan="6" form-view="user-form" grid-view="user-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+			<field name="team"  colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 			<field name="contactDate" colSpan="6" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
 			<field name="lostReason" colSpan="12" readonlyIf="statusSelect == 5" requiredIf="statusSelect == 5" showIf="statusSelect == 5"/>
 		</panel>
 		
 		<panel sidebar="true" name="marketingPanel" title="Marketing" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
-			<field name="source" canEdit="false" colSpan="6" form-view="source-form" grid-view="source-grid"/>
+			<field name="source"  colSpan="6" form-view="source-form" grid-view="source-grid"/>
 			<field name="referredBy" colSpan="6"/>
 			<field name="estimatedBudget" colSpan="6"/>
 		</panel>
@@ -186,7 +186,7 @@
 
     <form name="lead-lose-wizard-form" model="com.axelor.apps.crm.db.Lead" title="Loss confirmation" >
 		<panel name="mainPanel">
-			<field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
+			<field name="lostReason" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" />
 			<field name="lostReasonStr" colOffset="4" colSpan="4" hideIf="!lostReason.freeText"/>
 			<button name="lostReasonConfirmBtn" title="Confirm lost reason" onClick="action-lead-lost-reason-check,action-lead-method-confirm-lost-reason" colOffset="4" colSpan="4"/>
 			<field name="lostReason.freeText" hidden="true"/>

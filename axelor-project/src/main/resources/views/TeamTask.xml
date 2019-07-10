@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
 		<hilite if="status == 'closed'" color="success"/>
@@ -72,7 +72,7 @@
 					</field>
 					<field name="project" colSpan="6" onChange="action-team-task-group-project-onchange" required="true"/>
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
-					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
+					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false"  onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
 					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form" if="!__config__.app.isApp('business-support')"/>
 					<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" hidden="true" showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
 					<field name="isPrivate" hidden="true" showIf="typeSelect == 'ticket'" colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
@@ -128,7 +128,7 @@
 				<button name="projectPlanningTimeLineBtn" title="New line" colSpan="3" css="btn-custom text-left" onClick="save,action-team-task-view-time-planned,save"/>
 				<button name="removeProjectPlanningTimeLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-team-task-attrs-project-planning-time-remove,save" />
 				<field name="$projectPlanningTimeSet" hidden="true" type="many-to-many" widget="TagSelect" title="Planned Time Planning"
-				colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
+				colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime"  canNew="false" grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
 				<button name="removeSelectedPlanningTimeBtn" colSpan="3" hidden="true"  title="Remove selected lines" onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 				<button name="cancelRemovePlanningTimeBtn" colSpan="3" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
 				<panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning" action="action-team-task-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
@@ -139,7 +139,7 @@
 				<button name="projectPlanningSpentTimeLineBtn" title="New line" colSpan="3" css="btn-custom text-left" onClick="save,action-team-task-view-time-spent,save"/>
 				<button name="removeProjectPlanningTimeSpentLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-team-task-attrs-project-planning-time-spent-remove,save" />
 				<field name="$projectPlanningTimeSpentSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time Spent"
-				colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
+				colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime"  canNew="false" grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
 				<button name="removeSelectedPlanningTimeSpentBtn" colSpan="3" hidden="true"  title="Remove selected lines" onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time-spent"/>
 				<button name="cancelRemovePlanningTimeSpentBtn" colSpan="3" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-spent-cancel-remove" />
 				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-dashlet-project-planning-time-spent" colSpan="12" canSearch="true"/>
@@ -158,7 +158,7 @@
 				<field name="saleOrderLine" readonly="true" showIf="saleOrderLine" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
 				<field name="invoiceLine" readonly="true" showIf="invoiceLine" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 				<panel name="packagePanel" title="Package" colSpan="12" showIf="invoicingType == 2">
-					<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
+					<field name="product" colSpan="6"  onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
 					<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="6" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
 						<viewer><![CDATA[
 	                        <h4 class="text-right">
@@ -169,9 +169,9 @@
 						</viewer>
 					</field>					
 					<field name="quantity" colSpan="3" onChange="action-team-task-group-qty-onchange"/>
-					<field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
+					<field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" />
 					<field name="unitPrice" colSpan="3" onChange="action-team-task-group-unit-price-onchange"/>
-					<field name="currency" colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false"/>
+					<field name="currency" colSpan="3" grid-view="currency-grid" form-view="currency-form" />
 					<field name="toInvoice" hidden="true" colSpan="3" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 					<panel name="discountPanel" readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
 						<field name="discountTypeSelect" colSpan="3" onChange="action-sale-order-line-attrs-discountamount-title"/>

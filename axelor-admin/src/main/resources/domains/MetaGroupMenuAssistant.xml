@@ -2,7 +2,7 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models
-  http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="meta" package="com.axelor.meta.db" />
 

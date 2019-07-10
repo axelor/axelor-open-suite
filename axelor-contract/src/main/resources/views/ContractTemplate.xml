@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="contract-template-grid" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
 		<field name="name"/>
@@ -12,7 +12,7 @@
         <panel name="mainPanel">
             <panel colSpan="9" name="subMainPanel">
                 <field name="targetTypeSelect" readonlyIf="id" onChange="action-contract-attrs-domains-template"/>
-                <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
+                <field name="company" readonlyIf="statusSelect >= 2" />
                 <field name="name" colSpan="12" css="highlight"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency"/>
             </panel>
@@ -49,8 +49,8 @@
                         <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <panel colSpan="6" name="paymentPanel">
-                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-                                    <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                                    <field name="paymentMode" colSpan="6" widget="SuggestBox"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                                    <field name="paymentCondition" colSpan="6" widget="SuggestBox"  form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
                                 <panel colSpan="6"  name="automaticInvoicingPanel">
                                     <field name="automaticInvoicing" readonlyIf="statusSelect > 2" colSpan="6" widget="boolean-switch"/>
@@ -62,7 +62,7 @@
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <field name="isPeriodicInvoicing" readonlyIf="statusSelect > 2" colSpan="3" widget="boolean-switch"/>
                                 <panel name="invoicingDetailsPanel" hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
-                                    <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
+                                    <field name="invoicingDuration" colSpan="4"  requiredIf="isPeriodicInvoicing"/>
                                     <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                     <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                 </panel>

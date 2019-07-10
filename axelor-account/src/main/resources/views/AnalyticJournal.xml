@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<grid name="analytic-journal-grid" title="Analytic Journal" model="com.axelor.apps.account.db.AnalyticJournal">
 		<field name="name"/>
@@ -13,7 +13,7 @@
         <panel name="mainPanel" >
         	<field name="name"/>
         	<field name="type" form-view="analytic-journal-type-form" grid-view="analytic-journal-type-grid"/>
-        	<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+        	<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         </panel>
     </form>
     

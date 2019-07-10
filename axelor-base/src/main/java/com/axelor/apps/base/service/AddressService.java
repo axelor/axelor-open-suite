@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -53,6 +54,7 @@ public interface AddressService {
       String addressL6,
       Country addressL7Country);
 
+  @CallMethod
   public boolean checkAddressUsed(Long addressId);
 
   /**

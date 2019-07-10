@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
-    canEdit="false" canDelete="false" canNew="false" canSave="false">
+     canDelete="false" canNew="false" canSave="false">
     	<field name="id" />
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		<field name="duration" widget="duration" x-big="true"/>
@@ -15,7 +15,7 @@
     </grid>
     
     <form name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs" 
-    canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false" width="large">
+     canDelete="false" canNew="false" canCopy="false" canSave="false" width="large">
 		<panel name="mainPanel">
 		    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
 		    <field name="duration" widget="duration" x-big="true"/>

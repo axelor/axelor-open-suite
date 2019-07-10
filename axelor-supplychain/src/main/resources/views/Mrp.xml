@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
@@ -35,7 +35,7 @@
 			<field name="createdOn" colSpan="4"/>
 			<field name="createdBy" colSpan="4"/>
 			<field name="endDate" colSpan="4"/>
-			<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4" domain="self.typeSelect != 3" canEdit="false"/>
+			<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4" domain="self.typeSelect != 3" />
 			<field name="stockLocation.company" colSpan="4"/>
 	    </panel>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
@@ -45,12 +45,12 @@
 	        <field name="endDateTime" colSpan="4" readonly="true"/>
 	        <field name="createdBy"/>
 	        <field name="endDate" colSpan="6"/>
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3" canEdit="false"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3" />
 	        <field name="stockLocation.company"/>
-	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
-	        <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
-	        <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
-	        <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet" canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid" canNew="false" colSpan="12" onSelect="action-mrp-attrs-sale-order-domain"/>
+	        <panel-related name="productSetPanel" field="productSet"  form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
+	        <panel-related name="productCategorySetPanel" field="productCategorySet"  form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
+	        <panel-related name="productFamilySetPanel" field="productFamilySet"  form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
+	        <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet"  form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid" canNew="false" colSpan="12" onSelect="action-mrp-attrs-sale-order-domain"/>
 	        <panel-related name="mrpForecastSetPanel" field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true"/>
 	    </panel>
 	    <panel name="statusPanel" showIf="statusSelect == 1" colSpan="12">

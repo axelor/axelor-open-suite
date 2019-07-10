@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<toolbar>
@@ -267,7 +267,7 @@
 					<panel colSpan="6" name="partnerCategoryPanel">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
 						<field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>
-						<field name="source" canEdit="false" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
+						<field name="source"  colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
 						<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 					</panel>
           <panel name="otherPartnerDetailsPanel">
@@ -289,10 +289,10 @@
  		 		</panel>
 
 				<panel name="settingsPanel" title="Settings" colSpan="12">
-					<field name="language" colSpan="6" canEdit="false"/>
+					<field name="language" colSpan="6" />
 					<panel name="assignedToPanel" title="Assigned to" colSpan="12" >
-						<field name="user" colSpan="6" form-view="user-form" onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
-						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
+						<field name="user" colSpan="6" form-view="user-form" onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee" canNew="false"  canView="false"/>
+						<field name="team"  colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
 				</panel>
@@ -318,7 +318,7 @@
 			<panel name="customerPanel" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')">
 				<field name="saleOrderInformation"/>
 				<field name="payerQuality" if-module="axelor-account"  if="__config__.app.isApp('account')" hideIf="isEmployee"/>
-				<field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1" form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
+				<field name="salePartnerPriceList"  domain="self.typeSelect = 1" form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 				<field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 				<panel name="clientPortalAccessPanel" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
@@ -330,7 +330,7 @@
 			</panel>
 			<panel name="supplierPanel" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
-				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
+				<field name="purchasePartnerPriceList"  domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
@@ -395,7 +395,7 @@
 			<panel name="informationPanel" title="Informations">
 				<panel name="departmentPanel" title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 					<field name="department" form-view="department-form" grid-view="department-grid"/>
-					<field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
+					<field name="source"  hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 				</panel>
 				<panel colSpan="12" name="postalAddressesPanel" title="Postal addresses" hideIf="isContact">
 					<field name="partnerAddressList" colSpan="12">
@@ -504,10 +504,10 @@
 
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
-			<field name="language" canEdit="false"/>
+			<field name="language" />
 			<panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+				<field name="team"  colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>
 		</panel>
@@ -680,10 +680,10 @@
 		</panel-tabs>
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
-			<field name="language" canEdit="false"/>
+			<field name="language" />
 			<panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
-				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
-				<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+				<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+				<field name="team"  colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 				<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 			</panel>
 		</panel>
