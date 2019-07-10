@@ -34,7 +34,8 @@ public class PurchaseRequestManagementRepository extends PurchaseRequestReposito
     try {
       if (entity.getPurchaseRequestSeq() == null) {
         String seq =
-            Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PURCHASE_REQUEST, entity.getCompany());
+            Beans.get(SequenceService.class)
+                .getSequenceNumber(SequenceRepository.PURCHASE_REQUEST, entity.getCompany());
         if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
