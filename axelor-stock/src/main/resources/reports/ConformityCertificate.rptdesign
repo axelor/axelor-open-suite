@@ -3,6 +3,18 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -21,18 +33,6 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">3692</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3692</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3692</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -324,10 +324,10 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">conformity_certificate_description</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_track_nbr_on_picking_printing</property>
+                    <property name="columnName">display_track_nbr_on_certificate_of_conformity_printing</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">display_track_nbr_on_picking_printing</text-property>
-                    <text-property name="heading">display_track_nbr_on_picking_printing</text-property>
+                    <text-property name="displayName">display_track_nbr_on_certificate_of_conformity_printing</text-property>
+                    <text-property name="heading">display_track_nbr_on_certificate_of_conformity_printing</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">signatory</property>
@@ -485,7 +485,7 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">26</property>
-                        <property name="name">display_track_nbr_on_picking_printing</property>
+                        <property name="name">display_track_nbr_on_certificate_of_conformity_printing</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -684,8 +684,8 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">26</property>
-                    <property name="name">display_track_nbr_on_picking_printing</property>
-                    <property name="nativeName">display_track_nbr_on_picking_printing</property>
+                    <property name="name">display_track_nbr_on_certificate_of_conformity_printing</property>
+                    <property name="nativeName">display_track_nbr_on_certificate_of_conformity_printing</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -718,7 +718,7 @@ StockMove.gross_mass,
 SignatureFile.file_path as "electronic_signature_file_path",
 StockConfig.conformity_certificate_title,
 StockConfig.conformity_certificate_description,
-StockConfig.display_track_nbr_on_picking_printing,
+StockConfig.display_track_nbr_on_certificate_of_conformity_printing,
 SignatoryUser.name as "signatory",
 EmploymentContract.position as "function"
 from stock_stock_move as StockMove
@@ -1826,12 +1826,6 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">display_track_nbr_on_picking_printing</property>
-                    <text-property name="displayName">display_track_nbr_on_picking_printing</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_track_nbr_on_picking_printing"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
                     <property name="name">signatory</property>
                     <text-property name="displayName">signatory</text-property>
                     <expression name="expression" type="javascript">dataSetRow["signatory"]</expression>
@@ -1842,6 +1836,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <text-property name="displayName">function</text-property>
                     <expression name="expression" type="javascript">dataSetRow["function"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">display_track_nbr_on_certificate_of_conformity_printing</property>
+                    <text-property name="displayName">display_track_nbr_on_certificate_of_conformity_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_track_nbr_on_certificate_of_conformity_printing"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <column id="3343">
@@ -2464,7 +2464,7 @@ row["first_name"]
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row._outer["display_track_nbr_on_picking_printing"]</expression>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_track_nbr_on_certificate_of_conformity_printing"]</expression>
                                 </structure>
                             </list-property>
                             <property name="width">20%</property>
