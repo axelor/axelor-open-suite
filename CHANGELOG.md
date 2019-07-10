@@ -35,6 +35,7 @@
 - OPPORTUNITY : convert into quotation error when no customer selected on opportunity
 - EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
 - ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
+- SALE/PURCHASE without stock moves : issue on page numbering
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
