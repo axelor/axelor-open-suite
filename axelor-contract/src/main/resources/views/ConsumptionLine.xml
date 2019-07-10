@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-	http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid name="consumption-line-grid" title="Consumption Lines"
           model="com.axelor.apps.contract.db.ConsumptionLine"
@@ -21,11 +21,11 @@
     <form name="consumption-line-form" title="Consumption Line"
           model="com.axelor.apps.contract.db.ConsumptionLine">
         <panel readonlyIf="isInvoiced" name="mainPanel">
-            <field name="product" required="true" canEdit="false"
+            <field name="product" required="true"
                    onChange="action-consumption-line-method-change-product"/>
             <field name="lineDate" required="true"/>
             <field name="reference"/>
-            <field name="unit" canEdit="false"/>
+            <field name="unit" />
             <field name="qty"/>
             <field name="isInvoiced" readonly="true" colSpan="3"/>
             <field name="isError" readonly="true" colSpan="3"/>

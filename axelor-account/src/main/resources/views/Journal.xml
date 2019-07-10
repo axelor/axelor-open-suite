@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid name="journal-grid" title="Journal" model="com.axelor.apps.account.db.Journal">
         <field name="name"/>
@@ -22,7 +22,7 @@
 		<panel name="mainPanel" >
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-			<field name="company" canEdit="false" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
+			<field name="company"  readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
 			<field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
 		</panel>
 		

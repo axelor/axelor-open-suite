@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 	    <toolbar>
@@ -51,8 +51,8 @@
       form-view="configurator-soline-formula-form" grid-view="configurator-soline-formula-grid"/>
 
 		<panel name="authorizationsPanel" title="Authorizations" hideIf="id == null">
-			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
-            <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
+			<field name="authorizedUserSet" widget="TagSelect"  canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
+            <field name="authorizedGroupSet" widget="TagSelect"  canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 		
 		<panel name="configuratorBomPanel" title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">

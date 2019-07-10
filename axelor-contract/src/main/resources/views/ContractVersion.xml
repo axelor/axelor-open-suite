@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
   <grid name="contract-version-next-grid" title="Versions" model="com.axelor.apps.contract.db.ContractVersion">
     <field name="contract.contractId"/>
@@ -95,8 +95,8 @@
                     <field if="__config__.app.getApp('contract').isConsumptionManagement" widget="boolean-switch" name="isConsumptionBeforeEndDate" hidden="true" showIf="nextContract.isConsumptionManagement" colSpan="6"/>
                     <panel name="invoicingSubPanel" hidden="true" showIf="nextContract.isInvoicingManagement" colSpan="12">
                         <panel name="paymentPanel" colSpan="12">
-                            <field name="paymentMode" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-                            <field name="paymentCondition" colSpan="3" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                            <field name="paymentMode" colSpan="3" widget="SuggestBox"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                            <field name="paymentCondition" colSpan="3" widget="SuggestBox"  form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                             <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"/>
                             <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
                         </panel>

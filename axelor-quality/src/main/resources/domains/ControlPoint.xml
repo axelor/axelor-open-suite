@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 
-	<entity name="ControlPoint" lang="java" cachable="true">
+	<entity name="ControlPoint" lang="java" cacheable="true">
 		<integer name="statusSelect" selection="quality.control.points.status.select"/>
 		<many-to-one name="qualityControl" ref="QualityControl" title="Quality control" />
 		<many-to-one name="optionalQualityControl" ref="QualityControl"/>

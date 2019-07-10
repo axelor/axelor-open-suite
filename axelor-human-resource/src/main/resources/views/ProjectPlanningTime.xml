@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<grid name="project-planning-time-grid" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<field name="plannedHours" />
@@ -36,13 +36,13 @@
 			<field name="plannedHours" showIf="typeSelect == 1" onChange="action-project-planning-time-record-planned-hours-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="realHours" showIf="typeSelect == 2"/>
 			<field name="project" readonly="true"/>
-			<field name="task" domain="self.project = :project" canEdit="false" />
-			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>
+			<field name="task" domain="self.project = :project"  />
+			<field name="user" onSelect="action-project-planning-time-attrs-project-domain"  onChange="action-project-planning-time-attrs-user-change"/>
 			<field name="date" />
 			<spacer name="dateSpacer" colSpan="6"/>
 			<field name="startTime" showIf="typeSelect == 1" requiredIf="endTime" onChange="action-project-planning-time-record-start-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="endTime" showIf="typeSelect == 1" requiredIf="startTime" onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
-			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
+			<field name="product"   onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
 			<field name="isIncludeInTurnoverForecast"/>
             <field name="description" colSpan="12" widget="html"/>
 			<field name="typeSelect" hidden="true"/>
@@ -53,9 +53,9 @@
 		<panel name="mainPanel">
 			<field name="fromDate" required="true" type="datetime" title="From" />
 			<field name="toDate" required="true" type="datetime" title="To" />
-			<field name="task" canEdit="false" type="many-to-one" title="Task" target="com.axelor.team.db.TeamTask" target-name="name" domain="self.project = :project"/>
-			<field name="user" canEdit="false" title="User" type="many-to-one" target="com.axelor.auth.db.User" target-name="name" required="true"  onSelect="action-project-planning-time-attrs-project-domain"  onChange="action-project-planning-time-attrs-user-change"/>
-			<field name="product" canEdit="false" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" target-name="name"  onSelect="action-project-planning-time-attrs-domain-product" required="true" />
+			<field name="task"  type="many-to-one" title="Task" target="com.axelor.team.db.TeamTask" target-name="name" domain="self.project = :project"/>
+			<field name="user"  title="User" type="many-to-one" target="com.axelor.auth.db.User" target-name="name" required="true"  onSelect="action-project-planning-time-attrs-project-domain"  onChange="action-project-planning-time-attrs-user-change"/>
+			<field name="product"  title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" target-name="name"  onSelect="action-project-planning-time-attrs-domain-product" required="true" />
 			<field name="timepercent" title="Time%" widget="SelectProgress" type="integer" selection="project.task.progress.select"/>
 			<field name="isIncludeInTurnoverForecast" title="Include in turnover forecast" type="boolean" />
 			<button name="addMultipleProjectPlanningTimeBtn" title="Add lines" onClick="action-project-planning-time-method-add-multiple-project-planning-time" colSpan="3" readonlyIf="fromDate == null || toDate == null || user == null"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 		<hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
@@ -21,9 +21,9 @@
         onNew="action-invoice-payment-group-new">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
             <field name="amount"/>
-            <field name="currency" canEdit="false"
+            <field name="currency"
                 form-view="currency-form" grid-view="currency-grid"/>
-            <field name="paymentMode" canEdit="false"
+            <field name="paymentMode"
                 onChange="action-invoice-payment-method-fill-bank-details"
                 form-view="payment-mode-form" grid-view="payment-mode-grid"/>
             <field name="paymentDate"/>
@@ -31,7 +31,7 @@
                 showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
             <field name="invoice.dueDate"
                 showIf="paymentDate &gt; invoice.dueDate" requiredIf="typeSelect != 3 &amp;&amp; typeSelect != 4" hideIf="typeSelect == 3 || typeSelect == 4"/>
-            <field name="companyBankDetails" canEdit="false"
+            <field name="companyBankDetails"
                 onSelect="action-invoice-payment-method-bank-details-domain"
                 form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
@@ -53,12 +53,12 @@
         onNew="action-invoice-payment-record-mass-payment-new">
 		<panel name="mainPanel">
             <field name="amount" readonly="true" title="Total amount"/>
-            <field name="currency" canEdit="false"
+            <field name="currency"
                 form-view="currency-form" grid-view="currency-grid" readonly="true"/>
-            <field name="paymentMode" canEdit="false"
+            <field name="paymentMode"
                 onChange="action-invoice-payment-method-fill-bank-details"
                 form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-            <field name="companyBankDetails" canEdit="false"
+            <field name="companyBankDetails"
                 onSelect="action-invoice-payment-method-bank-details-domain"
                 form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="paymentDate"/>

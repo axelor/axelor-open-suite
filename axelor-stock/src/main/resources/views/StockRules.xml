@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,product.code,useCaseSelect">
         <toolbar>
@@ -22,10 +22,10 @@
     <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     	onNew="action-stock-rules-record-new" width="large">
     	<panel name="mainPanel" >
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" />
 			<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
 			<field name="typeSelect" colSpan="3" showIf="useCaseSelect == 2"/>
-	        <field name="product" canEdit="false" domain="self.productTypeSelect = 'storable' and self.stockManaged = true " onChange="action-stock-rules-record-product-change" form-view="product-form" grid-view="product-grid"/>
+	        <field name="product"  domain="self.productTypeSelect = 'storable' and self.stockManaged = true " onChange="action-stock-rules-record-product-change" form-view="product-form" grid-view="product-grid"/>
 			<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]"/>
 			<field name="product.procurementMethodSelect" hidden="true"/>
 	        <field name="minQty" onChange="action-stock-rules-minqty-change"
@@ -43,8 +43,8 @@
 			<field name="reOrderQty" colSpan="2" validIf="$number(reOrderQty) >= 0" />
         </panel>
 		<panel name="reorderingManagedByPanel" title="Reordering managed by"  showIf="orderAlertSelect == 1">
-			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
-	        <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
+			<field name="user" canNew="false"  canView="false" form-view="user-form" grid-view="user-grid"/>
+	        <field name="team"  form-view="team-form" grid-view="team-grid"/>
 		</panel>
 		
 		<panel-mail name="mailPanel">

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
    <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product">
        <panel name="mainPanel" colSpan="12">
-            <field name="costSheetGroup" showIf="productSubTypeSelect == 3" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+            <field name="costSheetGroup" showIf="productSubTypeSelect == 3"  form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
             <field name="economicManufOrderQty"/>
-           	<field name="defaultBillOfMaterial" canEdit="false" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
+           	<field name="defaultBillOfMaterial"  onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 			<field name="lastProductionPrice" readonly="true"/>
 		   	<field name="realOrEstimatedPriceSelect" onChange="action-product-group-cost-type-select-onchange"/>
 		   	<field name="manufOrderCompValuMethodSelect" showIf="productSubTypeSelect == 1 || productSubTypeSelect == 2"/>
