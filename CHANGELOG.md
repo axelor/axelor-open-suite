@@ -9,6 +9,7 @@
 - STOCK MOVE : fixed invoicing of stock moves containing several lines with the same product
 - SALE ORDER : Fix NPE while changing contactPartner
 - EMPLOYEE : Fixed timesheet dashlet domain
+- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
 
 ## [5.0.9] - 2019-06-19
 ## Improvements
