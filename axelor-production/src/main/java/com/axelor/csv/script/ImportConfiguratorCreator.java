@@ -17,13 +17,12 @@
  */
 package com.axelor.csv.script;
 
-import java.io.IOException;
-import java.util.Map;
-
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.util.Map;
 
 public class ImportConfiguratorCreator {
 
