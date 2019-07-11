@@ -23,7 +23,7 @@
 	</grid>
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Check duplicate" name="wizard-check-duplicate-form">
-		<panel-related name="fieldsSetPanel" field="$fieldsSet" title="Fields to select duplicate" domain="self.metaModel.fullName = :_contextModel AND (relationship = null OR relationship = 'ManyToOne')" canNew="false"  colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
+		<panel-related name="fieldsSetPanel" field="$fieldsSet" title="Fields to select duplicate" domain="self.metaModel.fullName = :_contextModel AND (relationship = null OR relationship = 'ManyToOne')" canNew="false" canEdit="false" colSpan="12" type="many-to-many" target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
   		<panel name="mainPanel" >
     		<button name="showDuplicateBtn" title="Show" colSpan="6" onClick="action-base-method-show-duplicate"/>
   		</panel>

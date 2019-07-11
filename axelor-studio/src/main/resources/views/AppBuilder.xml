@@ -18,7 +18,7 @@
 			<panel name="detailPanel" colSpan="8">
 				<field name="code" colSpan="3" />
 				<field name="name" colSpan="8" />
-				<field name="dependsOnSet" colSpan="12" widget="TagSelect" canNew="false"  />
+				<field name="dependsOnSet" colSpan="12" widget="TagSelect" canNew="false" canEdit="false" />
 				<field name="sequence" />
 			</panel>
 			<field name="description" widget="html" colSpan="12"/>

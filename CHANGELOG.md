@@ -152,7 +152,6 @@
 - Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
 - SUPPLY CHAIN : delete boolean manageInvoicedAmountByLine.
 - EMPLOYEE : Fix issue with full name view
-- Upgraded to ADK 5.1
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -181,5 +180,6 @@
 - SALEORDER : fix action with obsolete name
 - ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
 - Transactionnal : correction and standardisation of rollback.
+- Upgraded to ADK 5.1.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

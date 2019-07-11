@@ -30,8 +30,8 @@
     				<field name="name" required="true" colSpan="9"/>
      		 	</editor>
     		</field>
-		    <field name="company"  readonlyIf="statusSelect == 2"/>
-		    <field name="company.currency" />
+		    <field name="company" canEdit="false" readonlyIf="statusSelect == 2"/>
+		    <field name="company.currency" canEdit="false"/>
 		    <field name="fromDate" readonlyIf="statusSelect == 2"/>
 		    <field name="toDate" readonlyIf="statusSelect == 2"/>
 		</panel>
@@ -51,7 +51,7 @@
     		<field name="totalAmountRealized"/>
     	</panel>
     	<panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true" collapseIf="true" >
-  			<field name="inChargeUser" canNew="false" canView="false" />
+  			<field name="inChargeUser" canNew="false" canView="false" canEdit="false"/>
     	</panel>
     	<panel name="configuration" title="Configuration" canCollapse="true" sidebar="true" collapseIf="true" readonlyIf="statusSelect == 2">
    			<field name="checkAvailableBudget" widget="boolean-switch"/>

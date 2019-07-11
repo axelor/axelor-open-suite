@@ -82,7 +82,7 @@
 		<field name="$qty" title="Qty" type="decimal"/>
 	</grid>
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" >
+	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false">
 		<panel name="mainPanel">
 			<field name="$date" title="Date" type="date"/>
 			<field name="$qty" title="Qty" type="decimal"/>

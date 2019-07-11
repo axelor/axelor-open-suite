@@ -22,7 +22,7 @@
         </field>
     </grid>
 
-    <form name="abc-analysis-line-form" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis line"  canNew="false">
+    <form name="abc-analysis-line-form" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis line" canEdit="false" canNew="false">
         <panel name="mainPanel">
             <field name="product" readonly="true"/>
             <field name="abcAnalysisClass" readonly="true"/>

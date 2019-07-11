@@ -70,7 +70,11 @@ public interface UserService {
    */
   public MetaFile getUserActiveCompanyLogo();
 
-  /** Method that return the company logo link */
+  /**
+   * Method that return company logo link
+   *
+   * @return the logo Link
+   */
   public String getUserActiveCompanyLogoLink();
 
   /**

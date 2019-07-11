@@ -21,7 +21,7 @@
 		<panel name="debtRecoverySettingsPanel" title="Debt recovery settings">
         	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
         	<field name="debtRecoveryMethod" widget="SuggestBox" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
-        	<field name="userDebtRecovery" canNew="false"  canView="false" grid-view="user-grid" form-view="user-form"/>
+        	<field name="userDebtRecovery" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
         	<field name="unknownAddressOK"/>
         	<field name="setToIrrecoverableOK"/>
     	</panel>
@@ -57,7 +57,7 @@
 	        <field name="setToIrrecoverableOK"/>
 	        <field name="balanceDueDebtRecovery"/>
 	        <field name="unknownAddressOK"/>
-	        <field name="userDebtRecovery" canNew="false"  canView="false" grid-view="user-grid" form-view="user-form"/>
+	        <field name="userDebtRecovery" canNew="false" canEdit="false" canView="false" grid-view="user-grid" form-view="user-form"/>
 	        <field name="debtRecoveryDate"/>
 	        <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid" form-view="debt-recovery-method-line-form"/>
 	        <field name="debtRecoveryMessageSet" grid-view="message-grid" form-view="message-form"/>

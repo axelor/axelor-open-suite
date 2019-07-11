@@ -9,7 +9,7 @@
 		<field name="expenseSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"  canView="false"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 		<field name="ventilated"/>
@@ -17,7 +17,7 @@
 	
 	<grid name="expense-payroll-preparation-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"  canView="false"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 		<field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 	
@@ -28,9 +28,9 @@
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
 		<field name="expenseSeq" width="120"/>
-		<field name="company"  form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="sentDate"/>
-		<field name="period" form-view="period-form" grid-view="period-grid"  canView="false"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="statusSelect"/>
 	</grid>
@@ -68,10 +68,10 @@
 				</field>
 				<panel name="generalInfoPanel" colSpan="12">
 					<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
-					<field name="company"  form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
-					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false"  canView="false"/>
+					<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
+					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 					<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
-					<field name="period"  onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
+					<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
 					<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
 					<field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" readonlyIf="statusSelect != 1"/>
 					<field name="user.employee.companyCbDetails" colSpan="12" hidden="true" showIf="user != null &amp;&amp; user.employee != null &amp;&amp; companyCbSelect &gt; 1"/>
@@ -123,9 +123,9 @@
 
 		<panel name="followupPanel" title="Follow-up" showIf="sentDate" colSpan="12" canCollapse="true">
 			<field name="sentDate" colSpan="4"/>
-			<field name="validatedBy"  hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
+			<field name="validatedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="validatedBy" colSpan="4"/>
 			<field name="validationDate" hidden="true" showIf="validationDate" colSpan="4"/>
-			<field name="refusedBy"  hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
+			<field name="refusedBy" canEdit="false" hidden="true" form-view="user-form" grid-view="user-grid" showIf="refusedBy" colSpan="4"/>
 			<field name="refusalDate" hidden="true" showIf="refusalDate" colSpan="4"/>
 			<field name="groundForRefusal" hidden="true" showIf="statusSelect == 5" colSpan="12" readonly="true"/>
 		</panel>
@@ -163,7 +163,7 @@
 	
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
 		<panel name="mainPanel">
-			<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
+			<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
 			<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
 		</panel>
 	</form>

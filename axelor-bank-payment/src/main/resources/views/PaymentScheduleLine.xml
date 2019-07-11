@@ -5,7 +5,7 @@
 
   <grid name="payment-schedule-line-reject-grid" title="Payment schedule line rejection"
     model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id"
-    canNew="false"  canDelete="false">
+    canNew="false" canEdit="false" canDelete="false">
     <toolbar>
       <button name="rejectSelectedBtn" title="Reject selected lines" icon="fa-times"
         onClick="action-payment-schedule-line-show-reject-wizard"/>
@@ -51,7 +51,7 @@
     <panel name="mainPanel">
       <field name="$interbankCodeLine" x-type="many-to-one"
         x-target="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"
-        colSpan="12"  canNew="false" domain="self.interbankCode.typeSelect = 2"/>
+        colSpan="12" canEdit="false" canNew="false" domain="self.interbankCode.typeSelect = 2"/>
       <field name="$represent" widget="boolean" title="Represent" colSpan="3" colOffset="6"/>
       <button name="rejectBtn" title="Reject"
         onClick="action-payment-schedule-line-reject,close" colSpan="3"/>

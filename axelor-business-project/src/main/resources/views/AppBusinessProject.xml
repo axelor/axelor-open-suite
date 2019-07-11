@@ -11,7 +11,7 @@
 			<field name="projectSaleOrderLines" widget="boolean-switch"/>
 			<field name="projectPurchaseOrderLines" widget="boolean-switch"/>
 			<field name="projectInvoiceLines" widget="boolean-switch"/>
-			<field name="productInvoicingProject" />
+			<field name="productInvoicingProject" canEdit="false"/>
 			<field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
 			<field name="showSaleOrderLineRelatedToProject" widget="boolean-switch"/>
 			<field name="showProductionOrderRelatedToProject" widget="boolean-switch"/>

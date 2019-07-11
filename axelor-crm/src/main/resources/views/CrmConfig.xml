@@ -9,7 +9,7 @@
 
 	<form name="crm-config-form" title="CRM configuration" model="com.axelor.apps.crm.db.CrmConfig" onNew="action-crm-config-record-default" width="large">
 	  	<panel name="mainPanel" >
-	    	<field name="company"  form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
 	  	<panel name="reminderTemplatesPanel" title="Reminder Templates">
 	  		<field name="sendMail"/>

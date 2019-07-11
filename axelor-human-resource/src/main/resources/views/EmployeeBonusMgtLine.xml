@@ -7,7 +7,7 @@
 		<field name="employee" />
         <field name="amount" width="100px"/>
         <field name="coef" width="100px"/>
-        <field name="weeklyPlanning"  width="120px"/>
+        <field name="weeklyPlanning" canEdit="false" width="120px"/>
 		<field name="seniorityDate" />
         <field name="statusSelect" width="100px"/>
     </grid>
@@ -17,16 +17,16 @@
 		<field name="employeeBonusMgt.payPeriod" />
 		<field name="employeeBonusMgt.employeeBonusType" />
 		<field name="coef" />
-		<field name="weeklyPlanning"  />
+		<field name="weeklyPlanning" canEdit="false" />
 		<field name="employeeBonusMgt" hidden="true" />
     </grid>
 
     <form name="employee-bonus-mgt-line-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
     	<panel name="mainPanel">
-    		<field name="employee" canNew="false"  canView="false"/>
+    		<field name="employee" canNew="false" canEdit="false" canView="false"/>
 			<field name="amount" />
 			<field name="coef" />
-			<field name="weeklyPlanning"  />
+			<field name="weeklyPlanning" canEdit="false" />
 			<field name="seniorityDate" />
         </panel>
     </form>
@@ -37,7 +37,7 @@
 			<field name="coef" />
 			<field name="employeeBonusMgt.payPeriod" />
 			<field name="employeeBonusMgt.employeeBonusType" />
-			<field name="weeklyPlanning"  />
+			<field name="weeklyPlanning" canEdit="false" />
 			<field name="seniorityDate" />
 			<field name="employeeBonusMgt" hidden="true" />
         </panel>

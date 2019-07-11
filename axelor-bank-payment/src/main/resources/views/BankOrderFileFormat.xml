@@ -20,7 +20,7 @@
 		<panel name="globalAttributesPanel" title="Global attributes">
 			<field name="orderTypeSelect" onChange="action-bank-order-file-format-record-order-type-select-onchange" required="true"/>
 			<field name="fileGenerationSupported"/>
-			<field name="currency"  form-view="currency-form" grid-view="currency-grid"/>
+			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="bankDetailsTypeSelect" widget="MultiSelect"/>
 			<field name="ibanOnly" showIf="bankDetailsTypeSelect == '1' &amp;&amp; (orderTypeSelect == '1' || orderTypeSelect == '2')"/>
             <field name="allowOrderCurrDiffFromBankDetails" showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2" colSpan="12"/>

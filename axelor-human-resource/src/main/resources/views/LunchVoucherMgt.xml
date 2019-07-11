@@ -5,8 +5,8 @@
     
 	<grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="payPeriod"  canView="false"/>
-		<field name="leavePeriod"  canView="false"/>
+		<field name="payPeriod" canEdit="false" canView="false"/>
+		<field name="leavePeriod" canEdit="false" canView="false"/>
 		<field name="statusSelect"/>
 		<field name="requestedLunchVouchers"/>
 		<field name="lunchVoucherWageShare"/>
@@ -27,9 +27,9 @@
   					<panel name="statusPanel" colSpan="12">
 	  					<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
   					</panel>
-		    		<field name="company"  colSpan="4" onChange="action-lunch-voucher-record-company-onchange" />
-					<field name="payPeriod" colSpan="4" onChange="action-lunch-voucher-method-check-pay-period"  domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
-					<field name="leavePeriod" colSpan="4" onChange="action-lunch-voucher-method-check-leave-period"  domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
+		    		<field name="company" canEdit="false" colSpan="4" onChange="action-lunch-voucher-record-company-onchange" />
+					<field name="payPeriod" colSpan="4" onChange="action-lunch-voucher-method-check-pay-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
+					<field name="leavePeriod" colSpan="4" onChange="action-lunch-voucher-method-check-leave-period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" canView="false"/>
   				</panel>
 	        	<panel name="actionsPanel" colSpan="3">
 	        		<button name="calculateBtn" title="Calculate" colSpan="12"

@@ -90,17 +90,17 @@
 		<panel name="detailsPanel">
 			<panel name="generalInfoPanel" colSpan="12">
 				<field name="company" form-view="company-form" grid-view="company-grid"
-					colSpan="3"  />
+					colSpan="3"  canEdit="false"/>
 				<field name="clientPartner" domain="self.isCustomer = true AND :company member of self.companySet" onChange="action-project-method-get-partner-data"
 					requiredIf="isBusinessProject" form-view="partner-form" grid-view="partner-grid"
 					colSpan="3" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					showIf="isBusinessProject" />
 				<field name="currency" colSpan="3"
 					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					showIf="isBusinessProject" />
+					showIf="isBusinessProject" canEdit="false"/>
 				<field name="priceList" colSpan="3"
 					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					showIf="isBusinessProject" />
+					showIf="isBusinessProject" canEdit="false"/>
 				<field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
 					form-view="partner-form" grid-view="partner-grid" colSpan="6"
 					if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
@@ -145,7 +145,7 @@
 			<panel title="Members" name="membersPanel">
 				<field name="team" title="Team"
 					readonlyIf="synchronize || extendsMembersFromParent" colSpan="6"
-					canNew="false"  />
+					canNew="false" canEdit="false" />
 				<field name="synchronize" readonlyIf="extendsMembersFromParent"
 					colSpan="2" widget="boolean-switch" />
 				<field name="extendsMembersFromParent" hidden="true"
@@ -173,7 +173,7 @@
 					<button name="addProjectPlanningTimeLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-add-new,save" />
 					<button name="removeProjectPlanningTimeLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-remove,save" />
 					<field name="$projectPlanningTimeSet" hidden="true" type="many-to-many" widget="TagSelect" title="Planned Time Planning"
-					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime"  canNew="false"
+					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" 
 					grid-view="project-planning-time-grid" form-view="project-planning-time-form"/>
 					<button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 					<button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
@@ -185,7 +185,7 @@
 					<button name="addProjectPlanningTimeSpentLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-spent-add-new,save" />
 					<button name="removeProjectPlanningTimeSpentLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-spent-remove,save" />
 					<field name="$projectPlanningTimeSpentSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time Spent"
-					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime"  canNew="false"
+					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" 
 					grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
 					<button name="removeSelectedPlanningTimeSpentBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time-spent"/>
 					<button name="cancelRemovePlanningTimeSpentBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-spent-cancel-remove" />
@@ -213,7 +213,7 @@
 				<button name="selectNewSOLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-sales-order-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<button name="manageSOLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-sales-order-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<field name="$salesOrderLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Sale order lines"
-					colSpan="12" target="com.axelor.apps.sale.db.SaleOrderLine"  canNew="false"
+					colSpan="12" target="com.axelor.apps.sale.db.SaleOrderLine" canEdit="false" canNew="false" 
 					grid-view="sale-order-line-project-grid" form-view="sale-order-line-form"/>
 				<button-group name="SOLinesBtnGroup" colSpan="4">
 					<button name="addSelectedSOLinesBtn" hidden="true" title="Add selected lines" onClick="action-sale-order-line-method-set-project"/>
@@ -237,7 +237,7 @@
 				<button name="selectNewPOLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-purchase-order-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<button name="managePOLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-purchase-order-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<field name="$purchaseOrderLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Purchase order lines"
-					colSpan="12" target="com.axelor.apps.purchase.db.PurchaseOrderLine"  canNew="false"
+					colSpan="12" target="com.axelor.apps.purchase.db.PurchaseOrderLine" canEdit="false" canNew="false" 
 					grid-view="purchase-order-line-project-grid" form-view="purchase-order-line-form"/>
 				<button-group name="POLinesBtnGroup" colSpan="4">
 					<button name="addSelectedPOLinesBtn" hidden="true" title="Add selected lines" onClick="action-purchase-order-line-method-set-project"/>
@@ -261,7 +261,7 @@
 				<button name="selectNewExpenseLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<button name="manageExpenseLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-expense-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3"/>
 				<field name="$expenseLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Expense lines"
-					colSpan="12" target="com.axelor.apps.hr.db.ExpenseLine"  canNew="false"
+					colSpan="12" target="com.axelor.apps.hr.db.ExpenseLine" canEdit="false" canNew="false" 
 					grid-view="expense-line-project-grid" form-view="expense-line-form"/>
 				<button-group name="expenseLinesBtnGroup" colSpan="4">
 					<button name="addSelectedExpenseLinesBtn" hidden="true" title="Add selected lines" onClick="action-expense-line-method-set-project"/>
@@ -280,7 +280,7 @@
 						onClick="action-project-view-show-production-orders" />
 				<panel-related
 					colSpan="12" field="productionOrderList"
-					canSelect="true" canNew="false"  canSearch="true" name="productionOrderList"/>
+					canSelect="true" canNew="false" canEdit="false" canSearch="true" name="productionOrderList"/>
 			</panel>
 			<panel title="Invoicing" name="invoicingPanel"  showIf="isBusinessProject"
 				 if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
@@ -299,7 +299,7 @@
 				<button name="selectNewCustomerInvoiceLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-customer-invoice-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
 				<button name="manageCustomerInvoiceLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-customer-invoice-line-manage-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" />
 				<field name="$customerInvoiceLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Customer Invoice lines"
-					colSpan="12" target="com.axelor.apps.account.db.InvoiceLine"  canNew="false"
+					colSpan="12" target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false" 
 					grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
 				<button-group name="customerInvoiceLinesBtnGroup" colSpan="4">
 					<button name="addSelectedCustomerInvoiceLinesBtn" hidden="true" title="Add selected lines" onClick="action-invoice-line-method-set-customer-invoice-line-project"/>
@@ -311,7 +311,7 @@
 				<button name="selectNewSupplierInvoiceLinesBtn" title="Select new lines" css="btn-custom text-left" onClick="save,action-project-attrs-supplier-invoice-line-select-lines"  hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()"/>
 				<button name="manageSupplierInvoiceLinesBtn" title="Manage lines" css="btn-custom text-left" onClick="save,action-project-attrs-supplier-invoice-line-manage-lines" hideIf="$popup() || $readonly()" colSpan="3" if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject()" />
 				<field name="$supplierInvoiceLineSet" hidden="true" type="many-to-many" widget="TagSelect" title="Supplier Invoice lines"
-					colSpan="12" target="com.axelor.apps.account.db.InvoiceLine"  canNew="false"
+					colSpan="12" target="com.axelor.apps.account.db.InvoiceLine" canEdit="false" canNew="false" 
 					grid-view="invoice-line-project-grid" form-view="invoice-line-form"/>
 				<button-group name="supplierInvoiceLinesBtnGroup" colSpan="4">
 					<button name="addSelectedSupplierInvoiceLinesBtn" hidden="true" title="Add selected lines" onClick="action-invoice-line-method-set-supplier-invoice-line-project"/>
@@ -346,7 +346,7 @@
 			</panel>
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-					name="productSet" colSpan="12" widget="TagSelect"
+					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
 					domain="self.isActivity = true" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
 				<field name="projectCategorySet" colSpan="12" widget="TagSelect" />
@@ -397,7 +397,7 @@
 				showIf="isProject" colSpan="12">
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project"
 					requiredIf="isProject" />
-				<field name="parentProject" showIf="projectTypeSelect == 2"
+				<field name="parentProject" showIf="projectTypeSelect == 2" canEdit="false"
 					form-view="project-form" grid-view="project-grid"
 					onSelect="action-project-attrs-set-parent-project-domain"
 					requiredIf="projectTypeSelect == 2" />
@@ -405,7 +405,7 @@
 		</panel>
 		<panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true" canCollapse="true">
 			<field name="assignedTo" title="Person In Charge" canNew="false"
-				canView="false"  onChange="action-attrs-project-add-member"
+				canView="false" canEdit="false" onChange="action-attrs-project-add-member"
 				form-view="user-form" grid-view="user-grid" />
 		</panel>
 		<panel name="datePanel" title="Dates" colSpan="12" sidebar="true"

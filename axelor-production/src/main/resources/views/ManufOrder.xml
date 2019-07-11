@@ -96,8 +96,8 @@
 		<panel name="detailsPanel" colSpan="8">
 			<field name="manufOrderSeq"  readonly="true" css="bold" colSpan="2"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
-			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop"  readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" colSpan="2"  onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
+			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
+			<field name="workshopStockLocation" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
 			<field name="$viewerIsOutsourcing" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
 				<viewer>
 					<![CDATA[
@@ -117,15 +117,15 @@
 				</viewer>
 			</field>
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
-			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" />
-			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" />
+			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
+			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess.outsourcing" colSpan="3" hidden="true"/>
-			<field name="product"  required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
+			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true"/>
-			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" />
-			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order" />
+			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
+			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order" canEdit="false"/>
 			<field name="isConsProOnOperation" hidden="true"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
@@ -228,7 +228,7 @@
 	
 	<form name="manuf-order-cancel-wizard-form" model="com.axelor.apps.production.db.ManufOrder" title="Cancellation confirmation" >
 		<panel name="mainPanel">
-			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false"  onChange="action-attrs-sale-other-reason"/>
+			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
 			<field name="cancelReasonStr" colOffset="4" colSpan="4" hidden="true"/>
 			<button name="cancelConfirmBtn" title="Confirm cancellation" onClick="action-manuf-order-group-cancel-confirm" colOffset="4" colSpan="4"/>
 		</panel>

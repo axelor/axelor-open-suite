@@ -19,7 +19,7 @@
 		<panel name="mainPanel">
 			<field name="value" onChange="action-leave-management-record-counted"/>
 		    <field name="date"/>
-		    <field name="user" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+		    <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		    <field name="fromDate"/>
 		    <field name="toDate"/>
 		    <field name="comments"/>

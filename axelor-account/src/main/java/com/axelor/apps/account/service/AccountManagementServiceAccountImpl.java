@@ -60,7 +60,6 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @return the tax defined for the product, according to the fiscal position
    * @throws AxelorException
    */
-  @CallMethod
   public Account getProductAccount(
       Product product,
       Company company,
@@ -110,6 +109,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @return
    * @throws AxelorException
    */
+  @CallMethod
   protected Account getProductAccount(
       Product product, Company company, boolean isPurchase, boolean fixedAsset, int configObject) {
 

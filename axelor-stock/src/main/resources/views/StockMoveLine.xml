@@ -8,7 +8,7 @@
 		<hilite strong="true" color="default" if="lineTypeSelect != 0"/>
 		<field name="lineTypeSelect" hidden="true"/>
         <field name="product" 
-
+        	canEdit="false"
             onChange="action-group-stock-stockmoveline-product-onchange"
             onSelect="action-stock-move-line-method-product-domain"
             form-view="product-form"
@@ -76,9 +76,9 @@
     	canNew="false" canDelete="false">
         <panel name="mainPanel" >
         	<field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line" />
-		    <field name="product"  domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
+		    <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
 	        <field name="filterOnAvailableProducts" widget="boolean-switch" hidden="true"/>
-	        <field name="productModel"  domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
+	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
             <field name="productName"/>
 	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="realQty" colSpan="3" onChange="action-stock-move-line-group-real-qty-onchange"/>
@@ -102,7 +102,7 @@
 					<field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
-	        <field name="unit"  colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
 	        <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
@@ -231,8 +231,8 @@
 	        <field name="stockMove.toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         </panel>
         <panel name="moveDetailsPanel" title="Move details">
-	        <field name="product"  domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
-	        <field name="productModel"  domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
+	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
 	        <field name="productName" required="true" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="stockMove.partner"/>
 			<field name="qty" colSpan="3" min="0" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') > 1"/>
@@ -253,7 +253,7 @@
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1"/>
        		<field name="unitPriceTaxed" hidden="true"/>
-	        <field name="unit"  colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
 	        <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
@@ -279,7 +279,7 @@
     <form model="com.axelor.apps.base.db.Wizard" title="Enter tracking numbers" name="stock-move-line-track-number-wizard-form" onNew="action-track-number-atts-from-stock-move-line">
     	<panel name="wizardPanel" colSpan="12">
 	    	<panel-related name="$trackingNumbersPanel" field="$trackingNumbers" canSelect="false" editable="true" type="one-to-many" colSpan="12" title="Enter tracking numbers" target="com.axelor.apps.stock.db.TrackingNumber">
-	    	 	<field name="trackingNumber" type="many-to-one" target="com.axelor.apps.stock.db.TrackingNumber" hidden="true" onChange="action-stock-move-line-wizard-record-set-tracking-number-seq" onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain" />
+	    	 	<field name="trackingNumber" type="many-to-one" target="com.axelor.apps.stock.db.TrackingNumber" hidden="true" onChange="action-stock-move-line-wizard-record-set-tracking-number-seq" onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain" canEdit="false"/>
 	   			<field name="trackingNumberSeq" title="Tracking Nbr." onChange="action-stock-move-line-wizard-record-set-dates,action-track-number-atts-readonly-dates"/>
 				<field name="$availableQty" title="Available qty" type="decimal" width="120" readonly="true" />
 				<field name="counter" title="Quantity" readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>

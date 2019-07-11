@@ -52,7 +52,7 @@
 			<button name="editControlPointsBtn" title="Edit control points" onClick="action-quality-control-method-open-control-points"/>
 		</panel>
 		<panel name="configPanel" title="Configuration">
-			<field name="printingSettings" />
+			<field name="printingSettings" canEdit="false"/>
 		</panel>
 		<panel-mail name="mailPanel">
 		  <mail-messages />

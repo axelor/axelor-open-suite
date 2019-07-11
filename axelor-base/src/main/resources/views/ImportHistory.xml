@@ -11,7 +11,7 @@
 	
 	<form name="import-history-form" cols="6" title="Historical" model="com.axelor.apps.base.db.ImportHistory">
 		<panel name="mainPanel" >
-			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
 	        <field name="createdOn"/>
 	        <field name="logMetaFile" widget="binary-link" />

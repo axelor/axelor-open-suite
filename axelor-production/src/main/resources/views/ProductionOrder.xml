@@ -11,8 +11,8 @@
         <field name="prioritySelect"/>
         <field name="createdBy"/>
         <field name="createdOn"/>
-        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true"  onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
-		<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect"  onChange="action-production-order-record-client-partner-onchange-sale-order"/>
+        <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true" canEdit="false" onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
+		<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false" onChange="action-production-order-record-client-partner-onchange-sale-order"/>
         <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
     </grid>
 
@@ -32,8 +32,8 @@
                 ]]>
                 </viewer>
             </field>
-            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true"  onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
-			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect"  onChange="action-production-order-record-client-partner-onchange-sale-order"/>
+            <field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer = true" canEdit="false" onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
+			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-production-order-attrs-sale-order-onselect" canEdit="false" onChange="action-production-order-record-client-partner-onchange-sale-order"/>
             <field name="project" if-module="axelor-business-production" form-view="project-form" grid-view="project-grid" if=" __config__.app.getApp('production').getManageBusinessProduction()"/>
         </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
@@ -56,7 +56,7 @@
     
     <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Add Manuf. Order" onNew="action-production-order-record-default-wizard">
     	<panel name="wizardPanel">
-     		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product"  domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
+     		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
         	<field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
         	<field name="$qty" title="Quantity" type="decimal"/>
         	<field name="$_startDate" widget="dateTime" title="Planned start date"/>

@@ -17,7 +17,7 @@
     	<panel name="mainPanel" >
     		<field name="actionSelect" onChange="action-invoice-batch-attrs-action-select"/>
     		<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
-    		<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+    		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
     	</panel>
     	<panel-tabs name="mainPanelTab">
     		<panel name="statusOptionPanel" title="Options">

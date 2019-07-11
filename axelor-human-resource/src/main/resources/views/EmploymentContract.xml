@@ -37,8 +37,8 @@
         </panel>
         <panel-stack name="generalDetailsPanel">
 			<panel name="employeeDetailsPanel">
-			  <field name="employee" canSuggest="false" canNew="false"  canView="false" hideIf="$popup()" requiredIf="!$popup()"/>
-			  <field name="payCompany"  canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
+			  <field name="employee" canSuggest="false" canNew="false" canEdit="false" canView="false" hideIf="$popup()" requiredIf="!$popup()"/>
+			  <field name="payCompany" canEdit="false" canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
 			  <field name="companyDepartment" onSelect="action-employment-contract-attrs-department-domain"/>
 			  <field name="employmentContractVersion" canSuggest="false"/>
 			  <field name="employmentContractTemplate" readonlyIf="!payCompany" widget="SuggestBox" domain=":payCompany MEMBER OF self.companySet" />

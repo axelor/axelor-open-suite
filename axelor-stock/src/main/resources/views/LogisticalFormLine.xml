@@ -8,7 +8,7 @@
         <field name="typeSelect" width="65" onChange="sync,action-logistical-form-line-type-change" required="false" />
         <field name="stockMoveLine" width="170" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="sync,action-logistical-form-line-stock-move-line-change"
             readonlyIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid"
-             />
+            canEdit="false" />
         <field name="stockMoveLine.stockMove" width="170" form-view="stock-move-form" />
         <field name="stockMoveLine.product.code" width="120" title="Product code" />
         <field name="stockMoveLine.productName" width="170" title="Product description" />
@@ -30,7 +30,7 @@
             <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
             <field name="stockMoveLine" onSelect="action-logistical-form-line-stock-move-line-domain" onChange="action-logistical-form-line-stock-move-line-change"
                 hideIf="typeSelect != 3" form-view="stock-move-line-form" grid-view="stock-move-line-sale-order-grid"
-                 />
+                canEdit="false" />
             <field name="stockMoveLine.stockMove" hideIf="typeSelect != 3" form-view="stock-move-form" />
             <field name="stockMoveLine.product.code" title="Product code" hideIf="typeSelect != 3" />
             <field name="stockMoveLine.productName" title="Product description" hideIf="typeSelect != 3" />

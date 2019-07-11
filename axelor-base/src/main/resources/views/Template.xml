@@ -25,12 +25,12 @@
 				</editor>
 			</field>
 			<field name="mediaTypeSelect" colSpan="6" />
-			<field name="metaModel"  form-view="meta-model-form"
+			<field name="metaModel" canEdit="false" form-view="meta-model-form"
 				grid-view="meta-model-grid" onSelect="action-template-attrs-meta-model-domain" />
 			<field name="target" hidden="true" />
-			<field name="templateContext"  form-view="template-context-form"
+			<field name="templateContext" canEdit="false" form-view="template-context-form"
 				grid-view="template-context-grid" hidden="true" />
-			<field name="language"  form-view="language-form"
+			<field name="language" canEdit="false" form-view="language-form"
 				grid-view="language-grid" />
 		</panel>
 		<panel-tabs name="mainPanelTab">
@@ -56,7 +56,7 @@
 					<field name="content" showTitle="false" colSpan="12" widget="html" />
 				</panel>
 				<panel name="attachedFilesPanel" title="Attached files" colSpan="12">
-					<field name="birtTemplate" colSpan="12"
+					<field name="birtTemplate" colSpan="12" canEdit="false"
 						form-view="birt-template-form" grid-view="birt-template-grid" />
 				</panel>
 			</panel>

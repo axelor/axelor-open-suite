@@ -10,7 +10,7 @@
   </grid>
     
   <form name="wkf-tracking-time-form" title="Total time per status" model="com.axelor.studio.db.WkfTrackingTime" width="large"
-     canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
+    canEdit="false" canNew="false" canDelete="false" canAttach="false" canCopy="false" canSave="false">
       <panel name="mainPanel">
         <field name="status"/>
         <field name="totalTimeHours"/>

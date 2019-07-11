@@ -39,9 +39,9 @@
                 </viewer>
             </field>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="product" requiredIf="!isEnabledForAllProducts"  grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'"/>
-            <field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-            <field name="workshopStockLocation"  domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
+            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'"/>
+            <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+            <field name="workshopStockLocation" canEdit="false" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
         </panel>
 
 		<panel-tabs>
@@ -49,8 +49,8 @@
 			<panel-related title="Phases" name="prodProcessLineListPanel" field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			
 			<panel title="Details" name="detailsPanel">
-				<field name="stockLocation"  required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company"/>
-				<field name="producedProductStockLocation"  grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
+				<field name="stockLocation" canEdit="false" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company"/>
+				<field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
 				<field name="launchQty"/>
 				<field name="stockMoveRealizeOrderSelect"/>
 				<field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro" readonlyIf="isEnabledForAllProducts"/>

@@ -27,16 +27,16 @@
 			</panel>
 		</panel>
 		<panel name="stockCorrectionDetailsPanel" readonlyIf="statusSelect == 2">
-			<field name="stockLocation"  grid-view="stock-location-grid" form-view="stock-location-form"/>
-			<field name="product"  onSelect="action-stock-correction-on-select-product" onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid" form-view="product-form"/>
-			<field name="trackingNumber"  onSelect="action-stock-correction-on-select-tracking-number" onChange="action-stock-correction-method-set-deault-qtys"/>
+			<field name="stockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form"/>
+			<field name="product" canEdit="false" onSelect="action-stock-correction-on-select-product" onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid" form-view="product-form"/>
+			<field name="trackingNumber" canEdit="false" onSelect="action-stock-correction-on-select-tracking-number" onChange="action-stock-correction-method-set-deault-qtys"/>
 			<spacer name="trackingNumberSpacer"/>
 			<field name="realQty" colSpan="4"/>
 			<field name="futureQty" colSpan="4"/>
 			<field name="reservedQty" colSpan="4"/>
 		</panel>
 		<panel name="stockCorrectionReasonPanel" sidebar="true" readonlyIf="statusSelect == 2">
-			<field name="stockCorrectionReason"  colSpan="12"/>
+			<field name="stockCorrectionReason" canEdit="false" colSpan="12"/>
 			<field name="validationDateT"/>
 		</panel>
     </form>

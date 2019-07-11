@@ -279,14 +279,14 @@
         </panel>
 
         <panel name="stockMoveInformationPanel" title="Stock move information">
-            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company"  grid-view="company-grid" form-view="company-form"/>
-            <field name="partner"  domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form" hideIf="typeSelect == 1"/>
+            <field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+            <field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form" hideIf="typeSelect == 1"/>
             <field name="name" readonlyIf="statusSelect == 3 || statusSelect == 4"/>
-            <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-printing-settings-default-value"  if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
+            <field name="tradingName" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-stock-move-method-printing-settings-default-value" canEdit="false" if="__config__.app.getApp('base').enableTradingNamesManagement" grid-view="trading-name-grid" form-view="trading-name-form"/>
             <spacer name="tradingNameSpacer" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
 
-            <field name="fromStockLocation"  domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
-            <field name="toStockLocation"  domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="fromStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
+            <field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
 
             <field name="fromStockLocation.address" showIf="typeSelect == 1"/>
             <field name="toStockLocation.address" showIf="typeSelect == 1"/>
@@ -338,11 +338,11 @@
               onNew="action-stock-move-line-record-filter-on-available-products" grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
               orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true" />
             <panel name="freightCarrierPanel" title="Freight Carrier">
-                <field name="shipmentMode"  form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
-				<field name="freightCarrierMode"  domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
-                <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" />
-            	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid"  />
-            	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid"  />
+                <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid" />
+				<field name="freightCarrierMode" canEdit="false" domain="self.shipmentMode = :shipmentMode"  form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" onChange="action-stock-move-record-freight-carrier" />
+                <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
+            	<field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
+            	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 
                 <field name="trackingNumber" colSpan="4"/>
                 <field name="deliveryCondition" colSpan="6" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
@@ -366,7 +366,7 @@
                     </field>
                 </panel>
 				<field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
-				<field name="signatoryUser"  />
+				<field name="signatoryUser" canEdit="false" />
 				<field name="isConformityCertifSigned" showIf="isNeedingConformityCertificate" onChange="action-stock-move-record-is-conformity-certif-signed-onchange"/>
 				<field name="electronicSignature" showIf="isConformityCertifSigned" widget="Image"/>
 
@@ -379,7 +379,7 @@
                 <panel name="OriginPanel" itemSpan="3" colSpan="12">
                   <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
                   <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form" form-view="stock-move-form" showIf="reversionOriginStockMove" />
-                  <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form"  showIf="invoice"/>
+                  <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" showIf="invoice"/>
                   <button name="backOrderBtn" title="Backorder" colSpan="3" hidden="true" showIf="backorderId" onClick="action-stock-move-view-back-order"/>
             	  <field name="backorderId" hidden="true"/>
                 </panel>
@@ -391,7 +391,7 @@
             
             <panel name="configPanel" title="Configuration">
             	<field name="isWithBackorder" colSpan="6"/>
-                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings"  colSpan="6"/>
+                <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false" colSpan="6"/>
                 <field name="isWithReturnSurplus" showIf="typeSelect == 3" colSpan="6"/>
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
                 <panel name="plannedStockMovePanel" colSpan="12" showIf="typeSelect == 2">
@@ -456,7 +456,7 @@
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
     		<field name="stockToDate" title="To Date" type="date" required="true"/>
 	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" />
-	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" />
+	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false"/>
         </panel>
     </form>
     
@@ -868,7 +868,7 @@
 
 	<form name="stock-move-cancel-wizard-form" model="com.axelor.apps.stock.db.StockMove" title="Cancellation confirmation" >
 		<panel name="mainPanel">
-			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" />
+			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false"/>
 			<button readonlyIf="cancelReason == null" name="cancelConfirmBtn" title="Confirm cancellation" onClick="action-stock-move-method-cancel" colOffset="4" colSpan="4"/>
 		</panel>
 	</form>

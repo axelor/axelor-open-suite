@@ -30,7 +30,7 @@
 			</field>
 			<spacer name="nameSpacer"/>
 			<panel name="informationPanel" title="Information" colSpan="12">
-				<field name="campaignType"  colSpan="4"/>
+				<field name="campaignType" canEdit="false" colSpan="4"/>
 				<field name="eventStartDateT" colSpan="4"/>
 				<field name="eventEndDateT" colSpan="4"/>
 				<spacer name="campaignTypeSpacer"/>
@@ -46,8 +46,8 @@
 				<button name="generateTargetsBtn" title="Generate Targets" onClick="save,action-campaign-generate-targets,save" colSpan="3"/>
 				<button name="inviteSelectedTargetBtn" title="Invite selected targets" showIf="manageAttendees &amp;&amp; isAllowEditingOfTargets" onClick="save,action-campaign-method-invite-selected-targets" colSpan="4"/>
 				<button name="inviteAllTargetsBtn" title="Invite all targets" showIf="manageAttendees &amp;&amp; isAllowEditingOfTargets" colSpan="4" onClick="save,action-campaign-method-invite-all-targets"/>
-				<panel-related name="partnerSetPanel" field="partnerSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="partner-campaign-grid" form-view="partner-form" />
-				<panel-related name="leadSetPanel" field="leadSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="lead-campaign-grid" form-view="lead-form" />
+				<panel-related name="partnerSetPanel" field="partnerSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="partner-campaign-grid" form-view="partner-form" canEdit="false"/>
+				<panel-related name="leadSetPanel" field="leadSet" colSpan="12" showIf="isAllowEditingOfTargets" grid-view="lead-campaign-grid" form-view="lead-form" canEdit="false"/>
 			</panel>
 			<panel name="emailingPanel" title="Emailing" showIf="emailing" colSpan="12">
 				<field name="partnerTemplate" domain="self.metaModel.name = 'Partner' AND self.mediaTypeSelect IN (4)" showIf="emailing"/>
@@ -75,19 +75,19 @@
 			<panel name="resultsPanel" title="Results">
 				<field name="report" widget="html" colSpan="12" />
 				<panel name="invitedPanel" title="Invited" showIf="manageAttendees" colSpan="12">
-					<panel-related name="invitedLeadSetPanel" field="invitedLeadSet" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false"  canSelect="false"/>
-					<panel-related name="invitedPartnerSetPanel" field="invitedPartnerSet" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false"  canSelect="false"/>
+					<panel-related name="invitedLeadSetPanel" field="invitedLeadSet" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false" canEdit="false" canSelect="false"/>
+					<panel-related name="invitedPartnerSetPanel" field="invitedPartnerSet" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false" canEdit="false" canSelect="false"/>
 					<button name="participateBtn" title="Participate" colSpan="3" onClick="save,action-campaign-method-participate-targets"/>
 					<button name="notParticipatingBtn" title="Not participating" colSpan="3" onClick="save,action-campaign-method-not-participate-targets"/>
 					<button name="sendReminderEmailBtn" title="Send a reminder" colSpan="4" onClick="save,action-campaign-validate-send-reminder-email,action-campaign-method-send-reminder-email,save" showIf="emailing"/>
 				</panel>
 				<panel name="enrolledPanel" title="Enrolled" showIf="manageAttendees" colSpan="12">
-					<panel-related name="leadsPanel" field="leads" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false"  canSelect="false"/>
-					<panel-related name="partnersPanel" field="partners" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false"  canSelect="false"/>
+					<panel-related name="leadsPanel" field="leads" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false" canEdit="false" canSelect="false"/>
+					<panel-related name="partnersPanel" field="partners" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false" canEdit="false" canSelect="false"/>
 				</panel>
 				<panel name="notParticipatingPanel" title="Not participating" showIf="manageAttendees" colSpan="12">
-					<panel-related name="notParticipatingLeadSetPanel" field="notParticipatingLeadSet" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false"  canSelect="false"/>
-					<panel-related name="notParticipatingPartnerSetPanel" field="notParticipatingPartnerSet" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false"  canSelect="false"/>
+					<panel-related name="notParticipatingLeadSetPanel" field="notParticipatingLeadSet" colSpan="12" grid-view="lead-campaign-grid" form-view="lead-form" canNew="false" canEdit="false" canSelect="false"/>
+					<panel-related name="notParticipatingPartnerSetPanel" field="notParticipatingPartnerSet" colSpan="12" grid-view="partner-campaign-grid" form-view="partner-form" canNew="false" canEdit="false" canSelect="false"/>
 				</panel>
 				<panel name="emailingReportPanel" title="Emailing report" colSpan="12">
 					<field name="emailLog" widget="binary-link" showIf="emailing"/>

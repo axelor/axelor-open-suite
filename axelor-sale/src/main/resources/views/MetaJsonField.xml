@@ -40,7 +40,7 @@
 						   x-target-name="fullName" />
 					<field name="targetJsonModel" showIf="type.match('^json-')"
 						   title="Target custom model"
-						    canView="false" />
+						   canEdit="false" canView="false" />
 				</panel>
 				<field name="domain" showIf="type.match('-to-')" />
 				<field name="gridView" showIf="type.match('^(one|many)-to-')" widget="ref-text"

@@ -22,12 +22,12 @@
           
           <panel-tabs name="mainPanelTab">
         		<panel name="informationsPanel" title="Information">
-            		<field name="product"  onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"/>
+            		<field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"/>
             		<field name="productName"/>
             		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
             		<field name="price" onChange="action-method-contract-line-compute-total"/>
-            		<field name="taxLine"  onChange="action-method-contract-line-compute-total"/>
-            		<field name="unit" />
+            		<field name="taxLine" canEdit="false" onChange="action-method-contract-line-compute-total"/>
+            		<field name="unit" canEdit="false"/>
             		<field name="exTaxTotal" readonly="true"/>
             		<field name="inTaxTotal" readonly="true"/>
             		<field name="isConsumptionLine" hidden="true" onChange="action-method-contract-line-change-is-consumption-line,action-method-contract-line-compute-total"/>
@@ -37,7 +37,7 @@
         		</panel>
         		<panel name="analyticDistributionPanel" title="Analytics" if="__config__.app.getApp('account').getManageAnalyticAccounting()"
         				onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
-        			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"
+        			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false"
         				onChange="action-contract-line-method-create-distribution"/>
         			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
         		</panel>
@@ -87,12 +87,12 @@
           
           <panel-tabs name="mainPanelTab">
         		<panel name="informationsPanel" title="Information">
-            		<field name="product"  onChange="action-method-contract-change-product,action-method-contract-line-compute-total"/>
+            		<field name="product" canEdit="false" onChange="action-method-contract-change-product,action-method-contract-line-compute-total"/>
             		<field name="productName"/>
             		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
             		<field name="price" onChange="action-method-contract-line-compute-total"/>
-            		<field name="taxLine"  onChange="action-method-contract-line-compute-total"/>
-            		<field name="unit" />
+            		<field name="taxLine" canEdit="false" onChange="action-method-contract-line-compute-total"/>
+            		<field name="unit" canEdit="false"/>
             		<field name="exTaxTotal" readonly="true"/>
             		<field name="inTaxTotal" readonly="true"/>
             		<field name="isInvoiced" readonly="true" showIf="isInvoiced" />
@@ -100,7 +100,7 @@
         		</panel>
         		<panel name="analyticDistributionPanel" title="Analytics" if="__config__.app.getApp('account').getManageAnalyticAccounting()"
         				onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
-        			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"
+        			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false"
         				onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
         				onChange="action-contract-line-method-create-distribution"/>
         			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" colSpan="12" grid-view="analytic-move-line-distribution-grid"
@@ -121,13 +121,13 @@
     <form name="contract-line-form-for-template" title="Contract Line"
       model="com.axelor.apps.contract.db.ContractLine">
         <panel name="mainPanel">
-            <field name="product"
+            <field name="product" canEdit="false"
               onChange="action-contract-template-method-change-product"/>
             <field name="productName"/>
             <field name="qty" readonlyIf="isConsumptionLine"/>
             <field name="price"/>
-            <field name="taxLine" />
-            <field name="unit" />
+            <field name="taxLine" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
             <field name="isConsumptionLine"
               onChange="action-method-contract-line-change-is-consumption-line"/>
             <field name="description" colSpan="12" widget="html"/>
@@ -144,13 +144,13 @@
     <form name="additional-contract-line-form-for-template" title="Additional benefit"
       model="com.axelor.apps.contract.db.ContractLine">
         <panel name="mainPanel">
-            <field name="product"
+            <field name="product" canEdit="false"
               onChange="action-contract-template-method-change-product"/>
             <field name="productName"/>
             <field name="qty"/>
             <field name="price"/>
-            <field name="taxLine" />
-            <field name="unit" />
+            <field name="taxLine" canEdit="false"/>
+            <field name="unit" canEdit="false"/>
             <field name="description" colSpan="12" widget="html"/>
         </panel>
     </form>
