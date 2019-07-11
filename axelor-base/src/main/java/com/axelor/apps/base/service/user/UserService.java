@@ -71,6 +71,13 @@ public interface UserService {
   public MetaFile getUserActiveCompanyLogo();
 
   /**
+   * Method that return company logo link
+   *
+   * @return the logo Link
+   * */
+  public String getUserActiveCompanyLogoLink();
+
+  /**
    * Method that return the active team of the current connected user
    *
    * @return Team the active team
