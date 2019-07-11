@@ -38,6 +38,7 @@
 - SALE/PURCHASE without stock moves : issue on page numbering
 - ActionBuilder : Use CodeEditor widget for script.
 - Studio : Add colspan field on worklow transition.
+- Wkf : Add confirmation message when edit status field.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
