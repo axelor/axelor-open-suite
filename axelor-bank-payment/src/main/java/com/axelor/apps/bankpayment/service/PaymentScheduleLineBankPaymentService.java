@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.service.PaymentScheduleLineService;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.CallMethod;
 import java.util.Map;
 
 public interface PaymentScheduleLineBankPaymentService extends PaymentScheduleLineService {
@@ -81,6 +80,5 @@ public interface PaymentScheduleLineBankPaymentService extends PaymentScheduleLi
    *
    * @return
    */
-  @CallMethod
   InterbankCodeLine getDefaultRejectionReason();
 }

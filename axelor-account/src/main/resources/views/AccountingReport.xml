@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 <!--     ACCOUNTING REPORT -->
     
@@ -14,7 +14,7 @@
 		<field name="typeSelect" selection="accounting.report.type.select"/>
 	  <field name="dateFrom"/>
 	  <field name="dateTo"/>
-	  <field name="period" form-view="period-form" grid-view="period-grid"  canView="false"/>
+	  <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 	  <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
 	  <field name="totalDebit" aggregate="sum"/>
 		<field name="totalCredit" aggregate="sum"/>
@@ -30,7 +30,7 @@
 			<field name="date" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" readonlyIf="company == null" onChange="action-group-account-accounting-report-typeselect-onchange" selection="accounting.report.type.select" />
 			<field name="exportTypeSelect"/>
-			<field name="company"  readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
 			<field name="currency"/>
 		</panel>
 		
@@ -43,11 +43,11 @@
 
 		<panel-tabs name="mainPanelTab">
 			<panel name="filterPanel" title="Filter">
-				<field name="year"  hideIf="typeSelect != 12  &amp;&amp; typeSelect != 15 &amp;&amp; typeSelect != 16  &amp;&amp; typeSelect != 17" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="typeSelect == 12 || typeSelect == 15 ||  typeSelect == 16  || typeSelect == 17" grid-view="year-account-grid" form-view="year-account-form" />
-				<field name="period"  onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" />
+				<field name="year" canEdit="false" hideIf="typeSelect != 12  &amp;&amp; typeSelect != 15 &amp;&amp; typeSelect != 16  &amp;&amp; typeSelect != 17" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="typeSelect == 12 || typeSelect == 15 ||  typeSelect == 16  || typeSelect == 17" grid-view="year-account-grid" form-view="year-account-form" />
+				<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" form-view="period-form" grid-view="period-grid" canView="false" />
 				<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" requiredIf="typeSelect == 12 || typeSelect == 15" />
 				<field name="dateTo" requiredIf="typeSelect == 12 || typeSelect == 15" />
-				<field name="journal" hideIf="!typeSelect || [0,1,2,3,4,5,10,12,13,14,15,16,17].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" />
+				<field name="journal" hideIf="!typeSelect || [0,1,2,3,4,5,10,12,13,14,15,16,17].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [1,2,3,4,5,10,12,13,14,15,16,17].indexOf(typeSelect) != -1"/>
 				<field name="accountSet" hideIf="typeSelect == 2000 || typeSelect == 16 || typeSelect == 17 || typeSelect == 12" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" domain="self.company = :company AND (:typeSelect &lt;&gt; 6 OR self.useForPartnerBalance = true)"/>
 				<field name="partnerSet" hideIf="typeSelect == 2000 || typeSelect == 16 || typeSelect == 17 || typeSelect == 12" colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect" canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
@@ -75,11 +75,11 @@
     <grid name="accounting-report-export-grid" title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport">
         <field name="ref" width="120"/>
         <field name="date"/>
-		<field name="company"  form-view="company-form" grid-view="company-grid"/>
+		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="typeSelect" selection="accounting.report.type.select.export"/>
         <field name="dateFrom"/>
         <field name="dateTo"/>
-        <field name="period" form-view="period-form" grid-view="period-grid"  canView="false" />
+        <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false" />
         <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
         <field name="totalDebit" aggregate="sum"/>
 		<field name="totalCredit" aggregate="sum"/>
@@ -94,9 +94,9 @@
 			<field name="ref" readonly="true"/>
 			<field name="date" title="Export Date fixed to" readonlyIf="statusSelect == 2"/>
 			<field name="typeSelect" onChange="action-group-account-accounting-report-typeselect-onchange" selection="accounting.report.type.select.export"/>
-			<field name="company"  readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox" onChange="action-group-account-accounting-report-company-onchange" form-view="company-form" grid-view="company-grid"/>
 			<field name="year" hideIf="!$contains([1000, 1010], typeSelect)" onChange="action-accounting-report-record-period-dates" onSelect="action-accounting-report-attrs-year-domain" requiredIf="$contains([1000, 1010], typeSelect)" grid-view="year-account-grid" form-view="year-account-form" />
-			<field name="period"  onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" requiredIf="!$contains([1000, 1010], typeSelect)" form-view="period-form" grid-view="period-grid" canView="false"/>
+			<field name="period" canEdit="false" onChange="action-group-account-accounting-report-period-onchange" onSelect="action-accounting-report-attrs-period-domain" requiredIf="!$contains([1000, 1010], typeSelect)" form-view="period-form" grid-view="period-grid" canView="false"/>
 			<field name="dateFrom" onChange="action-move-Live-report-record-set-date-to" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="dateTo" readonlyIf="$contains([1000, 1010], typeSelect) &amp;&amp; period != null "/>
 			<field name="journal" form-view="journal-form" grid-view="journal-grid" hideIf="$contains([1000, 1010], typeSelect)"/>

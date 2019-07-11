@@ -36,7 +36,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -108,7 +107,6 @@ public class PartnerService {
     partner.setFullName(this.computeFullName(partner));
   }
 
-  @CallMethod
   public String computeFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
       return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
@@ -116,7 +114,6 @@ public class PartnerService {
     return computeSimpleFullName(partner);
   }
 
-  @CallMethod
   public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
         && !Strings.isNullOrEmpty(partner.getFirstName())) {
@@ -305,7 +302,6 @@ public class PartnerService {
     return null;
   }
 
-  @CallMethod
   public Address getInvoicingAddress(Partner partner) {
 
     return getAddress(
@@ -314,7 +310,6 @@ public class PartnerService {
         "self.partner.id = ?1 AND self.isInvoicingAddr = true");
   }
 
-  @CallMethod
   public Address getDeliveryAddress(Partner partner) {
 
     return getAddress(

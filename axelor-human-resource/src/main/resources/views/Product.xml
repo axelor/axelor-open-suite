@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="product-expense-grid" title="Expense types" model="com.axelor.apps.base.db.Product" orderBy="name">
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -41,7 +41,7 @@
 				<panel name="subSalePanel" colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
-					<field name="saleCurrency"  colSpan="12" hideIf="!sellable"/>
+					<field name="saleCurrency" canEdit="false" colSpan="12" hideIf="!sellable"/>
 					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
 				<panel colSpan="12" name="internalDescriptionPanel" title="Internal description" >
@@ -118,7 +118,7 @@
 				<panel name="subSalePanel" colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
-					<field name="saleCurrency"  colSpan="12" hideIf="!sellable" form-view="currency-form" grid-view="currency-grid"/>
+					<field name="saleCurrency" canEdit="false" colSpan="12" hideIf="!sellable" form-view="currency-form" grid-view="currency-grid"/>
 					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
 				<panel colSpan="6" name="productDatesPanel" title="Product dates">

@@ -31,7 +31,6 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -60,7 +59,6 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @return the tax defined for the product, according to the fiscal position
    * @throws AxelorException
    */
-  @CallMethod
   public Account getProductAccount(
       Product product,
       Company company,

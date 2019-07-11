@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<menubar>
@@ -91,7 +91,7 @@
 					<field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch" onChange="action-timesheet-attrs-refresh-editor" if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
 				</panel>
 				<field name="company" colSpan="5" form-view="company-form" grid-view="company-grid" onChange="action-hr-record-empty-user"/>
-				<field name="user" colSpan="5" form-view="user-form" onChange="action-timesheet-group-user-onchange" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false"  canView="false"/>
+				<field name="user" colSpan="5" form-view="user-form" onChange="action-timesheet-group-user-onchange" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 				<field name="timeLoggingPreferenceSelect" readonly="true" hidden="true" />
 				<field name="user.employee" hidden="true" />
 				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
@@ -138,8 +138,8 @@
 		<panel-dashlet name="totalHoursPerDayPanel" title="Total Hours per Day" hidden="true" showIf="id &amp;&amp; user.employee.timesheetImputationSelect != 2" action="action-timesheet-view-total-hours-per-day"/>
 		<panel name="validationInfoPanel" showIf="sentDate != null">
 		 	<field name="sentDate"/>
-			<field name="validatedBy"  form-view="user-form" grid-view="user-grid" showIf="validatedBy != null"/>
-			<field name="refusedBy"    form-view="user-form" grid-view="user-grid" showIf="refusedBy != null"/>
+			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="validatedBy != null"/>
+			<field name="refusedBy"  canEdit="false"  form-view="user-form" grid-view="user-grid" showIf="refusedBy != null"/>
 			<field name="validationDate" showIf="validationDate != null"/>
 			<field name="refusalDate" showIf="refusalDate != null"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>

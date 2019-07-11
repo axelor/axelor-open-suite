@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid model="com.axelor.team.db.TeamTask" title="Tasks" name="business-support-version-team-task-grid" orderBy="-taskDate">
 		<field name="name"/>
@@ -66,7 +66,7 @@
 						<field name="name" title="Subject" colSpan="12" css="label-bold bold large" required="true"/>
 					</editor>
 				</field>
-				<field name="project"  onChange="action-team-task-group-project-onchange" required="true"/>
+				<field name="project" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
 				<field name="parentTask" readonlyIf="project == null" onSelect="action-task-attrs-project-parent-task-configurations"/>
 				<field name="isOrderAccepted" hidden="true" showIf="typeSelect == 'ticket'"/>
 				<field name="isOrderProposed" hidden="true"/>
@@ -100,7 +100,7 @@
 				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" readonly="true" showIf="teamTaskInvoicing"/>
 				<panel name="pricingPanel" showIf="teamTaskInvoicing &amp;&amp; invoicingType == 2" colSpan="12">
 					<field name="quantity" colSpan="4" onChange="action-team-task-group-qty-onchange"/>
-					<field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" />
+					<field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
 					<field name="exTaxTotal" readonly="true" colSpan="4"/>
 				</panel>

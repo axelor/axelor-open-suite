@@ -36,7 +36,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
@@ -61,7 +60,6 @@ import org.slf4j.LoggerFactory;
 public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;
-  @Inject private MetaFiles metaFiles;
 
   public static final String DEFAULT_LOCALE = "en";
 
@@ -170,18 +168,6 @@ public class UserServiceImpl implements UserService {
     }
 
     return company.getLogo();
-  }
-
-  @Override
-  public String getUserActiveCompanyLogoLink() {
-
-    final Company company = this.getUserActiveCompany();
-
-    if (company == null) {
-      return null;
-    }
-
-    return metaFiles.getDownloadLink(company.getLogo(), company);
   }
 
   @Override

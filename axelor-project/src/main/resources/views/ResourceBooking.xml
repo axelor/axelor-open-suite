@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="resource-booking-grid" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
 		<field name="name"/>
@@ -18,10 +18,10 @@
 				<field name="name" colSpan="12" css="label-bold bold large"/>
 				<static name="nameLabel" hideIf="id" colSpan="12"><![CDATA[<span class='label label-info'>Computed automatically if left empty</span>]]></static>
 			</panel>
-			<field name="resource" />
-			<field name="user" />
-			<field name="project" />
-			<field name="task"  onChange="action-resource-booking-attrs-update-period" domain="self.project = :project"/>
+			<field name="resource" canEdit="false"/>
+			<field name="user" canEdit="false"/>
+			<field name="project" canEdit="false"/>
+			<field name="task" canEdit="false" onChange="action-resource-booking-attrs-update-period" domain="self.project = :project"/>
 			<field name="fromDate" colSpan="4"/>
 			<field name="toDate" colSpan="4"/>
 			<field name="updateTaskFromPeriod" onChange="action-resource-booking-attrs-update-period" colSpan="4"/>

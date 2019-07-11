@@ -20,7 +20,6 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
@@ -48,18 +47,14 @@ public interface StockLocationService {
   public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
       throws AxelorException;
 
-  @CallMethod
   public BigDecimal getRealQty(Long productId, Long locationId, Long companyId)
       throws AxelorException;
 
-  @CallMethod
   public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
       throws AxelorException;
 
-  @CallMethod
   public List<Long> getBadStockLocationLineId();
 
-  @CallMethod
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
 
   public List<StockLocation> getAllLocationAndSubLocation(

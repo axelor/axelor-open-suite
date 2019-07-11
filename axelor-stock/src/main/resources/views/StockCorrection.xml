@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid name="stock-correction-grid" title="Stock Corrections" model="com.axelor.apps.stock.db.StockCorrection">
 		<field name="stockLocation"/>
@@ -27,16 +27,16 @@
 			</panel>
 		</panel>
 		<panel name="stockCorrectionDetailsPanel" readonlyIf="statusSelect == 2">
-			<field name="stockLocation"  grid-view="stock-location-grid" form-view="stock-location-form"/>
-			<field name="product"  onSelect="action-stock-correction-on-select-product" onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid" form-view="product-form"/>
-			<field name="trackingNumber"  onSelect="action-stock-correction-on-select-tracking-number" onChange="action-stock-correction-method-set-deault-qtys"/>
+			<field name="stockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form"/>
+			<field name="product" canEdit="false" onSelect="action-stock-correction-on-select-product" onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid" form-view="product-form"/>
+			<field name="trackingNumber" canEdit="false" onSelect="action-stock-correction-on-select-tracking-number" onChange="action-stock-correction-method-set-deault-qtys"/>
 			<spacer name="trackingNumberSpacer"/>
 			<field name="realQty" colSpan="4"/>
 			<field name="futureQty" colSpan="4"/>
 			<field name="reservedQty" colSpan="4"/>
 		</panel>
 		<panel name="stockCorrectionReasonPanel" sidebar="true" readonlyIf="statusSelect == 2">
-			<field name="stockCorrectionReason"  colSpan="12"/>
+			<field name="stockCorrectionReason" canEdit="false" colSpan="12"/>
 			<field name="validationDateT"/>
 		</panel>
     </form>

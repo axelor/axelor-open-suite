@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <grid name="direct-debit-management-grid" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement">
         <field name="debitNumber" width="120"/>
@@ -9,7 +9,7 @@
     
     <form name="direct-debit-management-form-payment-schedule-line" title="Direct debits management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default" width="large">
         <panel name="mainPanel" >
-        	<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+        	<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         	<field name="debitNumber"/>
         </panel>
         <panel-related name="paymentScheduleLineListPanel" field="paymentScheduleLineList" form-view="payment-schedule-line-form" grid-view="payment-schedule-line-grid"/>
@@ -17,7 +17,7 @@
     
     <form name="direct-debit-management-form-invoice" title="Direct debit management" model="com.axelor.apps.account.db.DirectDebitManagement"  onNew="action-direct-debit-managemen-set-default" width="large">
         <panel name="mainPanel" >
-        	<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+        	<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
         	<field name="debitNumber"/>
         </panel>
         <panel-related name="invoiceSetPanel" field="invoiceSet" grid-view="invoice-grid" form-view="invoice-form"/>

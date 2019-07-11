@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
   <grid name="stock-move-line-consumed-production-grid" title="Stock move lines"
     orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -59,11 +59,11 @@
     onNew="action-group-stock-stockmoveline-production-onnew"
     onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
     <panel name="mainPanel" readonlyIf="stockMove.statusSelect == 3">
-      <field name="product"  domain="self.expense = false"
+      <field name="product" canEdit="false" domain="self.expense = false"
         onChange="action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form"
         grid-view="product-grid" readonlyIf="id" />
-      <field name="productModel"  domain="self.isModel = true"
+      <field name="productModel" canEdit="false" domain="self.isModel = true"
         form-view="product-form" grid-view="product-grid"
         if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
       <field name="productName" required="true" />
@@ -71,7 +71,7 @@
         title="Consumed quantity" />
       <field name="unitPriceUntaxed" />
       <field name="unitPriceTaxed" hidden="true" />
-      <field name="unit"  form-view="unit-form" grid-view="unit-grid" />
+      <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid" />
       <field name="trackingNumber" onChange="action-stock-move-line-record-product"
         form-view="tracking-number-form" grid-view="tracking-number-grid"
         canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"

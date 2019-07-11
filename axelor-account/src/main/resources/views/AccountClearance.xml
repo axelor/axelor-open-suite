@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<grid name="account-clearance-grid" title="Account clearance operations" model="com.axelor.apps.account.db.AccountClearance">
 		<field name="name" width="120"/>
@@ -19,8 +19,8 @@
 		<panel name="generalPanel" title="General">
 			<field name="name"/>
 			<field name="dateTime"/>
-			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
-			<field name="company" widget="SuggestBox" form-view="company-form"  grid-view="company-grid"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" canEdit="false" grid-view="company-grid"/>
 			<field name="statusSelect"/>
 		</panel>
 		

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
 		<field name="inventorySeq" width="120"/>
@@ -37,9 +37,9 @@
         <panel-tabs name="mainPanelTab">
         	<panel title="Details">
 	        	<panel name="detailPanel"  colSpan="12">
-              <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" />
+              <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" canEdit="false"/>
 							<field name="dateT" readonlyIf="statusSelect >= 2"/>
-							<field name="stockLocation"  onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+							<field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
 							<field name="typeSelect" validIf="typeSelect > 0"/>
 							<field name="completedBy" readonly="true" showIf="completedBy"/>
 							<field name="validatedBy" readonly="true" showIf="validatedBy"/>
@@ -77,9 +77,9 @@
     </panel-tabs>
 
     <panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
-			<field name="productFamily"  grid-view="product-family-grid" form-view="product-family-form"/>
-			<field name="productCategory"  grid-view="product-category-grid" form-view="product-category-form"/>
-			<field name="product"  onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
+			<field name="productFamily" canEdit="false" grid-view="product-family-grid" form-view="product-family-form"/>
+			<field name="productCategory" canEdit="false" grid-view="product-category-grid" form-view="product-category-form"/>
+			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
       <panel name="racksRangePanel" title="Racks range">

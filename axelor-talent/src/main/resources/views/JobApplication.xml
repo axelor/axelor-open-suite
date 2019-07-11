@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="job-application-grid" title="Job applications" model="com.axelor.apps.talent.db.JobApplication">
 		<field name="lastName" />
@@ -22,7 +22,7 @@
 	    </menubar>
 		<panel name="mainPanel" readonlyIf="statusSelect == 3">
 			<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="8" readonly="true"/>
-			<field name="hiringStage" colSpan="4" widget="SuggestBox" />
+			<field name="hiringStage" colSpan="4" widget="SuggestBox" canEdit="false"/>
 			<panel name="imagePanel" colSpan="4">
 				<field name="picture"  widget="Image" colSpan="12" showTitle="false">
 					<viewer>
@@ -48,9 +48,9 @@
 			<button name="cancelBtn" title="Cancel" onClick="save,action-job-application-status-cancel,save" colSpan="12" icon="fa-times-circle" css="btn-danger" hideIf="statusSelect == 1 || statusSelect == 3"/>
 		</panel>
 		<panel sidebar="true" name="JobOfferInformationPanel" title="Job Offer Information" readonlyIf="statusSelect == 3">
-			<field name="jobPosition" colSpan="6" />
+			<field name="jobPosition" colSpan="6" canEdit="false"/>
 			<field name="jobPosition.statusSelect" colSpan="6"/>
-			<field name="responsible" colSpan="6" />
+			<field name="responsible" colSpan="6" canEdit="false"/>
 			<field name="jobPosition.companyDepartment" colSpan="6"/>
 			<field name="jobPosition.publicationDate" colSpan="6"/>
 		</panel>
@@ -83,7 +83,7 @@
 					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
 				</panel>
 				<panel name="primaryAddressPanel" title="Primary Address" colSpan="12">
-					<field name="employeeAddress" colSpan="12" form-view="address-form" grid-view="address-grid" canNew="true" />
+					<field name="employeeAddress" colSpan="12" form-view="address-form" grid-view="address-grid" canNew="true" canEdit="false"/>
 				</panel>
 				<field name="fullName" hidden="true" />
 			</panel>

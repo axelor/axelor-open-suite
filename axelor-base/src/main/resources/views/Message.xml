@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
     <form name="message-form" id="base-message-form" title="Email" model="com.axelor.apps.message.db.Message"
     onNew="action-group-base-message-onnew">
@@ -13,7 +13,7 @@
     	<panel name="informationsPanel" title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="mediaTypeSelect" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
-			<field name="senderUser" canNew="false"  canView="false"/>
+			<field name="senderUser" canNew="false" canEdit="false" canView="false"/>
 			<field name="sentDateT" colSpan="4"/>
 			<panel name="emailDetailsPanel" colSpan="12" showIf="mediaTypeSelect == 2">
 			    <field name="fromEmailAddress" widget="SuggestBox" form-view="email-address-form" grid-view="email-address-grid"/>
@@ -30,14 +30,14 @@
         	<field name="bccEmailAddressSet" widget="TagSelect" x-create="address" form-view="email-address-form" colSpan="12" grid-view="email-address-grid"/>
         </panel>
 		<panel name="messageDestinatedToPanel" title="Message destinated to" readonlyIf="statusSelect == 2 || statusSelect == 3" showIf="mediaTypeSelect == 3">
-			<field name="recipientUser" colSpan="6" showTitle="false" showIf="mediaTypeSelect == 3" requiredIf="mediaTypeSelect == 3" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+			<field name="recipientUser" colSpan="6" showTitle="false" showIf="mediaTypeSelect == 3" requiredIf="mediaTypeSelect == 3" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		</panel>
         <panel name="contentPanel" title="Content" readonlyIf="statusSelect == 2 || statusSelect == 3">
         	<field name="subject" title="Subject" colSpan="12" required="true"/>
        	 	<field name="content" colSpan="12" showTitle="false" widget="html"/>
         </panel>
         <panel name="relatedToPanel" title="Related to" sidebar="true" colSpan="12" readonlyIf="statusSelect == 3">
-			<field name="company" colSpan="12" form-view="company-form" grid-view="company-grid" />
+			<field name="company" colSpan="12" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 			<panel colSpan="12" name="relatedTo1SelectPanel">
 				<field name="relatedTo1Select" widget="RefSelect" x-related="relatedTo1SelectId" colSpan="12"/>
 			</panel>

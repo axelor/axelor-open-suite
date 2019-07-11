@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="Wkf" cacheable="true">
+  <entity name="Wkf" cachable="true">
       <![CDATA[
 	    This class is a root class used to store the workflow. A workflow is linked with a model and a form view of that model. 
 	    Wkf stores the bpmn xml of the worklfow diagram. The nodes and transitions of a wkf will be created by using the bpmn xml. 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
   	<toolbar>
@@ -41,8 +41,8 @@
 		<field name="account.analyticDistributionAuthorized" hidden="true"/>
 		<field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
 		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120"  readonlyIf="amountPaid &gt; 0"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200"  readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
@@ -146,8 +146,8 @@
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
-			<field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" />
-	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"  onChange="action-move-line-method-compute-analytic-distribution"/>
+			<field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
+	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-method-compute-analytic-distribution"/>
 	        <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 	        <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
@@ -163,7 +163,7 @@
 			<panel name="irrecoverableDetailsPanel" colSpan="12">
 				<field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
-				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"  colSpan="6"/>
+				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false" colSpan="6"/>
 				<field name="irrecoverableStatusSelect" colSpan="12"/>
 				<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid" colSpan="12"/>
 			</panel>
@@ -242,8 +242,8 @@
 				<field name="dueDate" showIf="dueDate"/>
 				<field name="originDate"/>
 			</panel>
-			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner"  readonlyIf="amountPaid &gt; 0"/>
-			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account"  readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
+			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
 			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
@@ -260,7 +260,7 @@
 			<panel name="irrecoverableDetailsPanel" colSpan="12">
 				<field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
-				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"  colSpan="6"/>
+				<field name="interbankCodeLine" showIf="interbankCodeLine" form-view="interbank-code-line-form" grid-view="interbank-code-line-grid" canEdit="false" colSpan="6"/>
 				<field name="irrecoverableStatusSelect" colSpan="12"/>
 				<field name="managementObject" form-view="management-object-form" grid-view="management-object-grid" colSpan="12"/>
 			</panel>

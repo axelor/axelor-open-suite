@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips"
 	    orderBy="-depositDate,-depositNumber">
@@ -34,11 +34,11 @@
         </panel>
 
         <panel name="companyDetailsPanel" readonlyIf="publicationDate">
-            <field name="company" onChange="action-deposit-slip-company-onchange"  colSpan="4" />
-            <field name="currency"  colSpan="4" />
+            <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false" colSpan="4" />
+            <field name="currency" canEdit="false" colSpan="4" />
             <field name="depositDate" colSpan="4" />
             <panel name="companyBankDetailsPanel" hidden="true" colSpan="12">
-                <field name="companyBankDetails"  canNew="false"
+                <field name="companyBankDetails" canEdit="false" canNew="false"
                     onSelect="action-deposit-slip-company-bank-details-domain" canSelect="true" colSpan="4" />
                 <panel name="subCompanyBankDetailsPanel" showIf="companyBankDetails" colSpan="8">
                     <field name="companyBankDetails.bank.bankName" title="Bank name" />

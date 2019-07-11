@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
 		<field name="name"/>
@@ -30,8 +30,8 @@
     				<field name="name" required="true" colSpan="9"/>
      		 	</editor>
     		</field>
-		    <field name="company"  readonlyIf="statusSelect == 2"/>
-		    <field name="company.currency" />
+		    <field name="company" canEdit="false" readonlyIf="statusSelect == 2"/>
+		    <field name="company.currency" canEdit="false"/>
 		    <field name="fromDate" readonlyIf="statusSelect == 2"/>
 		    <field name="toDate" readonlyIf="statusSelect == 2"/>
 		</panel>
@@ -51,7 +51,7 @@
     		<field name="totalAmountRealized"/>
     	</panel>
     	<panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true" collapseIf="true" >
-  			<field name="inChargeUser" canNew="false" canView="false" />
+  			<field name="inChargeUser" canNew="false" canView="false" canEdit="false"/>
     	</panel>
     	<panel name="configuration" title="Configuration" canCollapse="true" sidebar="true" collapseIf="true" readonlyIf="statusSelect == 2">
    			<field name="checkAvailableBudget" widget="boolean-switch"/>

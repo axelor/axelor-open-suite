@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
 	<grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-grid">
 		<field name="fromDate"/>
@@ -20,9 +20,9 @@
     	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company"  required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
-    		<field name="productSet"  colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
     		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
@@ -41,9 +41,9 @@
     	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company"  required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
-    		<field name="productSet"  colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
     		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>

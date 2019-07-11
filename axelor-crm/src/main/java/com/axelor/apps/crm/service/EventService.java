@@ -23,7 +23,6 @@ import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.CallMethod;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -40,7 +39,6 @@ public interface EventService {
       int type,
       String subject);
 
-  @CallMethod
   String getInvoicingAddressFullName(Partner partner);
 
   void manageFollowers(Event event);

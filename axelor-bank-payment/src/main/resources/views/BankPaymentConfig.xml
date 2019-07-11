@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="bank-payment-config-grid" title="Bank payment configurations" model="com.axelor.apps.bankpayment.db.BankPaymentConfig">
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -10,7 +10,7 @@
     <form name="bank-payment-config-form" title="Bank payment configuration" model="com.axelor.apps.bankpayment.db.BankPaymentConfig" onNew="action-bank-payment-config-record-default" width="large">
         <panel name="bankOrderDetailsPanel" title="Bank Order">
             <panel name="mainPanel">
-				<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+				<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
             </panel>
             <panel colSpan="12" name="detailsPanel">
                 <field name="generateMoveOnBankOrderValidation"/>

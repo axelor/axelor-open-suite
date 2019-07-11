@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="stock-location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
@@ -18,7 +18,7 @@
     
     <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload">
     	<panel name="mainPanel">
-	        <field name="product"  form-view="product-form" grid-view="product-grid"/>
+	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
             <field name="avgPrice" colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
@@ -135,7 +135,7 @@
     
     <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
 		<panel name="mainPanel">
-	        <field name="product"  form-view="product-form" grid-view="product-grid"/>
+	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
 	        <field name="futureQty"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>

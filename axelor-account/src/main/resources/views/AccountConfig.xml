@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://axelor.com/xml/ns/object-views"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -12,7 +12,7 @@
 			<button name="showInvoiceBtn" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>
 		<panel name="mainPanel">
-			<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<spacer/>
 			<field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form" grid-view="account-chart-grid" canNew="true" />
 			<button name="installTemplateBtn" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" icon="fa-import" onClick="action-group-account-config-installchart-click" />
@@ -239,7 +239,7 @@
 						<field name="accountType" colSpan="6" form-view="account-type-form" grid-view="account-type-grid"/>
 						<field name="reconcileOk" colSpan="6"/>
 						<field name="parentAccount" colSpan="6" grid-view="account-grid" form-view="account-form"/>
-						<field name="company"  widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
+						<field name="company" canEdit="false" widget="SuggestBox" colSpan="6" form-view="company-form" grid-view="company-grid"/>
 					</editor>
 				</field>
 			</panel>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="substitute-pfp-validator-grid" title="Substitute PFP Validator" model="com.axelor.apps.account.db.SubstitutePfpValidator">
         <field name="substitutePfpValidatorUser"/>
@@ -11,7 +11,7 @@
     
     <form name="substitute-pfp-validator-form" title="Substitute PFP Validator" model="com.axelor.apps.account.db.SubstitutePfpValidator">
         <panel name="generalPanel" title="General">
-	        <field name="substitutePfpValidatorUser"  onSelect="action-substitute-pfp-validator-attrs-domain-pfp-validator-user"/>
+	        <field name="substitutePfpValidatorUser" canEdit="false" onSelect="action-substitute-pfp-validator-attrs-domain-pfp-validator-user"/>
 	        <field name="substituteStartDate"/>
 	        <field name="substituteEndDate"/>			
         </panel>

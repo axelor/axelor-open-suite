@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="ebics-user-grid" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" >
 		<toolbar>
@@ -29,7 +29,7 @@
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3" onChange="action-ebics-user-record-set-fullname"/>
-			<field name="associatedUser" canNew="false"  canView="false" onChange="action-ebics-user-record-set-fullname" showIf="userTypeSelect == 1"/>
+			<field name="associatedUser" canNew="false" canEdit="false" canView="false" onChange="action-ebics-user-record-set-fullname" showIf="userTypeSelect == 1"/>
 			<field name="nextOrderId"/>
 			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
 			<field name="ebicsPartner.ebicsTypeSelect" widget="RadioSelect"/>

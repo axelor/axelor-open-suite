@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="general-expense-line-grid"
 		  title="Expense lines"
@@ -25,7 +25,7 @@
   		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" grid-view="project-grid" width="120"/>
         <field name="expenseDate" title="Date" width="95"
         	onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
-		<field name="kilometricAllowParam"  required="true" width="60"
+		<field name="kilometricAllowParam" canEdit="false" required="true" width="60"
 			onChange="action-kilometric-allowance-method-compute" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"/>
         <field name="kilometricTypeSelect" required="true" width="100"/>
         <field name="distance" required="true" onChange="action-kilometric-allowance-method-compute" width="150"/>
@@ -34,12 +34,12 @@
 	    <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
 	    	onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" />
    	    <field name="comments" width="250"/>
-   	    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false"  canView="false"/>
+   	    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
   		<field name="untaxedAmount" hidden="true" />
    		<field name="expenseProduct" hidden="true"/>
 	</grid>
 
-    <form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" readonlyIf="true" >
+    <form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" readonlyIf="true" canEdit="false">
         <panel-include view="general-expense-line-form"/>
     </form>
 
@@ -48,9 +48,9 @@
 		onSave="action-expense-line-validate-expenseDate" width="large">
 		
 		<panel name="mainPanel" title="Main">
-			<field name="user" hidden="true" showIf="expense.multipleUsers" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false"  canView="false"/>
-			<field name="project" requiredIf="toInvoice" edit-icon="false"  onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
-			<field name="expenseProduct" edit-icon="false"  onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
+			<field name="user" hidden="true" showIf="expense.multipleUsers" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
+			<field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
+			<field name="expenseProduct" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid"/>
 			<field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
 			<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
 			<field name="totalTax" onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonlyIf="expenseProduct.blockExpenseTax == true"/>
@@ -74,7 +74,7 @@
 		</panel>
 				
 		<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
-			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"  onChange="action-expense-line-method-create-distribution"/>
+			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-expense-line-method-create-distribution"/>
 			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 
@@ -89,7 +89,7 @@
 		onSave="action-expense-line-validate-expenseDate" width="large">
 
 			<panel name="kilometricAllowancePanel" title="Kilometric Allowance">
-				<field name="project" requiredIf="toInvoice" edit-icon="false"  onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
+				<field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" form-view="project-form" grid-view="project-grid"/>
 		        <field name="expenseDate"/>
 				<field name="kilometricAllowParam" onSelect="action-kilometric-allowance-method-domain-on-select-on-kap" onChange="action-kilometric-allowance-method-compute"/>
 		        <field name="kilometricTypeSelect" required="true"/>
@@ -101,12 +101,12 @@
 		    	<field name="totalAmount" onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution" readonly="true"/>
 	    		<field name="comments" colSpan="12"/>
 				<field name="user"  hidden="true" form-view="user-form" grid-view="user-grid"
-					   onSelect="action-expense-line-attrs-company" canNew="false"  canView="false"/>
+					   onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
 				<field name="expenseProduct" hidden="true"/>
 			</panel>
 		
 		<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
-			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"  onChange="action-expense-line-method-create-distribution"/>
+			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-expense-line-method-create-distribution"/>
 			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
 		</panel>
 	</form>

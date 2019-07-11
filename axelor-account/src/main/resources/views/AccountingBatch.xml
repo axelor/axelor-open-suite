@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
 		<field name="actionSelect" />
@@ -15,7 +15,7 @@
 	<panel name="mainPanel" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
-		<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived"/>
 	</panel>
@@ -23,7 +23,7 @@
 		<panel name="reimbursementPagePanel" title="Reimbursement configuration" hideIf="actionSelect != 11">
 			<field name="reimbursementTypeSelect"/>
 			<field name="reimbursementExportTypeSelect" hideIf="reimbursementTypeSelect != 1"/>
-			<field name="currency"  readonly="true" grid-view="currency-grid" form-view="currency-form"/>
+			<field name="currency" canEdit="false" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
 		</panel>
 		<panel name="directDebitPagePanel" title="Direct debit configuration" hideIf="actionSelect != 12">
 			<field name="directDebitDataTypeSelect" />
@@ -38,7 +38,7 @@
 			<field name="creditTransferTypeSelect"/>
 			<field name="customerReimbursementTypeSelect" showIf="$contains([3], creditTransferTypeSelect)" />
 			<field name="paymentMode" domain="self.typeSelect in (2,9)" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid"  canView="false"/>
+			<field name="period" showIf="$contains([1], creditTransferTypeSelect)" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 			<field name="dueDate" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="currency" showIf="$contains([2, 3], creditTransferTypeSelect)" />
 			<field name="includeOtherBankAccounts" showIf="$contains([1, 2, 3], creditTransferTypeSelect)" if="__config__.app.getApp('base').getManageMultiBanks()" />
@@ -62,12 +62,12 @@
 <!-- 		TODO FILTER ON STATUS -->
 			<field name="closeYear"/>
 			<field name="openYear"/>
-			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" />
+			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" canEdit="false"/>		
 			<field name="allocatePerPartner"/>
     		<field name="year.toDate" showIf="closeYear" hidden="true"/>
     		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>
     		<field name="moveDescription"/>
-			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false"  domain="self.company = :company"/>
+			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company"/> 
 <!-- 			<field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid" widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
 		</panel>
 		<panel name="informationPanel" title="Information"  >

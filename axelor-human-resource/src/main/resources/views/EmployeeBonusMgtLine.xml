@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="employee-bonus-mgt-line-grid" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine" >
 		<hilite if="statusSelect &gt; 1" background="danger"/>
 		<field name="employee" />
         <field name="amount" width="100px"/>
         <field name="coef" width="100px"/>
-        <field name="weeklyPlanning"  width="120px"/>
+        <field name="weeklyPlanning" canEdit="false" width="120px"/>
 		<field name="seniorityDate" />
         <field name="statusSelect" width="100px"/>
     </grid>
@@ -17,16 +17,16 @@
 		<field name="employeeBonusMgt.payPeriod" />
 		<field name="employeeBonusMgt.employeeBonusType" />
 		<field name="coef" />
-		<field name="weeklyPlanning"  />
+		<field name="weeklyPlanning" canEdit="false" />
 		<field name="employeeBonusMgt" hidden="true" />
     </grid>
 
     <form name="employee-bonus-mgt-line-form" title="Employee bonus" model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
     	<panel name="mainPanel">
-    		<field name="employee" canNew="false"  canView="false"/>
+    		<field name="employee" canNew="false" canEdit="false" canView="false"/>
 			<field name="amount" />
 			<field name="coef" />
-			<field name="weeklyPlanning"  />
+			<field name="weeklyPlanning" canEdit="false" />
 			<field name="seniorityDate" />
         </panel>
     </form>
@@ -37,7 +37,7 @@
 			<field name="coef" />
 			<field name="employeeBonusMgt.payPeriod" />
 			<field name="employeeBonusMgt.employeeBonusType" />
-			<field name="weeklyPlanning"  />
+			<field name="weeklyPlanning" canEdit="false" />
 			<field name="seniorityDate" />
 			<field name="employeeBonusMgt" hidden="true" />
         </panel>

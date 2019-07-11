@@ -44,7 +44,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -203,7 +202,6 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  @CallMethod
   public Company getActiveCompany() {
     Company company = Beans.get(UserService.class).getUser().getActiveCompany();
     if (company == null) {
