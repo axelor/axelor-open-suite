@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
+  
+ 	<input file="480879733FEC20191231.csv" separator="|" type="com.axelor.apps.account.db.MoveLine" search="self.name = :EcritureNum" call="com.axelor.csv.script.ImportMove:importFECMove">
+ 		<header>journalCode, journalName, moveLine_name, moveLine_date, accountCode, accountName, partnerSeq, partnerFullName, moveLine_origin, moveLine_date, description, debit, credit, reconcileSeqList, reconcileDateList, validationDate, currencyAmount, move_currency</header>
+ 		<bind to="name" column="moveLine_name"/>
+ 		<bind to="counter" eval="moveLine_name.substring(moveLine_name.length() - 1)"/>
+ 		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(java.time.LocalDate.parse(validationDate, java.time.format.DateTimeFormatter.BASIC_ISO_DATE).format(java.time.format.DateTimeFormatter.ofPattern('yyyy-MM-dd')))" column="validationDate"/>
+ 		<bind to="partner" column="partnerSeq" search="self.partnerSeq =:partnerSeq" update="true"/>
+ 		<bind to="account" column="accountCode" search="self.code = :accountCode"/>
+ 		<bind to="debit" column="debit"/>
+ 		<bind to="credit" column="credit"/>
+ 		<bind to="origin" column="moveLine_origin"/>
+ 		<bind to="description" column="description"/>
+ 		<bind to="currencyAmount" column="currencyAmount"/>
+ 	</input>
+ 	
+</csv-inputs>

@@ -39,4 +39,6 @@
     
     <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true" />
     
+    <input file="base_importConfiguration.csv" separator=";" type="com.axelor.apps.base.db.ImportConfiguration" call="com.axelor.csv.script.ImportFECConfiguration:importFiles" />
+    
 </csv-inputs>
