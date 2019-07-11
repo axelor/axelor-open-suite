@@ -75,6 +75,7 @@
 - Sale Order: fix NPE on clicking allocate all button.
 - INVOICE : Resolve error of sending email from Invoice.
 - Studio: Fix export of selection with app
+- CONFIGURATOR : fix configurator demo data.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
