@@ -61,7 +61,7 @@
 	      <panel name="scriptPanel" showIf="typeSelect == 2" colSpan="12" >
 	      	<field name="scriptType" />
 	      	<field name="transactional" />
-	      	<field name="scriptText" colSpan="12" />
+	      	<field name="scriptText" widget="CodeEditor" x-code-syntax="javascript" colSpan="12" />
 	      </panel>
 	      <panel name="emailTemplatePanel" colSpan="12">
 	      	<field name="scriptText" widget="html" title="Template" colSpan="12" showIf="typeSelect == 5"/>
