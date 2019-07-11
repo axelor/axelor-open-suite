@@ -269,6 +269,7 @@
 "Periodicity type","Type de périodicité",,
 "Please enter at least one detail line.","Veuillez entrer une ligne de détail.",,
 "Please fill printing settings on sale order %s.","Merci de remplir les paramètres d'impressions sur les devis/commandes suivantes : %s",,
+"Please select a customer to be able to convert opportunity into quotation.","Veuillez sélectionner un client pour pouvoir convertir l'opportunité en un devis.",,
 "Please select the sale order(s) to print.","Merci de sélectionner le(s) devis/commande(s) à imprimer",,
 "Price List","Liste de prix",,
 "Price list","Liste de prix",,
@@ -527,4 +528,3 @@
 "{{ company.name }}",,,
 "{{ stockLocation.name }}",,,
 "{{ tradingName.name }}",,,
-
