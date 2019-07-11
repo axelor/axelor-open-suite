@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<grid name="app-builder-grid" title="App builder" model="com.axelor.studio.db.AppBuilder">
 		<toolbar>
@@ -18,7 +18,7 @@
 			<panel name="detailPanel" colSpan="8">
 				<field name="code" colSpan="3" />
 				<field name="name" colSpan="8" />
-				<field name="dependsOnSet" colSpan="12" widget="TagSelect" canNew="false" canEdit="false" />
+				<field name="dependsOnSet" colSpan="12" widget="TagSelect" canNew="false"  />
 				<field name="sequence" />
 			</panel>
 			<field name="description" widget="html" colSpan="12"/>

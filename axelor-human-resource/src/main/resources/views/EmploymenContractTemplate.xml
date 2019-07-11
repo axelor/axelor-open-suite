@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<grid name="employment-contract-template-grid" title="Employment contract templates" model="com.axelor.apps.hr.db.EmploymentContractTemplate">
 		<field name="metaFile" width="200px" onChange="action-employment-contract-template-record-name" canNew="true" />
 		<field name="name" width="200px" />
 		<field name="description" widget="html" />
-		<field name="companySet" form-view="company-form" grid-view="company-grid" canNew="false" canEdit="false" />
+		<field name="companySet" form-view="company-form" grid-view="company-grid" canNew="false"  />
     </grid>
 
     <form name="employment-contract-template-form" title="Employment contract templates" model="com.axelor.apps.hr.db.EmploymentContractTemplate" >
@@ -15,7 +15,7 @@
 			<field name="name" />
 			<field name="description" colSpan="12" showTitle="false" widget="html"/>
     	</panel>
-		<panel-related name="companySetPanel" field="companySet" sidebar="true" form-view="company-form" grid-view="company-grid" canNew="false" canEdit="false" />
+		<panel-related name="companySetPanel" field="companySet" sidebar="true" form-view="company-form" grid-view="company-grid" canNew="false"  />
     </form>
 
     <action-record name="action-employment-contract-template-record-name" model="com.axelor.apps.hr.db.EmploymentContractTemplate">

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 
-	<entity name="QualityProcess" lang="java" cachable="true">
+	<entity name="QualityProcess" lang="java" cacheable="true">
 		<string name="name" title="Label" required="true"/>
 		<string name="code" title="Code" />
         <one-to-many name="controlPointModelList" ref="ControlPointModel" mappedBy="qualityProcess"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
   <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
 	 	<toolbar>
@@ -104,12 +104,12 @@
                     <field name="name" showTitle="true" css="label-bold bold"/>
                 </editor>
             </field>
-            <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false" form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
-            <field name="source" colSpan="4" canEdit="false" form-view="source-form" grid-view="source-grid"/>
+            <field name="opportunityType" colSpan="4" widget="SuggestBox"  form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
+            <field name="source" colSpan="4"  form-view="source-form" grid-view="source-grid"/>
             <field name="expectedCloseDate" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
             <field name="nextStep" colSpan="12" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6"/>
             <field name="probability" colSpan="4" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" widget="Progress"/>
-            <field name="currency" colSpan="4" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
+            <field name="currency" colSpan="4"  form-view="currency-form" grid-view="currency-grid"/>
             <panel name="caseDetailsPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" colSpan="12">
                 <field name="amount" colSpan="4"/>
                 <field name="bestCase" colSpan="4"/>
@@ -133,11 +133,11 @@
             <button name="closed-wonBtn" help="Closed won" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
             <button name="closed-lostBtn" help="Closed lost" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
             <panel name="followUpPanel" title="Follow-up" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
-                <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-                <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form" grid-view="company-grid"/>
-                <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
-                <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" canEdit="false" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
-				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails" canEdit="false" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+                <field name="user" canNew="false" canView="false"  form-view="user-form" grid-view="user-grid"/>
+                <field name="company" widget="SuggestBox"  form-view="company-form" grid-view="company-grid"/>
+                <field if="__config__.app.getApp('base').getTeamManagement()" name="team"  form-view="team-form" grid-view="team-grid"/>
+                <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName"  domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid"/>
+				<field if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" name="bankDetails"  widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 				<panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
 				  <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
          		  <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr" colSpan="12" css="red">
@@ -146,8 +146,8 @@
 				</panel>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
-				<field name="partner" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-				<field name="lead" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-from-lead"/>
+				<field name="partner"  readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
+				<field name="lead"  readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-from-lead"/>
 			</panel>
 			<panel name="postitPanel" title="Memo" canCollapse="true">
 				<field name="memo" showTitle="false" colSpan="12"/>
@@ -202,7 +202,7 @@
 	<form name="opportunity-form-lost-popup" model="com.axelor.apps.crm.db.Opportunity"
 		title="Lost reason" width="large" onSave="action-opportunity-set-closed-lost,action-opportunity-method-cancel-saleorders">
 		<panel name="mainPanel">
-			<field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
+			<field name="lostReason"  colOffset="4" colSpan="4"/>
 			<field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
 			<field name="lostReason.freeText" hidden="true"/>
 		</panel>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="work-center-grid" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
         <field name="name"/>
@@ -25,7 +25,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
+	          <field name="product" domain="self.productTypeSelect = 'service'"  form-view="product-form" grid-view="product-grid"/>
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
   		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
@@ -56,7 +56,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false"/>
+	          <field name="product" domain="self.productTypeSelect = 'service'" />
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
@@ -84,7 +84,7 @@
 	          <field name="durationPerCycle" colSpan="3" widget="duration" x-big="true" x-seconds="true"/>
 	        </panel>
 	        <panel name="costingSettingsPanel" title="Costing settings" colSpan="12">
-	          <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false"/>
+	          <field name="product" domain="self.productTypeSelect = 'service'" />
 	          <field name="costTypeSelect" colSpan="3"/>
 	          <field name="costAmount" colSpan="3"/>
    		  	  <field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>

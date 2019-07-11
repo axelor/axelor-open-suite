@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="forecast-generator-grid" title="Forecast Assistants" model="com.axelor.apps.cash.management.db.ForecastGenerator">
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -17,7 +17,7 @@
 	 	onNew="action-forecast-generator-record-default-on-new">
 	 	<panel name="mainPanel" >
 	 		<button name="generateBtn" title="Generate" onClick="action-forecast-generator-validate-dates,action-forecast-generator-method-generate,action-forecast-generator-attrs-title-generate" colSpan="3" colOffset="9"/>
-			<field name="company" canEdit="false" onChange="action-forecast-generator-record-bank"/>
+			<field name="company"  onChange="action-forecast-generator-record-bank"/>
 	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
 	       	<field name="typeSelect"/>
 	       	<field name="amount"/>

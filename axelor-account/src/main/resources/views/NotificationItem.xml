@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid model="com.axelor.apps.account.db.NotificationItem" title="Notification items"
 		name="notification-item-grid">
-		<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange" required="true" canEdit="false"/>
+		<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange" required="true" />
 		<field name="amountPaid" />
 		<field name="typeSelect"/>
 		<field name="move" readonly="true"/>
@@ -14,7 +14,7 @@
 	<form model="com.axelor.apps.account.db.NotificationItem" title="Notification item"
 		name="notification-item-form" onNew="action-account-record-notification-item-type-select">
 		<panel name="mainPanel">
-			<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange" required="true" canEdit="false"/>
+			<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange" required="true" />
 			<field name="amountPaid" />
 			<field name="typeSelect"/>
 			<field name="move" readonly="true"/>

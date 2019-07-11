@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="timesheet-line-project-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project" orderBy="-date">
@@ -77,9 +77,9 @@
 	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-to-invoice-parent"
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title" width="large">
 		<panel name="overviewPanel" title="Overview">
-			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
 			<field name="date" />
-			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" requiredIf="toInvoice"  onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="hoursDuration" hidden="true" />
@@ -97,14 +97,14 @@
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="teamTask" form-view="project-team-task-form" grid-view="project-team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task" onChange="action-timesheet-line-method-set-default-to-invoice"/>
 			<field name="date" />
-			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" requiredIf="toInvoice"  onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="hoursDuration" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="enableEditor" />
 			<field name="comments" />
-			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canNew="false" canEdit="false" canView="false"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" hidden="true" canNew="false"  canView="false"/>
 		</panel>
 	</form>
 
@@ -127,7 +127,7 @@
 			<field name="project" onChange="action-timesheet-line-group-project-onchange" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 			<field name="teamTask"/>
 			<field name="date" />
-			<field name="product" canEdit="false" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product"  requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="hoursDuration" width="62%" colSpan="2" min="0.01"/>
 			<label name="durationLabel" colSpan="1"/>
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
@@ -135,7 +135,7 @@
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="comments" />
 			<field name="enableEditor" />
-			<field name="user"  form-view="user-form" grid-view="user-grid" hidden="true" canNew="false" canEdit="false" canView="false"/>
+			<field name="user"  form-view="user-form" grid-view="user-grid" hidden="true" canNew="false"  canView="false"/>
 		</panel>
 	</form>
 

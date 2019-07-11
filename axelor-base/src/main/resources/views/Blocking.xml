@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking" orderBy="-blockingToDate">
         <hilite if="$moment(blockingToDate) &gt; $moment(__date__)" background="danger"/>
@@ -19,7 +19,7 @@
             <field name="blockingSelect" colSpan="12" selection="base.blocking.select" widget="RadioSelect" required="true"/>
             <field name="blockingToDate" colSpan="4" required="true"/>
             <field name="blockingReason" colSpan="4" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
-            <field name="blockingByUser" colSpan="4" canNew="false" canEdit="false" canView="false" readonly="true" form-view="user-form" grid-view="user-grid"/>
+            <field name="blockingByUser" colSpan="4" canNew="false"  canView="false" readonly="true" form-view="user-form" grid-view="user-grid"/>
         </panel>
     </form>
     

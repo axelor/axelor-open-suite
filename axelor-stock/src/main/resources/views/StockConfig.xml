@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="stock-config-grid" title="Stock configurations" model="com.axelor.apps.stock.db.StockConfig">
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -9,7 +9,7 @@
 
 	<form name="stock-config-form" title="Stock configuration" model="com.axelor.apps.stock.db.StockConfig" onNew="action-stock-config-record-default" width="large">
 	  <panel name="mainPanel" >
-	    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	    <field name="company"  form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  </panel>
 	  <panel name="virtualStockLocationsInfoPanel" title="Virtual stock locations information">
 	    <field name="customerVirtualStockLocation" onSelect="action-stock-config-attrs-customer-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
     eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machineWorkCenter.machine" mode="week"
@@ -131,9 +131,9 @@
 			<button name="resumeBtn" title="Resume" icon="fa-step-forward" showIf="statusSelect == 5" colSpan="12" onClick="save,action-operation-order-method-resume,save"/>
 		</panel>
 		
-		<panel-related name="operationOrderDurationListPanel" field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false" sidebar="true" showIf="id" if="!__config__.app.getApp('production') || !__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+		<panel-related name="operationOrderDurationListPanel" field="operationOrderDurationList" canNew="false"  canRemove="false" sidebar="true" showIf="id" if="!__config__.app.getApp('production') || !__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
 
-		<panel-related name="operationOrderDurationListPanel" field="timesheetLineList" grid-view="timesheet-line-timesheet-operation-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" colSpan="12" canNew="false" canEdit="false" canRemove="false" if-module="axelor-business-production" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
+		<panel-related name="operationOrderDurationListPanel" field="timesheetLineList" grid-view="timesheet-line-timesheet-operation-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" colSpan="12" canNew="false"  canRemove="false" if-module="axelor-business-production" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
 	</form>
 	
 	<action-attrs name="action-operation-order-attrs-domain-machine">

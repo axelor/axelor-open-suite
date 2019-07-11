@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="reimbursement-grid" title="Reimbursements" model="com.axelor.apps.account.db.Reimbursement">
     	<field name="ref" width="120"/>
@@ -12,7 +12,7 @@
 	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  onNew="action-reimbursement-set-default">
 		<panel name="mainPanel" >
 			<field name="ref" colSpan="12"/>
-			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND :company member of self.companySet"/>
 		</panel>
 		

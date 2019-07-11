@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="target-grid" title="Objectives" model="com.axelor.apps.crm.db.Target">
         <field name="name"/>
@@ -30,9 +30,9 @@
 				</editor>
 			</field>
 			<field name="user" colSpan="6" showIf="team == null" canNew="false"
-				canView="false" canEdit="false" form-view="user-form" grid-view="user-grid" />
+				canView="false"  form-view="user-form" grid-view="user-grid" />
 			<field if="__config__.app.getApp('base').getTeamManagement()"
-				colSpan="6" name="team" showIf="user == null" canEdit="false"
+				colSpan="6" name="team" showIf="user == null"
 				form-view="team-form" grid-view="team-grid" />
 			<static />
 		</panel>

@@ -4,28 +4,28 @@
 
     <grid name="bo-ebics-partner-service-grid" title="Ebics partner B.O. services" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
         <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-bank-order-codification"
-            canNew="false" canEdit="false" required="true"/>
+            canNew="false"  required="true"/>
         <field name="ebicsCodification" required="true"/>
     </grid>
 
     <form name="ebics-partner-service-form" title="Ebics partner B.O. service" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
         <panel name="mainPanel">
             <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-bank-order-codification"
-                canNew="false" canEdit="false" required="true"/>
+                canNew="false"  required="true"/>
             <field name="ebicsCodification" required="true"/>
         </panel>
     </form>
     
     <grid name="bs-ebics-partner-service-grid" title="Ebics partner B.S. services" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
         <field name="bankStatementFileFormat" onChange="action-ebics-partner-service-record-default-bank-statement-codification"
-            canNew="false" canEdit="false" required="true"/>
+            canNew="false"  required="true"/>
         <field name="ebicsCodification" required="true"/>
     </grid>
 
     <form name="bs-ebics-partner-service-form" title="Ebics partner B.S. service" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
         <panel name="mainPanel">
             <field name="bankStatementFileFormat" onChange="action-ebics-partner-service-record-default-bank-statement-codification"
-                canNew="false" canEdit="false" required="true"/>
+                canNew="false"  required="true"/>
             <field name="ebicsCodification" required="true"/>
         </panel>
     </form>

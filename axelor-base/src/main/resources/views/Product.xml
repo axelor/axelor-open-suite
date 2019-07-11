@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
@@ -90,8 +90,8 @@
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
 		      	<panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
-		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-		        	<field name="productCategory" canEdit="false" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
+		        	<field name="productFamily"   colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
+		        	<field name="productCategory"  colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
 		      	</panel>
       			<panel name="inAtiExpensePanel" colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
@@ -110,16 +110,16 @@
 					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
-					<field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
+					<field name="saleCurrency"  hideIf="!sellable" colSpan="12" form-view="currency-form" grid-view="currency-grid"/>
                     <field name="saleSupplySelect" colSpan="12"
                         onChange="action-product-validate-sale-supply-select"
                         hideIf="isShippingCostsProduct || !sellable"/>
 					<panel name="unitsPanel" title="Units" colSpan="12">
-						<field name="unit" canEdit="false" colSpan="6" form-view="unit-form" grid-view="unit-grid"/>
+						<field name="unit"  colSpan="6" form-view="unit-form" grid-view="unit-grid"/>
 						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
-						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
+						<field name="salesUnit"  hideIf="!sellable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
 						<spacer colSpan="6"/>
-						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
+						<field name="purchasesUnit"  hideIf="!purchasable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
 					</panel>
 					<panel name="configuratorPanel" title="Configurator" colSpan="12" showIf="configurator" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableConfigurator()">
 						<field name="configurator" showTitle="false" form-view="configurator-form" grid-view="configurator-grid" readonly="true"/>
@@ -151,8 +151,8 @@
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
-			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
-			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
+			        <field name="purchaseCurrency"  showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+			        <field name="defaultSupplierPartner"  showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
                     <panel name="purchaseMultipleQtyPanel" title="Multiple quantities" colSpan="12" if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()">
 						<field name="allowToForcePurchaseQty"/>
@@ -253,7 +253,7 @@
 					            <field name="productVariantValue4" showTitle="false" showIf="productVariantAttr4" widget="SuggestBox" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				          </editor>
 	        			</field>
-	        			<field name="parentProduct" canEdit="false" form-view="product-form" grid-view="product-grid"/>
+	        			<field name="parentProduct"  form-view="product-form" grid-view="product-grid"/>
 	        			<panel-dashlet name="otherProductVariantPanel" colSpan="12" action="action-product-view-other-product-variant" showIf="parentProduct" />
 	      			</panel>
 	      			<button name="updateProductsPricesBtn" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
@@ -272,12 +272,12 @@
 	    	</panel>
             <panel name="packingPanel" title="Packing" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
 	  			<panel name="massPanel" title="Mass" colSpan="6">
-	  				<field name="massUnit" canEdit="false" domain="self.unitTypeSelect = 1"/>
+	  				<field name="massUnit"  domain="self.unitTypeSelect = 1"/>
 	  				<field name="grossMass"/>
 	  				<field name="netMass" requiredIf="usedInDEB"/>
 	  			</panel>
 			      <panel name="articleDimensionPanel" title="Article dimension" colSpan="6">
-			        <field name="lengthUnit" canEdit="false" domain="self.unitTypeSelect = 2" />
+			        <field name="lengthUnit"  domain="self.unitTypeSelect = 2" />
 			        <field name="length" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="width" readonlyIf="diameter > 0" onChange="action-product-record-calculate-volume-length"/>
 			        <field name="height" onChange="action-product-record-calculate-volume-length, action-product-record-calculate-volume-diameter"/>
@@ -287,7 +287,7 @@
 							<panel name="DEBPanel" if-module="axelor-stock" if="__config__.app.isApp('stock')">
 								<field name="usedInDEB" title="Used in DEB"/>
 								<field name="customsCodeNomenclature" requiredIf="usedInDEB &amp;&amp; productTypeSelect !='service'"
-									showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"/>
+									showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" />
 								<field name="countryOfOrigin" showIf="usedInDEB"/>	
 							</panel>
   			</panel>

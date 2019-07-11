@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
   <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
 		<field name="fullName"/>
@@ -57,12 +57,12 @@
 					<field name="name" showTitle="true" css="label-bold bold large"/>
 				</editor>
 			</field>
-			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
+			<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="workshopStockLocation"  domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"/>
-			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
+			<field name="product"  onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
             <field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"  required="true"/>
             <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
 		</panel>
 
@@ -82,7 +82,7 @@
 				<button name="addComponentsEnMasseBtn" title="Add components in bulk" onClick="action-bill-of-material-attrs-show-component-panel"/>
 				<panel name="addComponentsEnMassePanel" showTitle="false" colSpan="12" hidden="true">
 					<button name="addToComponents" title="Add to components" readonlyIf="!$rawMaterials" colSpan="3" css="btn-custom" onClick="save,action-bill-of-material-method-add-raw-materials,action-bill-of-material-attrs-hide-component-panel"/>
-					<field name="$rawMaterials" title="Raw materials to add to components" type="one-to-many" x-target="com.axelor.apps.base.db.Product" colSpan="12" domain="self.productTypeSelect = 'storable'" canNew="false" canEdit="false" canSelect="true" form-view="product-form" grid-view="product-grid"/>
+					<field name="$rawMaterials" title="Raw materials to add to components" type="one-to-many" x-target="com.axelor.apps.base.db.Product" colSpan="12" domain="self.productTypeSelect = 'storable'" canNew="false"  canSelect="true" form-view="product-form" grid-view="product-grid"/>
 				</panel>
 			</panel>
 
@@ -124,11 +124,11 @@
 		onLoad="action-bill-of-material-attrs-product-def-sub-bom,action-bill-of-material-attrs-price-and-qty-digits"
 		onSave="save,action-bill-of-material-method-name" width="large">
 		<panel name="mainPanel">
-			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product"  onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="defineSubBillOfMaterial" colSpan="3" hidden="true"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>
-			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
+			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"  required="true"/>
 			<field name="wasteRate" min="0"/>
 			<panel name="subProcessConfigurationPanel" title="Sub-process configuration" showIf="defineSubBillOfMaterial" colSpan="12" hidden="true">
 				<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
