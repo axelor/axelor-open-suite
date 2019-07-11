@@ -76,6 +76,7 @@
 - INVOICE : Resolve error of sending email from Invoice.
 - Studio: Fix export of selection with app
 - CONFIGURATOR : fix configurator demo data.
+- Operation Order: Fix typo in fr translations.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
