@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="ExtraHoursLine" cachable="true">
+  <entity name="ExtraHoursLine" cacheable="true">
       
       <many-to-one name="payrollPreparation" ref="com.axelor.apps.hr.db.PayrollPreparation"/>
       <many-to-one name="extraHours" ref="com.axelor.apps.hr.db.ExtraHours"/>

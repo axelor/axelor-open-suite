@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Timesheet" cachable="true">
+  <entity name="Timesheet" cacheable="true">
 
       <date name="sentDate" title="Sent Date" readonly="true"/>
       <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1" readonly="true"/>

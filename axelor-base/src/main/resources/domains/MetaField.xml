@@ -5,7 +5,7 @@
 
 	<module name="meta" package="com.axelor.meta.db" />
 
-	<entity name="MetaField" table="META_FIELD" cachable="true" >
+	<entity name="MetaField" table="META_FIELD" cacheable="true" >
     	<string name="label" title="Label" translatable="true"/>
 	</entity>
 </domain-models>

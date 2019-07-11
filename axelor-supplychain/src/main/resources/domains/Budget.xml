@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Budget" lang="java" cachable="true">
+  <entity name="Budget" lang="java" cacheable="true">
   
   	<decimal name="totalAmountCommitted" title="Committed total amount" precision="20" scale="2"/>
 

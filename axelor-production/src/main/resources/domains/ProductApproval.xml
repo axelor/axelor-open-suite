@@ -5,7 +5,7 @@
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProductApproval" lang="java" cachable="true">
+  <entity name="ProductApproval" lang="java" cacheable="true">
   
 	<string name="code" title="Code" unique="true" required="true"/>
 	<string name="name" title="name" namecolumn="true" unique="true" required="true"/>

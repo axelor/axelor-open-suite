@@ -4,7 +4,7 @@
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="JobPosition" lang="java" cachable="true">
+	<entity name="JobPosition" lang="java" cacheable="true">
 		<string name="jobTitle" title="Job title" required="true"  namecolumn="true"/>
 		<string name="jobReference" title="Job reference" readonly="true"/>
 		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Department" />

@@ -5,7 +5,7 @@
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
-	<entity name="ManualElement" cachable="true">
+	<entity name="ManualElement" cacheable="true">
         
         <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 		<string name="title" title="Title" required="true"/>

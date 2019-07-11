@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="UserAccessConfig" cachable="true">
+  <entity name="UserAccessConfig" cacheable="true">
   	<many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"/>
     <many-to-one name="app" ref="com.axelor.apps.base.db.App" title="App" />
     <many-to-one name="accessConfig" ref="com.axelor.apps.base.db.AccessConfig" title="Access config" />

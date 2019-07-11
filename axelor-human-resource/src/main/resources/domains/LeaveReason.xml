@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LeaveReason" cachable="true">
+  <entity name="LeaveReason" cacheable="true">
 
       <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
       <boolean name="manageAccumulation" title="Manage Accumulation"/>

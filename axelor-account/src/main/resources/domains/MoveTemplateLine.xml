@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveTemplateLine" lang="java" cachable="true">
+  <entity name="MoveTemplateLine" lang="java" cacheable="true">
   	<many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate" />
   	<string name="name" title="Label"/>
   	<string name="debitCreditSelect" title="Debit/Credit" selection="move.template.line.debit.credit.select"/>

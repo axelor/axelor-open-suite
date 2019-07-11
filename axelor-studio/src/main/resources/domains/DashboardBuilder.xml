@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="DashboardBuilder" cachable="true">
+  <entity name="DashboardBuilder" cacheable="true">
     <string name="title" title="Title" required="true" />
     <string name="name" title="Name"  required="true" unique="true"/>
     <string name="model" title="Model" />

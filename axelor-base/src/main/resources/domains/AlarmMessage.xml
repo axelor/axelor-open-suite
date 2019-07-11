@@ -3,7 +3,7 @@
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
-  <entity name="AlarmMessage" lang="java" cachable="true">
+  <entity name="AlarmMessage" lang="java" cacheable="true">
     
     <string title="Label" name="name" required="true"/>
     <string title="Type" name="typeSelect" required="true" selection="ialarm.type.select"/>

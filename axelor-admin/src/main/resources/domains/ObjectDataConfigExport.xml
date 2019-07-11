@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ObjectDataConfigExport" cachable="true">
+  <entity name="ObjectDataConfigExport" cacheable="true">
     <![CDATA[
     This object store the detail of export data
     ]]>

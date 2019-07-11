@@ -5,7 +5,7 @@
   
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="ActionBuilderView" cachable="true">
+  <entity name="ActionBuilderView" cacheable="true">
   	<string name="viewType" title="Type" required="true" selection="view.type.selection"/>
   	<string name="viewName" title="Name" required="true"/>
   	<many-to-one name="actionBuilder" ref="ActionBuilder" />

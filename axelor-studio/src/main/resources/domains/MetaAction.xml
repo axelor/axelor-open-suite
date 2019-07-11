@@ -5,7 +5,7 @@
 
   <module name="meta" package="com.axelor.meta.db" />
   
-  <entity name="MetaAction" cachable="true">
+  <entity name="MetaAction" cacheable="true">
     <integer name="sequence" title="Sequence" />
   </entity>
     

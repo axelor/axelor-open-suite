@@ -5,7 +5,7 @@
 
     <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-    <entity name="BankPaymentConfig" cachable="true">
+    <entity name="BankPaymentConfig" cacheable="true">
         <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
         <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>

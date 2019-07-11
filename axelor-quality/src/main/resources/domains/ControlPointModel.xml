@@ -4,7 +4,7 @@
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 
-	<entity name="ControlPointModel" lang="java" cachable="true">
+	<entity name="ControlPointModel" lang="java" cacheable="true">
 		<string name="name" title="Control point name" required="true"/>
 		<integer name="sequence" title="Sequence"/>
 		<decimal name="controlFrequency" title="Control Frequency"/>

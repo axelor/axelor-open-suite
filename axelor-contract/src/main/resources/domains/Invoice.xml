@@ -4,7 +4,7 @@
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="Invoice" lang="java" cachable="true" >
+	<entity name="Invoice" lang="java" cacheable="true" >
 	
 		<many-to-one name="contract" title="Contract" ref="com.axelor.apps.contract.db.Contract" />
 		

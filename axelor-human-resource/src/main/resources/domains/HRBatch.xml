@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="HrBatch" lang="java" cachable="true">
+  <entity name="HrBatch" lang="java" cacheable="true">
   	
   	<!-- HEADER -->
   	<string name="code" title="Code" namecolumn="true" unique="true"/>

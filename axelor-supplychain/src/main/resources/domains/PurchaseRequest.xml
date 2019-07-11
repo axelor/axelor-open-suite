@@ -5,7 +5,7 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseRequest" lang="java" cachable="true">
+  <entity name="PurchaseRequest" lang="java" cacheable="true">
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
 

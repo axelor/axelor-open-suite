@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="DashletBuilder" cachable="true">
+  <entity name="DashletBuilder" cacheable="true">
     <![CDATA[
     	It represents a custom dashlet. It contains fields required to generate a adk supported dashlet xml. 
     ]]>

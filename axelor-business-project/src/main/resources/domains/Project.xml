@@ -5,7 +5,7 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-	<entity name="Project" cachable="true">
+	<entity name="Project" cacheable="true">
         
   		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
 		<integer name="invoicingType" selection="project.invoicing.type.select" title="Invoicing Type" />

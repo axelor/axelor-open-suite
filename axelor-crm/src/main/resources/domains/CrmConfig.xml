@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="CrmConfig" lang="java" cachable="true">
+  <entity name="CrmConfig" lang="java" cacheable="true">
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
   	<many-to-one name="taskTemplate" ref="com.axelor.apps.message.db.Template" title="Task reminder template"/>

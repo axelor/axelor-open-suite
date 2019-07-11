@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentMode" lang="java" cachable="true">
+  <entity name="PaymentMode" lang="java" cacheable="true">
   
     <boolean name="generateBankOrder" title="Generate Bank order"/>
     <boolean name="autoConfirmBankOrder" title="Confirm auto. the bank orders"/>

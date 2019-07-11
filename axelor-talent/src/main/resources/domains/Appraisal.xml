@@ -4,7 +4,7 @@
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="Appraisal" lang="java" cachable="true">
+	<entity name="Appraisal" lang="java" cacheable="true">
 		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"  />
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
 		<many-to-one name="appraisalType" ref="AppraisalType" title="Type of appraisal" required="true"/>

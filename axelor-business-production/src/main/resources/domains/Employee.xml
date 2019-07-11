@@ -5,7 +5,7 @@
 
     <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-    <entity name="Employee" cachable="true">
+    <entity name="Employee" cacheable="true">
         <integer name="timesheetImputationSelect" title="Timesheet imputed on" selection="business.production.employee.timesheet.imputation.select" default="1"/>
 
         <extra-code>

@@ -4,7 +4,7 @@
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 
-	<entity name="QualityTag" lang="java" cachable="true">
+	<entity name="QualityTag" lang="java" cacheable="true">
 		<string name="name" title="Name" required="true" />
 	</entity>
 

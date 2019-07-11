@@ -5,7 +5,7 @@
 
     <module name="base" package="com.axelor.apps.base.db"/>
 
-    <entity name="Country" lang="java" cachable="true">
+    <entity name="Country" lang="java" cacheable="true">
 
         <boolean name="isIspmRequired" title="Is ISPM15 required"/>
 

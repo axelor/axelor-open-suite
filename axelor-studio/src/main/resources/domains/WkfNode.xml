@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="WkfNode" cachable="true">
+  <entity name="WkfNode" cacheable="true">
       <![CDATA[
 	    WkfNode represents a state of the workflow. A workflow must contain at least two states. 
 	    It is also used to generate a menu entry based on state. 

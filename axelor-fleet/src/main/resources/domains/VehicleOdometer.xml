@@ -4,7 +4,7 @@
 
 	<module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-	<entity name="VehicleOdometer" lang="java" cachable="true">
+	<entity name="VehicleOdometer" lang="java" cacheable="true">
 		<string name="name" title="Name" />
 		<date name="date" title="Date" column="date_val" />
 		<decimal name="value" title="Kilometric value"/>

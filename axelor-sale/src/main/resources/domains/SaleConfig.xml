@@ -5,7 +5,7 @@
 
 	<module name="sale" package="com.axelor.apps.sale.db"/>
 
-	<entity name="SaleConfig" lang="java" cachable="true">
+	<entity name="SaleConfig" lang="java" cacheable="true">
 		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
 		<decimal name="acceptedCredit" title="Accepted Credit"/>

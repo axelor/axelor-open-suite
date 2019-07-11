@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TimesheetLine" cachable="true">
+  <entity name="TimesheetLine" cacheable="true">
 
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>

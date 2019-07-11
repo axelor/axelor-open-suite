@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="HRConfig" cachable="true">
+  <entity name="HRConfig" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
     <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product" title="Kilometric expense product" />
     <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2" precision="20"/>

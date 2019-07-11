@@ -4,7 +4,7 @@
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="TrainingSession" lang="java" cachable="true">
+	<entity name="TrainingSession" lang="java" cacheable="true">
 		<integer name="statusSelect" title="Status" selection="training.session.status.select" default="1" />
 		<many-to-one name="training" ref="com.axelor.apps.talent.db.Training" title="Training" required="true" />
 		<datetime name="fromDate" title="From date" required="true" />

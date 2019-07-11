@@ -5,7 +5,7 @@
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
-  <entity name="InvoicingProject" cachable="true">
+  <entity name="InvoicingProject" cacheable="true">
       
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Business project"/>
     <many-to-many name="logTimesSet" ref="com.axelor.apps.hr.db.TimesheetLine" title="Log Times" />

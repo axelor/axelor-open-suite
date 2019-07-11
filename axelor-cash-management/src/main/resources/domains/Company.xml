@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Company" lang="java" cachable="true">
+  <entity name="Company" lang="java" cacheable="true">
 
   	<decimal name="customerPaymentDelay" title="Customers payment delay (Average in days)"/>
 	<decimal name="supplierPaymentDelay" title="Suppliers payment delay (Average in days)"/>

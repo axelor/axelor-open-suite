@@ -5,7 +5,7 @@
   
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmployeeAdvance" lang="java" cachable="true">
+  <entity name="EmployeeAdvance" lang="java" cacheable="true">
   	
 
 	<date name="date" column="date_val" title="Date" />

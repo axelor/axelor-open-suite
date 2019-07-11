@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db" />
 
-  <entity name="ActionBuilderLine" cachable="true">
+  <entity name="ActionBuilderLine" cacheable="true">
      <many-to-one name="actionBuilder" ref="ActionBuilder" title="Action Builder" />
      <many-to-one name="metaJsonField" ref="com.axelor.meta.db.MetaJsonField" title="Target Field" />
      <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Target Field" />

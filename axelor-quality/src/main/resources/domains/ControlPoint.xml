@@ -4,7 +4,7 @@
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 
-	<entity name="ControlPoint" lang="java" cachable="true">
+	<entity name="ControlPoint" lang="java" cacheable="true">
 		<integer name="statusSelect" selection="quality.control.points.status.select"/>
 		<many-to-one name="qualityControl" ref="QualityControl" title="Quality control" />
 		<many-to-one name="optionalQualityControl" ref="QualityControl"/>

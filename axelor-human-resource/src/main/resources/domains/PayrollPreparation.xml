@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="PayrollPreparation" cachable="true">
+  <entity name="PayrollPreparation" cacheable="true">
       
       <many-to-one name="employmentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contract"/>
       <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" required="true" title="Employee"/>

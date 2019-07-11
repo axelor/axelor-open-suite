@@ -5,7 +5,7 @@
 
 	<module name="human-resource" package="com.axelor.apps.hr.db" />
 
-	<entity name="LunchVoucherMgt" cachable="true">
+	<entity name="LunchVoucherMgt" cacheable="true">
 
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
 

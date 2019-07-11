@@ -5,7 +5,7 @@
   
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmployeeAdvanceUsage" lang="java" cachable="true">
+  <entity name="EmployeeAdvanceUsage" lang="java" cacheable="true">
   	
 	<decimal name="usedAmount" title="Used amount" />
 	<many-to-one name="expense" ref="com.axelor.apps.hr.db.Expense" title="Expense" />

@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="WkfTrackingTotal" cachable="true">
+  <entity name="WkfTrackingTotal" cacheable="true">
        <![CDATA[
 	 	It stores the number times a particular status used by an object. 
 	  ]]>

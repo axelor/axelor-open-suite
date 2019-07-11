@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Year" lang="java" cachable="true">
+  <entity name="Year" lang="java" cacheable="true">
   
   <date name="reportedBalanceDate" title="Reported balance Date"/>
 <!--     <one-to-many name="reportedBalanceLineList" ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="year" title="Reported balace lines"/> -->

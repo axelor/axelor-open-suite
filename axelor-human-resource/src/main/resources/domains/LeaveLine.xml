@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LeaveLine" cachable="true">
+  <entity name="LeaveLine" cacheable="true">
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"/>
     <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" />
     <decimal name="quantity" title="Remaining" scale="4" precision="8"/>

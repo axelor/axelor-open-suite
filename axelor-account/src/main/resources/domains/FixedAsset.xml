@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAsset" lang="java" cachable="true">
+  <entity name="FixedAsset" lang="java" cacheable="true">
   
   	<string name="reference" title="Reference" readonly="true"/>
   	<string name="name" title="Name" required="true"/>

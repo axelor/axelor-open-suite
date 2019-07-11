@@ -4,7 +4,7 @@
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="TalentSource" lang="java" cachable="true">
+	<entity name="TalentSource" lang="java" cacheable="true">
 		<string name="code" title="Code" required="true"/>
 		<string name="name" title="Name" required="true"/>
 	</entity>

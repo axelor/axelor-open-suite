@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountConfig" lang="java" cachable="true">
+  <entity name="AccountConfig" lang="java" cacheable="true">
   	
     <many-to-one name="expenseJournal" ref="com.axelor.apps.account.db.Journal" title="Expense Journal"/>
     

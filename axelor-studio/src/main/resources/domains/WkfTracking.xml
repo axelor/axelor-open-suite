@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="WkfTracking" cachable="true">
+  <entity name="WkfTracking" cacheable="true">
       <![CDATA[
 	    WkfTracking stores the information related to the workflow instance for an object. 
 	    The information like number of time some status changed, the user who changed the state, date and time when state is changed. 

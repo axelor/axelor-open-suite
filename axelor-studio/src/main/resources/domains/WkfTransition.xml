@@ -5,7 +5,7 @@
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="WkfTransition" cachable="true">
+  <entity name="WkfTransition" cacheable="true">
       <![CDATA[
     	WkfTransition stores the transition information for the nodes(state) of a workflow. 
     	It contains source and destination nodes. The transition can be done on button click or on satisfaction of some conditions. 

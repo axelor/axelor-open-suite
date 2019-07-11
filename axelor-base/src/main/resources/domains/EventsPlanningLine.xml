@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="EventsPlanningLine" cachable="true">
+  <entity name="EventsPlanningLine" cacheable="true">
   	  <many-to-one name="eventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning"/>
   	  <integer name="year" required="true" title="Year"/>
   	  <date name="date" column="date_val" required="true" title="Date"/>

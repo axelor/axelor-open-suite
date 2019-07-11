@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="OtherCostsEmployee" cachable="true">
+  <entity name="OtherCostsEmployee" cacheable="true">
       
       <decimal name="amount" title="Amount" scale="2" precision="15"/>
       <string name="description" title="Description" large="true"/>

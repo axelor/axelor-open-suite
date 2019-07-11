@@ -5,7 +5,7 @@
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="LostReason" lang="java" cachable="true">
+  <entity name="LostReason" lang="java" cacheable="true">
 	
   	<string name="name" title="Name" required="true"/>
     <boolean name="freeText" title="Free text"/>

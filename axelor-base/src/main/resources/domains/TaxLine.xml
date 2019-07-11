@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="TaxLine" lang="java" cachable="true">
+  <entity name="TaxLine" lang="java" cacheable="true">
 
     <many-to-one name="tax" ref="Tax" title="Tax" />
     <date name="startDate" title="Application start Date" required="true"/>

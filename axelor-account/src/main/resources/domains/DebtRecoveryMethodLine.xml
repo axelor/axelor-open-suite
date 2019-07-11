@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="DebtRecoveryMethodLine" lang="java" cachable="true">
+  <entity name="DebtRecoveryMethodLine" lang="java" cacheable="true">
   
   	<many-to-one name="debtRecoveryLevel"  ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Level" />
   	<string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>

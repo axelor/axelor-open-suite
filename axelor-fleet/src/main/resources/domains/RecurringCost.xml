@@ -4,7 +4,7 @@
 	
 	<module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-	<entity name="RecurringCost" lang="java" cachable="true">
+	<entity name="RecurringCost" lang="java" cacheable="true">
 		<date name="date" title="Date" column="date_rec_cost" />
 		<decimal name="amount" title="Amount"/>
 	</entity>

@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LeaveRequest" cachable="true">
+  <entity name="LeaveRequest" cacheable="true">
       
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
       <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select" default="1" readonly="true"/>
