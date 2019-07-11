@@ -38,6 +38,7 @@
 - SALE/PURCHASE without stock moves : issue on page numbering
 - ActionBuilder : Use CodeEditor widget for script.
 - Studio : Add colspan field on worklow transition.
+- ActionBuilderLine : Changes in form view, increased colspan of value.
 - Wkf : Add confirmation message when edit status field.
 
 ## Bug Fixes
@@ -79,6 +80,7 @@
 - Studio: Fix export of selection with app
 - CONFIGURATOR : fix configurator demo data.
 - Operation Order: Fix typo in fr translations.
+- AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form

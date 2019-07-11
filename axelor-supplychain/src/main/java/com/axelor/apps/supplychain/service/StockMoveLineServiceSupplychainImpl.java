@@ -418,6 +418,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   @Override
   public boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine) {
+    if (stockMoveLine.getProduct() == null
+        || (stockMoveLine.getProduct() != null && !stockMoveLine.getProduct().getStockManaged())) {
+      return true;
+    }
     updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
     BigDecimal availableQty = stockMoveLine.getAvailableQty();
     if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null
