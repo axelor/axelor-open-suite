@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
@@ -61,5 +62,6 @@ public interface AccountingCutOffService {
       boolean isReverse)
       throws AxelorException;
 
+  @CallMethod
   List<Long> getStockMoveLines(Batch batch);
 }
