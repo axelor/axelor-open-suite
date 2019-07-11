@@ -74,7 +74,7 @@ public interface UserService {
    * Method that return company logo link
    *
    * @return the logo Link
-   * */
+   */
   public String getUserActiveCompanyLogoLink();
 
   /**
