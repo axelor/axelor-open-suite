@@ -37,7 +37,8 @@
 - ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
 - SALE/PURCHASE without stock moves : issue on page numbering
 - ActionBuilder : Use CodeEditor widget for script.
-- ActionBuilderLine : Changes in form view.
+- Studio : Add colspan field on worklow transition.
+- ActionBuilderLine : Changes in form view, increased colspan of value.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -77,6 +78,7 @@
 - INVOICE : Resolve error of sending email from Invoice.
 - Studio: Fix export of selection with app
 - CONFIGURATOR : fix configurator demo data.
+- Operation Order: Fix typo in fr translations.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
