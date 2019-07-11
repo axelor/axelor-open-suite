@@ -81,6 +81,7 @@
 - CONFIGURATOR : fix configurator demo data.
 - Operation Order: Fix typo in fr translations.
 - AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
+- App Builder : Fix NPE on export of action-builder type view with params.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
