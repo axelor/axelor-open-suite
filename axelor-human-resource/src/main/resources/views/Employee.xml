@@ -85,15 +85,15 @@
 
     <panel name="rhInfoSBSPanel" title="HR information" showIf="stepByStepSelect == 1">
       <panel colSpan="12">
-        <field name="managerUser"  canNew="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+        <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
         <field name="exportCode" colSpan="4"/>
         <field name="bankDetails" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
       </panel>
 
       <panel colSpan="12">
         <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
-        <field name="publicHolidayEventsPlanning"  colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
-        <field name="imposedDayEventsPlanning"  colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
+        <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
+        <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
       </panel>
 
       <panel colSpan="12">
@@ -138,7 +138,7 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')" showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-      <field name="product"  colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
@@ -210,15 +210,15 @@
 
         <panel name="rhInfoPanel" title="HR information" colSpan="12">
           <panel colSpan="12">
-            <field name="managerUser"  canNew="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
+            <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
             <field name="exportCode" colSpan="4"/>
             <field name="bankDetails" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
           </panel>
 
           <panel colSpan="12">
             <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
-            <field name="publicHolidayEventsPlanning"  colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
-            <field name="imposedDayEventsPlanning"  colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
+            <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
+            <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4" form-view="events-planning-form" grid-view="events-planning-grid"/>
           </panel>
 
           <panel colSpan="12">
@@ -262,7 +262,7 @@
 
       <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
         <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-        <field name="product"  colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
         <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
 
@@ -274,7 +274,7 @@
 
         <panel-dashlet name="lunchVouchersDashletPanel" title="Lunch vouchers" action="action-employee-view-show-lunch-voucher" colSpan="12"/>
 
-        <panel-related name="lunchVoucherAdvanceListPanel" field="lunchVoucherAdvanceList"  canNew="false" canRemove="true" colSpan="12" form-view="lunch-voucher-advance-form" grid-view="lunch-voucher-advance-grid"/>
+        <panel-related name="lunchVoucherAdvanceListPanel" field="lunchVoucherAdvanceList" canEdit="false" canNew="false" canRemove="true" colSpan="12" form-view="lunch-voucher-advance-form" grid-view="lunch-voucher-advance-grid"/>
         <button name="addLunchVoucherAdvanceBtn" title="Add an advance" colSpan="3" icon="fa-ticket" onClick="save,action-lunch-voucher-advance-new"/>
       </panel>
 
@@ -296,7 +296,7 @@
                 <field name="vehicleMake"/>
                 <field name="vehicleModel"/>
                 <field name="plateNo"/>
-                <field name="kilometricAllowParam"  widget="SuggestBox"/>
+                <field name="kilometricAllowParam" canEdit="false" widget="SuggestBox"/>
                 <field name="startDate" onChange="action-employee-validate-dates"/>
                 <field name="endDate" onChange="action-employee-validate-dates"/>
               </panel>

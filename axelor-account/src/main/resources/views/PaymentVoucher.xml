@@ -24,9 +24,9 @@
 		<panel name="mainPanel" readonlyIf="statusSelect == 3" itemSpan="12">
 			 <field name="ref" readonly="true" colSpan="4"/>
 			 <field name="operationTypeSelect" colSpan="4" onChange="action-payment-voucher-hidden-fields-if-purchase"/>
-			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+			 <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			 <field name="paymentDate" colSpan="4" required="true"/>
-			 <field name="company"  widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
+			 <field name="company" canEdit="false" widget="SuggestBox" colSpan="4" form-view="company-form" grid-view="company-grid" onChange="action-payment-voucher-method-fill-bank-details"/>
 			 <field name="hasAutoInput" colSpan="4" hidden="true"/>
 		</panel>
 		
@@ -78,7 +78,7 @@
 		
 		<panel name="paymentInfoPanel" readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
 		 	<field name="paidAmount" colSpan="4" onChange="action-group-payment-voucher-reset-imputation" />
-			<field name="currency"  colSpan="4" form-view="currency-form" grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation" />
+			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation" />
 			<field name="remainingAmount" readonly="true" colSpan="4"/>
             <field name="moveLine" onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs"
                 onSelect="action-pv-moveLine-domain" colSpan="4" showIf="operationTypeSelect == 3 || operationTypeSelect == 4"

@@ -15,7 +15,7 @@
 	  	<panel name="mainPanel">
 		    <field name="actionSelect"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
-		    <field name="company" />
+		    <field name="company" canEdit="false"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
             <panel name="leaveManagementPanel" title="Leave management" hidden="true" showIf="actionSelect == 1">
@@ -40,7 +40,7 @@
 			</panel>
 
 			<panel name="payrollPreparationGenerationPanel" title="Payroll preparation generation page" hidden="true" showIf="actionSelect == 3">
-			    <field name="period" domain="self.year.company = :company AND self.year.typeSelect = 2" colSpan="4"  canView="false" />
+			    <field name="period" domain="self.year.company = :company AND self.year.typeSelect = 2" colSpan="4" canEdit="false" canView="false" />
    				<field name="planningSet" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect" colSpan="8"/>
    			    <field name="comments" colSpan="12"/>
 		   		<panel-related name="employeeSetPanel" field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
@@ -48,7 +48,7 @@
 			</panel>
 
 			<panel  name="payrollPreparationExportPanel" title="Payroll preparation export page" hidden="true" showIf="actionSelect == 4">
-				<field name="period" domain="self.year.company = :company AND self.year.typeSelect = 2" colSpan="4"  canView="false"/>
+				<field name="period" domain="self.year.company = :company AND self.year.typeSelect = 2" colSpan="4" canEdit="false" canView="false"/>
 				<field name="payrollPreparationExportTypeSelect" colSpan="4"/>
 				<field name="exportAlreadyExported" colSpan="4"/>
 				<spacer name="exportSpacer"/>
@@ -73,7 +73,7 @@
 
 			<panel name="informationsPanel" title="Informations">
 				<field name="createdOn" title="Created on"/>
-				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid" />
+				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid" canEdit="false"/>
 				<field name="description" colSpan="12" />
 				<panel-related name="batchListPanel" field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true"/>
 			</panel>

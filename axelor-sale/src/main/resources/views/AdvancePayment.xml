@@ -15,7 +15,7 @@
 	<form name="advance-payment-form" title="Advance Payment" model="com.axelor.apps.sale.db.AdvancePayment" onNew="action-advance-payment-record-new">
 		<panel name="mainPanel" readonlyIf="id">
 			<field name="amount" onChange="action-advance-payment-record-change-amount" required="true"/>
-			<field name="currency"  form-view="currency-form" grid-view="currency-grid" required="true"/>
+			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true"/>
 			<field name="advancePaymentDate" required="true"/> 
 			<field name="amountRemainingToUse" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" /> 
 	    	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid" required="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" /> 

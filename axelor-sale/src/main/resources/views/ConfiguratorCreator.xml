@@ -51,8 +51,8 @@
       form-view="configurator-soline-formula-form" grid-view="configurator-soline-formula-grid"/>
 
 		<panel name="authorizationsPanel" title="Authorizations" hideIf="id == null">
-			<field name="authorizedUserSet" widget="TagSelect"  canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
-            <field name="authorizedGroupSet" widget="TagSelect"  canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
+			<field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false" form-view="user-form" grid-view="user-grid" colSpan="12"/>
+            <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false" form-view="group-form" grid-view="group-grid" colSpan="12"/>
 		</panel>
 		
 		<panel name="configuratorBomPanel" title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">

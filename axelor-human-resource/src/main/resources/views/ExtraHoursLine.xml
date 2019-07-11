@@ -19,7 +19,7 @@
 			<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
 			<field name="project"/>
 			<field name="description" colSpan="12"/>
-			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 	</form>
 	

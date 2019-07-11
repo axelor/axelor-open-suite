@@ -19,8 +19,8 @@
 		<panel name="generalPanel" title="General">
 			<field name="name"/>
 			<field name="dateTime"/>
-			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
-			<field name="company" widget="SuggestBox" form-view="company-form"  grid-view="company-grid"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+			<field name="company" widget="SuggestBox" form-view="company-form" canEdit="false" grid-view="company-grid"/>
 			<field name="statusSelect"/>
 		</panel>
 		

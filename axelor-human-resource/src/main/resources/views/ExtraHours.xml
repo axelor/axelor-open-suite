@@ -42,13 +42,13 @@
 		<panel name="headPanel">
 			<field name="sentDate" colSpan="3"/>
 			<field name="totalQty" colSpan="3"/>
-			<field name="company"  colSpan="3" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" colSpan="3" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+			<field name="company" canEdit="false" colSpan="3" form-view="company-form" grid-view="company-grid"/>
+			<field name="user" colSpan="3" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 		<panel-related name="extraHoursLineListPanel" field="extraHoursLineList" onChange="action-extra-hours-method-compute"/>
 		<panel name="validationPanel">
-			<field name="validatedBy"  form-view="user-form" grid-view="user-grid"/>
-			<field name="refusedBy"  form-view="user-form" grid-view="user-grid"/>
+			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>

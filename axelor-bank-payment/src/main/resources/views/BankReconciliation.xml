@@ -9,7 +9,7 @@
 		<field name="toDate"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
-		<field name="currency"  form-view="currency-form" grid-view="currency-grid"/>
+		<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="journal" form-view="journal-form" grid-view="journal-grid"/>
 		<field name="startingBalance" />
 		<field name="endingBalance" />
@@ -28,14 +28,14 @@
 				<field name="validatedDate" colSpan="2"/>
 				<field name="name"/>
 				<field name="bankStatement" domain="self.statusSelect = 2"/>
-				<field name="company"  widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true"/>
-				<field name="currency"  form-view="currency-form" grid-view="currency-grid" required="true"/>
-				<field name="bankDetails"  form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"/>
+				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true"/>
+				<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true"/>
+				<field name="bankDetails" canEdit="false" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"/>
 				<field name="includeOtherBankStatements"/>
 				<field name="fromDate"/>
 				<field name="toDate"/>
-				<field name="journal"  domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-				<field name="cashAccount"  domain="self.company = :company AND self.accountType.technicalTypeSelect ='cash'" form-view="account-form" grid-view="account-grid"/>
+				<field name="journal" canEdit="false" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
+				<field name="cashAccount" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect ='cash'" form-view="account-form" grid-view="account-grid"/>
 			</panel>
 			<panel colSpan="12" name="actionsPanel">
 				<button name="loadBankStatementBtn" title="Load bank statements" onClick="save,action-bank-reconciliation-method-load-bank-statement" showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3"/>
@@ -79,7 +79,7 @@
 				<field name="_selectedBankReconciliationLine" hidden="true"/>
 			</panel>
 			<panel-related name="$toReconcileMoveLineSetPanel" field="$toReconcileMoveLineSet" title="Select move lines to reconciles" colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.MoveLine" 
-			onSelect="action-bank-reconciliation-attrs-move-line-domain-on-wizard" canNew="false"  form-view="move-line-form" grid-view="move-line-grid"
+			onSelect="action-bank-reconciliation-attrs-move-line-domain-on-wizard" canNew="false" canEdit="false" form-view="move-line-form" grid-view="move-line-grid"
 			onChange="action-bank-reconciliation-attrs-multiple-reconcile-wizard-compute-total-of-selected-move-lines"/>
 			<field name="$selectedMoveLineTotal" title="Total of selected move lines" type="decimal" readonly="true"/>
 			<button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="action-bank-reconciliation-method-validate-multiple-reconciles" showIf="$selectedMoveLineTotal &gt; 0"/>

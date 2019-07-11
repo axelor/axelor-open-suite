@@ -17,7 +17,7 @@
 	 	onNew="action-forecast-generator-record-default-on-new">
 	 	<panel name="mainPanel" >
 	 		<button name="generateBtn" title="Generate" onClick="action-forecast-generator-validate-dates,action-forecast-generator-method-generate,action-forecast-generator-attrs-title-generate" colSpan="3" colOffset="9"/>
-			<field name="company"  onChange="action-forecast-generator-record-bank"/>
+			<field name="company" canEdit="false" onChange="action-forecast-generator-record-bank"/>
 	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
 	       	<field name="typeSelect"/>
 	       	<field name="amount"/>

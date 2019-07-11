@@ -503,6 +503,7 @@ public class ChartBuilderService {
     return filterSqlService.getDefaultTarget(metaField.getName(), metaField.getTypeName())[0];
   }
 
+  @CallMethod
   public String getDefaultTarget(MetaJsonField metaJsonField) {
 
     if (!"many-to-one,one-to-one,json-many-to-one".contains(metaJsonField.getType())) {

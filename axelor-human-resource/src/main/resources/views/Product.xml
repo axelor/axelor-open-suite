@@ -41,7 +41,7 @@
 				<panel name="subSalePanel" colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
-					<field name="saleCurrency"  colSpan="12" hideIf="!sellable"/>
+					<field name="saleCurrency" canEdit="false" colSpan="12" hideIf="!sellable"/>
 					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
 				<panel colSpan="12" name="internalDescriptionPanel" title="Internal description" >
@@ -118,7 +118,7 @@
 				<panel name="subSalePanel" colSpan="6" title="Sales">
 				    <field name="sellable" colSpan="12"/>
 					<field name="salePrice" colSpan="12" hideIf="!sellable"/>
-					<field name="saleCurrency"  colSpan="12" hideIf="!sellable" form-view="currency-form" grid-view="currency-grid"/>
+					<field name="saleCurrency" canEdit="false" colSpan="12" hideIf="!sellable" form-view="currency-form" grid-view="currency-grid"/>
 					<field name="unit" colSpan="12" hideIf="!sellable" form-view="unit-form" grid-view="unit-grid"/>
 				</panel>
 				<panel colSpan="6" name="productDatesPanel" title="Product dates">

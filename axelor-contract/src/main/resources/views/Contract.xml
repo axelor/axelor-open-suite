@@ -39,9 +39,9 @@
 					</h3>
                     ]]></viewer>
                 </field>
-                <field name="company" readonlyIf="statusSelect >= 2"  colSpan="4"/>
-                <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2"  onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
-                <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" />
+                <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
+                <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
+                <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
                 <field name="project" colSpan="8" domain="(select id from User where partner = :partner) member of self.membersUserSet"/>
                 <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id" colSpan="12">
@@ -78,7 +78,7 @@
             </panel>
             <panel colSpan="3" stacked="true" name="actionPanel">
                 <panel name="templatePanel" hidden="true" showIf="statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2" stacked="true">
-                    <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE" canNew="false"  target="com.axelor.apps.contract.db.ContractTemplate"/>
+                    <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE" canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
                     <button name="copyFromTemplateBtn" title="Use this template" showIf="$contractTemplate" prompt="Do you really wish to fill your contract based on this template ?" onClick="save,action-contract-method-copy-from-template"/>
                 </panel>
                 <panel stacked="true" name="btnsPanel">
@@ -177,8 +177,8 @@
                         <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <panel colSpan="6">
-                                    <field name="paymentMode" colSpan="6" widget="SuggestBox"  form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-                                    <field name="paymentCondition" colSpan="6" widget="SuggestBox"  form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                                    <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
                                 <panel  colSpan="6">
                                     <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
@@ -191,7 +191,7 @@
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
                                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
-                                    <field name="invoicingDuration" colSpan="4"  requiredIf="isPeriodicInvoicing"/>
+                                    <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
                                     <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                     <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                 </panel>

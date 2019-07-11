@@ -22,7 +22,7 @@
 		<panel name="mainPanel" >
 			<field name="name"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-			<field name="company"  readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
 			<field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
 		</panel>
 		

@@ -5,7 +5,7 @@
 	
 	<form model="com.axelor.apps.base.db.Wizard" title="Delegate Rights of Pfp Validator" name="user-delegate-rights-pfp-validator-wizard-form">
     	<panel name="mainPanel">
-    		<field name="$newPfpValidatorUser" title="New Pfp Validator" type="many-to-one" target="com.axelor.auth.db.User"  required="true" domain="self.isPfpValidator = true" onChange="action-user-method-compare-company-set-on-change-user"/>
+    		<field name="$newPfpValidatorUser" title="New Pfp Validator" type="many-to-one" target="com.axelor.auth.db.User" canEdit="false" required="true" domain="self.isPfpValidator = true" onChange="action-user-method-compare-company-set-on-change-user"/>
     		<label name="$pfpValidatorCompanySetLabel" colSpan="12" css="label-danger"/>
             <button name="confirmBtn" title="Confirm" onClick="action-user-method-pfp-wizard-confirm-change-pfp-validator"/>
     	</panel>

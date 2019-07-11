@@ -37,9 +37,9 @@
         <panel-tabs name="mainPanelTab">
         	<panel title="Details">
 	        	<panel name="detailPanel"  colSpan="12">
-              <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" />
+              <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" canEdit="false"/>
 							<field name="dateT" readonlyIf="statusSelect >= 2"/>
-							<field name="stockLocation"  onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+							<field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
 							<field name="typeSelect" validIf="typeSelect > 0"/>
 							<field name="completedBy" readonly="true" showIf="completedBy"/>
 							<field name="validatedBy" readonly="true" showIf="validatedBy"/>
@@ -77,9 +77,9 @@
     </panel-tabs>
 
     <panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
-			<field name="productFamily"  grid-view="product-family-grid" form-view="product-family-form"/>
-			<field name="productCategory"  grid-view="product-category-grid" form-view="product-category-form"/>
-			<field name="product"  onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
+			<field name="productFamily" canEdit="false" grid-view="product-family-grid" form-view="product-family-form"/>
+			<field name="productCategory" canEdit="false" grid-view="product-category-grid" form-view="product-category-form"/>
+			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
       <panel name="racksRangePanel" title="Racks range">

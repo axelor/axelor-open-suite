@@ -49,7 +49,7 @@
 
 	<form name="lunch-voucher-mgt-line-form" title="Lunch Voucher Line" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" width="large">
 		<panel name="overviewPanel" title="Overview">
-			<field name="employee" colSpan="6" form-view="employee-form" grid-view="employee-grid" canNew="false"  canView="false"/>
+			<field name="employee" colSpan="6" form-view="employee-form" grid-view="employee-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="lunchVoucherNumber" css="label-bold bold" colSpan="12" />
 		</panel>
 		<panel name="detailsPanel" title="Details">

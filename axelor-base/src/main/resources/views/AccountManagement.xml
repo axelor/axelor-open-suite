@@ -7,12 +7,12 @@
 		model="com.axelor.apps.account.db.AccountManagement">
 		<field name="typeSelect" />
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="saleAccount" if-module="axelor-account" form-view="account-form"
+		<field name="saleAccount" if-module="axelor-account" form-view="account-form" canEdit="false"
 			grid-view="account-grid" if="__config__.app.isApp('account')" />
 		<field name="purchaseAccount" if-module="axelor-account"
-			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" />
+			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" canEdit="false"/>
 		<field name="cashAccount" if-module="axelor-account" form-view="account-form"
-			grid-view="account-grid" if="__config__.app.isApp('account')" />
+			grid-view="account-grid" if="__config__.app.isApp('account')" canEdit="false"/>
 		<field name="analyticDistributionTemplate" if-module="axelor-account"
 			if="__config__.app.isApp('account')" canNew="true"/>
 	</grid>
@@ -22,21 +22,21 @@
 		onNew="action-account-management-record-default, action-account-management-attrs-type">
 		<field name="typeSelect" hidden="true"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"
-			onChange="action-group-account-account-management-onchange-common"
+			onChange="action-group-account-account-management-onchange-common" canEdit="false"
 			if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="fixedAssetCategory" if-module="axelor-account"
 			if="__config__.app.isApp('account')" domain="self.company = :company"
 			form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"
-			 />
+			canEdit="false" />
 		<field name="purchaseAccount" if-module="axelor-account"
-			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')"
+			form-view="account-form" grid-view="account-grid" if="__config__.app.isApp('account')" canEdit="false"
 			domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation')"/>
-		<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" />
+		<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
 		<field name="purchFixedAssetsAccount"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" />
+			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" canEdit="false"/>
 		<field name="saleAccount" if-module="axelor-account" form-view="account-form"
 			grid-view="account-grid" if="__config__.app.isApp('account')"
-			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" />
+			domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'" canEdit="false"/>
 		<field name="saleTax" form-view="tax-form" grid-view="tax-grid" />
 		<field name="analyticDistributionTemplate" if-module="axelor-account"
 			if="__config__.app.isApp('account')" canNew="true"/>
@@ -52,8 +52,8 @@
 				<field name="typeSelect" />
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"
-					form-view="company-form" grid-view="company-grid" />
-				<field name="product"  colSpan="12" form-view="product-form"
+					form-view="company-form" grid-view="company-grid" canEdit="false"/>
+				<field name="product" canEdit="false" colSpan="12" form-view="product-form"
 					grid-view="product-grid" showIf="typeSelect == 1"/>
 			</panel>
 
@@ -63,8 +63,8 @@
 				<field name="purchaseAccount"
 					domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" />
-				<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" />
+					if="__config__.app.isApp('account')" canEdit="false"/>
+				<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
 			</panel>
 
 			<panel name="fixedAssetsConfig1Panel" title="Purchase of fixed assets"
@@ -72,11 +72,11 @@
 				<field name="fixedAssetCategory" if-module="axelor-account"
 					if="__config__.app.isApp('account')" domain="self.company = :company"
 					form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"
-					 />
+					canEdit="false" />
 				<field name="purchFixedAssetsAccount"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" />
+					if="__config__.app.isApp('account')" canEdit="false"/>
 			</panel>
 
 			<panel name="saleConfig1Panel" title="Sale" colSpan="12"
@@ -84,8 +84,8 @@
 				<field name="saleAccount"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" />
-				<field name="saleTax" form-view="tax-form" grid-view="tax-grid" />
+					if="__config__.app.isApp('account')" canEdit="false"/>
+				<field name="saleTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
 			</panel>
 
 			<!-- TAX -->
@@ -94,7 +94,7 @@
 				<field name="purchaseAccount"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" />
+					if="__config__.app.isApp('account')" canEdit="false"/>
 			</panel>
 
 			<panel name="fixedAssetsConfig2Panel" title="Purchase of fixed assets"
@@ -102,7 +102,7 @@
 				<field name="purchFixedAssetsAccount"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" />
+					if="__config__.app.isApp('account')" canEdit="false"/>
 			</panel>
 
 			<panel name="saleConfig2Panel" title="Sale" colSpan="12"
@@ -110,7 +110,7 @@
 				<field name="saleAccount"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" />
+					if="__config__.app.isApp('account')" canEdit="false"/>
 			</panel>
 
 			<!-- PAYMENT -->
@@ -119,12 +119,12 @@
 				<field name="cashAccount"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" />
+					if="__config__.app.isApp('account')" canEdit="false"/>
 				<field name="paymentMode" form-view="payment-mode-form"
-					grid-view="payment-mode-grid" />
+					grid-view="payment-mode-grid" canEdit="false"/>
 				<field name="journal"
 					domain="self.company = :company AND self.statusSelect = 1"
-					form-view="journal-form" grid-view="journal-grid" />
+					form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="bankDetails" form-view="bank-details-form"
 					grid-view="bank-details-grid" onSelect="action-account-management-attrs-bank-details-domain" />
 				<field name="sequence" domain="self.company = :company  AND self.code='paymentVoucher'" 

@@ -20,9 +20,9 @@
     	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company"  required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
-    		<field name="productSet"  colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
     		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>
@@ -41,9 +41,9 @@
     	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company"  required="true"/>
+    		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
-    		<field name="productSet"  colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
     		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
     	</panel>

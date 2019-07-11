@@ -15,9 +15,9 @@
 		<panel name="mainPanel" itemSpan="12">
 			 <field name="statusSelect" widget="NavSelect"></field>
 			 <field name="name"/>
-			 <field name="user" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+			 <field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			 <field name="dateTime"/>
-			 <field name="company"   widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			 <field name="company" canEdit="false"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			 <field name="statusSelect" hidden="true"/>
 		</panel>
 		<panel name="irrecoverablePanel" showIf="statusSelect == 1">

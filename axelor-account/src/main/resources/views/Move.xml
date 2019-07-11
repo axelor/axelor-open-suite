@@ -13,7 +13,7 @@
 		<hilite color="danger" if="statusSelect == 4"/>
 		<field name="reference" width="200"/>
 		<field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
-		<field name="period" form-view="period-form" grid-view="period-grid" width="120"  canView="false"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false" canView="false"/>
 		<field name="date" width="90"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" width="140" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -24,7 +24,7 @@
 	<grid name="move-grid-period" orderBy="date,id" title="Account moves to validate" model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
         <field name="reference" width="200"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
-        <field name="period" form-view="period-form" grid-view="period-grid" width="120"  canView="false"/>
+        <field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false" canView="false"/>
         <field name="date" width="90"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
@@ -47,12 +47,12 @@
 			<panel name="moveDetailsPanel" colSpan="9">
                 <field name="reference" colSpan="12"/>
                 <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
-                    <field name="company"  widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
-                    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" />
-                    <field name="period" form-view="period-form" grid-view="period-grid"  canView="false"/>
+                    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
+                    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
+                    <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
                 </panel>
-                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false"  form-view="partner-form" grid-view="partner-grid"/>
+                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
             </panel>
 
             <panel name="otherDetailsPanel" colSpan="3">
@@ -135,7 +135,7 @@
                 <field name="invoice" domain="self.company = :company AND self.statusSelect = 3" form-view="invoice-form" grid-view="invoice-grid" canNew="false"/>
                 <field name="paymentVoucher" domain="self.company = :company" canNew="false" form-view="payment-voucher-form" grid-view="payment-voucher-grid"/>
                 <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" onSelect="action-move-attrs-set-domain-payment-mode" canNew="false" canView="false"/>
-            	<field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form" canNew="false"  if-module="axelor-supplychain"/>
+            	<field name="stockMove" grid-view="stock-move-grid" form-view="stock-move-form" canNew="false" canEdit="false" if-module="axelor-supplychain"/>
             </panel>
 
             <panel name="accountingExportPanel" title="Accounting export" hideIf="statusSelect == 1" hidden="true" readonly="true">

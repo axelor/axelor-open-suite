@@ -54,12 +54,12 @@
 	    </panel>
 		<panel name="informationPanel">
             <spacer name="companySpacer" />
-            <field name="company"  onChange="action-hr-record-empty-user,action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid" />
+            <field name="company" canEdit="false" onChange="action-hr-record-empty-user,action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid" />
             <field name="user" form-view="user-form" grid-view="user-grid" onSelect="action-hr-attrs-set-user-domain"
                 onChange="action-leave-request-record-reset-leave-line,action-leave-request-validate-dates,action-leave-request-methode-compute-duration,action-leave-request-method-leave-reason-to-justify"
-                canNew="false"  canView="false" />
+                canNew="false" canEdit="false" canView="false" />
             <field name="requestDate" colSpan="12" width="50%" />
-            <field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason"  canNew="false" widget="SuggestBox" required="true"
+            <field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
                 onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change" form-view="leave-line-form" grid-view="leave-line-grid" />
             <panel>
                 <field name="leaveLine.quantity" title="Available quantity (acquired)" showIf="statusSelect != 3" colSpan="12" />
@@ -93,8 +93,8 @@
             <field name="comments" colSpan="12" />
         </panel>
 		<panel name="validationDetailsPanel">
-			<field name="validatedBy"  form-view="user-form" grid-view="user-grid"/>
-			<field name="refusedBy"  form-view="user-form" grid-view="user-grid"/>
+			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+			<field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="validationDate"/>
 			<field name="refusalDate"/>
 			<field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>

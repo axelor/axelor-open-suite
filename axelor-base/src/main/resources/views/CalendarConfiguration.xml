@@ -13,7 +13,7 @@
 	<form name="calendar-configuration-form" title="Calendar configuration" model="com.axelor.apps.base.db.CalendarConfiguration">
 		<panel name="mainPanel" >
 			<field name="name" readonlyIf="metaAction"/>
-			<field name="calendarUser" canNew="false"  canView="false" form-view="user-form" grid-view="user-grid" readonlyIf="metaAction"/>
+			<field name="calendarUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" readonlyIf="metaAction"/>
 			<field name="calendarGroup" form-view="group-form" grid-view="group-grid" readonlyIf="metaAction"/>
 			<field name="parentMetaMenu" readonlyIf="metaAction"/>
 			<field name="metaAction" form-view="meta-action-form" grid-view="meta-action-grid" readonly="true"/>

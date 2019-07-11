@@ -23,7 +23,7 @@
     
 	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result">
 	    <panel name="mainPanel">
-	        <field name="product" readonly="true" />
+	        <field name="product" readonly="true" canEdit="false"/>
 	        <field name="mrpLineType" readonly="true"/>
         	<field name="qty" readonly="true"/>
         	<field name="maturityDate" readonly="true"/>

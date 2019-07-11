@@ -19,8 +19,8 @@
 			<field name="delayToStart"/>
 			<field name="duration"/>
 			<field name="totalPlannedHrs"/>
-			<field name="assignedTo" />
-			<field name="team" />
+			<field name="assignedTo" canEdit="false"/>
+			<field name="team" canEdit="false"/>
 			<field name="isUniqueTaskForMultipleQuantity" widget="boolean-switch"/>
 		</panel>
 		<panel name="contentPanel" title="Description" colSpan="12">

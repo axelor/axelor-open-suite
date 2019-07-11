@@ -20,7 +20,7 @@
         <panel name="mainPanel" >
         	<field name="articleId"/>
 	        <field name="summaryId"/>
-	        <field name="product"  form-view="product-form" grid-view="product-grid"/>
+	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="startDate"/>
 	        <field name="endDate"/>
 	        <field name="qty"/>

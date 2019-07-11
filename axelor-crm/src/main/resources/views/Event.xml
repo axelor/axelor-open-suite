@@ -152,9 +152,9 @@
 		</panel>
 
 		<panel sidebar="true" name="followupPanel" title="Follow up" canCollapse="true">
-			<field name="user" canNew="false"  canView="false" form-view="user-form" grid-view="user-grid" colSpan="6"/>
+			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" colSpan="6"/>
 			<field name="calendar" widget="SuggestBox" onSelect="action-event-method-domain-calendar" onChange="action-event-method-change-creator" colSpan="6"/>
-			<field name="team"  onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+			<field name="team" canEdit="false" onSelect="action-event-attrs-team-domain" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
 		</panel>
 
 		<panel sidebar="true" title="Characteristics" name="meetingAttributesPanel" canCollapse="true">

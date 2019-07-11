@@ -53,7 +53,7 @@
 		</panel>
 		<panel name="otherDetailPanel">
 			<button name="createNewAdvanceBtn" title="Validate the advance" onClick="action-lunch-voucher-advance-group-onNewAdvance"/>
-			<field name="employee" hidden="true" canNew="false"  canView="false"/>
+			<field name="employee" hidden="true" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 	</form>
 	

@@ -16,10 +16,10 @@
 	<form name="ts-timer-form" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
 	width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
 		<panel name="startAndStopPanel" title="Start&amp;Stop Timer">
-			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false"  canView="false"/>
+			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
 			<field name="project" form-view="project-form" grid-view="project-grid" domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
 			<field name="startDateTime"/>
-			<field name="product"  onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="product" canEdit="false" onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" widget="duration" colSpan="2"/>
 			<label name="durationLabel" title="Hours" colSpan="1"/>
 			<field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" hideIf="timesheetLine == null" colOffset="3"/>

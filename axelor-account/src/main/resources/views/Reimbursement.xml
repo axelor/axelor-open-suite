@@ -12,7 +12,7 @@
 	<form name="reimbursement-form" title="Reimbursement" model="com.axelor.apps.account.db.Reimbursement"  onNew="action-reimbursement-set-default">
 		<panel name="mainPanel" >
 			<field name="ref" colSpan="12"/>
-			<field name="company"  widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND :company member of self.companySet"/>
 		</panel>
 		

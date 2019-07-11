@@ -29,7 +29,7 @@
 			<field name="date" />
 			<field name="reason" />
 			<field name="typeSelect" />
-			<field name="employee" canNew="false"  canView="false"/>
+			<field name="employee" canNew="false" canEdit="false" canView="false"/>
 			<field name="paymentMode" />
 			<field name="requestedAmount" />
 			<field name="remainingAmount" hidden="true" showIf="statusSelect == 2" />
