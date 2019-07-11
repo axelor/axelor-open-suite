@@ -69,9 +69,11 @@
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
 - OPPORTUNITY : do not allows select both customer and lead at same time.
 - STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
+- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
 - TEAMTASK: task history show only canceled and closed task.
 - Sale Order: fix NPE on clicking allocate all button.
-- Studio: Fix export app.
+- INVOICE : Resolve error of sending email from Invoice.
+- Studio: Fix export of selection with app
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
