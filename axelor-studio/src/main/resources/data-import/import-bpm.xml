@@ -31,7 +31,7 @@
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"  />
  		</bind>
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel != null &amp;&amp; !jsonModel.empty"
- 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel.name = :jsonModel and (self.appBuilder.code = :appBuilder OR self.jsonModel.appBuilder.code = :modelAppBuilder)"
+ 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel.name = :jsonModel"
  			call="com.axelor.studio.service.ImportService:importJsonModelField" update="true">
  			<bind node="name" to="name" />
  			<bind node="title" to="title" />
@@ -72,7 +72,7 @@
  		</bind>
  		
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel == null"
- 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.appBuilder.code = :appBuilder"
+ 			search="self.name = :name and self.model = :model and self.modelField = :modelField"
  			call="com.axelor.studio.service.ImportService:importJsonField" update="true">
  			<bind node="name" to="name" />
  			<bind node="title" to="title" />
