@@ -97,6 +97,7 @@
 - Contract : Add analytic information to contract lines.
 - MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 - PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
+- Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
