@@ -85,6 +85,7 @@
 - Reserved Qty: manage the case when the product is not stock managed.
 - App Builder : Fix uniqueness problem when import existing app.
 - App Builder : Fix NPE on export of action-builder type view with params.
+- Studio: Fix error on selecting target model.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
