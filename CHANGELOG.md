@@ -81,6 +81,8 @@
 - CONFIGURATOR : fix configurator demo data.
 - Operation Order: Fix typo in fr translations.
 - AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
+- Reserved Qty: manage the case when the product is not stock managed.
+- App Builder : Fix uniqueness problem when import existing app.
 - App Builder : Fix NPE on export of action-builder type view with params.
 
 ## [5.1.7] - 2019-06-17
