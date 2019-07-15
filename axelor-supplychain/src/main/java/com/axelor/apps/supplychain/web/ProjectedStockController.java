@@ -167,18 +167,18 @@ public class ProjectedStockController {
   public void showProjectedStock(ActionRequest request, ActionResponse response) {
 
     try {
+      ProjectedStockService projectedStockService = Beans.get(ProjectedStockService.class);
       Map<String, Long> mapId =
-          Beans.get(ProjectedStockService.class)
-              .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+          projectedStockService.getProductIdCompanyIdStockLocationIdFromContext(
+              request.getContext());
       if (mapId == null || mapId.get("productId") == 0L) {
         return;
       }
       List<MrpLine> mrpLineList = new ArrayList<>();
       try {
         mrpLineList =
-            Beans.get(ProjectedStockService.class)
-                .createProjectedStock(
-                    mapId.get("productId"), mapId.get("companyId"), mapId.get("stockLocationId"));
+            projectedStockService.createProjectedStock(
+                mapId.get("productId"), mapId.get("companyId"), mapId.get("stockLocationId"));
         response.setView(
             ActionView.define(I18n.get("Projected stock"))
                 .model(MrpLine.class.getName())
