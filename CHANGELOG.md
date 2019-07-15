@@ -42,6 +42,7 @@
 - ActionBuilderLine : Changes in form view, increased colspan of value.
 - Wkf : Add confirmation message when edit status field.
 - Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
