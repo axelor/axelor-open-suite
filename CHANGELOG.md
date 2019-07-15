@@ -88,6 +88,7 @@
 - App Builder : Fix NPE on export of action-builder type view with params.
 - Studio: Fix error on selecting target model.
 - ACCOUNTING REPORT : Added missing translation of typeSelect values
+- STOCK MOVE : Display error message on deleting stock move with status 'realize'.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
