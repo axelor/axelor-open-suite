@@ -196,14 +196,16 @@
 	</action-group>
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
-	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-        <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
+		<field name="user" expr="eval:__user__"/>
+		<field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+		<field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
 		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, _payCompany).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
-    	<field name="taxTotal" expr="eval: 0"/>
-    	<field name="inTaxTotal" expr="eval: 0"/>
-    	<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
+		<field name="taxTotal" expr="eval: 0"/>
+		<field name="inTaxTotal" expr="eval: 0"/>
+		<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
+		<field name="bankDetails"
+		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany.defaultBankDetails"/>
 	</action-record>
 
 	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
