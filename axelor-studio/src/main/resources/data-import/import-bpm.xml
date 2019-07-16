@@ -57,6 +57,7 @@
  			<bind node="regex" to="regex" />
  			<bind node="required" to="required" />
  			<bind node="requiredIf" to="requiredIf" />
+ 			<bind node="readonly" to="readonly" />
  			<bind node="scale" to="scale" />
  			<bind node="selection" to="selection" />
  			<bind node="sequence" to="sequence" />
@@ -98,6 +99,7 @@
  			<bind node="regex" to="regex" />
  			<bind node="required" to="required" />
  			<bind node="requiredIf" to="requiredIf" />
+ 			<bind node="readonly" to="readonly" />
  			<bind node="scale" to="scale" />
  			<bind node="selection" to="selection" />
  			<bind node="sequence" to="sequence" />
