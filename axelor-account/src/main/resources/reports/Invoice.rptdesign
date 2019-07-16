@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2728,12 +2728,12 @@ $func$ LANGUAGE plpgsql;
             <xml-property name="queryText"><![CDATA[select InvoicePayment.payment_date,
 PaymentMode.name as payment_mode,InvoicePayment.amount,
 Currency.symbol,
-(CASE WHEN InvoicePayment.type_select = 1 THEN 'Advance Payment'
+(CASE WHEN InvoicePayment.type_select = 1 THEN 'Advance Payment' 
 WHEN InvoicePayment.type_select = 2 THEN 'Payment'
 WHEN InvoicePayment.type_select = 3 THEN 'Refund invoice'
 WHEN InvoicePayment.type_select = 4 THEN 'Invoice'
 WHEN InvoicePayment.type_select = 5 THEN 'Other'
-WHEN InvoicePayment.type_select = 6 THEN 'Advance Payment Imputation' END) AS type_select
+WHEN InvoicePayment.type_select = 6 THEN 'Advance Payment Imputation' END) AS type_select 
 from account_invoice_payment as InvoicePayment
 left join account_invoice as Invoice on Invoice.id = InvoicePayment.invoice
 left join base_currency as Currency on Currency.id = InvoicePayment.currency
@@ -3047,37 +3047,31 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">if (row["status_select"] == "1") {
-	'Invoice.draftInvoiceNo'
-} else if(row["status_select"] == "2") {
-	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.invoiceAdvPaymentNo'
+                                            <value type="javascript">
+if(row["operation_type_select"] == "1" ){
+	if (row["operation_sub_type_select"] == "2") {
+			'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_sub_type_select"] == "3") {
+		'Invoice.purchaseInvoiceBalanceNo'
 	} else {
-		'Invoice.draftInvoiceNo'
-	}
-} else if(row["status_select"] == "3") {
-	if (row["operation_type_select"] == "1") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.purchaseInvoiceBalanceNo'
-		} else {
 			'Invoice.purchaseInvoiceNo'
-		}
-	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
-	} else if (row["operation_type_select"] == "3") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.invoiceBalanceNo'
-		} else {
-			'Invoice.invoiceNo'
-		}
-	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
 	}
-} else if(row["status_select"] == "4") {
-	'Invoice.cancelInvoiceNo'
-}</value>
+} else if(row["operation_type_select"] == "2" ){
+	'Invoice.purchaseRefundNo'
+}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
+	'Invoice.draftInvoiceNo'
+}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
+	if (row["operation_sub_type_select"] == "2") {
+		'Invoice.invoiceAdvPaymentNo'
+	} else if (row["operation_sub_type_select"] == "3") {
+		'Invoice.invoiceBalanceNo'
+	} else {
+		'Invoice.invoiceNo'
+	}
+} else if(row["operation_type_select"] == "4" ){
+	'Invoice.refundNo'
+}
+                                            </value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3485,39 +3479,32 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if (params["ReportType"].value == 1){
+                                    <value type="javascript">if(params["ReportType"].value == 1){
 	'Invoice.proformaInvoice'
 }else{
-if(row["status_select"] == "1") {
-	'Invoice.draftInvoiceNo'
-} else if(row["status_select"] == "2") {
-	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-		'Invoice.invoiceAdvPaymentNo'
+if(row["operation_type_select"] == "1" ){
+	if (row["operation_sub_type_select"] == "2") {
+			'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_sub_type_select"] == "3") {
+		'Invoice.purchaseInvoiceBalanceNo'
 	} else {
-		'Invoice.draftInvoiceNo'
-	}
-} else if(row["status_select"] == "3") {
-	if (row["operation_type_select"] == "1") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.purchaseInvoiceBalanceNo'
-		} else {
 			'Invoice.purchaseInvoiceNo'
-		}
-	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
-	} else if (row["operation_type_select"] == "3") {
-		if (row["operation_sub_type_select"] == "3") {
-			'Invoice.invoiceBalanceNo'
-		} else {
-			'Invoice.invoiceNo'
-		}
-	} else if (row["operation_type_select"] == "4") {
-		'Invoice.refundNo'
 	}
-} else if(row["status_select"] == "4") {
-	'Invoice.cancelInvoiceNo'
+}else if(row["operation_type_select"] == "2" ){
+'Invoice.purchaseRefundNo'
+}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
+'Invoice.draftInvoiceNo'
+}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
+	if (row["operation_sub_type_select"] == "2") {
+		'Invoice.invoiceAdvPaymentNo'
+		} else if (row["operation_sub_type_select"] == "3") {
+		'Invoice.invoiceBalanceNo'
+	} else {
+		'Invoice.invoiceNo'
+	}
+}else if(row["operation_type_select"] == "4" ){
+'Invoice.refundNo'
+}
 }</value>
                                 </simple-property-list>
                             </structure>
