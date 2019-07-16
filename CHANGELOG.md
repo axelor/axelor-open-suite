@@ -45,6 +45,7 @@
 - Bank payment: upgrade Bouncy Castle dependencies
 - PROJECT : Add missing translation
 - FORECAST RECAP : Changes in populating forecastRecapLineList
+- FORECAST RECAP : Changes in form view. Add new field Calculation Date.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
