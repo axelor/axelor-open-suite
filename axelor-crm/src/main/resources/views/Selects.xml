@@ -73,7 +73,6 @@
 	
 	<selection name="crm.eventReminder.assign.to.select">
 		<option value="1">For me</option>
-		<option value="2">For me and internal guests</option>
 		<option value="3">For all</option>
 	</selection>
 	

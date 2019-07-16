@@ -93,6 +93,7 @@
 "Template Rules","Sjabloonregels",,
 "Templates","Sjablonen",,
 "Test connection","Testaansluiting",,
+"The email template model (%s) is different than the entity generating the email (%s)",,,
 "There is already a default account","Er is al een standaard account",,
 "To","Naar",,
 "Type","Type",,

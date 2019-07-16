@@ -385,7 +385,7 @@
     <selection name="base.blocking.select">
         <option value="1">Reminder blocking</option>
         <option value="2">Invoicing blocking</option>
-        <option value="3">Reimbursement blocking</option>
+        <option value="3">Refund blocking</option>
     </selection>
 
 	<selection name="meta.schedule.job.select">

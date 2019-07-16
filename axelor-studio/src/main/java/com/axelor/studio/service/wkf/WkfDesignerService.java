@@ -269,6 +269,7 @@ public class WkfDesignerService {
         if (transition.getVersion() == null) {
           transition.setIsButton(true);
           transition.setButtonTitle(transition.getName());
+          transition.setColSpan(transition.getColSpan());
         }
         instance.addTransition(transition);
       }

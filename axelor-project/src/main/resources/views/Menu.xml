@@ -78,6 +78,7 @@
 	<action-view name="all.tasks.history" title="Task history" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
+		<domain>self.status = 'closed' or self.status = 'canceled'</domain>
 	</action-view>
 
   <menuitem name="project-reporting" parent="menu-project-root" order="40" title="Reportings" icon="fa-bar-chart"/>
