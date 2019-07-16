@@ -870,7 +870,7 @@
         <action name="action-sale-order-attrs-hidden-bank-details"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-external-reference"/>
-        <action name="action-sale-order-attrs-availability-request-label"/>
+        <action name="action-sale-order-attrs-availability"/>
         <action name="action-sale-order-group-set-defualts-from-opportunity" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity'"/>
     </action-group>
 
@@ -890,7 +890,7 @@
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
 		<action name="action-sale-order-attrs-external-reference"/>
-		<action name="action-sale-order-attrs-availability-request-label"/>
+		<action name="action-sale-order-attrs-availability"/>
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
@@ -1308,8 +1308,9 @@
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
 	
-	<action-attrs name="action-sale-order-attrs-availability-request-label">
+	<action-attrs name="action-sale-order-attrs-availability">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
+		<attribute name="hidden" expr="eval: statusSelect != 3" for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
 	</action-attrs>
 
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">

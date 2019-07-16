@@ -5,6 +5,7 @@
 - FLEET : Manage rental cars and minor fixes
 - Studio: New features - Label with color,multiline string,grid column sequence,form width and order by properties. 
 - JOURNAL : viewer to display the balance
+- SALE ORDER LINE : Display availability status on sale order line grid view if sale order status is 'Confirmed'.
 
 ## Improvements
 - Remove Pack Feature from Product.
