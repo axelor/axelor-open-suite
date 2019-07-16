@@ -172,7 +172,9 @@ public class DebtRecoveryActionService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void runManualAction(DebtRecovery debtRecovery) throws AxelorException {
+  public void runManualAction(DebtRecovery debtRecovery)
+      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
+          IllegalAccessException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
