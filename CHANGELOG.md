@@ -42,6 +42,7 @@
 - ActionBuilderLine : Changes in form view, increased colspan of value.
 - Wkf : Add confirmation message when edit status field.
 - Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- PROJECT : Add missing translation
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
