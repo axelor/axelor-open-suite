@@ -75,10 +75,8 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
   @Override
   public void remove(StockMove entity) {
-    if (entity.getStatusSelect() == STATUS_PLANNED) {
+    if (entity.getStatusSelect() == STATUS_PLANNED || entity.getStatusSelect() == STATUS_REALIZED) {
       throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_NOT_DELETED));
-    } else if (entity.getStatusSelect() == STATUS_REALIZED) {
-      entity.setArchived(true);
     } else {
       if (entity.getStockMoveOrigin() != null) {
         entity.getStockMoveOrigin().setBackorderId(null);

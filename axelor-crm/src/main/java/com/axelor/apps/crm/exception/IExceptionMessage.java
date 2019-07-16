@@ -60,7 +60,7 @@ public interface IExceptionMessage {
   static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
 
   /** Opportunity */
-  static final String LEAD_PARTNER = /*$$(*/ "Please select a path" /*)*/;
+  static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/
