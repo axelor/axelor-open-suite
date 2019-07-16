@@ -48,6 +48,7 @@
 - FORECAST RECAP : Changes in populating forecastRecapLineList
 - FORECAST RECAP : Changes in form view. Add new field Calculation Date.
 - Studio: Removed description field from model properties. 
+- ForecastRecapLine : Add translation for Balance field.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
