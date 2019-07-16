@@ -13,6 +13,9 @@
 - Custom Model : Hide menu panel and allows to create menu from menubuilder only
 - English language : Correction of errors in english words and change gender job word to genderless job word 
 
+## Bug Fixes
+- Studio : Fix error when click on wkf buttons.
+
 ## [Unreleased 5.2.0]
 ## Features
 - Employee: added DPAE
