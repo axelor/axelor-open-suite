@@ -32,6 +32,7 @@
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- EVENT : add tag viewer if the event start date is in the past
 - YEAR : disable canEdit on company field in year-form.
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
 - OPPORTUNITY : convert into quotation error when no customer selected on opportunity
