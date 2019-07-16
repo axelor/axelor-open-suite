@@ -11,7 +11,10 @@
     </grid>
  
 	 <form name="forecast-recap-form" title="Forecast Recap" model="com.axelor.apps.cash.management.db.ForecastRecap"
-	 	onNew="action-forecast-recap-record-default-on-new">
+	 	onNew="action-forecast-recap-record-default-on-new" width="large">
+	 	<toolbar>
+	 		<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-forecast-recap-method-show-report"/>
+	 	</toolbar>
 	 	<panel name="mainPanel" >
 			<field name="company" canEdit="false" onChange="action-forecast-record-bank, action-forecast-recap-record-currency"/>
 	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
@@ -21,9 +24,9 @@
        		<field name="startingBalance"/>
        		<button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
        		<panel-dashlet name="forecastRecapLineListPanel" showIf="id" height="500" action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
-       		<field name="endingBalance"/>
-       		<field name="currency" readonly="true"/>
-       		<button name="showReportBtn" title="Show histrogram" colOffset="6" onClick="save,action-forecast-recap-method-show-report"/>
+       		<field name="endingBalance" readonly="true" colSpan="4"/>
+       		<field name="currency" readonly="true" colSpan="4"/>
+       		<field name="calculationDate" colSpan="4"/>
        		<field name="isReport" hidden="true"/>
 	 	</panel>
 	 </form>

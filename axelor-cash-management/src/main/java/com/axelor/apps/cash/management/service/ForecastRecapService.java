@@ -100,6 +100,7 @@ public class ForecastRecapService {
 
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
+    forecastRecap.setCalculationDate(appBaseService.getTodayDate());
     Beans.get(ForecastRecapRepository.class).save(forecastRecap);
   }
 
