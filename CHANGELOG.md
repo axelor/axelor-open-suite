@@ -42,6 +42,7 @@
 - ActionBuilderLine : Changes in form view, increased colspan of value.
 - Wkf : Add confirmation message when edit status field.
 - Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- FORECAST RECAP : Changes in populating forecastRecapLineList.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly

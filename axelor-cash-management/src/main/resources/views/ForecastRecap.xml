@@ -19,8 +19,8 @@
        		<field name="toDate" onChange="action-forecast-recap-validate-dates"/>
        		<field name="opportunitiesTypeSelect"/>
        		<field name="startingBalance"/>
-       		<button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate, action-forecast-recap-method-populate"/>
-       		<panel-related name="forecastRecapLineListPanel" field="forecastRecapLineList" readonly="true" colSpan="12"/>
+       		<button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
+       		<panel-dashlet name="forecastRecapLineListPanel" showIf="id" height="500" action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
        		<field name="endingBalance"/>
        		<field name="currency" readonly="true"/>
        		<button name="showReportBtn" title="Show histrogram" colOffset="6" onClick="save,action-forecast-recap-method-show-report"/>
@@ -66,6 +66,14 @@
 	<action-view title="Marges" name="forecast.report.marges.dashlet">
 	  <view type="chart" name="chart.forecast.report.marges"/>
 	  <context name="_id" expr="eval: id" />
+	</action-view>
+	
+	<action-view name="action-forecast-recap-view-show-forecast-recap-line-list" title="Details" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+		<view type="grid" name="forecast-recap-line-grid"/>
+		<view type="form" name="forecast-recap-line-form"/>
+		<view-param name="limit" value="100"/>
+		<domain>self.forecastRecap.id = :forecastRecap</domain>
+		<context name="forecastRecap" expr="eval: __self__?.id"/>
 	</action-view>
 	 
 	 <action-attrs name="action-forecast-report-refresh">
