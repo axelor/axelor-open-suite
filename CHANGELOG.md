@@ -6,6 +6,7 @@
 - ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
 - LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
 - ActionBuilderView : Add condition option
+- FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
