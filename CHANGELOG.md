@@ -181,5 +181,6 @@
 - ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
 - Transactionnal : correction and standardisation of rollback.
 - Upgraded to ADK 5.1.
+- Wkf : Fix unable to edit status field.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
