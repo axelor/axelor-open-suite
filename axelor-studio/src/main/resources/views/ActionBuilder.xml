@@ -40,8 +40,9 @@
       	  <field name="title" colSpan="12" showIf="typeSelect == 3" requiredIf="typeSelect == 3"/>
       	  <field name="actionBuilderViews"  showIf="typeSelect == 3" colSpan="12">
       	  	<editor>
-      	  		<field name="viewType" colSpan="4" />
-      	  		<field name="viewName" colSpan="8" widget="ref-text" x-target="com.axelor.meta.db.MetaView" x-target-name="name" onSelect="action-action-builder-view-name-domain"/>
+      	  		<field name="viewType" colSpan="3" />
+      	  		<field name="viewName" colSpan="5" widget="ref-text" x-target="com.axelor.meta.db.MetaView" x-target-name="name" onSelect="action-action-builder-view-name-domain"/>
+      	  		<field name="viewConditionToCheck" colSpan="4"/>
       	  	</editor>
       	  </field>
       	  <field name="lines" title="Context"  hideIf="typeSelect != 3" colSpan="12">
@@ -61,7 +62,7 @@
 	      <panel name="scriptPanel" showIf="typeSelect == 2" colSpan="12" >
 	      	<field name="scriptType" />
 	      	<field name="transactional" />
-	      	<field name="scriptText" colSpan="12" />
+	      	<field name="scriptText" widget="CodeEditor" x-code-syntax="javascript" colSpan="12" />
 	      </panel>
 	      <panel name="emailTemplatePanel" colSpan="12">
 	      	<field name="scriptText" widget="html" title="Template" colSpan="12" showIf="typeSelect == 5"/>

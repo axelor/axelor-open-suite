@@ -439,6 +439,7 @@
 "There are no lines to invoice",,,
 "This batch has already been running this month",,,
 "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.",,,
+"This product is not stock managed.",,,
 "This quantity is not available in stock.",,,
 "Timetable",,,
 "Timetables",,,

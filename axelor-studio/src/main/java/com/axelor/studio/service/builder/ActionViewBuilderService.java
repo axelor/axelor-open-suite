@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.builder;
 
+import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.studio.db.ActionBuilder;
@@ -112,7 +113,12 @@ public class ActionViewBuilderService {
     views.sort((action1, action2) -> action1.getSequence().compareTo(action2.getSequence()));
     for (ActionBuilderView view : views) {
       xml.append("\n" + INDENT + "<view type=\"" + view.getViewType() + "\" ");
-      xml.append("name=\"" + view.getViewName() + "\" />");
+      xml.append("name=\"" + view.getViewName() + "\" ");
+      if (StringUtils.notEmpty(view.getViewConditionToCheck())) {
+        xml.append("if=\"" + view.getViewConditionToCheck() + "\" />");
+      } else {
+        xml.append("/>");
+      }
     }
   }
 

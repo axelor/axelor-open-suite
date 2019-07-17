@@ -5,6 +5,8 @@
 - PROJECT : Translate Total real hours
 - ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
 - LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
+- ActionBuilderView : Add condition option
+- FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -30,12 +32,25 @@
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- EVENT : add tag viewer if the event start date is in the past
 - YEAR : disable canEdit on company field in year-form.
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
 - OPPORTUNITY : convert into quotation error when no customer selected on opportunity
 - EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
 - ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
 - SALE/PURCHASE without stock moves : issue on page numbering
+- ActionBuilder : Use CodeEditor widget for script.
+- Studio : Add colspan field on worklow transition.
+- ActionBuilderLine : Changes in form view, increased colspan of value.
+- Wkf : Add confirmation message when edit status field.
+- Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- Bank payment: upgrade Bouncy Castle dependencies
+- PROJECT : Add missing translation
+- FORECAST RECAP : Changes in populating forecastRecapLineList
+- FORECAST RECAP : Changes in form view. Add new field Calculation Date.
+- Studio: Removed description field from model properties. 
+- ForecastRecapLine : Add translation for Balance field.
+- SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -73,6 +88,17 @@
 - TEAMTASK: task history show only canceled and closed task.
 - Sale Order: fix NPE on clicking allocate all button.
 - INVOICE : Resolve error of sending email from Invoice.
+- Studio: Fix export of selection with app
+- CONFIGURATOR : fix configurator demo data.
+- Operation Order: Fix typo in fr translations.
+- AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
+- Reserved Qty: manage the case when the product is not stock managed.
+- App Builder : Fix uniqueness problem when import existing app.
+- App Builder : Fix NPE on export of action-builder type view with params.
+- Studio: Fix error on selecting target model.
+- ACCOUNTING REPORT : Added missing translation of typeSelect values
+- STOCK MOVE : Display error message on deleting stock move with status 'realize'.
+- NPE : fix NPE in timesheet timer.
 - DECLARATION OF EXCHANGES: fixed missing select option and exception message.
 
 ## [5.1.7] - 2019-06-17

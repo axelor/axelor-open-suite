@@ -439,6 +439,7 @@
 "There are no lines to invoice","Il n'y a pas de lignes à facturer",,
 "This batch has already been running this month","Attention, le batch a déjà été lancé ce mois-ci.",,
 "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.","Cette opération ne peut pas être réalisée. Stock disponible pour le produit %s : %s, stock nécessaire : %s. Veuillez désallouer.",,
+"This product is not stock managed.","Ce produit n'est pas géré en stock.",,
 "This quantity is not available in stock.","Ce montant n'est pas disponible en stock.",,
 "Timetable","Echéancier",,
 "Timetables","Echéanciers",,
