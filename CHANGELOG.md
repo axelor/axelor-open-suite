@@ -51,6 +51,7 @@
 - Studio: Removed description field from model properties. 
 - ForecastRecapLine : Add translation for Balance field.
 - SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
+- STOCK MOVE LINE : stock location missing on form view
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
