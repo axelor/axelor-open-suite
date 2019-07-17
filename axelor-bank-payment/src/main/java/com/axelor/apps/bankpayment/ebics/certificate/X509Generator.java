@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -63,6 +64,7 @@ import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.asn1.x509.X509Name;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
@@ -205,7 +207,9 @@ public class X509Generator {
       vector.add(KeyPurposeId.id_kp_emailProtection);
 
       generator.addExtension(
-          X509Extensions.ExtendedKeyUsage, false, new ExtendedKeyUsage(new DERSequence(vector)));
+          X509Extensions.ExtendedKeyUsage,
+          false,
+          ExtendedKeyUsage.getInstance(new DERSequence(vector)));
     }
 
     switch (keyusage) {
@@ -252,7 +256,9 @@ public class X509Generator {
     ASN1EncodableVector vector;
 
     input = new ByteArrayInputStream(publicKey.getEncoded());
-    keyInfo = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(input).readObject());
+    try (final ASN1InputStream is = new ASN1InputStream(input)) {
+      keyInfo = SubjectPublicKeyInfo.getInstance((ASN1Sequence) is.readObject());
+    }
     vector = new ASN1EncodableVector();
     vector.add(new GeneralName(new X509Name(issuer)));
 
@@ -266,16 +272,21 @@ public class X509Generator {
    * @param publicKey the given public key
    * @return the subject key identifier
    * @throws IOException
+   * @throws NoSuchAlgorithmException
    */
-  private SubjectKeyIdentifier getSubjectKeyIdentifier(PublicKey publicKey) throws IOException {
+  private SubjectKeyIdentifier getSubjectKeyIdentifier(PublicKey publicKey)
+      throws IOException, NoSuchAlgorithmException {
 
     InputStream input;
     SubjectPublicKeyInfo keyInfo;
 
     input = new ByteArrayInputStream(publicKey.getEncoded());
-    keyInfo = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(input).readObject());
+    try (final ASN1InputStream is = new ASN1InputStream(input)) {
+      keyInfo = SubjectPublicKeyInfo.getInstance((ASN1Sequence) is.readObject());
+    }
 
-    return new SubjectKeyIdentifier(keyInfo);
+    final JcaX509ExtensionUtils jcaX509ExtensionUtils = new JcaX509ExtensionUtils();
+    return jcaX509ExtensionUtils.createSubjectKeyIdentifier(keyInfo);
   }
 
   /**
