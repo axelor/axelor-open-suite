@@ -57,6 +57,7 @@
 "Buyer/Seller","Acheteur/Vendeur",,
 "CSV",,,
 "Can't delete a planned stock move","Il n'est pas possible de supprimer un mouvement de stock planifié",,
+"Can't delete a realized stock move","Il n'est pas possible de supprimer un mouvement de stock réalisé",,
 "Can't realize this stock move because of the ongoing inventory %s.","Impossible de réaliser ce mouvement de stock à cause de l’inventaire en cours %s.",,
 "Cancel","Annuler",,
 "Cancel reason",,,

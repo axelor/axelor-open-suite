@@ -57,6 +57,7 @@
 "Buyer/Seller",,,
 "CSV",,,
 "Can't delete a planned stock move",,,
+"Can't delete a realized stock move",,,
 "Can't realize this stock move because of the ongoing inventory %s.",,,
 "Cancel",,,
 "Cancel reason",,,

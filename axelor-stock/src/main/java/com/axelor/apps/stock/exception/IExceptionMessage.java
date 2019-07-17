@@ -84,7 +84,10 @@ public interface IExceptionMessage {
       "All storable products used in DEB must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
-  static final String STOCK_MOVE_NOT_DELETED = /*$$(*/ "Can't delete a planned stock move" /*)*/;
+  static final String STOCK_MOVE_PLANNED_NOT_DELETED = /*$$(*/
+      "Can't delete a planned stock move" /*)*/;
+  static final String STOCK_MOVE_REALIZED_NOT_DELETED = /*$$(*/
+      "Can't delete a realized stock move" /*)*/;
   static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/
       "No new stock move was generated" /*)*/;
   static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/
