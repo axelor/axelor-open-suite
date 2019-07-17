@@ -46,6 +46,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -1120,7 +1121,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @throws IOException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void exportMoveLineTypeSelect1000(
+  public MetaFile exportMoveLineTypeSelect1000(
       AccountingReport accountingReport, boolean administration, boolean replay)
       throws AxelorException, IOException {
 
@@ -1252,9 +1253,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
-    writeMoveLineToCsvFile(
-        company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
     accountingReportRepo.save(accountingReport);
+    return writeMoveLineToCsvFile(
+        company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
   }
 
   /**
@@ -1465,7 +1466,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         accountingReport);
   }
 
-  private void writeMoveLineToCsvFile(
+  private MetaFile writeMoveLineToCsvFile(
       Company company,
       String fileName,
       String[] columnHeader,
@@ -1482,7 +1483,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);
     try (InputStream is = new FileInputStream(path.toFile())) {
-      Beans.get(MetaFiles.class).attach(is, fileName, accountingReport);
+      return Beans.get(MetaFiles.class).attach(is, fileName, accountingReport).getMetaFile();
     }
   }
 
@@ -1625,7 +1626,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     return header.split(";");
   }
 
-  public void exportMoveLine(AccountingReport accountingReport)
+  public MetaFile exportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException {
 
     accountingReportService.setStatus(accountingReport);
@@ -1652,8 +1653,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         break;
 
       case AccountingReportRepository.EXPORT_ADMINISTRATION:
-        this.exportMoveLineTypeSelect1000(accountingReport, true, false);
-        break;
+        return this.exportMoveLineTypeSelect1000(accountingReport, true, false);
 
       case AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
         this.exportMoveLineTypeSelect1000(accountingReport, false, false);
@@ -1662,6 +1662,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       default:
         break;
     }
+    return null;
   }
 
   public void replayExportMoveLine(AccountingReport accountingReport)

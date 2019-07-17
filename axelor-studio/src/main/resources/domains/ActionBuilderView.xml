@@ -10,6 +10,7 @@
   	<string name="viewName" title="Name" required="true"/>
   	<many-to-one name="actionBuilder" ref="ActionBuilder" />
   	<integer name="sequence" title="Sequence" />
+  	<string name="viewConditionToCheck" title="If"/>
   </entity>
   
 </domain-models>

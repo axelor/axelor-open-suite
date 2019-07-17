@@ -18,7 +18,7 @@
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="fromDate"/>
 	        <field name="toDate"/>
-	        <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+	        <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 	        <field name="typeSelect" readonly="true" />
 	    </panel>
     </form>
