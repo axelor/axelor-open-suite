@@ -2,6 +2,11 @@
 
 ## [Unreleased 5.1.8]
 ## Features
+- PROJECT : Translate Total real hours
+- ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
+- LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
+- ActionBuilderView : Add condition option
+- FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -20,6 +25,35 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 - EMPLOYEE CARD : add tag for rh, company and department field.
 - STOCK MOVES : updating filterOnAvailableProducts field display conditions
+- DEBT RECOVERY : process rollbacked when message sending fails.
+- MESSAGE SERVICE : exception message improved. 
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- APP PURCHASE : change title of supplierRequestMgt field
+- OPPORTUNITY : delete canEdit on partner and lead
+- SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
+- CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- EVENT : add tag viewer if the event start date is in the past
+- YEAR : disable canEdit on company field in year-form.
+- SALE ORDER COPY : order being edited tag removed from copy sale Order
+- OPPORTUNITY : convert into quotation error when no customer selected on opportunity
+- EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
+- ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
+- SALE/PURCHASE without stock moves : issue on page numbering
+- ActionBuilder : Use CodeEditor widget for script.
+- Studio : Add colspan field on worklow transition.
+- ActionBuilderLine : Changes in form view, increased colspan of value.
+- Wkf : Add confirmation message when edit status field.
+- Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- Bank payment: upgrade Bouncy Castle dependencies
+- PROJECT : Add missing translation
+- FORECAST RECAP : Changes in populating forecastRecapLineList
+- FORECAST RECAP : Changes in form view. Add new field Calculation Date.
+- Studio: Removed description field from model properties. 
+- ForecastRecapLine : Add translation for Balance field.
+- SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
+- PROJECTS CATEGORY: Make 'name' field required and remove 'byDefault' field
+- FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
+- Stock Move: add config for default delivery date from sale order.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -43,6 +77,34 @@
 - INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
 - EVENTREMINDER : Made the batch work as intended.
 - SALE ORDER : Fix generate invoice error
+- OPPORTUNITY : Error message 'Parent lead is missing' is removed onchange of lead
+- DEBT RECOVERY METHOD : name field is now required.
+- DEBT RECOVERY LEVEL : label field is now required.
+- ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
+- INVOICE : add in demo data more information for demo supplier invoices.
+- PURCHASE REQUEST : seq number is retrieved depending on the company.
+- DEMO DATA : clean and corrected errors from import demo data.
+- DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- OPPORTUNITY : do not allows select both customer and lead at same time.
+- STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
+- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
+- TEAMTASK: task history show only canceled and closed task.
+- Sale Order: fix NPE on clicking allocate all button.
+- INVOICE : Resolve error of sending email from Invoice.
+- Studio: Fix export of selection with app
+- CONFIGURATOR : fix configurator demo data.
+- Operation Order: Fix typo in fr translations.
+- AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
+- Reserved Qty: manage the case when the product is not stock managed.
+- App Builder : Fix uniqueness problem when import existing app.
+- App Builder : Fix NPE on export of action-builder type view with params.
+- Studio: Fix error on selecting target model.
+- ACCOUNTING REPORT : Added missing translation of typeSelect values
+- STOCK MOVE : Display error message on deleting stock move with status 'realize'.
+- NPE : fix NPE in timesheet timer.
+- DECLARATION OF EXCHANGES: fixed missing select option and exception message.
+- BLOCKING : Fix NPE during import of sale orders from prestashop batch
+- INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
 - SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
 
 ## [5.1.7] - 2019-06-17

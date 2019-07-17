@@ -15,7 +15,6 @@
 	<string name="comments" title="Comments" large="true"/>
 	<integer name="realizedSelect" selection="forecast.realized.select" title="Realized" default="2"/>
 	<integer name="periodicitySelect" selection="product.periodicity.subscription.select" title="Periodicity" default="1"/>
-	<one-to-many name="forecastList" ref="com.axelor.apps.cash.management.db.Forecast" title="Forecasts generated" mappedBy="forecastGenerator"/>
   </entity>
   
 </domain-models>

@@ -1,3 +1,0 @@
-"importId";"typeSelect";"statusSelect";"name";"fromStockLocation.importId";"toStockLocation.importId";"estimatedDate";"realDate";"company.importId";"partner.importId";"originId";"originTypeSelect";"invoice.importId";"printingSettings.importId"
-1;2;2;"DO0001";1;2;;;1;88;1;"com.axelor.apps.sale.db.SaleOrder";;1
-2;2;2;"DO0002";1;2;;;1;20;2;"com.axelor.apps.sale.db.SaleOrder";;1
