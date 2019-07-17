@@ -50,6 +50,7 @@
 - FORECAST RECAP : Changes in form view. Add new field Calculation Date.
 - Studio: Removed description field from model properties. 
 - ForecastRecapLine : Add translation for Balance field.
+- SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
