@@ -293,9 +293,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setName(stockMoveToolService.computeName(stockMove));
     }
 
-    if (stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
-    }
     int initialStatus = stockMove.getStatusSelect();
 
     setPlannedStatus(stockMove);
