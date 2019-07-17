@@ -51,6 +51,7 @@
 - Studio: Removed description field from model properties. 
 - ForecastRecapLine : Add translation for Balance field.
 - SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
+- PROJECTS CATEGORY: Make 'name' field required and remove 'byDefault' field
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
