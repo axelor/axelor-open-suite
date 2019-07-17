@@ -6,6 +6,8 @@
 
 	allFields = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaJsonFieldRepository' as Class).all()
 	
+	allSelections = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaSelectRepository' as Class).all()
+	
 	allCharts = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.ChartBuilderRepository' as Class).all()
 	
 	allDashboards = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.DashboardBuilderRepository' as Class).all()
@@ -26,6 +28,8 @@
 		allModels = allModels.filter('self.appBuilder.id in ?1',__ids__)
 		
 		allFields = allFields.filter('self.appBuilder.id in ?1 OR (self.appBuilder is null and self.jsonModel.appBuilder.id in ?1)',__ids__)
+		
+		allSelections = allSelections.filter('(self.appBuilder.id in ?1 OR self.appBuilder is null) AND self.isCustom = true',__ids__)
 					
 		allCharts = allCharts.filter('self.appBuilder.id in ?1',__ids__)
 				
@@ -41,6 +45,8 @@
 		
 		allWkfs = allWkfs.filter('self.appBuilder.id in ?1)',__ids__)
 	} else {
+		allSelections = allSelections.filter('self.isCustom = true')
+	
 		allMenus = allMenus.filter('self.parentMenu is null')
 		
 		allMenusParentMenu = allMenusParentMenu.filter('self.parentMenu is not null')
@@ -57,7 +63,8 @@
 		<description>${it.description}</description>
 		<depends>$depends</depends>
 		<image name=\"${it.image?.fileName}\">${com.axelor.studio.service.ExportService.getImage(it.image)}</image>
-		<sequence>${it.sequence}</sequence>\n\t</appBuilder>"""
+		<sequence>${it.sequence}</sequence>
+		\n\t</appBuilder>"""
 	})
 	
 	models = ""
@@ -121,11 +128,7 @@
 	})
 	
 	selections = ""
-	com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaSelectRepository' as Class)
-		.all()
-		.filter('(self.appBuilder.id = ?1 OR self.appBuilder is null) AND self.isCustom = ?2',app.id, true)
-		.fetch()
-		.each({
+	allSelections.fetch().each({
 		selection -> 
 				options = ""
 				selection.items.each{
