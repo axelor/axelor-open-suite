@@ -82,7 +82,10 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
     BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
     Timesheet timesheet = Beans.get(TimesheetService.class).getCurrentOrCreateTimesheet();
-    LocalDate startDateTime = (timer.getStartDateTime() == null)  ? Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate() : timer.getStartDateTime().toLocalDate();
+    LocalDate startDateTime =
+        (timer.getStartDateTime() == null)
+            ? Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate()
+            : timer.getStartDateTime().toLocalDate();
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineService.class)
             .createTimesheetLine(

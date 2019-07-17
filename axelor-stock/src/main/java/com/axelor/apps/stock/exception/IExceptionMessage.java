@@ -185,7 +185,7 @@ public interface IExceptionMessage {
   String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_UNSUPPORTED = /*$$(*/
       "Declaration of exchanges for %s is not supported." /*)*/;
   String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK = /*$$(*/
-          "Please set an economic are in AppStock." /*)*/;
+      "Please set an economic are in AppStock." /*)*/;
 
   String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
