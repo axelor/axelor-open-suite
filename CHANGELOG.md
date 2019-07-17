@@ -99,6 +99,7 @@
 - ACCOUNTING REPORT : Added missing translation of typeSelect values
 - STOCK MOVE : Display error message on deleting stock move with status 'realize'.
 - NPE : fix NPE in timesheet timer.
+- DECLARATION OF EXCHANGES: fixed missing select option and exception message.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
