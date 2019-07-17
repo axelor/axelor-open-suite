@@ -105,6 +105,7 @@
 - DECLARATION OF EXCHANGES: fixed missing select option and exception message.
 - BLOCKING : Fix NPE during import of sale orders from prestashop batch
 - INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
+- SALE ORDER CHARTS: Date fixed on SQL queries.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
