@@ -175,6 +175,11 @@ public class ProjectServiceImpl implements ProjectService {
 
       project.setCode(projectCode);
       project.setClientPartner(clientPartner);
+      if (clientPartner != null
+          && clientPartner.getContactPartnerSet() != null
+          && !clientPartner.getContactPartnerSet().isEmpty()) {
+        project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
+      }
       project.setDescription(projectTemplate.getDescription());
       project.setTeam(projectTemplate.getTeam());
       project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
@@ -186,7 +191,6 @@ public class ProjectServiceImpl implements ProjectService {
       project.setCompany(projectTemplate.getCompany());
       project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
       project.setExcludePlanning(projectTemplate.getExcludePlanning());
-      project.setIsProject(projectTemplate.getIsProject());
       project.setProjectTypeSelect(ProjectRepository.TYPE_PROJECT);
 
       List<Wiki> wikiList = projectTemplate.getWikiList();
