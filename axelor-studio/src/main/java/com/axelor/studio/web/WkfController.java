@@ -23,6 +23,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonRecord;
+import com.axelor.meta.db.repo.MetaJsonRecordRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.rpc.ActionRequest;
@@ -36,6 +38,7 @@ import com.axelor.studio.db.repo.WkfTransitionRepository;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.wkf.WkfDesignerService;
 import com.axelor.studio.service.wkf.WkfService;
+import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.axelor.studio.translation.ITranslation;
 import com.google.inject.Inject;
 import java.util.Collections;
@@ -254,5 +257,20 @@ public class WkfController {
     }
 
     return Collections.emptyList();
+  }
+
+  public void track(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = (Long) request.getContext().get("id");
+      if (id == null) {
+        return;
+      }
+
+      MetaJsonRecord record = Beans.get(MetaJsonRecordRepository.class).find(id);
+      Beans.get(WkfTrackingService.class).track(record);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
