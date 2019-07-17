@@ -51,6 +51,7 @@
 - Studio: Removed description field from model properties. 
 - ForecastRecapLine : Add translation for Balance field.
 - SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
+- FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
