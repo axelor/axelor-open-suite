@@ -23,10 +23,10 @@
     </grid>
     
 	<grid name="move-grid-period" orderBy="date,id" title="Account moves to validate" model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
+        <field name="date" width="90"/>
         <field name="reference" width="200"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
         <field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false" canView="false"/>
-        <field name="date" width="90"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
         <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
