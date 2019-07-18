@@ -105,6 +105,12 @@
 - DECLARATION OF EXCHANGES: fixed missing select option and exception message.
 - BLOCKING : Fix NPE during import of sale orders from prestashop batch
 - INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
+- SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
+- LEAD WIZARD : add missing translation.
+- DEBIT VAT DECLARATION REPORT : now the report completely filter on debit VAT.
+- Studio : Fix import app.
+- Studio: Fix double panel title.
+- BPM : Fix invalid domain on model when isJson is false.
 - SALE ORDER CHARTS: Date fixed on SQL queries.
 
 ## [5.1.7] - 2019-06-17
