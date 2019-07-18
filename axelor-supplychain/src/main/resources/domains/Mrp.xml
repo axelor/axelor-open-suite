@@ -16,6 +16,7 @@
       <datetime name="startDateTime" title="Calculation Start Date"/>
       <datetime name="endDateTime" title="Calculation End Date"/>
       <string name="mrpSeq" title="MRP number" readonly="true"/>
+      <boolean name="displayProductWithoutProposal" title="Display product without proposal" default="false"/>
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
