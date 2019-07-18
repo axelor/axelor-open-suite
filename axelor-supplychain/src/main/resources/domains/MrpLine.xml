@@ -23,6 +23,7 @@
     
         <!-- TRANSIENT FIELD -->
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" transient="true"/>
+        <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" transient="true"/>
     
 		
   </entity>
