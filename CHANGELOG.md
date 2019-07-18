@@ -57,6 +57,29 @@
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- OPPORTUNITY : do not allows select both customer and lead at same time.
+- STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
+- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
+- TEAMTASK: task history show only canceled and closed task.
+- Sale Order: fix NPE on clicking allocate all button.
+- INVOICE : Resolve error of sending email from Invoice.
+- Studio: Fix export of selection with app
+- CONFIGURATOR : fix configurator demo data.
+- Operation Order: Fix typo in fr translations.
+- AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
+- Reserved Qty: manage the case when the product is not stock managed.
+- App Builder : Fix uniqueness problem when import existing app.
+- App Builder : Fix NPE on export of action-builder type view with params.
+- Studio: Fix error on selecting target model.
+- ACCOUNTING REPORT : Added missing translation of typeSelect values
+- STOCK MOVE : Display error message on deleting stock move with status 'realize'.
+- NPE : fix NPE in timesheet timer.
+- DECLARATION OF EXCHANGES: fixed missing select option and exception message.
+- BLOCKING : Fix NPE during import of sale orders from prestashop batch
+- INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
+- SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
+- LEAD WIZARD : add missing translation.
+- DEBIT VAT DECLARATION REPORT : now the report completely filter on debit VAT.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
