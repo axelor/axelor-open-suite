@@ -111,6 +111,7 @@
 - Studio : Fix import app.
 - Studio: Fix double panel title.
 - BPM : Fix invalid domain on model when isJson is false.
+- SALE ORDER CHARTS: Date fixed on SQL queries.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
