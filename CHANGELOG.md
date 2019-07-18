@@ -139,6 +139,7 @@
 - Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
 - SUPPLY CHAIN : delete boolean manageInvoicedAmountByLine.
 - EMPLOYEE : Fix issue with full name view
+- ACCOUNTING REPORT : add ODS file formate in report export type.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
