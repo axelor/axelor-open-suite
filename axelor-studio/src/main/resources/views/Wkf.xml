@@ -17,7 +17,7 @@
         <field name="isJson" colSpan="1" onChange="action-wkf-reset-model"/>
         <panel name="modelPanel" colSpan="6">
 	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" onSelect="action-wkf-attrs-set-model-domain" />
-	        <field name="model" colSpan="12" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" />
+	        <field name="model" colSpan="12" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" onSelect="action-wkf-attrs-set-model-domain" />
 	    </panel>
 	    <field name="jsonField" colSpan="5" requiredIf="model != null &amp;&amp; !isJson" readonlyIf="model == null &amp;&amp; !isJson" hideIf="isJson" widget="ref-text" 
 	    	x-target="com.axelor.meta.db.MetaField" x-target-name="name" x-domain="self.metaModel.fullName = :model and self.json = true" onChange="action-wkf-attrs-reset-status-field"/>
@@ -65,7 +65,7 @@
 
   <action-attrs name="action-wkf-attrs-set-model-domain">
     <attribute name="domain" for="model" expr="eval:&quot;self.appBuilder.id = ${appBuilder.id} &quot;" if="isJson &amp;&amp; appBuilder != null" />
-    <attribute name="domain" for="model" expr="eval: null" if="isJson &amp;&amp; appBuilder == null" />
+    <attribute name="domain" for="model" expr="eval: null" if="!isJson" />
   </action-attrs>
   
   <action-attrs name="action-wkf-attrs-set-status-field-domain">
