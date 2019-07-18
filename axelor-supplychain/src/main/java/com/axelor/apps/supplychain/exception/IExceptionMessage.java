@@ -82,6 +82,8 @@ public interface IExceptionMessage {
       "An invoice not canceled already exists for the outgoing stock move %s" /*)*/;
   static final String INCOMING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
+  static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
+      "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
 
   /** Stock move line service */
   static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
