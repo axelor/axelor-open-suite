@@ -109,6 +109,7 @@
 - LEAD WIZARD : add missing translation.
 - DEBIT VAT DECLARATION REPORT : now the report completely filter on debit VAT.
 - Studio : Fix import app.
+- BPM : Fix invalid domain on model when isJson is false.
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
