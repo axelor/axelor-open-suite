@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -125,12 +126,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .all()
             .filter(
                 "self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
-                    + "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
+                    + "AND self.statusSelect IN (?3)",
                 this.productMap.keySet(),
                 this.stockLocationList,
-                statusList, // TODO ETRANGE ICI : DEVRAIT ETRE
-                // L'INVERSE.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                today.atStartOfDay())
+                statusList)
             .fetch();
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -428,5 +427,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             productRepository.find(product.getId()),
             stockLocation,
             availableStockMrpLineType));
+  }
+
+  @Override
+  protected Mrp completeProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
+    super.completeProjectedStock(mrp, product, company, stockLocation);
+    this.createManufOrderMrpLines();
+    return mrp;
   }
 }

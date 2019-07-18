@@ -1051,7 +1051,15 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public Mrp completeProjectedStock(
+  public Mrp createProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
+    this.completeProjectedStock(mrp, product, company, stockLocation);
+    this.computeCumulativeQty(product, true);
+    return mrp;
+  }
+
+  protected Mrp completeProjectedStock(
       Mrp mrp, Product product, Company company, StockLocation stockLocation)
       throws AxelorException {
     this.mrp = mrp;
@@ -1084,8 +1092,6 @@ public class MrpServiceImpl implements MrpService {
     this.createPurchaseMrpLines();
 
     this.createSaleOrderMrpLines();
-
-    this.computeCumulativeQty(product, true);
 
     return mrp;
   }
