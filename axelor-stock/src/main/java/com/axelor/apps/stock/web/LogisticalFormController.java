@@ -133,6 +133,7 @@ public class LogisticalFormController {
       LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
       logisticalFormService.updateProductNetMass(logisticalForm);
       response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
+      response.setValue("totalNetMass", logisticalForm.getTotalNetMass());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

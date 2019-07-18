@@ -25,41 +25,29 @@ import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.ForecastReason;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.List;
 
 public class ForecastService {
 
   @Inject protected AppBaseService appBaseService;
+  @Inject protected ForecastRepository forecastRepo;
 
+  @Transactional
   public void generate(ForecastGenerator forecastGenerator) {
     LocalDate fromDate = forecastGenerator.getFromDate();
     LocalDate toDate = forecastGenerator.getToDate();
     LocalDate itDate = LocalDate.parse(fromDate.toString(), DateTimeFormatter.ISO_DATE);
-    LocalDate todayDate = appBaseService.getTodayDate();
     int count = 0;
 
-    if (forecastGenerator.getForecastList() != null
-        && !forecastGenerator.getForecastList().isEmpty()) {
-      List<Forecast> forecastList = forecastGenerator.getForecastList();
-      Iterator<Forecast> it = forecastList.iterator();
-      while (it.hasNext()) {
-        Forecast forecast = it.next();
-        if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_NO) {
-          it.remove();
-        } else if (forecast.getRealizedSelect() == ForecastRepository.REALISED_SELECT_AUTO
-            && forecast.getEstimatedDate().isAfter(todayDate)) {
-          it.remove();
-        }
-      }
-    }
+    this.reset(forecastGenerator);
 
     while (!itDate.isAfter(toDate)) {
       Forecast forecast =
           this.createForecast(
+              forecastGenerator,
               forecastGenerator.getCompany(),
               forecastGenerator.getBankDetails(),
               forecastGenerator.getTypeSelect(),
@@ -68,12 +56,13 @@ public class ForecastService {
               forecastGenerator.getForecastReason(),
               forecastGenerator.getComments(),
               forecastGenerator.getRealizedSelect());
-      forecastGenerator.addForecastListItem(forecast);
+      forecastRepo.save(forecast);
       itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
     }
   }
 
   public Forecast createForecast(
+      ForecastGenerator forecastGenerator,
       Company company,
       BankDetails bankDetails,
       int typeSelect,
@@ -84,6 +73,7 @@ public class ForecastService {
       int realizedSelect) {
 
     Forecast forecast = new Forecast();
+    forecast.setForecastGenerator(forecastGenerator);
     forecast.setCompany(company);
     forecast.setBankDetails(bankDetails);
     forecast.setTypeSelect(typeSelect);
@@ -94,5 +84,18 @@ public class ForecastService {
     forecast.setRealizedSelect(realizedSelect);
 
     return forecast;
+  }
+
+  @Transactional
+  public void reset(ForecastGenerator forecastGenerator) {
+    forecastRepo
+        .all()
+        .filter(
+            "self.forecastGenerator = ? AND (self.realizedSelect = ? OR (self.realizedSelect = ? AND self.estimatedDate > ?))",
+            forecastGenerator,
+            ForecastRepository.REALISED_SELECT_NO,
+            ForecastRepository.REALISED_SELECT_AUTO,
+            appBaseService.getTodayDate())
+        .remove();
   }
 }
