@@ -502,7 +502,7 @@
 501;462000;46;"Receivables from sale of property";"receivable";;1;;
 502;464000;46;"Debt related to acquisition of investment securities";"debt";;1;;
 503;465000;46;"Receivables from sale of marketable securities";"receivable";;1;;
-504;467000;46;"Other accounts receivable or payable";"view";;1;;
+504;467000;46;"Other accounts receivable or payable";"view";"true";1;;
 505;468000;46;"Miscellaneous - Accrued expenses and accrued income";"receivable";;1;;
 506;468600;468000;"Accruals";"debt";;1;;
 507;468700;468000;"Accrued income";"receivable";;1;;

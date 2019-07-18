@@ -502,7 +502,7 @@
 501;462000;460;"Créances sur cessions d'immobilisations";"receivable";;1;;
 502;464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"debt";;1;;
 503;465000;460;"Créances sur cessions de valeurs mobilières de placement";"receivable";;1;;
-504;467000;460;"Autres comptes débiteurs ou créditeurs";"view";;1;;
+504;467000;460;"Autres comptes débiteurs ou créditeurs";"view";"true";1;;
 505;468000;460;"Divers - Charges à payer et produits à recevoir";"receivable";;1;;
 506;468600;468000;"Charges à payer";"debt";;1;;
 507;468700;468000;"Produits à recevoir";"receivable";;1;;
