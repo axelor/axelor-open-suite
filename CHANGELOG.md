@@ -5,6 +5,8 @@
 - PROJECT : Translate Total real hours
 - ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
 - LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
+- ActionBuilderView : Add condition option
+- FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -30,6 +32,7 @@
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- EVENT : add tag viewer if the event start date is in the past
 - YEAR : disable canEdit on company field in year-form.
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
 - OPPORTUNITY : convert into quotation error when no customer selected on opportunity
@@ -40,6 +43,17 @@
 - Studio : Add colspan field on worklow transition.
 - ActionBuilderLine : Changes in form view, increased colspan of value.
 - Wkf : Add confirmation message when edit status field.
+- Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- Bank payment: upgrade Bouncy Castle dependencies
+- PROJECT : Add missing translation
+- FORECAST RECAP : Changes in populating forecastRecapLineList
+- FORECAST RECAP : Changes in form view. Add new field Calculation Date.
+- Studio: Removed description field from model properties.
+- ForecastRecapLine : Add translation for Balance field.
+- SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
+- PROJECTS CATEGORY: Make 'name' field required and remove 'byDefault' field
+- FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
+- Stock Move: add config for default delivery date from sale order.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -82,6 +96,18 @@
 - Operation Order: Fix typo in fr translations.
 - AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
 - Reserved Qty: manage the case when the product is not stock managed.
+- App Builder : Fix uniqueness problem when import existing app.
+- App Builder : Fix NPE on export of action-builder type view with params.
+- Studio: Fix error on selecting target model.
+- ACCOUNTING REPORT : Added missing translation of typeSelect values
+- STOCK MOVE : Display error message on deleting stock move with status 'realize'.
+- NPE : fix NPE in timesheet timer.
+- DECLARATION OF EXCHANGES: fixed missing select option and exception message.
+- BLOCKING : Fix NPE during import of sale orders from prestashop batch
+- INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
+- SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
+- LEAD WIZARD : add missing translation.
+- DEBIT VAT DECLARATION REPORT : now the report completely filter on debit VAT.
 - Projected Stock : remove twice injection
 
 ## [5.1.7] - 2019-06-17

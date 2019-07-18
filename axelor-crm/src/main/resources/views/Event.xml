@@ -119,6 +119,7 @@
 			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="allDay" colSpan="2"/>
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
+			<static name="pastEventText" hidden="true" showIf="id &amp;&amp; $moment(startDateTime) &lt; $moment(todayDate)" colSpan="12"><![CDATA[<span class='label label-warning'>The selected date is in the past.</span>]]></static>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">

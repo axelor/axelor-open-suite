@@ -874,11 +874,4 @@ public class LeaveServiceImpl implements LeaveService {
     }
     return leaveLine;
   }
-
-  @Override
-  public LeaveLine leaveReasonToJustify(Employee employee, LeaveReason leaveReason)
-      throws AxelorException {
-    // TODO Auto-generated method stub
-    return null;
-  }
 }
