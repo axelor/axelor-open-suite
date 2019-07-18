@@ -18,9 +18,11 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
@@ -75,5 +77,23 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      if (context.get("_model") != null
+          && context.get("_model").toString().contains("SubrogationRelease")) {
+        long id = (long) context.get("id");
+        SubrogationRelease subrogationRelease =
+            Beans.get(SubrogationReleaseRepository.class).find(id);
+        json.put("$SubrogationStatusSelect", subrogationRelease.getStatusSelect());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return super.populate(json, context);
   }
 }

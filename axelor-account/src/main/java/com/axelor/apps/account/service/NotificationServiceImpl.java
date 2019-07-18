@@ -192,9 +192,15 @@ public class NotificationServiceImpl implements NotificationService {
     moveService.getMoveValidateService().validate(paymentMove);
 
     MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
+    MoveLine subrogationReleaseMoveLine = findSubrogationReleaseAccountMoveLine(invoice);
 
     if (invoiceMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
       reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
+      if (subrogationReleaseMoveLine != null
+          && notificationItem.getTypeSelect()
+              == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE) {
+        reconcileService.reconcile(debitMoveLine, subrogationReleaseMoveLine, true, false);
+      }
     }
 
     notificationItem.setMove(paymentMove);
@@ -241,5 +247,16 @@ public class NotificationServiceImpl implements NotificationService {
       }
     }
     throw new NoSuchElementException();
+  }
+
+  protected MoveLine findSubrogationReleaseAccountMoveLine(Invoice invoice) throws AxelorException {
+    if (invoice.getSubrogationReleaseMove() != null) {
+      for (MoveLine moveLine : invoice.getSubrogationReleaseMove().getMoveLineList()) {
+        if (moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1) {
+          return moveLine;
+        }
+      }
+    }
+    return null;
   }
 }

@@ -42,6 +42,9 @@
 - ActionBuilderLine : Changes in form view, increased colspan of value.
 - Wkf : Add confirmation message when edit status field.
 - Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- Invoice : add two fields, active subrogration release and its move.
+- Subrogration release : add the total amount remaining and highlight invoice lines with remaining amount > 0 and when the subrogration status is at accounting.
+- Payment notification : add the possibility to reconcile debit payment move line to subrogation move line if it exist, accounts are reconcil able and notification type is 'payment to the factor'.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
