@@ -3,6 +3,7 @@
 ## [5.0.10] - unreleased
 ## Improvements
 - YEAR : disable canEdit on company field in year-form.
+- MRP : add a try catch block in generateAllProposals method.
 
 ## Bug Fixes
 - STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
