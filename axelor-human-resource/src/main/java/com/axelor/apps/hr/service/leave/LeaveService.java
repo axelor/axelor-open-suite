@@ -96,11 +96,7 @@ public interface LeaveService {
 
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine leaveReasonToJustify(Employee employee, LeaveReason leaveReason)
-      throws AxelorException;
-
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReasonHrConfig)
       throws AxelorException;
 

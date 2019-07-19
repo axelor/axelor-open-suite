@@ -15,6 +15,7 @@
   	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField"/>
   	<many-to-one name="metaJsonField" title="Json Field" ref="com.axelor.meta.db.MetaJsonField"/>
   	<many-to-one name="wkfTransition" ref="com.axelor.studio.db.WkfTransition" />
+  	<many-to-one name="wkf" ref="com.axelor.studio.db.Wkf" />
   	<string name="operator" title="Operator" selection="studio.filter.operator" required="true" />
   	<many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" />
   	<string name="targetField" title="Target field"/>

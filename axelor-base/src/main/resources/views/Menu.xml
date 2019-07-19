@@ -613,6 +613,15 @@
 		<view type="form" name="import-configuration-form" />
 	</action-view>
 	
+	<menuitem name="admin-root-advanced-import" parent="admin-root-maintenance"
+   		title="Advanced import" action="admin.root.advanced.import"/>
+  
+	<action-view name="admin.root.advanced.import" title="Advanced import"
+		model="com.axelor.apps.base.db.AdvancedImport" >
+		<view type="grid" name="advanced-import-grid"/>
+		<view type="form" name="advanced-import-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-convert-demo-file" parent="admin-root-maintenance"
 		title="Convert demo file" action="admin.root.convert.demo.file"/>
 		
