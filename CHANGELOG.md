@@ -99,6 +99,7 @@
 - PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
 - Advanced Import : Add feature to import data with advanced configurations.
 - BPM: More than one workflow support for a same object.
+- MRP : boolean to exclude product without proposal in the result dashlet
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
