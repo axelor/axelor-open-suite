@@ -178,6 +178,7 @@
 - Studio : Fix readonly fields are enabled when imported an application.
 - Studio : Fix error when click on wkf buttons.
 - Studio : Fix export app.
+- Advance Data Import : Fix indexOutOfBound Exception.
 - Advanced Data Import : Specify truncated value to sampleLines for large string.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
