@@ -537,4 +537,14 @@ public class StockMoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void refreshProductNetMass(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveService.class).updateProductNetMass(stockMove);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

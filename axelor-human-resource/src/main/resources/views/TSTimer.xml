@@ -56,7 +56,7 @@
 	</action-record>
 	
 	<action-record name="action-ts-timer-record-start" model="com.axelor.apps.hr.db.TSTimer">
-		<field name="startDateTime" expr="eval:__config__.app.getTodayDateTime()"  if="statusSelect != TSTimerRepository.STATUS_PAUSE "/>
+		<field name="startDateTime" expr="eval:__config__.app.getTodayDateTime()"  if="startDateTime == null || statusSelect != TSTimerRepository.STATUS_PAUSE "/>
 		<field name="timerStartDateT" expr="eval:__config__.app.getTodayDateTime()"/>
 		<field name="statusSelect" expr="eval:TSTimerRepository.STATUS_START"/>
 	</action-record>

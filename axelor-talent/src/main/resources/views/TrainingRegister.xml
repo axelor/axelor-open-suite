@@ -83,25 +83,18 @@
 	<search-filters name="my-training-register-fitlers" model="com.axelor.apps.talent.db.Appraisal" title="My traning filters">
 		<filter title="My upcoming trainings">
 			<domain>self.employee.id = :_employeeId and self.statusSelect = 1</domain>
-			<context name="_employeeId" value="eval:__user__.employee?.id" />
 		</filter>
 		<filter title="My completed trainings">
 			<domain>self.employee.id = :_employeeId and self.statusSelect = 2</domain>
-			<context name="_employeeId" value="eval:__user__.employee?.id" />
 		</filter>
-	</search-filters>
-	
-	<search-filters name="my-team-training-register-fitlers" model="com.axelor.apps.talent.db.Appraisal" title="My team traning filters">
 		<filter title="Upcoming trainings of all employees of a team">
 			<domain>self.employee.id in :_employeeList and self.statusSelect = 1</domain>
-			<context name="_employeeList" value="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />
 		</filter>
 		<filter title="Completed trainings of all employees of a team">
 			<domain>self.employee.id in :_employeeList and self.statusSelect = 2</domain>
-			<context name="_employeeList" value="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />
 		</filter>
 	</search-filters>
-		
+
 	<action-group name="action-group-training-register-save-click">
   		<action name="action-training-register-update-old-rating"/>
   		<action if="__this__.calendar != null &amp;&amp; __this__.calendar != __self__?.calendar" name="action-training-register-method-update-event-calendar"/>
