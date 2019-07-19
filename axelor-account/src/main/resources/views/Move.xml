@@ -285,7 +285,8 @@
 	<action-view name="action-move-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
 		<view type="grid" name="move-grid-period"/>
 		<view type="form" name="move-form"/>
-		<domain>self.period = :_id AND self.statusSelect NOT IN (3,4)</domain>
+		<view-param name="showArchived" value="true"/>
+		<domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR  (self.statusSelect = 1 AND (self.archived = false OR self.archived is null) ))</domain>
 	</action-view>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
