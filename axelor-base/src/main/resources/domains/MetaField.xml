@@ -7,5 +7,7 @@
 
 	<entity name="MetaField" table="META_FIELD" cacheable="true" >
     	<string name="label" title="Label" translatable="true"/>
+    	
+    	<finder-method name="findByModel" using="name, metaModel" cacheable="true"/>
 	</entity>
 </domain-models>

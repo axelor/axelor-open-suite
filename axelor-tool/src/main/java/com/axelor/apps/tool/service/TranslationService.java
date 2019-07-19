@@ -50,6 +50,15 @@ public interface TranslationService {
   String getTranslation(String key, String language);
 
   /**
+   * Get the translation key of the given message.
+   *
+   * @param value
+   * @param language
+   * @return
+   */
+  String getTranslationKey(String message, String language);
+
+  /**
    * Get the translation of the given value key.
    *
    * @param key
