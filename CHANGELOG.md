@@ -145,6 +145,7 @@
 - EMPLOYEE : Fix issue with full name view
 - INVENTORY : adding ODS file format in report selection type.
 - Quality Control : Set default printing setting and update translation
+- INVOICE : Configure BIRT to generate an Excel and a Word file
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
