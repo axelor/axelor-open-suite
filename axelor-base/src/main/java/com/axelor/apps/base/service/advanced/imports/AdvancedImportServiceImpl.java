@@ -184,8 +184,11 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      FileField fileField = fileFieldList.get(i);
+      if(fileFieldList.size() <= i) {
+        break;
+      }
 
+      FileField fileField = fileFieldList.get(i);
       if (line == 2) {
         fileField.setColumnTitle(row[i]);
         continue;
