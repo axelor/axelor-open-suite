@@ -97,6 +97,7 @@
 - Contract : Add analytic information to contract lines.
 - MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 - PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
+- Advanced Import : Add feature to import data with advanced configurations.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
