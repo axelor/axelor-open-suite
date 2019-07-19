@@ -11,7 +11,8 @@
 	</action-group>
 	
 	<action-validate name="action-sale-validate-create-client">
-		<alert message="No client selected, a new one will be created from the lead, do you agree?"/>
+		<alert message="No client selected, a new one will be created from the lead, do you agree?" if="lead"/>
+		<error message="Please select a customer to be able to convert opportunity into quotation." if="!lead"/>
 	</action-validate>
 	
 	<action-method name="action-sale-method-create-client">

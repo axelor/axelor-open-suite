@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  
+  	<form id="studio-meta-select-form" name="meta-select-form" title="Selection" model="com.axelor.meta.db.MetaSelect"
+  		onNew="action-studio-meta-select-record-onnew,action-studio-meta-select-attrs-onnew-onload" 
+  		onLoad="action-studio-meta-select-attrs-onnew-onload">
+		<panel name="appBuilderPanel">
+      		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+ 			<field name="isCustom" hidden="true"/>
+    	</panel>
+	    <panel-include view="meta-select-form" from="axelor-core"/>
+	</form>
+  
+  	<action-attrs name="action-studio-meta-select-attrs-onnew-onload">
+  		<attribute name="hidden" for="appBuilderPanel" expr="eval: !_fromStudio"/>
+  	</action-attrs>
+  	
+  	<action-record name="action-studio-meta-select-record-onnew" model="com.axelor.meta.db.MetaSelect">
+  		<field name="isCustom" expr="eval: true" if="_fromStudio"/>
+  	</action-record>
+
+</object-views>
