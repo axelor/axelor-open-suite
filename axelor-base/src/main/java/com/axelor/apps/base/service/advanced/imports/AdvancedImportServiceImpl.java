@@ -239,6 +239,13 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   private void setSampleLines(int line, String value, FileField fileField) {
+    if (!StringUtils.isBlank(fileField.getTargetType())
+        && fileField.getTargetType().equals("String")
+        && !StringUtils.isBlank(value)
+        && value.length() > 255) {
+      value = StringUtils.abbreviate(value, 255);
+    }
+
     switch (line) {
       case 1:
         fileField.setFirstLine(value);
