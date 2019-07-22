@@ -66,10 +66,14 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
   @Override
   public void generateProposal(
-      MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders)
+      MrpLine mrpLine,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      boolean isProposalsPerSupplier)
       throws AxelorException {
 
-    super.generateProposal(mrpLine, purchaseOrders);
+    super.generateProposal(
+        mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalsPerSupplier);
 
     if (mrpLine.getMrpLineType().getElementSelect()
         == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL) {
