@@ -114,6 +114,7 @@
 - Studio: Fix double panel title.
 - BPM : Fix invalid domain on model when isJson is false.
 - SALE ORDER CHARTS: Date fixed on SQL queries.
+- SUPPLIER INVOICE GRID : the mass invoice payment function now works properly as the payment save function on a invoice form.  
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
