@@ -58,10 +58,14 @@ public class MrpController {
 
   public void generateAllProposals(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    Mrp mrp = request.getContext().asType(Mrp.class);
+    int id = (int) request.getContext().get("_id");
     MrpService mrpService = mrpServiceProvider.get();
     MrpRepository mrpRepository = mrpRepositoryProvider.get();
-    mrpService.generateProposals(mrpRepository.find(mrp.getId()));
+    Boolean isProposalsPerSupplier =
+        (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
+    mrpService.generateProposals(
+        mrpRepository.find(Long.valueOf(id)),
+        isProposalsPerSupplier == null ? false : isProposalsPerSupplier);
     response.setReload(true);
   }
 

@@ -101,6 +101,7 @@
 - BPM: More than one workflow support for a same object.
 - MRP : boolean to exclude product without proposal in the result dashlet
 - HR : TRAINING - Optimization of the menu by adding filters
+- MRP : Group proposals per supplier
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
