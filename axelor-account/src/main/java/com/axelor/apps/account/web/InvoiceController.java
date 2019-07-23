@@ -829,14 +829,16 @@ public class InvoiceController {
         for (Long invoiceId : invoiceIdList) {
           Invoice invoice = invoiceRepo.find(invoiceId);
 
-          if (invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
-              && (invoice.getOperationSubTypeSelect()
+          if ((invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
+                  && invoice.getOperationSubTypeSelect()
+                      != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+              || (invoice.getOperationSubTypeSelect()
                       == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
                   && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED)) {
 
             continue;
           }
-          if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) == 0) {
+          if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
 
             continue;
           }

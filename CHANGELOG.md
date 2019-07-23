@@ -7,6 +7,7 @@
 - LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
 - ActionBuilderView : Add condition option
 - FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
+- MrpForecast : Enable Tracking Feature for all fields on the creation of record
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -51,7 +52,11 @@
 - Studio: Removed description field from model properties. 
 - ForecastRecapLine : Add translation for Balance field.
 - SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
-- STOCK MOVE LINE : stock location missing on form view
+- PROJECTS CATEGORY: Make 'name' field required and remove 'byDefault' field
+- FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
+- Stock Move: add config for default delivery date from sale order.
+- MRP : add a try catch block in generateAllProposals method.
+- STOCK LOCATION LINE : fixed missing stock location on form view
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -100,6 +105,17 @@
 - ACCOUNTING REPORT : Added missing translation of typeSelect values
 - STOCK MOVE : Display error message on deleting stock move with status 'realize'.
 - NPE : fix NPE in timesheet timer.
+- DECLARATION OF EXCHANGES: fixed missing select option and exception message.
+- BLOCKING : Fix NPE during import of sale orders from prestashop batch
+- INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
+- SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
+- LEAD WIZARD : add missing translation.
+- DEBIT VAT DECLARATION REPORT : now the report completely filter on debit VAT.
+- Studio : Fix import app.
+- Studio: Fix double panel title.
+- BPM : Fix invalid domain on model when isJson is false.
+- SALE ORDER CHARTS: Date fixed on SQL queries.
+- SUPPLIER INVOICE GRID : the mass invoice payment function now works properly as the payment save function on a invoice form.  
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form

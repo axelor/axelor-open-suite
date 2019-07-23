@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -79,14 +80,16 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
-      ReservedQtyService reservedQtyService) {
+      ReservedQtyService reservedQtyService,
+      ProductRepository productRepository) {
     super(
         stockMoveLineService,
         stockMoveToolService,
         stockMoveLineRepository,
         appBaseService,
         stockMoveRepository,
-        partnerProductQualityRatingService);
+        partnerProductQualityRatingService,
+        productRepository);
     this.appSupplyChainService = appSupplyChainService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.saleOrderRepo = saleOrderRepo;

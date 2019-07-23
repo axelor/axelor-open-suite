@@ -227,4 +227,6 @@ public interface StockMoveService {
    * @param stockMove
    */
   void updateStocks(StockMove stockMove) throws AxelorException;
+
+  void updateProductNetMass(StockMove stockMove) throws AxelorException;
 }
