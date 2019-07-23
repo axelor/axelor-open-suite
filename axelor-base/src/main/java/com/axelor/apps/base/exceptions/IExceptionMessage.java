@@ -328,4 +328,12 @@ public interface IExceptionMessage {
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
       "The worth and quantity value of each class must be greater than 0." /*)*/;
+
+  /* DMS Import */
+  public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
+      "File loaded successfully" /*)*/;
+  public static final String DMS_IMPORT_FILE_PROCESS_ERROR = /*$$(*/
+      "Error while processing zip file" /*)*/;
+  public static final String DMS_IMPORT_INVALID_ZIP_ERROR = /*$$(*/
+      "Uploaded file is not a valid zip file" /*)*/;
 }
