@@ -114,6 +114,7 @@
 - Studio: Fix double panel title.
 - BPM : Fix invalid domain on model when isJson is false.
 - SALE ORDER CHARTS: Date fixed on SQL queries.
+- BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
