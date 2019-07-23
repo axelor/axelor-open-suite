@@ -56,6 +56,7 @@
 - FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
 - Stock Move: add config for default delivery date from sale order.
 - MRP : add a try catch block in generateAllProposals method.
+- EXPENSE : Reduce calling of three action-methods to one onSave of form
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
