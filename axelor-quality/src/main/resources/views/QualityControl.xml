@@ -25,7 +25,7 @@
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" />
 			<field name="reference" showTitle="false" colSpan="12" css="label-bold bold large"/>
 			<field name="name"/>
-			<field name="project" required="true"/>
+			<field name="project" required="true" onChange="action-quality-control-record-set-printing-setting-on-project-change"/>
 			<field name="responsible"/>
 			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="startDate"/>
@@ -166,6 +166,10 @@
 	<action-validate name="action-quality-control-validate-control-points-on-finish">
 		<error message="Please complete all control points" if="controlPointList != null &amp;&amp; controlPointList.any{it?.statusSelect != 2}"/>
 	</action-validate>
+
+	<action-record name="action-quality-control-record-set-printing-setting-on-project-change" model="com.axelor.apps.quality.db.QualityControl">
+		<field name="printingSettings" expr="eval: project?.company?.printingSettings" if="project != null &amp;&amp; project?.company != null"/>
+	</action-record>
 
 	<search-filters name="quality-control-filters" model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
 		<filter title="My quality controls">

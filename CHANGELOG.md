@@ -97,7 +97,12 @@
 - Contract : Add analytic information to contract lines.
 - MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 - PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
-- Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList.
+- Advanced Import : Add feature to import data with advanced configurations.
+- BPM: More than one workflow support for a same object.
+- MRP : boolean to exclude product without proposal in the result dashlet
+- HR : TRAINING - Optimization of the menu by adding filters
+- MRP : Group proposals per supplier
+- Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -140,6 +145,9 @@
 - Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
 - SUPPLY CHAIN : delete boolean manageInvoicedAmountByLine.
 - EMPLOYEE : Fix issue with full name view
+- INVENTORY : adding ODS file format in report selection type.
+- Quality Control : Set default printing setting and update translation
+- INVOICE : Configure BIRT to generate an Excel and a Word file
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -169,5 +177,12 @@
 - ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
 - Transactionnal : correction and standardisation of rollback.
 - Upgraded to ADK 5.1.
+- SALE ORDER LINE : Fixed Error when selecting a product
+- Studio : Fix readonly fields are enabled when imported an application.
+- Studio : Fix error when click on wkf buttons.
+- Studio : Fix export app.
+- Advance Data Import : Fix indexOutOfBound Exception.
+- Advanced Data Import : Specify truncated value to sampleLines for large string.
+- MetaSelect : Update view and domain with latest version.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

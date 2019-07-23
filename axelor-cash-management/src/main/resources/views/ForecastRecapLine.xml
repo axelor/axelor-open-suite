@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
-    <grid name="forecast-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+    <grid name="forecast-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine" orderBy="estimatedDate,typeSelect,id">
        	<field name="estimatedDate"/>
 	   	<field name="typeSelect"/>
-	   	<field name="forecastReason"/>
+	   	<field name="relatedToSelectName"/>
 	   	<field name="amount" aggregate="sum"/>
 	   	<field name="balance"/>
     </grid>
@@ -15,7 +15,7 @@
 	 	<panel name="mainPanel" >
 	       	<field name="estimatedDate"/>
 	       	<field name="typeSelect"/>
-	       	<field name="forecastReason"/>
+	       	<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" readonly="true"/>
 	       	<field name="amount"/>
 	       	<field name="balance"/>
 	 	</panel>

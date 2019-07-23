@@ -56,6 +56,9 @@
  		<bind to="deliveryDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(deliveryDate)" column="deliveryDate"/>
  		<bind to="orderDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(orderDate)" column="orderDate"/>
  	</input>
-
+    
+    <input file="account_budgetDistribution.csv" separator=";" type="com.axelor.apps.account.db.BudgetDistribution" search="self.importId = :importId" >
+		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(createdOn)" column="createdOn"/>
+	</input>
 </csv-inputs>
 

@@ -398,7 +398,8 @@
       <attribute name="hidden" for="countryOfOrigin"
         expr="eval: __parent__?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" if="_parent !=null &amp;&amp; _parent?._model == 'com.axelor.apps.stock.db.StockMove'"/>
       <attribute name="hidden" expr="eval: stockMove?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" for="countryOfOrigin" if="_parent == null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
-	  <attribute name="hidden" for="$availableQty,$availableQtyForProduct,availableStatus" expr="_parent?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3" if="_parent"/>
+	  <attribute name="hidden" for="$availableQty,$availableQtyForProduct" expr="_parent?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3" if="_parent"/>
+	  <attribute name="hidden" for="availableStatus" expr="(_parent?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3) || !product?.stockManaged" if="_parent"/>
 	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: __parent__?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent !=null &amp;&amp; _parent?._model == 'com.axelor.apps.stock.db.StockMove'"/>
 	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: stockMove?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent ==null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
     </action-attrs>
