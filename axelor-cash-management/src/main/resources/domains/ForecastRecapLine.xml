@@ -4,13 +4,15 @@
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
   
   <entity name="ForecastRecapLine" lang="java">
-	
-	<many-to-one name="forecastReason" ref="com.axelor.apps.cash.management.db.ForecastReason" title="Reason" />
+
 	<integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type" required="true"/>
 	<decimal name="amount" title="Amount"/>
 	<date name="estimatedDate" title="Date"/>
-	<decimal name="balance" title="Balance"/>
+	<decimal name="balance" title="ForecastRecapLine.balance"/>
 	<many-to-one name="forecastRecap" ref="com.axelor.apps.cash.management.db.ForecastRecap"/>
+	<string name="relatedToSelect" title="Related to" selection="forecast.recap.line.related.to.select"/>
+	<long name="relatedToSelectId"/>
+	<string name="relatedToSelectName" title="Related to"/>
 	
   </entity>
   

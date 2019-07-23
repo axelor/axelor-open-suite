@@ -198,6 +198,9 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_REQUESTED_QTY_TOO_LOW = /*$$(*/
       "The requested quantity must be greater than the already delivered quantity." /*)*/;
 
+  static final String SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED = /*$$(*/
+      "This product is not stock managed." /*)*/;
+
   /** Account config supplychain service */
   static final String FORECASTED_INVOICE_CUSTOMER_ACCOUNT = /*$$(*/
       "You must configure a forecasted invoiced customer account for the company %s" /*)*/;

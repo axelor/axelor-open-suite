@@ -24,6 +24,7 @@
         <toolbar>
             <button name="packingListBtn" title="Print packing list" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-group-logistical-form-print-packing-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
+            <button name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-logistical-form-method-refresh-net-mass,save" />
         </toolbar>
         <panel colSpan="12" name="mainPanel">
 			<panel name="statusSelectPanel" colSpan="4" itemSpan="12">
@@ -176,5 +177,9 @@
     <action-method name="action-logistical-form-method-set-customer-account-number">
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="setCustomerAccountNumberToCarrier" />
     </action-method>
+
+	<action-method name="action-logistical-form-method-refresh-net-mass">
+		<call class="com.axelor.apps.stock.web.LogisticalFormController" method="refreshProductNetMass"/>
+	</action-method>
 
 </object-views>

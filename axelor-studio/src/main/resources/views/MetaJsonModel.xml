@@ -28,6 +28,7 @@
       <panel-related field="fields" form-view="json-field-form-2" orderBy="sequence" canMove="true">
         <field name="name"/>
         <field name="type"/>
+        <field name="title"/>
       </panel-related>
       <panel-related field="roles">
         <field name="name" />
