@@ -181,5 +181,6 @@
 - Studio : Fix export app.
 - Advance Data Import : Fix indexOutOfBound Exception.
 - Advanced Data Import : Specify truncated value to sampleLines for large string.
+- MetaSelect : Update view and domain with latest version.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
