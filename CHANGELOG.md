@@ -13,7 +13,8 @@
 - Account : Remove DirectDebitManagement
 - MENU BUILDER : Add selection support for icon and iconBackground
 - Custom Model : Hide menu panel and allows to create menu from menubuilder only
-- English language : Correction of errors in english words and change gender job word to genderless job word 
+- English language : Correction of errors in english words and change gender job word to genderless job word
+- Action Builder: Added option to update or use json field from real model
 
 ## [Unreleased 5.2.0]
 ## Features
