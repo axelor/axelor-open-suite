@@ -94,7 +94,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     orderTypeSelect = bankOrder.getOrderTypeSelect();
     senderCompany = bankOrder.getSenderCompany();
     senderBankDetails = bankOrder.getSenderBankDetails();
-
+    partnerTypeSelect = bankOrder.getPartnerTypeSelect();
+    
     journal =
         paymentModeService.getPaymentModeJournal(paymentMode, senderCompany, senderBankDetails);
     senderBankAccount =
