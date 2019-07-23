@@ -118,6 +118,8 @@
 - SALE ORDER CHARTS: Date fixed on SQL queries.
 - SUPPLIER INVOICE GRID : the mass invoice payment function now works properly as the payment save function on a invoice form.  
 - INVOICE : on ventilation corrected the error produced when a product had a very long name. 
+- BANK ORDER : Fix account move generation when we realize a bank order.
+
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
