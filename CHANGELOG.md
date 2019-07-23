@@ -57,6 +57,7 @@
 - Stock Move: add config for default delivery date from sale order.
 - MRP : add a try catch block in generateAllProposals method.
 - STOCK LOCATION LINE : fixed missing stock location on form view
+- MENU BUILDER : Re-arrange the position of 'lines' field
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
