@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
@@ -932,5 +933,33 @@ public class InvoiceController {
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
         "value",
         invoice.getPfpValidatorUser().equals(invoiceService.getPfpValidatorUser(invoice)));
+  }
+
+  public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Company company = invoice.getCompany();
+
+    long companyId = company.getPartner().getId();
+
+    String domain =
+        String.format(
+            "self.id != %d AND self.isContact = false AND self.isCustomer = true", companyId);
+    domain += " AND :company member of self.companySet";
+
+    int invoiceTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+
+    try {
+
+      if ((!(invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()))
+          && (invoiceTypeSelect == 1)) {
+
+        domain += Beans.get(PartnerService.class).getPartnerDomain(invoice.getPartner());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
+    }
+    response.setAttr("partner", "domain", domain);
   }
 }

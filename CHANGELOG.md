@@ -102,6 +102,7 @@
 - MRP : boolean to exclude product without proposal in the result dashlet
 - HR : TRAINING - Optimization of the menu by adding filters
 - MRP : Group proposals per supplier
+- Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
