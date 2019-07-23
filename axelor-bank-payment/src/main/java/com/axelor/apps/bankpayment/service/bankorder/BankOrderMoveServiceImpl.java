@@ -164,7 +164,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 senderMove,
                 partner,
                 getPartnerAccount(
-                    partner, bankOrderLine.getReceiverCompany(), senderMove.getCompany()),
+                    partner, senderCompany, senderCompany),
                 bankOrderLine.getBankOrderAmount(),
                 isDebit,
                 senderMove.getDate(),
@@ -180,9 +180,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
     Partner partner = bankOrderLine.getPartner();
     Company receiverCompany = bankOrderLine.getReceiverCompany();
-    if(partnerTypeSelect != BankOrderRepository.PARTNER_TYPE_COMPANY)  {
-    	receiverCompany = bankOrderLine.getBankOrder().getSenderCompany();
-    }
 
     BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
 
