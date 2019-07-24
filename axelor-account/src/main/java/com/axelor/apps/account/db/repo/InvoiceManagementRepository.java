@@ -20,6 +20,7 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -88,10 +89,10 @@ public class InvoiceManagementRepository extends InvoiceRepository {
         long id = (long) context.get("id");
         SubrogationRelease subrogationRelease =
             Beans.get(SubrogationReleaseRepository.class).find(id);
-        json.put("$SubrogationStatusSelect", subrogationRelease.getStatusSelect());
+        json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
       }
     } catch (Exception e) {
-      e.printStackTrace();
+    	TraceBackService.trace(e);
     }
 
     return super.populate(json, context);
