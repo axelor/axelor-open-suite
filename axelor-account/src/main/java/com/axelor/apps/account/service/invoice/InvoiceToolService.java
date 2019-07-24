@@ -29,12 +29,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public class InvoiceToolService {
 
+  @CallMethod
   public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate) {
 
     if (paymentCondition == null) {

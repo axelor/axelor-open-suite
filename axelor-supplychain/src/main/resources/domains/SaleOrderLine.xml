@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -22,6 +22,9 @@
 	<boolean name="invoiced" readonly="true"/>
 
 	<string name="pickingOrderInfo" title="Picking Order Info" large="true"/>
+	
+	<string name="availableStatus" title="Available status" transient="true"/>
+  	<integer name="availableStatusSelect" title="Available status" transient="true" selection="supplychain.sale.order.line.available.status.select"/>
 
 	<decimal name="reservedQty" title="Allocated qty" min="0"/>
 	<decimal name="requestedReservedQty" title="Requested reserved qty" min="0"/>
@@ -42,6 +45,10 @@
             public static final int DELIVERY_STATE_NOT_DELIVERED = 1;
             public static final int DELIVERY_STATE_PARTIALLY_DELIVERED = 2;
             public static final int DELIVERY_STATE_DELIVERED = 3;
+            
+            // AVAILABLE STATUS SELECT
+			public static final int STATUS_AVAILABLE = 1;
+			public static final int STATUS_MISSING = 2;
 	  	]]>
   	</extra-code>
   	

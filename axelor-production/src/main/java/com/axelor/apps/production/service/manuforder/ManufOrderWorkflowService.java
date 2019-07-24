@@ -460,7 +460,7 @@ public class ManufOrderWorkflowService {
    * @param manufOrder
    * @return
    */
-  private List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
+  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
     List<OperationOrder> operationOrderList =
         MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
     Comparator<OperationOrder> byPriority =

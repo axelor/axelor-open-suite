@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="crm-config-grid" title="CRM configurations" model="com.axelor.apps.crm.db.CrmConfig">
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -12,14 +12,13 @@
 	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
 	  	<panel name="reminderTemplatesPanel" title="Reminder Templates">
-	  		<field name="sendMail"/>
-	  		<spacer name="sendMailSpacer"/>
+	  		<field name="eventTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="taskTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
+	    	<field name="callTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingDateChangeTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingGuestAddedTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingGuestDeletedTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
-	    	<field name="callTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	  	</panel>
 	  					        
 		<panel-mail name="mailPanel">
