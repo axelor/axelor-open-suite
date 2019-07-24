@@ -56,6 +56,8 @@
 - FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
 - Stock Move: add config for default delivery date from sale order.
 - MRP : add a try catch block in generateAllProposals method.
+- STOCK LOCATION LINE : fixed missing stock location on form view
+- MENU BUILDER : Re-arrange the position of 'lines' field
 - PURCHASE ORDER PRINTING : Add versionNumber on sequence
 
 ## Bug Fixes
@@ -115,6 +117,10 @@
 - Studio: Fix double panel title.
 - BPM : Fix invalid domain on model when isJson is false.
 - SALE ORDER CHARTS: Date fixed on SQL queries.
+- SUPPLIER INVOICE GRID : the mass invoice payment function now works properly as the payment save function on a invoice form.  
+- INVOICE : on ventilation corrected the error produced when a product had a very long name. 
+- BANK ORDER : Fix account move generation when we realize a bank order.
+
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form

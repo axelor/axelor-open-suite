@@ -59,8 +59,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected int orderTypeSelect;
   protected int partnerTypeSelect;
   protected Journal journal;
-  protected LocalDate bankOrderDate;
-  protected Currency bankOrderCurrency;
   protected Account senderBankAccount;
   protected BankDetails senderBankDetails;
   protected boolean isMultiDate;
@@ -96,7 +94,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     orderTypeSelect = bankOrder.getOrderTypeSelect();
     senderCompany = bankOrder.getSenderCompany();
     senderBankDetails = bankOrder.getSenderBankDetails();
-
+    partnerTypeSelect = bankOrder.getPartnerTypeSelect();
+    
     journal =
         paymentModeService.getPaymentModeJournal(paymentMode, senderCompany, senderBankDetails);
     senderBankAccount =
@@ -165,7 +164,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
                 senderMove,
                 partner,
                 getPartnerAccount(
-                    partner, bankOrderLine.getReceiverCompany(), senderMove.getCompany()),
+                    partner, senderCompany, senderCompany),
                 bankOrderLine.getBankOrderAmount(),
                 isDebit,
                 senderMove.getDate(),
@@ -271,18 +270,18 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected LocalDate getDate(BankOrderLine bankOrderLine) {
 
     if (isMultiDate) {
-      return bankOrderDate;
-    } else {
       return bankOrderLine.getBankOrderDate();
+    } else {
+      return bankOrderLine.getBankOrder().getBankOrderDate();
     }
   }
 
   protected Currency getCurrency(BankOrderLine bankOrderLine) {
 
     if (isMultiCurrency) {
-      return bankOrderCurrency;
-    } else {
       return bankOrderLine.getBankOrderCurrency();
+    } else {
+      return bankOrderLine.getBankOrder().getBankOrderCurrency();
     }
   }
 }
