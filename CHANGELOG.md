@@ -58,6 +58,7 @@
 - MRP : add a try catch block in generateAllProposals method.
 - STOCK LOCATION LINE : fixed missing stock location on form view
 - MENU BUILDER : Re-arrange the position of 'lines' field
+- STOCK CONFIG : Put panel customsPanel above stockConfigPanel.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
