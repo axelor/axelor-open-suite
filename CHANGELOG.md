@@ -61,6 +61,7 @@
 - PURCHASE ORDER PRINTING : Add versionNumber on sequence
 - EXPENSE : Reduce calling of three action-methods to one onSave of form
 - UNIT CONVERSION : Set to two the number of decimal on grid view.
+- MRP : Add field in stock location to take in consideration in Mrp
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
