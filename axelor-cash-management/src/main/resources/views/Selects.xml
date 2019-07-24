@@ -22,5 +22,13 @@
 		<option value="2">Spending</option>
 		<option value="3">Both</option>
 	</selection>
+
+	<selection name="forecast.recap.line.related.to.select">
+		<option value="com.axelor.apps.sale.db.SaleOrder" data-grid="sale-order-grid" data-form="sale-order-form">Sale order</option>
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
+		<option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid" data-form="invoice-form">Invoice</option>
+		<option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid" data-form="expense-form">Expense</option>
+		<option value="com.axelor.apps.cash.management.db.ForecastReason" data-grid="forecast-reason-grid" data-form="forecast-reason-form">Forecast reason</option>
+	</selection>
 	
 </object-views>

@@ -20,7 +20,6 @@ package com.axelor.apps.crm.message;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
@@ -77,7 +76,7 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
                 .getCrmConfig(event.getUser().getActiveCompany())
                 .getTaskTemplate();
         break;
-        
+
       default:
         break;
     }

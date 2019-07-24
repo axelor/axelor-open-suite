@@ -26,6 +26,7 @@
 	            <item title="Create order" action="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1" if-module="axelor-sale" if="__config__.app.isApp('sale')" showIf="isProspect || isCustomer"/>
 	            <item title="Generate Project" action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project" if="__config__.app.isApp('project')"/>
 	            <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
+	            <item title="Customer recovery" name="customerRecovery" action="action-partner-view-show-customer-debt-recovery" if="__config__.app.isApp('account')" />
 	        </menu>
 	        
 	    </menubar>

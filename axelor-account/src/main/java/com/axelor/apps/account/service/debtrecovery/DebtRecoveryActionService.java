@@ -229,8 +229,8 @@ public class DebtRecoveryActionService {
       this.saveDebtRecovery(debtRecovery);
 
       /* Messages are send from this transaction
-         If an exception occurs while sending messages
-         The debtRecovery process is rollbacked */
+      If an exception occurs while sending messages
+      The debtRecovery process is rollbacked */
       this.runMessage(debtRecovery);
     }
     log.debug("End runManualAction service");
