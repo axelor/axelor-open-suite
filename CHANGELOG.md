@@ -5,6 +5,7 @@
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
 ## Improvements
+- Fixed assets : add stock location and tracking number management
 - SALE ORDER : line not editable if availability request = true
 - Project : Reset the progression when we copy a Project
 - EMPLOYEE : disable canEdit on kilometricAllowParam and put validation on vehicle dates
