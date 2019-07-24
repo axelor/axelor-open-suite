@@ -1,11 +1,15 @@
 # Changelog
 
+## [Unreleased 5.1.8]
+## Improvements
+- Fixed assets : add stock location and tracking number management
+
+
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
 ## Improvements
-- Fixed assets : add stock location and tracking number management
 - SALE ORDER : line not editable if availability request = true
 - Project : Reset the progression when we copy a Project
 - EMPLOYEE : disable canEdit on kilometricAllowParam and put validation on vehicle dates
