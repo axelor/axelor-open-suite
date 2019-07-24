@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
    		<hilite strong="true" color="default" if="typeSelect != 0"/>
@@ -14,7 +14,7 @@
 		<field name="productName"/>
 		<field name="qty" aggregate="sum"/>
 		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
-    <button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
+    	<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
@@ -22,8 +22,12 @@
 		<field name="exTaxTotal" aggregate="sum"/>
 		<field name="inTaxTotal" aggregate="sum"/>
 		<field name="estimatedDelivDate"/>
-    <field name="saleOrder.statusSelect" hidden="true"/>
-    <field name="saleOrder.orderBeingEdited" hidden="true"/>
+		<field name="availableStatus" if="__config__.app.isApp('supplychain')">
+        	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+        	<hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
+        </field>
+	    <field name="saleOrder.statusSelect" hidden="true"/>
+	    <field name="saleOrder.orderBeingEdited" hidden="true"/>
 	</grid>
 
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" canEdit="false">
@@ -72,7 +76,7 @@
 		<panel name="productPanel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
 			<field name="typeSelect" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
-			<field name="isShowTotal"/> 
+			<field name="isShowTotal"/>
 			<field name="isHideUnitAmounts"/>
 		</panel>
  
@@ -136,7 +140,7 @@
 				<field name="oldQty"/>
 			</panel>
 				<panel name="productDetailPanel" colSpan="12">
-					<field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="($get('saleOrder.statusSelect') &gt; 1 &amp;&amp; !$get('saleOrder.orderBeingEdited'))" validIf="$qtyValid != false"/>
+					<field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="$availabiltyRequest || ($get('saleOrder.statusSelect') &gt; 1 &amp;&amp; !$get('saleOrder.orderBeingEdited'))" validIf="$qtyValid != false"/>
 					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || $isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<field name="price" colSpan="3" readonlyIf="$isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<field name="inTaxPrice" colSpan="3" readonlyIf="$isReadOnly !== false || $get('saleOrder.statusSelect') &gt; 1" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
@@ -247,8 +251,8 @@
 			</panel>
 			<field name="productName"/>
 			<panel name="productDetailsPanel" colSpan="12">
-				<field name="qty"  onChange="action-group-sale-saleorderline-qty-onchange" />
-				<field name="unit"  canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="qty"  onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="isSubLine"/>
+				<field name="unit" readonlyIf="isSubLine || typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="price"  onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 				<field name="inTaxPrice" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 				<panel name="discountPanel" title="Discount">
@@ -434,7 +438,7 @@
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
     </action-group>
-    
+
 	<action-attrs if-module="axelor-business-project" name="action-sale-order-line-attrs-title-project-task">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="title" for="projectPanel" expr="eval:  __config__.app.getApp('project').getProjectLabel()" if=" __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty( __config__.app.getApp('project').getProjectLabel())"/>
@@ -508,7 +512,7 @@
 	<action-method name="action-sale-order-line-method-get-discount">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="getDiscount"/>
 	</action-method>
-	
+
 	<action-method name="action-sale-order-line-method-supplier-partner-domain" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="supplierPartnerDomain"/>
 	</action-method>

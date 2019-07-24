@@ -342,7 +342,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("productName", null);
     productInformation.put("unit", null);
     productInformation.put("discountAmount", null);
-    productInformation.put("discountTypeSelect", null);
+    productInformation.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
     productInformation.put("price", null);
     productInformation.put("inTaxPrice", null);
     productInformation.put("exTaxTotal", null);

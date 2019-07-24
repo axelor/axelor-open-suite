@@ -51,7 +51,7 @@ public interface InvoicePrintService {
    * @throws AxelorException
    * @throws IOException
    */
-  File printCopiesToFile(Invoice invoice, boolean forceRefresh, Integer reportType)
+  File printCopiesToFile(Invoice invoice, boolean forceRefresh, Integer reportType, String format)
       throws AxelorException, IOException;
 
   /**
@@ -64,7 +64,7 @@ public interface InvoicePrintService {
    *     changes made to invoice between last print and current state won't appear on printed copy.
    * @return a file with the invoice as PDF.
    */
-  File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType)
+  File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType, String format)
       throws AxelorException;
 
   /**
@@ -74,16 +74,17 @@ public interface InvoicePrintService {
    * @return a file of the invoice printing.
    * @throws AxelorException
    */
-  public File print(Invoice invoice, Integer reportType) throws AxelorException;
+  public File print(Invoice invoice, Integer reportType, String format) throws AxelorException;
 
   /**
    * Print an invoice, then save the generated file in this invoice.
    *
    * @param invoice an invoice
+   * @param format
    * @return a metafile of the invoice printing.
    * @throws AxelorException
    */
-  File printAndSave(Invoice invoice, Integer reportType) throws AxelorException;
+  File printAndSave(Invoice invoice, Integer reportType, String format) throws AxelorException;
 
   /**
    * Print a list of invoices in the same output.
@@ -102,5 +103,6 @@ public interface InvoicePrintService {
    * @return the report settings to print the given invoice
    * @throws AxelorException
    */
-  ReportSettings prepareReportSettings(Invoice invoice, Integer reportType) throws AxelorException;
+  ReportSettings prepareReportSettings(Invoice invoice, Integer reportType, String format)
+      throws AxelorException;
 }

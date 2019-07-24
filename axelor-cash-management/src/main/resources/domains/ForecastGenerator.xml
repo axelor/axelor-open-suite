@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
   
@@ -15,7 +15,6 @@
 	<string name="comments" title="Comments" large="true"/>
 	<integer name="realizedSelect" selection="forecast.realized.select" title="Realized" default="2"/>
 	<integer name="periodicitySelect" selection="product.periodicity.subscription.select" title="Periodicity" default="1"/>
-	<one-to-many name="forecastList" ref="com.axelor.apps.cash.management.db.Forecast" title="Forecasts generated" mappedBy="forecastGenerator"/>
   </entity>
   
 </domain-models>

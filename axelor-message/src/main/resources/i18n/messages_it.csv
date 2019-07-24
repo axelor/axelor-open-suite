@@ -93,6 +93,7 @@
 "Template Rules","Regole del modello",,
 "Templates","Modelli",,
 "Test connection","Connessione di prova",,
+"The email template model (%s) is different than the entity generating the email (%s)",,,
 "There is already a default account","C'è già un account predefinito",,
 "To","A",,
 "Type","Tipo",,

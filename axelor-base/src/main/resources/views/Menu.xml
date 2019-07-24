@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
@@ -613,6 +613,15 @@
 		<view type="form" name="import-configuration-form" />
 	</action-view>
 	
+	<menuitem name="admin-root-advanced-import" parent="admin-root-maintenance"
+   		title="Advanced import" action="admin.root.advanced.import"/>
+  
+	<action-view name="admin.root.advanced.import" title="Advanced import"
+		model="com.axelor.apps.base.db.AdvancedImport" >
+		<view type="grid" name="advanced-import-grid"/>
+		<view type="form" name="advanced-import-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-convert-demo-file" parent="admin-root-maintenance"
 		title="Convert demo file" action="admin.root.convert.demo.file"/>
 		
@@ -660,7 +669,17 @@
 		<view type="grid" name="printing-setting-grid"/>
 		<view type="form" name="printing-setting-form"/>
 	</action-view>
-	
+
+	<menuitem title="DMS Import" name="menu-dms-import-wizard"
+		parent="admin-root-maintenance" action="menu.dms.import.wizard" />
+
+	<action-view name="menu.dms.import.wizard" model="com.axelor.apps.base.db.Wizard"
+		title="DMS Import">
+		<view name="dms-import-wizard-form" type="form" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="show-toolbar" value="false" />
+	</action-view>
+
 	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
 			  title="Calendars" order="50"/>
 
