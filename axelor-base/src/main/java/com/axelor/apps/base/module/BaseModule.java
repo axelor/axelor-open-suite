@@ -85,6 +85,14 @@ import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
+import com.axelor.apps.base.service.advanced.imports.AdvancedImportServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.DataImportService;
+import com.axelor.apps.base.service.advanced.imports.DataImportServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.FileFieldService;
+import com.axelor.apps.base.service.advanced.imports.FileFieldServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.FileTabService;
+import com.axelor.apps.base.service.advanced.imports.FileTabServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -174,5 +182,9 @@ public class BaseModule extends AxelorModule {
     bind(ABCAnalysisService.class).to(ABCAnalysisServiceImpl.class);
     bind(ABCAnalysisRepository.class).to(ABCAnalysisBaseRepository.class);
     bind(DMSImportWizardService.class).to(DMSImportWizardServiceImpl.class);
+    bind(AdvancedImportService.class).to(AdvancedImportServiceImpl.class);
+    bind(DataImportService.class).to(DataImportServiceImpl.class);
+    bind(FileTabService.class).to(FileTabServiceImpl.class);
+    bind(FileFieldService.class).to(FileFieldServiceImpl.class);
   }
 }

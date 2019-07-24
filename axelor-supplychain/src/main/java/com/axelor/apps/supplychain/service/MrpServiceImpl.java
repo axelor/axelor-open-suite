@@ -1011,10 +1011,10 @@ public class MrpServiceImpl implements MrpService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateProposals(Mrp mrp) throws AxelorException {
+  public void generateProposals(Mrp mrp, boolean isProposalPerSupplier) throws AxelorException {
 
     Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
-
+    Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
@@ -1025,7 +1025,8 @@ public class MrpServiceImpl implements MrpService {
     for (MrpLine mrpLine : mrpLineList) {
 
       if (!mrpLine.getProposalGenerated()) {
-        mrpLineService.generateProposal(mrpLine, purchaseOrders);
+        mrpLineService.generateProposal(
+            mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
       }
     }
   }

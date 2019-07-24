@@ -70,33 +70,14 @@
 	<!-- Training menus -->
 	<menuitem name="training-root" parent="hr-root" if="__config__.app.isApp('training')" title="Training" icon="fa-graduation-cap" icon-background="#84429f"/>
     
-	<menuitem name="my-training-register" parent="training-root" title="My trainings" action="my.training.register" />
-
-	<action-view name="my.training.register" model="com.axelor.apps.talent.db.TrainingRegister"	title="My trainings">
-		<view name="training-register-grid" type="grid" />
-		<view name="training-register-calendar" type="calendar" />
-		<view name="training-register-form" type="form" />
-		<view-param name="search-filters" value="my-training-register-fitlers"/>
-		<domain>self.employee.id = :_employeeId</domain>
-		<context name="_employeeId" expr="eval:__user__.employee?.id" />
-	</action-view>
-	
-	<menuitem name="my-team-training-register" parent="training-root" title="My team trainings" action="my.team.training.register" />	
-	
-	<action-view name="my.team.training.register" model="com.axelor.apps.talent.db.TrainingRegister" title="My team trainings">
-		<view name="training-register-grid" type="grid" />
-		<view name="training-register-calendar" type="calendar" />
-		<view name="training-register-form" type="form" />
-		<view-param name="search-filters" value="my-team-training-register-fitlers"/>
-		<domain>self.employee.id in :_employeeList</domain>
-		<context name="_employeeList" expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />
-	</action-view>
-	
 	<menuitem name="training-register-all" parent="training-root" title="All trainings" action="training.register.all" />	
 	
 	<action-view name="training.register.all" model="com.axelor.apps.talent.db.TrainingRegister" title="All trainings">
 		<view name="training-register-grid" type="grid" />
 		<view name="training-register-form" type="form" />
+		<view-param name="search-filters" value="my-training-register-fitlers"/>
+		<context name="_employeeId" expr="eval:__user__.employee?.id" />
+  		<context name="_employeeList" expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />	
 	</action-view>
 	
 	<menuitem name="training-dashboard" parent="training-root" title="Training dashboard" action="training.dashboard" />
