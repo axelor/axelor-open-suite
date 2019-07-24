@@ -60,6 +60,7 @@
 - MENU BUILDER : Re-arrange the position of 'lines' field
 - PURCHASE ORDER PRINTING : Add versionNumber on sequence
 - EXPENSE : Reduce calling of three action-methods to one onSave of form
+- UNIT CONVERSION : Set to two the number of decimal on grid view.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
