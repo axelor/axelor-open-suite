@@ -37,7 +37,10 @@ public interface MrpLineService {
   void generateProposal(MrpLine mrpLine) throws AxelorException;
 
   void generateProposal(
-      MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders)
+      MrpLine mrpLine,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      boolean isProposalsPerSupplier)
       throws AxelorException;
 
   MrpLine createMrpLine(

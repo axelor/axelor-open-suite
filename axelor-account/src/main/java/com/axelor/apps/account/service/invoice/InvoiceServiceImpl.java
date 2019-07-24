@@ -57,6 +57,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
@@ -314,7 +315,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceRepo.save(invoice);
     if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
       Beans.get(InvoicePrintService.class)
-          .printAndSave(invoice, InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE);
+          .printAndSave(
+              invoice, InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE, ReportSettings.FORMAT_PDF);
     }
   }
 

@@ -465,6 +465,25 @@
     <option value="task">Task</option>
     <option value="ticket">Ticket</option>
   </selection>
+  	
+  	<selection name="advanced.import.status.select">
+  		<option value="0">Draft</option>
+  		<option value="1">Validated</option>
+  	</selection>
+  
+  	<selection name="file.field.import.type.select">
+		<option value="0">Direct</option>
+		<option value="1">Find</option>
+		<option value="2">FindNew</option>
+		<option value="3">New</option>
+		<option value="4">Ignore/Empty</option>
+  	</selection>
+	
+	<selection name="file.field.for.select.use.select">
+		<option value="0">Titles</option>
+		<option value="1">Values</option>
+		<option value="2">Translated titles</option>
+	</selection>
 
   <selection name="abc.analysis.type.select">
 	  <option value="com.axelor.apps.base.service.ABCAnalysisServiceImpl">Base</option>
