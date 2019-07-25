@@ -116,6 +116,10 @@ public interface IExceptionMessage {
 
   static final String MRP_MISSING_MRP_LINE_TYPE = /*$$(*/
       "No move type found for element : %s" /*)*/;
+
+  static final String MRP_MISSING_STOCK_LOCATION_VALID = /*$$(*/
+      "No stock location valid. Please uncheck the chosen stock location 'is not in MRP'." /*)*/;
+
   static final String MRP_NO_PRODUCT = /*$$(*/ "Please select an element to run calculation" /*)*/;
 
   /** Sale order Stock Service Implement */
