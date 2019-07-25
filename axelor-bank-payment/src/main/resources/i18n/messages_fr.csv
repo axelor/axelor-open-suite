@@ -101,6 +101,7 @@
 "9-1 - Special instructions 1","9-1 - Instructions particulières 1",,
 "9-2 - Special instructions 2","9-2 - Instructions particulières 2",,
 "9-3 - Special instructions 3","9-3 - Instructions particulières 3",,
+"A bank order %s already exist for the supplier invoice %s.","Un ordre bancaire %s existe déjà pour la facture fournisseur %s.",,
 "Accepted Bank Details Identifiers","Types d'identifiant des comptes acceptés",,
 "Account",,,
 "Account balance",,,
