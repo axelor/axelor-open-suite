@@ -54,6 +54,7 @@
 - PROJECTS CATEGORY: Make 'name' field required and remove 'byDefault' field
 - FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
 - Stock Move: add config for default delivery date from sale order.
+- PRODUCT : increased the width of the field "name" in form view.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
