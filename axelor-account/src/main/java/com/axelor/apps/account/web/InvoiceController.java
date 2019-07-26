@@ -219,6 +219,21 @@ public class InvoiceController {
     }
   }
 
+  public void checkNotLetteredAdvancePaymentMoveLines(
+      ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = invoiceRepo.find(invoice.getId());
+
+    try {
+      String msg = invoiceService.checkNotLetteredAdvancePaymentMoveLines(invoice);
+      if (msg != null) {
+        response.setFlash(msg);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Fonction appeler par le bouton générer un avoir.
    *

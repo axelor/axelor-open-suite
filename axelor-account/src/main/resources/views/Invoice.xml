@@ -388,8 +388,8 @@ InvoiceSet.length > 0))"
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
-            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
+            <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
+            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
             <button name="cancelBtn" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="action-invoice-group-add-invoice-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
@@ -1109,7 +1109,11 @@ InvoiceSet.length > 0))"
 	
 	<action-method name="action-invoice-method-check-not-imputed-refunds">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="checkNotImputedRefunds"/>
-  </action-method>
+    </action-method>
+  
+  	<action-method name="action-invoice-method-check-not-lettered-advance-payment-move-lines">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="checkNotLetteredAdvancePaymentMoveLines"/>
+ 	</action-method>
 
 	<action-method name="action-invoice-method-check-partner-bank-details-list">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="checkPartnerBankDetailsList"/>
