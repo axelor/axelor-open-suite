@@ -1,8 +1,6 @@
 "name";"roles"
 "hr-root";"Appraisal Manager|Appraisal User|Appraisal Read"
 "appraisal-root";"Appraisal Manager|Appraisal User|Appraisal Read"
-"appraisal-my-appraisals";"Appraisal Manager|Appraisal User|Appraisal Read"
-"appraisal-my-team-appraisals";"Appraisal Manager|Appraisal User|Appraisal Read"
 "appraisal-all-appraisals";"Appraisal Manager|Appraisal User|Appraisal Read"
 "appraisal-template-appraisals";"Appraisal Manager|Appraisal User|Appraisal Read"
 "appraisal-config";"Appraisal Manager"
