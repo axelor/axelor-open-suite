@@ -789,5 +789,5 @@ public interface IExceptionMessage {
 
   /*Check not lettered advance move lines*/
   public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
-      "Note: there are existing not lettered supplier advance move lines." /*)*/;
+      "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
 }
