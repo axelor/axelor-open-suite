@@ -103,6 +103,7 @@
 - HR : TRAINING - Optimization of the menu by adding filters
 - MRP : Group proposals per supplier
 - Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList
+- MESSAGE TEMPLATE : added the management of additional contexts (groovy evaluation) in order to allow the use of Json fields.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

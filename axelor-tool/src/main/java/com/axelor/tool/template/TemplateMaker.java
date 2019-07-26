@@ -93,6 +93,14 @@ public class TemplateMaker {
     this.context = makeContext(nameInContext, model, map);
   }
 
+  public void addContext(String nameInContext, Object object) {
+    if (this.context == null) {
+      this.context = Maps.newHashMap();
+    }
+
+    this.context.put(nameInContext, object);
+  }
+
   private Map<String, Object> makeContext(
       String nameInContext, Model model, Map<String, Object> map) {
     Map<String, Object> _map = Maps.newHashMap();

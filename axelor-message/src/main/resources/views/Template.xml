@@ -41,6 +41,7 @@
 			</panel>
 			<panel-dashlet name="templateMessagePanel" action="template.messages.by.template" title="Messages"/>
 		</panel-tabs>
+		<panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
 	</form>
 
     <action-record name="action-template-record-new" model="com.axelor.apps.message.db.Template">

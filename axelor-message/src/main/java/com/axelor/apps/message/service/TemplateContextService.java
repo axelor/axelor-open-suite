@@ -15,28 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.template;
+package com.axelor.apps.message.service;
 
-import com.axelor.apps.base.db.TemplateContext;
-import com.axelor.apps.base.db.TemplateContextLine;
-import com.axelor.db.Model;
-import com.google.common.collect.Maps;
-import com.google.inject.Inject;
-import java.util.Map;
+import com.axelor.apps.message.db.TemplateContext;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptHelper;
 
 public class TemplateContextService {
 
-  @Inject private TemplateContextLineService tcls;
+  public Object computeTemplateContext(String groovyScript, Context values) {
 
-  public Map<String, Object> getContext(TemplateContext templateContext, Model bean) {
-    Map<String, Object> map = Maps.newHashMap();
+    ScriptHelper scriptHelper = new GroovyScriptHelper(values);
 
-    if (templateContext.getTemplateContextLineList() != null) {
-      for (TemplateContextLine line : templateContext.getTemplateContextLineList()) {
-        Object o = tcls.evaluate(line, bean);
-        map.put(line.getKey(), o);
-      }
-    }
-    return map;
+    return scriptHelper.eval(groovyScript);
+  }
+
+  public Object computeTemplateContext(TemplateContext templateContext, Context values) {
+    return this.computeTemplateContext(templateContext.getValue(), values);
   }
 }

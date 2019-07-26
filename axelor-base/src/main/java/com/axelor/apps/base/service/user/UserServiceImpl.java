@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
 
     MetaFile logo = company.getLogo();
 
-    if(logo == null){
+    if (logo == null) {
       return null;
     }
 

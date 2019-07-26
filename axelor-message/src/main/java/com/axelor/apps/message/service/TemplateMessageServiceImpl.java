@@ -21,6 +21,7 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
@@ -36,6 +37,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.rpc.Context;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -65,10 +67,13 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
   protected MessageService messageService;
+  protected TemplateContextService templateContextService;
 
   @Inject
-  public TemplateMessageServiceImpl(MessageService messageService) {
+  public TemplateMessageServiceImpl(
+      MessageService messageService, TemplateContextService templateContextService) {
     this.messageService = messageService;
+    this.templateContextService = templateContextService;
   }
 
   @Override
@@ -97,6 +102,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
                 model));
       }
       initMaker(objectId, model, tag);
+      computeTemplateContexts(template.getTemplateContextList(), objectId, model);
     }
 
     log.debug("model : {}", model);
@@ -224,10 +230,31 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   @Override
   @SuppressWarnings("unchecked")
   public TemplateMaker initMaker(long objectId, String model, String tag)
-      throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+      throws ClassNotFoundException {
 
     Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
     maker.setContext(JPA.find(myClass, objectId), tag);
+
+    return maker;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected TemplateMaker computeTemplateContexts(
+      List<TemplateContext> templateContextList, long objectId, String model)
+      throws ClassNotFoundException {
+
+    if (templateContextList == null) {
+      return maker;
+    }
+
+    Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
+
+    Context context = new com.axelor.rpc.Context(objectId, myClass);
+
+    for (TemplateContext templateContext : templateContextList) {
+      Object result = templateContextService.computeTemplateContext(templateContext, context);
+      maker.addContext(templateContext.getName(), result);
+    }
 
     return maker;
   }
