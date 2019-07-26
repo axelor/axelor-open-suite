@@ -786,4 +786,8 @@ public interface IExceptionMessage {
       "Disposal date must be after the date of the last depreciation." /*)*/;
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
       "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+
+  /*Check not lettered advance move lines*/
+  public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
+      "Note: there are existing not lettered supplier advance move lines." /*)*/;
 }

@@ -1192,6 +1192,7 @@
 "Not implemented for OSM","Non implémenté pour OSM",,
 "Note: there are existing not imputed client refunds.","Remarque : il existe des avoirs client non imputés.",,
 "Note: there are existing not imputed supplier refunds.","Remarque : il existe des avoirs fournisseur non imputés.",,
+"Note: there are existing not lettered supplier advance move lines.","Remarque : il existe des lignes d'écritures fournisseurs non lettrées",,
 "Notes","Remarques",,
 "Notification","Notification",,
 "Notification item","Élément de notification",,
