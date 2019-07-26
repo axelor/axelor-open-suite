@@ -125,6 +125,7 @@
 - INVOICE : on ventilation corrected the error produced when a product had a very long name. 
 - BANK ORDER : Fix account move generation when we realize a bank order.
 - STOCK RULES : send email if stock move rule alert is activated
+- BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
 
 ## [5.1.7] - 2019-06-17
 - USER : filter assigned to user in partner form
