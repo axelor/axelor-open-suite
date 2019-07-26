@@ -286,7 +286,7 @@
     		<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
     		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
     		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
-    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" onClick="save,action-bank-order-method-cancel"/>
+    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" prompt="This action is irreversible, do you want to continue ?" onClick="save,action-bank-order-method-cancel"/>
 			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
   		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
