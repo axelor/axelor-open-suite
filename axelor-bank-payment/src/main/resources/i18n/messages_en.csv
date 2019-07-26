@@ -665,6 +665,7 @@
 "The bank order is not properly signed. Please correct it and sign it again.",,,
 "The company %s does not have bank order sequence",,,
 "The input to be zipped cannot be null",,,
+"The payment status will not update.",,,
 "The receiver bank details currency is not compatible with the currency in bank order.",,,
 "The receiver bank details is inactive.",,,
 "The receiver bank details type is not compatible with the accepted types in file format.",,,

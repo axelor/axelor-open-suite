@@ -665,6 +665,7 @@
 "The bank order is not properly signed. Please correct it and sign it again.","L’ordre bancaire n’est pas signé correctement. Merci de le corriger et de le signer à nouveau.",,
 "The company %s does not have bank order sequence","La société %s n'a pas de séquence d'ordre bancaire configurée",,
 "The input to be zipped cannot be null","L'archive ne peut être vide",,
+"The payment status will not update.","Le statut du paiement ne sera pas mis à jour.",,
 "The receiver bank details currency is not compatible with the currency in bank order.","La devise du RIB destinataire n'est pas compatible avec la devise de l'ordre bancaire",,
 "The receiver bank details is inactive.","Le RIB destinataire est inactif.",,
 "The receiver bank details type is not compatible with the accepted types in file format.","Le type du RIB destinataire n'est pas autorisé par le format de fichier.",,
