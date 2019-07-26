@@ -56,6 +56,13 @@
 - FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
 - Stock Move: add config for default delivery date from sale order.
 - MRP : add a try catch block in generateAllProposals method.
+- SUPPLIER INVOICE : add a new verification, if an active bank order already exist for a supplier invoice, it's impossible to create an other bank order from the supplier invoice. 
+- STOCK LOCATION LINE : fixed missing stock location on form view
+- MENU BUILDER : Re-arrange the position of 'lines' field
+- PURCHASE ORDER PRINTING : Add versionNumber on sequence
+- EXPENSE : Reduce calling of three action-methods to one onSave of form
+- UNIT CONVERSION : Set to two the number of decimal on grid view.
+- MRP : Add field in stock location to take in consideration in Mrp
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -114,6 +121,10 @@
 - Studio: Fix double panel title.
 - BPM : Fix invalid domain on model when isJson is false.
 - SALE ORDER CHARTS: Date fixed on SQL queries.
+- SUPPLIER INVOICE GRID : the mass invoice payment function now works properly as the payment save function on a invoice form.  
+- INVOICE : on ventilation corrected the error produced when a product had a very long name. 
+- BANK ORDER : Fix account move generation when we realize a bank order.
+- STOCK RULES : send email if stock move rule alert is activated
 - BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
 
 ## [5.1.7] - 2019-06-17
