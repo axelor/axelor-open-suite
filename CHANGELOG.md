@@ -149,6 +149,7 @@
 - INVENTORY : adding ODS file format in report selection type.
 - Quality Control : Set default printing setting and update translation
 - INVOICE : Configure BIRT to generate an Excel and a Word file
+- KEYWORD : remove Keyword model.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
