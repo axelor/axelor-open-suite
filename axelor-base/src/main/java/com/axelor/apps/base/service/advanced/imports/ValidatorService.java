@@ -205,7 +205,7 @@ public class ValidatorService {
           I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
-    String object = row[0];
+    String object = row[0].trim();
     if (StringUtils.containsIgnoreCase(object, "Object")) {
       String model = object.split("\\:")[1].trim();
 
@@ -294,6 +294,7 @@ public class ValidatorService {
       if (Strings.isNullOrEmpty(value)) {
         continue;
       }
+      value = value.trim();
       map.put(isConfig ? value.contains("(") ? value.split("\\(")[0] : value : value, cell);
       if (cell == row.length - 1) {
         this.validateFields(startIndex, isConfig, fileTab);
@@ -587,25 +588,26 @@ public class ValidatorService {
 
     if (!Strings.isNullOrEmpty(row[cell])) {
       String field = getField(fileField);
+      String value = row[cell].trim();
 
       switch (type) {
         case INTEGER:
         case LONG:
         case BIG_DECIMAL:
-          this.checkNumeric(row, cell, line, field, type);
+          this.checkNumeric(value, line, field, type);
           break;
 
         case LOCAL_DATE:
         case ZONED_DATE_TIME:
         case LOCAL_DATE_TIME:
         case LOCAL_TIME:
-          this.checkDateTime(row, cell, line, field, type, fileField);
+          this.checkDateTime(value, line, field, type, fileField);
           break;
 
         case BOOLEAN:
           String boolPat = "(true|false|1|0|no|yes|n|y)";
 
-          if (!row[cell].matches(boolPat)) {
+          if (!value.matches(boolPat)) {
             logService.addLog(
                 IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
           }
@@ -614,7 +616,7 @@ public class ValidatorService {
         default:
           if (!type.equals(STRING)) {
             try {
-              new BigInteger(row[cell]);
+              new BigInteger(value);
             } catch (Exception e) {
               logService.addLog(
                   IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
@@ -625,13 +627,12 @@ public class ValidatorService {
     }
   }
 
-  private void checkNumeric(String[] row, int cell, int line, String field, String type)
-      throws IOException {
+  private void checkNumeric(String value, int line, String field, String type) throws IOException {
 
     switch (type) {
       case INTEGER:
         try {
-          Integer.parseInt(row[cell]);
+          Integer.parseInt(value);
         } catch (NumberFormatException e) {
           logService.addLog(
               IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
@@ -640,7 +641,7 @@ public class ValidatorService {
 
       case LONG:
         try {
-          Long.parseLong(row[cell]);
+          Long.parseLong(value);
         } catch (NumberFormatException e) {
           logService.addLog(
               IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
@@ -649,7 +650,7 @@ public class ValidatorService {
 
       case BIG_DECIMAL:
         try {
-          new BigDecimal(row[cell]);
+          new BigDecimal(value);
         } catch (NumberFormatException e) {
           logService.addLog(
               IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
@@ -658,14 +659,12 @@ public class ValidatorService {
     }
   }
 
-  private void checkDateTime(
-      String[] row, int cell, int line, String field, String type, FileField fileField)
+  private void checkDateTime(String value, int line, String field, String type, FileField fileField)
       throws IOException {
 
     if (!Strings.isNullOrEmpty(fileField.getDateFormat())
         && Strings.isNullOrEmpty(fileField.getExpression())) {
 
-      String value = row[cell];
       String pattern = fileField.getDateFormat().trim();
       try {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -696,7 +695,7 @@ public class ValidatorService {
   public String getField(FileField fileField) {
     String field =
         !Strings.isNullOrEmpty(fileField.getSubImportField())
-            ? fileField.getImportField().getName() + "." + fileField.getSubImportField()
+            ? fileField.getImportField().getName() + "." + fileField.getSubImportField().trim()
             : fileField.getImportField().getName();
 
     return field;
