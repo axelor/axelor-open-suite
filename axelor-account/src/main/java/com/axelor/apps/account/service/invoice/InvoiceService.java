@@ -274,6 +274,8 @@ public interface InvoiceService {
 
   public Boolean checkPartnerBankDetailsList(Invoice invoice);
 
+  public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
