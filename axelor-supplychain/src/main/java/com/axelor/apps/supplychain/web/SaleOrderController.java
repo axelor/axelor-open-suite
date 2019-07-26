@@ -781,10 +781,10 @@ public class SaleOrderController {
       List<String> productList = new ArrayList<String>();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (saleOrderLine.getAnalyticDistributionTemplate() == null) {
-          productList.add(saleOrderLine.getProduct().getFullName());
+          productList.add(saleOrderLine.getProductName());
         }
       }
-      if (productList != null && !productList.isEmpty()) {
+      if (!productList.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.SALE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
