@@ -218,5 +218,5 @@ public interface IExceptionMessage {
 
   /** Generate bank order from invoices */
   static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
-      "A bank order %s already exist for the supplier invoice %s." /*)*/;
+      "A bank order %s already exist for the invoice %s." /*)*/;
 }
