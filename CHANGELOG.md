@@ -8,6 +8,8 @@
 - ActionBuilderView : Add condition option
 - FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
 - MrpForecast : Enable Tracking Feature for all fields on the creation of record
+- SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
+- Wkf : Add an option to display 'Track flow' button.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -64,6 +66,9 @@
 - UNIT CONVERSION : Set to two the number of decimal on grid view.
 - MRP : Add field in stock location to take in consideration in Mrp
 - INVOICE SUPPLIER FORM : add a new flash message on ventilation who pop when unlettered supplier move lines are found for the invoice partner.
+- Fixed assets : add stock location and tracking number management
+- STOCK CONFIG : Put panel customsPanel above stockConfigPanel
+- MENU BUILDER : Delete a menu completely
 - MRP : Compute cumulative qty when mrp line type is stock
 
 ## Bug Fixes
@@ -128,8 +133,14 @@
 - BANK ORDER : Fix account move generation when we realize a bank order.
 - STOCK RULES : send email if stock move rule alert is activated
 - BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
+- PROJECT FORM :change the position of hidden field '$toInvoiceCounter' in project form
+- WKF : Fix NPE when select a status field with selection which is not exist.
+- BANKORDER : Fix error when merge bankorders generated from expense
+- Studio: Fix translation for 'Order'
+- Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 
 ## [5.1.7] - 2019-06-17
+## Features
 - USER : filter assigned to user in partner form
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
