@@ -53,6 +53,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -152,7 +153,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             .getStockMoveLineList()
             .stream()
             .map(StockMoveLine::getTrackingNumber)
+            .filter(Objects::nonNull)
             .map(TrackingNumber::getId)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
     if (CollectionUtils.isNotEmpty(trackingNumberIds)) {
