@@ -11,30 +11,15 @@
 		<view name="job-position-cards" type="cards" />
 		<view name="job-position-grid" type="grid" />
 		<view name="job-position-form" type="form" />
-		<domain>self.statusSelect &lt; 2</domain>
+		<view-param name="search-filters" value="job-position-filters"/>
 	</action-view>
 	
-	<menuitem name="recruitment-job-position-historic" parent="recruitment-root" title="Historic job positions" action="recruitment.job.position.historic"  />
+	<menuitem name="recruitment-job-application-all" parent="recruitment-root" title="Applications" action="recruitment.job.application.all"  />
 	
-	<action-view name="recruitment.job.position.historic" model="com.axelor.apps.talent.db.JobPosition" title="Historic job positions">
-		<view name="job-position-grid" type="grid" />
-		<view name="job-position-form" type="form" />
-		<domain>self.statusSelect &gt; 1</domain>
-	</action-view>
-	
-	<menuitem name="recruitment-job-application-open" parent="recruitment-root" title="All open Applications" action="recruitment.job.application.open"  />
-	
-	<action-view name="recruitment.job.application.open" model="com.axelor.apps.talent.db.JobApplication" title="All open Applications">
+	<action-view name="recruitment.job.application.all" model="com.axelor.apps.talent.db.JobApplication" title="Applications">
 		<view name="job-application-grid" type="grid" />
 		<view name="job-application-form" type="form" />
-		<domain>self.statusSelect = 0</domain>
-	</action-view>
-	
-	<menuitem name="recruitment-job-application-all" parent="recruitment-root" title="All Applications" action="recruitment.job.application.all"  />
-	
-	<action-view name="recruitment.job.application.all" model="com.axelor.apps.talent.db.JobApplication" title="All Applications">
-		<view name="job-application-grid" type="grid" />
-		<view name="job-application-form" type="form" />
+		<view-param name="search-filters" value="job-application-filters"/>
 	</action-view>
 	
 	<menuitem name="recruitment-config" parent="recruitment-root" title="Configuration" icon="fa-cog"/>
@@ -53,7 +38,7 @@
 		<view name="hiring-stage-form" type="form" />
 	</action-view>
 	
-	<menuitem name="recruitment-config-source" parent="recruitment-config" title="Sources" action="recruitment.config.source"  />
+	<menuitem name="recruitment-config-source" parent="recruitment-config" title="Source" action="recruitment.config.source"  />
 	
 	<action-view name="recruitment.config.source" model="com.axelor.apps.talent.db.TalentSource" title="Source">
 		<view name="talent-source-grid" type="grid" />

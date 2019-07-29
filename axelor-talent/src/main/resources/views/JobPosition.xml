@@ -101,4 +101,13 @@
 		<field name="statusSelect" expr="eval: 4"/>
 	</action-record>
 	
+	<search-filters name="job-position-filters" model="com.axelor.apps.talent.db.JobPosition" title="Job Position Filters">
+		<filter title="Current job offers">
+			<domain>self.statusSelect &lt; 3</domain>
+		</filter>
+		<filter title="Closed job offers">
+			<domain>self.statusSelect &gt; 2</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>
