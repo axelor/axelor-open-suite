@@ -135,6 +135,7 @@
 - PROJECT FORM :change the position of hidden field '$toInvoiceCounter' in project form
 - WKF : Fix NPE when select a status field with selection which is not exist.
 - BANKORDER : Fix error when merge bankorders generated from expense
+- Studio: Fix translation for 'Order'
 
 ## [5.1.7] - 2019-06-17
 ## Features
