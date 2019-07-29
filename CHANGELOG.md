@@ -136,6 +136,7 @@
 - WKF : Fix NPE when select a status field with selection which is not exist.
 - BANKORDER : Fix error when merge bankorders generated from expense
 - Studio: Fix translation for 'Order'
+- Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 
 ## [5.1.7] - 2019-06-17
 ## Features
