@@ -95,7 +95,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     senderCompany = bankOrder.getSenderCompany();
     senderBankDetails = bankOrder.getSenderBankDetails();
     partnerTypeSelect = bankOrder.getPartnerTypeSelect();
-    
+
     journal =
         paymentModeService.getPaymentModeJournal(paymentMode, senderCompany, senderBankDetails);
     senderBankAccount =
@@ -163,8 +163,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             .createMoveLine(
                 senderMove,
                 partner,
-                getPartnerAccount(
-                    partner, senderCompany, senderCompany),
+                getPartnerAccount(partner, senderCompany, senderCompany),
                 bankOrderLine.getBankOrderAmount(),
                 isDebit,
                 senderMove.getDate(),

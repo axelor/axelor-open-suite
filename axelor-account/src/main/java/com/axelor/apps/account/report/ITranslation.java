@@ -138,7 +138,32 @@ public interface ITranslation {
       "AccountingReportType7.reconcileGroup"; /*)*/
   public static final String ACCOUNTING_REPORT_7_JOURNAL_DATE = /*$$(*/
       "AccountingReportType7.journalCode"; /*)*/
-
+	  public static final String ACCOUNTING_REPORT_7_JOURNAL = /*$$(*/
+	      "AccountingReportType1.journal"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_COMPANY = /*$$(*/
+	      "AccountingReportType1.company"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_END_DATE = /*$$(*/
+	      "AccountingReportType1.endDate"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_FROM = /*$$(*/ "AccountingReportType1.from"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_TO = /*$$(*/ "AccountingReportType1.to"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_PERIOD = /*$$(*/
+	      "AccountingReportType1.period"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_PAYMENT_MODE = /*$$(*/
+	      "AccountingReportType1.paymentMode"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_DESCRIPTION = /*$$(*/
+	      "AccountingReportType1.description"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_PARTNER = /*$$(*/
+	      "AccountingReportType1.partner"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_BALANCE = /*$$(*/
+	      "AccountingReportType1.balance"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_DEBIT = /*$$(*/
+	      "AccountingReportType1.debit"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_CREDIT = /*$$(*/
+	      "AccountingReportType1.credit"; /*)*/
+	  public static final String ACCOUNTING_REPORT_7_TOTAL = /*$$(*/
+	      "AccountingReportType1.total"; /*)*/
+	  
   public static final String ACCOUNTING_REPORT_2_TITLE = /*$$(*/
       "AccountingReportType2.title"; /*)*/
   public static final String ACCOUNTING_REPORT_2_JOURNAL = /*$$(*/
