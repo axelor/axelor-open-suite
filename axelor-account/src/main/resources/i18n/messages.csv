@@ -1192,6 +1192,7 @@
 "Not implemented for OSM",,,
 "Note: there are existing not imputed client refunds.",,,
 "Note: there are existing not imputed supplier refunds.",,,
+"There is at least one advance payment or payment that can be imputed to this invoice.",,,
 "Notes",,,
 "Notification",,,
 "Notification item",,,
