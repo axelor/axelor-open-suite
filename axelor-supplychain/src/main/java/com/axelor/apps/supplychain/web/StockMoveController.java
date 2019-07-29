@@ -18,21 +18,23 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 
 public class StockMoveController {
-
-  @Inject private StockMoveServiceSupplychain stockMoveService;
 
   public void addSubLines(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       response.setValue(
-          "stockMoveLineList", stockMoveService.addSubLines(stockMove.getStockMoveLineList()));
+          "stockMoveLineList",
+          Beans.get(StockMoveServiceSupplychain.class)
+              .addSubLines(stockMove.getStockMoveLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -43,7 +45,9 @@ public class StockMoveController {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       response.setValue(
-          "stockMoveLineList", stockMoveService.removeSubLines(stockMove.getStockMoveLineList()));
+          "stockMoveLineList",
+          Beans.get(StockMoveServiceSupplychain.class)
+              .removeSubLines(stockMove.getStockMoveLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -53,7 +57,13 @@ public class StockMoveController {
   public void verifyProductStock(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
-      stockMoveService.verifyProductStock(stockMove);
+      if (stockMove.getPickingIsEdited() && !stockMove.getAvailabilityRequest()) {
+        response.setValue("availabilityRequest", true);
+        response.setFlash(
+            I18n.get(IExceptionMessage.STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE));
+        return;
+      }
+      Beans.get(StockMoveServiceSupplychain.class).verifyProductStock(stockMove);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);

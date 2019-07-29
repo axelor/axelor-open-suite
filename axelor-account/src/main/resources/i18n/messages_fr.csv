@@ -1192,6 +1192,7 @@
 "Not implemented for OSM","Non implémenté pour OSM",,
 "Note: there are existing not imputed client refunds.","Remarque : il existe des avoirs client non imputés.",,
 "Note: there are existing not imputed supplier refunds.","Remarque : il existe des avoirs fournisseur non imputés.",,
+"There is at least one advance payment or payment that can be imputed to this invoice.","Il existe au moins un acompte ou un paiement pouvant être imputé sur cette facture.",,
 "Notes","Remarques",,
 "Notification","Notification",,
 "Notification item","Élément de notification",,

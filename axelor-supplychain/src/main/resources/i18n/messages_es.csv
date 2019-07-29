@@ -312,6 +312,7 @@
 "Please fill the product name.","Por favor, rellene el nombre del producto.",,
 "Please generate a stock move for this sale order before modifying allocated quantity.","Por favor, genere un movimiento de stock para este pedido de venta antes de modificar la cantidad asignada.",,
 "Please select an element to run calculation","Por favor, seleccione un elemento para ejecutar el cálculo",,
+"Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry.",,,
 "Please, select a currency for the order %s","Por favor, seleccione una moneda para el pedido %s",,
 "Please, select a supplier for the line %s","Por favor, seleccione un proveedor para la línea %s",,
 "Print","Imprimir",,
