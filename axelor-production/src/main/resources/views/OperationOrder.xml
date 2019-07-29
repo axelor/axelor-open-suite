@@ -97,7 +97,6 @@
 				<field name="plannedStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true" x-big="true"/>
-				<field name="isPinned" />
 			</panel>
 			<panel name="realDatesPanel" title="Real dates" colSpan="6">
 				<field name="realStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>

@@ -37,8 +37,6 @@ import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepositor
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
-import com.axelor.apps.production.service.ManufOrderPlanService;
-import com.axelor.apps.production.service.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
@@ -102,7 +100,6 @@ public class ProductionModule extends AxelorModule {
     bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
     bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
     bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);
-    bind(ManufOrderPlanService.class).to(ManufOrderPlanServiceImpl.class);
     bind(OperationOrderService.class).to(OperationOrderServiceImpl.class);
     bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
     bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);

@@ -36,7 +36,6 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.ManufOrderPlanService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -130,14 +129,10 @@ public class ManufOrderWorkflowService {
       }
     }
 
-    if (Beans.get(AppProductionService.class).getAppProduction().getFiniteCapacity()) {
-      Beans.get(ManufOrderPlanService.class).optaPlan(manufOrderList, quickSolve);
-    } else {
-      for (ManufOrder manufOrder : manufOrderList) {
-        if (manufOrder.getOperationOrderList() != null) {
-          for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-            operationOrderWorkflowService.plan(operationOrder);
-          }
+    for (ManufOrder manufOrder : manufOrderList) {
+      if (manufOrder.getOperationOrderList() != null) {
+        for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
+          operationOrderWorkflowService.plan(operationOrder);
         }
       }
     }
