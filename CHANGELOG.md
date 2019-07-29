@@ -69,6 +69,7 @@
 - Fixed assets : add stock location and tracking number management
 - STOCK CONFIG : Put panel customsPanel above stockConfigPanel
 - MENU BUILDER : Delete a menu completely
+- MRP : Compute cumulative qty when mrp line type is stock
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
