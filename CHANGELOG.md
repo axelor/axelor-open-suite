@@ -3,7 +3,7 @@
 ## Features
 - Add Pack Feature in sale order.
 - FLEET : Manage rental cars and minor fixes
-- Studio: New features - Label with color,multiline string,grid column sequence,form width and order by properties. 
+- Studio: New features - Label with color,multiline string,grid column sequence,form width,spacer and order by properties. 
 - JOURNAL : viewer to display the balance
 - SALE ORDER LINE : Display availability status on sale order line grid view if sale order status is 'Confirmed'.
 - Studio: sidebar option for panel
