@@ -257,8 +257,8 @@
                 <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
                 <button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
                 <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
-                <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
-                <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
+                <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action-group-stock-stockmove-cancel-click"/>
+                <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="action-stock-move-method-draft"/>
             </panel>
         </panel>
 
@@ -299,7 +299,7 @@
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
 				<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
-				<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" onChange="action-stock-move-method-verify-product-stock"/>
+				<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender'" onChange="action-stock-move-method-verify-product-stock"/>
            		<field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
             </panel>
             <spacer/>
@@ -556,12 +556,6 @@
     <call class="com.axelor.apps.stock.web.StockMoveController" method="manageBackorder"/>
   </action-method>
 
-  	<action-group name="action-group-stock-stockmove-draft-click">
-	  	<action name="save"/>
-    	<action name="action-stock-move-record-draft"/>
-    	<action name="save"/>
-  	</action-group>
-
 	<action-group name="action-stock-move-group-to-location-onchange">
 		<action name="action-stock-move-set-to-address"/>
         <action name="action-stock-move-method-set-addresses-str"/>
@@ -625,9 +619,10 @@
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
 	
-    <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
-    	<field name="statusSelect" expr="eval: 1"/>
-    </action-record>
+    <action-method name="action-stock-move-method-draft" model="com.axelor.apps.stock.db.StockMove">
+    	<call class="com.axelor.apps.stock.web.StockMoveController" method="draft"/>
+    </action-method>
+    
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.stock.db.StockMove">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
@@ -906,5 +901,15 @@
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 	</action-record>
-
+	
+	<action-group name="action-group-stock-stockmove-cancel-click">
+		<action name="save"/>
+		<action name="action-validate-stock-move-validate-cancel"/>
+		<action name="action.stock.move.view.cancel"/>
+	</action-group>
+	
+	<action-validate name="action-validate-stock-move-validate-cancel">
+	  <error if="statusSelect == 2 &amp;&amp; pickingIsEdited &amp;&amp; availabilityRequest" message="Picking order has been edited for this stock move, it can not be canceled."/>
+	</action-validate>
+	
 </object-views>
