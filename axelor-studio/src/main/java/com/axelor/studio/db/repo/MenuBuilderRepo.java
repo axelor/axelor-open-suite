@@ -19,6 +19,7 @@ package com.axelor.studio.db.repo;
 
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaMenu;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.service.StudioMetaService;
@@ -63,7 +64,9 @@ public class MenuBuilderRepo extends MenuBuilderRepository {
 
   @Override
   public void remove(MenuBuilder menuBuilder) {
-    metaService.removeMetaMenu(menuBuilder.getMetaMenu());
+    MetaMenu metaMenu = menuBuilder.getMetaMenu();
+    menuBuilder.setMetaMenu(null);
+    metaService.removeMetaMenu(metaMenu);
 
     ActionBuilder actionBuilder = menuBuilder.getActionBuilder();
 
