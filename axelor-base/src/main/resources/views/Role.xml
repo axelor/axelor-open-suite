@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+
+	<form name="role-form" title="Role" model="com.axelor.auth.db.Role"  id="role-form-base">
+	 <panel-include view="role-form" from="axelor-core"/>
+	 <panel-mail name="mailsPanel">
+	   <mail-messages limit="4"/>
+		 <mail-followers/>
+	 </panel-mail>
+	</form>
+</object-views>

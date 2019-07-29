@@ -1,11 +1,136 @@
 # Changelog
 
 ## [Unreleased 5.1.8]
-## Improvements
-- Fixed assets : add stock location and tracking number management
+## Features
+- PROJECT : Translate Total real hours
+- ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
+- LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
+- ActionBuilderView : Add condition option
+- FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
+- MrpForecast : Enable Tracking Feature for all fields on the creation of record
+- SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
 
+## Improvements
+- DEMO DATA : Reduce padding in sequence for all modules.
+- PURCHASE REQUEST : fill stockLocation automatically
+- Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
+- INVOICE : optimisation of injections in invoice services in order to improve their performance
+- SALEORDER/PURCHASE ORDER/INVOICE : add the possibility to copy a line
+- App Object : fix typo.
+- Sale Order Line : Allow to change quantity even if sale order is invoiced or delivered when Allow Pending Order Modification is true.
+- BBAN TRANSLATION : change french translation from 'RIB' to 'BBAN'.
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- BUDGET : added status, committed total amount, realized total amount and boolean for budget checking
+- INVOICE : budget lines generation process moved from InvoiceService to ValidateState
+- Updated translations in management app
+- SALE CONFIG DEMO DATA : update demo data.
+- USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
+- EMPLOYEE CARD : add tag for rh, company and department field.
+- STOCK MOVES : updating filterOnAvailableProducts field display conditions
+- DEBT RECOVERY : process rollbacked when message sending fails.
+- MESSAGE SERVICE : exception message improved. 
+- MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
+- APP PURCHASE : change title of supplierRequestMgt field
+- OPPORTUNITY : delete canEdit on partner and lead
+- SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
+- CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- EVENT : add tag viewer if the event start date is in the past
+- YEAR : disable canEdit on company field in year-form.
+- SALE ORDER COPY : order being edited tag removed from copy sale Order
+- OPPORTUNITY : convert into quotation error when no customer selected on opportunity
+- EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
+- ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
+- SALE/PURCHASE without stock moves : issue on page numbering
+- ActionBuilder : Use CodeEditor widget for script.
+- Studio : Add colspan field on worklow transition.
+- ActionBuilderLine : Changes in form view, increased colspan of value.
+- Wkf : Add confirmation message when edit status field.
+- Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
+- Bank payment: upgrade Bouncy Castle dependencies
+- PROJECT : Add missing translation
+- FORECAST RECAP : Changes in populating forecastRecapLineList
+- FORECAST RECAP : Changes in form view. Add new field Calculation Date.
+- Studio: Removed description field from model properties. 
+- ForecastRecapLine : Add translation for Balance field.
+- SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
+- PROJECTS CATEGORY: Make 'name' field required and remove 'byDefault' field
+- FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
+- Stock Move: add config for default delivery date from sale order.
+- MRP : add a try catch block in generateAllProposals method.
+- SUPPLIER INVOICE : add a new verification, if an active bank order already exist for a supplier invoice, it's impossible to create an other bank order from the supplier invoice. 
+- STOCK LOCATION LINE : fixed missing stock location on form view
+- MENU BUILDER : Re-arrange the position of 'lines' field
+- PURCHASE ORDER PRINTING : Add versionNumber on sequence
+- EXPENSE : Reduce calling of three action-methods to one onSave of form
+- UNIT CONVERSION : Set to two the number of decimal on grid view.
+- MRP : Add field in stock location to take in consideration in Mrp
+- INVOICE SUPPLIER FORM : add a new flash message on ventilation who pop when unlettered supplier move lines are found for the invoice partner.
+
+## Bug Fixes
+- SALE/PURCHASE ORDER LINES : dates should not be in readonly
+- ACCOUNTING BATCH : doubtful customer action is now working.
+- PROJECT : display the cancel button even if the status is draft
+- BANKORDERLINE : grid view sorting on bankOrderDate
+- CHEQUE REJECTION : fix payment voucher selection.
+- PAYMENT VOUCHER : trace exceptions happening on save in repository
+- ACCOUNT/STOCK : add more french translation.
+- PURCHASEORDERLINE : corrected potential injection error when calling service
+- SALEORDER : companyBankDetails can no longer be edited in form view.
+- SALE ORDER LINE: Fix NPE in groovy script.
+- PACKING LIST : address not readable on printing
+- HUMAN RESOURCE DEMO DATA : holiday planning is now correctly imported.
+- TRANSLATION : fix french translation of "start date".
+- ACCOUNTING REPORT : now filter "journal" is working for analytic balance report.
+- SALE ORDER : line delivery dates not editable if availability request = true
+- MOVE : NPE when click on validation button in move-grid
+- SALE ORDER : hide and rename some field in advance search.
+- STOCK MOVE : Printing address at bottom-left of Report.
+- INVOICE : Generate Invoice from sale order : take in consideration classic invoice only
+- EVENTREMINDER : Made the batch work as intended.
+- SALE ORDER : Fix generate invoice error
+- OPPORTUNITY : Error message 'Parent lead is missing' is removed onchange of lead
+- DEBT RECOVERY METHOD : name field is now required.
+- DEBT RECOVERY LEVEL : label field is now required.
+- ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
+- INVOICE : add in demo data more information for demo supplier invoices.
+- PURCHASE REQUEST : seq number is retrieved depending on the company.
+- DEMO DATA : clean and corrected errors from import demo data.
+- DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- OPPORTUNITY : do not allows select both customer and lead at same time.
+- STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
+- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
+- TEAMTASK: task history show only canceled and closed task.
+- Sale Order: fix NPE on clicking allocate all button.
+- INVOICE : Resolve error of sending email from Invoice.
+- Studio: Fix export of selection with app
+- CONFIGURATOR : fix configurator demo data.
+- Operation Order: Fix typo in fr translations.
+- AVAILABITY REQUEST : error message if product stock < realQty when product.stockManaged=true
+- Reserved Qty: manage the case when the product is not stock managed.
+- App Builder : Fix uniqueness problem when import existing app.
+- App Builder : Fix NPE on export of action-builder type view with params.
+- Studio: Fix error on selecting target model.
+- ACCOUNTING REPORT : Added missing translation of typeSelect values
+- STOCK MOVE : Display error message on deleting stock move with status 'realize'.
+- NPE : fix NPE in timesheet timer.
+- DECLARATION OF EXCHANGES: fixed missing select option and exception message.
+- BLOCKING : Fix NPE during import of sale orders from prestashop batch
+- INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
+- SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
+- LEAD WIZARD : add missing translation.
+- DEBIT VAT DECLARATION REPORT : now the report completely filter on debit VAT.
+- Studio : Fix import app.
+- Studio: Fix double panel title.
+- BPM : Fix invalid domain on model when isJson is false.
+- SALE ORDER CHARTS: Date fixed on SQL queries.
+- SUPPLIER INVOICE GRID : the mass invoice payment function now works properly as the payment save function on a invoice form.  
+- INVOICE : on ventilation corrected the error produced when a product had a very long name. 
+- BANK ORDER : Fix account move generation when we realize a bank order.
+- STOCK RULES : send email if stock move rule alert is activated
+- BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
 
 ## [5.1.7] - 2019-06-17
+## Features
 - USER : filter assigned to user in partner form
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
@@ -439,7 +564,6 @@ in progress manuf order and for bill of material, and add a prorata method for i
 First is the manually merge issue that keep only the first and last bank orders instead of all selected bank orders.
 Second is the automatically merge issue that create draft bank orders when we get an exception on one invoice instead of rollback all.
 - STOCKMOVE : Fix Invoice NPE
-
 
 ## [5.1.2] - 2019-02-11
 ## Features
@@ -1070,7 +1194,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-
+[Unreleased 5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...dev
 [5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
 [5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5

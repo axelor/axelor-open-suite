@@ -78,8 +78,8 @@
     <long name="originId" title="Origin Id" />
     <string name="origin" readonly="true" title="Origin"/>
 	<boolean name="availabilityRequest" title="Availability request"/>
-	<boolean name="pickingIsEdited" title="Outgoing Stock Move is edited"/>
-	<date name="pickingEditDate" title="Outgoing Stock Move edit date"/>
+	<boolean name="pickingIsEdited" title="Picking order is edited"/>
+	<date name="pickingEditDate" title="Picking order edit date"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
     <string name="note" title="Notes" large="true"/>

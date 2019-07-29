@@ -41,6 +41,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
@@ -179,6 +180,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (isNeedingConformityCertificate) {
       stockMove.setSignatoryUser(
           stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
+    }
+
+    SupplyChainConfig supplychainConfig =
+        Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
+    if (supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(appBaseService.getTodayDate());
     }
 
     stockMoveService.plan(stockMove);

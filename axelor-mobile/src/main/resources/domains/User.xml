@@ -6,7 +6,13 @@
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="User" sequential="true" lang="java">
+
   	<string name="appPermissions" title="Apps permissions" selection="mobile.user.app.permissions.select"/>
+
+	 <track>
+	   <field name="appPermissions"/>
+   </track>
+
   </entity>
 
 </domain-models>

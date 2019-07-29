@@ -55,9 +55,6 @@ public class DebtRecoveryController {
       }
       debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
       debtRecoveryActionService.runManualAction(debtRecovery);
-      // find the updated debtRecovery
-      debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
-      debtRecoveryActionService.runMessage(debtRecovery);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
