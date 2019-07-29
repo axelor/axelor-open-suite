@@ -68,6 +68,7 @@
 - INVOICE SUPPLIER FORM : add a new flash message on ventilation who pop when unlettered supplier move lines are found for the invoice partner.
 - Fixed assets : add stock location and tracking number management
 - STOCK CONFIG : Put panel customsPanel above stockConfigPanel
+- MENU BUILDER : Delete a menu completely
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
