@@ -175,8 +175,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     int index = 0;
     for (int i = 0; i < row.length; i++) {
       index = line;
+      String value = row[i].trim();
       if (line == 1) {
-        this.readFields(row, i, fileFieldList, ignoreFields, mapper);
+        this.readFields(value, i, fileFieldList, ignoreFields, mapper);
         continue;
       }
 
@@ -190,12 +191,12 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       FileField fileField = fileFieldList.get(i);
       if (line == 2) {
-        fileField.setColumnTitle(row[i]);
+        fileField.setColumnTitle(value);
         continue;
       }
 
       line += -2;
-      this.setSampleLines(line, row[i], fileField);
+      this.setSampleLines(line, value, fileField);
       line = index;
     }
   }
@@ -207,7 +208,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     int index = 0;
     for (int i = 0; i < row.length; i++) {
       index = line;
-      String value = row[i];
+      String value = row[i].trim();
       FileField fileField = null;
 
       if (line == 0) {
@@ -262,7 +263,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   }
 
   private void readFields(
-      String[] row,
+      String value,
       int index,
       List<FileField> fileFieldList,
       List<Integer> ignoreFields,
@@ -271,7 +272,6 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     FileField fileField = new FileField();
     fileField.setSequence(index);
-    String value = row[index];
     if (Strings.isNullOrEmpty(value)) {
       return;
     }
