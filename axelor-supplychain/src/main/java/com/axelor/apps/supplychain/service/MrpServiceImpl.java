@@ -547,15 +547,7 @@ public class MrpServiceImpl implements MrpService {
 
     for (MrpLine mrpLine : mrpLineList) {
 
-      if (mrpLine.getMrpLineType().getElementSelect()
-          == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK) {
-
-        mrpLine.setCumulativeQty(mrpLine.getQty());
-      } else {
-
-        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
-      }
-
+      mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
       previousCumulativeQty = mrpLine.getCumulativeQty();
 
       log.debug(
