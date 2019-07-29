@@ -9,6 +9,7 @@
 - FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
 - MrpForecast : Enable Tracking Feature for all fields on the creation of record
 - SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
+- Wkf : Add an option to display 'Track flow' button.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
