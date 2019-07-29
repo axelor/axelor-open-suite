@@ -22,6 +22,8 @@ public class ClientViewInterfaceImpl implements ClientViewInterface {
     map.put("$totalProjects", 2);
     map.put("$tasksInProgress", 5);
     map.put("$tasksDue", 8);
+    map.put("$totalRemaining", 157);
+
     return map;
   }
 }

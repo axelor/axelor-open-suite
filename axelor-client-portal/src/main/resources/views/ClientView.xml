@@ -15,30 +15,30 @@
 		</panel>
 		<panel name="indicatorsPanel" colSpan="12">
 			<panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
-				<panel name="projectPanel"  title="Projets" if-module="axelor-project" itemSpan="12">
-					<button name="$totalProjects" title="Projects" width="180px" widget="info-button" onClick="" />
-	                <button name="$tasksInProgress" title="Tasks in progress" width="180px" widget="info-button" onClick=""/>
-					<button name="$tasksDue" title="Tasks due" width="180px" widget="info-button" onClick=""/>
+				<panel name="projectPanel"  title="Project" if-module="axelor-project" itemSpan="12">
+					<button name="$totalProjects" title="Projects" width="190px" widget="info-button" onClick="" />
+	                <button name="$tasksInProgress" title="Tasks in progress" width="190px" widget="info-button" onClick=""/>
+					<button name="$tasksDue" title="Tasks due" width="190px" widget="info-button" onClick=""/>
 				</panel>
-				<panel name="saleOrderPanel" title="Devis" if-module="axelor-sale" itemSpan="12">
-					<button name="$orders" title="Orders" width="180px" widget="info-button" onClick="" />
-	                <button name="$quotationInProgress" title="Quotation in progress" width="180px" widget="info-button" onClick=""/>
-					<button name="$lastOrder" title="Last order" width="180px" widget="info-button" onClick=""/>
+				<panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12">
+					<button name="$orders" title="Orders" width="190px" widget="info-button" onClick="" />
+	                <button name="$quotationInProgress" title="Quotation in progress" width="190px" widget="info-button" onClick=""/>
+					<button name="$lastOrder" title="Last order" width="190px" widget="info-button" onClick=""/>
 				</panel>
-				<panel name="shipPanel" title="Livraisons" if-module="axelor-stock" itemSpan="12">
-					<button name="$lastDelivery" title="Last delivery" width="180px" widget="info-button" onClick=""/>
-	                <button name="$nextDelivery" title="Next delivery" width="180px" widget="info-button" onClick=""/>
-	                <button name="$realizedDelivery" title="Realised delivery" width="180px" widget="info-button" onClick=""/>
+				<panel name="shipPanel" title="Delivery" if-module="axelor-stock" itemSpan="12">
+					<button name="$lastDelivery" title="Last delivery" width="190px" widget="info-button" onClick=""/>
+	                <button name="$nextDelivery" title="Next delivery" width="190px" widget="info-button" onClick=""/>
+	                <button name="$realizedDelivery" title="Realized delivery" width="190px" widget="info-button" onClick=""/>
 				</panel>
-				<panel name="invoicePanel"  title="Facturation" if-module="axelor-account" itemSpan="12">
-					<button name="$overdueInvoices" title="Overdue invoices" width="180px" widget="info-button"/>
-					<button name="$awaitingInvoices" title="Awaiting invoices" width="180px" widget="info-button"/>
-					<button name="$invoiceSaleSituation" title="Invoice sale situation" width="180px" widget="info-button" />
+				<panel name="invoicePanel"  title="Invoicing" if-module="axelor-account" itemSpan="12">
+					<button name="$overdueInvoices" title="Overdue invoices" width="190px" widget="info-button"/>
+					<button name="$awaitingInvoices" title="Awaiting invoices" width="190px" widget="info-button"/>
+					<button name="$totalRemaining" title="Total remaining" width="190px" widget="info-button" />
 				</panel>
-				<panel name="ticketPanel"  title="Support client" if-module="axelor-helpdesk" itemSpan="12">
-					<button name="$customerTickets" title="Customer tickets" width="180px" widget="info-button" onClick=""/>
-	                <button name="$companyTickets" title="Tickets company" width="180px" widget="info-button" onClick=""/>
-	                <button name="$resolvedTickets" title="Resolved tickets" width="180px" widget="info-button" onClick="" />
+				<panel name="ticketPanel"  title="Customer helpdesk" if-module="axelor-helpdesk" itemSpan="12">
+					<button name="$customerTickets" title="Customer tickets" width="190px" widget="info-button" onClick=""/>
+	                <button name="$companyTickets" title="Tickets company" width="190px" widget="info-button" onClick=""/>
+	                <button name="$resolvedTickets" title="Resolved tickets" width="190px" height="100px" widget="info-button" onClick="" />
 				</panel>
 			</panel>
 		</panel>
