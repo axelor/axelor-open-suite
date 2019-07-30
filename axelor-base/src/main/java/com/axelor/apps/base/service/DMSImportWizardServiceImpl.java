@@ -17,6 +17,17 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,27 +37,13 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.detect.AutoDetectReader;
 import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.dms.db.DMSFile;
-import com.axelor.dms.db.repo.DMSFileRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-
 public class DMSImportWizardServiceImpl implements DMSImportWizardService {
-
-  @Inject private DMSFileRepository dmsFileRepo;
 
   @Inject private MetaFiles metaFiles;
 
@@ -104,20 +101,20 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
       LOG.debug("Praent file: {}", dmsFile.getParent());
       if (zipEntry.isDirectory()) {
         dmsFile.setIsDirectory(true);
-        dmsFile = dmsFileRepo.save(dmsFile);
+        dmsFile = Beans.get(DMSFileRepository.class).save(dmsFile);
         dmsMap.put(zipEntry.getName(), dmsFile);
         LOG.debug("DMS Directory created: {}", dmsFile.getFileName());
       } else {
         String fileType = fileName.substring(fileName.indexOf(".") + 1);
         try {
           File tempDir = File.createTempFile("", "");
-          File file = new File(tempDir,fileName);
+          File file = new File(tempDir, fileName);
           InputStream is = zipfile.getInputStream(zipEntry);
           FileUtils.copyInputStreamToFile(is, file);
           MetaFiles.checkType(file);
           MetaFile metaFile = metaFiles.upload(zipInputStream, fileName);
           dmsFile.setMetaFile(metaFile);
-          dmsFile = dmsFileRepo.save(dmsFile);
+          dmsFile = Beans.get(DMSFileRepository.class).save(dmsFile);
           LOG.debug("DMS File created: {}", dmsFile.getFileName());
         } catch (IllegalArgumentException e) {
           LOG.debug("File type is not allowed : {}", fileType);
