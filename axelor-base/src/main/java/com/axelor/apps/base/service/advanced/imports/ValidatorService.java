@@ -199,7 +199,7 @@ public class ValidatorService {
 
   private void validateObject(String[] row, FileTab fileTab) throws IOException, AxelorException {
 
-    if (row == null) {
+    if (row == null || StringUtils.isBlank(row[0])) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
@@ -586,44 +586,46 @@ public class ValidatorService {
   private void validateDataType(String[] row, int cell, int line, String type, FileField fileField)
       throws IOException {
 
-    if (!Strings.isNullOrEmpty(row[cell])) {
-      String field = getField(fileField);
-      String value = row[cell].trim();
+    if (Strings.isNullOrEmpty(row[cell])) {
+      return;
+    }
 
-      switch (type) {
-        case INTEGER:
-        case LONG:
-        case BIG_DECIMAL:
-          this.checkNumeric(value, line, field, type);
-          break;
+    String field = getField(fileField);
+    String value = row[cell].trim();
 
-        case LOCAL_DATE:
-        case ZONED_DATE_TIME:
-        case LOCAL_DATE_TIME:
-        case LOCAL_TIME:
-          this.checkDateTime(value, line, field, type, fileField);
-          break;
+    switch (type) {
+      case INTEGER:
+      case LONG:
+      case BIG_DECIMAL:
+        this.checkNumeric(value, line, field, type);
+        break;
 
-        case BOOLEAN:
-          String boolPat = "(true|false|1|0|no|yes|n|y)";
+      case LOCAL_DATE:
+      case ZONED_DATE_TIME:
+      case LOCAL_DATE_TIME:
+      case LOCAL_TIME:
+        this.checkDateTime(value, line, type, fileField);
+        break;
 
-          if (!value.matches(boolPat)) {
+      case BOOLEAN:
+        String boolPat = "(true|false|1|0|no|yes|n|y)";
+
+        if (!value.matches(boolPat)) {
+          logService.addLog(
+              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+        }
+        break;
+
+      default:
+        if (!type.equals(STRING)) {
+          try {
+            new BigInteger(value);
+          } catch (Exception e) {
             logService.addLog(
                 IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
           }
-          break;
-
-        default:
-          if (!type.equals(STRING)) {
-            try {
-              new BigInteger(value);
-            } catch (Exception e) {
-              logService.addLog(
-                  IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
-            }
-          }
-          break;
-      }
+        }
+        break;
     }
   }
 
@@ -659,7 +661,7 @@ public class ValidatorService {
     }
   }
 
-  private void checkDateTime(String value, int line, String field, String type, FileField fileField)
+  private void checkDateTime(String value, int line, String type, FileField fileField)
       throws IOException {
 
     if (!Strings.isNullOrEmpty(fileField.getDateFormat())
@@ -687,7 +689,8 @@ public class ValidatorService {
             break;
         }
       } catch (DateTimeParseException e) {
-        logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+        logService.addLog(
+            IExceptionMessage.ADVANCED_IMPORT_LOG_9, getField(fileField) + "(" + type + ")", line);
       }
     }
   }
