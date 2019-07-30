@@ -184,7 +184,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      if(fileFieldList.size() <= i) {
+      if (fileFieldList.size() <= i) {
         break;
       }
 

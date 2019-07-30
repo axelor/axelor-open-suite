@@ -17,6 +17,9 @@
 - English language : Correction of errors in english words and change gender job word to genderless job word
 - Action Builder: Added option to update or use json field from real model
 
+## Bug Fixes
+- Fix injection error during test
+
 ## [Unreleased 5.2.0]
 ## Features
 - Employee: added DPAE
