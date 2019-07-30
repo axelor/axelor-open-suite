@@ -92,7 +92,7 @@ public class InvoiceManagementRepository extends InvoiceRepository {
         json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
       }
     } catch (Exception e) {
-    	TraceBackService.trace(e);
+      TraceBackService.trace(e);
     }
 
     return super.populate(json, context);
