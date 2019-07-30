@@ -30,6 +30,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -44,7 +47,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/abs51-dev</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -73,6 +76,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">lmdpdlaa</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -131,7 +137,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs51-dev</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1753,12 +1761,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <column id="4147">
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row._outer["global_by_partner"]</expression>
-                                </structure>
-                            </list-property>
                             <property name="width">2%</property>
                         </column>
                         <column id="4090">
@@ -2127,108 +2129,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </cell>
                             </row>
                         </header>
-                        <group id="4252">
-                            <property name="groupName">partner_group</property>
-                            <expression name="keyExpr" type="javascript">if(row._outer["global_by_partner"]){
-	row["partner"]
-}else{
-	row["account"]
-}</expression>
-                            <property name="hideDetail">false</property>
-                            <header>
-                                <row id="4253">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["global_by_partner"]</expression>
-                                        </structure>
-                                    </list-property>
-                                    <cell id="4254">
-                                        <property name="colSpan">11</property>
-                                        <property name="rowSpan">1</property>
-                                        <data id="4277">
-                                            <property name="borderTopStyle">solid</property>
-                                            <property name="borderTopWidth">medium</property>
-                                            <property name="resultSetColumn">partner</property>
-                                        </data>
-                                    </cell>
-                                </row>
-                            </header>
-                            <footer>
-                                <row id="4265">
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["global_by_partner"]</expression>
-                                        </structure>
-                                    </list-property>
-                                    <cell id="4266">
-                                        <property name="colSpan">6</property>
-                                        <property name="rowSpan">1</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <text-data id="4288">
-                                            <property name="fontSize">9.5pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <expression name="valueExpr">"Total" + " "+ row["partner"]</expression>
-                                            <property name="contentType">html</property>
-                                        </text-data>
-                                    </cell>
-                                    <cell id="4272">
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
-                                    <cell id="4273">
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <data id="4289">
-                                            <property name="fontSize">9.5pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Currency</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                            </structure>
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_debit_partner</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="4274">
-                                        <property name="fontWeight">bold</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="4290">
-                                            <property name="fontSize">9.5pt</property>
-                                            <structure name="numberFormat">
-                                                <property name="category">Currency</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                            </structure>
-                                            <property name="resultSetColumn">sum_credit_partner</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="4275">
-                                        <property name="fontSize">9.5pt</property>
-                                        <property name="fontWeight">bold</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                        <property name="textAlign">right</property>
-                                        <data id="4291">
-                                            <structure name="numberFormat">
-                                                <property name="category">Currency</property>
-                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
-                                            </structure>
-                                            <property name="resultSetColumn">sum_balance_partner</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="4276">
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
-                                    </cell>
-                                </row>
-                            </footer>
-                        </group>
                         <group id="4097">
                             <property name="groupName">account_group</property>
                             <expression name="keyExpr" type="javascript">row["account"]</expression>
@@ -2238,17 +2138,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="hideDetail">false</property>
                             <header>
                                 <row id="4098">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
                                     <cell id="4143">
-                                        <property name="colSpan">1</property>
+                                        <property name="colSpan">11</property>
                                         <property name="rowSpan">1</property>
-                                    </cell>
-                                    <cell id="4278">
-                                        <property name="colSpan">10</property>
-                                        <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <property name="borderTopStyle">solid</property>
-                                        <property name="borderTopWidth">thin</property>
                                         <data id="4115">
                                             <property name="resultSetColumn">account</property>
                                         </data>
@@ -2257,9 +2153,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </header>
                             <footer>
                                 <row id="4106">
-                                    <cell id="4145"/>
-                                    <cell id="4107">
-                                        <property name="colSpan">5</property>
+                                    <cell id="4145">
+                                        <property name="colSpan">6</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4141">
                                             <property name="fontSize">9.5pt</property>
@@ -2312,6 +2207,102 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         </data>
                                     </cell>
                                     <cell id="4223"/>
+                                </row>
+                            </footer>
+                        </group>
+                        <group id="4252">
+                            <property name="groupName">partner_group</property>
+                            <expression name="keyExpr" type="javascript">if(row._outer["global_by_partner"]){
+	row["partner"]
+}else{
+	row["account"]
+}</expression>
+                            <property name="hideDetail">false</property>
+                            <header>
+                                <row id="4253">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["global_by_partner"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <cell id="4254">
+                                        <property name="colSpan">1</property>
+                                        <property name="rowSpan">1</property>
+                                    </cell>
+                                    <cell id="4303">
+                                        <property name="colSpan">10</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <data id="4277">
+                                            <property name="resultSetColumn">partner</property>
+                                        </data>
+                                    </cell>
+                                </row>
+                            </header>
+                            <footer>
+                                <row id="4265">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">!row._outer["global_by_partner"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <cell id="4266">
+                                        <property name="colSpan">1</property>
+                                        <property name="rowSpan">1</property>
+                                    </cell>
+                                    <cell id="4292">
+                                        <property name="colSpan">5</property>
+                                        <property name="rowSpan">1</property>
+                                        <text-data id="4288">
+                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <expression name="valueExpr">"Total" + " "+ row["partner"]</expression>
+                                            <property name="contentType">html</property>
+                                        </text-data>
+                                    </cell>
+                                    <cell id="4272"/>
+                                    <cell id="4273">
+                                        <data id="4289">
+                                            <property name="fontSize">9.5pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Currency</property>
+                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            </structure>
+                                            <property name="textAlign">right</property>
+                                            <property name="resultSetColumn">sum_debit_partner</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4274">
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">right</property>
+                                        <data id="4290">
+                                            <property name="fontSize">9.5pt</property>
+                                            <structure name="numberFormat">
+                                                <property name="category">Currency</property>
+                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            </structure>
+                                            <property name="resultSetColumn">sum_credit_partner</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4275">
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="textAlign">right</property>
+                                        <data id="4291">
+                                            <structure name="numberFormat">
+                                                <property name="category">Currency</property>
+                                                <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            </structure>
+                                            <property name="resultSetColumn">sum_balance_partner</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4276"/>
                                 </row>
                             </footer>
                         </group>
