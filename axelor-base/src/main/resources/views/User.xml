@@ -15,7 +15,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode">
+    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company,action-attrs-select-in-step-status-select" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select">
     	<panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1" >
 	    	<panel name="stepStatusPanel" colSpan="12">
 	    		<field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12" readonly="true"/>
@@ -248,18 +248,22 @@
         expr="call: com.axelor.apps.base.service.user.UserService:getPasswordPatternDescription()"/>
     </action-attrs>
 
+    <action-attrs name="action-attrs-select-in-step-status-select">
+      <attribute name="selection-in" for="stepStatusSelect" expr="eval: __config__.app.isApp('employee') ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
+    </action-attrs>
+    
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
     </action-record>
 
     <action-record name="action-user-record-step-status-next" model="com.axelor.auth.db.User">
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
     </action-record>
 
     <action-record name="action-user-record-step-status-previous" model="com.axelor.auth.db.User">
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 2" if="stepStatusSelect == 4 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 1" if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 2" if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 1" if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
     </action-record>
 
     <action-validate name="action-user-check-company">

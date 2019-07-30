@@ -153,6 +153,7 @@
 - INVOICE : Configure BIRT to generate an Excel and a Word file
 - KEYWORD : remove Keyword model.
 - Advanced Import : trim data before import.
+- USER : don't display the step "Employee" in the workflow when axelor-human-resource module is not installed
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
