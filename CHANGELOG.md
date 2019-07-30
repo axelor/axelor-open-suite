@@ -140,6 +140,7 @@
 - BANKORDER : Fix error when merge bankorders generated from expense
 - Studio: Fix translation for 'Order'
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
+- PERIOD : Fix NPE when date is null.
 
 ## [5.1.7] - 2019-06-17
 ## Features
