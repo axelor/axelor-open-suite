@@ -149,7 +149,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
             I18n.get(IExceptionMessage.ADVANCED_IMPORT_4));
       }
     } else {
-      if (Strings.isNullOrEmpty(row[0]) && linesToIgnore == 0) {
+      if (StringUtils.isBlank(row[0]) && linesToIgnore == 0) {
         return false;
       }
 
@@ -174,6 +174,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     int index = 0;
     for (int i = 0; i < row.length; i++) {
+      if (Strings.isNullOrEmpty(row[i])) {
+        continue;
+      }
       index = line;
       String value = row[i].trim();
       if (line == 1) {
@@ -207,6 +210,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     int index = 0;
     for (int i = 0; i < row.length; i++) {
+      if (Strings.isNullOrEmpty(row[i])) {
+        continue;
+      }
       index = line;
       String value = row[i].trim();
       FileField fileField = null;
@@ -224,6 +230,10 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         fileField.setSequence(i);
         fileField.setFullName(fileFieldService.computeFullName(fileField));
         continue;
+      }
+
+      if (fileFieldList.size() <= i) {
+        break;
       }
 
       if (!isHeader) {
