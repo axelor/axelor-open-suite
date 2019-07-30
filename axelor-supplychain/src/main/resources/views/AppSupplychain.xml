@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<form name="app-supplychain-config-form" title="App Supplychain" model="com.axelor.apps.base.db.AppSupplychain" canDelete="false" canNew="false" width="large">
 		<panel name="saleOrderPanel" title="Sale order">
@@ -12,9 +12,8 @@
 			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
 			<field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
-			<field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4" readonlyIf="manageInvoicedAmountByLine"/>
+			<field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4"/>
 			<field name="checkSaleStocks" widget="boolean-switch" colSpan="4"/>
-			<field name="manageInvoicedAmountByLine" widget="boolean-switch" colSpan="4" onChange="action-app-supply-chain-record-allow-timetable-invoicing"/>
             <field name="allowCompleteManuallySaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="blockDeallocationOnAvailabilityRequest" widget="boolean-switch" colSpan="4"/>
 			<field name="isSaleOrderWithoutOutgoingStockMove" widget="boolean-switch" colSpan="4" onChange="action-app-supply-chain-record-customer-stock-move-generation-auto"/>
@@ -27,6 +26,10 @@
             <field name="allowFinishManuallyPurchaseOrder" widget="boolean-switch" colSpan="4"/>
             <field name="isPurchaseOrderWithoutIncomingStockMove" widget="boolean-switch" colSpan="4" onChange="action-app-supply-chain-record-supplier-stock-move-generation-auto"/>
 		</panel>
+        <panel name="StockDetailsPanel" title="Stock details">
+            <field name="sOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4" selection="sale.order.status.select"/>
+            <field name="pOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4" selection="purchase.purchase.order.status.select"/>
+        </panel>
 		<panel name="stackPanel" title="Stock">
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
 			<field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
@@ -47,8 +50,8 @@
 			<panel-dashlet name="confSupplyChainConfigDashletPanel" action="admin.root.conf.supply.chain.config" colSpan="12"/>
 		</panel>
 		        
-        	<panel-mail name="mailPanel">
-		    	<mail-messages limit="4" />
+        <panel-mail name="mailPanel">
+		    <mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>
 	</form>
@@ -59,9 +62,6 @@
 		<view type="form" name="supply-chain-config-form"/>
 	</action-view>
 	
-	<action-record name="action-app-supply-chain-record-allow-timetable-invoicing" model="com.axelor.apps.base.db.AppSupplychain">
-		<field name="allowTimetableInvoicing" expr="eval: false" if="manageInvoicedAmountByLine"/>
-	</action-record>
 	
 	<action-record name="action-app-supply-chain-record-customer-stock-move-generation-auto" model="com.axelor.apps.base.db.AppSupplychain">
 		<field name="customerStockMoveGenerationAuto" expr="eval: false" if="isSaleOrderWithoutOutgoingStockMove"/>

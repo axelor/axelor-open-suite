@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -92,6 +92,11 @@
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>
+	</selection>
+
+	<selection name='iadministration.declaration.of.exchanges.export.type.select'>
+		<option value="pdf">PDF</option>
+		<option value="csv">CSV</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select">
@@ -385,7 +390,7 @@
     <selection name="base.blocking.select">
         <option value="1">Reminder blocking</option>
         <option value="2">Invoicing blocking</option>
-        <option value="3">Reimbursement blocking</option>
+        <option value="3">Refund blocking</option>
     </selection>
 
 	<selection name="meta.schedule.job.select">
@@ -407,6 +412,7 @@
 	<selection name="base.cancel.reason.application.type.select">
 		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
         <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
+        <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
 	</selection>
 
  	<selection name="base.barcode.select">
@@ -460,6 +466,25 @@
     <option value="task">Task</option>
     <option value="ticket">Ticket</option>
   </selection>
+  	
+  	<selection name="advanced.import.status.select">
+  		<option value="0">Draft</option>
+  		<option value="1">Validated</option>
+  	</selection>
+  
+  	<selection name="file.field.import.type.select">
+		<option value="0">Direct</option>
+		<option value="1">Find</option>
+		<option value="2">FindNew</option>
+		<option value="3">New</option>
+		<option value="4">Ignore/Empty</option>
+  	</selection>
+	
+	<selection name="file.field.for.select.use.select">
+		<option value="0">Titles</option>
+		<option value="1">Values</option>
+		<option value="2">Translated titles</option>
+	</selection>
 
   <selection name="abc.analysis.type.select">
 	  <option value="com.axelor.apps.base.service.ABCAnalysisServiceImpl">Base</option>

@@ -60,7 +60,7 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public TimerHistory start(Model model, Timer timer, LocalDateTime dateTime)
       throws AxelorException {
     Ticket ticket = (Ticket) model;

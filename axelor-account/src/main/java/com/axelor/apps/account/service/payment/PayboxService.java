@@ -53,7 +53,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
-import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -389,7 +389,7 @@ public class PayboxService {
    * @param email Une adresse email
    * @param toSaveOk L'adresse email doit-elle être enregistré pour le contact
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addPayboxEmail(Partner partner, String email, boolean toSaveOk) {
     if (toSaveOk) {
 
@@ -462,12 +462,11 @@ public class PayboxService {
    * @throws Exception
    */
   private PublicKey getPubKey(String pubKeyPath) throws Exception {
+    final byte[] pubKey;
 
-    PEMReader reader = new PEMReader(new FileReader(pubKeyPath));
-
-    byte[] pubKey = ((X509EncodedKeySpec) reader.readObject()).getEncoded();
-
-    reader.close();
+    try (final PEMParser reader = new PEMParser(new FileReader(pubKeyPath))) {
+      pubKey = ((X509EncodedKeySpec) reader.readObject()).getEncoded();
+    }
 
     KeyFactory keyFactory = KeyFactory.getInstance(this.ENCRYPTION_ALGORITHM);
 

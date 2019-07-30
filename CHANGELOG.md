@@ -91,8 +91,17 @@
 - CONTRACT : Set Invoice date with newly added options for invoicing Moment
 - Inventory : Added new field 'typeSelect' and change in product doman filter.
 - Address: Street have now a dedicated object.
+- SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
 - ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
 - PROJECT : Add new feature 'Project template'
+- Contract : Add analytic information to contract lines.
+- MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
+- PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
+- Advanced Import : Add feature to import data with advanced configurations.
+- BPM: More than one workflow support for a same object.
+- MRP : boolean to exclude product without proposal in the result dashlet
+- HR : TRAINING - Optimization of the menu by adding filters
+- MRP : Group proposals per supplier
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -129,7 +138,16 @@
 - CONTRACT : Set project on generated invoices
 - LEAVE REQUEST : Set message for leave reason has no unit
 - LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
-- CLIENT PORTAL : update the client form view 
+- ACCOUNT MOVE REVERSE: Selected reverse move date must not be after the date of the day
+- ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation  
+- Change google-plus icon by google one.
+- Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
+- SUPPLY CHAIN : delete boolean manageInvoicedAmountByLine.
+- EMPLOYEE : Fix issue with full name view
+- INVENTORY : adding ODS file format in report selection type.
+- Quality Control : Set default printing setting and update translation
+- INVOICE : Configure BIRT to generate an Excel and a Word file
+- CLIENT PORTAL : update the client form view
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -155,5 +173,16 @@
 - INVOICE : Reduce font size of tax table in Invoice printing
 - PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
 - ACCOUNT MOVE REVERSE: add translation
+- SALEORDER : fix action with obsolete name
+- ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
+- Transactionnal : correction and standardisation of rollback.
+- Upgraded to ADK 5.1.
+- SALE ORDER LINE : Fixed Error when selecting a product
+- Studio : Fix readonly fields are enabled when imported an application.
+- Studio : Fix error when click on wkf buttons.
+- Studio : Fix export app.
+- Advance Data Import : Fix indexOutOfBound Exception.
+- Advanced Data Import : Specify truncated value to sampleLines for large string.
+- MetaSelect : Update view and domain with latest version.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

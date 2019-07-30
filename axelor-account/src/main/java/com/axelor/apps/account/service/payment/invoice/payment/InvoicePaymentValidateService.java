@@ -27,13 +27,13 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface InvoicePaymentValidateService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 
   public void validate(InvoicePayment invoicePayment)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
 }

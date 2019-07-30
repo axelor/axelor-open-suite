@@ -176,7 +176,7 @@ public class MoveLineController {
                 .context("_balance", finalBalance)
                 .map());
       } else {
-        response.setAlert(IExceptionMessage.NO_MOVE_LINE_SELECTED);
+        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

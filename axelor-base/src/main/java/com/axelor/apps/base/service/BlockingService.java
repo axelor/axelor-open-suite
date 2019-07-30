@@ -38,12 +38,16 @@ public class BlockingService {
   public Blocking getBlocking(Partner partner, Company company, int blockingType) {
     List<Blocking> blockings = partner.getBlockingList();
 
-    for (Blocking blocking : blockings) {
-      if (blocking.getCompanySet().contains(company)
-          && blocking.getBlockingSelect().equals(blockingType)
-          && blocking.getBlockingToDate().compareTo(Beans.get(AppBaseService.class).getTodayDate())
-              >= 0) {
-        return blocking;
+    if (blockings != null && !blockings.isEmpty()) {
+      for (Blocking blocking : blockings) {
+        if (blocking.getCompanySet().contains(company)
+            && blocking.getBlockingSelect().equals(blockingType)
+            && blocking
+                    .getBlockingToDate()
+                    .compareTo(Beans.get(AppBaseService.class).getTodayDate())
+                >= 0) {
+          return blocking;
+        }
       }
     }
 

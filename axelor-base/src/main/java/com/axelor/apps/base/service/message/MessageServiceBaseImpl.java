@@ -67,7 +67,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Message createMessage(
       String model,
       int id,
@@ -146,7 +146,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message)
       throws MessagingException, IOException, AxelorException {
 

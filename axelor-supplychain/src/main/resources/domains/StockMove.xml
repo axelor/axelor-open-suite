@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -16,6 +16,8 @@
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
    	
+    <integer name="pfpValidateStatusSelect" title="PFP Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
     <extra-code>
@@ -25,9 +27,10 @@
     ]]>
     </extra-code>
 
-	<track>
-		<field name="invoice"/>
-	</track>
+    <track on="UPDATE">
+		<field name="pfpValidateStatusSelect"/>
+      <field name="invoice"/>
+    </track>
 
   </entity>
 </domain-models>

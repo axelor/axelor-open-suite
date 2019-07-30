@@ -108,7 +108,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     JPA.clear();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void createBankStatementLine(Map<String, Object> structuredContentLine, int sequence) {
 
     String description = (String) structuredContentLine.get("description");

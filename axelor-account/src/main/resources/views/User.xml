@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	
+	<form model="com.axelor.apps.base.db.Wizard" title="Delegate Rights of Pfp Validator" name="user-delegate-rights-pfp-validator-wizard-form">
+    	<panel name="mainPanel">
+    		<field name="$newPfpValidatorUser" title="New Pfp Validator" type="many-to-one" target="com.axelor.auth.db.User" canEdit="false" required="true" domain="self.isPfpValidator = true" onChange="action-user-method-compare-company-set-on-change-user"/>
+    		<label name="$pfpValidatorCompanySetLabel" colSpan="12" css="label-danger"/>
+            <button name="confirmBtn" title="Confirm" onClick="action-user-method-pfp-wizard-confirm-change-pfp-validator"/>
+    	</panel>
+    </form>
+	
+	<action-view name="action-user-view-delegate-rights-pfp-validator" title="Delegate Rights of Pfp Validator" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="user-delegate-rights-pfp-validator-wizard-form" />
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="popup-save" value="false"/>
+		<context name="_userId" expr="eval:id" />
+	</action-view>
+ 	
+ 	<action-method name="action-user-method-pfp-wizard-confirm-change-pfp-validator">
+ 		<call class="com.axelor.apps.account.web.UserController" method="changePfpValidator"/>
+ 	</action-method>
+ 	
+ 	<action-method name="action-user-method-compare-company-set-on-change-user">
+ 		<call class="com.axelor.apps.account.web.UserController" method="comparePfpValidatorCompanySet"/>
+ 	</action-method>
+ 	
+</object-views>

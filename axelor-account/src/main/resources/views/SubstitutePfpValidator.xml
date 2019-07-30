@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+    
+    <grid name="substitute-pfp-validator-grid" title="Substitute PFP Validator" model="com.axelor.apps.account.db.SubstitutePfpValidator">
+        <field name="substitutePfpValidatorUser"/>
+        <field name="substituteStartDate"/>
+        <field name="substituteEndDate"/>
+    </grid>
+    
+    <form name="substitute-pfp-validator-form" title="Substitute PFP Validator" model="com.axelor.apps.account.db.SubstitutePfpValidator">
+        <panel name="generalPanel" title="General">
+	        <field name="substitutePfpValidatorUser" canEdit="false" onSelect="action-substitute-pfp-validator-attrs-domain-pfp-validator-user"/>
+	        <field name="substituteStartDate"/>
+	        <field name="substituteEndDate"/>			
+        </panel>
+    </form>
+    
+	<action-attrs name="action-substitute-pfp-validator-attrs-domain-pfp-validator-user">
+  	   <attribute name="domain" expr="eval: &quot; ${'self.id in (select u.id from User u join u.companySet c where c.id in (' + __parent__.companySet.id.join(',') + '))' }&quot;" for="substitutePfpValidatorUser" if="__parent__.companySet != null &amp;&amp; !__parent__.companySet.empty"/>
+  	   <attribute name="domain" expr="eval: &quot;self.id in (0)&quot;" for="substitutePfpValidatorUser" if="__parent__.companySet == null || __parent__.companySet.empty"/>
+	</action-attrs>
+    
+</object-views>

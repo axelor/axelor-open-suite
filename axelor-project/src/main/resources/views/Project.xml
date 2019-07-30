@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
@@ -70,16 +70,18 @@
 						</viewer>
 				</field>
 			</panel>
-			<panel name="seqPanel" colSpan="2" if="__config__.app.getApp('project')?.generateProjectSequence">
-				<field name="projectSeq" showTitle="false" colSpan="12" css="label-bold bold large" readonly="true"/>
-			</panel>
+			
 			<panel name="informationPanel" colSpan="10">
 				<field name="fullName" showTitle="false" colSpan="12"
 					css="label-bold bold large">
 					<editor x-show-titles="false">
-						<field name="code" showTitle="false" colSpan="3" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
+						<panel name="seq" colSpan="3">
+						<field name="code" showTitle="false" colSpan="12" required="true" if="__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
-						<field name="name" showTitle="false" colSpan="9" required="true"
+						<field name="code" showTitle="false" colSpan="12" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
+							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
+						</panel>
+						<field name="name" showTitle="false" colSpan="6" required="true"
 							css="label-bold bold large" />
 					</editor>
 				</field>
@@ -374,7 +376,7 @@
 			<button name="finishBtn" title="Finish" hidden="true" showIf="statusSelect == 2"
 				colSpan="12" icon="fa-check" onClick="action-project-record-status-finished,save" />
 			<button name="cancelBtn" title="Cancel" hidden="true"
-				showIf="statusSelect == 2 || statusSelect == 3" colSpan="12" css="btn-danger"
+				showIf="statusSelect != 4" colSpan="12" css="btn-danger"
 				icon="fa-times-circle" onClick="action-project-record-status-canceled,save" />
 			<button name="newStatusBtn" title="Reset to New" hidden="true"
 				showIf="statusSelect == 4" colSpan="12" css="btn-danger"

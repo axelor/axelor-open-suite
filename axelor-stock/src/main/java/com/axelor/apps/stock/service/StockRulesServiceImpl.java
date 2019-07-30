@@ -43,7 +43,7 @@ public class StockRulesServiceImpl implements StockRulesService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generatePurchaseOrder(
       Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException {

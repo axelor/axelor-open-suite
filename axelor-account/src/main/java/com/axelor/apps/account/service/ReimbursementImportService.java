@@ -73,7 +73,7 @@ public class ReimbursementImportService {
     this.reimbursementRepo = reimbursementRepo;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void runReimbursementImport(Company company) throws AxelorException, IOException {
 
     this.testCompanyField(company);
@@ -119,7 +119,7 @@ public class ReimbursementImportService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Reimbursement createReimbursementRejectMoveLine(
       String[] reject, Company company, int seq, Move move, LocalDate rejectDate)
       throws AxelorException {
@@ -173,7 +173,7 @@ public class ReimbursementImportService {
     return reimbursement;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMoveReject(Company company, LocalDate date) throws AxelorException {
     return moveRepo.save(
         moveService
@@ -197,7 +197,7 @@ public class ReimbursementImportService {
     return totalAmount;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public MoveLine createOppositeRejectMoveLine(Move move, int seq, LocalDate rejectDate)
       throws AxelorException {
     // Création d'une ligne au débit
@@ -217,14 +217,14 @@ public class ReimbursementImportService {
     return debitMoveLine;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateMove(Move move) throws AxelorException {
     moveService.getMoveValidateService().validate(move);
     moveRepo.save(move);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void deleteMove(Move move) throws AxelorException {
+  @Transactional
+  public void deleteMove(Move move) {
     moveRepo.remove(move);
   }
 

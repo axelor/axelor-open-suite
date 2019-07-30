@@ -79,7 +79,7 @@ public class BankStatementService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void updateStatus(BankStatement bankStatement) {
     bankStatement = find(bankStatement);
     bankStatement.setStatusSelect(BankStatementRepository.STATUS_IMPORTED);

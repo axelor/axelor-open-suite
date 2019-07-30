@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 			   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+			   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
@@ -32,10 +32,15 @@
 		<!-- Invoice mail -->
 		<boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
 		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+		<boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate" default="false" />
+		<many-to-one name="invoiceMessageTemplateOnValidate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+		
 
 		<!-- Reported Balance -->
 		<one-to-many name="reportedBalanceLineList" ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation" title="Reported balance lines"/>
-
+		
+		<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
+		
 		<string name="name">
 			<![CDATA[
 			String name = "";

@@ -69,7 +69,7 @@ public class PaymentVoucherCreateService {
     this.appAccountService = appAccountService;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PaymentVoucher createPaymentVoucherIPO(
       Invoice invoice, LocalDate date, BigDecimal amount, PaymentMode paymentMode)
       throws AxelorException {

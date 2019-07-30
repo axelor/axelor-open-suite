@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="SubstitutePfpValidator" sequential="true" lang="java">
+  		<many-to-one name="substitutePfpValidatorUser" ref="com.axelor.auth.db.User" title="Substitue PFP Validator"/>
+  		<date name="substituteStartDate" title="Substitute Start Date"/>
+  		<date name="substituteEndDate" title="Substitute End Date"/>
+  </entity>
+
+</domain-models>

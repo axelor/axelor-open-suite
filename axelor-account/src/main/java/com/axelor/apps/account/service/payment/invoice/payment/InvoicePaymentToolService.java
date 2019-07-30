@@ -28,7 +28,7 @@ import java.util.List;
 
 public interface InvoicePaymentToolService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateAmountPaid(Invoice invoice) throws AxelorException;
 
   void updateHasPendingPayments(Invoice invoice);

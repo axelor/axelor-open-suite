@@ -19,9 +19,12 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 
 public interface StockLocationServiceSupplychain extends StockLocationService {
 
-  public BigDecimal getReservedQty(Long productId, Long locationId) throws AxelorException;
+  @CallMethod
+  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException;
 }

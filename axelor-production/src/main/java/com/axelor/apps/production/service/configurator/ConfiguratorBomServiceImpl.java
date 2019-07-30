@@ -60,7 +60,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial generateBillOfMaterial(
       ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
       throws AxelorException {

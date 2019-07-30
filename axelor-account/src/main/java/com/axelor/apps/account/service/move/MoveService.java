@@ -129,7 +129,7 @@ public class MoveService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMove(Invoice invoice) throws AxelorException {
     Move move = null;
 
@@ -420,7 +420,7 @@ public class MoveService {
     return oDmove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(
       Move move,
       boolean isAutomaticReconcile,
@@ -439,7 +439,8 @@ public class MoveService {
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
             move.getIgnoreInDebtRecoveryOk(),
-            move.getIgnoreInAccountingOk());
+            move.getIgnoreInAccountingOk(),
+            move.getAutoYearClosureMove());
 
     move.setInvoice(move.getInvoice());
     move.setPaymentVoucher(move.getPaymentVoucher());
@@ -536,5 +537,16 @@ public class MoveService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
+    move =
+        generateReverse(
+            move,
+            (boolean) assistantMap.get("isAutomaticReconcile"),
+            (boolean) assistantMap.get("isAutomaticAccounting"),
+            (boolean) assistantMap.get("isUnreconcileOriginalMove"),
+            (LocalDate) assistantMap.get("dateOfReversion"));
+    return move;
   }
 }

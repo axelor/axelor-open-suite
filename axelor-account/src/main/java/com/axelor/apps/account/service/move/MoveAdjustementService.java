@@ -65,7 +65,7 @@ public class MoveAdjustementService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createAdjustmentDebitMove(MoveLine debitMoveLine) throws AxelorException {
 
     Partner partner = debitMoveLine.getPartner();

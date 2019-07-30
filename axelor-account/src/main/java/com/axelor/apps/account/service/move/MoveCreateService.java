@@ -27,12 +27,14 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -126,6 +128,7 @@ public class MoveCreateService {
         paymentMode,
         technicalOriginSelect,
         false,
+        false,
         false);
   }
 
@@ -153,7 +156,8 @@ public class MoveCreateService {
       PaymentMode paymentMode,
       int technicalOriginSelect,
       boolean ignoreInDebtRecoveryOk,
-      boolean ignoreInAccountingOk)
+      boolean ignoreInAccountingOk,
+      boolean autoYearClosureMove)
       throws AxelorException {
     log.debug(
         "Creating a new generic accounting move (journal : {}, company : {}",
@@ -166,10 +170,21 @@ public class MoveCreateService {
 
     move.setIgnoreInDebtRecoveryOk(ignoreInDebtRecoveryOk);
     move.setIgnoreInAccountingOk(ignoreInAccountingOk);
+    move.setAutoYearClosureMove(autoYearClosureMove);
 
-    Period period = periodService.rightPeriod(date, company, YearRepository.TYPE_FISCAL);
+    if (autoYearClosureMove) {
+      move.setPeriod(periodService.getPeriod(date, company, YearRepository.TYPE_FISCAL));
+      if (move.getPeriod() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.PERIOD_1),
+            company.getName(),
+            date.toString());
+      }
+    } else {
+      move.setPeriod(periodService.getActivePeriod(date, company, YearRepository.TYPE_FISCAL));
+    }
 
-    move.setPeriod(period);
     move.setDate(date);
     move.setMoveLineList(new ArrayList<MoveLine>());
 

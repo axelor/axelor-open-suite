@@ -155,7 +155,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createFixedAsset(Invoice invoice) throws AxelorException {
 
     if (invoice != null && invoice.getInvoiceLineList() != null) {
@@ -212,7 +212,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void disposal(LocalDate disposalDate, BigDecimal disposalAmount, FixedAsset fixedAsset)
       throws AxelorException {
 

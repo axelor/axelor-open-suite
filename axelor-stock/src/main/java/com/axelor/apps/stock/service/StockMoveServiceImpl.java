@@ -81,6 +81,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppBaseService appBaseService;
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
+  protected ProductRepository productRepository;
   private StockMoveToolService stockMoveToolService;
   private StockMoveLineRepository stockMoveLineRepo;
 
@@ -91,13 +92,15 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
-      PartnerProductQualityRatingService partnerProductQualityRatingService) {
+      PartnerProductQualityRatingService partnerProductQualityRatingService,
+      ProductRepository productRepository) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.stockMoveRepo = stockMoveRepository;
     this.partnerProductQualityRatingService = partnerProductQualityRatingService;
+    this.productRepository = productRepository;
   }
 
   /**
@@ -218,7 +221,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(StockMove stockMove) throws AxelorException {
 
     this.plan(stockMove);
@@ -226,7 +229,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void goBackToDraft(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
       throw new AxelorException(
@@ -239,7 +242,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
 
     LOG.debug("Planification du mouvement de stock : {} ", stockMove.getStockMoveSeq());
@@ -290,9 +293,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setName(stockMoveToolService.computeName(stockMove));
     }
 
-    if (stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
-    }
     int initialStatus = stockMove.getStatusSelect();
 
     setPlannedStatus(stockMove);
@@ -365,7 +365,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean checkOngoingInventoryFlag)
       throws AxelorException {
     LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
@@ -763,14 +763,14 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException {
     applyCancelReason(stockMove, cancelReason);
     cancel(stockMove);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
     LOG.debug("Annulation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
     int initialStatus = stockMove.getStatusSelect();
@@ -815,7 +815,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Boolean splitStockMoveLinesUnit(List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
 
     Boolean selected = false;
@@ -850,7 +850,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void splitStockMoveLinesSpecial(
       StockMove stockMove, List<StockMoveLine> stockMoveLines, BigDecimal splitQty) {
 
@@ -879,7 +879,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public StockMove splitInto2(
       StockMove originalStockMove, List<StockMoveLine> modifiedStockMoveLines)
       throws AxelorException {
@@ -944,14 +944,14 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
     for (StockMoveLine line : stockMove.getStockMoveLineList()) line.setRealQty(line.getQty());
     stockMoveRepo.save(stockMove);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException {
 
     LOG.debug(
@@ -1182,7 +1182,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
     stockMove.setFullySpreadOverLogisticalFormsFlag(
         computeFullySpreadOverLogisticalFormsFlag(stockMove));
@@ -1200,7 +1200,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         : true;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void applyCancelReason(StockMove stockMove, CancelReason cancelReason)
       throws AxelorException {
     if (cancelReason == null) {
@@ -1257,7 +1257,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateStocks(StockMove stockMove) throws AxelorException {
     if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
       return;
@@ -1292,5 +1292,19 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLine ->
             stockMove.addPlannedStockMoveLineListItem(
                 stockMoveLineRepo.copy(stockMoveLine, false)));
+  }
+
+  @Override
+  @Transactional
+  public void updateProductNetMass(StockMove stockMove) throws AxelorException {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        if (stockMoveLine.getProduct() != null) {
+          Product product = productRepository.find(stockMoveLine.getProduct().getId());
+          stockMoveLine.setNetMass(product.getNetMass());
+          stockMoveLineRepo.save(stockMoveLine);
+        }
+      }
+    }
   }
 }

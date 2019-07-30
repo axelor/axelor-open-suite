@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
         model="com.axelor.apps.sale.db.SaleOrderLine" onNew="action-group-sale-saleorderline-onnew,action-record-sale-order-line-fill-request-qty"
@@ -50,6 +50,10 @@
 
 	<action-method name="action-method-sale-order-line-change-requested-reserved-qty">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeRequestedReservedQty"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkInvoicedOrDeliveredOrderQty"/>
 	</action-method>
 
 	<action-method name="action-method-sale-order-line-request-qty">
@@ -119,7 +123,7 @@
 	</action-view>
 
 	<action-record name="action-record-sale-order-line-future-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, __parent__.stockLocation.id)"/>
+		<field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, __parent__.stockLocation.id, null)"/>
 	</action-record>
 
   <action-record name="action-record-sale-order-line-fill-request-qty" model="com.axelor.apps.sale.db.SaleOrderLine">

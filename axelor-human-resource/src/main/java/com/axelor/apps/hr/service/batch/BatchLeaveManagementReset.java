@@ -69,7 +69,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void resetLeaveManagement(Employee employee) throws AxelorException {
     LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
     for (LeaveLine leaveLine : employee.getLeaveLineList()) {

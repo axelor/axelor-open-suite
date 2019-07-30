@@ -79,7 +79,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     this.paymentScheduleLineRepository = paymentScheduleLineRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
 
     if (bankOrders == null || bankOrders.size() <= 1) {
@@ -324,7 +324,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeFromInvoicePayments(Collection<InvoicePayment> invoicePayments)
       throws AxelorException {
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<hilite color="danger" if="statusSelect == 5"/>
@@ -69,7 +69,8 @@
 				<panel name="generalInfoPanel" colSpan="12">
 					<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 					<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
-					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"
+            onChange="action-expense-record-user-onchange"/>
 					<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
 					<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
 					<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
@@ -196,18 +197,25 @@
 	</action-group>
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
-	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-        <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
+		<field name="user" expr="eval:__user__"/>
+		<field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+		<field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
 		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, _payCompany).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
-    	<field name="taxTotal" expr="eval: 0"/>
-    	<field name="inTaxTotal" expr="eval: 0"/>
-    	<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
+		<field name="taxTotal" expr="eval: 0"/>
+		<field name="inTaxTotal" expr="eval: 0"/>
+		<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
+		<field name="bankDetails"
+		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany.defaultBankDetails"/>
 	</action-record>
 
+  <action-record name="action-expense-record-user-onchange" model="com.axelor.apps.hr.db.Expense">
+    <field name="bankDetails"
+      expr="eval: user?.employee?.mainEmploymentContract?.payCompany ? user.employee.mainEmploymentContract.payCompany.defaultBankDetails : user.activeCompany.defaultBankDetails"/>
+  </action-record>
+
 	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
-		<field name="period" expr="eval: null"/>
+		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, company).fetchOne()"/>
 		<field name="bankDetails" expr="eval: null"/>
 		<field name="user" expr="eval: null"/>
 	</action-record>

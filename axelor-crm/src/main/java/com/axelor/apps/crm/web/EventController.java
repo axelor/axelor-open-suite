@@ -230,7 +230,7 @@ public class EventController {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateRecurrentEvents(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
@@ -255,7 +255,7 @@ public class EventController {
   }
 
   @Transactional
-  public void deleteThis(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteThis(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);
     Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
@@ -268,7 +268,7 @@ public class EventController {
   }
 
   @Transactional
-  public void deleteNext(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteNext(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);
     Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
@@ -283,7 +283,7 @@ public class EventController {
   }
 
   @Transactional
-  public void deleteAll(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteAll(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);
     Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
@@ -303,7 +303,7 @@ public class EventController {
     response.setReload(true);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void changeAll(ActionRequest request, ActionResponse response) throws AxelorException {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);

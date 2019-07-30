@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid name="subscription-so-invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<field name="subscriptionFromDate" />
@@ -14,5 +14,9 @@
     <action-method name="action-supplychain-method-generate-subscription-invoice">
     	<call class="com.axelor.apps.supplychain.web.InvoiceController" method="generateSubscriptionInvoices"/>
     </action-method>
+    
+    <action-validate name="action-invoice-validate-pfp-stock-move">
+    	<alert message="At least one stock move is in litigation, do you really want to validate passed for payment ?" if="__repo__(StockMove).all().filter('self.invoice.id = ? and self.pfpValidateStatusSelect = 3',id).fetch().size &gt;= 1"/>
+    </action-validate>
     
 </object-views>

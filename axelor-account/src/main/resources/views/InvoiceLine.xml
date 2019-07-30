@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <hilite strong="true" color="default" if="typeSelect != 0"/>
        	<field name="product.code" width="120"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
-        <field name="price" x-scale="2"/>
+        <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal" aggregate="sum"/>
@@ -30,7 +30,7 @@
   		<field name="product.code" title="product.code" width="120"/>
   		<field name="productName" width="170"/>
   		<field name="qty" width="50" aggregate="sum"/>
-  		<field name="price" x-scale="2"/>
+  		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
   		<field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="exTaxTotal" aggregate="sum"/>
   		<field name="invoice.currency" width="85"/>
@@ -107,7 +107,7 @@
 					</viewer>
 				</field>
 				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
-				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false"/>
+				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false" domain="self.statusSelect = 2"/>
 				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
 				<field name="$currencySymbol" hidden="true"/>
 			</panel>
@@ -121,10 +121,10 @@
 				<field name="account.analyticDistributionAuthorized" hidden="true" />
 			</panel>
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
-				<field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-				<field name="saleOrderLine" canEdit="false" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
-				<field name="purchaseOrderLine" canEdit="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+
+				<field name="saleOrderLine" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
+				<field name="purchaseOrderLine" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+
 			</panel>
 		</panel-tabs>
 	</form>
@@ -224,7 +224,6 @@
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
 	    <action name="action-invoice-line-record-new"/>
-	    <action name="action-invoice-line-record-order" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
 	    <action name="action-invoice-line-record-project"/>
 	    <action name="action-invoice-line-record-operation-type"/>
 	    <action name="action-attrs-account-invoice-line-onnew-onload"/>
@@ -401,11 +400,6 @@
 	
 	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
 		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
-	</action-record>
-
-	<action-record name="action-invoice-line-record-order" model="com.axelor.apps.account.db.InvoiceLine">
-		<field name="saleOrder" expr="eval: _parent?.saleOrder" if="_parent?.operationTypeSelect == 3 || _parent?.operationTypeSelect == 4"/>
-		<field name="purchaseOrder" expr="eval: _parent?.purchaseOrder" if="_parent?.operationTypeSelect == 1 || _parent?.operationTypeSelect == 2"/>
 	</action-record>
 
 	<action-attrs name="action-invoice-line-attrs-compute-total-pack">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
 		name="data-create-backup-grid">
@@ -22,7 +22,7 @@
 			<field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"  colSpan="2"/>
 			<spacer colSpan="4"/>
 			<button-group name="mainBtnGroup" colSpan="3">
-			<button name="backToDraftBtn" title="Back To Draft"
+			<button name="backToDraftBtn" title="Return to draft status"
 				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
 				colSpan="4" onClick="data.create.backup.set.draft.status" />
 			<button name="createBtn" title="Create"

@@ -81,7 +81,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message generateMessage(Long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
@@ -91,8 +91,10 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       if (!model.equals(metaModel.getFullName())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.TEMPLATE_SERVICE_3),
-            I18n.get(IExceptionMessage.SET_EMAIL_TEMPLATE_MESSAGE));
+            String.format(
+                I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL),
+                metaModel.getFullName(),
+                model));
       }
       initMaker(objectId, model, tag);
     }

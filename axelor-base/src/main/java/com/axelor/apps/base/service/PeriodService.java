@@ -33,7 +33,8 @@ public interface PeriodService {
    * @return
    * @throws AxelorException
    */
-  public Period rightPeriod(LocalDate date, Company company, int typeSelect) throws AxelorException;
+  public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
+      throws AxelorException;
 
   public Period getPeriod(LocalDate date, Company company, int typeSelect);
 
@@ -41,10 +42,9 @@ public interface PeriodService {
 
   public void testOpenPeriod(Period period) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void close(Period period);
+  public void close(Period period) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void adjust(Period period);
 
   /**
