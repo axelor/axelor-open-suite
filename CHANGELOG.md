@@ -72,6 +72,7 @@
 - MENU BUILDER : Delete a menu completely
 - MRP : Compute cumulative qty when mrp line type is stock
 - PRODUCT : increased the width of the field "name" in form view
+- ACCOUNTING : general ledger new columns on BIRT
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
