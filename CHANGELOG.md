@@ -10,6 +10,7 @@
 - MrpForecast : Enable Tracking Feature for all fields on the creation of record
 - SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
 - Wkf : Add an option to display 'Track flow' button.
+- HR : Enable Tracking Feature for 'statusSelect' field.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
