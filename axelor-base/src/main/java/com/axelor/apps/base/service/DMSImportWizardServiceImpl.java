@@ -23,6 +23,7 @@ import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
@@ -43,8 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DMSImportWizardServiceImpl implements DMSImportWizardService {
-
-  @Inject private DMSFileRepository dmsFileRepo;
 
   @Inject private MetaFiles metaFiles;
 
@@ -102,7 +101,7 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
       LOG.debug("Praent file: {}", dmsFile.getParent());
       if (zipEntry.isDirectory()) {
         dmsFile.setIsDirectory(true);
-        dmsFile = dmsFileRepo.save(dmsFile);
+        dmsFile = Beans.get(DMSFileRepository.class).save(dmsFile);
         dmsMap.put(zipEntry.getName(), dmsFile);
         LOG.debug("DMS Directory created: {}", dmsFile.getFileName());
       } else {
@@ -115,7 +114,7 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
           MetaFiles.checkType(file);
           MetaFile metaFile = metaFiles.upload(zipInputStream, fileName);
           dmsFile.setMetaFile(metaFile);
-          dmsFile = dmsFileRepo.save(dmsFile);
+          dmsFile = Beans.get(DMSFileRepository.class).save(dmsFile);
           LOG.debug("DMS File created: {}", dmsFile.getFileName());
         } catch (IllegalArgumentException e) {
           LOG.debug("File type is not allowed : {}", fileType);
