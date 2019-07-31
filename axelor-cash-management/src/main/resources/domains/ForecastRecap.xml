@@ -18,6 +18,7 @@
 	<many-to-one name="salesMan" ref="com.axelor.auth.db.User" title="SalesMan"/>
 	<integer name="displayTypeSelect" title="Display" selection="display.type.select" default="3"/>
 	<boolean name="isReport"/>
+	<date name="calculationDate" title="Calculation Date" readonly="true"/>
 	<extra-code><![CDATA[
 	
 	   

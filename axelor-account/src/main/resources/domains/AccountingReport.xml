@@ -33,6 +33,9 @@
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
+    <boolean name="displayCodeAccountOnPrinting" title="Display code account on printing"/>
+    <boolean name="displayNameAccountOnPrinting" title="Display name account on printing"/>
+    <boolean name="displayMoveSequenceOnPrinting" title="Display move sequence on printing"/>
 	<unique-constraint columns="ref,company"/>
     
     <extra-code><![CDATA[
