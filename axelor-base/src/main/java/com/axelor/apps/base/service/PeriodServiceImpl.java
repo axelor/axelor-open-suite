@@ -62,11 +62,12 @@ public class PeriodServiceImpl implements PeriodService {
 
     Period period = this.getPeriod(date, company, typeSelect);
     if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+      String dateStr = date != null ? date.toString() : "";
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PERIOD_1),
           company.getName(),
-          date.toString());
+          dateStr);
     }
     LOG.debug("Period : {}", period);
     return period;

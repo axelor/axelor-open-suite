@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -56,6 +57,7 @@ import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -851,5 +853,42 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return true;
     }
     return false;
+  }
+
+  @Override
+  public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+      long supplierNotLetteredAdvancePaymentMoveLinesAmount =
+          getNotLetteredAdvancePaymentMoveLinesAmount(invoice.getPartner());
+
+      if (supplierNotLetteredAdvancePaymentMoveLinesAmount > 0) {
+        return I18n.get(IExceptionMessage.INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES);
+      }
+    }
+    return null;
+  }
+
+  protected long getNotLetteredAdvancePaymentMoveLinesAmount(Partner partner) {
+    return JPA.em()
+        .createQuery(
+            "Select moveLine.id "
+                + "FROM  MoveLine moveLine "
+                + "LEFT JOIN Move move on moveLine.move = move.id "
+                + "LEFT JOIN Invoice invoice on move.id = invoice.move "
+                + "LEFT JOIN Account account on moveLine.account = account.id "
+                + "LEFT JOIN AccountType accountType on account.accountType = accountType.id "
+                + "LEFT JOIN Partner partner on moveLine.partner = partner.id "
+                + "WHERE invoice.move = null "
+                + "AND moveLine.debit > 0 "
+                + "AND moveLine.amountRemaining > 0 "
+                + "AND accountType.technicalTypeSelect = ?1 "
+                + "AND move.statusSelect in (?2,?3) "
+                + "AND partner.id = ?4")
+        .setParameter(1, AccountTypeRepository.TYPE_PAYABLE)
+        .setParameter(2, MoveRepository.STATUS_DAYBOOK)
+        .setParameter(3, MoveRepository.STATUS_VALIDATED)
+        .setParameter(4, partner.getId())
+        .getResultList()
+        .size();
   }
 }

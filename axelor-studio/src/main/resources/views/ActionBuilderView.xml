@@ -6,12 +6,14 @@
   <grid name="action-builder-view-grid" title="View" model="com.axelor.studio.db.ActionBuilderView" editable="true" orderBy="sequence" canMove="true">
   	  <field name="viewType" />	
       <field name="viewName" widget="ref-text" x-target="com.axelor.meta.db.MetaView" x-target-name="name" onSelect="action-action-builder-view-name-domain" />
+      <field name="viewConditionToCheck"/>
   </grid>
   
   <form name="action-builder-view-form" title="View" model="com.axelor.studio.db.ActionBuilderView">
   	  <panel name="mainPanel">
 	  	  <field name="viewType" colSpan="4" />
   		  <field name="viewName" colSpan="8" widget="ref-text" x-target="com.axelor.meta.db.MetaView" x-target-name="name" onSelect="action-action-builder-view-name-domain"/>
+  		  <field name="viewConditionToCheck"/>
       </panel>
   </form>
   
