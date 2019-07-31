@@ -146,4 +146,10 @@
     	<call class="com.axelor.apps.talent.web.JobApplicationController" method="setSocialNetworkUrl"/>
     </action-method>
     
+    <search-filters name="job-application-filters" model="com.axelor.apps.talent.db.JobApplication" title="Job Application Filters">
+		<filter title="Current applications">
+			<domain>self.statusSelect = 0</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

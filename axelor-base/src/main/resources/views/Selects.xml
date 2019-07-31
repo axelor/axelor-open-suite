@@ -124,12 +124,6 @@
 		<option value='2'>Calendar synchronization</option>
 	</selection>
 
-	<selection name="base.keyword.type.select">
-		<option value="1">Tools</option>
-		<option value="2">Sector</option>
-		<option value="3">Work</option>
-	</selection>
-	
 	<selection name="base.routing.rule.type.select">
 		<option value="1">Contains</option>
 		<option value="2">Not contains</option>

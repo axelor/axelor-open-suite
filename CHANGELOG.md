@@ -123,6 +123,9 @@
 - HR : TRAINING - Optimization of the menu by adding filters
 - MRP : Group proposals per supplier
 - Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList
+- MESSAGE TEMPLATE : added the management of additional contexts (groovy evaluation) in order to allow the use of Json fields.
+- HR : APPRAISALS - Optimization of the menu by adding filters
+- HR : RECRUITMENT - optimization of the menu by adding filters
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -168,6 +171,8 @@
 - INVENTORY : adding ODS file format in report selection type.
 - Quality Control : Set default printing setting and update translation
 - INVOICE : Configure BIRT to generate an Excel and a Word file
+- KEYWORD : remove Keyword model.
+- Advanced Import : trim data before import.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -202,5 +207,6 @@
 - Advanced Data Import : Specify truncated value to sampleLines for large string.
 - MetaSelect : Update view and domain with latest version.
 - ERROR : Fixed NPE on product selection on invoiceLine
+- QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
