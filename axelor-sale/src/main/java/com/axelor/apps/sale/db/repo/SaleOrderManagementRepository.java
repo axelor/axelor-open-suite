@@ -50,6 +50,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setMarginRate(null);
     copy.setEndOfValidityDate(null);
     copy.setDeliveryDate(null);
+    copy.setOrderBeingEdited(false);
 
     for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
       saleOrderLine.setDesiredDelivDate(null);

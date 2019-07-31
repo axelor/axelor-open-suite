@@ -5,13 +5,11 @@
 	
 	<grid name="category-grid" title="Category" model="com.axelor.apps.project.db.ProjectCategory">
 		<field name="name"/>
-		<field name="byDefault"/>
 	</grid>
 	
 	<form title="Category" name="category-form"  model="com.axelor.apps.project.db.ProjectCategory">
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="byDefault"/>
 		</panel>
 		
 	</form>

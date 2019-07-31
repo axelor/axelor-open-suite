@@ -67,10 +67,12 @@ public class ExportService {
 
       if (line.getParent() == null) {
         ActionBuilder builder = line.getActionBuilder();
-        target = builder.getTargetModel();
-        source = builder.getModel();
-        if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_UPDATE) {
-          target = builder.getModel();
+        if (builder != null) {
+          target = builder.getTargetModel();
+          source = builder.getModel();
+          if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_UPDATE) {
+            target = builder.getModel();
+          }
         }
       } else {
         ActionBuilderLine parent = line.getParent();

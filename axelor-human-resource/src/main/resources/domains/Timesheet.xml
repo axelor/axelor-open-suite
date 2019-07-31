@@ -49,6 +49,9 @@
 	  		public static final int STATUS_CANCELED = 5;
 	  ]]>
       </extra-code>
+      <track>
+          <field name="statusSelect"/>
+      </track>
   </entity>
   
 </domain-models>

@@ -45,13 +45,13 @@
 	<!-- 	SALES MANAGER DASHBOARD -->
 	
 	<dashboard title="Dashboard" name="sale.manager.dashboard.sample"  >
+        <dashlet action="dashlet.sales.manager.dashboard.sales.orders.per.salesman" height="350" colSpan="12"/>
 		<dashlet action="dashlet.sales.turnover.ytd.vs.previous.years.by.month" height="350"/>
 		<dashlet action="dashlet.sales.turnover.ytd.vs.past.year" height="350"/>  	
 		<dashlet action="dashlet.sales.turnover.by.product.ytd.vs.lastyear" height="350"/>
 		<dashlet action="dashlet.sales.turnover.ytd.vs.lastyear.by.family" height="350" />
 		<dashlet action="dashlet.sales.turnover.by.family.ytd.vs.lastyear" height="350" />		
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team" height="350"/>
-		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.salesman" height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.sales.distribution.per.family" height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.product.sales.per.category" height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.sales.per.country" height="350" />
@@ -104,8 +104,8 @@
 
 	</action-view>
 	
-	<action-view name="dashlet.sales.manager.dashboard.turnover.per.salesman" title="Turnover (excl. Tax) per saleman">
-	  <view type="chart" name="chart.sale.manager.dashboard.turnover.per.saleman"/>
+	<action-view name="dashlet.sales.manager.dashboard.sales.orders.per.salesman" title="Sales Orders per salesman">
+	  <view type="chart" name="chart.sale.manager.dashboard.sales.orders.per.saleman"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 
 	</action-view>
@@ -153,7 +153,7 @@
 		<dashlet action="dashlet.salesman.dashboard.orders" canSearch="true" height="350" colSpan="12"/>
 		<dashlet action="dashlet.my.turnover.per.month"  height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.team"  height="350"/>
-		<dashlet action="dashlet.sales.manager.dashboard.turnover.per.salesman"  height="350" />
+		<dashlet action="dashlet.sales.manager.dashboard.sales.orders.per.salesman"  height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.sales.distribution.per.family"  height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.product.sales.per.category"  height="350" />
 		<dashlet action="dashlet.sales.manager.dashboard.sales.per.country"  height="350" />
