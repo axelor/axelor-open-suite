@@ -145,6 +145,7 @@
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 - PERIOD : Fix NPE when date is null.
 - ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
+- SUBROGATION RELEASE : corrected subrogation release refund moves sense and removed the possibility to select a supplier invoice or a supplier refund in a subrogation realase.
 
 ## [5.1.7] - 2019-06-17
 ## Features
