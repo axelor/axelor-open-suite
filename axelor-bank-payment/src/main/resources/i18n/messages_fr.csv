@@ -191,7 +191,7 @@
 "Bank payment config (${ name })",,,
 "Bank payment configuration",,,
 "Bank payment configurations","Configurations paiement bancaire",,
-"Bank reconcile amount must be inferior or equal to credit or debit.","Le montant rapproché doit être inférieur ou égale au crédit ou au débit.",,
+"Bank reconcile amount must be inferior or equal to credit or debit.","Le montant rapproché doit être inférieur ou égal au crédit ou au débit.",,
 "Bank reconciled amount","Montant rapproché",,
 "Bank reconciliation","Rapprochement bancaire",,
 "Bank reconciliation Line","Ligne de rapprochement bancaire",,
