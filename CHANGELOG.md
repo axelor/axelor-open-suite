@@ -143,6 +143,7 @@
 - Studio: Fix translation for 'Order'
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 - PERIOD : Fix NPE when date is null.
+- ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
 
 ## [5.1.7] - 2019-06-17
 ## Features
