@@ -63,6 +63,7 @@
 - SUPPLIER INVOICE : add a new verification, if an active bank order already exist for a supplier invoice, it's impossible to create an other bank order from the supplier invoice. 
 - STOCK LOCATION LINE : fixed missing stock location on form view
 - MENU BUILDER : Re-arrange the position of 'lines' field
+- PARTNER GENERAL LEDGER REPORT : add the possibility to group on partner and add the possibility to display only not completely lettered move lines.
 - PURCHASE ORDER PRINTING : Add versionNumber on sequence
 - EXPENSE : Reduce calling of three action-methods to one onSave of form
 - UNIT CONVERSION : Set to two the number of decimal on grid view.
