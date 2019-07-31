@@ -447,17 +447,8 @@ public class MoveService {
       log.debug("Moveline {}", moveLine);
       Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
-      MoveLine newMoveLine =
-          moveLineService.createMoveLine(
-              newMove,
-              moveLine.getPartner(),
-              moveLine.getAccount(),
-              moveLine.getCurrencyAmount(),
-              !isDebit,
-              todayDate,
-              moveLine.getCounter(),
-              moveLine.getName(),
-              null);
+      MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, todayDate, isDebit);
+
       newMove.addMoveLineListItem(newMoveLine);
 
       if (validatedMove) {
@@ -517,5 +508,22 @@ public class MoveService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  protected MoveLine generateReverseMoveLine(
+      Move reverseMove, MoveLine orgineMoveLine, LocalDate todayDate, boolean isDebit)
+      throws AxelorException {
+    MoveLine reverseMoveLine =
+        moveLineService.createMoveLine(
+            reverseMove,
+            orgineMoveLine.getPartner(),
+            orgineMoveLine.getAccount(),
+            orgineMoveLine.getCurrencyAmount(),
+            !isDebit,
+            todayDate,
+            orgineMoveLine.getCounter(),
+            orgineMoveLine.getName(),
+            null);
+    return reverseMoveLine;
   }
 }

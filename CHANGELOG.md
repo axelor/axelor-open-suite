@@ -76,6 +76,9 @@
 - PRODUCT : increased the width of the field "name" in form view
 - ACCOUNTING : general ledger new columns on BIRT
 - FORECAST RECAP : Improve the birt report to follow the Axelor guidelines
+- MOVELINE : bank reconciled amount is now editable.
+- MOVELINE : reverse move line stop to appear in bank reconciliation.
+- MOVELINE : add a verification between bank reconcile amount and credit or debit.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
