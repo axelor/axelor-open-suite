@@ -74,6 +74,7 @@
 - MRP : Compute cumulative qty when mrp line type is stock
 - PRODUCT : increased the width of the field "name" in form view
 - ACCOUNTING : general ledger new columns on BIRT
+- FORECAST RECAP : Improve the birt report to follow the Axelor guidelines
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
