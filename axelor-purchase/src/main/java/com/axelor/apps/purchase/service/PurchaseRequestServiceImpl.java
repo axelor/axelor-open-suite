@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.apps.purchase.db.PurchaseRequestLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
@@ -30,7 +29,6 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,13 +74,12 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
       throws AxelorException {
 
-    List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<PurchaseOrderLine>();
     Map<String, PurchaseOrder> purchaseOrderMap = new HashMap<>();
 
     for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      PurchaseOrder purchaseOrder;
-
+      Product product = purchaseRequest.getProduct();
       String key = groupBySupplier ? getPurchaseOrderGroupBySupplierKey(purchaseRequest) : null;
+      PurchaseOrder purchaseOrder;
       if (key != null && purchaseOrderMap.containsKey(key)) {
         purchaseOrder = purchaseOrderMap.get(key);
       } else {
@@ -90,37 +87,32 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
         key = key == null ? purchaseRequest.getId().toString() : key;
         purchaseOrderMap.put(key, purchaseOrder);
       }
+      PurchaseOrderLine purchaseOrderLine =
+          groupByProduct && purchaseOrder != null
+              ? getPoLineByProduct(product, purchaseOrder)
+              : null;
 
       if (purchaseOrder == null) {
         purchaseOrder = createPurchaseOrder(purchaseRequest);
       }
-
-      for (PurchaseRequestLine purchaseRequestLine : purchaseRequest.getPurchaseRequestLineList()) {
-        PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
-        Product product = purchaseRequestLine.getProduct();
-
-        purchaseOrderLine =
-            groupByProduct && purchaseOrder != null
-                ? getPoLineByProduct(product, purchaseOrder)
-                : null;
-
+      if (purchaseOrderLine == null) {
         purchaseOrderLine =
             purchaseOrderLineService.createPurchaseOrderLine(
                 purchaseOrder,
                 product,
-                purchaseRequestLine.getNewProduct()
-                    ? purchaseRequestLine.getProductTitle()
+                purchaseRequest.getNewProduct()
+                    ? purchaseRequest.getProductTitle()
                     : product.getName(),
-                purchaseRequestLine.getNewProduct() ? null : product.getDescription(),
-                purchaseRequestLine.getQuantity(),
-                purchaseRequestLine.getUnit());
+                purchaseRequest.getNewProduct() ? null : product.getDescription(),
+                purchaseRequest.getQuantity(),
+                purchaseRequest.getUnit());
         purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
-        purchaseOrderLineList.add(purchaseOrderLine);
-        purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+      } else {
+        purchaseOrderLine.setQty(purchaseOrderLine.getQty().add(purchaseRequest.getQuantity()));
       }
-      purchaseOrder.getPurchaseOrderLineList().addAll(purchaseOrderLineList);
+      purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
-      purchaseOrderRepo.save(purchaseOrder);
+      purchaseOrderLineRepo.save(purchaseOrderLine);
     }
     List<PurchaseOrder> purchaseOrders =
         purchaseOrderMap.values().stream().collect(Collectors.toList());
