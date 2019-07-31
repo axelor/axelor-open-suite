@@ -11,6 +11,7 @@
 - SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
 - Wkf : Add an option to display 'Track flow' button.
 - HR : Enable Tracking Feature for 'statusSelect' field.
+- PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -72,6 +73,7 @@
 - MENU BUILDER : Delete a menu completely
 - MRP : Compute cumulative qty when mrp line type is stock
 - PRODUCT : increased the width of the field "name" in form view
+- ACCOUNTING : general ledger new columns on BIRT
 - FORECAST RECAP : Improve the birt report to follow the Axelor guidelines
 
 ## Bug Fixes
@@ -142,6 +144,7 @@
 - Studio: Fix translation for 'Order'
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 - PERIOD : Fix NPE when date is null.
+- ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
 
 ## [5.1.7] - 2019-06-17
 ## Features
