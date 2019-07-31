@@ -9,6 +9,9 @@
 - FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
 - MrpForecast : Enable Tracking Feature for all fields on the creation of record
 - SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
+- Wkf : Add an option to display 'Track flow' button.
+- HR : Enable Tracking Feature for 'statusSelect' field.
+- PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -66,6 +69,13 @@
 - MRP : Add field in stock location to take in consideration in Mrp
 - INVOICE SUPPLIER FORM : add a new flash message on ventilation who pop when unlettered supplier move lines are found for the invoice partner.
 - MRP : Compute cumulative qty when mrp line type is stock
+- Fixed assets : add stock location and tracking number management
+- STOCK CONFIG : Put panel customsPanel above stockConfigPanel
+- MENU BUILDER : Delete a menu completely
+- MRP : Compute cumulative qty when mrp line type is stock
+- PRODUCT : increased the width of the field "name" in form view
+- ACCOUNTING : general ledger new columns on BIRT
+- FORECAST RECAP : Improve the birt report to follow the Axelor guidelines
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -130,8 +140,16 @@
 - STOCK RULES : send email if stock move rule alert is activated
 - BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
 - Projected Stock : remove twice injection
+- PROJECT FORM :change the position of hidden field '$toInvoiceCounter' in project form
+- WKF : Fix NPE when select a status field with selection which is not exist.
+- BANKORDER : Fix error when merge bankorders generated from expense
+- Studio: Fix translation for 'Order'
+- Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
+- PERIOD : Fix NPE when date is null.
+- ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
 
 ## [5.1.7] - 2019-06-17
+## Features
 - USER : filter assigned to user in partner form
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
