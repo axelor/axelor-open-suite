@@ -65,6 +65,7 @@
 				<field name="usableOnPurchaseOrder" colSpan="3"/>
 				<field name="usableOnProduction" colSpan="3"/>
 				<field name="directOrderLocation" colSpan="3"/>
+				<field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
 				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
 			</panel>
 		</panel-tabs>

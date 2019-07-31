@@ -117,6 +117,10 @@ public interface ITranslation {
       "AccountingReportType1.paymentMode"; /*)*/
   public static final String ACCOUNTING_REPORT_1_DATE = /*$$(*/ "AccountingReportType1.date"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_1_CODE = /*$$(*/ "AccountingReportType1.code"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_1_NAME = /*$$(*/ "AccountingReportType1.name"; /*)*/
+
   public static final String ACCOUNTING_REPORT_1_DESCRIPTION = /*$$(*/
       "AccountingReportType1.description"; /*)*/
   public static final String ACCOUNTING_REPORT_1_PARTNER = /*$$(*/
