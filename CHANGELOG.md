@@ -193,5 +193,6 @@
 - MetaSelect : Update view and domain with latest version.
 - ERROR : Fixed NPE on product selection on invoiceLine
 - QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
+- EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
