@@ -16,7 +16,7 @@
 			hideIf="__parent__.statusSelect &gt; 2 &amp;&amp; !newProduct" /><spacer/>
 			<field name="product" colSpan="6" form-view="product-form"
 				grid-view="product-grid" hideIf="newProduct" requiredIf="!newProduct"
-			    canEdit="false" onChange="action-purchase-request-line-product-on-change"/>
+			    canEdit="false" onChange="action-purchase-request-line-product-on-change" onSelect="action-purchase-request-line-attrs-product-doamin"/>
 			<field name="productTitle" colSpan="6" showIf="newProduct" requiredIf="newProduct"/>
 			<field name="unit" colSpan="6"/>
 			<field name="quantity" colSpan="6"/>
@@ -27,7 +27,11 @@
 	<action-record name="action-purchase-request-line-product-on-change" model="com.axelor.apps.purchase.db.PurchaseRequestLine">
 		<field name="unit" expr="eval: product?.purchasesUnit ? product.purchasesUnit : product?.unit"/>
 	</action-record>
-
+	
+	<action-attrs name="action-purchase-request-line-attrs-product-doamin">
+		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) &quot;"/>
+	</action-attrs>
+	
 	<action-record name="action-purchase-request-line-record-default" model="com.axelor.apps.purchase.db.PurchaseRequestLine">
   		<field name="quantity" expr="eval:1"/>
   		<field name="product" expr="eval:_parent?._product"/>
