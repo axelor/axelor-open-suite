@@ -154,6 +154,7 @@
 - KEYWORD : remove Keyword model.
 - Advanced Import : trim data before import.
 - USER : don't display the step "Employee" in the workflow when axelor-human-resource module is not installed
+- ACCOUNTING : year and accountSet fields are set empty when company is changed
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
