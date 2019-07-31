@@ -11,6 +11,7 @@
 - SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
 - Wkf : Add an option to display 'Track flow' button.
 - HR : Enable Tracking Feature for 'statusSelect' field.
+- PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
