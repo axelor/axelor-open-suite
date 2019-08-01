@@ -27,11 +27,16 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -303,5 +308,62 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     return invoicePaymentList;
+  }
+
+  @Override
+  public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException {
+    Company company = null;
+    Currency currency = null;
+    List<Long> invoiceToPay = new ArrayList<>();
+    Boolean isActivatePassedForPayment =
+        Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment();
+
+    for (Long invoiceId : invoiceIdList) {
+      Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+
+      if ((invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
+              && invoice.getOperationSubTypeSelect()
+                  != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+          || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+              && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED)) {
+
+        continue;
+      }
+
+      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
+
+        continue;
+      }
+
+      if (company == null) {
+        company = invoice.getCompany();
+      }
+      if (currency == null) {
+        currency = invoice.getCurrency();
+      }
+
+      if (invoice.getCompany() == null
+          || company == null
+          || !invoice.getCompany().equals(company)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
+      }
+      if (invoice.getCurrency() == null
+          || currency == null
+          || !invoice.getCurrency().equals(currency)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
+      }
+      if (isActivatePassedForPayment
+          && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION));
+      }
+      invoiceToPay.add(invoiceId);
+    }
+    return invoiceToPay;
   }
 }

@@ -72,6 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,10 +177,21 @@ public class MrpServiceImpl implements MrpService {
 
     // Initialize
     this.mrp = mrp;
-    this.stockLocationList =
-        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
-    this.assignProductAndLevel(this.getProductList());
+    List<StockLocation> slList =
+        stockLocationService
+            .getAllLocationAndSubLocation(mrp.getStockLocation(), false)
+            .stream()
+            .filter(x -> !x.getIsNotInMrp())
+            .collect(Collectors.toList());
+    this.stockLocationList = slList;
 
+    this.assignProductAndLevel(this.getProductList());
+    if (stockLocationList.isEmpty()) {
+      throw new AxelorException(
+          Mrp.class,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.MRP_MISSING_STOCK_LOCATION_VALID));
+    }
     // Get the stock for each product on each stock location
     this.createAvailableStockMrpLines();
 
@@ -262,7 +274,7 @@ public class MrpServiceImpl implements MrpService {
 
     boolean doASecondPass = false;
 
-    this.computeCumulativeQty(productRepository.find(product.getId()), false);
+    this.computeCumulativeQty(productRepository.find(product.getId()));
 
     JPA.clear();
 
@@ -515,12 +527,12 @@ public class MrpServiceImpl implements MrpService {
 
     for (Long productId : this.productMap.keySet()) {
 
-      this.computeCumulativeQty(productRepository.find(productId), false);
+      this.computeCumulativeQty(productRepository.find(productId));
     }
   }
 
   @Transactional
-  protected void computeCumulativeQty(Product product, boolean isProjectedStock) {
+  protected void computeCumulativeQty(Product product) {
 
     List<MrpLine> mrpLineList =
         mrpLineRepository
@@ -535,17 +547,7 @@ public class MrpServiceImpl implements MrpService {
     BigDecimal previousCumulativeQty = BigDecimal.ZERO;
 
     for (MrpLine mrpLine : mrpLineList) {
-
-      if (mrpLine.getMrpLineType().getElementSelect()
-              == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK
-          && !isProjectedStock) {
-
-        mrpLine.setCumulativeQty(mrpLine.getQty());
-      } else {
-
-        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
-      }
-
+      mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
       previousCumulativeQty = mrpLine.getCumulativeQty();
 
       log.debug(
@@ -829,15 +831,13 @@ public class MrpServiceImpl implements MrpService {
     for (Long productId : this.productMap.keySet()) {
 
       for (StockLocation stockLocation : this.stockLocationList) {
-
         this.createAvailableStockMrpLine(
             mrpRepository.find(mrp.getId()),
             productRepository.find(productId),
             stockLocationRepository.find(stockLocation.getId()),
             mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
-
-        JPA.clear();
       }
+      JPA.clear();
     }
   }
 
@@ -1052,7 +1052,15 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public Mrp completeProjectedStock(
+  public Mrp createProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
+    this.completeProjectedStock(mrp, product, company, stockLocation);
+    this.computeCumulativeQty(product);
+    return mrp;
+  }
+
+  protected Mrp completeProjectedStock(
       Mrp mrp, Product product, Company company, StockLocation stockLocation)
       throws AxelorException {
     this.mrp = mrp;
@@ -1085,8 +1093,6 @@ public class MrpServiceImpl implements MrpService {
     this.createPurchaseMrpLines();
 
     this.createSaleOrderMrpLines();
-
-    this.computeCumulativeQty(product, true);
 
     return mrp;
   }
