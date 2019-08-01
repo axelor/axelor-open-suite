@@ -457,7 +457,7 @@ public interface IExceptionMessage {
   static final String ACCOUNT_CONFIG_44 = /*$$(*/
       "%s : You must configure a year closure account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_45 = /*$$(*/
-	      "%s : You must configure a reported balance journal for the company %s" /*)*/;
+      "%s : You must configure a reported balance journal for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
