@@ -180,10 +180,28 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">real_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">real_date</text-property>
                     <text-property name="heading">real_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">picking_edit_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">picking_edit_date</text-property>
+                    <text-property name="heading">picking_edit_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">type_select</property>
@@ -208,6 +226,18 @@ else row["last_modified_by"]</expression>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">production_note</text-property>
                     <text-property name="heading">production_note</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">external_reference</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">external_reference</text-property>
+                    <text-property name="heading">external_reference</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">delivery_condition</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">delivery_condition</text-property>
+                    <text-property name="heading">delivery_condition</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">purchase_order_seq</property>
@@ -312,6 +342,12 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">gross_mass</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">picking_order_printing_detailed</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">picking_order_printing_detailed</text-property>
+                    <text-property name="heading">picking_order_printing_detailed</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">display_track_nbr_on_picking_printing</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_track_nbr_on_picking_printing</text-property>
@@ -363,136 +399,166 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">real_date</property>
-                        <property name="dataType">date</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">type_select</property>
+                        <property name="name">logo_width</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
+                        <property name="name">real_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">picking_edit_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">type_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">stock_move_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">9</property>
                         <property name="name">sale_order_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">10</property>
                         <property name="name">production_note</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
-                        <property name="name">purchase_order_seq</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">CustomerCode</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">title_select</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
                         <property name="position">11</property>
-                        <property name="name">name</property>
+                        <property name="name">external_reference</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">first_name</property>
+                        <property name="name">delivery_condition</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
-                        <property name="name">partner_type_select</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">purchase_order_seq</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">14</property>
-                        <property name="name">from_address_str</property>
+                        <property name="name">CustomerCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">to_address_str</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
-                        <property name="name">is_ispm_required</property>
+                        <property name="name">title_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
+                        <property name="position">16</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
                         <property name="position">17</property>
-                        <property name="name">countryName</property>
+                        <property name="name">first_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">pdf_header</property>
-                        <property name="dataType">string</property>
+                        <property name="name">partner_type_select</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">19</property>
-                        <property name="name">last_modified_by</property>
+                        <property name="name">from_address_str</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">20</property>
-                        <property name="name">createdBy</property>
+                        <property name="name">to_address_str</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">num_of_packages</property>
+                        <property name="name">is_ispm_required</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">22</property>
-                        <property name="name">tracking_number</property>
+                        <property name="name">countryName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">23</property>
-                        <property name="name">num_of_palettes</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">pdf_header</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">24</property>
-                        <property name="name">gross_mass</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">last_modified_by</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">25</property>
-                        <property name="name">display_track_nbr_on_picking_printing</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">createdBy</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">26</property>
-                        <property name="name">display_barcode_on_picking_printing</property>
+                        <property name="name">num_of_packages</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">27</property>
+                        <property name="name">tracking_number</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
+                        <property name="name">num_of_palettes</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">29</property>
+                        <property name="name">gross_mass</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">30</property>
+                        <property name="name">picking_order_printing_detailed</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">31</property>
+                        <property name="name">display_track_nbr_on_picking_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">32</property>
+                        <property name="name">display_barcode_on_picking_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">33</property>
                         <property name="name">displayCustomerCodeOnPickingPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">28</property>
+                        <property name="position">34</property>
                         <property name="name">origin</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">29</property>
+                        <property name="position">35</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -516,181 +582,223 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">3</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
                     <property name="name">real_date</property>
                     <property name="nativeName">real_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">6</property>
+                    <property name="name">picking_edit_date</property>
+                    <property name="nativeName">picking_edit_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">type_select</property>
                     <property name="nativeName">type_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">8</property>
                     <property name="name">stock_move_seq</property>
                     <property name="nativeName">stock_move_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">9</property>
                     <property name="name">sale_order_seq</property>
                     <property name="nativeName">sale_order_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">10</property>
                     <property name="name">production_note</property>
                     <property name="nativeName">production_note</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">11</property>
+                    <property name="name">external_reference</property>
+                    <property name="nativeName">external_reference</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">delivery_condition</property>
+                    <property name="nativeName">delivery_condition</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
                     <property name="name">purchase_order_seq</property>
                     <property name="nativeName">purchase_order_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">14</property>
                     <property name="name">CustomerCode</property>
                     <property name="nativeName">CustomerCode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">15</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">16</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">17</property>
                     <property name="name">first_name</property>
                     <property name="nativeName">first_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">18</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">19</property>
                     <property name="name">from_address_str</property>
                     <property name="nativeName">from_address_str</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">20</property>
                     <property name="name">to_address_str</property>
                     <property name="nativeName">to_address_str</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">21</property>
                     <property name="name">is_ispm_required</property>
                     <property name="nativeName">is_ispm_required</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">22</property>
                     <property name="name">countryName</property>
                     <property name="nativeName">countryName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">23</property>
                     <property name="name">pdf_header</property>
                     <property name="nativeName">pdf_header</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">24</property>
                     <property name="name">last_modified_by</property>
                     <property name="nativeName">last_modified_by</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">25</property>
                     <property name="name">createdBy</property>
                     <property name="nativeName">createdBy</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">26</property>
                     <property name="name">num_of_packages</property>
                     <property name="nativeName">num_of_packages</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">27</property>
                     <property name="name">tracking_number</property>
                     <property name="nativeName">tracking_number</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">23</property>
+                    <property name="position">28</property>
                     <property name="name">num_of_palettes</property>
                     <property name="nativeName">num_of_palettes</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">29</property>
                     <property name="name">gross_mass</property>
                     <property name="nativeName">gross_mass</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">25</property>
+                    <property name="position">30</property>
+                    <property name="name">picking_order_printing_detailed</property>
+                    <property name="nativeName">picking_order_printing_detailed</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">31</property>
                     <property name="name">display_track_nbr_on_picking_printing</property>
                     <property name="nativeName">display_track_nbr_on_picking_printing</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">26</property>
+                    <property name="position">32</property>
                     <property name="name">display_barcode_on_picking_printing</property>
                     <property name="nativeName">display_barcode_on_picking_printing</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">27</property>
+                    <property name="position">33</property>
                     <property name="name">displayCustomerCodeOnPickingPrinting</property>
                     <property name="nativeName">displayCustomerCodeOnPickingPrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">28</property>
+                    <property name="position">34</property>
                     <property name="name">origin</property>
                     <property name="nativeName">origin</property>
                     <property name="dataType">string</property>
@@ -700,6 +808,8 @@ else row["last_modified_by"]</expression>
             <xml-property name="queryText"><![CDATA[select 
 StockMove.id,
 MetaFile.file_path as logo_path,
+Company.height as logo_height,
+Company.width as logo_width,
 StockMove.real_date,
 StockMove.picking_edit_date,
 StockMove.type_select,
@@ -1560,6 +1670,26 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">picking_order_printing_detailed_1</property>
+                    <text-property name="displayName">picking_order_printing_detailed</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["picking_order_printing_detailed"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <column id="4212">
                 <property name="width">2.99cm</property>
@@ -1584,20 +1714,23 @@ order by StockMoveLine.sequence]]></xml-property>
                 <cell id="4219">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <image id="3419">
-                        <property name="height">2.169583333333333cm</property>
-                        <property name="width">248px</property>
-                        <expression name="altText">""</expression>
+                    <text id="4288">
+                        <property name="fontSize">8pt</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="source">file</property>
-                        <property name="proportionalScale">true</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                    </image>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="4221">
                     <property name="colSpan">4</property>

@@ -106,6 +106,7 @@
 - MESSAGE TEMPLATE : added the management of additional contexts (groovy evaluation) in order to allow the use of Json fields.
 - HR : APPRAISALS - Optimization of the menu by adding filters
 - HR : RECRUITMENT - optimization of the menu by adding filters
+- Base : Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
