@@ -79,6 +79,7 @@
 - MOVELINE : bank reconciled amount is now editable.
 - MOVELINE : reverse move line stop to appear in bank reconciliation.
 - MOVELINE : add a verification between bank reconcile amount and credit or debit.
+- ACCOUNTING : display 'productFamily' field on Account Management Form.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
