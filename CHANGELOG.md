@@ -150,6 +150,7 @@
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 - PERIOD : Fix NPE when date is null.
 - ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
+- SaleOrderLine : Fix functionality of Edit button of Sale Order.
 
 ## [5.1.7] - 2019-06-17
 ## Features
