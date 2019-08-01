@@ -61,6 +61,7 @@
       <field name="product.code"/>
       <field name="productName"/>
       <field name="qty" aggregate="sum"/>
+      <field name="receivedQty" aggregate="sum"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="price" x-scale="2"/>
       <field name="inTaxPrice" x-scale="2"/>

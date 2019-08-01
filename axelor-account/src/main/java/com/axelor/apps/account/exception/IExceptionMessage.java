@@ -814,4 +814,8 @@ public interface IExceptionMessage {
   /* MOVE REVERSE*/
   static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
       "There is no reverse date select value of value %d" /*)*/;
+
+  /*Check not lettered advance move lines*/
+  public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
+      "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
 }

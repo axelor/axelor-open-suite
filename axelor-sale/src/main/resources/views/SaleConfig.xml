@@ -28,6 +28,9 @@
 			<field name="saleOrderClientBox" widget="html" x-lite="true" colSpan="12"/>
 			<field name="saleOrderLegalNote" widget="html" x-lite="true" colSpan="12"/>
 		</panel>
+		<panel name="analyticDistributionPanel" title="Analytic distribution">
+		  <field name="isAnalyticDistributionRequired" widget="boolean-switch" if="__config__.app.getApp('account')"/>
+		</panel>
 	</form>
 
 	<action-record name="action-sale-config-record-default" model="com.axelor.apps.sale.db.SaleConfig">
