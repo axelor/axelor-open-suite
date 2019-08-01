@@ -20,6 +20,7 @@
 		<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
 		<many-to-one name="autoMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Auto Misc. Operation Journal"/>
 		<many-to-one name="manualMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Manual Misc. Operation Journal"/>
+		<many-to-one name="reportedBalanceJournal" ref="com.axelor.apps.account.db.Journal" title="Reported Balance Journal"/>
 
 		<many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
 		<many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>

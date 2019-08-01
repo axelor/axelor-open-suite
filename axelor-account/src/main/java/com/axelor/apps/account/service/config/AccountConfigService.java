@@ -225,6 +225,18 @@ public class AccountConfigService {
     return accountConfig.getReimbursementJournal();
   }
 
+  public Journal getReportedBalanceJournal(AccountConfig accountConfig) throws AxelorException {
+
+    if (accountConfig.getReportedBalanceJournal() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_45),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountConfig.getCompany().getName());
+    }
+    return accountConfig.getReportedBalanceJournal();
+  }
+
   /** ****************************** JOURNAL TYPE ******************************************* */
   public JournalType getSaleJournalType(AccountConfig accountConfig) throws AxelorException {
 
