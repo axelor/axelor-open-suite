@@ -195,5 +195,6 @@
 - ERROR : Fixed NPE on product selection on invoiceLine
 - QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
 - EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
+- REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
