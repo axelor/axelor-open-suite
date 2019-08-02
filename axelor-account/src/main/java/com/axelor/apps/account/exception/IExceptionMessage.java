@@ -820,4 +820,7 @@ public interface IExceptionMessage {
   /*Check not lettered advance move lines*/
   public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
       "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
+
+  static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
+      "Please set a reported balance date on fiscal year" /*)*/;
 }

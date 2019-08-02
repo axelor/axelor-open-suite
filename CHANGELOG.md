@@ -196,5 +196,6 @@
 - ERROR : Fixed NPE on product selection on invoiceLine
 - QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
 - EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
+- REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
