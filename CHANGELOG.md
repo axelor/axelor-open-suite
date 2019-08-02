@@ -82,6 +82,7 @@
 - MOVELINE : add a verification between bank reconcile amount and credit or debit.
 - ACCOUNTING : display 'productFamily' field on Account Management Form.
 - SALE/PURCHASE ORDER : translation "fusionner devis fournisseurs"
+- SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly

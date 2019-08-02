@@ -249,7 +249,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   null,
                   1,
                   subrogationRelease.getSequenceNumber(),
-                  null);
+                  invoice.getInvoiceId());
 
       creditMoveLine =
           moveService
@@ -264,7 +264,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   null,
                   2,
                   subrogationRelease.getSequenceNumber(),
-                  null);
+                  invoice.getInvoiceId());
 
       move.addMoveLineListItem(debitMoveLine);
       move.addMoveLineListItem(creditMoveLine);
