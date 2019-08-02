@@ -12,6 +12,7 @@
 - Wkf : Add an option to display 'Track flow' button.
 - HR : Enable Tracking Feature for 'statusSelect' field.
 - PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
+- MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -63,6 +64,7 @@
 - SUPPLIER INVOICE : add a new verification, if an active bank order already exist for a supplier invoice, it's impossible to create an other bank order from the supplier invoice. 
 - STOCK LOCATION LINE : fixed missing stock location on form view
 - MENU BUILDER : Re-arrange the position of 'lines' field
+- PARTNER GENERAL LEDGER REPORT : add the possibility to group on partner and add the possibility to display only not completely lettered move lines.
 - PURCHASE ORDER PRINTING : Add versionNumber on sequence
 - EXPENSE : Reduce calling of three action-methods to one onSave of form
 - UNIT CONVERSION : Set to two the number of decimal on grid view.
@@ -75,6 +77,11 @@
 - PRODUCT : increased the width of the field "name" in form view
 - ACCOUNTING : general ledger new columns on BIRT
 - FORECAST RECAP : Improve the birt report to follow the Axelor guidelines
+- MOVELINE : bank reconciled amount is now editable.
+- MOVELINE : reverse move line stop to appear in bank reconciliation.
+- MOVELINE : add a verification between bank reconcile amount and credit or debit.
+- ACCOUNTING : display 'productFamily' field on Account Management Form.
+- SALE/PURCHASE ORDER : translation "fusionner devis fournisseurs"
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -146,6 +153,7 @@
 - PERIOD : Fix NPE when date is null.
 - ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
 - SUBROGATION RELEASE : corrected subrogation release refund moves sense and removed the possibility to select a supplier invoice or a supplier refund in a subrogation realase.
+- SaleOrderLine : Fix functionality of Edit button of Sale Order.
 
 ## [5.1.7] - 2019-06-17
 ## Features
