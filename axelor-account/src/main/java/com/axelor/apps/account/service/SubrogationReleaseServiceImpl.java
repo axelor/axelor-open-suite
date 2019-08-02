@@ -218,11 +218,10 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       }
 
       boolean isRefund = false;
-      if(invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) 
-      {
-    	  isRefund=true;
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        isRefund = true;
       }
-      
+
       LocalDate date = subrogationRelease.getAccountingDate();
       Move move =
           moveService
