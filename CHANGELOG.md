@@ -81,6 +81,7 @@
 - MOVELINE : reverse move line stop to appear in bank reconciliation.
 - MOVELINE : add a verification between bank reconcile amount and credit or debit.
 - ACCOUNTING : display 'productFamily' field on Account Management Form.
+- SALE/PURCHASE ORDER : translation "fusionner devis fournisseurs"
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
