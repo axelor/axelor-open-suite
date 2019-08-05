@@ -245,7 +245,7 @@
 							<field name="address" form-view="address-form" grid-view="address-grid" colSpan="3" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
+							<field name="isDefaultAddr" widget="toggle" x-exclusive="true" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
 						</editor>
 					</field>
 				</panel>
