@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
    
 	<grid name="file-field-grid" title="File fields" model="com.axelor.apps.base.db.FileField">
 		<hilite color="danger" if="(subImportField == null &amp;&amp; relationship != null) || importField == null || (dateFormat == null &amp;&amp; expression == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime'))"/>
