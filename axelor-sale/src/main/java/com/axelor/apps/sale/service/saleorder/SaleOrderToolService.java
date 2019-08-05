@@ -61,7 +61,7 @@ public class SaleOrderToolService {
     return currencyService
         .getAmountCurrencyConvertedAtDate(
             saleOrder.getCurrency(),
-            saleOrder.getClientPartner().getCurrency(),
+            saleOrder.getCustomerPartner().getCurrency(),
             exTaxTotal,
             saleOrder.getCreationDate())
         .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);

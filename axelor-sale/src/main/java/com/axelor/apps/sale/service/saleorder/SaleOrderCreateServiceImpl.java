@@ -94,16 +94,16 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       String externalReference,
       LocalDate orderDate,
       PriceList priceList,
-      Partner clientPartner,
+      Partner customerPartner,
       Team team)
       throws AxelorException {
 
     logger.debug(
         "Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
-        new Object[] {company, externalReference, clientPartner.getFullName()});
+        new Object[] {company, externalReference, customerPartner.getFullName()});
 
     SaleOrder saleOrder = new SaleOrder();
-    saleOrder.setClientPartner(clientPartner);
+    saleOrder.setCustomerPartner(customerPartner);
     saleOrder.setCreationDate(appSaleService.getTodayDate());
     saleOrder.setContactPartner(contactPartner);
     saleOrder.setCurrency(currency);
@@ -129,15 +129,15 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     }
     saleOrder.setCompany(company);
 
-    saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
-    saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
+    saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(customerPartner));
+    saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(customerPartner));
 
     saleOrderService.computeAddressStr(saleOrder);
 
     if (priceList == null) {
       priceList =
           Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE);
+              .getDefaultPriceList(customerPartner, PriceListRepository.TYPE_SALE);
     }
     saleOrder.setPriceList(priceList);
 
@@ -155,7 +155,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   public SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrderList,
       Currency currency,
-      Partner clientPartner,
+      Partner customerPartner,
       Company company,
       Partner contactPartner,
       PriceList priceList,
@@ -189,7 +189,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             externalRef,
             LocalDate.now(),
             priceList,
-            clientPartner,
+            customerPartner,
             team);
 
     this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);

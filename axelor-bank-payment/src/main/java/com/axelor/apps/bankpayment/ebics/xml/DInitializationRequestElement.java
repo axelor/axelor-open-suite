@@ -37,8 +37,8 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.OrderAttribute;
 import com.axelor.exception.AxelorException;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,7 +63,7 @@ public class DInitializationRequestElement extends InitializationRequestElement 
    */
   public DInitializationRequestElement(
       EbicsSession session,
-      com.axelor.apps.bankpayment.ebics.client.OrderType type,
+      com.axelor.apps.bankpayment.ebics.customer.OrderType type,
       Date startRange,
       Date endRange)
       throws AxelorException {
@@ -109,7 +109,7 @@ public class DInitializationRequestElement extends InitializationRequestElement 
     OrderAttribute orderAttribute = new OrderAttribute(type, ebicsPartner.getEbicsTypeSelect());
     orderAttribute.build();
 
-    if (type.equals(com.axelor.apps.bankpayment.ebics.client.OrderType.FDL)) {
+    if (type.equals(com.axelor.apps.bankpayment.ebics.customer.OrderType.FDL)) {
       FDLOrderParamsType fDLOrderParamsType;
       FileFormatType fileFormat;
 

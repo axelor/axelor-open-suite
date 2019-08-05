@@ -1,2 +1,2 @@
 "name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
-"perm.client.portal.all";"com.axelor.apps.client.portal.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"perm.customer.portal.all";"com.axelor.apps.customer.portal.db.*";"x";"x";"x";"x";"x";;;"Admin"

@@ -276,7 +276,7 @@ public class SaleOrderController {
 
   public void generateSaleOrderWizard(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrderTemplate = request.getContext().asType(SaleOrder.class);
-    Partner clientPartner = saleOrderTemplate.getClientPartner();
+    Partner customerPartner = saleOrderTemplate.getCustomerPartner();
 
     response.setView(
         ActionView.define("Create the quotation")
@@ -288,7 +288,7 @@ public class SaleOrderController {
             .param("width", "large")
             .param("popup-save", "false")
             .context("_saleOrderTemplate", saleOrderTemplate)
-            .context("_clientPartnerCurrency", clientPartner.getCurrency())
+            .context("_customerPartnerCurrency", customerPartner.getCurrency())
             .map());
   }
 
@@ -371,9 +371,9 @@ public class SaleOrderController {
       }
     }
 
-    // Check if currency, clientPartner and company are the same for all selected sale orders
+    // Check if currency, customerPartner and company are the same for all selected sale orders
     Currency commonCurrency = null;
-    Partner commonClientPartner = null;
+    Partner commonCustomerPartner = null;
     Company commonCompany = null;
     Partner commonContactPartner = null;
     Team commonTeam = null;
@@ -392,7 +392,7 @@ public class SaleOrderController {
       saleOrderList.add(saleOrderTemp);
       if (count == 1) {
         commonCurrency = saleOrderTemp.getCurrency();
-        commonClientPartner = saleOrderTemp.getClientPartner();
+        commonCustomerPartner = saleOrderTemp.getCustomerPartner();
         commonCompany = saleOrderTemp.getCompany();
         commonContactPartner = saleOrderTemp.getContactPartner();
         commonTeam = saleOrderTemp.getTeam();
@@ -401,9 +401,9 @@ public class SaleOrderController {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
         }
-        if (commonClientPartner != null
-            && !commonClientPartner.equals(saleOrderTemp.getClientPartner())) {
-          commonClientPartner = null;
+        if (commonCustomerPartner != null
+            && !commonCustomerPartner.equals(saleOrderTemp.getCustomerPartner())) {
+          commonCustomerPartner = null;
         }
         if (commonCompany != null && !commonCompany.equals(saleOrderTemp.getCompany())) {
           commonCompany = null;
@@ -429,11 +429,11 @@ public class SaleOrderController {
     if (commonCurrency == null) {
       fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
     }
-    if (commonClientPartner == null) {
+    if (commonCustomerPartner == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
-      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
+      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CUSTOMER_PARTNER));
     }
     if (commonCompany == null) {
       if (fieldErrors.length() > 0) {
@@ -487,7 +487,7 @@ public class SaleOrderController {
       }
       if (existContactPartnerDiff) {
         confirmView.context("contextContactPartnerToCheck", "true");
-        confirmView.context("contextPartnerId", commonClientPartner.getId().toString());
+        confirmView.context("contextPartnerId", commonCustomerPartner.getId().toString());
       }
       if (existTeamDiff) {
         confirmView.context("contextTeamToCheck", "true");
@@ -506,7 +506,7 @@ public class SaleOrderController {
               .mergeSaleOrders(
                   saleOrderList,
                   commonCurrency,
-                  commonClientPartner,
+                  commonCustomerPartner,
                   commonCompany,
                   commonContactPartner,
                   commonPriceList,
@@ -554,7 +554,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
     Company company = saleOrder.getCompany();
-    Partner partner = saleOrder.getClientPartner();
+    Partner partner = saleOrder.getCustomerPartner();
     if (company == null) {
       return;
     }
@@ -664,9 +664,9 @@ public class SaleOrderController {
     }
     response.setValue(
         "priceList",
-        saleOrder.getClientPartner() != null
+        saleOrder.getCustomerPartner() != null
             ? Beans.get(PartnerPriceListService.class)
-                .getDefaultPriceList(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE)
+                .getDefaultPriceList(saleOrder.getCustomerPartner(), PriceListRepository.TYPE_SALE)
             : null);
   }
 
@@ -690,7 +690,7 @@ public class SaleOrderController {
     }
     String domain =
         Beans.get(PartnerPriceListService.class)
-            .getPriceListDomain(saleOrder.getClientPartner(), PriceListRepository.TYPE_SALE);
+            .getPriceListDomain(saleOrder.getCustomerPartner(), PriceListRepository.TYPE_SALE);
     response.setAttr("priceList", "domain", domain);
   }
 
@@ -728,7 +728,7 @@ public class SaleOrderController {
     try {
       if (!(saleOrder.getSaleOrderLineList() == null
           || saleOrder.getSaleOrderLineList().isEmpty())) {
-        domain += Beans.get(PartnerService.class).getPartnerDomain(saleOrder.getClientPartner());
+        domain += Beans.get(PartnerService.class).getPartnerDomain(saleOrder.getCustomerPartner());
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
 import com.axelor.exception.AxelorException;
 
 /**

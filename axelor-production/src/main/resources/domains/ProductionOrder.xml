@@ -10,7 +10,7 @@
   	<integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2"/>
   	<string name="productionOrderSeq" title="Name" namecolumn="true" initParam="true" required="true" unique="true"/>
   	
- 	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
+ 	<many-to-one name="customerPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
   	
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder" mappedBy="productionOrder" title="Manufacturing orders" orderBy="prioritySelect"/>

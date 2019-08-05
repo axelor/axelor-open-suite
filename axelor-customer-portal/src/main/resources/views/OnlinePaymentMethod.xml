@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
-    <grid name="online-payment-method-grid" title="Online payment methods" model="com.axelor.apps.client.portal.db.OnlinePaymentMethod">
+    <grid name="online-payment-method-grid" title="Online payment methods" model="com.axelor.apps.customer.portal.db.OnlinePaymentMethod">
         <field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
-    <form name="online-payment-method-form" title="Online payment method" model="com.axelor.apps.client.portal.db.OnlinePaymentMethod">
+    <form name="online-payment-method-form" title="Online payment method" model="com.axelor.apps.customer.portal.db.OnlinePaymentMethod">
     	<panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>

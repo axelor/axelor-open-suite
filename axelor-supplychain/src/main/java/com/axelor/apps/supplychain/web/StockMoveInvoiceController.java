@@ -414,7 +414,7 @@ public class StockMoveInvoiceController {
             .add("grid", "invoice-grid")
             .add("form", "invoice-form")
             .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")")
-            .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE)
             .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate());
 
         response.setView(viewBuilder.map());

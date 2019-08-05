@@ -105,7 +105,7 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
         new Object[] {saleOrder.getSaleOrderLineList().size()});
 
     // create Tva lines
-    if (saleOrder.getClientPartner() != null) {
+    if (saleOrder.getCustomerPartner() != null) {
       saleOrder
           .getSaleOrderLineTaxList()
           .addAll(

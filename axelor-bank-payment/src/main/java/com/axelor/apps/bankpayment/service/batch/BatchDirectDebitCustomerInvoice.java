@@ -59,7 +59,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 
     filterList.add("self.operationTypeSelect = :operationTypeSelect");
     bindingList.add(
-        Pair.of("operationTypeSelect", (Object) InvoiceRepository.OPERATION_TYPE_CLIENT_SALE));
+        Pair.of("operationTypeSelect", (Object) InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE));
 
     filterList.add("self.statusSelect = :statusSelect");
     bindingList.add(Pair.of("statusSelect", (Object) InvoiceRepository.STATUS_VENTILATED));

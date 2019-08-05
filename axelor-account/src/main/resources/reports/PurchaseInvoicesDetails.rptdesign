@@ -3490,7 +3490,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'ClientSituation.orders'</value>
+                                                <value type="javascript">'CustomerSituation.orders'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>

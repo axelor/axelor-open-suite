@@ -23,8 +23,8 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsReque
 import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType.SegmentNumber;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.OrderType;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.OrderType;
 import com.axelor.exception.AxelorException;
 
 /**

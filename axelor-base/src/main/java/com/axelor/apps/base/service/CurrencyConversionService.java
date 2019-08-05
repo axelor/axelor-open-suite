@@ -153,7 +153,7 @@ public class CurrencyConversionService {
     HTTPResponse response = null;
 
     if (dayCount < 8) {
-      HTTPClient httpclient = new HTTPClient();
+      HTTPClient httpCustomer = new HTTPClient();
       HTTPRequest request = new HTTPRequest();
       Map<String, Object> headers = new HashMap<>();
       headers.put("Accept", "application/json");
@@ -165,7 +165,7 @@ public class CurrencyConversionService {
       request.setUrl(url);
       request.setMethod(HTTPMethod.GET);
       try {
-        response = httpclient.execute(request);
+        response = httpCustomer.execute(request);
       } catch (Exception e) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

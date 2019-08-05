@@ -178,8 +178,8 @@ public class BankOrderCreateService {
 
   public int getBankOrderPartnerType(Invoice invoice) {
 
-    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE) {
       return BankOrderRepository.PARTNER_TYPE_CUSTOMER;
     } else {
       return BankOrderRepository.PARTNER_TYPE_SUPPLIER;

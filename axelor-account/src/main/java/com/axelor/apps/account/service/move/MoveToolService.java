@@ -91,10 +91,10 @@ public class MoveToolService {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
         isDebitCustomer = true;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE:
         isDebitCustomer = true;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND:
         isDebitCustomer = false;
         break;
 

@@ -43,7 +43,7 @@ public interface StockMoveService {
    * @param fromAddress
    * @param toAddress
    * @param company
-   * @param clientPartner
+   * @param customerPartner
    * @param fromStockLocation
    * @param toStockLocation
    * @param realDate
@@ -62,7 +62,7 @@ public interface StockMoveService {
       Address fromAddress,
       Address toAddress,
       Company company,
-      Partner clientPartner,
+      Partner customerPartner,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       LocalDate realDate,
@@ -79,7 +79,7 @@ public interface StockMoveService {
   /**
    * Generic method to create any stock move for internal stock move (without partner information)
    *
-   * @param clientPartner
+   * @param customerPartner
    * @param shipmentMode
    * @param freightCarrierMode
    * @param carrierPartner

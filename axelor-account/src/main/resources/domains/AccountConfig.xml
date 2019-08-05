@@ -146,7 +146,7 @@
 		<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
 		<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
 		<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
-		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
+		<string name="invoiceCustomerBox" large="true" multiline="true" title="Customer box in invoice"/>
 		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices" help="Short legal note to be displayed on sale invoices"/>
 
 		<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
@@ -288,7 +288,7 @@
 		<field name="displayProductCodeOnPrinting" on="UPDATE"/>
 		<field name="displayTaxDetailOnPrinting" on="UPDATE"/>
 		<field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
-		<field name="invoiceClientBox" on="UPDATE"/>
+		<field name="invoiceCustomerBox" on="UPDATE"/>
 		<field name="saleInvoiceLegalNote" on="UPDATE"/>
 
 		<field name="termsAndConditions" on="UPDATE"/>

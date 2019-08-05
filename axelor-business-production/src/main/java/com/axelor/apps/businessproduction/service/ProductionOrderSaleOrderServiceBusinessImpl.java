@@ -68,7 +68,7 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
 
     Project project = productionOrder.getProject();
 
-    project.getClientPartner();
+    project.getCustomerPartner();
 
     //		if(businessFolder.getCompany() != null)  {
     //

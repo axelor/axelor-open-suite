@@ -73,8 +73,8 @@
 	   	// OPERATION TYPE SELECT
 		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;
 		public static final int OPERATION_TYPE_SUPPLIER_REFUND = 2;
-		public static final int OPERATION_TYPE_CLIENT_SALE = 3;
-		public static final int OPERATION_TYPE_CLIENT_REFUND = 4;
+		public static final int OPERATION_TYPE_CUSTOMER_SALE = 3;
+		public static final int OPERATION_TYPE_CUSTOMER_REFUND = 4;
 		
 		]]></extra-code>
 	

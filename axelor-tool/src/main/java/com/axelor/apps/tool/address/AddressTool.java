@@ -45,13 +45,13 @@ public class AddressTool {
   private static QName PORT_NAME = null;
   private static URL wsdlURL = null;
   private static Service service = null;
-  private static QAPortType client = null;
+  private static QAPortType customer = null;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void setService(String wsdlUrl) throws MalformedURLException {
     // TODO: inject this
-    if (this.client == null) {
+    if (this.customer == null) {
       this.SERVICE_NAME = new QName("http://www.qas.com/web-2005-02", "ProWeb");
 
       this.PORT_NAME = new QName("http://www.qas.com/web-2005-02", "QAPortType");
@@ -61,9 +61,9 @@ public class AddressTool {
       // println this.wsdlURL
 
       this.service = Service.create(this.wsdlURL, this.SERVICE_NAME);
-      this.client = service.getPort(QAPortType.class);
-      // QAPortType client = service.getPort(PORT_NAME, QAPortType.class)
-      LOG.debug("setService  this.client = {}", this.client);
+      this.customer = service.getPort(QAPortType.class);
+      // QAPortType customer = service.getPort(PORT_NAME, QAPortType.class)
+      LOG.debug("setService  this.customer = {}", this.customer);
     }
   }
 
@@ -78,13 +78,13 @@ public class AddressTool {
       URL wsdlURL = new URL(wsdlUrl);
 
       Service service = Service.create(wsdlURL, SERVICE_NAME);
-      QAPortType client = service.getPort(QAPortType.class);
-      // QAPortType client = service.getPort(PORT_NAME, QAPortType.class)
-      LOG.debug("setService  client = {}", client);
+      QAPortType customer = service.getPort(QAPortType.class);
+      // QAPortType customer = service.getPort(PORT_NAME, QAPortType.class)
+      LOG.debug("setService  customer = {}", customer);
 
       // 1. Pre-check.
 
-      QAData qadata = client.doGetData();
+      QAData qadata = customer.doGetData();
       QADataSet ds = qadata.getDataSet().get(0);
 
       QACanSearch canSearch = new QACanSearch();
@@ -96,7 +96,7 @@ public class AddressTool {
 
       engType.setValue(EngineEnumType.VERIFICATION);
       canSearch.setEngine(engType);
-      QASearchOk resp = client.doCanSearch(canSearch);
+      QASearchOk resp = customer.doCanSearch(canSearch);
 
       return resp.isIsOk();
     } catch (Exception e) {
@@ -121,7 +121,7 @@ public class AddressTool {
       engTypeT.setFlatten(true);
       search.setEngine(engTypeT);
 
-      QASearchResult respSearch = this.client.doSearch(search);
+      QASearchResult respSearch = this.customer.doSearch(search);
 
       Map<String, Object> mapSearch = new HashMap<String, Object>();
       mapSearch.put("verifyLevel", respSearch.getVerifyLevel());
@@ -144,7 +144,7 @@ public class AddressTool {
       getAddress.setMoniker(moniker);
       getAddress.setLayout("AFNOR INSEE");
 
-      Address formattedAddress = this.client.doGetAddress(getAddress);
+      Address formattedAddress = this.customer.doGetAddress(getAddress);
 
       return formattedAddress;
     } catch (Exception e) {

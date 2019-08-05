@@ -150,7 +150,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
 
-    Company intercoCompany = findIntercoCompany(saleOrder.getClientPartner());
+    Company intercoCompany = findIntercoCompany(saleOrder.getCustomerPartner());
     // create purchase order
     PurchaseOrder purchaseOrder = new PurchaseOrder();
     purchaseOrder.setCompany(intercoCompany);
@@ -304,21 +304,21 @@ public class IntercoServiceImpl implements IntercoService {
     int priceListRepositoryType;
     switch (invoice.getOperationTypeSelect()) {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE;
         priceListRepositoryType = PriceListRepository.TYPE_SALE;
         isPurchase = false;
         break;
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+        generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND;
         priceListRepositoryType = PriceListRepository.TYPE_SALE;
         isPurchase = false;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
         priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
         isPurchase = true;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND:
         generatedOperationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
         priceListRepositoryType = PriceListRepository.TYPE_PURCHASE;
         isPurchase = true;

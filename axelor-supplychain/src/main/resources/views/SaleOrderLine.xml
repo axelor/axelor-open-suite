@@ -5,7 +5,7 @@
 
     <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
         model="com.axelor.apps.sale.db.SaleOrderLine" onNew="action-group-sale-saleorderline-onnew,action-record-sale-order-line-fill-request-qty"
-		onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
+		onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-customer"
         width="large">
         <panel-include view="sale-order-line-form" from="axelor-sale" />
     </form>

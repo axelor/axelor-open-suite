@@ -11,7 +11,7 @@
 		<boolean name="manageTickets" title="Manage tickets" default="false"/>
 		<boolean name="canConfirmOnline" title="Can confirm online" default="false"/>
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
-		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
+		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.customer.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
 		
 		<track>
 			<field name="manageSaleOrders" on="UPDATE"/>

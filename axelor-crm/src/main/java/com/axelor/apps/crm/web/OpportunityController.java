@@ -71,11 +71,11 @@ public class OpportunityController {
     }
   }
 
-  public void createClient(ActionRequest request, ActionResponse response) {
+  public void createCustomer(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
       opportunity = opportunityRepo.find(opportunity.getId());
-      opportunityService.createClientFromLead(opportunity);
+      opportunityService.createCustomerFromLead(opportunity);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(e);

@@ -109,7 +109,7 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @param fromAddress
    * @param toAddress
    * @param company
-   * @param clientPartner
+   * @param customerPartner
    * @param fromStockLocation
    * @param toStockLocation
    * @param realDate
@@ -128,7 +128,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       Address fromAddress,
       Address toAddress,
       Company company,
-      Partner clientPartner,
+      Partner customerPartner,
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       LocalDate realDate,
@@ -153,14 +153,14 @@ public class StockMoveServiceImpl implements StockMoveService {
             estimatedDate,
             note,
             typeSelect);
-    stockMove.setPartner(clientPartner);
+    stockMove.setPartner(customerPartner);
     stockMove.setShipmentMode(shipmentMode);
     stockMove.setFreightCarrierMode(freightCarrierMode);
     stockMove.setCarrierPartner(carrierPartner);
     stockMove.setForwarderPartner(forwarderPartner);
     stockMove.setIncoterm(incoterm);
     stockMove.setNote(note);
-    stockMove.setIsIspmRequired(stockMoveToolService.getDefaultISPM(clientPartner, toAddress));
+    stockMove.setIsIspmRequired(stockMoveToolService.getDefaultISPM(customerPartner, toAddress));
 
     return stockMove;
   }

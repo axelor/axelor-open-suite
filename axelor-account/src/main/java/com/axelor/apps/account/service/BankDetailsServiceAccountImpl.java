@@ -67,9 +67,9 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       if (partner != null
           && partner.getFactorizedCustomer()
           && operationTypeSelect != null
-          && (operationTypeSelect.intValue() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+          && (operationTypeSelect.intValue() == InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE
               || operationTypeSelect.intValue()
-                  == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
+                  == InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND)) {
 
         authorizedBankDetails = createCompanyBankDetailsDomainFromFactorPartner(company);
       } else {
@@ -132,9 +132,9 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       if (partner != null
           && partner.getFactorizedCustomer()
           && operationTypeSelect != null
-          && (operationTypeSelect.intValue() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+          && (operationTypeSelect.intValue() == InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE
               || operationTypeSelect.intValue()
-                  == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
+                  == InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND)) {
 
         return getDefaultCompanyBankDetailsFromFactorPartner(company);
       } else {

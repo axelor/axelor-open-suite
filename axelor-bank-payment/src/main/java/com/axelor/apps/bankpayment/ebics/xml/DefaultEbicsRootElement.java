@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
-import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.OrderType;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsRootElement;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.OrderType;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import java.io.ByteArrayInputStream;

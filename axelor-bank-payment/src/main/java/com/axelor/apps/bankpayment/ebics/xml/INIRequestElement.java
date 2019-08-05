@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.bankpayment.ebics.xml;
 
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
-import com.axelor.apps.bankpayment.ebics.client.OrderType;
-import com.axelor.apps.bankpayment.ebics.client.UnsecuredRequestElement;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.customer.OrderType;
+import com.axelor.apps.bankpayment.ebics.customer.UnsecuredRequestElement;
 import com.axelor.exception.AxelorException;
 import java.lang.invoke.MethodHandles;
 import javax.xml.XMLConstants;

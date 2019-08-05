@@ -71,7 +71,7 @@ public class QualityControlPrintServiceImpl {
     }
 
     String locale =
-        ReportSettings.getPrintingLocale(qualityControl.getProject().getClientPartner());
+        ReportSettings.getPrintingLocale(qualityControl.getProject().getCustomerPartner());
     String title = getFileName(qualityControl);
 
     ReportSettings reportSetting =

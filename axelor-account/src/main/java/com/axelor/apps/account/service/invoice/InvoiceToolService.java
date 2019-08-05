@@ -94,8 +94,8 @@ public class InvoiceToolService {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE: // fall-through
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
         return true;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND: // fall-through
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE:
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND: // fall-through
         return false;
 
       default:
@@ -125,10 +125,10 @@ public class InvoiceToolService {
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
         isRefund = true;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE:
         isRefund = false;
         break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND:
         isRefund = true;
         break;
 

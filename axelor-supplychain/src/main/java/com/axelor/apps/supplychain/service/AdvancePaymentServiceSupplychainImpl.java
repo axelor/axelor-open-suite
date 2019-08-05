@@ -131,7 +131,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     SaleOrder saleOrder = advancePayment.getSaleOrder();
     Company company = saleOrder.getCompany();
     PaymentMode paymentMode = advancePayment.getPaymentMode();
-    Partner clientPartner = saleOrder.getClientPartner();
+    Partner customerPartner = saleOrder.getCustomerPartner();
     LocalDate advancePaymentDate = advancePayment.getAdvancePaymentDate();
     BankDetails bankDetails = saleOrder.getCompanyBankDetails();
     String ref = saleOrder.getSaleOrderSeq();
@@ -147,7 +147,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
                 journal,
                 company,
                 advancePayment.getCurrency(),
-                clientPartner,
+                customerPartner,
                 advancePaymentDate,
                 paymentMode,
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
@@ -162,7 +162,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,
-            clientPartner,
+            customerPartner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
             amountConverted,
             true,
@@ -175,7 +175,7 @@ public class AdvancePaymentServiceSupplychainImpl extends AdvancePaymentServiceI
     move.addMoveLineListItem(
         moveLineService.createMoveLine(
             move,
-            clientPartner,
+            customerPartner,
             accountConfigService.getAdvancePaymentAccount(accountConfig),
             amountConverted,
             false,

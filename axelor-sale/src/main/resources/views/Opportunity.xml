@@ -4,19 +4,19 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<action-group name="action-sale-group-generate-sale-order">
-		<action name="action-sale-validate-create-client" if="partner == null"/>
+		<action name="action-sale-validate-create-customer" if="partner == null"/>
 		<action name="save"/>
-		<action name="action-sale-method-create-client" if="partner == null"/>
+		<action name="action-sale-method-create-customer" if="partner == null"/>
 		<action name="action-sale-method-generate-sale-order"/>
 	</action-group>
 	
-	<action-validate name="action-sale-validate-create-client">
-		<alert message="No client selected, a new one will be created from the lead, do you agree?" if="lead"/>
+	<action-validate name="action-sale-validate-create-customer">
+		<alert message="No customer selected, a new one will be created from the lead, do you agree?" if="lead"/>
 		<error message="Please select a customer to be able to convert opportunity into quotation." if="!lead"/>
 	</action-validate>
 	
-	<action-method name="action-sale-method-create-client">
-		<call class="com.axelor.apps.crm.web.OpportunityController" method="createClient"/>
+	<action-method name="action-sale-method-create-customer">
+		<call class="com.axelor.apps.crm.web.OpportunityController" method="createCustomer"/>
 	</action-method>
 	
 	<action-method name="action-sale-method-generate-sale-order">

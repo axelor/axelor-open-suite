@@ -65,8 +65,8 @@ public class MapService {
     }
     // http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 
-    // TODO inject the rest client, or better, run it in the browser
-    RESTClient restClient = new RESTClient("https://maps.googleapis.com");
+    // TODO inject the rest customer, or better, run it in the browser
+    RESTClient restCustomer = new RESTClient("https://maps.googleapis.com");
     Map<String, Object> responseQuery = new HashMap<>();
     responseQuery.put("address", qString.trim());
     responseQuery.put("sensor", "false");
@@ -82,7 +82,7 @@ public class MapService {
     responseMap.put("useCaches", false);
     responseMap.put("sslTrustAllCerts", true);
 
-    JSONObject restResponse = getJSON(restClient.get(responseMap));
+    JSONObject restResponse = getJSON(restCustomer.get(responseMap));
     LOG.debug("Gmap response: {}", restResponse);
 
     if (restResponse.containsKey("results")) {
@@ -168,7 +168,7 @@ public class MapService {
     try {
       BigDecimal latitude = BigDecimal.ZERO;
       BigDecimal longitude = BigDecimal.ZERO;
-      RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
+      RESTClient restCustomer = new RESTClient("http://nominatim.openstreetmap.org/");
       Map<String, Object> mapQuery = new HashMap<>();
       mapQuery.put("q", qString);
       mapQuery.put("format", "xml");
@@ -186,7 +186,7 @@ public class MapService {
       mapResponse.put("followRedirects", false);
       mapResponse.put("useCaches", false);
       mapResponse.put("sslTrustAllCerts", true);
-      Response restResponse = restClient.get(mapResponse);
+      Response restResponse = restCustomer.get(mapResponse);
       GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
       Iterator<Node> iterator = searchresults.childNodes();
       if (iterator.hasNext()) {
@@ -364,7 +364,7 @@ public class MapService {
   }
 
   public void testGMapService() throws AxelorException, JSONException {
-    RESTClient restClient = new RESTClient("https://maps.googleapis.com");
+    RESTClient restCustomer = new RESTClient("https://maps.googleapis.com");
 
     Map<String, Object> responseQuery = new HashMap<>();
     responseQuery.put("address", "google");
@@ -382,7 +382,7 @@ public class MapService {
     responseMap.put("useCaches", false);
     responseMap.put("sslTrustAllCerts", true);
 
-    Response response = restClient.get(responseMap);
+    Response response = restCustomer.get(responseMap);
     getJSON(response);
   }
 

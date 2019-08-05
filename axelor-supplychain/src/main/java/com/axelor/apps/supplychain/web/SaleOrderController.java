@@ -281,7 +281,7 @@ public class SaleOrderController {
                 .add("form", "invoice-form")
                 .add("grid", "invoice-grid")
                 .context("_showRecord", String.valueOf(invoice.getId()))
-                .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+                .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE)
                 .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                 .map());
       }
@@ -339,10 +339,10 @@ public class SaleOrderController {
         fromPopup = true;
       }
     }
-    // Check if currency, clientPartner and company are the same for all selected
+    // Check if currency, customerPartner and company are the same for all selected
     // sale orders
     Currency commonCurrency = null;
-    Partner commonClientPartner = null;
+    Partner commonCustomerPartner = null;
     Company commonCompany = null;
     Partner commonContactPartner = null;
     Team commonTeam = null;
@@ -367,7 +367,7 @@ public class SaleOrderController {
       saleOrderList.add(saleOrderTemp);
       if (count == 1) {
         commonCurrency = saleOrderTemp.getCurrency();
-        commonClientPartner = saleOrderTemp.getClientPartner();
+        commonCustomerPartner = saleOrderTemp.getCustomerPartner();
         commonCompany = saleOrderTemp.getCompany();
         commonContactPartner = saleOrderTemp.getContactPartner();
         commonTeam = saleOrderTemp.getTeam();
@@ -377,9 +377,9 @@ public class SaleOrderController {
         if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
           commonCurrency = null;
         }
-        if (commonClientPartner != null
-            && !commonClientPartner.equals(saleOrderTemp.getClientPartner())) {
-          commonClientPartner = null;
+        if (commonCustomerPartner != null
+            && !commonCustomerPartner.equals(saleOrderTemp.getCustomerPartner())) {
+          commonCustomerPartner = null;
         }
         if (commonCompany != null && !commonCompany.equals(saleOrderTemp.getCompany())) {
           commonCompany = null;
@@ -411,14 +411,14 @@ public class SaleOrderController {
           I18n.get(
               com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
     }
-    if (commonClientPartner == null) {
+    if (commonCustomerPartner == null) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.sale.exception.IExceptionMessage
-                  .SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
+                  .SALE_ORDER_MERGE_ERROR_CUSTOMER_PARTNER));
     }
     if (commonCompany == null) {
       if (fieldErrors.length() > 0) {
@@ -481,7 +481,7 @@ public class SaleOrderController {
       }
       if (existContactPartnerDiff) {
         confirmView.context("contextContactPartnerToCheck", "true");
-        confirmView.context("contextPartnerId", commonClientPartner.getId().toString());
+        confirmView.context("contextPartnerId", commonCustomerPartner.getId().toString());
       }
       if (existTeamDiff) {
         confirmView.context("contextTeamToCheck", "true");
@@ -503,7 +503,7 @@ public class SaleOrderController {
               .mergeSaleOrders(
                   saleOrderList,
                   commonCurrency,
-                  commonClientPartner,
+                  commonCustomerPartner,
                   commonCompany,
                   commonLocation,
                   commonContactPartner,

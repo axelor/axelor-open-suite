@@ -14,7 +14,7 @@
   	<decimal name="qty" title="Qty" initParam="true"/>
   
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" initParam="true"/>
-  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
+  	<many-to-one name="customerPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
 
     <string name="manufOrderSeq" title="MO" namecolumn="true" initParam="true"/>
@@ -81,7 +81,7 @@
 	  <field name="prioritySelect" />
 	  <field name="plannedStartDateT" />
 	  <field name="plannedEndDateT" />
-	  <field name="clientPartner" />
+	  <field name="customerPartner" />
 	  <field name="saleOrder" />
 	  <field name="statusSelect" />
 	  <field name="cancelReasonStr"/>

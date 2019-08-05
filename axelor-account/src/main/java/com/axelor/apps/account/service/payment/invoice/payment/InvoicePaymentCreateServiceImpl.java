@@ -143,7 +143,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     Invoice invoice = move.getInvoice();
     if (invoice != null) {
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE
           || invoice.getOperationTypeSelect()
               == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
         return InvoicePaymentRepository.TYPE_INVOICE;

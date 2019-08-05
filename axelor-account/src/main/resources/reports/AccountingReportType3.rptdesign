@@ -1078,7 +1078,7 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                         <property name="fontSize">13pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
-                        <text-property name="text">BALANCE  CLIENTS</text-property>
+                        <text-property name="text">BALANCE  CUSTOMERS</text-property>
                     </label>
                 </cell>
             </row>
@@ -1097,7 +1097,7 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                         <property name="fontSize">13pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
-                        <text-property name="text">BALANCE CLIENTS DETAILLEE</text-property>
+                        <text-property name="text">BALANCE CUSTOMERS DETAILLEE</text-property>
                     </label>
                 </cell>
             </row>

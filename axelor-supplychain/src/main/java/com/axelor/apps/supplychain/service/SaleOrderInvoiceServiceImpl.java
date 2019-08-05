@@ -141,7 +141,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     }
 
-    invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
+    invoice.setPartnerTaxNbr(saleOrder.getCustomerPartner().getTaxNbr());
 
     invoice = invoiceRepo.save(invoice);
 
@@ -401,10 +401,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     BigDecimal total = BigDecimal.ZERO;
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE) {
         total = total.add(invoice.getInTaxTotal());
       }
-      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND) {
         total = total.subtract(invoice.getInTaxTotal());
       }
     }
@@ -636,13 +636,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             saleOrder,
             currentInvoiceId,
             excludeCurrentInvoice,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
+            InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE);
     BigDecimal refundAmount =
         this.getAmountVentilated(
             saleOrder,
             currentInvoiceId,
             excludeCurrentInvoice,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+            InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND);
 
     if (saleAmount != null) {
       invoicedAmount = invoicedAmount.add(saleAmount);

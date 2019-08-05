@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.ebics.client;
+package com.axelor.apps.bankpayment.ebics.customer;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.bankpayment.db.EbicsBank;
@@ -105,11 +105,11 @@ public class HttpRequestSender {
     String url = bank.getUrl();
     X509Certificate certificate =
         EbicsCertificateService.getBankCertificate(bank, EbicsCertificateRepository.TYPE_SSL);
-    DefaultHttpClient client = getSecuredHttpClient(certificate, url);
+    DefaultHttpClient customer = getSecuredHttpCustomer(certificate, url);
     String proxyConfiguration = AppSettings.get().get("http.proxy.host");
 
     if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
-      setProxy(client);
+      setProxy(customer);
     }
 
     InputStream input = request.getContent();
@@ -121,7 +121,7 @@ public class HttpRequestSender {
     post.setEntity(entity);
 
     try {
-      HttpResponse responseHttp = client.execute(post);
+      HttpResponse responseHttp = customer.execute(post);
       retCode = responseHttp.getStatusLine().getStatusCode();
       log.debug("Http reason phrase: {}", responseHttp.getStatusLine().getReasonPhrase());
       response = new InputStreamContentFactory(responseHttp.getEntity().getContent());
@@ -138,16 +138,16 @@ public class HttpRequestSender {
   }
 
   public final int sendTLS(ContentFactory request, EbicsBank bank) throws IOException {
-    HttpClient httpClient;
+    HttpClient httpCustomer;
     PostMethod method;
     RequestEntity requestEntity;
     InputStream input;
     int retCode;
-    httpClient = new HttpClient();
+    httpCustomer = new HttpClient();
     String proxyConfiguration = AppSettings.get().get("http.proxy.host");
 
     if (proxyConfiguration != null && !proxyConfiguration.equals("")) {
-      setProxy(httpClient);
+      setProxy(httpCustomer);
     }
     input = request.getContent();
     method = new PostMethod(bank.getUrl());
@@ -156,13 +156,13 @@ public class HttpRequestSender {
     method.setRequestEntity(requestEntity);
     method.setRequestHeader("Content-type", "text/xml; charset=ISO-8859-1");
     retCode = -1;
-    retCode = httpClient.executeMethod(method);
+    retCode = httpCustomer.executeMethod(method);
     response = new InputStreamContentFactory(method.getResponseBodyAsStream());
 
     return retCode;
   }
 
-  private void setProxy(DefaultHttpClient client) {
+  private void setProxy(DefaultHttpClient customer) {
 
     String proxyHost;
     int proxyPort;
@@ -179,15 +179,15 @@ public class HttpRequestSender {
       pwd = AppSettings.get().get("http.proxy.password").trim();
       credentials = new UsernamePasswordCredentials(user, pwd);
       authscope = new AuthScope(proxyHost, proxyPort);
-      client.getCredentialsProvider().setCredentials(authscope, credentials);
+      customer.getCredentialsProvider().setCredentials(authscope, credentials);
     }
   }
 
-  private void setProxy(HttpClient httpClient) {
+  private void setProxy(HttpClient httpCustomer) {
 
     String proxyHost = AppSettings.get().get("http.proxy.host").trim();
     Integer proxyPort = Integer.parseInt(AppSettings.get().get("http.proxy.port").trim());
-    HostConfiguration hostConfig = httpClient.getHostConfiguration();
+    HostConfiguration hostConfig = httpCustomer.getHostConfiguration();
     hostConfig.setProxy(proxyHost, proxyPort);
     if (!AppSettings.get().get("http.proxy.user").equals("")) {
       String user;
@@ -199,17 +199,17 @@ public class HttpRequestSender {
       pwd = AppSettings.get().get("http.proxy.password").trim();
       credentials = new org.apache.commons.httpclient.UsernamePasswordCredentials(user, pwd);
       authscope = new org.apache.commons.httpclient.auth.AuthScope(proxyHost, proxyPort);
-      httpClient.getState().setProxyCredentials(authscope, credentials);
+      httpCustomer.getState().setProxyCredentials(authscope, credentials);
     }
   }
 
-  private DefaultHttpClient getSecuredHttpClient(Certificate cert, String bankURL)
+  private DefaultHttpClient getSecuredHttpCustomer(Certificate cert, String bankURL)
       throws AxelorException {
 
     HttpParams httpParams = new BasicHttpParams();
     HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
     HttpConnectionParams.setSoTimeout(httpParams, 30000);
-    DefaultHttpClient client = new DefaultHttpClient(httpParams);
+    DefaultHttpClient customer = new DefaultHttpClient(httpParams);
 
     try {
       Scheme https = null;
@@ -234,14 +234,14 @@ public class HttpRequestSender {
         log.debug("SSL certificate not exist");
         https = new Scheme("https", 443, SSLSocketFactory.getSocketFactory());
       }
-      client.getConnectionManager().getSchemeRegistry().register(https);
+      customer.getConnectionManager().getSchemeRegistry().register(https);
     } catch (Exception e) {
       e.printStackTrace();
       throw new AxelorException(
           e.getCause(), TraceBackRepository.TYPE_TECHNICAL, I18n.get("Error adding certificate"));
     }
 
-    return client;
+    return customer;
   }
 
   /**

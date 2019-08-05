@@ -652,7 +652,7 @@
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND item.select.name='partner.partner.type.select'
-				AND CAST(item.value as int) = self.saleOrder.clientPartner.partnerTypeSelect
+				AND CAST(item.value as int) = self.saleOrder.customerPartner.partnerTypeSelect
 			GROUP BY
 				item.title
 		</dataset>
@@ -668,7 +668,7 @@
 		<dataset type="jpql">
 		    SELECT
 		    	SUM(self.exTaxTotal) AS _amount,
-		    	self.saleOrder.clientPartner.partnerCategory.name AS category
+		    	self.saleOrder.customerPartner.partnerCategory.name AS category
 		    FROM
 		    	SaleOrderLine self
 		    WHERE
@@ -676,7 +676,7 @@
 			    AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			    AND self.saleOrder.company = :activeCompany
 		    GROUP BY
-		    	self.saleOrder.clientPartner.partnerCategory.name
+		    	self.saleOrder.customerPartner.partnerCategory.name
 		</dataset>
 		<category key="category" type="text" title="Category"/>
 		<series key="_amount" type="bar" title="Turnover"/>
@@ -698,7 +698,7 @@
 				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
-				AND industrySector.id = self.saleOrder.clientPartner.industrySector.id
+				AND industrySector.id = self.saleOrder.customerPartner.industrySector.id
 			GROUP BY
 				industrySector.name
 		</dataset>
@@ -762,7 +762,7 @@
 				AND
 				  YEAR(saleOrder.confirmationDateTime) IN (YEAR(CURRENT_DATE), YEAR(CURRENT_DATE) - 1)
 				AND
-				  saleOrder.clientPartner.id=:id
+				  saleOrder.customerPartner.id=:id
 				AND(
 				  ( saleOrder.confirmationDateTime &gt;= TO_DATE(YEAR(DATE(:toDate)) || '-01-01','YYYY-MM-DD')
 				  AND saleOrder.confirmationDateTime &lt;= DATE(:toDate))

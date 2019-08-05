@@ -124,8 +124,8 @@
 			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true"/>
-			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
-			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order" canEdit="false"/>
+			<field name="customerPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-customer-partner" canEdit="false"/>
+			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-customer-partner-onchange-sale-order" canEdit="false"/>
 			<field name="isConsProOnOperation" hidden="true"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
@@ -294,20 +294,20 @@
     </action-attrs>
     
     <action-attrs name="action-manuf-order-attrs-sale-order-onselect">
-	  <attribute if="clientPartner != null" name="domain" expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
-	  <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
+	  <attribute if="customerPartner != null" name="domain" expr="self.customerPartner = :customerPartner AND self.statusSelect = 3" for="saleOrder"/>
+	  <attribute if="customerPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
 	</action-attrs>
 	
 	<action-attrs name="action-manuf-order-attrs-set-unit">
 		<attribute name="value" for="unit" expr="eval: billOfMaterial.unit"/>
 	</action-attrs>
 	
-	<action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
-	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
+	<action-attrs name="action-manuf-order-atts-sale-order-onchange-customer-partner">
+	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.customerPartner != customerPartner"/>
 	</action-attrs>
 
-    <action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
-	  <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
+    <action-record name="action-manuf-order-record-customer-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
+	  <field name="customerPartner" expr="eval: saleOrder?.customerPartner"/>
 	</action-record>
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">

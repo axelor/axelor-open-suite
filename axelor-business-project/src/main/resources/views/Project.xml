@@ -5,7 +5,7 @@
 	<grid name="business-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
+		<field name="customerPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="fromDate" />
 		<field name="toDate" />
 	</grid>
@@ -123,7 +123,7 @@
 		<attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="value" for="$salesOrderLineSet" expr="eval:false"/>
 		<attribute name="title" for="$salesOrderLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
-		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.clientPartner = :clientPartner AND self.saleOrder.statusSelect in (3,4) AND self.project is null&quot;"/>
+		<attribute name="domain" for="$salesOrderLineSet" expr="eval:&quot;self.saleOrder.customerPartner = :customerPartner AND self.saleOrder.statusSelect in (3,4) AND self.project is null&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-sales-order-line-manage-lines">
@@ -383,7 +383,7 @@
 		<attribute name="hidden" for="$customerInvoiceLineSet" expr="eval:false"/>
 		<attribute name="value" for="$customerInvoiceLineSet" expr="eval:null"/>
 		<attribute name="title" for="$customerInvoiceLineSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
-		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND self.invoice.partner = :clientPartner AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;"/>
+		<attribute name="domain" for="$customerInvoiceLineSet" expr="eval:&quot;self.invoice.operationTypeSelect = 3 AND self.invoice.partner = :customerPartner AND self.project is null AND self.invoice.statusSelect = 3  AND self.invoice.operationSubTypeSelect != 2&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-customer-invoice-line-manage-lines">

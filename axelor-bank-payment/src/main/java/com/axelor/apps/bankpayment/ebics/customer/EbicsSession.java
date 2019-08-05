@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.ebics.client;
+package com.axelor.apps.bankpayment.ebics.customer;
 
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
@@ -37,7 +37,7 @@ public class EbicsSession {
    * Constructs a new ebics session
    *
    * @param user the ebics user
-   * @param the ebics client configuration
+   * @param the ebics customer configuration
    */
   public EbicsSession(EbicsUser user) {
     this.user = user;
@@ -48,7 +48,7 @@ public class EbicsSession {
    * Constructs a new ebics session
    *
    * @param user the ebics user
-   * @param the ebics client configuration
+   * @param the ebics customer configuration
    */
   public EbicsSession(EbicsUser user, EbicsUser signatoryUser) {
     this.user = user;

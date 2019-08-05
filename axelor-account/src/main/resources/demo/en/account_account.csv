@@ -531,7 +531,7 @@
 530;488700;488000;"Products";"receivable";;1;;
 531;489000;48;"Emission allowances allocated by the State";"receivable";;1;;
 532;49;"CL4";"Impairment of accounts of others";"view";;1;;
-533;491000;49;"Impairment of client accounts";"debt";;1;;
+533;491000;49;"Impairment of customer accounts";"debt";;1;;
 534;495000;49;"Depreciation of the group and associates";"debt";;1;;
 535;495100;495000;"Group accounts";"debt";;1;;
 536;495500;495000;"Current accounts of shareholders";"debt";;1;;
@@ -683,7 +683,7 @@
 682;623100;623000;"Ads and inserts";"charge";;1;;
 683;623200;623000;"Samples";"charge";;1;;
 684;623300;623000;"Fairs and exhibitions";"charge";;1;;
-685;623400;623000;"Gifts to clients";"charge";;1;;
+685;623400;623000;"Gifts to customers";"charge";;1;;
 686;623500;623000;"Rewards";"charge";;1;;
 687;623600;623000;"Catalogues and";"charge";;1;;
 688;623700;623000;"Publications";"charge";;1;;

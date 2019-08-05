@@ -41,7 +41,7 @@ public interface StockMoveToolService {
 
   public BigDecimal compute(StockMove stockMove);
 
-  public boolean getDefaultISPM(Partner clientPartner, Address toAddress);
+  public boolean getDefaultISPM(Partner customerPartner, Address toAddress);
 
   /**
    * Fill {@link StockMove#fromAddressStr} and {@link StockMove#toAddressStr}

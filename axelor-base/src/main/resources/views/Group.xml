@@ -7,7 +7,7 @@
         <field name="name" />
         <field name="code" />
         <field name="navigation" />
-        <field name="isClient"/>
+        <field name="isCustomer"/>
         <field name="isSupplier"/>
     </grid>
 
@@ -24,7 +24,7 @@
                 <field name="__actionSelect" title="Action" widget="SuggestBox" canNew="false" target="com.axelor.meta.db.MetaAction" target-name="name" domain="self.type = 'action-view' and self.home = true"/>
             </panel>
             <field name="technicalStaff" colSpan="4"/>
-            <field name="isClient" colSpan="4"/>
+            <field name="isCustomer" colSpan="4"/>
             <field name="isSupplier" colSpan="4"/>
         </panel>
         <panel-tabs name="mainPanelTab">

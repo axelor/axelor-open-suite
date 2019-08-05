@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.ebics.io;
 
 import com.axelor.apps.bankpayment.db.EbicsUser;
-import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsUtils;
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;

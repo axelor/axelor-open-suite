@@ -61,7 +61,7 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
   @Override
   public void remove(SaleOrder order) {
 
-    Partner partner = order.getClientPartner();
+    Partner partner = order.getCustomerPartner();
 
     super.remove(order);
 

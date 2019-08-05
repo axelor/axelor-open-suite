@@ -184,7 +184,7 @@
         </oda-data-source>
     </data-sources>
     <data-sets>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ClientSituationDS" id="3692">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="CustomerSituationDS" id="3692">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -772,7 +772,7 @@ COALESCE(NULLIF(LangTranslate.message_value, ''), LangTranslate.message_key) as 
 from meta_translation as LangTranslate 
 where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ClientPartnerDS" id="4066">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="CustomerPartnerDS" id="4066">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -1798,7 +1798,7 @@ ContactPartner.title_select, ContactPartner.name, ContactPartner.first_name,
 SaleOrder.ex_tax_total, SaleOrder.tax_total, SaleOrder.in_tax_total, 
 SaleOrder.status_select, SaleOrder.order_date, Currency.symbol AS currency
 FROM base_partner AS Partner
-INNER JOIN sale_sale_order AS SaleOrder ON (SaleOrder.client_partner = Partner.id)
+INNER JOIN sale_sale_order AS SaleOrder ON (SaleOrder.customer_partner = Partner.id)
 LEFT JOIN base_partner AS ContactPartner ON (ContactPartner.id = SaleOrder.contact_partner)
 INNER JOIN auth_user AS AuthUser ON (AuthUser.id = Partner.user_id)
 LEFT JOIN base_currency AS Currency ON (SaleOrder.currency = Currency.id)
@@ -1892,7 +1892,7 @@ $func$ LANGUAGE plpgsql;
             <property name="marginLeft">2pt</property>
             <property name="height">9.233958333333334cm</property>
             <property name="width">19.420416666666664cm</property>
-            <property name="dataSet">ClientSituationDS</property>
+            <property name="dataSet">CustomerSituationDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">id</property>
@@ -2104,7 +2104,7 @@ $func$ LANGUAGE plpgsql;
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'ClientSituation.title'</value>
+                                    <value type="javascript">'CustomerSituation.title'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2141,7 +2141,7 @@ $func$ LANGUAGE plpgsql;
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.followedBy"</value>
+                                    <value type="javascript">"CustomerSituation.followedBy"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2179,7 +2179,7 @@ $func$ LANGUAGE plpgsql;
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.team"</value>
+                                    <value type="javascript">"CustomerSituation.team"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2315,7 +2315,7 @@ row["partner_first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.address"</value>
+                                    <value type="javascript">"CustomerSituation.address"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2358,7 +2358,7 @@ row["partner_first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.fixedPhone"</value>
+                                    <value type="javascript">"CustomerSituation.fixedPhone"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2403,9 +2403,9 @@ row["partner_first_name"]
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">if(row["partner_type_select"] == "1"){
-"ClientSituation.fax"
+"CustomerSituation.fax"
 }else{
-"ClientSituation.mobile"
+"CustomerSituation.mobile"
 }</value>
                                 </simple-property-list>
                             </structure>
@@ -2454,7 +2454,7 @@ row["mobile_phone"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.email"</value>
+                                    <value type="javascript">"CustomerSituation.email"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2500,9 +2500,9 @@ row["mobile_phone"]
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">if(row["partner_type_select"] == "1"){
-"ClientSituation.website"
+"CustomerSituation.website"
 }else if(row["partner_type_select"] == "2"){
-"ClientSituation.fax"
+"CustomerSituation.fax"
 }</value>
                                 </simple-property-list>
                             </structure>
@@ -2558,7 +2558,7 @@ row["fax"]
         <table id="4109">
             <property name="marginLeft">0pt</property>
             <property name="width">19.579166666666666cm</property>
-            <property name="dataSet">ClientPartnerDS</property>
+            <property name="dataSet">CustomerPartnerDS</property>
             <list-property name="visibility">
                 <structure>
                     <property name="format">all</property>
@@ -2685,7 +2685,7 @@ row["fax"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.contacts"</value>
+                                        <value type="javascript">"CustomerSituation.contacts"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2746,7 +2746,7 @@ row["fax"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.name"</value>
+                                        <value type="javascript">"CustomerSituation.name"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2805,7 +2805,7 @@ row["fax"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.phone"</value>
+                                        <value type="javascript">"CustomerSituation.phone"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2864,7 +2864,7 @@ row["fax"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.mobile"</value>
+                                        <value type="javascript">"CustomerSituation.mobile"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2923,7 +2923,7 @@ row["fax"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.email"</value>
+                                        <value type="javascript">"CustomerSituation.email"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2982,7 +2982,7 @@ row["fax"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.function"</value>
+                                        <value type="javascript">"CustomerSituation.function"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -3038,7 +3038,7 @@ row["fax"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.address"</value>
+                                        <value type="javascript">"CustomerSituation.address"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -3267,7 +3267,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.commercialData"</value>
+                                    <value type="javascript">"CustomerSituation.commercialData"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3314,7 +3314,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.lastMeetingDate"</value>
+                                    <value type="javascript">"CustomerSituation.lastMeetingDate"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3415,7 +3415,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.lastCall"</value>
+                                    <value type="javascript">"CustomerSituation.lastCall"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3516,7 +3516,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.lastOrder"</value>
+                                    <value type="javascript">"CustomerSituation.lastOrder"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3682,7 +3682,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.with"</value>
+                                    <value type="javascript">"CustomerSituation.with"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3782,7 +3782,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.with"</value>
+                                    <value type="javascript">"CustomerSituation.with"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3882,7 +3882,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.avgOrderAmt"</value>
+                                    <value type="javascript">"CustomerSituation.avgOrderAmt"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4054,7 +4054,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.nextMeetingDate"</value>
+                                    <value type="javascript">"CustomerSituation.nextMeetingDate"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4155,7 +4155,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.nextOutgoingCall"</value>
+                                    <value type="javascript">"CustomerSituation.nextOutgoingCall"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4256,7 +4256,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.12MonthTurnover"</value>
+                                    <value type="javascript">"CustomerSituation.12MonthTurnover"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4477,7 +4477,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.with"</value>
+                                    <value type="javascript">"CustomerSituation.with"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4578,7 +4578,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.with"</value>
+                                    <value type="javascript">"CustomerSituation.with"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -4679,7 +4679,7 @@ row["first_name"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.orderFreq"</value>
+                                    <value type="javascript">"CustomerSituation.orderFreq"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -5063,7 +5063,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.orders"</value>
+                                        <value type="javascript">"CustomerSituation.orders"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5122,7 +5122,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.date"</value>
+                                        <value type="javascript">"CustomerSituation.date"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5181,7 +5181,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.reference"</value>
+                                        <value type="javascript">"CustomerSituation.reference"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5240,7 +5240,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.contact"</value>
+                                        <value type="javascript">"CustomerSituation.contact"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5299,7 +5299,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.totalHT"</value>
+                                        <value type="javascript">"CustomerSituation.totalHT"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5358,7 +5358,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.totalTax"</value>
+                                        <value type="javascript">"CustomerSituation.totalTax"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5417,7 +5417,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.totalATI"</value>
+                                        <value type="javascript">"CustomerSituation.totalATI"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5476,7 +5476,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.toInvoice"</value>
+                                        <value type="javascript">"CustomerSituation.toInvoice"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5532,7 +5532,7 @@ row["creation_date"]
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.status"</value>
+                                        <value type="javascript">"CustomerSituation.status"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -5799,7 +5799,7 @@ default:
             <property name="pageBreakInside">avoid</property>
             <property name="height">1.7991666666666668cm</property>
             <property name="width">19.552708333333335cm</property>
-            <property name="dataSet">ClientSituationDS</property>
+            <property name="dataSet">CustomerSituationDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">id</property>
@@ -5959,7 +5959,7 @@ default:
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.financialData"</value>
+                                    <value type="javascript">"CustomerSituation.financialData"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6002,7 +6002,7 @@ default:
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.totalBalance"</value>
+                                    <value type="javascript">"CustomerSituation.totalBalance"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6032,7 +6032,7 @@ default:
                     <text id="4474">
                         <property name="fontSize">8pt</property>
                         <property name="marginTop">2pt</property>
-                        <property name="dataSet">ClientSituationDS</property>
+                        <property name="dataSet">CustomerSituationDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">id</property>
@@ -6166,7 +6166,7 @@ default:
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.dueBalance"</value>
+                                    <value type="javascript">"CustomerSituation.dueBalance"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6196,7 +6196,7 @@ default:
                     <text id="4478">
                         <property name="fontSize">8pt</property>
                         <property name="marginTop">2pt</property>
-                        <property name="dataSet">ClientSituationDS</property>
+                        <property name="dataSet">CustomerSituationDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">id</property>
@@ -6330,7 +6330,7 @@ default:
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"ClientSituation.recoverableBalance"</value>
+                                    <value type="javascript">"CustomerSituation.recoverableBalance"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -6363,7 +6363,7 @@ default:
                     <text id="4482">
                         <property name="fontSize">8pt</property>
                         <property name="marginTop">2pt</property>
-                        <property name="dataSet">ClientSituationDS</property>
+                        <property name="dataSet">CustomerSituationDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">id</property>
@@ -6629,7 +6629,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.invoices"</value>
+                                        <value type="javascript">"CustomerSituation.invoices"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -6688,7 +6688,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.date"</value>
+                                        <value type="javascript">"CustomerSituation.date"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -6747,7 +6747,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.num"</value>
+                                        <value type="javascript">"CustomerSituation.num"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -6806,7 +6806,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.refDoc"</value>
+                                        <value type="javascript">"CustomerSituation.refDoc"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -6865,7 +6865,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.custRef"</value>
+                                        <value type="javascript">"CustomerSituation.custRef"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -6924,7 +6924,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.totalHT"</value>
+                                        <value type="javascript">"CustomerSituation.totalHT"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -6983,7 +6983,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.totalTax"</value>
+                                        <value type="javascript">"CustomerSituation.totalTax"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -7042,7 +7042,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.totalATI"</value>
+                                        <value type="javascript">"CustomerSituation.totalATI"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -7101,7 +7101,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.toPay"</value>
+                                        <value type="javascript">"CustomerSituation.toPay"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -7157,7 +7157,7 @@ default:
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">"ClientSituation.dueDate"</value>
+                                        <value type="javascript">"CustomerSituation.dueDate"</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

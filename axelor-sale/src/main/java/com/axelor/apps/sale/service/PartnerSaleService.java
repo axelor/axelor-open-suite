@@ -59,7 +59,7 @@ public class PartnerSaleService extends PartnerService {
         "SELECT DISTINCT(email.id) FROM Message as email, SaleOrder as so, Partner as part"
             + " WHERE part.id = "
             + partner.getId()
-            + " AND so.clientPartner = part.id AND email.mediaTypeSelect = 2 AND "
+            + " AND so.customerPartner = part.id AND email.mediaTypeSelect = 2 AND "
             + "((email.relatedTo1Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo1SelectId = so.id) "
             + "OR (email.relatedTo2Select = 'com.axelor.apps.sale.db.SaleOrder' AND email.relatedTo2SelectId = so.id))";
     return JPA.em().createQuery(query).getResultList();

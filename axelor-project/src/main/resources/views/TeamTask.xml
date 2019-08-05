@@ -43,7 +43,7 @@
 					<viewer>
 						<![CDATA[
 							<h4 class="text-right">
-								<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
+								<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the customer</span>
 								<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
 								<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.ebics.client;
+package com.axelor.apps.bankpayment.ebics.customer;
 
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 
@@ -106,7 +106,7 @@ public class OrderAttribute {
   }
 
   /**
-   * Depending on order type and possible further marginal conditions, an EBICS client MUST enter
+   * Depending on order type and possible further marginal conditions, an EBICS customer MUST enter
    * the following order attributes in the control data of the first EBICS request of an EBICS
    * transaction (ebicsRequest/header/static/OrderDetails/OrderAttribute):
    *

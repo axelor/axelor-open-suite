@@ -150,10 +150,10 @@
 		<domain>self.statusSelect = 2 and self.toStockLocation.id = 3</domain>
 	</action-view>	
 	
-	<menuitem name="stock-root-outcoming-client" parent="stock-root-planned"
-		title="Customer deliveries" action="stock.root.outcoming.client" />
+	<menuitem name="stock-root-outcoming-customer" parent="stock-root-planned"
+		title="Customer deliveries" action="stock.root.outcoming.customer" />
 
-	<action-view name="stock.root.outcoming.client" title="Customer deliveries"
+	<action-view name="stock.root.outcoming.customer" title="Customer deliveries"
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
@@ -161,10 +161,10 @@
 		<domain>self.statusSelect = 2 and self.toStockLocation.id = 2</domain>
 	</action-view>	
 	
-	<menuitem name="stock-root-incoming-client" parent="stock-root-planned"
-		title="Customer returns" action="stock.root.incoming.client" />
+	<menuitem name="stock-root-incoming-customer" parent="stock-root-planned"
+		title="Customer returns" action="stock.root.incoming.customer" />
 
-	<action-view name="stock.root.incoming.client" title="Customer returns"
+	<action-view name="stock.root.incoming.customer" title="Customer returns"
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />

@@ -414,7 +414,7 @@ public class DoubtfulCustomerService {
             + "' AND ml.account.id != "
             + doubtfulCustomerAccount.getId()
             + " AND m.invoice.operationTypeSelect = "
-            + InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+            + InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE;
 
     log.debug("Requete : {} ", request);
 
@@ -465,7 +465,7 @@ public class DoubtfulCustomerService {
                     company,
                     date,
                     doubtfulCustomerAccount,
-                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+                    InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE)
                 .fetch();
         break;
 
@@ -486,7 +486,7 @@ public class DoubtfulCustomerService {
                     company,
                     date,
                     doubtfulCustomerAccount,
-                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+                    InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE)
                 .fetch();
         break;
 

@@ -63,7 +63,7 @@ public class InvoicingProjectController {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
     }
-    if (invoicingProject.getProject().getClientPartner() == null) {
+    if (invoicingProject.getProject().getCustomerPartner() == null) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

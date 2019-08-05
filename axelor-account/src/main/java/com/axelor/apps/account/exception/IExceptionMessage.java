@@ -803,8 +803,8 @@ public interface IExceptionMessage {
       "No Accounting Situation related to %s." /*)*/;
 
   /* Check refunds */
-  String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
-      "Note: there are existing not imputed client refunds."; /*)*/
+  String INVOICE_NOT_IMPUTED_CUSTOMER_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed customer refunds."; /*)*/
   String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
       "Note: there are existing not imputed supplier refunds."; /*)*/
 
