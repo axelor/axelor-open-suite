@@ -17,6 +17,11 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.PersistenceException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -30,10 +35,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class PartnerBaseRepository extends PartnerRepository {
 
@@ -74,14 +75,7 @@ public class PartnerBaseRepository extends PartnerRepository {
 
       if (!partner.getIsContact() && !partner.getIsEmployee()) {
         partner.setMainAddress(null);
-        if (partner.getPartnerAddressList() != null) {
-          for (PartnerAddress partnerAddress : partner.getPartnerAddressList()) {
-            if (partnerAddress.getIsDefaultAddr()) {
-              partner.setMainAddress(partnerAddress.getAddress());
-              break;
-            }
-          }
-        }
+        partner.setMainAddress(getDefaultAddress(partner));
       }
 
       if (partner.getPartnerTypeSelect() == PARTNER_TYPE_INDIVIDUAL) {
@@ -102,6 +96,49 @@ public class PartnerBaseRepository extends PartnerRepository {
     } catch (Exception e) {
       throw new PersistenceException(e);
     }
+  }
+
+  /**
+   * Ensures that there is exactly one default invoicing address and no more than one default
+   * delivery address. If the partner address list is valid, returns the default invoicing address.
+   *
+   * @param partnerAddressList
+   * @throws AxelorException
+   */
+  private Address getDefaultAddress(Partner partner) throws AxelorException {
+    List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+    if (partnerAddressList == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
+    }
+
+    Address defaultInvoicingAddress = null;
+    Address defaultDeliveryAddress = null;
+
+    for (PartnerAddress partnerAddress : partnerAddressList) {
+      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
+        if (defaultInvoicingAddress != null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+        }
+        defaultInvoicingAddress = partnerAddress.getAddress();
+      }
+
+      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
+        if (defaultDeliveryAddress != null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+        }
+        defaultDeliveryAddress = partnerAddress.getAddress();
+      }
+    }
+
+    if (defaultInvoicingAddress == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
+    }
+
+    return defaultInvoicingAddress;
   }
 
   @Override
