@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -73,10 +74,7 @@ public class PartnerBaseRepository extends PartnerRepository {
         }
       }
 
-      if (!partner.getIsContact() && !partner.getIsEmployee()) {
-        partner.setMainAddress(null);
-        partner.setMainAddress(getDefaultAddress(partner));
-      }
+      updatePartnerAddress(partner);
 
       if (partner.getPartnerTypeSelect() == PARTNER_TYPE_INDIVIDUAL) {
         partner.setContactPartnerSet(new HashSet<>());
@@ -95,6 +93,40 @@ public class PartnerBaseRepository extends PartnerRepository {
       return super.save(partner);
     } catch (Exception e) {
       throw new PersistenceException(e);
+    }
+  }
+
+  /**
+   * Updates M2O and O2M fields of partner that manage partner addresses. This method ensures
+   * consistency between these two fields.
+   *
+   * @param partner
+   * @throws AxelorException
+   */
+  private void updatePartnerAddress(Partner partner) throws AxelorException {
+    Address address = partner.getMainAddress();
+
+    if (!partner.getIsContact() && !partner.getIsEmployee()) {
+      partner.setMainAddress(getDefaultAddress(partner));
+
+    } else if (address == null) {
+      partner.removePartnerAddressListItem(
+          JPA.all(PartnerAddress.class)
+              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
+              .bind("partnerId", partner.getId())
+              .fetchOne());
+
+    } else if (partner
+        .getPartnerAddressList()
+        .stream()
+        .map(PartnerAddress::getAddress)
+        .noneMatch(address::equals)) {
+      PartnerAddress mainAddress = new PartnerAddress();
+      mainAddress.setAddress(address);
+      mainAddress.setIsDefaultAddr(true);
+      mainAddress.setIsDeliveryAddr(true);
+      mainAddress.setIsInvoicingAddr(true);
+      partner.addPartnerAddressListItem(mainAddress);
     }
   }
 
