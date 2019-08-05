@@ -195,5 +195,11 @@
         <option value="1">Days</option>
         <option value="2">Hours</option>
     </selection>
+    
+    <selection name="hr.dpae.contract.type.select">
+        <option value="1">CDD</option>
+        <option value="2">CDI</option>
+        <option value="3">CTT</option>
+    </selection>
 
 </object-views>

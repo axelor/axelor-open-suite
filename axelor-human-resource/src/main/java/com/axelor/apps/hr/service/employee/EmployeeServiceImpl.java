@@ -38,6 +38,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -46,6 +47,7 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
@@ -221,10 +223,25 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setRegistrationCode(employer.getRegistrationCode());
     newDPAE.setMainActivityCode(employer.getMainActivityCode());
     newDPAE.setCompany(payCompany);
-    newDPAE.setCompanyAddress(employer.getMainAddress());
+    newDPAE.setCompanyName(payCompany.getName());
+    newDPAE.setCompanyAddressL1(
+        (Optional.ofNullable(employer.getMainAddress().getAddressL2()).orElse("")
+                + " "
+                + Optional.ofNullable(employer.getMainAddress().getAddressL3()).orElse(""))
+            .trim());
+    newDPAE.setCompanyAddressL2(
+        (Optional.ofNullable(employer.getMainAddress().getAddressL4()).orElse("")
+                + " "
+                + Optional.ofNullable(employer.getMainAddress().getAddressL5()).orElse(""))
+            .trim());
     newDPAE.setCompanyFixedPhone(employer.getFixedPhone());
-    newDPAE.setHealthService(employer.getHealthService());
-    newDPAE.setHealthServiceAddress(employer.getHealthServiceAddress());
+    newDPAE.setHealthService(employer.getHealthService() );
+    newDPAE.setHealthServiceAddress(employer.getHealthServiceAddress() != null ? employer.getHealthServiceAddress().getFullName() : "" );
+    newDPAE.setCompanyCity( employer.getMainAddress().getCity() != null ? employer.getMainAddress().getCity().getName() : 
+      !Strings.isNullOrEmpty(employer.getMainAddress().getAddressL6()) && employer.getMainAddress().getAddressL6().length() > 6 ? employer.getMainAddress().getAddressL6().substring(6) : ""  );
+    newDPAE.setCompanyZipCode( !Strings.isNullOrEmpty(employer.getMainAddress().getZip()) ? employer.getMainAddress().getZip() : 
+      !Strings.isNullOrEmpty(employer.getMainAddress().getAddressL6()) && employer.getMainAddress().getAddressL6().length() >= 5 ? employer.getMainAddress().getAddressL6().substring(0,5) : "");
+    
 
     // Employee
     newDPAE.setLastName(employee.getContactPartner().getName());
@@ -232,15 +249,15 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setSocialSecurityNumber(employee.getSocialSecurityNumber());
     newDPAE.setSexSelect(employee.getSexSelect());
     newDPAE.setDateOfBirth(employee.getBirthDate());
-    newDPAE.setDepartmentOfBirth(employee.getDepartmentOfBirth());
-    newDPAE.setCityOfBirth(employee.getCityOfBirth());
-    newDPAE.setCountryOfBirth(employee.getCountryOfBirth());
+    newDPAE.setDepartmentOfBirth(employee.getDepartmentOfBirth() != null && employee.getDepartmentOfBirth().getCode().length() >= 2 ? employee.getDepartmentOfBirth().getCode().substring(0, 2) : "" );
+    newDPAE.setCityOfBirth(employee.getCityOfBirth() != null ? employee.getCityOfBirth().getName() : "" );
+    newDPAE.setCountryOfBirth(employee.getCountryOfBirth() != null ? employee.getCountryOfBirth().getName() : "");
 
     // Contract
     newDPAE.setDateOfHire(mainEmploymentContract.getStartDate());
     newDPAE.setTimeOfHire(mainEmploymentContract.getStartTime());
     newDPAE.setTrialPeriodDuration(mainEmploymentContract.getTrialPeriodDuration());
-    newDPAE.setContractType(mainEmploymentContract.getContractType());
+    //newDPAE.setContractType(mainEmploymentContract.getContractType().getContractTypeSelect());
     newDPAE.setEndDateOfContract(mainEmploymentContract.getEndDate());
 
     employee.addDpaeListItem(newDPAE);

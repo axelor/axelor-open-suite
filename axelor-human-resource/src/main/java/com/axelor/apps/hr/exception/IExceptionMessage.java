@@ -195,4 +195,7 @@ public interface IExceptionMessage {
 
   static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
       "Please configure the unit for this type of absence" /*)*/;
+  
+  /** DPAE Service */
+  static final String DPAE_FIELD_INVALID = /*$$(*/ "Field %s missing or invalid in DPAE." /*)*/;
 }
