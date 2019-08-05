@@ -343,7 +343,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setProductName(null);
     line.setUnit(null);
     line.setDiscountAmount(null);
-    line.setDiscountTypeSelect(null);
+    line.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     line.setPrice(null);
     line.setInTaxPrice(null);
     line.setSaleMinPrice(null);
