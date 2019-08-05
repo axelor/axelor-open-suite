@@ -67,7 +67,6 @@
 		      	</panel>
       			<panel colSpan="12">
 			        <field name="inAti" colSpan="6"/>
-			        <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account"/>
 			        <field name="expense" hidden="true" if-module="axelor-human-resource"/>
       			</panel>
     		</panel>
