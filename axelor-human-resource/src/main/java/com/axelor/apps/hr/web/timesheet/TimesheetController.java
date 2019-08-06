@@ -206,9 +206,9 @@ public class TimesheetController {
   }
 
   public void editTimesheetSelected(ActionRequest request, ActionResponse response) {
-    Map timesheetMap = (Map) request.getContext().get("timesheetSelect");
+    Map<?, ?> timesheetMap = (Map<?, ?>) request.getContext().get("timesheetSelect");
     Timesheet timesheet =
-        Beans.get(TimesheetRepository.class).find(new Long((Integer) timesheetMap.get("id")));
+        Beans.get(TimesheetRepository.class).find(Long.valueOf((String) timesheetMap.get("id")));
     response.setView(
         ActionView.define("Timesheet")
             .model(Timesheet.class.getName())

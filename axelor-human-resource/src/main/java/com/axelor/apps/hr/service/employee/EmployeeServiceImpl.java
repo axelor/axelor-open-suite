@@ -123,17 +123,14 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     while (!itDate.isAfter(toDate)) {
       duration =
           duration.add(
-              new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+              BigDecimal.valueOf(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
       itDate = itDate.plusDays(1);
     }
 
-    if (publicHolidayPlanning != null) {
-      duration =
-          duration.subtract(
-              Beans.get(PublicHolidayHrService.class)
-                  .computePublicHolidayDays(
-                      fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
-    }
+    duration =
+        duration.subtract(
+            Beans.get(PublicHolidayHrService.class)
+                .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
   }

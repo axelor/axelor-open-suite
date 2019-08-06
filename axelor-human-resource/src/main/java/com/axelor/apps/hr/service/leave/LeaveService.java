@@ -17,18 +17,19 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import javax.mail.MessagingException;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import javax.mail.MessagingException;
 
 public interface LeaveService {
 
@@ -106,4 +107,13 @@ public interface LeaveService {
   @Transactional
   public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
       throws AxelorException;
+
+  /**
+   * Checks if the given day is a leave day.
+   *
+   * @param user
+   * @param date
+   * @return
+   */
+  public boolean isLeaveDay(User user, LocalDate date);
 }
