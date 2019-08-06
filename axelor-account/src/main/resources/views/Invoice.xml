@@ -535,7 +535,7 @@ InvoiceSet.length > 0))"
 			<panel name="invoiceTypePanel" colSpan="6">
 				<field name="$reportType" title="Invoice type" type="integer" selection-in="[1]" selection="invoice.report.type" required="true"
 					onChange="action-invoice-reports-wizard-attrs-set-format-select"
-					showIf="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)" hidden="true" readonly="true" colSpan="12" />
+					showIf="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)" readonly="true" colSpan="12" />
 				<field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3]" selection="invoice.report.type" required="true"
 					onChange="action-invoice-reports-wizard-attrs-set-format-select"
 					showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF == null" colSpan="12"/>
