@@ -52,6 +52,10 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   @Inject private FileFieldService fileFieldService;
 
+  private static final String forSelectUseValues = "values";
+  private static final String forSelectUseTitles = "titles";
+  private static final String forSelectUseTranslatedTitles = "translated titles";
+
   @Override
   public boolean apply(AdvancedImport advancedImport)
       throws AxelorException, ClassNotFoundException {
@@ -287,7 +291,15 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
 
     String importType = StringUtils.substringBetween(value, "(", ")");
-    fileField.setImportType(this.getImportType(value, importType));
+
+    if (!Strings.isNullOrEmpty(importType)
+        && (importType.equalsIgnoreCase(forSelectUseValues)
+            || importType.equalsIgnoreCase(forSelectUseTitles)
+            || importType.equalsIgnoreCase(forSelectUseTranslatedTitles))) {
+      fileField.setForSelectUse(this.getForStatusSelect(importType));
+    } else {
+      fileField.setImportType(this.getImportType(value, importType));
+    }
 
     value = value.split("\\(")[0];
     String importField = null;
@@ -436,6 +448,20 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
           return FileFieldRepository.IMPORT_TYPE_FIND;
         }
         return FileFieldRepository.IMPORT_TYPE_DIRECT;
+    }
+  }
+
+  private int getForStatusSelect(String importType) {
+
+    switch (importType.toLowerCase()) {
+      case forSelectUseTitles:
+        return FileFieldRepository.SELECT_USE_TITLES;
+      case forSelectUseValues:
+        return FileFieldRepository.SELECT_USE_VALUES;
+      case forSelectUseTranslatedTitles:
+        return FileFieldRepository.SELECT_USE_TRANSLATED_TITLES;
+      default:
+        return FileFieldRepository.SELECT_USE_VALUES;
     }
   }
 
