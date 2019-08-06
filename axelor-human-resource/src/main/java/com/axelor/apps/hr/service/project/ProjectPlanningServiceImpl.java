@@ -134,10 +134,10 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
       BigDecimal totalPlanned =
           plannings
               .stream()
-              .map(p -> p.getTotalPlannedHrs())
+              .map(ProjectPlanning::getTotalPlannedHrs)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       task.setTotalPlannedHrs(totalPlanned);
-      task = teamTaskRepo.save(task);
+      teamTaskRepo.save(task);
     }
   }
 
@@ -151,10 +151,10 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
       BigDecimal totalPlanned =
           plannings
               .stream()
-              .map(p -> p.getTotalPlannedHrs())
+              .map(ProjectPlanning::getTotalPlannedHrs)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       project.setTotalPlannedHrs(totalPlanned);
-      project = projectRepo.save(project);
+      projectRepo.save(project);
     }
   }
 
