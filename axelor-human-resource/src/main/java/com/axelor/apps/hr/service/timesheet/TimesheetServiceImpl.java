@@ -177,6 +177,16 @@ public class TimesheetServiceImpl implements TimesheetService {
           I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
           user.getName());
     }
+    WeeklyPlanning planning = employee.getWeeklyPlanning();
+    if (planning == null) {
+      throw new AxelorException(
+          timesheet,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
+          user.getName());
+    }
+    List<DayPlanning> dayPlanningList = planning.getWeekDays();
+    Map<Integer, String> correspMap = getCorresMap();
 
     List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
     timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
@@ -189,7 +199,8 @@ public class TimesheetServiceImpl implements TimesheetService {
 
         while (ChronoUnit.DAYS.between(date1, date2) > 1) {
 
-          if (!leaveService.isLeaveDay(user, missingDay)
+          if (isWorkedDay(missingDay, correspMap, dayPlanningList)
+              && !leaveService.isLeaveDay(user, missingDay)
               && !publicHolidayHrService.checkPublicHolidayDay(missingDay, employee)) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD, "Line for %s is missing.", missingDay);
@@ -318,7 +329,7 @@ public class TimesheetServiceImpl implements TimesheetService {
           I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
           user.getName());
     }
-    WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
+    WeeklyPlanning planning = employee.getWeeklyPlanning();
     if (planning == null) {
       throw new AxelorException(
           timesheet,
@@ -327,17 +338,10 @@ public class TimesheetServiceImpl implements TimesheetService {
           user.getName());
     }
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
+    Map<Integer, String> correspMap = getCorresMap();
 
     LocalDate fromDate = fromGenerationDate;
     LocalDate toDate = toGenerationDate;
-    Map<Integer, String> correspMap = new HashMap<>();
-    correspMap.put(1, "monday");
-    correspMap.put(2, "tuesday");
-    correspMap.put(3, "wednesday");
-    correspMap.put(4, "thursday");
-    correspMap.put(5, "friday");
-    correspMap.put(6, "saturday");
-    correspMap.put(7, "sunday");
 
     if (employee.getPublicHolidayEventsPlanning() == null) {
       throw new AxelorException(
@@ -351,18 +355,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     PublicHolidayHrService publicHolidayHrService = Beans.get(PublicHolidayHrService.class);
 
     while (!fromDate.isAfter(toDate)) {
-      DayPlanning dayPlanningCurr = new DayPlanning();
-      for (DayPlanning dayPlanning : dayPlanningList) {
-        if (dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek().getValue()))) {
-          dayPlanningCurr = dayPlanning;
-          break;
-        }
-      }
-
-      if ((dayPlanningCurr.getMorningFrom() != null
-              || dayPlanningCurr.getMorningTo() != null
-              || dayPlanningCurr.getAfternoonFrom() != null
-              || dayPlanningCurr.getAfternoonTo() != null)
+      if (isWorkedDay(fromDate, correspMap, dayPlanningList)
           && !leaveService.isLeaveDay(user, fromDate)
           && !publicHolidayHrService.checkPublicHolidayDay(fromDate, employee)) {
 
@@ -381,6 +374,34 @@ public class TimesheetServiceImpl implements TimesheetService {
       fromDate = fromDate.plusDays(1);
     }
     return timesheet;
+  }
+
+  private Map<Integer, String> getCorresMap() {
+    Map<Integer, String> correspMap = new HashMap<>();
+    correspMap.put(1, "monday");
+    correspMap.put(2, "tuesday");
+    correspMap.put(3, "wednesday");
+    correspMap.put(4, "thursday");
+    correspMap.put(5, "friday");
+    correspMap.put(6, "saturday");
+    correspMap.put(7, "sunday");
+    return correspMap;
+  }
+
+  private boolean isWorkedDay(
+      LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
+    DayPlanning dayPlanningCurr = new DayPlanning();
+    for (DayPlanning dayPlanning : dayPlanningList) {
+      if (dayPlanning.getName().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
+        dayPlanningCurr = dayPlanning;
+        break;
+      }
+    }
+
+    return dayPlanningCurr.getMorningFrom() != null
+        || dayPlanningCurr.getMorningTo() != null
+        || dayPlanningCurr.getAfternoonFrom() != null
+        || dayPlanningCurr.getAfternoonTo() != null;
   }
 
   @Override
