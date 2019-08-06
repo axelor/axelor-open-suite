@@ -15,28 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service.template;
+package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.TemplateContext;
-import com.axelor.apps.base.db.TemplateContextLine;
-import com.axelor.db.Model;
-import com.google.common.collect.Maps;
+import com.axelor.apps.base.db.FileField;
+import com.axelor.apps.base.service.advanced.imports.FileFieldService;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
-import java.util.Map;
 
-public class TemplateContextService {
+public class FileFieldController {
 
-  @Inject private TemplateContextLineService tcls;
+  @Inject private FileFieldService fileFieldService;
 
-  public Map<String, Object> getContext(TemplateContext templateContext, Model bean) {
-    Map<String, Object> map = Maps.newHashMap();
+  public void fillType(ActionRequest request, ActionResponse response) {
+    try {
+      FileField fileField = request.getContext().asType(FileField.class);
+      fileField = fileFieldService.fillType(fileField);
+      response.setValues(fileField);
 
-    if (templateContext.getTemplateContextLineList() != null) {
-      for (TemplateContextLine line : templateContext.getTemplateContextLineList()) {
-        Object o = tcls.evaluate(line, bean);
-        map.put(line.getKey(), o);
-      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    return map;
   }
 }

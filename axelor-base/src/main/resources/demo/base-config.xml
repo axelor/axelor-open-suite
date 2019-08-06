@@ -52,8 +52,6 @@
 		<bind column="members" to="members" search="self.code in :members" eval="members.split('\\|') as List" />
 	</input>
 
-	<input file="base_keyword.csv" separator=";" type="com.axelor.apps.base.db.Keyword" search="self.importId = :importId"  />
-	
 	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source" search="self.code = :code"/>
 
     <input file="base_economicArea.csv" separator=";" type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>

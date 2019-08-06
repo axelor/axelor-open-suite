@@ -181,7 +181,13 @@ public class UserServiceImpl implements UserService {
       return null;
     }
 
-    return metaFiles.getDownloadLink(company.getLogo(), company);
+    MetaFile logo = company.getLogo();
+
+    if (logo == null) {
+      return null;
+    }
+
+    return metaFiles.getDownloadLink(logo, company);
   }
 
   @Override

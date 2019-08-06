@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.Map;
 
 public class MoveServiceBankPaymentImpl extends MoveService {
@@ -76,9 +77,20 @@ public class MoveServiceBankPaymentImpl extends MoveService {
         (boolean) assistantMap.get("isHiddenMoveLinesInBankReconciliation");
     if (isHiddenMoveLinesInBankReconciliation) {
       move = this.updateBankAmountReconcile(move);
-      newMove = this.updateBankAmountReconcile(newMove);
     }
     return newMove;
+  }
+
+  protected MoveLine generateReverseMoveLine(
+      Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
+      throws AxelorException {
+    MoveLine reverseMoveLine =
+        super.generateReverseMoveLine(reverseMove, orgineMoveLine, dateOfReversion, isDebit);
+    reverseMoveLine.setBankReconciledAmount(
+        reverseMoveLine
+            .getDebit()
+            .add(reverseMoveLine.getCredit().subtract(orgineMoveLine.getBankReconciledAmount())));
+    return reverseMoveLine;
   }
 
   protected Move updateBankAmountReconcile(Move move) {

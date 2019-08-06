@@ -3,9 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
-	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Wizard" canSave="false" width="large" onNew="action-group-stock-details-by-product-on-new">	
+	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Wizard" canSave="false" width="large" canNew="false" canCopy="false" onNew="action-group-stock-details-by-product-on-new">	
       <panel name="MainFilters" itemSpan="4" colSpan="12">
-          <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators"/>
+          <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators" domain="self.stockManaged = true"/>
           <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-record-empty-company-and-stock-location, action-group-supplychain-update-indicators"/>
           <field name="$stockLocation" title="Stock location" showIf="$product &amp;&amp; $company" domain="self.typeSelect != 3 and self.company = :company" canEdit="false" target="com.axelor.apps.stock.db.StockLocation" type="many-to-one" form-view="stock-location-form" grid-view="stock-location-grid" onChange="action-group-supplychain-update-indicators" />
       </panel>
@@ -43,7 +43,9 @@
   
   <action-group name="action-group-stock-details-by-product-on-new">
      <action name="action-record-stock-details-by-product-init-product"/>
+     <action name="action-method-find-all-sublocation"/>
      <action name="action-method-update-indicators" />
+     <action name="action-attrs-reload-panel-dashlet"/>
   </action-group>
   
   <action-record name="action-record-empty-company-and-stock-location" model="com.axelor.apps.base.db.Product">
@@ -96,9 +98,8 @@
      <view-param name="popup-save" value="false"/>
      <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId 
-      AND (self.stockMove.toStockLocation.id IN :location OR :location IS NULL)
-      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)
-      AND (self.stockMove.fromStockLocation.typeSelect = 1 OR self.stockMove.toStockLocation.typeSelect = 1)</domain>
+      AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
+      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
      <context name="productId" expr="eval:product?.id"/>
      <context name="location" expr="eval: __stockLocationIdList"/>
      <context name="companyId" expr="eval: company?.id "/>
@@ -113,9 +114,8 @@
     <view-param name="popup-save" value="false"/>
     <domain>self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId  
-      AND (self.stockMove.toStockLocation.id IN :location OR :location IS NULL)
-      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)
-      AND (self.stockMove.fromStockLocation.typeSelect = 1 OR self.stockMove.toStockLocation.typeSelect = 1)</domain>
+      AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
+      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: __stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
@@ -128,15 +128,14 @@
     <view type="form" name="stock-move-line-all-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
-    <domain>self.stockMove.statusSelect = :statusSelectList 
+    <domain>self.stockMove.statusSelect = :statusSelect
       AND self.product.id = :productId 
-      AND (self.stockMove.toStockLocation.id IN :location OR :location IS NULL)
-      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)
-      AND (self.stockMove.fromStockLocation.typeSelect = 1 OR self.stockMove.toStockLocation.typeSelect = 1)</domain>
+      AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
+      AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: __stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
-    <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_REALIZED" />
+    <context name="statusSelect" expr="eval: __repo__(StockMove).STATUS_REALIZED" />
   </action-view>
  
   <action-method name="action-method-supplychain-purchase-order-product-planned">

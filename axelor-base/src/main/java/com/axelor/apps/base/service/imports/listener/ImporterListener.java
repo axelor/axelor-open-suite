@@ -86,4 +86,11 @@ public class ImporterListener implements Listener {
             name),
         IException.IMPORT);
   }
+
+  public boolean isImported() {
+    if ((anomaly == 0 || notNull == 0) && (totalRecord == successRecord)) {
+      return true;
+    }
+    return false;
+  }
 }

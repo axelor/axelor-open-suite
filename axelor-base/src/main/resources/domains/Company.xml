@@ -33,6 +33,8 @@
    	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" />
     <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning"/>
 
+    <integer name="width" title="Width" min="0"/>
+    <integer name="height" title="Height" help="Maximum height should be 60 px." min="0" max="60"/>
   </entity>
   
 </domain-models>

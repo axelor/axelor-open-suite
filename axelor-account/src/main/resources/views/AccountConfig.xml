@@ -152,6 +152,7 @@
 				<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
                 <field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid"
                        form-view="journal-form"/>
+				<field name="reportedBalanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 			</panel>
 
 			<panel name="cfonbPanel" title="CFONB" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment">

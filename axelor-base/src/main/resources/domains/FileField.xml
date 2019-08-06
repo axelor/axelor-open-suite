@@ -1,0 +1,55 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="FileField">
+  	<integer name="sequence" title="Sequence"/>
+  	
+  	<string name="columnTitle" title="Column title"/>
+  	<string name="firstLine" title="First line"/>
+  	<string name="secondLine" title="Second line"/>
+  	<string name="thirdLine" title="Third line"/>
+  	
+  	<many-to-one name="importField" ref="com.axelor.meta.db.MetaField" title="Import field"/>
+  	
+  	<string name="subImportField" title="Sub import field"/>
+  	<string name="fullName" title="Name" namecolumn="true" readonly="true"/>
+  	<string name="dateFormat" title="Date format"/>
+    
+    <integer name="importType" title="Import type" selection="file.field.import.type.select"/>
+    
+    <string name="expression" title="Expression"/>
+    <string name="splitBy" title="Split by" max="1"/>
+    <string name="noImportIf" title="Don't import if"/>
+    
+    <integer name="forSelectUse" title="For select use" selection="file.field.for.select.use.select"/>
+    
+    <string name="defaultIfNotFound" title="Default if not found"/>
+    
+    <many-to-one name="fileTab" ref="com.axelor.apps.base.db.FileTab" title="FileTab"/>
+    
+    <boolean name="isMatchWithFile" title="Match with file"/>
+    <string name="targetType" title="Target type"/>
+    <string name="relationship" title="Relationship"/>
+    
+    <extra-code>
+    <![CDATA[
+    	//IMPORT TYPE
+    	public static final int IMPORT_TYPE_DIRECT = 0;
+    	public static final int IMPORT_TYPE_FIND = 1;
+    	public static final int IMPORT_TYPE_FIND_NEW = 2;
+    	public static final int IMPORT_TYPE_NEW	 = 3;
+    	public static final int IMPORT_TYPE_IGNORE_EMPTY = 4;
+    	
+    	//FOR SELECT USE
+    	public static final int SELECT_USE_TITLES = 0;
+    	public static final int SELECT_USE_VALUES = 1;
+    	public static final int SELECT_USE_TRANSLATED_TITLES = 2;
+    ]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

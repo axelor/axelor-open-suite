@@ -29,4 +29,6 @@ public interface ProjectedStockService {
       throws AxelorException;
 
   Map<String, Long> getProductIdCompanyIdStockLocationIdFromContext(Context context);
+
+  void removeMrpAndMrpLine(List<MrpLine> mrpLineList);
 }

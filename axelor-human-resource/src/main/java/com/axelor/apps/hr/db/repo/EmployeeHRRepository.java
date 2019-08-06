@@ -20,6 +20,7 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 
@@ -33,6 +34,12 @@ public class EmployeeHRRepository extends EmployeeRepository {
       partner.setIsEmployee(true);
       Beans.get(PartnerHRRepository.class).save(partner);
     }
+
+    EmploymentContract employmentContract = entity.getMainEmploymentContract();
+    if (employmentContract != null && employmentContract.getEmployee() == null) {
+      employmentContract.setEmployee(entity);
+    }
+
     return super.save(entity);
   }
 
