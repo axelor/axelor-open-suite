@@ -170,6 +170,13 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     User user = timesheet.getUser();
     Employee employee = user.getEmployee();
+    if (employee.getPublicHolidayEventsPlanning() == null) {
+      throw new AxelorException(
+          timesheet,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
+          user.getName());
+    }
 
     List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
     timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
@@ -182,12 +189,10 @@ public class TimesheetServiceImpl implements TimesheetService {
 
         while (ChronoUnit.DAYS.between(date1, date2) > 1) {
 
-          if (leaveService.isLeaveDay(user, missingDay)
-              && publicHolidayHrService.checkPublicHolidayDay(missingDay, employee)) {
+          if (!leaveService.isLeaveDay(user, missingDay)
+              && !publicHolidayHrService.checkPublicHolidayDay(missingDay, employee)) {
             throw new AxelorException(
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                "Line for %s is missing.",
-                missingDay.getDayOfWeek());
+                TraceBackRepository.CATEGORY_MISSING_FIELD, "Line for %s is missing.", missingDay);
           }
 
           date1 = missingDay;
@@ -334,7 +339,6 @@ public class TimesheetServiceImpl implements TimesheetService {
     correspMap.put(6, "saturday");
     correspMap.put(7, "sunday");
 
-    // Public holidays list
     if (employee.getPublicHolidayEventsPlanning() == null) {
       throw new AxelorException(
           timesheet,
@@ -359,8 +363,8 @@ public class TimesheetServiceImpl implements TimesheetService {
               || dayPlanningCurr.getMorningTo() != null
               || dayPlanningCurr.getAfternoonFrom() != null
               || dayPlanningCurr.getAfternoonTo() != null)
-          && leaveService.isLeaveDay(user, fromGenerationDate)
-          && publicHolidayHrService.checkPublicHolidayDay(fromGenerationDate, employee)) {
+          && !leaveService.isLeaveDay(user, fromDate)
+          && !publicHolidayHrService.checkPublicHolidayDay(fromDate, employee)) {
 
         TimesheetLine timesheetLine =
             timesheetLineService.createTimesheetLine(
