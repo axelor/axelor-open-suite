@@ -3047,10 +3047,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">if(params["ReportType"].value == 1){
-	'Invoice.proformaInvoice'
-}else{
-if (row["status_select"] == "1") {
+                                            <value type="javascript">if (row["status_select"] == "1") {
 	'Invoice.draftInvoiceNo'
 } else if(row["status_select"] == "2") {
 	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
@@ -3080,7 +3077,6 @@ if (row["status_select"] == "1") {
 	}
 } else if(row["status_select"] == "4") {
 	'Invoice.cancelInvoiceNo'
-}
 }</value>
                                         </simple-property-list>
                                     </structure>
@@ -3489,10 +3485,7 @@ if (row["status_select"] == "1") {
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(params["ReportType"].value == 1){
-	'Invoice.proformaInvoice'
-}else{
-if (row["status_select"] == "1") {
+                                    <value type="javascript">if (row["status_select"] == "1") {
 	'Invoice.draftInvoiceNo'
 } else if(row["status_select"] == "2") {
 	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
@@ -3522,7 +3515,6 @@ if (row["status_select"] == "1") {
 	}
 } else if(row["status_select"] == "4") {
 	'Invoice.cancelInvoiceNo'
-}
 }</value>
                                 </simple-property-list>
                             </structure>
