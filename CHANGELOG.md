@@ -199,5 +199,6 @@
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 - PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
 - Update xsd to ADK 5.1
+- Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

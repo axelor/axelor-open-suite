@@ -88,7 +88,7 @@ public class ImporterListener implements Listener {
   }
 
   public boolean isImported() {
-    if (anomaly == 0 || notNull == 0) {
+    if ((anomaly == 0 || notNull == 0) && (totalRecord == successRecord)) {
       return true;
     }
     return false;
