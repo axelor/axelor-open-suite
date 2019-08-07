@@ -123,14 +123,14 @@ public class AddressTool {
 
       QASearchResult respSearch = this.client.doSearch(search);
 
-      Map<String, Object> mapSearch = new HashMap<String, Object>();
+      Map<String, Object> mapSearch = new HashMap<>();
       mapSearch.put("verifyLevel", respSearch.getVerifyLevel());
       mapSearch.put("qaPicklist", respSearch.getQAPicklist());
       mapSearch.put("qaAddress", respSearch.getQAAddress());
       return mapSearch;
     } catch (Exception e) {
       e.printStackTrace();
-      return new HashMap<String, Object>();
+      return new HashMap<>();
     }
   }
 
@@ -144,9 +144,7 @@ public class AddressTool {
       getAddress.setMoniker(moniker);
       getAddress.setLayout("AFNOR INSEE");
 
-      Address formattedAddress = this.client.doGetAddress(getAddress);
-
-      return formattedAddress;
+      return this.client.doGetAddress(getAddress);
     } catch (Exception e) {
       e.printStackTrace();
     }

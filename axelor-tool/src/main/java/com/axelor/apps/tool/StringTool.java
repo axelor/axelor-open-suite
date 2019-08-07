@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.tool;
 
-import com.axelor.db.Model;
-import com.google.common.base.Joiner;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import com.axelor.db.Model;
 
 public final class StringTool {
   private static final String[] FILENAME_SEARCH_LIST =
@@ -277,7 +276,7 @@ public final class StringTool {
           idList.add(item.getId());
         }
       }
-      idString = Joiner.on(",").join(idList);
+      idString = idList.stream().map(l -> l.toString()).collect(Collectors.joining(","));
     }
     return idString;
   }
