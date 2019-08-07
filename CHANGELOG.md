@@ -108,6 +108,7 @@
 - HR : RECRUITMENT - optimization of the menu by adding filters
 - Base : Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
 - Data import : manage forSelectUse in the file directly.
+- Action Builder : Add feature to create templates for json models to send email
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
