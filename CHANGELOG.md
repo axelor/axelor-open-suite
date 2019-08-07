@@ -173,6 +173,7 @@
 - INVOICE : Configure BIRT to generate an Excel and a Word file
 - KEYWORD : remove Keyword model.
 - Advanced Import : trim data before import.
+- CHARGEBYMACHINE : Correction of values with and without weekly planning of machine in the Previsional charge by machine (per days) graph.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
