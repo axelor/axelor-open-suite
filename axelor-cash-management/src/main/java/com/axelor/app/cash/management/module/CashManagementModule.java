@@ -15,11 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.cash.management.exception;
+package com.axelor.app.cash.management.module;
 
-public interface IExceptionMessage {
+import com.axelor.app.AxelorModule;
+import com.axelor.apps.cash.management.db.repo.CashManagementForecastRecapRepository;
+import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 
-  static final String FORECAST_COMPANY = /*$$(*/ "Please select a company" /*)*/;
-  static final String FORCAST_RECAP_SEQUENCE_ERROR = /*$$(*/
-      "The company %s doesn't have any configured sequence for ForcastRecap" /*)*/;
+public class CashManagementModule extends AxelorModule {
+
+  @Override
+  protected void configure() {
+    bind(ForecastRecapRepository.class).to(CashManagementForecastRecapRepository.class);
+  }
 }
