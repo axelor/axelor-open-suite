@@ -109,6 +109,7 @@
 - Base : Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
 - Data import : manage forSelectUse in the file directly.
 - Action Builder : Add feature to create templates for json models to send email
+- FORECAST RECAP : sequence feature added for ForeCastRecap
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
