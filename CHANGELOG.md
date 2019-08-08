@@ -161,6 +161,7 @@
 - ACCOUNTING : year and accountSet fields are set empty when company is changed
 - ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
 - PARTNER: Checks the consistency of the address list of a partner.
+- FORECAST RECAP : reset fields while creating duplicate record.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
