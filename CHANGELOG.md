@@ -8,6 +8,7 @@
 - SALE ORDER LINE : Display availability status on sale order line grid view if sale order status is 'Confirmed'.
 - Studio: sidebar option for panel
 - Add DMS Import.
+- Map : Filter out the data with empty address.
 
 ## Improvements
 - Remove Pack Feature from Product.
