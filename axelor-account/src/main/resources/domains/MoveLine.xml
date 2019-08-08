@@ -63,6 +63,7 @@
     <string name="taxCode" readonly="true"/>
       
     <decimal name="taxAmount" title="Tax amount" readonly="true"/>
+    <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine" ref="com.axelor.apps.account.db.TaxPaymentMoveLine"/>
 
     <many-to-one name="reconcileGroup" title="Reconcile Group"
                  ref="com.axelor.apps.account.db.ReconcileGroup"/>

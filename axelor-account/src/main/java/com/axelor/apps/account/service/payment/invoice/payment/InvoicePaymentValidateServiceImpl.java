@@ -20,17 +20,22 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
@@ -44,6 +49,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -205,9 +211,16 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             2,
             invoicePayment.getInvoicePaymentRef(),
             null);
-    customerMoveLine.setTaxAmount(invoice.getTaxTotal());
 
     move.addMoveLineListItem(customerMoveLine);
+
+    Beans.get(MoveRepository.class).save(move);
+
+    customerMoveLine = this.generateTaxPaymentMoveLineList(invoicePayment, customerMoveLine);
+
+    customerMoveLine = moveLineService.computeTaxAmount(customerMoveLine);
+
+    Beans.get(MoveLineRepository.class).save(customerMoveLine);
 
     moveService.getMoveValidateService().validate(move);
 
@@ -222,5 +235,32 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     invoicePaymentRepository.save(invoicePayment);
 
     return move;
+  }
+
+  protected MoveLine generateTaxPaymentMoveLineList(
+      InvoicePayment invoicePayment, MoveLine customerMoveLine) throws AxelorException {
+    BigDecimal paymentAmount = invoicePayment.getAmount();
+    Invoice invoice = invoicePayment.getInvoice();
+    BigDecimal invoiceTotalAmount = invoice.getInTaxTotal();
+    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+
+      TaxLine taxLine = invoiceLineTax.getTaxLine();
+      BigDecimal vatRate = taxLine.getValue();
+      BigDecimal taxAmountTotal = invoiceLineTax.getInTaxTotal();
+
+      BigDecimal detailPaymentAmount =
+          taxAmountTotal
+              .multiply(paymentAmount)
+              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN);
+
+      TaxPaymentMoveLine taxPaymentMoveLine =
+          new TaxPaymentMoveLine(customerMoveLine, taxLine, vatRate, detailPaymentAmount);
+
+      taxPaymentMoveLine =
+          Beans.get(TaxPaymentMoveLineService.class).computeTaxAmount(taxPaymentMoveLine);
+
+      customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
+    }
+    return customerMoveLine;
   }
 }

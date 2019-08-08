@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -1128,5 +1129,14 @@ public class MoveLineService {
           I18n.get(IExceptionMessage.MOVE_LINE_7),
           moveLine.getAccount().getCode());
     }
+  }
+
+  public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
+    BigDecimal taxAmount = BigDecimal.ZERO;
+    for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
+      taxAmount = taxAmount.add(taxPaymentMoveLine.getTaxAmount());
+    }
+    moveLine.setTaxAmount(taxAmount);
+    return moveLine;
   }
 }
