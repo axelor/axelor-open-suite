@@ -112,6 +112,7 @@
 			<button name="exportBtn" title="Export" showIf="statusSelect != 2 || $contains([1000, 1010, 1001], typeSelect)" onClick="action-group-account-accounting-report-export-click"/>
 			<button name="showMoveExportedBtn" title="Exported moves" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-show-move-exported"/>
 			<button name="replayExportBtn" title="Run export again" hideIf="statusSelect != 2 || $contains([1000, 1010], typeSelect)" onClick="save,action-accounting-report-method-replay-export"/>
+			<button name="generateDocumentationBtn" title="Generate documentation" hideIf="typeSelect != 1000" onClick="save,action-accounting-report-generate-documentation-method-on-click" />
 		</panel>
 		
 		<panel sidebar="true" name="balancePanel" title="Balance">
@@ -263,5 +264,8 @@
 		<call class="com.axelor.apps.account.web.AccountingReportController" method="getJournalType"/>
 	</action-method>
 	
+	<action-method name="action-accounting-report-generate-documentation-method-on-click">
+		<call class="com.axelor.apps.account.web.AccountingReportController" method="generateDocumentation"/>
+	</action-method>
     
 </object-views>
