@@ -85,6 +85,7 @@
 - LUNCH VOUCHER LINE: Display period instead of from- and toDates.
 - SALE/PURCHASE ORDER : new config to display lines sequences
 - TIMESHEET : Throw an alert on timesheet validation.
+- MOVE LINES : lettering move lines is now quicker.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
