@@ -13,6 +13,7 @@
 - EMPLOYEE : Fixed timesheet dashlet domain
 - INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
 - Move various fields and actions to convenient modules.
+- Move 'wizard-client-form-open-my-tickets' action to helpdesk module.
 
 ## [5.0.9] - 2019-06-19
 ## Improvements
