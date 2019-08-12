@@ -838,6 +838,36 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <column id="4053"/>
             <column id="4054"/>
             <column id="4055"/>
+            <row id="4893">
+                <cell id="4894">
+                    <property name="colSpan">4</property>
+                    <property name="rowSpan">1</property>
+                    <text id="3923">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'DescriptiveDocumentationFEC.title'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
             <row id="4060">
                 <cell id="4061"/>
                 <cell id="4062"/>
