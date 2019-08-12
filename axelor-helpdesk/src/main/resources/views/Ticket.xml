@@ -190,4 +190,13 @@
  		<attribute for="contactPartner" if="customer == null" name="domain" expr="eval: &quot;self.isContact = true&quot;"/>
 	</action-attrs>
     
+    <action-view name="wizard-client-form-open-my-tickets" title="My tickets"
+		model="com.axelor.apps.helpdesk.db.Ticket" icon="img/16px/crmSmall_16px.png">
+		<view type="grid" name="ticket-grid"/>
+		<view type="form" name="ticket-form"/>
+		<domain>self.customer = :_myPartner or self.createdBy =:_user</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+		<context name="_user" expr="eval:__user__"/>
+	</action-view>
+
 </object-views>
