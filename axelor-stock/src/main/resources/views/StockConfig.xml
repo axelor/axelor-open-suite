@@ -67,6 +67,7 @@
 			<field name="isDisplaySaleValueInPrinting" widget="boolean-switch"/>
 			<field name="isDisplayAccountingValueInPrinting" widget="boolean-switch"/>
 			<field name="displayTrackNbrOnCertificateOfConformityPrinting" widget="boolean-switch"/>
+			<field name="isDisplayAgPriceInPrinting" widget="boolean-switch"></field>
 		</panel>
 				
 		<panel-mail name="mailPanel">

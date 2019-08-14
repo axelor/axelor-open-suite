@@ -36,6 +36,8 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -142,7 +144,8 @@ public class PurchaseOrderController {
           purchaseOrderIdList.add(new Long((Integer) map.get("id")));
         }
       } else {
-        // After confirmation popup, purchase order's id are in a string separated by ","
+        // After confirmation popup, purchase order's id are in a string separated by
+        // ","
         String purchaseOrderIdListStr = (String) request.getContext().get("purchaseOrderToMerge");
         for (String purchaseOrderId : purchaseOrderIdListStr.split(",")) {
           purchaseOrderIdList.add(new Long(purchaseOrderId));
@@ -151,19 +154,23 @@ public class PurchaseOrderController {
       }
     }
 
-    // Check if currency, supplierPartner and company are the same for all selected purchase orders
+    // Check if currency, supplierPartner and company are the same for all selected
+    // purchase orders
     Currency commonCurrency = null;
     Partner commonSupplierPartner = null;
     Company commonCompany = null;
     Partner commonContactPartner = null;
     TradingName commonTradingName = null;
-    // Useful to determine if a difference exists between contact partners of all purchase orders
+    // Useful to determine if a difference exists between contact partners of all
+    // purchase orders
     boolean existContactPartnerDiff = false;
     PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all purchase orders
+    // Useful to determine if a difference exists between price lists of all
+    // purchase orders
     boolean existPriceListDiff = false;
     StockLocation commonLocation = null;
-    // Useful to determine if a difference exists between stock locations of all purchase orders
+    // Useful to determine if a difference exists between stock locations of all
+    // purchase orders
     boolean existLocationDiff = false;
 
     PurchaseOrder purchaseOrderTemp;
@@ -249,7 +256,8 @@ public class PurchaseOrderController {
       return;
     }
 
-    // Check if priceList or contactPartner or stock location are content in parameters
+    // Check if priceList or contactPartner or stock location are content in
+    // parameters
     if (request.getContext().get("priceList") != null) {
       commonPriceList =
           JPA.em()
@@ -363,5 +371,33 @@ public class PurchaseOrderController {
       }
     }
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+
+  /**
+   * Called from purchase order form view when validating purchase order and analytic distribution
+   * is required from company's purchase config.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkPurchaseOrderAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      List<String> productList = new ArrayList<String>();
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        if (purchaseOrderLine.getAnalyticDistributionTemplate() == null) {
+          productList.add(purchaseOrderLine.getProduct().getFullName());
+        }
+      }
+      if (productList != null && !productList.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
+            productList);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }
