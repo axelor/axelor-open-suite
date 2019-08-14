@@ -86,6 +86,7 @@
 - LUNCH VOUCHER LINE: Display period instead of from- and toDates.
 - SALE/PURCHASE ORDER : new config to display lines sequences
 - TIMESHEET : Throw an alert on timesheet validation.
+- STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
 
 ## Bug Fixes
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -122,9 +123,7 @@
 - INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
 - TEAMTASK: task history show only canceled and closed task.
 - Sale Order: fix NPE on clicking allocate all button.
-<<<<<<< HEAD
 - STOCK MOVE Certificate of conformity : corrected errors in the lines of the report.
-=======
 - INVOICE : Resolve error of sending email from Invoice.
 - Studio: Fix export of selection with app
 - CONFIGURATOR : fix configurator demo data.
@@ -164,7 +163,6 @@
 - Workflow: reset domain of model and json field when app builder is changed.
 - Move various fields and actions to convenient modules.
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
->>>>>>> 32432fb8ae80ee38d49bc5112480ccfa87a579af
 
 ## [5.1.7] - 2019-06-17
 ## Features
