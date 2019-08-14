@@ -30,6 +30,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
@@ -38,6 +39,7 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -47,7 +49,14 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,6 +146,26 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     detachNonDeliveredStockMoveLines(stockMove);
+
+    List<Long> trackingNumberIds =
+        stockMove
+            .getStockMoveLineList()
+            .stream()
+            .map(StockMoveLine::getTrackingNumber)
+            .filter(Objects::nonNull)
+            .map(TrackingNumber::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+
+    if (CollectionUtils.isNotEmpty(trackingNumberIds)) {
+      Query update =
+          JPA.em()
+              .createQuery(
+                  "UPDATE FixedAsset self SET self.stockLocation = :stockLocation WHERE self.trackingNumber.id IN (:trackingNumber)");
+      update.setParameter("stockLocation", stockMove.getToStockLocation());
+      update.setParameter("trackingNumber", trackingNumberIds);
+      update.executeUpdate();
+    }
 
     return newStockSeq;
   }

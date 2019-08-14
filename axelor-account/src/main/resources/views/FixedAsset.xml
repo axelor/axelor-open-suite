@@ -24,6 +24,8 @@
 	    		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect &gt; 1"/>
 	    		<field name="company.currency" title="Currency" form-view="currency-form" grid-view="currency-grid"/>
 	    		<field name="fixedAssetCategory" canEdit="false" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" onChange="action-fixed-asset-record-onchange-set-values" readonlyIf="statusSelect &gt; 1"/>
+	    		<field name="stockLocation" canEdit="false" canNew="false" domain="self.company = :company" if-module="axelor-supplychain" form-view="stock-location-form" grid-view="stock-location-grid" />
+	    		<field name="trackingNumber" canEdit="false" canNew="false" if-module="axelor-supplychain" form-view="trackink-number-form" grid-view="tracking-number-grid" />
 	    	</panel>
 	    </panel>
     	<panel name="otherDetailsPanel">

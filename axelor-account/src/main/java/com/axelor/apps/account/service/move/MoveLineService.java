@@ -44,6 +44,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -304,7 +305,8 @@ public class MoveLineService {
         counter,
         debit,
         credit,
-        this.determineDescriptionMoveLine(move.getJournal(), origin, description),
+        StringTool.cutTooLongString(
+            this.determineDescriptionMoveLine(move.getJournal(), origin, description)),
         origin,
         currencyRate.setScale(5, RoundingMode.HALF_EVEN),
         amountInSpecificMoveCurrency,

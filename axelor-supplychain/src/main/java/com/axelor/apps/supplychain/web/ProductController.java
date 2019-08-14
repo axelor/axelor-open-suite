@@ -46,8 +46,9 @@ public class ProductController {
       Long productId = mapId.get("productId");
       Long companyId = mapId.get("companyId");
       Long stockLocationId = mapId.get("stockLocationId");
-
-      if (companyId != 0L && stockLocationId != 0L) {
+      if (companyId == 0L && stockLocationId != 0L) {
+        stockLocationId = 0L;
+      } else if (companyId != 0L && stockLocationId != 0L) {
         StockLocation sl = Beans.get(StockLocationRepository.class).find(stockLocationId);
         if (sl != null && sl.getCompany() != null && sl.getCompany().getId() != companyId) {
           stockLocationId = 0L;

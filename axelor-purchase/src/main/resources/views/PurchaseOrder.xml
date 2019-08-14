@@ -401,6 +401,7 @@
     </action-group>
 
     <action-group name="action-group-purchase-order-on-validate-actions">
+      <action name="action-purchase-order-method-check-analytic-distribution-template"/>
     	<action name="action-purchase-order-validate-purchase-order-line"/>
     	<action name="action-purchase-order-validate-stock-location"/>
     	<action name="save"/>
@@ -693,4 +694,7 @@
 		<field name="supplierPartner" expr="eval: __repo__(Partner).find(_partner.id)" />
 	</action-record>
 
+  <action-method name="action-purchase-order-method-check-analytic-distribution-template">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="checkPurchaseOrderAnalyticDistributionTemplate" if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
+  </action-method>
 </object-views>
