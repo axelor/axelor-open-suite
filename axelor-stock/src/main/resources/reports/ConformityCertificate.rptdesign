@@ -3,18 +3,6 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
-            <property name="name">queryText</property>
-            <property name="id">3692</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3692</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3692</property>
-        </structure>
-        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -158,7 +146,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs-data3</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -330,6 +320,11 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">display_track_nbr_on_certificate_of_conformity_printing</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">display_line_details_on_printing</property>
+                    <text-property name="displayName">display_line_details_on_printing</text-property>
+                    <text-property name="heading">display_line_details_on_printing</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">signatory</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">signatory</text-property>
@@ -490,16 +485,21 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">27</property>
+                        <property name="name">display_line_details_on_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">28</property>
                         <property name="name">signatory</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">28</property>
+                        <property name="position">29</property>
                         <property name="name">function</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">29</property>
+                        <property name="position">30</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -691,13 +691,20 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">27</property>
+                    <property name="name">display_line_details_on_printing</property>
+                    <property name="nativeName">display_line_details_on_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">28</property>
                     <property name="name">signatory</property>
                     <property name="nativeName">signatory</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">28</property>
+                    <property name="position">29</property>
                     <property name="name">function</property>
                     <property name="nativeName">function</property>
                     <property name="dataType">string</property>
@@ -719,6 +726,7 @@ SignatureFile.file_path as "electronic_signature_file_path",
 StockConfig.conformity_certificate_title,
 StockConfig.conformity_certificate_description,
 StockConfig.display_track_nbr_on_certificate_of_conformity_printing,
+StockConfig.display_line_details_on_printing,
 SignatoryUser.name as "signatory",
 EmploymentContract.position as "function"
 from stock_stock_move as StockMove
@@ -1843,6 +1851,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["display_track_nbr_on_certificate_of_conformity_printing"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">display_line_details_on_printing</property>
+                    <text-property name="displayName">display_line_details_on_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_line_details_on_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">2.9897916666666666cm</property>
@@ -2738,7 +2752,7 @@ rowNumD=0;]]></method>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            <expression name="valueExpr" type="javascript">row._outer["display_line_details_on_printing"]</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4282">
@@ -2857,7 +2871,7 @@ rowNumD=0;]]></method>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["isTitleLine"] == null || row["isTitleLine"] == false</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["display_line_details_on_printing"]</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4283">

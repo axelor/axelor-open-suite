@@ -2573,6 +2573,12 @@ rowNumD=0;]]></method>
                             <property name="width">1.5cm</property>
                         </column>
                         <column id="3450">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_track_nbr_on_picking_printing"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">4cm</property>
                         </column>
                         <column id="4097">
