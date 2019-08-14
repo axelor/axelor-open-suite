@@ -188,16 +188,24 @@
                 <field name="isCarrier" colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly() || isEmployee" if="__config__.app.isApp('stock')" onChange="action-partner-record-unset-factor" />
                 <field name="isFactor" colSpan="2" widget="InlineCheckbox" hideIf="isContact || $readonly() || isEmployee" if="__config__.app.getApp('account')?.manageFactors" onChange="action-partner-record-set-factor" />
 				<field name="$viewerPartnerType" showTitle="false" hideIf="isContact || !$readonly()" colSpan="12">
-					<viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isSubcontractor,isFactor,isCarrier">
+					<viewer depends="isProspect,isEmployee,isCustomer,isSupplier,isFactor,isCarrier">
 						<![CDATA[
 							<h4 style="text-align: right;">
 								<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
 								<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
 								<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
 								<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
-								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 								<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
 								<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+							</h4>
+                        ]]>
+					</viewer>
+				</field>
+				<field name="$viewerPartnerTypeIsSubcontractor" showTitle="false" hideIf="isContact || !$readonly()" colSpan="12" if-module="axelor-production"  if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()">
+					<viewer depends="isSubcontractor">
+						<![CDATA[
+							<h4 style="text-align: right;">
+								<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor" x-translate>Subcontractor</span>
 							</h4>
                         ]]>
 					</viewer>
