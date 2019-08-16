@@ -65,6 +65,7 @@
 		<view type="grid" name="invoice-light-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
+		<context name="_operationTypeSelect" expr="eval:3"/>
 		<context name="_operationSubTypeSelect" expr="eval:6"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
