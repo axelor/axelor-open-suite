@@ -13,7 +13,7 @@
         <field name="stockMoveLine.product.code" width="120" title="Product code" />
         <field name="stockMoveLine.productName" width="170" title="Product description" />
         <field name="saleOrder.saleOrderSeq" width="120" title="Internal number" if="__config__.app.isApp('supplychain')" />
-        <field name="saleOrder.externalReference" width="120" title="Customer order ref." if="__config__.app.isApp('supplychain')" />
+        <field name="saleOrder.externalReference" width="170" title="Customer order ref." if="__config__.app.isApp('supplychain')" />
         <!-- <field name="stockMoveLine.netMass" title="Unit net mass" /> --> <!-- Should be null when stockMoveLine is null -->
         <field name="unitNetMass" width="75" x-scale="3"/>
         <field name="qty" width="55" readonlyIf="typeSelect != 3" onChange="sync" />
