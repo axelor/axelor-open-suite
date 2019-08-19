@@ -30,9 +30,9 @@ import java.util.List;
 import javax.mail.MessagingException;
 
 public class ICalendarEventServiceImpl implements ICalendarEventService {
-  
+
   @Inject protected UserRepository userRepository;
-  
+
   @Override
   public List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
