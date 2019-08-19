@@ -210,7 +210,7 @@ public class ImportSupplyChain {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
         Product product =
-            Beans.get(ProductRepository.class).findByName(stockMoveLine.getProductName());
+            Beans.get(ProductRepository.class).find(stockMoveLine.getProduct().getId());
         TrackingNumberConfiguration trackingNumberConf = product.getTrackingNumberConfiguration();
 
         if (trackingNumberConf != null && !trackingNumberConf.getHasSaleAutoSelectTrackingNbr()) {
