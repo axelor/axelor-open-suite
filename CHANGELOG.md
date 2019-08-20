@@ -87,6 +87,7 @@
 - TIMESHEET : Throw an alert on timesheet validation.
 
 ## Bug Fixes
+- PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
