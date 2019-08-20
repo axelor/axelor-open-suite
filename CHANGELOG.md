@@ -161,6 +161,7 @@
 - Workflow: reset domain of model and json field when app builder is changed.
 - Move various fields and actions to convenient modules.
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
+- Resolve the working of Open Street Map
 
 ## [5.1.7] - 2019-06-17
 ## Features
