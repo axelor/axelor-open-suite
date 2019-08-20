@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.AppSupplychain;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
@@ -28,19 +29,23 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
-import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -48,6 +53,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +72,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected UnitConversionService unitConversionService;
   protected ReservedQtyService reservedQtyService;
 
+  @Inject private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+
   @Inject
   public StockMoveServiceSupplychainImpl(
       StockMoveLineService stockMoveLineService,
@@ -74,14 +86,16 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
-      ReservedQtyService reservedQtyService) {
+      ReservedQtyService reservedQtyService,
+      ProductRepository productRepository) {
     super(
         stockMoveLineService,
         stockMoveToolService,
         stockMoveLineRepository,
         appBaseService,
         stockMoveRepository,
-        partnerProductQualityRatingService);
+        partnerProductQualityRatingService,
+        productRepository);
     this.appSupplyChainService = appSupplyChainService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.saleOrderRepo = saleOrderRepo;
@@ -133,6 +147,26 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     detachNonDeliveredStockMoveLines(stockMove);
+
+    List<Long> trackingNumberIds =
+        stockMove
+            .getStockMoveLineList()
+            .stream()
+            .map(StockMoveLine::getTrackingNumber)
+            .filter(Objects::nonNull)
+            .map(TrackingNumber::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+
+    if (CollectionUtils.isNotEmpty(trackingNumberIds)) {
+      Query update =
+          JPA.em()
+              .createQuery(
+                  "UPDATE FixedAsset self SET self.stockLocation = :stockLocation WHERE self.trackingNumber.id IN (:trackingNumber)");
+      update.setParameter("stockLocation", stockMove.getToStockLocation());
+      update.setParameter("trackingNumber", trackingNumberIds);
+      update.executeUpdate();
+    }
 
     return newStockSeq;
   }
@@ -382,14 +416,29 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  public BigDecimal getAvailableStock(StockMove stockMove, StockMoveLine stockMoveLine) {
-    StockLocationLine stockLocationLine =
-        Beans.get(StockLocationLineService.class)
-            .getStockLocationLine(stockMove.getFromStockLocation(), stockMoveLine.getProduct());
-
-    if (stockLocationLine == null) {
-      return BigDecimal.ZERO;
+  public void verifyProductStock(StockMove stockMove) throws AxelorException {
+    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
+    if (stockMove.getAvailabilityRequest()
+        && stockMove.getStockMoveLineList() != null
+        && appSupplychain.getIsVerifyProductStock()
+        && stockMove.getFromStockLocation() != null) {
+      StringJoiner notAvailableProducts = new StringJoiner(",");
+      int counter = 1;
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        boolean isAvailableProduct =
+            stockMoveLineServiceSupplychain.isAvailableProduct(stockMove, stockMoveLine);
+        if (!isAvailableProduct && counter <= 10) {
+          notAvailableProducts.add(stockMoveLine.getProduct().getFullName());
+          counter++;
+        }
+      }
+      if (!Strings.isNullOrEmpty(notAvailableProducts.toString())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(IExceptionMessage.STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR),
+                notAvailableProducts.toString()));
+      }
     }
-    return stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
   }
 }

@@ -7,7 +7,7 @@
 
   <entity name="BudgetDistribution" lang="java" cachable="true">
     <many-to-one name="invoiceLine" ref="com.axelor.apps.account.db.InvoiceLine"/>
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
+    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget" required="true"/>
     <decimal name="amount" title="Amount" precision="20" scale="2"/>
   	
   </entity>

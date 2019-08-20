@@ -62,6 +62,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,6 +217,7 @@ public class PurchaseOrderController {
     // Useful to determine if a difference exists between price lists of all purchase orders
     boolean existPriceListDiff = false;
     PurchaseOrder purchaseOrderTemp;
+    boolean allTradingNamesAreNull = true;
     int count = 1;
     for (Long purchaseOrderId : purchaseOrderIdList) {
       purchaseOrderTemp = JPA.em().find(PurchaseOrder.class, purchaseOrderId);
@@ -227,6 +229,8 @@ public class PurchaseOrderController {
         commonContactPartner = purchaseOrderTemp.getContactPartner();
         commonPriceList = purchaseOrderTemp.getPriceList();
         commonTradingName = purchaseOrderTemp.getTradingName();
+        allTradingNamesAreNull = commonTradingName == null;
+
       } else {
         if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -247,9 +251,9 @@ public class PurchaseOrderController {
           commonPriceList = null;
           existPriceListDiff = true;
         }
-        if (commonTradingName != null
-            && !commonTradingName.equals(purchaseOrderTemp.getTradingName())) {
+        if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
           commonTradingName = null;
+          allTradingNamesAreNull = false;
         }
       }
       count++;
@@ -271,7 +275,7 @@ public class PurchaseOrderController {
       }
       fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
-    if (commonTradingName == null) {
+    if (commonTradingName == null && !allTradingNamesAreNull) {
       fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
     }
 
@@ -382,6 +386,17 @@ public class PurchaseOrderController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
       purchaseOrderService.validatePurchaseOrder(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+      purchaseOrderService.cancelPurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

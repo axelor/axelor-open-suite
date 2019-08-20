@@ -60,7 +60,7 @@ public interface IExceptionMessage {
       "Please fill printing settings on following purchase orders: %s" /*)*/;
 
   public static final String PURCHASE_REQUEST_1 = /*$$(*/
-      "There is no sequence set for the purchase requests" /*)*/;
+      "There is no sequence set for the purchase requests for the company %s" /*)*/;
   public static final String PURCHASE_REQUEST_MISSING_SUPPLIER_USER = /*$$(*/
       "Please enter supplier for following purchase request : %s" /*)*/;
 }

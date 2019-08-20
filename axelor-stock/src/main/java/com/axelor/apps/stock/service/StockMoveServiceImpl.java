@@ -81,10 +81,9 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppBaseService appBaseService;
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
+  protected ProductRepository productRepository;
   private StockMoveToolService stockMoveToolService;
   private StockMoveLineRepository stockMoveLineRepo;
-
-  @Inject private StockLocationService stockLocationService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -93,13 +92,15 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
-      PartnerProductQualityRatingService partnerProductQualityRatingService) {
+      PartnerProductQualityRatingService partnerProductQualityRatingService,
+      ProductRepository productRepository) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.stockMoveRepo = stockMoveRepository;
     this.partnerProductQualityRatingService = partnerProductQualityRatingService;
+    this.productRepository = productRepository;
   }
 
   /**
@@ -236,7 +237,9 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT));
     }
-
+    stockMove.setAvailabilityRequest(false);
+    stockMove.setPickingEditDate(null);
+    stockMove.setPickingIsEdited(false);
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
   }
 
@@ -292,9 +295,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setName(stockMoveToolService.computeName(stockMove));
     }
 
-    if (stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
-    }
     int initialStatus = stockMove.getStatusSelect();
 
     setPlannedStatus(stockMove);
@@ -1252,7 +1252,61 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (ids != null && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
       for (Long id : ids) {
         StockMove stockMove = stockMoveRepo.find(id);
-        setPickingStockMoveEditDate(stockMove, userType);
+        if (stockMove != null) {
+          setPickingStockMoveEditDate(stockMove, userType);
+        }
+      }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void updateStocks(StockMove stockMove) throws AxelorException {
+    if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+      return;
+    }
+    List<StockMoveLine> savedStockMoveLineList =
+        Optional.ofNullable(stockMove.getPlannedStockMoveLineList())
+            .orElse(new ArrayList<StockMoveLine>());
+    List<StockMoveLine> stockMoveLineList =
+        Optional.ofNullable(stockMove.getStockMoveLineList())
+            .orElse(new ArrayList<StockMoveLine>());
+
+    stockMoveLineService.updateLocations(
+        stockMove.getFromStockLocation(),
+        stockMove.getToStockLocation(),
+        StockMoveRepository.STATUS_PLANNED,
+        StockMoveRepository.STATUS_CANCELED,
+        savedStockMoveLineList,
+        stockMove.getEstimatedDate(),
+        false);
+
+    stockMoveLineService.updateLocations(
+        stockMove.getFromStockLocation(),
+        stockMove.getToStockLocation(),
+        StockMoveRepository.STATUS_DRAFT,
+        StockMoveRepository.STATUS_PLANNED,
+        stockMoveLineList,
+        stockMove.getEstimatedDate(),
+        true);
+
+    stockMove.clearPlannedStockMoveLineList();
+    stockMoveLineList.forEach(
+        stockMoveLine ->
+            stockMove.addPlannedStockMoveLineListItem(
+                stockMoveLineRepo.copy(stockMoveLine, false)));
+  }
+
+  @Override
+  @Transactional
+  public void updateProductNetMass(StockMove stockMove) throws AxelorException {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        if (stockMoveLine.getProduct() != null) {
+          Product product = productRepository.find(stockMoveLine.getProduct().getId());
+          stockMoveLine.setNetMass(product.getNetMass());
+          stockMoveLineRepo.save(stockMoveLine);
+        }
       }
     }
   }

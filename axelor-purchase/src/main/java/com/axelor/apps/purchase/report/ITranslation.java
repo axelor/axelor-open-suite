@@ -81,6 +81,8 @@ public interface ITranslation {
   public static final String PURCHASE_ORDER_DESIRED_DELIV_DATE = /*$$(*/
       "PurchaseOrder.desiredDelivDate"; /*)*/
   public static final String PURCHASE_ORDER_BUYER = /*$$(*/ "PurchaseOrder.buyer"; /*)*/
+  public static final String PURCHASE_ORDER_BUYER_EMAIL = /*$$(*/ "PurchaseOrder.buyerEmail"; /*)*/
+  public static final String PURCHASE_ORDER_BUYER_PHONE = /*$$(*/ "PurchaseOrder.buyerPhone"; /*)*/
   public static final String PURCHASE_ORDER_INVOICING_ADDRESS = /*$$(*/
       "PurchaseOrder.invoicingAddress"; /*)*/
   public static final String PURCHASE_ORDER_DELIVERY_ADDRESS = /*$$(*/
@@ -90,4 +92,6 @@ public interface ITranslation {
       "PurchaseOrder.supplierCode"; /*)*/
   public static final String PURCHASE_ORDER_PRODUCT_PRODUCT_STANDARD = /*$$(*/
       "PurchaseOrder.productStandard"; /*)*/
+  public static final String PURCHASE_ORDER_PRODUCT_LINE_SEQUENCE = /*$$(*/
+      "PurchaseOrder.productSequence"; /*)*/
 }

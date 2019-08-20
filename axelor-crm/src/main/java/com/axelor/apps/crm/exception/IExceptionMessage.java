@@ -60,12 +60,14 @@ public interface IExceptionMessage {
   static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
 
   /** Opportunity */
-  static final String LEAD_PARTNER = /*$$(*/ "Please select a path" /*)*/;
+  static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/
       "Please configure informations for CRM for company %s" /*)*/;
 
+  static final String CRM_CONFIG_USER_EMAIL = /*$$(*/
+      "User %s does not have an email address configured nor is it linked to a partner with an email address configured." /*)*/;
   static final String CRM_CONFIG_USER_COMPANY = /*$$(*/
       "User %s must have an active company to use templates" /*)*/;
   static final String CRM_CONFIG_TEMPLATES = /*$$(*/

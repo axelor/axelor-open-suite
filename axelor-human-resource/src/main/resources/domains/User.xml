@@ -6,9 +6,13 @@
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="User" sequential="true" lang="java">
-  		
-      <one-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
-		    	
+
+     <one-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+
+	   <track>
+	     <field name="employee"/>
+     </track>
+
   </entity>
 
 </domain-models>

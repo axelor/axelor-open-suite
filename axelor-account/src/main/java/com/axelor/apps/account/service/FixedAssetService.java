@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface FixedAssetService {
 
@@ -40,7 +41,7 @@ public interface FixedAssetService {
    * @return
    * @throws AxelorException
    */
-  public void createFixedAsset(Invoice invoice) throws AxelorException;
+  public List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException;
 
   /**
    * Allow to disposal remaining depreciation

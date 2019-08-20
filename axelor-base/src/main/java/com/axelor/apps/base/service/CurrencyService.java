@@ -70,26 +70,29 @@ public class CurrencyService {
     if (startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency)) {
 
       LocalDate dateToConvert = this.getDateToConvert(date);
+      boolean isInverse = true;
+      BigDecimal exchangeRate = null;
 
       CurrencyConversionLine currencyConversionLine =
           this.getCurrencyConversionLine(startCurrency, endCurrency, dateToConvert);
       if (currencyConversionLine != null) {
-        return currencyConversionLine.getExchangeRate();
+        exchangeRate = currencyConversionLine.getExchangeRate();
+        isInverse = false;
+
       } else {
         currencyConversionLine =
             this.getCurrencyConversionLine(endCurrency, startCurrency, dateToConvert);
-      }
 
-      if (currencyConversionLine == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CURRENCY_1),
-            startCurrency.getName(),
-            endCurrency.getName(),
-            dateToConvert);
+        if (currencyConversionLine == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.CURRENCY_1),
+              startCurrency.getName(),
+              endCurrency.getName(),
+              dateToConvert);
+        }
+        exchangeRate = currencyConversionLine.getExchangeRate();
       }
-
-      BigDecimal exchangeRate = currencyConversionLine.getExchangeRate();
 
       if (exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0) {
         throw new AxelorException(
@@ -100,8 +103,9 @@ public class CurrencyService {
             dateToConvert);
       }
 
-      return BigDecimal.ONE.divide(
-          currencyConversionLine.getExchangeRate(), 10, RoundingMode.HALF_EVEN);
+      return isInverse
+          ? BigDecimal.ONE.divide(exchangeRate, 10, RoundingMode.HALF_EVEN)
+          : exchangeRate;
     }
 
     return BigDecimal.ONE;

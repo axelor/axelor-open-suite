@@ -56,11 +56,11 @@
 				self.status_select in (3,4)
 				AND self.company = _user.active_company  
 				AND(
-				    ( self.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD')
-				    AND self.confirmation_date_time &lt;= DATE(:toDate))
+				    ( DATE(self.confirmation_date_time) &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD')
+				    AND DATE(self.confirmation_date_time) &lt;= DATE(:toDate))
 					OR
-				    (self.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD')
-				    AND self.confirmation_date_time &lt;= DATE(:toDateLY))
+				    ( DATE(self.confirmation_date_time) &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD')
+				    AND DATE(self.confirmation_date_time) &lt;= DATE(:toDateLY))
 				 )      
 			GROUP BY
 				_month, _year
@@ -176,11 +176,11 @@
 			  _order.status_select in (3,4)
 			  AND _order.company = _user.active_company  
 			  AND(
-			      ( _order.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD')
-			      AND _order.confirmation_date_time &lt;= DATE(:toDate))
+			      (DATE(_order.confirmation_date_time) &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD')
+			      AND DATE(_order.confirmation_date_time) &lt;= DATE(:toDate))
 			    OR
-			      (_order.confirmation_date_time &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD')
-			      AND _order.confirmation_date_time &lt;= DATE(:toDateLY))
+			      (DATE(_order.confirmation_date_time) &gt;= TO_DATE(DATE_PART('year',DATE(:toDateLY)) || '-01-01','YYYY-MM-DD')
+			      AND DATE(_order.confirmation_date_time) &lt;= DATE(:toDateLY))
 			     )      
 			AND
 			    _order.ex_tax_total > 0.00	         
@@ -250,7 +250,7 @@
 	  		JOIN 
 	    		auth_user _user ON _user.id = :__user__ AND self.company = _user.active_company
 	  		WHERE
-	    		self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
+	    		DATE(self.confirmation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
 	  		GROUP BY
 	    		team.name
 	  		HAVING  
@@ -260,14 +260,14 @@
 		<series key="amount" type="bar" title="Amount"/>
 	</chart>
 	  
-	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.turnover.per.saleman" title="Turnover (excl. Tax) per saleman">
+	<chart onInit="action.sale.chart.set.date.1m" name="chart.sale.manager.dashboard.sales.orders.per.saleman" title="Sales Orders per salesman">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
 			<field type="date" name="toDate" title="To Date" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
-			  sum(self.ex_tax_total) as amount,
+			  sum(self.company_ex_tax_total) as amount,
 			  saleman.full_name as saleman_name
 			FROM
 			  sale_sale_order self
@@ -279,12 +279,12 @@
 			  ON _user.id = :__user__
 			  AND self.company = _user.active_company
 			WHERE
-			  self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			  DATE(self.confirmation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			  AND self.status_select in (3,4)
 			GROUP BY
 			  saleman_name
 			HAVING
-			 	sum(self.ex_tax_total) > 0
+			 	sum(self.company_ex_tax_total) > 0
 		</dataset>
 		<category key="saleman_name" type="text" title="Salesman"/>
 		<series key="amount" type="bar" title="Amount"/>
@@ -315,7 +315,7 @@
 				ON _user.id = :__user__
 				AND self.company = _user.active_company
 			WHERE
-				self.status_select in (3,4) AND self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
+				self.status_select in (3,4) AND DATE(self.confirmation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			GROUP BY
 			  family_name
 			HAVING
@@ -350,7 +350,7 @@
 				ON _user.id = :__user__
 				AND self.company = _user.active_company
 			WHERE
-				self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
+				DATE(self.confirmation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND self.status_select in (3,4)
 			GROUP BY
 				category_name
 		</dataset>
@@ -380,7 +380,7 @@
 			  ON _user.id = :__user__
 			  AND self.company = _user.active_company
 			WHERE
-			  self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			  DATE(self.confirmation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			  and self.status_select in (3,4)
 			GROUP BY
 			  country_name
@@ -445,7 +445,7 @@
 			      ON _user.id = :__user__
 		      	AND _sale_order.company = _user.active_company    
 			    WHERE
-			      _sale_order.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			      DATE(_sale_order.confirmation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			      AND _sale_order.status_select in (3,4)
 			    GROUP BY _sale_order.id, _line_product
 			    ORDER BY _turn_over DESC) AS _sale
@@ -494,7 +494,7 @@
 			    ON _user.id = :__user__
 			    AND _sale_order.company = _user.active_company    
 			  WHERE
-			    _sale_order.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			    DATE(_sale_order.confirmation_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			    AND _sale_order.status_select in (3,4)
 			  GROUP BY _sale_order.id, _line_product, _turn_over
 			  ORDER BY _turn_over DESC) AS _sale

@@ -78,7 +78,8 @@ public interface ReservedQtyService {
    *
    * @param stockMoveLine a stock move line
    * @param stockLocation a stock location
-   * @param product the product of the line
+   * @param product the product of the line. If the product is not managed in stock, this method
+   *     does nothing.
    * @param toStatus target status for the stock move
    * @param requestedReservedQty the requested reserved quantity in stock move unit
    * @throws AxelorException
@@ -96,7 +97,8 @@ public interface ReservedQtyService {
    *
    * @param stockMoveLine a stock move line.
    * @param stockLocation a stock location.
-   * @param product the product of the line.
+   * @param product the product of the line. If the product is not managed in stock, this method
+   *     does nothing.
    * @param toStatus target status for the stock move.
    * @param qty the quantity in stock move unit.
    * @throws AxelorException
@@ -215,6 +217,22 @@ public interface ReservedQtyService {
    * @throws AxelorException
    */
   void updateRequestedReservedQty(StockLocationLine stockLocationLine) throws AxelorException;
+
+  /**
+   * Request quantity for a sale order line.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void requestQty(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
+   * Cancel the reservation for a sale order line.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void cancelReservation(SaleOrderLine saleOrderLine) throws AxelorException;
 
   /**
    * Update reserved qty for sale order line from already updated stock move.
