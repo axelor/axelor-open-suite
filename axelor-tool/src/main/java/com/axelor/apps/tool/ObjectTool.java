@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.axelor.exception.service.TraceBackService;
 
 public final class ObjectTool {
 
@@ -42,9 +43,9 @@ public final class ObjectTool {
       field = classGotten.getDeclaredField(fieldName);
 
     } catch (SecurityException e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     } catch (NoSuchFieldException e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
     LOG.debug("Champ récupéré : {}", field);
     return field;
