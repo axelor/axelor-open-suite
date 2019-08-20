@@ -511,13 +511,14 @@ public class EventController {
       TraceBackService.trace(response, e);
     }
   }
-  
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void deleteReminder(ActionRequest request, ActionResponse response) {
     try {
       EventReminderRepository eventReminderRepository = Beans.get(EventReminderRepository.class);
-      
-      EventReminder eventReminder = eventReminderRepository.find((long) request.getContext().get("id"));
+
+      EventReminder eventReminder =
+          eventReminderRepository.find((long) request.getContext().get("id"));
       eventReminderRepository.remove(eventReminder);
       response.setCanClose(true);
     } catch (Exception e) {
