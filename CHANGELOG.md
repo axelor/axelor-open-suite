@@ -82,9 +82,14 @@
 - MOVELINE : add a verification between bank reconcile amount and credit or debit.
 - ACCOUNTING : display 'productFamily' field on Account Management Form.
 - SALE/PURCHASE ORDER : translation "fusionner devis fournisseurs"
+- LUNCH VOUCHER LINE: Display period instead of from- and toDates.
+- SALE/PURCHASE ORDER : new config to display lines sequences
+- TIMESHEET : Throw an alert on timesheet validation.
 - SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
 
+
 ## Bug Fixes
+- PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
@@ -153,8 +158,13 @@
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 - PERIOD : Fix NPE when date is null.
 - ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
-- SUBROGATION RELEASE : corrected subrogation release refund moves sense and removed the possibility to select a supplier invoice or a supplier refund in a subrogation realase.
+- SUBROGATION RELEASE : corrected subrogation release refund moves direction and removed the possibility to select a supplier invoice or a supplier refund in a subrogation realase.
 - SaleOrderLine : Fix functionality of Edit button of Sale Order.
+- PurchaseOrder: Add analytic move lines to generated purchase order.
+- Workflow: reset domain of model and json field when app builder is changed.
+- Move various fields and actions to convenient modules.
+- Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
+- Resolve the working of Open Street Map
 
 ## [5.1.7] - 2019-06-17
 ## Features
