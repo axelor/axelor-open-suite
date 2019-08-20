@@ -89,6 +89,7 @@
 - SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
 - STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
 - MOVE LINES : lettering move lines is now quicker.
+- EVENT REMINDER : improved behaviour of event reminders.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
