@@ -118,6 +118,7 @@
 - DEBT RECOVERY LEVEL : label field is now required.
 - ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
 - INVOICE : add in demo data more information for demo supplier invoices.
+- DEMO DATA : clean and corrected errors from import demo data.
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
