@@ -43,6 +43,7 @@
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
 - OPPORTUNITY : convert into quotation error when no customer selected on opportunity
 - EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
+- STOCK MOVE / STOCK CONFIG Certificate of conformity : add tracking numbers to the lines in certificate of conformity printing and add the option in stock configuration to display or not the tracking numbers on the certificate.  
 - ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
 - SALE/PURCHASE without stock moves : issue on page numbering
 - ActionBuilder : Use CodeEditor widget for script.
@@ -85,9 +86,13 @@
 - LUNCH VOUCHER LINE: Display period instead of from- and toDates.
 - SALE/PURCHASE ORDER : new config to display lines sequences
 - TIMESHEET : Throw an alert on timesheet validation.
+- SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
+- STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
+- MOVE LINES : lettering move lines is now quicker.
 - EVENT REMINDER : improved behaviour of event reminders.
 
 ## Bug Fixes
+- PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
@@ -114,6 +119,7 @@
 - DEBT RECOVERY LEVEL : label field is now required.
 - ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
 - INVOICE : add in demo data more information for demo supplier invoices.
+- DEMO DATA : clean and corrected errors from import demo data.
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
@@ -122,6 +128,7 @@
 - INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
 - TEAMTASK: task history show only canceled and closed task.
 - Sale Order: fix NPE on clicking allocate all button.
+- STOCK MOVE Certificate of conformity : corrected errors in the lines of the report.
 - INVOICE : Resolve error of sending email from Invoice.
 - Studio: Fix export of selection with app
 - CONFIGURATOR : fix configurator demo data.
@@ -156,11 +163,14 @@
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 - PERIOD : Fix NPE when date is null.
 - ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
+- SUBROGATION RELEASE : corrected subrogation release refund moves direction and removed the possibility to select a supplier invoice or a supplier refund in a subrogation realase.
 - SaleOrderLine : Fix functionality of Edit button of Sale Order.
 - PurchaseOrder: Add analytic move lines to generated purchase order.
 - Workflow: reset domain of model and json field when app builder is changed.
 - Move various fields and actions to convenient modules.
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
+- Resolve the working of Open Street Map
+- EXPENSE : Improving exception message when expense line date is in the future
 
 ## [5.1.7] - 2019-06-17
 ## Features
@@ -209,6 +219,7 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
 - SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
 - TRACKING : Added all fields for all apps and also for company's configuration
+- FISCAL POSTION DEMO DATA : set several tax equivalent with reverse charge to true.
 
 ## Bug Fixes
 - STOCK MOVE : Added fr translation for 'Not Invoiced' tag
