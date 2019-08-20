@@ -13,6 +13,7 @@
 - HR : Enable Tracking Feature for 'statusSelect' field.
 - PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
 - MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
+- EBICS USER : add the possibility to print ebics request log.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
