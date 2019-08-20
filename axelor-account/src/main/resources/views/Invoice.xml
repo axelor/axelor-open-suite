@@ -189,7 +189,7 @@
           onLoad="action-account-invoice-onload-group" >
 
 		<toolbar>
-			<button name="reportsBtn" title="Reports" icon="fa-print" readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
+			<button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4" readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
 		</toolbar>
 
         <menubar>
@@ -544,7 +544,7 @@ InvoiceSet.length > 0))"
 					showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
 			</panel>
 			<panel name="formatPanel" colSpan="6">
-				<field name="$format" title="Format" type="integer" hideIf="_statusSelect == 4" selection="invoice.report.format" colSpan="12" required="true"/>
+				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
 			</panel>
 			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print" readonlyIf="$reportType==null || $format==null"/>
 		</panel>
