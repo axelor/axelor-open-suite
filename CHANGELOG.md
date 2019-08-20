@@ -170,6 +170,7 @@
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
 - Resolve the working of Open Street Map
 - EXPENSE : Improving exception message when expense line date is in the future
+- ACCOUNT CONFIG: New panel for forecasted invoice accounts 
 
 ## [5.1.7] - 2019-06-17
 ## Features
