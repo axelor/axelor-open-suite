@@ -43,6 +43,7 @@
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
 - OPPORTUNITY : convert into quotation error when no customer selected on opportunity
 - EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
+- STOCK MOVE / STOCK CONFIG Certificate of conformity : add tracking numbers to the lines in certificate of conformity printing and add the option in stock configuration to display or not the tracking numbers on the certificate.  
 - ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
 - SALE/PURCHASE without stock moves : issue on page numbering
 - ActionBuilder : Use CodeEditor widget for script.
@@ -86,6 +87,7 @@
 - SALE/PURCHASE ORDER : new config to display lines sequences
 - TIMESHEET : Throw an alert on timesheet validation.
 - SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
+- STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
@@ -123,6 +125,7 @@
 - INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
 - TEAMTASK: task history show only canceled and closed task.
 - Sale Order: fix NPE on clicking allocate all button.
+- STOCK MOVE Certificate of conformity : corrected errors in the lines of the report.
 - INVOICE : Resolve error of sending email from Invoice.
 - Studio: Fix export of selection with app
 - CONFIGURATOR : fix configurator demo data.
