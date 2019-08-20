@@ -199,6 +199,11 @@ public class AddressServiceImpl implements AddressService {
 
     if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {
       Map<String, Object> result = mapService.getMap(address.getFullName());
+      if (result == null) {
+        address.setIsValidLatLong(false);
+        return Optional.empty();
+      }
+      address.setIsValidLatLong(true);
       BigDecimal latitude = (BigDecimal) result.get("latitude");
       BigDecimal longitude = (BigDecimal) result.get("longitude");
       setLatLong(address, Pair.of(latitude, longitude));
