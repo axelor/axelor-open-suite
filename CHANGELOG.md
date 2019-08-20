@@ -87,7 +87,6 @@
 - TIMESHEET : Throw an alert on timesheet validation.
 - SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
 
-
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
@@ -165,6 +164,7 @@
 - Move various fields and actions to convenient modules.
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
 - Resolve the working of Open Street Map
+- EXPENSE : Improving exception message when expense line date is in the future
 
 ## [5.1.7] - 2019-06-17
 ## Features
