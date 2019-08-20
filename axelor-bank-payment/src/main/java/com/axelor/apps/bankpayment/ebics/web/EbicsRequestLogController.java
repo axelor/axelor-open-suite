@@ -21,7 +21,7 @@ public class EbicsRequestLogController {
 
       String fileLink =
           ReportFactory.createReport("EbicsReportLog.rptdesign", name + "-${date}")
-              .addParam("EbicsReportLog", ebicsRequestLog.getId())
+              .addParam("EbicsReportLogId", ebicsRequestLog.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addFormat("pdf")
               .toAttach(ebicsRequestLog)
