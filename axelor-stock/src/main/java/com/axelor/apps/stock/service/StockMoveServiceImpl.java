@@ -237,7 +237,9 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT));
     }
-
+    stockMove.setAvailabilityRequest(false);
+    stockMove.setPickingEditDate(null);
+    stockMove.setPickingIsEdited(false);
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
   }
 
