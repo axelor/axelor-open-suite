@@ -512,7 +512,7 @@ public class EventController {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void deleteReminder(ActionRequest request, ActionResponse response) {
     try {
       EventReminderRepository eventReminderRepository = Beans.get(EventReminderRepository.class);
