@@ -706,6 +706,7 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - INVOICES : alert message if no bank details in partner-form.
 - PartnerStockSettings : Added new field 'incoterm'.
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
+- Tool module: code refactoring and update documentation.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
