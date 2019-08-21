@@ -35,6 +35,11 @@
         		<field name="note" colSpan="12"/>
 	    	</panel>
 	    </panel>
+
+	    <panel-mail name="mailPanel">
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	 </form>
 	 
 	 <action-record name="action-mrp-forecast-record-unit" model="com.axelor.apps.supplychain.db.MrpForecast">

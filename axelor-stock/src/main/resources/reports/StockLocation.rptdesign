@@ -203,6 +203,18 @@
                     <text-property name="displayName">location_name</text-property>
                     <text-property name="heading">location_name</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters"/>
@@ -225,11 +237,21 @@
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">raw_count</property>
+                        <property name="name">logo_height</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">raw_count</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
                         <property name="name">Locations</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -259,8 +281,23 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT Location.id as location_id, MetaFile.file_path as logo_path, Location.name as location_name	
+            <xml-property name="queryText"><![CDATA[SELECT Location.id as location_id, MetaFile.file_path as logo_path, Location.name as location_name,
+Company.height as logo_height, Company.width as logo_width
 FROM 
 	stock_stock_location AS Location
 LEFT JOIN 
@@ -936,6 +973,7 @@ order by Product.code
     </page-setup>
     <body>
         <grid id="3342">
+            <property name="fontSize">8pt</property>
             <property name="marginLeft">0pt</property>
             <property name="height">6.164791666666667cm</property>
             <property name="width">19.341041666666666cm</property>
@@ -971,6 +1009,20 @@ order by Product.code
                     <expression name="expression" type="javascript">dataSetRow["Locations"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">20%</property>
@@ -983,19 +1035,23 @@ order by Product.code
                 <cell id="3350">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
-                    <image id="3419">
-                        <property name="height">69px</property>
-                        <property name="width">140px</property>
+                    <text id="5359">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="source">file</property>
-                        <property name="proportionalScale">true</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                    </image>
+                        <structure name="toc"/>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="4400">
                     <property name="colSpan">1</property>

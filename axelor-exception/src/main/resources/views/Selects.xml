@@ -25,6 +25,7 @@
    	  <option value='directDebit'>Direct debit</option>
    	  <option value="interbankPaymentOrder">Interbank payment order</option>
    	  <option value="crm">CRM</option>
+   	  <option value="reportedBalance">Reported balance</option>
 	</selection>
 
 </object-views>

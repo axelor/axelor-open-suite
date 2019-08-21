@@ -432,8 +432,8 @@
 	  </selection>
     
     <selection name="base.user.form.step.select">
-		<option value="0">Basic Overview</option>
-		<option value="1">Authorization Details</option>
+		<option value="0">Basic overview</option>
+		<option value="1">Authorization details</option>
 		<option value="2">Contact / Partner</option>
 		<option value="3">Employee</option>
 		<option value="4">Activation</option>

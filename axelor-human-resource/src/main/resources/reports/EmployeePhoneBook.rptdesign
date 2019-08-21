@@ -537,12 +537,25 @@ order by Employee.name]]></xml-property>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="CompanyDS" id="392">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">full_name</property>
@@ -579,11 +592,21 @@ order by Employee.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">full_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">3</property>
+                        <property name="position">5</property>
                         <property name="name">web_site</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -600,21 +623,38 @@ order by Employee.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">full_name</property>
                     <property name="nativeName">full_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">3</property>
+                    <property name="position">5</property>
                     <property name="name">web_site</property>
                     <property name="nativeName">web_site</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path, Address.full_name, Partner.web_site
-from auth_user as AuthUser 
+            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path,
+Company.height as logo_height,
+Company.width as logo_width,
+Address.full_name, Partner.web_site
+from auth_user as AuthUser
 left outer join base_company as Company on (AuthUser.active_company = Company.id)
 left outer join base_address as Address on (Company.address = Address.id)
 left outer join base_partner as Partner on (Company.partner = Partner.id)
@@ -623,23 +663,6 @@ where AuthUser.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -973,45 +996,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <cell id="4619">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
-                        <image id="3440">
-                            <property name="fontFamily">sans-serif</property>
-                            <property name="fontSize">10pt</property>
-                            <property name="fontWeight">normal</property>
-                            <property name="fontStyle">normal</property>
-                            <property name="fontVariant">normal</property>
-                            <property name="color">black</property>
-                            <property name="textLineThrough">none</property>
-                            <property name="textOverline">none</property>
-                            <property name="textUnderline">none</property>
-                            <property name="borderBottomColor">black</property>
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderBottomWidth">medium</property>
-                            <property name="borderLeftColor">black</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderLeftWidth">medium</property>
-                            <property name="borderRightColor">black</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderRightWidth">medium</property>
-                            <property name="borderTopColor">black</property>
-                            <property name="borderTopStyle">none</property>
-                            <property name="borderTopWidth">medium</property>
-                            <property name="marginTop">0pt</property>
-                            <property name="marginLeft">0pt</property>
-                            <property name="marginBottom">0pt</property>
-                            <property name="marginRight">0pt</property>
-                            <property name="paddingTop">1pt</property>
-                            <property name="paddingLeft">1pt</property>
-                            <property name="paddingBottom">1pt</property>
-                            <property name="paddingRight">1pt</property>
-                            <property name="textAlign">center</property>
-                            <property name="display">block</property>
-                            <property name="pageBreakAfter">auto</property>
-                            <property name="pageBreakBefore">auto</property>
-                            <property name="pageBreakInside">avoid</property>
-                            <property name="showIfBlank">false</property>
-                            <property name="overflow">hidden</property>
-                            <property name="height">2.169583333333333cm</property>
-                            <property name="width">6.138333333333333cm</property>
+                        <text id="4635">
+                            <property name="fontSize">8pt</property>
                             <property name="dataSet">CompanyDS</property>
                             <list-property name="visibility">
                                 <structure>
@@ -1027,6 +1013,20 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
+                                    <property name="name">logo_height</property>
+                                    <text-property name="displayName">logo_height</text-property>
+                                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">logo_width</property>
+                                    <text-property name="displayName">logo_width</text-property>
+                                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
                                     <property name="name">full_name</property>
                                     <text-property name="displayName">full_name</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
@@ -1039,17 +1039,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="dataType">string</property>
                                 </structure>
                             </list-property>
-                            <property name="source">file</property>
-                            <property name="proportionalScale">true</property>
-                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            <list-property name="action">
-                                <structure>
-                                    <property name="linkType">hyperlink</property>
-                                    <expression name="uri" type="javascript">row["web_site"]</expression>
-                                    <property name="targetWindow">_parent</property>
-                                </structure>
-                            </list-property>
-                        </image>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="4613">

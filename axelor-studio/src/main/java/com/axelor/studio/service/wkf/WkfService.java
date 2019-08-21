@@ -153,6 +153,7 @@ public class WkfService {
     trackFlow.setOnClick(WkfTrackingService.ACTION_OPEN_TRACK);
     trackFlow.setIsWkf(true);
     trackFlow.setVisibleInGrid(false);
+    trackFlow.setHidden(!workflow.getIsTrackFlow());
     saveJsonField(trackFlow);
 
     MetaJsonField wkfEnd = getJsonField(wkfId + "Separator", "separator");

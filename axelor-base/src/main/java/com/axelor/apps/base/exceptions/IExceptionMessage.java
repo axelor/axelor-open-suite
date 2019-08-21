@@ -174,6 +174,13 @@ public interface IExceptionMessage {
       "Feature currently not available with Open Street Maps." /*)*/;
   public static final String ADDRESS_7 = /*$$(*/
       "Current user's active company address is not set" /*)*/;
+  public static final String ADDRESS_8 = /*$$(*/
+      "You can select only one default invoicing address." /*)*/;
+  public static final String ADDRESS_9 = /*$$(*/
+      "You can select only one default delivery address." /*)*/;
+  public static final String ADDRESS_10 = /*$$(*/
+      "You must specify a default invoicing address." /*)*/;
+
   public static final String ADDRESS_CANNOT_BE_NULL = "Address cannot be null.";
 
   /** Bank details controller */
