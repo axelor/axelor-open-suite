@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.exception.service.TraceBackService;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.axelor.exception.service.TraceBackService;
 
 public final class ObjectTool {
 

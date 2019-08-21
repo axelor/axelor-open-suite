@@ -25,8 +25,8 @@ import java.time.LocalDate;
 /**
  * A period is composed of a start date, an end date and a boolean attribute to determine if the
  * year is fixed to 360 days.
- * 
- * Seems to be unused since there is another object Period in base module.
+ *
+ * <p>Seems to be unused since there is another object Period in base module.
  */
 @Deprecated
 public class Period {
