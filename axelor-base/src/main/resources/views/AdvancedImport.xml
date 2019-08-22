@@ -23,6 +23,7 @@
 		    <field name="fileSeparator" showIf="fileExtension == 'csv'" requiredIf="fileExtension == 'csv'"/>
 		    <panel name="detailPanel" readonlyIf="statusSelect == 1" colSpan="12">
 			    <field name="isConfigInFile" widget="boolean-switch" onChange="action-advanced-import-record-onchange-config"/>
+			    <field name="isFileTabConfigAdded" widget="boolean-switch" hideIf="!isConfigInFile"/>
 			    <field name="isHeader" readonlyIf="isConfigInFile" widget="boolean-switch" colSpan="3"/>
 			    <field name="isValidateValue" widget="boolean-switch" colSpan="3"/>
 			    <field name="nbOfFirstLineIgnore" readonlyIf="isConfigInFile"/>
@@ -32,7 +33,7 @@
 		</panel>
 	  	<panel-related colSpan="12" field="fileTabList" form-view="file-tab-form" grid-view="file-tab-grid" readonlyIf="statusSelect == 1" canMove="true" orderBy="sequence"/>
 	  	<panel sidebar="true">
-			<button name="applyBtn" title="Apply" onClick="action-advanced-import-validate-filetab,save,action-advanced-import-method-apply,save" hideIf="statusSelect == 1"/>
+			<button name="applyBtn" title="Apply" onClick="action-advanced-import-validate-filetab,save,action-advanced-import-method-apply" hideIf="statusSelect == 1"/>
 			<button name="validateBtn" title="Validate" onClick="save,action-advanced-import-method-validate,save" showIf="fileTabList.length &gt; 0 &amp;&amp; statusSelect == 0"/>
 			<button name="importBtn" title="Import" onClick="save,action-advanced-import-method-import,save" showIf="statusSelect == 1"/>
 			<button name="draftBtn" title="Reset to draft" onClick="action-advanced-import-record-set-values" showIf="statusSelect == 1"/>

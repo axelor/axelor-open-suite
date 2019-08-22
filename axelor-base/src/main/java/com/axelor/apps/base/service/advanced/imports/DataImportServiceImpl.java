@@ -147,6 +147,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     boolean isConfig = advancedImport.getIsConfigInFile();
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
+    boolean isTabConfig = advancedImport.getIsFileTabConfigAdded();
     List<CSVInput> inputList = new ArrayList<CSVInput>();
 
     validatorService.sortFileTabList(advancedImport.getFileTabList());
@@ -178,9 +179,16 @@ public class DataImportServiceImpl implements DataImportService {
       String[] headers = this.createHeader(row, fileTab, isConfig, mapper);
       allLines.add(headers);
 
+      int tabConfigRowCount = 0;
+      if (isTabConfig) {
+        String objectRow[] = reader.read(fileTab.getName(), 0, 0);
+        tabConfigRowCount =
+            advancedImportService.getTabConfigRowCount(
+                fileTab.getName(), reader, totalLines, objectRow);
+      }
       startIndex =
           isConfig
-              ? 3
+              ? tabConfigRowCount + 3
               : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
 
       for (int line = startIndex; line < totalLines; line++) {
