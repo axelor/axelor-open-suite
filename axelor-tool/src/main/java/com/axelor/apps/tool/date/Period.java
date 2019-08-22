@@ -23,10 +23,12 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 
 /**
- * Classe permettant d'appliquer plusieurs opérations sur une période. Une période est composée
- * d'une date de début, d'une date de fin, et d'un attribut booléen qui détermine si l'on fixe
- * l'année sur 360 jours.
+ * A period is composed of a start date, an end date and a boolean attribute to determine if the
+ * year is fixed to 360 days.
+ *
+ * <p>Seems to be unused since there is another object Period in base module.
  */
+@Deprecated
 public class Period {
 
   private LocalDate from;

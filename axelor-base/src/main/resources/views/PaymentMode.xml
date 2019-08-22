@@ -12,7 +12,7 @@
         <panel name="mainPanel" >
         	<field name="name"/>
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="typeSelect" colSpan="3" onChange="action-payment-mode-record-empty"/>
+	        <field name="typeSelect" colSpan="3" onChange="action-payment-mode-group-empty"/>
 			<field name="inOutSelect" colSpan="3"/>
   			<field name="validatePaymentByDepositSlipPublication" showIf="inOutSelect == 1 &amp;&amp; [5, 7].indexOf(typeSelect) >= 0" if="__config__.app.getApp('account')?.paymentVouchersOnInvoice" />
 		</panel>
@@ -33,6 +33,10 @@
 		</panel-tabs>
     </form>
     
+    <action-group name="action-payment-mode-group-empty" if-module="axelor-bank-payment">
+    	<action name="action-payment-mode-record-empty"/>
+    </action-group>
+    
     <action-record name="action-payment-mode-record-cheque"
     	model="com.axelor.apps.account.db.PaymentMode" 
     	search="('self.typeSelect = ?1', 7)">
@@ -41,14 +45,6 @@
 
 	<action-record name="action-payment-mode-set-default" model="com.axelor.apps.account.db.PaymentMode">
 	    <field name="accountManagementList" expr="eval:__repo__(Company).all().fetch().collect{__repo__(AccountManagement).create([company:it])}" if="__config__.app.isApp('account')"/>
-	</action-record>
-
-	<action-record name="action-payment-mode-record-empty" model="com.axelor.apps.account.db.PaymentMode">
-	    <field name="orderTypeSelect" expr=""/>
-	    <field name="generateBankOrder" expr="false" />
-	    <field name="automaticTransmission" expr="false"/>
-	    <field name="bankOrderExportFolderPath" expr=""/>
-        <field name="validatePaymentByDepositSlipPublication" expr="false" if="__config__.app.isApp('account')" />
 	</action-record>
 
 </object-views>

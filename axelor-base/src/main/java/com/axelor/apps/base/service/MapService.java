@@ -104,35 +104,35 @@ public class MapService {
         restResponse);
 
     /*
-    log.debug("restResponse = {}", restResponse)
-    log.debug("restResponse.parsedResponseContent.text = {}", restResponse.parsedResponseContent.text)
+     * log.debug("restResponse = {}", restResponse)
+     * log.debug("restResponse.parsedResponseContent.text = {}",
+     * restResponse.parsedResponseContent.text)
      */
-    // def searchresults = new JsonSlurper().parseText(restResponse.parsedResponseContent.text);
+    // def searchresults = new
+    // JsonSlurper().parseText(restResponse.parsedResponseContent.text);
     /*
-    LOG.debug("searchresults.status = {}", searchresults.status);
-    if (searchresults.status == "OK") {
-    	/*
-    	log.debug("searchresults.results.size() = {}", searchresults.results.size())
-    	log.debug("searchresults.results[0] = {}", searchresults.results[0])
-    	log.debug("searchresults.results[0].address_components = {}", searchresults.results[0].address_components)
-    	log.debug("searchresults.results[0].geometry.location = {}", searchresults.results[0].geometry.location)
+     * LOG.debug("searchresults.status = {}", searchresults.status); if
+     * (searchresults.status == "OK") { /*
+     * log.debug("searchresults.results.size() = {}", searchresults.results.size())
+     * log.debug("searchresults.results[0] = {}", searchresults.results[0])
+     * log.debug("searchresults.results[0].address_components = {}",
+     * searchresults.results[0].address_components)
+     * log.debug("searchresults.results[0].geometry.location = {}",
+     * searchresults.results[0].geometry.location)
      */
     /*
-    	def results = searchresults.results;
-
-    	if (results.size() > 1) {
-    		response.put("multiple", true);
-    	}
-    	def firstPlaceFound = results[0];
-
-    	if (firstPlaceFound) {
-    		BigDecimal lat = new BigDecimal(firstPlaceFound.geometry.location.lat);
-    		BigDecimal lng = new BigDecimal(firstPlaceFound.geometry.location.lng);
-
-    		response.put("lat", lat.setScale(10, RoundingMode.HALF_EVEN));
-    		response.put("lng", lng.setScale(10, RoundingMode.HALF_EVEN));
-    	}
-    */
+     * def results = searchresults.results;
+     *
+     * if (results.size() > 1) { response.put("multiple", true); } def
+     * firstPlaceFound = results[0];
+     *
+     * if (firstPlaceFound) { BigDecimal lat = new
+     * BigDecimal(firstPlaceFound.geometry.location.lat); BigDecimal lng = new
+     * BigDecimal(firstPlaceFound.geometry.location.lng);
+     *
+     * response.put("lat", lat.setScale(10, RoundingMode.HALF_EVEN));
+     * response.put("lng", lng.setScale(10, RoundingMode.HALF_EVEN)); }
+     */
     // }
   }
 
@@ -168,20 +168,17 @@ public class MapService {
     try {
       BigDecimal latitude = BigDecimal.ZERO;
       BigDecimal longitude = BigDecimal.ZERO;
-      RESTClient restClient = new RESTClient("http://nominatim.openstreetmap.org/");
+      RESTClient restClient = new RESTClient("https://nominatim.openstreetmap.org/");
       Map<String, Object> mapQuery = new HashMap<>();
       mapQuery.put("q", qString);
       mapQuery.put("format", "xml");
       mapQuery.put("polygon", true);
       mapQuery.put("addressdetails", true);
-      Map<String, Object> mapHeaders = new HashMap<>();
-      mapHeaders.put("HTTP referrer", "axelor");
       Map<String, Object> mapResponse = new HashMap<>();
       mapResponse.put("path", "/search");
       mapResponse.put("accept", ContentType.JSON);
       mapResponse.put("query", mapQuery);
-      mapResponse.put("headers", mapHeaders);
-      mapResponse.put("connectTimeout", 5000);
+      mapResponse.put("connectTimeout", 10000);
       mapResponse.put("readTimeout", 10000);
       mapResponse.put("followRedirects", false);
       mapResponse.put("useCaches", false);
@@ -281,16 +278,12 @@ public class MapService {
 
   public String getDirectionUrl(
       String key, BigDecimal dLat, BigDecimal dLon, BigDecimal aLat, BigDecimal aLon) {
-    return "map/directions.html?dx="
-        + dLat
-        + "&dy="
-        + dLon
-        + "&ax="
-        + aLat
-        + "&ay="
-        + aLon
-        + "&key="
-        + key;
+    String queryParam = "dx=" + dLat + "&dy=" + dLon + "&ax=" + aLat + "&ay=" + aLon;
+    if (appBaseService.getAppBase().getMapApiSelect()
+        == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
+      return "map/osm-directions.html?" + queryParam;
+    }
+    return "map/directions.html?" + queryParam + "&key=" + key;
   }
 
   public Map<String, Object> getDirectionMapGoogle(
@@ -414,7 +407,9 @@ public class MapService {
   }
 
   public String getMapURI(String name) {
-    return getMapURI(name, null);
+    return appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE
+        ? getMapURI(name, null)
+        : getOsmMapURI(name, null);
   }
 
   public String getMapURI(String name, Long id) {
@@ -428,7 +423,6 @@ public class MapService {
       if (id != null) {
         ub.addParameter("id", String.valueOf(id));
       }
-
       return ub.toString();
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -464,8 +458,91 @@ public class MapService {
         return StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey());
 
       case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+        return true;
+
       default:
         return false;
+    }
+  }
+
+  public String getOsmMapURI(String name) {
+    return getOsmMapURI(name, null);
+  }
+
+  public String getOsmMapURI(String name, Long id) {
+    final String uri = "map/osm-objs.html";
+
+    try {
+      URIBuilder ub = new URIBuilder(uri);
+      ub.addParameter("object", name);
+
+      if (id != null) {
+        ub.addParameter("id", String.valueOf(id));
+      }
+      return ub.toString();
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      return getErrorURI(e.getMessage());
+    }
+  }
+
+  public Map<String, Object> getDirectionMapOsm(
+      String dString,
+      BigDecimal dLat,
+      BigDecimal dLon,
+      String aString,
+      BigDecimal aLat,
+      BigDecimal aLon) {
+    LOG.debug("departureString = {}", dString);
+    LOG.debug("arrivalString = {}", aString);
+    Map<String, Object> result = new HashMap<>();
+    try {
+      if (!checkNotNullNotZero(dLat) || !checkNotNullNotZero(dLon)) {
+        getOsmResponse(dString);
+        dLat = lat;
+        dLon = lon;
+      }
+      LOG.debug("departureLat = {}, departureLng={}", dLat, dLon);
+      if (!checkNotNullNotZero(aLat) || !checkNotNullNotZero(aLon)) {
+        getOsmResponse(aString);
+        aLat = lat;
+        aLon = lon;
+      }
+      LOG.debug("arrivalLat = {}, arrivalLng={}", aLat, aLon);
+
+      if (checkNotNullNotZero(dLat)
+          && checkNotNullNotZero(dLon)
+          && checkNotNullNotZero(aLon)
+          && checkNotNullNotZero(aLat)) {
+        result.put(
+            "url",
+            "map/osm-directions.html?"
+                + "dx="
+                + dLat
+                + "&dy="
+                + dLon
+                + "&ax="
+                + aLat
+                + "&ay="
+                + aLon);
+        result.put("aLat", aLat);
+        result.put("dLat", dLat);
+        return result;
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+
+    return null;
+  }
+
+  protected void getOsmResponse(String qString) throws AxelorException, JSONException {
+    Map<String, Object> osmResponse = getMapOsm(qString);
+
+    lat = lon = BigDecimal.ZERO;
+    if (osmResponse != null) {
+      lat = new BigDecimal(osmResponse.get("latitude").toString());
+      lon = new BigDecimal(osmResponse.get("longitude").toString());
     }
   }
 }
