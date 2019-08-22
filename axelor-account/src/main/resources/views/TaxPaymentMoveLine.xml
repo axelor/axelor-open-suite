@@ -6,18 +6,18 @@
 	<grid name="tax-payment-move-line-grid" editable="true" model="com.axelor.apps.account.db.TaxPaymentMoveLine" title="Tax payment move line list">
 		<field name="moveLine" width="135" readonly="true" hidden="true"/>
 		<field name="originTaxLine" readonly="true"/>
+		<field name="detailPaymentAmount" readonly="true" title="Base"/>
 		<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
 		<field name="taxAmount" readonly="true"/>
-		<field name="detailPaymentAmount" readonly="true" hidden="true"/>
 	</grid>
 	
 	<form name="tax-payment-move-line-form" model="com.axelor.apps.account.db.TaxPaymentMoveLine" title="Tax payment move line" >
 		<panel name="MainInformationsPanel" itemSpan="6">
 			<field name="moveLine" readonly="true"/>
 			<field name="originTaxLine" readonly="true"/>
+			<field name="detailPaymentAmount" readonly="true" title="Base"/>
 			<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
 			<field name="taxAmount" readonly="true"/>
-			<field name="detailPaymentAmount" readonly="true" hidden="true"/>
 		</panel>
 	</form>
 	

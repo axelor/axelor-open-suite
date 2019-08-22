@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -328,11 +329,15 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (debitInvoice != null) {
       InvoicePayment debitInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
+      Beans.get(MoveLineService.class)
+          .generateTaxPaymentMoveLineList(debitInvoicePayment, reconcile.getCreditMoveLine());
       debitInvoicePayment.setReconcile(reconcile);
     }
     if (creditInvoice != null) {
       InvoicePayment creditInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
+      Beans.get(MoveLineService.class)
+          .generateTaxPaymentMoveLineList(creditInvoicePayment, reconcile.getDebitMoveLine());
       creditInvoicePayment.setReconcile(reconcile);
     }
   }

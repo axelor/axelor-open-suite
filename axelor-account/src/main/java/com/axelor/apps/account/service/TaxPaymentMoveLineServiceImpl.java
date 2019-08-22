@@ -10,7 +10,7 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
   public TaxPaymentMoveLine computeTaxAmount(TaxPaymentMoveLine taxPaymentMoveLine)
       throws AxelorException {
     BigDecimal taxRate = taxPaymentMoveLine.getTaxRate();
-    BigDecimal base = taxPaymentMoveLine.getDetailPaymentAmout();
+    BigDecimal base = taxPaymentMoveLine.getDetailPaymentAmount();
     taxPaymentMoveLine.setTaxAmount(base.multiply(taxRate));
     return taxPaymentMoveLine;
   }

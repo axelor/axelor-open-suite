@@ -11,7 +11,7 @@
 	<many-to-one name="originTaxLine" ref="com.axelor.apps.account.db.TaxLine" title="Origin tax line" readonly="true" initParam="true"/>
 	<decimal name="taxRate" title="Rate" scale="3" precision="20" initParam="true"/>
 	<decimal name="taxAmount"  title="Tax amount" readonly="true"/>
-	<decimal name="detailPaymentAmout" readonly="true" hidden="true" initParam="true"/>
+	<decimal name="detailPaymentAmount" readonly="true" initParam="true"/>
   	
   </entity>
 
