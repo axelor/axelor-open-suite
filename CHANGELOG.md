@@ -173,6 +173,7 @@
 - Resolve the working of Open Street Map
 - EXPENSE : Improving exception message when expense line date is in the future
 - HELPDESK : Fix NPE when computing a total timer duration
+- BankStatementLineAFB120 : Fix Long index name issue with entity inheritance.
 
 ## [5.1.7] - 2019-06-17
 ## Features
