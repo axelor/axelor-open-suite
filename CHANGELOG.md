@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.9]
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
+- TIMESHEET : Generate TS lines for leaves and holidays automatically.
 
 ## Bug Fixes
 
