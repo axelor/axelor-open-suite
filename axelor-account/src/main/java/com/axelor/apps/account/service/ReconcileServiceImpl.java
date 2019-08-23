@@ -62,6 +62,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected ReconcileSequenceService reconcileSequenceService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -72,7 +73,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveAdjustementService moveAdjustementService,
       ReconcileSequenceService reconcileSequenceService,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      InvoicePaymentCreateService invoicePaymentCreateService) {
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      MoveLineService moveLineService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -82,6 +84,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.reconcileSequenceService = reconcileSequenceService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.moveLineService = moveLineService;
   }
 
   /**
@@ -329,15 +332,15 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (debitInvoice != null) {
       InvoicePayment debitInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
-      Beans.get(MoveLineService.class)
-          .generateTaxPaymentMoveLineList(debitInvoicePayment, reconcile.getCreditMoveLine());
+      moveLineService.generateTaxPaymentMoveLineList(
+          debitInvoicePayment, reconcile.getCreditMoveLine());
       debitInvoicePayment.setReconcile(reconcile);
     }
     if (creditInvoice != null) {
       InvoicePayment creditInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
-      Beans.get(MoveLineService.class)
-          .generateTaxPaymentMoveLineList(creditInvoicePayment, reconcile.getDebitMoveLine());
+      moveLineService.generateTaxPaymentMoveLineList(
+          creditInvoicePayment, reconcile.getDebitMoveLine());
       creditInvoicePayment.setReconcile(reconcile);
     }
   }

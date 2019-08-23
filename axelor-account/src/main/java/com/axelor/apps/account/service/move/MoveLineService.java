@@ -1149,7 +1149,10 @@ public class MoveLineService {
       BigDecimal baseAmount = invoiceLineTax.getExTaxBase();
 
       BigDecimal detailPaymentAmount =
-          baseAmount.multiply(paymentAmount).divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN);
+          baseAmount
+              .multiply(paymentAmount)
+              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN)
+              .setScale(2, RoundingMode.HALF_UP);
 
       TaxPaymentMoveLine taxPaymentMoveLine =
           new TaxPaymentMoveLine(customerMoveLine, taxLine, vatRate, detailPaymentAmount);
@@ -1160,16 +1163,13 @@ public class MoveLineService {
       customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
     }
     this.computeTaxAmount(customerMoveLine);
-    Beans.get(MoveLineRepository.class).save(customerMoveLine);
-    return customerMoveLine;
+    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
   }
 
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
-    BigDecimal taxAmount = BigDecimal.ZERO;
     for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
-      taxAmount = taxAmount.add(taxPaymentMoveLine.getTaxAmount());
+      moveLine.setTaxAmount(moveLine.getTaxAmount().add(taxPaymentMoveLine.getTaxAmount()));
     }
-    moveLine.setTaxAmount(taxAmount);
     return moveLine;
   }
 }
