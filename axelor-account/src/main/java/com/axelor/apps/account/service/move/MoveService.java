@@ -453,17 +453,8 @@ public class MoveService {
       log.debug("Moveline {}", moveLine);
       Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
-      MoveLine newMoveLine =
-          moveLineService.createMoveLine(
-              newMove,
-              moveLine.getPartner(),
-              moveLine.getAccount(),
-              moveLine.getCurrencyAmount(),
-              !isDebit,
-              dateOfReversion,
-              moveLine.getCounter(),
-              moveLine.getName(),
-              null);
+      MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
+
       newMove.addMoveLineListItem(newMoveLine);
 
       if (isUnreconcileOriginalMove) {
@@ -548,5 +539,22 @@ public class MoveService {
             (boolean) assistantMap.get("isUnreconcileOriginalMove"),
             (LocalDate) assistantMap.get("dateOfReversion"));
     return move;
+  }
+
+  protected MoveLine generateReverseMoveLine(
+      Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
+      throws AxelorException {
+    MoveLine reverseMoveLine =
+        moveLineService.createMoveLine(
+            reverseMove,
+            orgineMoveLine.getPartner(),
+            orgineMoveLine.getAccount(),
+            orgineMoveLine.getCurrencyAmount(),
+            !isDebit,
+            dateOfReversion,
+            orgineMoveLine.getCounter(),
+            orgineMoveLine.getName(),
+            null);
+    return reverseMoveLine;
   }
 }

@@ -147,6 +147,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     boolean isConfig = advancedImport.getIsConfigInFile();
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
+    boolean isTabConfig = advancedImport.getIsFileTabConfigAdded();
     List<CSVInput> inputList = new ArrayList<CSVInput>();
 
     validatorService.sortFileTabList(advancedImport.getFileTabList());
@@ -178,9 +179,16 @@ public class DataImportServiceImpl implements DataImportService {
       String[] headers = this.createHeader(row, fileTab, isConfig, mapper);
       allLines.add(headers);
 
+      int tabConfigRowCount = 0;
+      if (isTabConfig) {
+        String objectRow[] = reader.read(fileTab.getName(), 0, 0);
+        tabConfigRowCount =
+            advancedImportService.getTabConfigRowCount(
+                fileTab.getName(), reader, totalLines, objectRow);
+      }
       startIndex =
           isConfig
-              ? 3
+              ? tabConfigRowCount + 3
               : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
 
       for (int line = startIndex; line < totalLines; line++) {
@@ -215,10 +223,10 @@ public class DataImportServiceImpl implements DataImportService {
     Map<String, Object> map = isConfig ? fieldMap : titleMap;
     int rowCount = row.length;
     for (int cell = 0; cell < rowCount; cell++) {
-      String value = row[cell];
-      if (Strings.isNullOrEmpty(value)) {
+      if (Strings.isNullOrEmpty(row[cell])) {
         continue;
       }
+      String value = row[cell].trim();
       map.put(isConfig ? value.contains("(") ? value.split("\\(")[0] : value : value, cell);
     }
 
@@ -291,16 +299,16 @@ public class DataImportServiceImpl implements DataImportService {
       }
 
       cell = (!isConfig && !fileTab.getAdvancedImport().getIsHeader()) ? fieldIndex : cell;
-      String dataCell = dataRow[cell];
 
-      if (Strings.isNullOrEmpty(dataCell)) {
+      if (Strings.isNullOrEmpty(dataRow[cell])) {
         dataList.add(
             !Strings.isNullOrEmpty(fileField.getDefaultIfNotFound())
-                ? fileField.getDefaultIfNotFound()
+                ? fileField.getDefaultIfNotFound().trim()
                 : "");
         continue;
       }
 
+      String dataCell = dataRow[cell].trim();
       this.checkAndWriteData(dataCell, fileTab.getMetaModel(), fileField, mapper, dataList);
     }
     return dataList.stream().toArray(String[]::new);
@@ -439,8 +447,9 @@ public class DataImportServiceImpl implements DataImportService {
 
       String expression = this.setExpression(column, fileField, prop);
       String adapter = null;
-      if (Strings.isNullOrEmpty(expression)) {
-        adapter = this.getAdapter(prop.getJavaType().getSimpleName(), fileField);
+      String dateFormat = fileField.getDateFormat();
+      if (Strings.isNullOrEmpty(expression) && !Strings.isNullOrEmpty(dateFormat)) {
+        adapter = this.getAdapter(prop.getJavaType().getSimpleName(), dateFormat.trim());
       }
       CSVBind bind = null;
       if (!fileField.getIsMatchWithFile()) {
@@ -517,8 +526,9 @@ public class DataImportServiceImpl implements DataImportService {
         String field = childProp.getName();
         String expression = this.setExpression(column, fileField, childProp);
         String adapter = null;
-        if (Strings.isNullOrEmpty(expression)) {
-          adapter = this.getAdapter(childProp.getJavaType().getSimpleName(), fileField);
+        String dateFormat = fileField.getDateFormat();
+        if (Strings.isNullOrEmpty(expression) && !Strings.isNullOrEmpty(dateFormat)) {
+          adapter = this.getAdapter(childProp.getJavaType().getSimpleName(), dateFormat.trim());
         }
 
         if (!fileField.getIsMatchWithFile()) {
@@ -617,6 +627,7 @@ public class DataImportServiceImpl implements DataImportService {
     String expression = null;
 
     if (!Strings.isNullOrEmpty(expr)) {
+      expr = expr.trim();
       if (expr.contains(REPLACE_SYMBOL) && !Strings.isNullOrEmpty(column)) {
         if (!Strings.isNullOrEmpty(relationship) && relationship.equals(MANY_TO_MANY)) {
           expression =
@@ -625,7 +636,7 @@ public class DataImportServiceImpl implements DataImportService {
                   : expr.replace(REPLACE_SYMBOL, column);
           return expression;
         }
-        return this.convertExpression(expr.trim(), targetType, column);
+        return this.convertExpression(expr, targetType, column);
 
       } else {
         if (!Strings.isNullOrEmpty(relationship) && relationship.equals(MANY_TO_MANY)) {
@@ -633,7 +644,7 @@ public class DataImportServiceImpl implements DataImportService {
               !Strings.isNullOrEmpty(splitBy) ? expr + SPLIT + splitBy + AS_LIST : "'" + expr + "'";
           return expression;
         }
-        return this.createExpression(expr.trim(), targetType, prop, fileField.getForSelectUse());
+        return this.createExpression(expr, targetType, prop, fileField.getForSelectUse());
       }
     } else if (!Strings.isNullOrEmpty(relationship)
         && relationship.equals(MANY_TO_MANY)
@@ -719,29 +730,27 @@ public class DataImportServiceImpl implements DataImportService {
     return expression;
   }
 
-  private String getAdapter(String type, FileField fileField) {
+  private String getAdapter(String type, String dateFormat) {
     String adapter = null;
 
     switch (type) {
       case "LocalDate":
-        DataAdapter dateAdapter = this.createAdapter("LocalDate", fileField.getDateFormat().trim());
+        DataAdapter dateAdapter = this.createAdapter("LocalDate", dateFormat);
         adapter = dateAdapter.getName();
         break;
 
       case "LocalDateTime":
-        DataAdapter dateTimeAdapter =
-            this.createAdapter("LocalDateTime", fileField.getDateFormat().trim());
+        DataAdapter dateTimeAdapter = this.createAdapter("LocalDateTime", dateFormat);
         adapter = dateTimeAdapter.getName();
         break;
 
       case "LocalTime":
-        DataAdapter timeAdapter = this.createAdapter("LocalTime", fileField.getDateFormat().trim());
+        DataAdapter timeAdapter = this.createAdapter("LocalTime", dateFormat);
         adapter = timeAdapter.getName();
         break;
 
       case "ZoneDateTime":
-        DataAdapter zonedDateTimeAdapter =
-            this.createAdapter("ZonedDateTime", fileField.getDateFormat().trim());
+        DataAdapter zonedDateTimeAdapter = this.createAdapter("ZonedDateTime", dateFormat);
         adapter = zonedDateTimeAdapter.getName();
         break;
     }

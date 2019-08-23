@@ -17,23 +17,33 @@
  */
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import javax.persistence.TypedQuery;
 
-public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreateServiceImpl {
+public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreateServiceImpl
+    implements InvoicePaymentCreateServiceBankPay {
 
   @Inject
   public InvoicePaymentCreateServiceBankPayImpl(
@@ -73,5 +83,43 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
     }
     return invoicePaymentList;
+  }
+
+  @Override
+  public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException {
+    List<Long> invoiceToPay = super.getInvoiceIdsToPay(invoiceIdList);
+    for (Long invoiceId : invoiceToPay) {
+      Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+      if (invoice.getPaymentMode().getGenerateBankOrder()) {
+        this.checkBankOrderAlreadyExist(invoice);
+      }
+    }
+    return invoiceToPay;
+  }
+
+  @Override
+  public void checkBankOrderAlreadyExist(Invoice invoice) throws AxelorException {
+    TypedQuery<BankOrder> q =
+        JPA.em()
+            .createQuery(
+                "select bankOrder "
+                    + "FROM Invoice invoice "
+                    + "LEFT JOIN InvoicePayment invoicePayment on invoice.id = invoicePayment.invoice "
+                    + "LEFT JOIN BankOrder as bankOrder on invoicePayment.bankOrder = bankOrder.id "
+                    + "WHERE invoice.id = :id "
+                    + "AND (bankOrder.statusSelect = :statusSelectDraft "
+                    + "OR bankOrder.statusSelect = :statusSelectAwaiting)",
+                BankOrder.class);
+    q.setParameter("id", invoice.getId());
+    q.setParameter("statusSelectDraft", BankOrderRepository.STATUS_DRAFT);
+    q.setParameter("statusSelectAwaiting", BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+    List<BankOrder> listbankOrder = q.getResultList();
+    if (listbankOrder != null && !listbankOrder.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_BANK_ORDER_ALREADY_EXIST),
+          listbankOrder.get(0).getBankOrderSeq(),
+          invoice.getInvoiceId());
+    }
   }
 }

@@ -17,10 +17,10 @@
       <field name="mrpLineType" width="210"/>
       <field name="qty" width="100"/>
       <field name="cumulativeQty" css="bold" width="130"/>
-      <field name="product.unit" width="80"/>
+      <field name="unit" width="80"/>
       <field name="company" />
       <field name="stockLocation" />
-      <field name="relatedToSelectName"/>
+      <field name="relatedToSelectName" width="150"/>
       <field name="partner"/>
       <field name="mrpLineType.elementSelect" hidden="true"/>
    </grid>

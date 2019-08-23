@@ -165,7 +165,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     Move move =
         moveCreateService.createMove(
-            accountConfigService.getAutoMiscOpeJournal(accountConfig),
+            accountConfigService.getReportedBalanceJournal(accountConfig),
             company,
             company.getCurrency(),
             partner,

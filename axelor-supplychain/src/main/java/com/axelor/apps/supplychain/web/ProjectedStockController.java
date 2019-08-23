@@ -24,8 +24,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.db.MrpLine;
-import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
-import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
@@ -167,18 +165,18 @@ public class ProjectedStockController {
   public void showProjectedStock(ActionRequest request, ActionResponse response) {
 
     try {
+      ProjectedStockService projectedStockService = Beans.get(ProjectedStockService.class);
       Map<String, Long> mapId =
-          Beans.get(ProjectedStockService.class)
-              .getProductIdCompanyIdStockLocationIdFromContext(request.getContext());
+          projectedStockService.getProductIdCompanyIdStockLocationIdFromContext(
+              request.getContext());
       if (mapId == null || mapId.get("productId") == 0L) {
         return;
       }
-      List<MrpLine> mrpLineList = new ArrayList<>();
+      final List<MrpLine> mrpLineList = new ArrayList<>();
       try {
-        mrpLineList =
-            Beans.get(ProjectedStockService.class)
-                .createProjectedStock(
-                    mapId.get("productId"), mapId.get("companyId"), mapId.get("stockLocationId"));
+        mrpLineList.addAll(
+            projectedStockService.createProjectedStock(
+                mapId.get("productId"), mapId.get("companyId"), mapId.get("stockLocationId")));
         response.setView(
             ActionView.define(I18n.get("Projected stock"))
                 .model(MrpLine.class.getName())
@@ -190,11 +188,7 @@ public class ProjectedStockController {
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       } finally {
-        if (mrpLineList != null && !mrpLineList.isEmpty()) {
-          Long mrpId = mrpLineList.get(0).getId();
-          Beans.get(MrpRepository.class).all().filter("self.id = ?1", mrpId).remove();
-          Beans.get(MrpLineRepository.class).all().filter("self.mrp.id = ?1", mrpId).remove();
-        }
+        projectedStockService.removeMrpAndMrpLine(mrpLineList);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

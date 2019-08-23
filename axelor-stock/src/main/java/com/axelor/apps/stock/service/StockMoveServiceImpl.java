@@ -237,7 +237,9 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT));
     }
-
+    stockMove.setAvailabilityRequest(false);
+    stockMove.setPickingEditDate(null);
+    stockMove.setPickingIsEdited(false);
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
   }
 
@@ -1087,15 +1089,16 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.STOCK_MOVE_11));
     }
+    Map<String, Object> result;
     if (appBaseService.getAppBase().getMapApiSelect()
         == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_12));
+      result =
+          Beans.get(MapService.class).getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
+    } else {
+      result =
+          Beans.get(MapService.class)
+              .getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     }
-    Map<String, Object> result =
-        Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     if (result == null) {
       throw new AxelorException(
           stockMove,

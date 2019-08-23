@@ -126,6 +126,7 @@ public class ValidatorService {
     this.validateTab(sheets, advancedImport);
 
     boolean isConfig = advancedImport.getIsConfigInFile();
+    boolean isTabConfig = advancedImport.getIsFileTabConfigAdded();
 
     sortFileTabList(advancedImport.getFileTabList());
 
@@ -137,18 +138,24 @@ public class ValidatorService {
       fieldMap = new HashMap<>();
       titleMap = new HashMap<>();
       String sheet = fileTab.getName();
-
       logService.initialize(sheet);
 
       this.validateModel(fileTab);
 
+      int tabConfigRowCount = 0;
+      int totalLines = reader.getTotalLines(fileTab.getName());
+
       if (isConfig) {
         String[] objectRow = reader.read(sheet, 0, 0);
-        this.validateObject(objectRow, fileTab);
+        if (isTabConfig) {
+          tabConfigRowCount =
+              advancedImportService.getTabConfigRowCount(sheet, reader, totalLines, objectRow);
+        }
+        this.validateObject(objectRow, fileTab, isTabConfig);
       }
       this.validateSearchFields(fileTab);
       this.validateObjectRequiredFields(fileTab);
-      this.validateFieldAndData(reader, sheet, fileTab, isConfig);
+      this.validateFieldAndData(reader, sheet, fileTab, isConfig, isTabConfig, tabConfigRowCount);
 
       if (fileTab.getValidationLog() != null) {
         fileTab.setValidationLog(null);
@@ -197,20 +204,25 @@ public class ValidatorService {
     }
   }
 
-  private void validateObject(String[] row, FileTab fileTab) throws IOException, AxelorException {
+  private void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
+      throws IOException, AxelorException {
 
-    if (row == null) {
+    int rowIndex = isTabConfig ? 1 : 0;
+
+    if (isTabConfig && row[0] != null) {
+      rowIndex = 0;
+    }
+    if (row == null || (StringUtils.isBlank(row[rowIndex]))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
-    String object = row[0];
+    String object = row[rowIndex].trim();
     if (StringUtils.containsIgnoreCase(object, "Object")) {
       String model = object.split("\\:")[1].trim();
-
       if (fileTab.getMetaModel() != null && !fileTab.getMetaModel().getName().equals(model)) {
-        logService.addLog(LogService.COMMON_KEY, IExceptionMessage.ADVANCED_IMPORT_LOG_1, 0);
+        logService.addLog(LogService.COMMON_KEY, IExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
       }
     }
   }
@@ -273,7 +285,12 @@ public class ValidatorService {
   }
 
   private void validateFieldAndData(
-      DataReaderService reader, String sheet, FileTab fileTab, boolean isConfig)
+      DataReaderService reader,
+      String sheet,
+      FileTab fileTab,
+      boolean isConfig,
+      boolean isTabConfig,
+      int tabConfigRowCount)
       throws ClassNotFoundException, IOException {
 
     AdvancedImport advancedImport = fileTab.getAdvancedImport();
@@ -294,6 +311,7 @@ public class ValidatorService {
       if (Strings.isNullOrEmpty(value)) {
         continue;
       }
+      value = value.trim();
       map.put(isConfig ? value.contains("(") ? value.split("\\(")[0] : value : value, cell);
       if (cell == row.length - 1) {
         this.validateFields(startIndex, isConfig, fileTab);
@@ -305,9 +323,10 @@ public class ValidatorService {
     }
 
     int totalLines = reader.getTotalLines(sheet);
+
     startIndex =
         isConfig
-            ? 3
+            ? tabConfigRowCount + 3
             : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
 
     for (int line = startIndex; line < totalLines; line++) {
@@ -585,53 +604,55 @@ public class ValidatorService {
   private void validateDataType(String[] row, int cell, int line, String type, FileField fileField)
       throws IOException {
 
-    if (!Strings.isNullOrEmpty(row[cell])) {
-      String field = getField(fileField);
+    if (Strings.isNullOrEmpty(row[cell])) {
+      return;
+    }
 
-      switch (type) {
-        case INTEGER:
-        case LONG:
-        case BIG_DECIMAL:
-          this.checkNumeric(row, cell, line, field, type);
-          break;
+    String field = getField(fileField);
+    String value = row[cell].trim();
 
-        case LOCAL_DATE:
-        case ZONED_DATE_TIME:
-        case LOCAL_DATE_TIME:
-        case LOCAL_TIME:
-          this.checkDateTime(row, cell, line, field, type, fileField);
-          break;
+    switch (type) {
+      case INTEGER:
+      case LONG:
+      case BIG_DECIMAL:
+        this.checkNumeric(value, line, field, type);
+        break;
 
-        case BOOLEAN:
-          String boolPat = "(true|false|1|0|no|yes|n|y)";
+      case LOCAL_DATE:
+      case ZONED_DATE_TIME:
+      case LOCAL_DATE_TIME:
+      case LOCAL_TIME:
+        this.checkDateTime(value, line, type, fileField);
+        break;
 
-          if (!row[cell].matches(boolPat)) {
+      case BOOLEAN:
+        String boolPat = "(true|false|1|0|no|yes|n|y)";
+
+        if (!value.matches(boolPat)) {
+          logService.addLog(
+              IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+        }
+        break;
+
+      default:
+        if (!type.equals(STRING)) {
+          try {
+            new BigInteger(value);
+          } catch (Exception e) {
             logService.addLog(
                 IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
           }
-          break;
-
-        default:
-          if (!type.equals(STRING)) {
-            try {
-              new BigInteger(row[cell]);
-            } catch (Exception e) {
-              logService.addLog(
-                  IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
-            }
-          }
-          break;
-      }
+        }
+        break;
     }
   }
 
-  private void checkNumeric(String[] row, int cell, int line, String field, String type)
-      throws IOException {
+  private void checkNumeric(String value, int line, String field, String type) throws IOException {
 
     switch (type) {
       case INTEGER:
         try {
-          Integer.parseInt(row[cell]);
+          Integer.parseInt(value);
         } catch (NumberFormatException e) {
           logService.addLog(
               IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
@@ -640,7 +661,7 @@ public class ValidatorService {
 
       case LONG:
         try {
-          Long.parseLong(row[cell]);
+          Long.parseLong(value);
         } catch (NumberFormatException e) {
           logService.addLog(
               IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
@@ -649,7 +670,7 @@ public class ValidatorService {
 
       case BIG_DECIMAL:
         try {
-          new BigDecimal(row[cell]);
+          new BigDecimal(value);
         } catch (NumberFormatException e) {
           logService.addLog(
               IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
@@ -658,14 +679,12 @@ public class ValidatorService {
     }
   }
 
-  private void checkDateTime(
-      String[] row, int cell, int line, String field, String type, FileField fileField)
+  private void checkDateTime(String value, int line, String type, FileField fileField)
       throws IOException {
 
     if (!Strings.isNullOrEmpty(fileField.getDateFormat())
         && Strings.isNullOrEmpty(fileField.getExpression())) {
 
-      String value = row[cell];
       String pattern = fileField.getDateFormat().trim();
       try {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -688,7 +707,8 @@ public class ValidatorService {
             break;
         }
       } catch (DateTimeParseException e) {
-        logService.addLog(IExceptionMessage.ADVANCED_IMPORT_LOG_9, field + "(" + type + ")", line);
+        logService.addLog(
+            IExceptionMessage.ADVANCED_IMPORT_LOG_9, getField(fileField) + "(" + type + ")", line);
       }
     }
   }
@@ -696,7 +716,7 @@ public class ValidatorService {
   public String getField(FileField fileField) {
     String field =
         !Strings.isNullOrEmpty(fileField.getSubImportField())
-            ? fileField.getImportField().getName() + "." + fileField.getSubImportField()
+            ? fileField.getImportField().getName() + "." + fileField.getSubImportField().trim()
             : fileField.getImportField().getName();
 
     return field;

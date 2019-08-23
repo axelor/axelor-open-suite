@@ -265,7 +265,7 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("Generate fixed asset");
     // Create fixed asset
-    fixedAssetService.createFixedAsset(invoice);
+    fixedAssetService.createFixedAssets(invoice);
   }
 
   /**

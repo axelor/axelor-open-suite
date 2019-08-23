@@ -76,6 +76,20 @@ public class MapRest {
       for (Partner partner : partners) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
+
+        Address address = partnerService.getInvoicingAddress(partner);
+        if (address != null
+            && StringUtils.notBlank(address.getFullName())
+            && address.getIsValidLatLong()) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
+          if (StringUtils.isBlank(addressString)) {
+            continue;
+          }
+          objectNode.put("address", addressString);
+        } else {
+          continue;
+        }
+
         objectNode.put("fullName", partner.getFullName());
 
         if (partner.getFixedPhone() != null) {
@@ -84,12 +98,6 @@ public class MapRest {
 
         if (partner.getEmailAddress() != null) {
           objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
-        }
-
-        Address address = partnerService.getInvoicingAddress(partner);
-        if (address != null && StringUtils.notBlank(address.getFullName())) {
-          String addressString = mapRestService.makeAddressString(address, objectNode);
-          objectNode.put("address", addressString);
         }
 
         objectNode.put("pinColor", partner.getIsProspect() ? "red" : "orange");
@@ -134,10 +142,22 @@ public class MapRest {
               : Collections.emptyList();
 
       for (PartnerAddress partnerAddress : partnerAddressList) {
-        if (partnerAddress.getAddress() == null) {
+        Address address = partnerAddress.getAddress();
+        if (address == null || !address.getIsValidLatLong()) {
           continue;
         }
         ObjectNode objectNode = nodeFactory.objectNode();
+
+        if (!StringUtils.isBlank(address.getFullName())) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
+          if (StringUtils.isBlank(addressString)) {
+            continue;
+          }
+          objectNode.put("address", addressString);
+        } else {
+          continue;
+        }
+
         objectNode.put("fullName", getFullName(partnerAddress));
 
         if (partnerAddress.getIsDefaultAddr()) {
@@ -148,14 +168,6 @@ public class MapRest {
           if (partner.getEmailAddress() != null) {
             objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
           }
-        }
-
-        Address address = partnerAddress.getAddress();
-
-        if (!StringUtils.isBlank(address.getFullName())) {
-          String addressString;
-          addressString = mapRestService.makeAddressString(address, objectNode);
-          objectNode.put("address", addressString);
         }
 
         objectNode.put("pinColor", pinColor);
@@ -187,18 +199,24 @@ public class MapRest {
       for (Partner customer : customers) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
+
+        Address address = partnerService.getInvoicingAddress(customer);
+        if (address != null && address.getIsValidLatLong()) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
+          if (StringUtils.isBlank(addressString)) {
+            continue;
+          }
+          objectNode.put("address", addressString);
+        } else {
+          continue;
+        }
+
         objectNode.put("fullName", customer.getFullName());
         objectNode.put(
             "fixedPhone", customer.getFixedPhone() != null ? customer.getFixedPhone() : " ");
 
         if (customer.getEmailAddress() != null) {
           objectNode.put("emailAddress", customer.getEmailAddress().getAddress());
-        }
-
-        Address address = partnerService.getInvoicingAddress(customer);
-        if (address != null) {
-          String addressString = mapRestService.makeAddressString(address, objectNode);
-          objectNode.put("address", addressString);
         }
 
         objectNode.put("pinColor", "orange");
@@ -229,18 +247,24 @@ public class MapRest {
       for (Partner prospect : customers) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
+
+        Address address = partnerService.getInvoicingAddress(prospect);
+        if (address != null && address.getIsValidLatLong()) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
+          if (StringUtils.isBlank(addressString)) {
+            continue;
+          }
+          objectNode.put("address", addressString);
+        } else {
+          continue;
+        }
+
         objectNode.put("fullName", prospect.getFullName());
         objectNode.put(
             "fixedPhone", prospect.getFixedPhone() != null ? prospect.getFixedPhone() : " ");
 
         if (prospect.getEmailAddress() != null) {
           objectNode.put("emailAddress", prospect.getEmailAddress().getAddress());
-        }
-
-        Address address = partnerService.getInvoicingAddress(prospect);
-        if (address != null) {
-          String addressString = mapRestService.makeAddressString(address, objectNode);
-          objectNode.put("address", addressString);
         }
 
         objectNode.put("pinColor", "red");
@@ -270,18 +294,24 @@ public class MapRest {
       for (Partner supplier : customers) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
+
+        Address address = partnerService.getInvoicingAddress(supplier);
+        if (address != null && address.getIsValidLatLong()) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
+          if (StringUtils.isBlank(addressString)) {
+            continue;
+          }
+          objectNode.put("address", addressString);
+        } else {
+          continue;
+        }
+
         objectNode.put("fullName", supplier.getFullName());
         objectNode.put(
             "fixedPhone", supplier.getFixedPhone() != null ? supplier.getFixedPhone() : " ");
 
         if (supplier.getEmailAddress() != null) {
           objectNode.put("emailAddress", supplier.getEmailAddress().getAddress());
-        }
-
-        Address address = partnerService.getInvoicingAddress(supplier);
-        if (address != null) {
-          String addressString = mapRestService.makeAddressString(address, objectNode);
-          objectNode.put("address", addressString);
         }
 
         objectNode.put("pinColor", "purple");
