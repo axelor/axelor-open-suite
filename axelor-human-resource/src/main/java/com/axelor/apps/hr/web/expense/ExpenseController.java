@@ -1,5 +1,5 @@
 /*
- * Axelor Business Solutions
+< * Axelor Business Solutions
  *
  * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
@@ -478,7 +478,7 @@ public class ExpenseController {
 
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get("Date problem for line(s) : %s"),
+            I18n.get("Date can't be in the future for line(s) : %s"),
             expenseLineListId.stream().map(id -> id.toString()).collect(Collectors.joining(",")));
       }
 

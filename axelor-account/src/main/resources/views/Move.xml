@@ -107,14 +107,14 @@
 	   		<field name="$totalDebit" title="Total debit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalDebit}}</h3>
+						<h3>{{$fmt('$totalDebit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
 	   		<field name="$totalCredit" title="Total credit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalCredit}}</h3>
+						<h3>{{$fmt('$totalCredit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
@@ -122,8 +122,8 @@
 				<viewer>
 					<![CDATA[
 						<h3>
-							<span ng-show="record.$difference == 0">{{record.$difference}}</span>
-							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{record.$difference}}</span>
+							<span ng-show="record.$difference == 0">{{$fmt('$difference')}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')}}</span>
 						</h3>
 					]]>
 				</viewer>

@@ -219,6 +219,11 @@
     	<call class="com.axelor.apps.crm.web.EventController" method="assignToMeEvent"/>
     </action-method>
 
+    <action-view name="dashlet.meeting" title="Meetings" model="com.axelor.apps.crm.db.Event">
+        <view type="grid" name="meeting-grid" />
+        <view type="form" name="meeting-form" />
+    </action-view>
+
     <action-method name="action-event-method-add-email-guest">
     	<call class="com.axelor.apps.base.web.ICalendarEventController" method="addEmailGuest"/>
     </action-method>
