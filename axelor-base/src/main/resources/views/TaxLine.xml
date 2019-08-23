@@ -8,7 +8,7 @@
     	<hilite color="danger" if="$moment(endDate).diff(todayDate,'days') &lt; 0"/>
     	<hilite color="success" if="$moment(startDate).diff(todayDate,'days') &lt;= 0 &amp;&amp; ($moment(endDate).diff(todayDate,'days') &gt;= 0 || endDate == null)"/>
     	<field name="tax" form-view="tax-form" grid-view="tax-grid"/>
-    	<field name="value"/>
+    	<field name="value" readonlyIf="id != null"/>
         <field name="startDate"/>
         <field name="endDate"/>
     </grid>
@@ -16,7 +16,7 @@
     <form name="tax-line-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine">
         <panel name="mainPanel">
         	<field name="tax" form-view="tax-form" grid-view="tax-grid"/>
-	        <field name="value"/>
+	        <field name="value" readonlyIf="id != null"/>
 	        <field name="startDate"/>
 	        <field name="endDate"/>
         </panel>
@@ -26,12 +26,12 @@
     <grid name="tax-line-tax-grid" title="Tax Rates" model="com.axelor.apps.account.db.TaxLine">
         <field name="startDate"/>
         <field name="endDate"/>
-        <field name="value"/>
+        <field name="value" readonlyIf="id != null"/>
     </grid>
     
     <form name="tax-line-tax-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine" onNew="action-base-record-new-tax-line-tax">
         <panel name="mainPanel">
-	        <field name="value"/>
+	        <field name="value" readonlyIf="id != null"/>
 	        <field name="startDate"/>
 	        <field name="endDate"/>
         </panel>
