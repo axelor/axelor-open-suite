@@ -306,7 +306,7 @@
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="true" />
-		<view-param name="popup-save" value="true"/>
+		<view-param name="popup-save" value="false"/>
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: id"/>
 	</action-view>
