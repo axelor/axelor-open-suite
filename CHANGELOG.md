@@ -13,6 +13,7 @@
 - HR : Enable Tracking Feature for 'statusSelect' field.
 - PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
 - MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
+- EBICS USER : add the possibility to print ebics request log.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -89,6 +90,8 @@
 - SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
 - STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
 - MOVE LINES : lettering move lines is now quicker.
+- EVENT REMINDER : improved behaviour of event reminders.
+- Production : Remove stockLocation from Machine Type.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
@@ -170,6 +173,9 @@
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
 - Resolve the working of Open Street Map
 - EXPENSE : Improving exception message when expense line date is in the future
+- HELPDESK : Fix NPE when computing a total timer duration
+- BankStatementLineAFB120 : Fix Long index name issue with entity inheritance.
+- EXPENSE : Fix NPE when the RIB is not configured for the receiver
 - ACCOUNT CONFIG: New panel for forecasted invoice accounts 
 
 ## [5.1.7] - 2019-06-17
@@ -705,6 +711,7 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - INVOICES : alert message if no bank details in partner-form.
 - PartnerStockSettings : Added new field 'incoterm'.
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
+- Tool module: code refactoring and update documentation.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
