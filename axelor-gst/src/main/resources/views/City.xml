@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+		<form name="city-form" title="City" model="com.axelor.apps.base.db.City" width="large"
+				id="gst-city-form">
+				<panel name="mainPanel">
+						<field name="name" />
+						<field name="artmin" colSpan="2" />
+						<field name="zip" colSpan="4" />
+						<field name="inseeCode" />
+						<field name="hasZipOnRight" />
+				</panel>
+				<panel name="localizationPanel" title="Localization">
+						<field name="country" form-view="country-form" grid-view="country-grid" />
+						<field name="state" />
+						<field name="department" form-view="department-form" grid-view="department-grid" />
+						<field name="canton" form-view="canton-form" grid-view="canton-grid" />
+				</panel>
+				<panel name="demographyPanel" title="Demography">
+						<field name="nbInhCommune" />
+				</panel>
+		</form>
+
+
+</object-views>

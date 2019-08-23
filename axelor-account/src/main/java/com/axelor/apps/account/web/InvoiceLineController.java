@@ -206,6 +206,8 @@ public class InvoiceLineController {
                       InvoiceToolService.isPurchase(invoice)));
 
       for (Entry<String, Object> entry : discounts.entrySet()) {
+        System.err.println(
+            "entry.getKey()::" + entry.getKey() + "entry.getValue()::" + entry.getValue());
         response.setValue(entry.getKey(), entry.getValue());
       }
 
@@ -228,7 +230,7 @@ public class InvoiceLineController {
     try {
       BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
       TaxLine taxLine = invoiceLine.getTaxLine();
-
+      System.err.println(invoiceLineService.convertUnitPrice(true, taxLine, inTaxPrice));
       response.setValue("price", invoiceLineService.convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

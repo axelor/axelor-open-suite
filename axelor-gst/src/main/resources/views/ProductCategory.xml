@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+
+		<form name="product-category-form" id="gst-product-category-form" title="Product category"
+				model="com.axelor.apps.base.db.ProductCategory" width="large">
+				<toolbar>
+						<button name="viewProductsBtn" title="View Products"
+								onClick="action-view-product-by-category" />
+				</toolbar>
+				<panel name="mainPanel">
+						<field name="name" />
+						<field name="code" x-bind="{{code|unaccent|uppercase}}" />
+						<field name="gstRate" if="__config__.app.isApp('gst')" />
+						<field name="parentProductCategory" form-view="product-category-form"
+								grid-view="product-family-grid" />
+				</panel>
+				<panel-dashlet name="salesTurnoverPanel" title="Sales Turnover"
+						action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350"
+						if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+		</form>
+
+</object-views>
