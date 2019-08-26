@@ -177,7 +177,8 @@
 - HELPDESK : Fix NPE when computing a total timer duration
 - BankStatementLineAFB120 : Fix Long index name issue with entity inheritance.
 - EXPENSE : Fix NPE when the RIB is not configured for the receiver
-- ACCOUNT CONFIG: New panel for forecasted invoice accounts 
+- ACCOUNT CONFIG: New panel for forecasted invoice accounts
+- LEAVE REQUEST : Fix NPE on date computation 
 
 ## [5.1.7] - 2019-06-17
 ## Features
