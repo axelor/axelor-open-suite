@@ -9,6 +9,7 @@
 - Studio: sidebar option for panel
 - Add DMS Import.
 - Map : Filter out the data with empty address.
+- MRP : Freeze proposals after manually modifying them.
 
 ## Improvements
 - Remove Pack Feature from Product.

@@ -40,6 +40,20 @@ public class MrpController {
 
   @Inject protected Provider<MrpRepository> mrpRepositoryProvider;
 
+  public void undoManualChanges(ActionRequest request, ActionResponse response) {
+    Mrp mrp = request.getContext().asType(Mrp.class);
+    MrpService mrpService = mrpServiceProvider.get();
+    MrpRepository mrpRepository = mrpRepositoryProvider.get();
+    try {
+      mrpService.undoManualChanges(mrpRepository.find(mrp.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      mrpService.reset(mrpRepository.find(mrp.getId()));
+    } finally {
+      response.setReload(true);
+    }
+  }
+
   public void runCalculation(ActionRequest request, ActionResponse response) {
 
     Mrp mrp = request.getContext().asType(Mrp.class);
@@ -48,6 +62,7 @@ public class MrpController {
     try {
 
       mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       mrpService.reset(mrpRepository.find(mrp.getId()));

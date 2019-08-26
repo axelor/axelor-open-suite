@@ -164,7 +164,10 @@ public class MrpServiceImpl implements MrpService {
   @Transactional
   public void reset(Mrp mrp) {
 
-    mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).remove();
+    mrpLineRepository
+        .all()
+        .filter("self.mrp.id = ?1 AND self.isEditedByUser = ?2", mrp.getId(), false)
+        .remove();
 
     mrp.setStatusSelect(MrpRepository.STATUS_DRAFT);
 
@@ -349,6 +352,21 @@ public class MrpServiceImpl implements MrpService {
       }
 
       MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules, product);
+
+      long duplicateCount =
+          mrpLineRepository
+              .all()
+              .filter(
+                  "self.mrp.id = ?1  AND self.isEditedByUser = ?2 AND self.product = ?3 AND self.relatedToSelectName = ?4",
+                  mrp.getId(),
+                  true,
+                  product,
+                  mrpLine.getRelatedToSelectName())
+              .count();
+
+      if (duplicateCount != 0) {
+        return false;
+      }
 
       this.createProposalMrpLine(
           mrpLine.getMrp(),
@@ -1095,5 +1113,11 @@ public class MrpServiceImpl implements MrpService {
     this.createSaleOrderMrpLines();
 
     return mrp;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void undoManualChanges(Mrp mrp) {
+    mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).update("isEditedByUser", false);
   }
 }
