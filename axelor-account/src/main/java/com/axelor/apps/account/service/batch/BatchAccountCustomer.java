@@ -25,7 +25,7 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -97,7 +97,7 @@ public class BatchAccountCustomer extends BatchStrategy {
                     I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),
                     accountingSituationRepo.find(accountingSituation.getId()).getName()),
                 e),
-            IException.ACCOUNT_CUSTOMER,
+            ExceptionOriginRepository.ACCOUNT_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();
@@ -177,7 +177,7 @@ public class BatchAccountCustomer extends BatchStrategy {
                     I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),
                     accountingSituationRepo.find(accountingSituation.getId()).getName()),
                 e),
-            IException.ACCOUNT_CUSTOMER,
+            ExceptionOriginRepository.ACCOUNT_CUSTOMER,
             batch.getId());
 
         anomaly++;

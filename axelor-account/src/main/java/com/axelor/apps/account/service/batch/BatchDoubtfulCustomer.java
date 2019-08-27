@@ -28,7 +28,7 @@ import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -74,7 +74,9 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
     } catch (AxelorException e) {
 
       TraceBackService.trace(
-          new AxelorException(e, e.getCategory(), ""), IException.DOUBTFUL_CUSTOMER, batch.getId());
+          new AxelorException(e, e.getCategory(), ""),
+          ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
+          batch.getId());
       incrementAnomaly();
       stop = true;
     }
@@ -160,7 +162,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         TraceBackService.trace(
             new AxelorException(
                 e, e.getCategory(), I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()),
-            IException.DOUBTFUL_CUSTOMER,
+            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
         incrementAnomaly();
 
@@ -169,7 +171,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         TraceBackService.trace(
             new Exception(
                 String.format(I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()), e),
-            IException.DOUBTFUL_CUSTOMER,
+            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();
@@ -220,7 +222,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
                 e.getCategory(),
                 I18n.get("Invoice") + " %s",
                 moveLine.getInvoiceReject().getInvoiceId()),
-            IException.DOUBTFUL_CUSTOMER,
+            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
         incrementAnomaly();
 
@@ -231,7 +233,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
                 String.format(
                     I18n.get("Invoice") + " %s", moveLine.getInvoiceReject().getInvoiceId()),
                 e),
-            IException.DOUBTFUL_CUSTOMER,
+            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();

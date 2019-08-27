@@ -111,6 +111,7 @@
 - Action Builder : Add feature to create templates for json models to send email
 - FORECAST RECAP : sequence feature added for ForeCastRecap
 - Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
+
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
 - ContractLine: hide `isConsumptionLine` if not activated in Contract config
@@ -161,6 +162,7 @@
 - ACCOUNTING : year and accountSet fields are set empty when company is changed
 - ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
 - PARTNER: Checks the consistency of the address list of a partner.
+- EXCEPTION : Removing deprecated interface IException 
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
