@@ -41,7 +41,7 @@ public interface MrpService {
    */
   public LocalDate findMrpEndDate(Mrp mrp);
 
-  public Mrp completeProjectedStock(
+  public Mrp createProjectedStock(
       Mrp mrp, Product product, Company company, StockLocation stockLocation)
       throws AxelorException;
 }
