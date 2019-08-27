@@ -1230,3 +1230,4 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 [5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...v5.1.2
 [5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.com/axelor/axelor-business-suite/compare/5.0...v5.1.0
+
