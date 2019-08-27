@@ -268,6 +268,7 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - Team Task : Removed adding new task from Kanban view through "Add" button
 - INVOICE : NPE when companyBankDetails is null
 - SALE ORDER : Update discount calculation in sale order report
+- REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 
 ## [5.1.6] - 2019-04-29
 ## Features
