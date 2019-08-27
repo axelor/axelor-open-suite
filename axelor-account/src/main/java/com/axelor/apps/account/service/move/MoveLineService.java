@@ -45,8 +45,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -949,13 +951,28 @@ public class MoveLineService {
     PaymentService paymentService = Beans.get(PaymentService.class);
 
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
-      List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
-      List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
-      companyPartnerCreditMoveLineList.sort(byDate);
-      companyPartnerDebitMoveLineList.sort(byDate);
-      paymentService.useExcessPaymentOnMoveLinesDontThrow(
-          companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+      try {
+        this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        log.debug(e.getMessage());
+      } finally {
+        JPA.clear();
+      }
     }
+  }
+
+  @Transactional
+  protected void useExcessPaymentOnMoveLinesDontThrow(
+      Comparator<MoveLine> byDate,
+      PaymentService paymentService,
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
+    List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+    List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+    companyPartnerCreditMoveLineList.sort(byDate);
+    companyPartnerDebitMoveLineList.sort(byDate);
+    paymentService.useExcessPaymentOnMoveLinesDontThrow(
+        companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 
   private void populateCredit(
