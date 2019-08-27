@@ -93,6 +93,7 @@
 - EVENT REMINDER : improved behaviour of event reminders.
 - Production : Remove stockLocation from Machine Type.
 - PRODUCTION: Complete demo data.
+- MOVE : add a control on period status
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names

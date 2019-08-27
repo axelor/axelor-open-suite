@@ -130,6 +130,11 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_4));
     }
 
+    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_11));
+    }
+
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
