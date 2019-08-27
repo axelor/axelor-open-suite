@@ -1,3 +1,3 @@
 package com.axelor.apps.gst.service;
 
-public class PartnerServiceImpl {}
+public class PartnerServiceGSTImpl {}

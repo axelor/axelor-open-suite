@@ -415,6 +415,7 @@ public abstract class InvoiceGenerator {
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
       // In the invoice currency
+      System.out.println(invoiceLineTax.getTaxTotal());
       invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
 
       // In the company accounting currency

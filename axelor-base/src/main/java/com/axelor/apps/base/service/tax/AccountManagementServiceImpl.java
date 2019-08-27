@@ -93,7 +93,6 @@ public class AccountManagementServiceImpl implements AccountManagementService {
    * @throws AxelorException
    */
   protected AccountManagement getAccountManagement(Product product, Company company) {
-
     return this.getAccountManagement(product.getAccountManagementList(), company);
   }
 

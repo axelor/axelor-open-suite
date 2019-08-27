@@ -41,7 +41,6 @@ public class TaxInvoiceLine extends TaxGenerator {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
-
     super(invoice, invoiceLines);
   }
 

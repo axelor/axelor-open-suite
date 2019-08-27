@@ -69,7 +69,7 @@
 				<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
 						<panel name="informationsPanel" title="Information">
 								<field name="product" canEdit="false"
-										onChange="action-group-account-invoice-line-product-onchange,action-group-gst-invoice-line-product-onChange"
+										onChange="action-group-account-invoice-line-product-onchange"
 										onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form"
 										grid-view="product-grid" />
 								<field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean"
@@ -85,11 +85,11 @@
 								<!-- end gst -->
 								<field name="productName" colSpan="12" requiredIf="typeSelect != 1" />
 								<field name="qty" colSpan="3" required="true" readonlyIf="isSubLine"
-										onChange="action-group-account-invoice-line-qty-onchange" />
+										onChange="action-group-account-invoice-line-qty-onchange,action-group-gst-invoice-line-qty-onChange" />
 								<field name="unit" colSpan="3" canEdit="false" form-view="unit-form"
 										grid-view="unit-grid" readonlyIf="typeSelect == 2 || isSubLine" />
 								<field name="price" colSpan="3" required="true"
-										onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
+										onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount,action-group-gst-invoice-line-price-onChange"
 										hidden="true" />
 								<field name="inTaxPrice" colSpan="3" required="true"
 										onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
@@ -215,7 +215,18 @@
 		</form>
 
 		<!-- GST Start -->
-		<action-group name="action-group-gst-invoice-line-product-onChange">
+<!-- 		<action-group name="action-group-gst-invoice-line-product-onChange"> -->
+<!-- 				<action name="action-gst-invoice-line-gst-rate" if="__config__.app.isApp('gst')" /> -->
+<!-- 				<action name="action-gst-invoice-line-calculate" if="__config__.app.isApp('gst')" /> -->
+<!-- 		</action-group> -->
+
+		<action-group name="action-group-gst-invoice-line-qty-onChange">
+				<action name="action-gst-invoice-line-calculate" if="__config__.app.isApp('gst')" />
+		</action-group>
+		
+<!-- try with extends method -->
+
+		<action-group name="action-group-gst-invoice-line-price-onChange">
 				<action name="action-gst-invoice-line-gst-rate" if="__config__.app.isApp('gst')" />
 				<action name="action-gst-invoice-line-calculate" if="__config__.app.isApp('gst')" />
 		</action-group>
