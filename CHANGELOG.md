@@ -178,6 +178,7 @@
 - BankStatementLineAFB120 : Fix Long index name issue with entity inheritance.
 - EXPENSE : Fix NPE when the RIB is not configured for the receiver
 - ACCOUNT CONFIG: New panel for forecasted invoice accounts 
+- Sale Order: Forbid negative invoicing value.
 
 ## [5.1.7] - 2019-06-17
 ## Features
