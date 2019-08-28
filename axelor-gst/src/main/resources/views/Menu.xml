@@ -143,6 +143,10 @@
 		<action-view name="gst.invoice.create" title="Invoice"
 				model="com.axelor.apps.account.db.Invoice">
 				<view type="form" name="invoice-form" />
+				<view-param name="search-filters" value="customer-invoices-filters" />
+				<domain>self.operationTypeSelect = 3</domain>
+				<context name="_operationTypeSelect" expr="eval:3" />
+				<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 		</action-view>
 
 
@@ -207,9 +211,6 @@
 
 		</action-view>
 
-
-
-		<!-- ******************************************************************************************************************** -->
 
 		<!-- Company -->
 

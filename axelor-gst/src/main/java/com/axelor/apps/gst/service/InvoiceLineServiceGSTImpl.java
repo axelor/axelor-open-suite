@@ -2,7 +2,6 @@ package com.axelor.apps.gst.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
