@@ -3,6 +3,33 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
+		<grid name="product-grid" id="product-grid" title="Products"
+				model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+				<toolbar>
+						
+						<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
+								icon="fa-book" />
+						<button name="checkDuplicateBtn" title="Check Duplicate"
+								onClick="action-general-check-duplicate-records" />
+						<button name="btnCreateInvoice" onClick="action-gst-set-invoice-line"
+								title="Create Invoice" if="__config__.app.isApp('gst')" />
+						<button name="btnPrint" onClick="print.gst.product" title="Print" icon="fa-print"
+								if="__config__.app.isApp('gst')" />
+
+				</toolbar>
+				<field name="code" x-bind="{{code|unaccent|uppercase}}" width="120" />
+				<field name="name" width="300" />
+				<field name="productCategory" form-view="product-category-form"
+						grid-view="product-category-grid" />
+				<field name="productFamily" form-view="product-family-form"
+						grid-view="product-family-grid" />
+				<field name="productTypeSelect" width="100" />
+				<field name="salePrice" x-scale="2" />
+				<field name="unit" width="70" form-view="unit-form" grid-view="unit-grid" />
+				<field name="internalDescription" widget="html" width="400" />
+				<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+						onClick="action-send-by-email-with-template" />
+		</grid>
 
 
 		<form name="product-form" title="Product" model="com.axelor.apps.base.db.Product"
@@ -456,6 +483,10 @@
 		<action-attrs name="action-gst-product-set-gstRate">
 				<attribute name="value" for="gstRate" expr="eval:productCategory.getGstRate()" />
 		</action-attrs>
+
+		<action-method name="action-gst-set-invoice-line">
+				<call class="com.axelor.apps.gst.web.ProductController" method="createInvoice" />
+		</action-method>
 
 		<!-- End gst -->
 

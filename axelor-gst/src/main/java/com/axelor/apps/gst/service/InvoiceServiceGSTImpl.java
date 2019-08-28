@@ -48,7 +48,6 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl {
   public Invoice compute(Invoice invoice) throws AxelorException {
     super.compute(invoice);
     {
-      System.out.println("call compute extednded methods..");
       BigDecimal totalNetAmt = BigDecimal.ZERO;
       BigDecimal totalIgst = BigDecimal.ZERO;
       BigDecimal totalSgst = BigDecimal.ZERO;

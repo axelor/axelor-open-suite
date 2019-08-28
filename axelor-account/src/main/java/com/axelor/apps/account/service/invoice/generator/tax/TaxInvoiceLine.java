@@ -226,6 +226,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       invoice.setSpecificNotes(invoice.getPartner().getSpecificTaxNote());
     }
 
+    System.err.println(invoiceLineTaxList.size());
     return invoiceLineTaxList;
   }
 }

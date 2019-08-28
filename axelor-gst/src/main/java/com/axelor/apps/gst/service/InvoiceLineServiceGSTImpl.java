@@ -9,6 +9,7 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.purchase.service.PurchaseProductService;
@@ -16,7 +17,9 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
@@ -68,14 +71,6 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
               .bind("taxId", id)
               .fetchOne();
 
-      //      TaxLine taxLine =
-      //          taxLineRepository
-      //              .all()
-      //              .filter("self.value = :value and self.taxt = :taxId")
-      //              .bind("value", invoiceLine.getGstRate().divide(new BigDecimal(100)))
-      //              .fetchOne();
-      System.out.println(taxLine.getValue());
-
       if (taxLine != null) {
         productInformation.remove("error");
         invoiceLine.setTaxLine(taxLine);
@@ -109,7 +104,7 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
     }
 
     invoiceLine = calculateInvoiceLine(invoiceLine, isSameState, isNullAddress);
-
+    productInformation.put("gstRate", invoiceLine.getGstRate());
     productInformation.put("igst", invoiceLine.getIgst());
     productInformation.put("sgst", invoiceLine.getSgst());
     productInformation.put("cgst", invoiceLine.getCgst());
@@ -161,5 +156,24 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
     grossAmt = netAmt.add(finalGST);
     invoiceLine.setGrossAmount(grossAmt);
     return invoiceLine;
+  }
+
+  @Override
+  public List<InvoiceLine> getInvoiceLineFromProduct(List<Product> productList) {
+    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+    for (Product product : productList) {
+      InvoiceLine invoiceLine = new InvoiceLine();
+      TaxLine taxLine = taxLineRepository.find((long) 26);
+      invoiceLine.setTaxLine(taxLine);
+      invoiceLine.setProduct(product);
+      invoiceLine.setProductCode(product.getCode());
+      invoiceLine.setProductName(product.getName());
+      invoiceLine.setPrice(product.getSalePrice());
+      invoiceLine.setQty(new BigDecimal(1)); // default qty
+      invoiceLine.setGstRate(product.getGstRate());
+      invoiceLineList.add(invoiceLine);
+    }
+
+    return invoiceLineList;
   }
 }
