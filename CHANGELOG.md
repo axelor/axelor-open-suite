@@ -229,6 +229,7 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
 - TRACKING : Added all fields for all apps and also for company's configuration
 - FISCAL POSTION DEMO DATA : set several tax equivalent with reverse charge to true.
+- MOVE LINE EXPORT : only validated move for FEC Administration
 
 ## Bug Fixes
 - STOCK MOVE : Added fr translation for 'Not Invoiced' tag
