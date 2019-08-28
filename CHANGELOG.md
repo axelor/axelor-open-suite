@@ -206,5 +206,6 @@
 - Update xsd to ADK 5.1
 - Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
+- SaleOrder : Fix NPE on click of generate customer deliveries
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
