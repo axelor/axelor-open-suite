@@ -169,6 +169,11 @@ public class LeaveServiceImpl implements LeaveService {
             leave.getUser().getName());
       }
 
+      if (leave.getLeaveLine() == null || leave.getLeaveLine().getLeaveReason() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.LEAVE_SELECT_REASON));
+      }
       switch (leave.getLeaveLine().getLeaveReason().getUnitSelect()) {
         case LeaveReasonRepository.UNIT_SELECT_DAYS:
           LocalDate fromDate = from.toLocalDate();
