@@ -17,21 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
@@ -65,6 +50,21 @@ import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MoveLineExportServiceImpl implements MoveLineExportService {
 
@@ -1158,7 +1158,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
       }
     }
-    
+
     if (accountingReport.getDate() != null) {
       moveLineQueryStr +=
           String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
