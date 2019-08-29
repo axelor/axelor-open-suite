@@ -34,5 +34,11 @@
 	<selection name="sequence.generic.code.select" id="cash.management.sequence.generic.code.select">
 		<option value="forecastRecap">Forecast Recap</option>
 	</selection>
-	
+
+	<selection name="forecast.recap.report.type.select">
+		<option value="pdf">PDF</option>
+		<option value="xlsx">XLS</option>
+		<option value="ods">ODS</option>
+	</selection>
+
 </object-views>

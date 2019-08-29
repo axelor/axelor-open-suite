@@ -111,6 +111,8 @@
 - Action Builder : Add feature to create templates for json models to send email
 - FORECAST RECAP : sequence feature added for ForeCastRecap
 - Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
+- FORECAST RECAP : Add support of printing report in 'xls' and 'ods' format.
+
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
 - ContractLine: hide `isConsumptionLine` if not activated in Contract config
