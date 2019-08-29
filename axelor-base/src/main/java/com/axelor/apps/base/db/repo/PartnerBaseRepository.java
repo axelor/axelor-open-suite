@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.PersistenceException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -36,6 +32,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.PersistenceException;
 
 public class PartnerBaseRepository extends PartnerRepository {
 

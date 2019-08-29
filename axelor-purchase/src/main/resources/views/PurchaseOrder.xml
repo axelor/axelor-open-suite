@@ -177,7 +177,6 @@
 			<button name="generateInvoiceBtn" title="Generate control invoice" showIf="statusSelect == 3" onClick="save,action-purchase-order-method-generate-control-invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder" if-module="axelor-supplychain"/>
 			<button name="showInvoiceBtn" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <button name="finishManuallyPurchaseOrderBtn" title="Finish the order" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
-			<spacer name="btnSpacer"/>
 			<button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"   onClick="save,action-group-purchase-order-cancel"/>
 		</panel>
   
