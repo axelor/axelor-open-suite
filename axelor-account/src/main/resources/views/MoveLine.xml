@@ -192,7 +192,7 @@
 					<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL" readonlyIf="!account.isTaxAuthorizedOnMoveLine"/>
 					<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 					<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1" readonly="true"/>
-					<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1" readonly="true"/>
+					<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0" readonly="true" selection="move.line.reimbursement.status.select"/>
 				</panel>
 				<panel name="secondSubOthersPanel">
 					<field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
@@ -293,7 +293,7 @@
 					<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"/>
 					<field name="account.accountType.technicalTypeSelect" hidden="true"/>
 					<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"  readonly="true"/>
-					<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"  readonly="true"/>
+					<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0" readonly="true" selection="move.line.reimbursement.status.select"/>
 				</panel>
 				<panel name="secondSubOthersPanel">
 					<field name="bankReconciledAmount" if-module="axelor-bank-payment" onChange="action-account-group-move-line-check-bank-reconcile-amount-on-change"/>
