@@ -441,7 +441,6 @@ InvoiceSet.length > 0))"
 
 
 
-
 				<panel name="totalsCompanyCurrencyPanel" title="Totals company currency" itemSpan="6"
 						sidebar="true"
 						hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code">
@@ -477,8 +476,8 @@ InvoiceSet.length > 0))"
 				<action name="action-gst-invoice-partner-contact"
 						if="__config__.app.isApp('gst') &amp;&amp; partner" />
 
-				<action name="action-gst-invoice-compute"
-						if="__config__.app.isApp('gst') &amp;&amp; partner" />
+				<action name="action-gst-invoice-calculate"
+						if="__config__.app.isApp('gst') &amp;&amp; partner  &amp;&amp; invoiceLineList" />
 		</action-group>
 
 		<action-method name="action-gst-invoice-partner-contact">
@@ -492,8 +491,8 @@ InvoiceSet.length > 0))"
 		<action-method name="action-gst-invoice-line-set">
 				<call class="com.axelor.apps.gst.web.InvoiceController" method="setInvoiceLine" />
 		</action-method>
-		<action-method name="action-gst-invoice-compute">
-				<call class="com.axelor.apps.account.web.InvoiceController" method="compute" />
+		<action-method name="action-gst-invoice-calculate">
+				<call class="com.axelor.apps.gst.web.InvoiceController" method="calculate" />
 		</action-method>
 
 </object-views>

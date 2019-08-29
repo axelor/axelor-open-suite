@@ -2,12 +2,16 @@ package com.axelor.apps.gst.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
@@ -18,10 +22,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl {
+public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements InvoiceServiceGST {
 
   @Inject private AddressService addressService;
   @Inject private InvoiceLineServiceGST invoiceLineServiceGST;
+  @Inject private AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public InvoiceServiceGSTImpl(
@@ -82,7 +87,7 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl {
           InvoiceLine invoiceLinenew;
           invoiceLinenew =
               invoiceLineServiceGST.calculateInvoiceLine(invoiceLine, isSameState, isNullAddress);
-
+          System.out.println(invoiceLinenew.getIgst());
           totalIgst = totalIgst.add(invoiceLinenew.getIgst());
           totalSgst = totalSgst.add(invoiceLinenew.getSgst());
           totalCgst = totalCgst.add(invoiceLinenew.getCgst());
@@ -99,5 +104,33 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl {
       invoice.setInvoiceLineList(invoiceLineList);
       return invoice;
     }
+  }
+
+  @Override
+  public Invoice calculate(Invoice invoice) throws AxelorException {
+    System.out.println("call calculat..::" + invoice.getInvoiceLineList().size());
+
+    
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+
+      TaxLine taxLine =
+          accountManagementAccountService.getTaxLine(
+              appAccountService.getTodayDate(),
+              invoiceLine.getProduct(),
+              invoice.getCompany(),
+              invoice.getPartner().getFiscalPosition(),
+              true);
+      System.out.println(taxLine);
+      invoiceLine.setTaxLine(taxLine);
+    }
+    
+    Invoice invoiceNew = compute(invoice);
+    // Create tax lines.
+    List<InvoiceLineTax> invoiceTaxLines =
+        (new TaxInvoiceLine(invoice, invoice.getInvoiceLineList())).creates();
+    System.out.println("invoiceTaxLines::" + invoiceTaxLines.size());
+    System.out.println(invoiceNew.getInvoiceLineTaxList().size());
+    return invoiceNew;
   }
 }

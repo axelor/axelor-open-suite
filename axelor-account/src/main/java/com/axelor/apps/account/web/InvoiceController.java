@@ -97,6 +97,7 @@ public class InvoiceController {
 
     try {
       invoice = invoiceService.compute(invoice);
+
       response.setValues(invoice);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -329,6 +330,7 @@ public class InvoiceController {
         Invoice invoice = invoiceRepo.find(request.getContext().asType(Invoice.class).getId());
         fileLink = invoicePrintService.printInvoice(invoice, false);
         title = I18n.get("Invoice");
+        //        title = I18n.get("InvoiceGST");
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
@@ -336,6 +338,7 @@ public class InvoiceController {
       response.setView(ActionView.define(title).add("html", fileLink).map());
       response.setReload(true);
     } catch (Exception e) {
+      e.printStackTrace();
       TraceBackService.trace(response, e);
     }
   }

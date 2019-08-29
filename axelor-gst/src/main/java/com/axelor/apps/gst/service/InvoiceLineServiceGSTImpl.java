@@ -76,6 +76,11 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
         invoiceLine.setTaxLine(taxLine);
         productInformation.put("taxLine", taxLine);
       }
+    } else {
+      System.err.println(invoiceLine.getTaxLine().getValue().multiply(new BigDecimal(100)));
+      invoiceLine.setGstRate(invoiceLine.getTaxLine().getValue().multiply(new BigDecimal(100)));
+      //     invoiceLine.setTaxLine(productInformation.get("taxLine"));
+
     }
 
     boolean isNullAddress = false;
@@ -163,8 +168,7 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     for (Product product : productList) {
       InvoiceLine invoiceLine = new InvoiceLine();
-      TaxLine taxLine = taxLineRepository.find((long) 26);
-      invoiceLine.setTaxLine(taxLine);
+
       invoiceLine.setProduct(product);
       invoiceLine.setProductCode(product.getCode());
       invoiceLine.setProductName(product.getName());
