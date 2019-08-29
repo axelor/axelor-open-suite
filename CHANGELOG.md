@@ -184,6 +184,7 @@
 - Studio: Fix display of duplicate models and allow to select core models
 - LEAVE REQUEST : Fix NPE on date computation 
 - RawMaterialRequirement report: fix sql query.
+- Improve exception handling in leave request form.
 
 ## [5.1.7] - 2019-06-17
 ## Features
