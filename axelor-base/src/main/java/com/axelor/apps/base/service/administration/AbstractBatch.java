@@ -121,7 +121,7 @@ public abstract class AbstractBatch {
 
   protected boolean isRunnable(Model model) {
     this.model = model;
-    return model.getArchived() != Boolean.TRUE;
+    return !Boolean.TRUE.equals(model.getArchived());
   }
 
   protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {

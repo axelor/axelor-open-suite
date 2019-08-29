@@ -46,7 +46,9 @@ public class HrBatchController {
 
     Batch batch = hrBatchService.run(hrBatchRepo.find(hrBatch.getId()));
 
-    if (batch != null) response.setFlash(batch.getComments());
+    if (batch != null) {
+      response.setFlash(batch.getComments());
+    }
     response.setReload(true);
   }
 }
