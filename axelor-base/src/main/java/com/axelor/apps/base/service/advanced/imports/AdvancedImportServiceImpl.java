@@ -492,7 +492,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     if (Strings.isNullOrEmpty(importType)) {
       if (value.contains(".")) {
-        return FileFieldRepository.IMPORT_TYPE_FIND;
+        return FileFieldRepository.IMPORT_TYPE_NEW;
       }
       return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }
@@ -512,7 +512,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       default:
         if (value.contains(".")) {
-          return FileFieldRepository.IMPORT_TYPE_FIND;
+          return FileFieldRepository.IMPORT_TYPE_NEW;
         }
         return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }

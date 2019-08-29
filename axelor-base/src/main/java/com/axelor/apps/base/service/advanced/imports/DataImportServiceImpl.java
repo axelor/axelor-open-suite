@@ -456,8 +456,10 @@ public class DataImportServiceImpl implements DataImportService {
         dummyBind.setExpression(expression);
         dummyBind.setAdapter(adapter);
         bind = this.createCSVBind(column, prop.getName(), null, null, null, null);
+        this.setImportIf(prop, bind, column);
       } else {
         bind = this.createCSVBind(column, prop.getName(), null, expression, adapter, null);
+        this.setImportIf(prop, bind, column);
       }
       allBindings.add(bind);
       this.setSearch(column, prop.getName(), fileField, null);
@@ -523,7 +525,6 @@ public class DataImportServiceImpl implements DataImportService {
             subFields, index + 1, column, childProp, fileField, subBind, dummyBind);
 
       } else {
-        String field = childProp.getName();
         String expression = this.setExpression(column, fileField, childProp);
         String adapter = null;
         String dateFormat = fileField.getDateFormat();
@@ -533,11 +534,11 @@ public class DataImportServiceImpl implements DataImportService {
 
         if (!fileField.getIsMatchWithFile()) {
           this.createBindForNotMatchWithFile(
-              column, field, importType, dummyBind, expression, adapter, parentBind);
+              column, importType, dummyBind, expression, adapter, parentBind, childProp);
 
         } else {
           this.createBindForMatchWithFile(
-              column, field, importType, expression, adapter, relationship, parentBind);
+              column, importType, expression, adapter, relationship, parentBind, childProp);
         }
         this.setSearch(column, childProp.getName(), fileField, parentBind);
 
@@ -550,31 +551,32 @@ public class DataImportServiceImpl implements DataImportService {
 
   private void createBindForNotMatchWithFile(
       String column,
-      String field,
       int importType,
       CSVBind dummyBind,
       String expression,
       String adapter,
-      CSVBind parentBind) {
+      CSVBind parentBind,
+      Property childProp) {
 
     dummyBind.setExpression(expression);
     dummyBind.setAdapter(adapter);
 
     if (importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW
         || importType == FileFieldRepository.IMPORT_TYPE_NEW) {
-      CSVBind subBind = this.createCSVBind(column, field, null, null, null, null);
+      CSVBind subBind = this.createCSVBind(column, childProp.getName(), null, null, null, null);
+      this.setImportIf(childProp, subBind, column);
       parentBind.getBindings().add(subBind);
     }
   }
 
   private void createBindForMatchWithFile(
       String column,
-      String field,
       int importType,
       String expression,
       String adapter,
       String relationship,
-      CSVBind parentBind) {
+      CSVBind parentBind,
+      Property childProp) {
 
     if (importType != FileFieldRepository.IMPORT_TYPE_FIND) {
       if (!Strings.isNullOrEmpty(expression)
@@ -584,7 +586,9 @@ public class DataImportServiceImpl implements DataImportService {
         parentBind.setExpression(expression);
         return;
       }
-      CSVBind subBind = this.createCSVBind(column, field, null, expression, adapter, null);
+      CSVBind subBind =
+          this.createCSVBind(column, childProp.getName(), null, expression, adapter, null);
+      this.setImportIf(childProp, subBind, column);
       parentBind.getBindings().add(subBind);
 
     } else {
@@ -858,6 +862,12 @@ public class DataImportServiceImpl implements DataImportService {
       return logFile;
     }
     return null;
+  }
+
+  private void setImportIf(Property prop, CSVBind bind, String column) {
+    if (prop.isRequired()) {
+      bind.setCondition(column.toString() + "!= null && !" + column.toString() + ".empty");
+    }
   }
 
   private MetaFile createImportLogFile(ImporterListener listener) throws IOException {
