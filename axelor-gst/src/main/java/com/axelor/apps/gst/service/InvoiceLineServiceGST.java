@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface InvoiceLineServiceGST {
-	InvoiceLine calculateInvoiceLine(InvoiceLine invoiceLine, Boolean isSameState, Boolean isNullAddress);
+  InvoiceLine calculateInvoiceLine(
+      InvoiceLine invoiceLine, Boolean isSameState, Boolean isNullAddress);
 
-	List<InvoiceLine> getInvoiceLineFromProduct(List<Product> productList);
+  List<InvoiceLine> getInvoiceLineFromProduct(List<Product> productList);
 
-	Map<String, Object> fillProductInformationForInvoice(Invoice invoice, InvoiceLine invoiceLine);
+  Map<String, Object> fillProductInformationForInvoice(Invoice invoice, InvoiceLine invoiceLine);
 }

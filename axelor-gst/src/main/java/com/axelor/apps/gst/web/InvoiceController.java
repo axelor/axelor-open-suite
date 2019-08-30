@@ -29,8 +29,6 @@ public class InvoiceController {
       List<Product> productList =
           productRepository.all().filter("self.id in (?1)", productIds).fetch();
       List<InvoiceLine> invoiceLineList = invoiceLineService.getInvoiceLineFromProduct(productList);
-
-//      res.setValue("invoiceLineTaxList", taxLineList);
       res.setValue("invoiceLineList", invoiceLineList);
     }
   }
@@ -41,8 +39,8 @@ public class InvoiceController {
 
     try {
       invoice = invoiceService.calculate(invoice);
-//response.setValue("invoiceLineTaxList", value);
-//      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+      // response.setValue("invoiceLineTaxList", value);
+      //      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       response.setValues(invoice);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

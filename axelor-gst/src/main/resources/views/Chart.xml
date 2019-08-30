@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+
+		<chart name="chart.gst.invoice.unpaid.per.customer.bar" title="Unpaid invoices per customer"
+				onInit="action.gst.set.default.date">
+				<search-fields>
+						<field type="date" name="fromDate" title="From Date" />
+						<field type="date" name="toDate" title="To Date" />
+				</search-fields>
+
+				<dataset type="sql">
+  <![CDATA[
+          
+          SELECT
+				COUNT(_invoice.id) AS count,
+				party.name AS name
+			FROM
+				 account_invoice _invoice
+			JOIN
+				base_partner party ON (party.id = _invoice.partner)
+			WHERE
+				party.is_customer='t' AND _invoice.status_select!=3
+				AND	DATE(invoice.created_on) BETWEEN DATE(:fromDate) and DATE(:toDate)
+			GROUP BY
+				party.name
+          
+  ]]>
+  </dataset>
+				<category key="name" />
+				<series key="count" groupBy="name" type="bar" />
+
+		</chart>
+
+
+		<chart name="chart.gst.per.category.per.product.bar"
+				title="Paid invoices per category per product" onInit="action.gst.set.default.date">
+
+				<search-fields>
+						<field type="date" name="fromDate" title="From Date" />
+						<field type="date" name="toDate" title="To Date" />
+				</search-fields>
+
+				<dataset type="sql">
+				
+  <![CDATA[
+
+     
+     
+     
+      SELECT count(_invoice.id) as count, _product.name as pname, _productCategory.name as pcname
+			FROM
+				account_invoice as _invoice
+			JOIN 
+				account_invoice_line invoice_line ON (invoice_line.invoice = _invoice.id)
+			JOIN 
+				base_product as _product ON ( _product.id = invoice_line.product)
+			JOIN
+				base_product_category as _productCategory ON ( _productCategory.id = _product.product_category)
+			WHERE
+				_invoice.status_select = 3 
+				AND	DATE(_invoice.created_on) BETWEEN DATE(:fromDate) and DATE(:toDate)
+			GROUP BY
+				_productCategory.name, _product.name
+
+     
+     
+  ]]>
+  </dataset>
+				<category key="pcname" />
+				<series key="count" groupBy="pname" type="bar" />
+
+		</chart>
+
+
+		<action-attrs name="action.gst.set.default.date">
+				<attribute name="value" for="fromDate" expr="eval: __datetime__.withDayOfMonth(1)" />
+				<attribute name="value" for="toDate" expr="eval: __datetime__" />
+		</action-attrs>
+
+
+		<chart name="chart.gst.customer.per.state.pie" title="Customer per state">
+
+				<dataset type="sql">
+  <![CDATA[
+      
+      SELECT 
+				count(basePartner.id),
+				_address.state as state
+			FROM 
+				base_partner basePartner 
+			INNER JOIN base_partner_address basePartnerAddress on basePartner.id = basePartnerAddress.partner 
+			INNER JOIN base_address _address on basePartnerAddress.address = _address.id
+			WHERE 
+				basePartner.is_customer = 't' 
+			GROUP BY 
+				_address.state  
+
+
+  ]]> 
+  </dataset>
+				<category key="state" />
+				<series key="count" type="pie" />
+
+		</chart>
+
+
+		<chart name="chart.gst.invoice.amount.per.status.bar" title="Invoice amount per status">
+				<dataset type="jpql">
+
+    <![CDATA[
+
+
+
+SELECT
+ 				SUM(_invoice.inTaxTotal) as amount,
+ 				_invoice.statusSelect as status
+ 			FROM
+ 				Invoice _invoice
+ 				
+ 			GROUP BY
+ 				_invoice.statusSelect
+
+   
+     ]]> 
+    </dataset>
+				<category key="status" />
+				<series key="amount" type="bar" />
+
+		</chart>
+
+		<chart name="chart.gst.no.of.invoice.per.status.line" title="Number of invoice per status ">
+
+				<dataset type="jpql">
+    <![CDATA[
+     
+      
+       SELECT
+ 				COUNT(_invoice.externalReference) as count,
+ 				_invoice.statusSelect as status
+ 			FROM
+ 				Invoice _invoice
+ 			GROUP BY
+ 				_invoice.statusSelect
+   
+    ]]> 
+    </dataset>
+				<category key="count" />
+				<series key="count" groupBy="status" type="line" />
+
+		</chart>
+
+
+</object-views>

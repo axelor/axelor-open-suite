@@ -12,7 +12,7 @@
 		<menuitem name="menu-dashboards" order="-101" title="Dashboards" icon="fa-dashboard"
 				icon-background="blue" parent="gst-root" />
 
-		<dashboard name="welcome.dashboard" title="Welcome!">
+		<dashboard name="welcome.dashboard.gst" title="Welcome!">
 				<dashlet action="chart:chart.gst.invoice.unpaid.per.customer.bar" />
 				<dashlet action="chart:chart.gst.per.category.per.product.bar" />
 				<dashlet action="chart:chart.gst.customer.per.state.pie" />
@@ -23,7 +23,7 @@
 		</dashboard>
 
 		<action-view name="welcome" title="Welcome!">
-				<view type="dashboard" name="welcome.dashboard" />
+				<view type="dashboard" name="welcome.dashboard.gst" />
 		</action-view>
 
 		<menuitem name="menu-welcome" parent="menu-dashboards" title="Welcome!" action="welcome" />

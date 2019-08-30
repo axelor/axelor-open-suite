@@ -3,7 +3,6 @@ package com.axelor.apps.gst.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -11,18 +10,19 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements InvoiceServiceGST {
 
@@ -89,7 +89,6 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
           InvoiceLine invoiceLinenew;
           invoiceLinenew =
               invoiceLineServiceGST.calculateInvoiceLine(invoiceLine, isSameState, isNullAddress);
-          System.out.println(invoiceLinenew.getIgst());
           totalIgst = totalIgst.add(invoiceLinenew.getIgst());
           totalSgst = totalSgst.add(invoiceLinenew.getSgst());
           totalCgst = totalCgst.add(invoiceLinenew.getCgst());
@@ -110,37 +109,62 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
 
   @Override
   public Invoice calculate(Invoice invoice) throws AxelorException {
-    System.out.println("call calculat..::" + invoice.getInvoiceLineList().size());
 
-    
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-    	
-    	Map<String, Object> productInformation = new HashMap<>();
-    	productInformation = invoiceLineServiceGST.fillProductInformationForInvoice(invoice, invoiceLine);
-    	System.err.println(productInformation.get("taxLine"));
-		
-	}
-    
-
+    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
 
-      TaxLine taxLine =
-          accountManagementAccountService.getTaxLine(
-              appAccountService.getTodayDate(),
-              invoiceLine.getProduct(),
-              invoice.getCompany(),
-              invoice.getPartner().getFiscalPosition(),
-              true);
-      System.out.println(taxLine);
-      invoiceLine.setTaxLine(taxLine);
+      Product product = invoiceLine.getProduct();
+      invoiceLine =
+          Mapper.toBean(
+              InvoiceLine.class, invoiceLineService.fillProductInformation(invoice, invoiceLine));
+
+      invoiceLine.setProduct(product);
+
+      /* set ex_tax  and in_tax*/
+
+      BigDecimal exTaxTotal;
+      BigDecimal companyExTaxTotal;
+      BigDecimal inTaxTotal;
+      BigDecimal companyInTaxTotal;
+      BigDecimal priceDiscounted =
+          invoiceLineService.computeDiscount(invoiceLine, invoice.getInAti());
+
+      invoiceLine.setQty(new BigDecimal(1));
+
+      BigDecimal taxRate = BigDecimal.ZERO;
+      if (invoiceLine.getTaxLine() != null) {
+        taxRate = invoiceLine.getTaxLine().getValue();
+      }
+
+      if (!invoice.getInAti()) {
+        exTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
+        inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
+      } else {
+        inTaxTotal = InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted);
+        exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      }
+
+      companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
+      companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
+
+      invoiceLine.setExTaxTotal(exTaxTotal);
+      invoiceLine.setInTaxTotal(inTaxTotal);
+      invoiceLine.setCompanyExTaxTotal(companyExTaxTotal);
+      invoiceLine.setCompanyInTaxTotal(companyInTaxTotal);
+      invoiceLineList.add(invoiceLine);
+      /* ................................................End
+      tax.................................................................................*/
+
     }
- 
-    Invoice invoiceNew = compute(invoice);
-    // Create tax lines.
+
+    invoice.setInvoiceLineList(invoiceLineList);
+    //     Create tax lines.
     List<InvoiceLineTax> invoiceTaxLines =
         (new TaxInvoiceLine(invoice, invoice.getInvoiceLineList())).creates();
-    System.out.println("invoiceTaxLines::" + invoiceTaxLines.size());
-    System.out.println(invoiceNew.getInvoiceLineTaxList().size());
+
+    invoice.setInvoiceLineTaxList(invoiceTaxLines);
+    Invoice invoiceNew = compute(invoice);
+
     return invoiceNew;
   }
 }
