@@ -78,9 +78,7 @@ public class TemplateService {
 
     maker.setTemplate(template.getSubject());
     maker.setContext(bean, context, beanName);
-    String result = maker.make();
-
-    return result;
+    return maker.make();
   }
 
   public String processContent(
@@ -89,8 +87,6 @@ public class TemplateService {
 
     maker.setTemplate(template.getContent());
     maker.setContext(bean, context, beanName);
-    String result = maker.make();
-
-    return result;
+    return maker.make();
   }
 }

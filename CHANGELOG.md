@@ -169,6 +169,7 @@
 - DEMO DATA : Rename field data.
 - SALE ORDER/ PURCHASE ORDER : Removal of spacer.
 - ACCOUNTING BATCH : alert when the closing annual accounts batch already ran
+- MESSAGE MODULE: Refactor code.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
