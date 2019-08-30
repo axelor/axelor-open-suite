@@ -99,7 +99,13 @@ public class HrBatchService extends AbstractBatchService {
     return Beans.get(BatchEmploymentContractExport.class).run(hrBatch);
   }
 
-  public Batch runTimesheetReminderBatch(HrBatch hrBatch) {
+  public Batch runTimesheetReminderBatch(HrBatch hrBatch) throws AxelorException {
+    if (hrBatch.getTemplate() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          com.axelor.apps.hr.exception.IExceptionMessage.BATCH_TIMESHEET_MISSING_TEMPLATE);
+    }
+
     return Beans.get(BatchTimesheetReminder.class).run(hrBatch);
   }
 }

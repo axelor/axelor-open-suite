@@ -53,23 +53,17 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 
 public class BatchSeniorityLeaveManagement extends BatchStrategy {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   int total;
   int noValueAnomaly;
@@ -94,7 +88,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -128,7 +122,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   public List<Employee> getEmployees(HrBatch hrBatch) {
 
-    List<Employee> employeeList = Lists.newArrayList();
+    List<Employee> employeeList;
     if (hrBatch.getCompany() != null) {
       employeeList =
           JPA.all(Employee.class)
@@ -207,7 +201,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
               .getLeaveManagementBatchRuleList()) {
 
         if (rule.getExecutiveStatusSelect()
-            == employee.getMainEmploymentContract().getExecutiveStatusSelect()) {
+            .equals(employee.getMainEmploymentContract().getExecutiveStatusSelect())) {
           maker.setContext(employee, "Employee");
           String formula = rule.getFormula();
           formula =

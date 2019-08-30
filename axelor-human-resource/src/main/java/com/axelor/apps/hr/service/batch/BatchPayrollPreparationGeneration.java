@@ -19,7 +19,6 @@ package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.Employee;
@@ -36,7 +35,6 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -72,7 +70,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -99,47 +97,29 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     if (!hrBatch.getEmployeeSet().isEmpty()) {
       String employeeIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getEmployeeSet(),
-                      new Function<Employee, String>() {
-                        public String apply(Employee obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getEmployeeSet(), obj -> obj.getId().toString()));
       query.add("self.id IN (" + employeeIds + ")");
     }
     if (!hrBatch.getPlanningSet().isEmpty()) {
       String planningIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getPlanningSet(),
-                      new Function<WeeklyPlanning, String>() {
-                        public String apply(WeeklyPlanning obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getPlanningSet(), obj -> obj.getId().toString()));
 
       query.add("self.weeklyPlanning.id IN (" + planningIds + ")");
     }
 
-    List<Employee> employeeList = Lists.newArrayList();
     String liaison = query.isEmpty() ? "" : " AND";
     if (hrBatch.getCompany() != null) {
-      employeeList =
-          JPA.all(Employee.class)
-              .filter(
-                  Joiner.on(" AND ").join(query)
-                      + liaison
-                      + " self.mainEmploymentContract.payCompany = :company")
-              .bind("company", hrBatch.getCompany())
-              .fetch();
+      return JPA.all(Employee.class)
+          .filter(
+              Joiner.on(" AND ").join(query)
+                  + liaison
+                  + " self.mainEmploymentContract.payCompany = :company")
+          .bind("company", hrBatch.getCompany())
+          .fetch();
     } else {
-      employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();
+      return JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();
     }
-
-    return employeeList;
   }
 
   public void generatePayrollPreparations(List<Employee> employeeList) {

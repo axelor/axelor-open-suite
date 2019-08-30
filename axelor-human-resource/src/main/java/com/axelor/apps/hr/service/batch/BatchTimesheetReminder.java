@@ -27,7 +27,6 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -42,17 +41,6 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   @Inject protected TimesheetRepository timesheetRepo;
   @Inject protected MessageService messageService;
-
-  @Override
-  protected void start() throws IllegalAccessException, AxelorException {
-    super.start();
-
-    if (batch.getHrBatch().getTemplate() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          IExceptionMessage.BATCH_TIMESHEET_MISSING_TEMPLATE);
-    }
-  }
 
   @Override
   protected void process() {
