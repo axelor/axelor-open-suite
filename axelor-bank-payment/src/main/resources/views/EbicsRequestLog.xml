@@ -10,6 +10,7 @@
 		<field name="requestType" />
 		<field name="requestTime" />
 		<field name="responseCode" />
+		<button name="printBtn" icon="fa-print" title="Print" onClick="bank-payment-ebics-request-log-print-method"/>
 	</grid>
 	
 	<form name="ebics-request-log-form" title="Ebics request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
@@ -27,6 +28,13 @@
 				<field name="responseTraceText"  colSpan="12" showTitle="false" />
 			</panel>
 		</panel-tabs>
+		<panel name="actionPanel">
+			<button name="printBtn" icon="fa-print" colSpan="4" title="Print" onClick="bank-payment-ebics-request-log-print-method"/>
+		</panel>
 	</form>
+	
+	<action-method name="bank-payment-ebics-request-log-print-method" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
+		<call class="com.axelor.apps.bankpayment.ebics.web.EbicsRequestLogController" method="print"/>
+	</action-method>
   
 </object-views>
