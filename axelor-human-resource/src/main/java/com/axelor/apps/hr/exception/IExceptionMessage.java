@@ -136,14 +136,12 @@ public interface IExceptionMessage {
       "Payroll preparations failed to be generated due to missing data : %s" /*)*/;
   static final String BATCH_PAYROLL_PREPARATION_EXPORT_RECAP = /*$$(*/
       "Payroll preparations exported : %s" /*)*/;
+
   static final String BATCH_TIMESHEET_MISSING_TEMPLATE = /*$$(*/
       "You must choose a template." /*)*/;
-  static final String BATCH_TIMESHEET_EMPLOYEES_WITHOUT_RECENT_TIMESHEET = /*$$(*/
-      "Employees without recent timesheet: %s" /*)*/;
-  static final String BATCH_TIMESHEET_REMINDER_DONE = /*$$(*/
-      "Employees' successfully computed: %d" /*)*/;
+  static final String BATCH_TIMESHEET_REMINDER_DONE = /*$$(*/ "Employees computed: %d" /*)*/;
   static final String BATCH_TIMESHEET_REMINDER_ANOMALY = /*$$(*/
-      "Employees' failed to be computed due to anomaly: %d" /*)*/;
+      "Employees failed to be computed due to anomaly: %d" /*)*/;
 
   static final String BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR = /*$$(*/
       "%d expense treated successfully," /*)*/;
