@@ -10,7 +10,7 @@
 				<string name="hsbn" title="HSBN" />
 <!-- 				<string name="item" /> -->
 <!-- 				<decimal name="netAmount" readonly="true" title="Net Amount" /> -->
-				<decimal name="gstRate" required="true" readonly="true" title="GST Rate" precision="20" scale="2" />
+				<decimal name="gstRate" readonly="true" title="GST Rate" precision="20" scale="2" />
 				<decimal name="igst" readonly="true" title="IGST" precision="20" scale="2"/>
 				<decimal name="sgst" readonly="true" title="SGST" precision="20" scale="2"/>
 				<decimal name="cgst" readonly="true" title="CGST" precision="20" scale="2"/>

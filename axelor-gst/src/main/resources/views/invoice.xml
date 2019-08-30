@@ -485,7 +485,7 @@ InvoiceSet.length > 0))"
 		</action-method>
 
 		<action-group name="action-gst-invoice-onnew-group">
-				<action name="action-gst-invoice-line-set" if="invoiceLineTaxList" />
+				<action name="action-gst-invoice-line-set" />
 		</action-group>
 
 		<action-method name="action-gst-invoice-line-set">
