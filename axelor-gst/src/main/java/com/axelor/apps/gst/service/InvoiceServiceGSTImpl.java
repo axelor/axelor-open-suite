@@ -20,7 +20,9 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements InvoiceServiceGST {
 
@@ -110,6 +112,14 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
   public Invoice calculate(Invoice invoice) throws AxelorException {
     System.out.println("call calculat..::" + invoice.getInvoiceLineList().size());
 
+    
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    	
+    	Map<String, Object> productInformation = new HashMap<>();
+    	productInformation = invoiceLineServiceGST.fillProductInformationForInvoice(invoice, invoiceLine);
+    	System.err.println(productInformation.get("taxLine"));
+		
+	}
     
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
