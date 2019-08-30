@@ -183,6 +183,7 @@
 - Sale Order: Forbid negative invoicing value.
 - Studio: Fix display of duplicate models and allow to select core models
 - LEAVE REQUEST : Fix NPE on date computation 
+- LEAVE REQUEST : Fix non explicit exception on leave line select.
 - RawMaterialRequirement report: fix sql query.
 - Improve exception handling in leave request form.
 
