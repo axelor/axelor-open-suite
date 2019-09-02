@@ -75,7 +75,7 @@
                         <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
                     </editor>
                 </field>
-                <field name="$technicalOriginTags" showTitle="false">
+                <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
                   <viewer depends="technicalOriginSelect">
                     <![CDATA[
                       <h4 class="text-right">
@@ -153,9 +153,9 @@
             </panel>
 
             <panel name="othersPanel" title="Others">
-                <field name="ignoreInAccountingOk"/>
+                <field name="ignoreInAccountingOk" showIf="ignoreInAccountingOk" readonly="true"/>
                 <field name="ignoreInDebtRecoveryOk"/>
-                <field name="rejectOk"/>
+                <field name="rejectOk" showIf="rejectOk" readonly="true"/>
             </panel>
         </panel-tabs>
         
