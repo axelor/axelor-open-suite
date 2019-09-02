@@ -187,6 +187,7 @@
 - LEAVE REQUEST : Fix non explicit exception on leave line select.
 - RawMaterialRequirement report: fix sql query.
 - Improve exception handling in leave request form.
+- BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 
 ## [5.1.7] - 2019-06-17
 ## Features
