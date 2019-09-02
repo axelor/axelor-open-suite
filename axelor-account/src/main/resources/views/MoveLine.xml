@@ -109,7 +109,7 @@
     </grid>
 
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
-    	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
+    	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" showIf="account.analyticDistributionAuthorized">
 			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
               requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
 			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
@@ -152,15 +152,15 @@
 	        <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 	        <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
-			<field name="amountPaid" colSpan="3"/>
+			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
 			<field name="taxAmount" showIf="taxAmount != 0"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
-			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1" colSpan="12">
+			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
 			<panel name="irrecoverableDetailsPanel" colSpan="12">
 				<field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
@@ -187,12 +187,12 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="othersPanel" title="Others">
+			<panel name="othersPanel" title="Others" showIf="move.statusSelect == 2 || move.statusSelect == 3">
 				<panel name="firstSubOthersPanel" readonly="true">
 					<field name="taxLine" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL" readonlyIf="!account.isTaxAuthorizedOnMoveLine"/>
 					<field name="account.accountType.technicalTypeSelect" hidden="true"/>
-					<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1" readonly="true"/>
 					<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1" readonly="true"/>
+					<field name="exportedDirectDebitOk" hidden="true" readonly="true"/>
 				</panel>
 				<panel name="secondSubOthersPanel">
 					<field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
@@ -252,16 +252,17 @@
 			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
-			<field name="amountPaid" colSpan="3"/>
+			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || (move.statusSelect == 1 || move.statusSelect == 4"/>
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
 			<field name="taxAmount" showIf="taxAmount != 0"/>
 			<field name="move.statusSelect" hidden="true"/>
+			<field name="account.reconcileOk" hidden="true"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
+			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
 			<panel-related name="creditReconcileListPanel" showIf="id &amp;&amp; move.statusSelect &gt; 1 &amp;&amp; $number(credit) &gt; 0.00" field="creditReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
-			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; move.statusSelect > 1" colSpan="12">
+			<panel name="irrecoverablePanel" title="Irrecoverable" showIf="id &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)" colSpan="12">
 			<panel name="irrecoverableDetailsPanel" colSpan="12">
 				<field name="passageReason" showIf="$number(debit) > 0.00" colSpan="6"/>
 				<field name="usherPassageOk" onChange="action-group-account-moveline-usher-process-onchange" colSpan="6"/>
@@ -288,12 +289,12 @@
 					</editor>
 				</field>
 			</panel>
-			<panel name="othersPanel" title="Others">
+			<panel name="othersPanel" title="Others" showIf="move.statusSelect == 2 || move.statusSelect == 3">
 				<panel name="firstSubOthersPanel">
 					<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"/>
 					<field name="account.accountType.technicalTypeSelect" hidden="true"/>
-					<field name="exportedDirectDebitOk" showIf="id &amp;&amp; move.statusSelect > 1"  readonly="true"/>
 					<field name="reimbursementStatusSelect" showIf="id &amp;&amp; move.statusSelect > 1"  readonly="true"/>
+					<field name="exportedDirectDebitOk" hidden="true"  readonly="true"/>
 				</panel>
 				<panel name="secondSubOthersPanel">
 					<field name="bankReconciledAmount" if-module="axelor-bank-payment" onChange="action-account-group-move-line-check-bank-reconcile-amount-on-change"/>
