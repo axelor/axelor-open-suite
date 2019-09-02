@@ -10,6 +10,7 @@ import com.axelor.apps.gst.service.InvoiceServiceGST;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ public class InvoiceController {
 
   @SuppressWarnings("unchecked")
   public void setInvoiceLine(ActionRequest req, ActionResponse res) {
+    Context context = req.getContext();
+
     List<Long> productIds = (List<Long>) req.getContext().get("productIds");
 
     List<TaxLine> taxLineList = new ArrayList<TaxLine>();

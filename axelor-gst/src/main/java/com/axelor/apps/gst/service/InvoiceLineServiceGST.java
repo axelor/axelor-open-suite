@@ -12,5 +12,5 @@ public interface InvoiceLineServiceGST {
 
   List<InvoiceLine> getInvoiceLineFromProduct(List<Product> productList);
 
-  Map<String, Object> fillProductInformationForInvoice(Invoice invoice, InvoiceLine invoiceLine);
+//  Map<String, Object> fillProductInformationForInvoice(Invoice invoice, InvoiceLine invoiceLine);
 }

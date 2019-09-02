@@ -50,8 +50,7 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 
-    Map<String, Object> productInformation = new HashMap<>();
-    productInformation = super.fillProductInformation(invoice, invoiceLine);
+    Map<String, Object> productInformation = super.fillProductInformation(invoice, invoiceLine);
 
     invoiceLine.setPrice(new BigDecimal(productInformation.get("price").toString()));
     invoiceLine.setGstRate(invoiceLine.getProduct().getGstRate());
@@ -181,9 +180,4 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
     return invoiceLineList;
   }
 
-  @Override
-  public Map<String, Object> fillProductInformationForInvoice(
-      Invoice invoice, InvoiceLine invoiceLine) {
-    return fillProductInformationForInvoice(invoice, invoiceLine);
-  }
 }

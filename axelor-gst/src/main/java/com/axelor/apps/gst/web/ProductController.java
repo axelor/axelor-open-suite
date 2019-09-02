@@ -1,6 +1,7 @@
 package com.axelor.apps.gst.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -18,7 +19,7 @@ public class ProductController {
               .model(Invoice.class.getName())
               .add("form", "invoice-form")
               .context("productIds", productIds)
-              .context("_operationTypeSelect", 3);
+              .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
 
       res.setView(actionViewBuilder.map());
 

@@ -13,8 +13,6 @@
 								onClick="action-general-check-duplicate-records" />
 						<button name="btnCreateInvoice" onClick="action-gst-set-invoice-line"
 								title="Create Invoice" if="__config__.app.isApp('gst')" />
-						<button name="btnPrint" onClick="print.gst.product" title="Print" icon="fa-print"
-								if="__config__.app.isApp('gst')" />
 
 				</toolbar>
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" width="120" />
