@@ -241,7 +241,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-move-attrs-adjusting-move">
-		<attribute for="adjustingMove" name="readonly" expr="eval: period.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
+		<attribute for="adjustingMove" name="readonly" expr="eval: period?.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
 		<attribute for="adjustingMove" name="readonly" expr="true" if="eval: statusSelect &gt; 2"/>
 	</action-attrs>
 
