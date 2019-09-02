@@ -211,5 +211,6 @@
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
 - SaleOrder : Fix NPE on click of generate customer deliveries
 - Advance data import:fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
+- MOVE : Fix NPE while creating new accounting move.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
