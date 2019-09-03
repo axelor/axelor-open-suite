@@ -9,6 +9,7 @@
 - Studio: sidebar option for panel
 - Add DMS Import.
 - Map : Filter out the data with empty address.
+- Studio : Tab display for panel tab
 
 ## Improvements
 - Remove Pack Feature from Product.
