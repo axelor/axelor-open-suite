@@ -96,6 +96,7 @@
 - PRODUCTION: Complete demo data.
 - SALE ORDER LINE VIEW : Removal of spacer.
 - Move/MoveLine : Changed condition in dispalying fields in form-view and also added translation
+- PAYMENTMODE : form and grid views defined on bankOrderFileFormat
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
