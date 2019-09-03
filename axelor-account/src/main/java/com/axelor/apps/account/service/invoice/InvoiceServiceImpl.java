@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -366,6 +366,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
+  }
+
   @Override
   @Transactional
   public Invoice mergeInvoice(
@@ -424,11 +448,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
     Beans.get(InvoiceRepository.class).save(invoiceMerged);
-    deleteOldInvoices(invoiceList);
     return invoiceMerged;
   }
 
   @Override
+  @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
     for (Invoice invoicetemp : invoiceList) {
       invoiceRepo.remove(invoicetemp);

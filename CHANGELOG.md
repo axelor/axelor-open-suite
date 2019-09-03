@@ -1,7 +1,22 @@
 # Changelog
 
-## [Unreleased 5.0.9]
-## Features
+## [5.0.10] - unreleased
+## Improvements
+- YEAR : disable canEdit on company field in year-form.
+- MRP : add a try catch block in generateAllProposals method.
+- TIMESHEET : Throw an alert on timesheet validation.
+
+## Bug Fixes
+- STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
+- STOCK MOVE : fixed invoicing of stock moves containing several lines with the same product
+- SALE ORDER : Fix NPE while changing contactPartner
+- EMPLOYEE : Fixed timesheet dashlet domain
+- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
+- Move various fields and actions to convenient modules.
+- Move 'wizard-client-form-open-my-tickets' action to helpdesk module.
+- TaxLine: tax field is now readonly and cannot be edited when selected.
+
+## [5.0.9] - 2019-06-19
 ## Improvements
 - HR : Update kilometric Allowance demo data(fr and en).
 - MOVE : Disable canEdit on journal
@@ -27,7 +42,7 @@
 - JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
 - JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
 - DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
-- TaxLine : tax field now readonly and can not be edit when selected.
+- Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
 
 ## [5.0.8] - 2019-01-17
 ## Features
@@ -39,7 +54,6 @@
 - Invoice : journal & partner account are now set on validation rather than on ventilation.
 - Advanced exports: store dates as dates and numbers as numbers in Excel export.
 - Base : Removal of PartnerList object and its relevant controller because of no use.
-- HR : Update kilometric Allowance demo data(fr and en).
 
 ## Bug Fixes
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
@@ -755,7 +769,6 @@ Also, improve the sale order line grid and form views.
 - Fix custom model form view with latest from adk.
 - Fix resource management from project, removed unwanted menus and views related to it. 
 
-
 ## [4.2.5] - 2018-10-06
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
@@ -1107,7 +1120,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...5.0-dev
+[5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...v5.0.9
 [5.0.8]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.0.8
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6

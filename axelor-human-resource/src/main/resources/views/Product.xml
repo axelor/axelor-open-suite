@@ -15,7 +15,7 @@
     </grid>
 
    <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
-    <toolbar>
+        <toolbar>
     		<button name="sendByEmail" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheet" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
@@ -169,6 +169,8 @@
 		<field name="sellable" expr="false"/>
     </action-record>
     
-
+    <action-record name="hr-action-product-record-default-new" model="com.axelor.apps.base.db.Product">
+    	<field name="expense" expr="false"/>
+    </action-record>
 	
 </object-views>

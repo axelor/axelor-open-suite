@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -65,7 +64,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   private SaleOrderInvoiceService saleOrderInvoiceService;
   private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-  private StockMoveLineService stockMoveLineService;
+  private StockMoveLineSupplychainServiceImpl stockMoveLineServiceSupplychain;
   private InvoiceRepository invoiceRepository;
   private StockMoveRepository stockMoveRepo;
 
@@ -73,12 +72,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public StockMoveInvoiceServiceImpl(
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
-      StockMoveLineService stockMoveLineService,
+      StockMoveLineSupplychainServiceImpl stockMoveLineServiceSupplychain,
       InvoiceRepository invoiceRepository,
       StockMoveRepository stockMoveRepo) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
-    this.stockMoveLineService = stockMoveLineService;
+    this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.invoiceRepository = invoiceRepository;
     this.stockMoveRepo = stockMoveRepo;
   }
@@ -772,7 +771,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   /**
-   * Get a list of stock move lines consolidated by product.
+   * Get a list of stock move lines consolidated by parent line (sale or purchase order).
    *
    * @param stockMoveLineList
    * @return
@@ -780,21 +779,38 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
    */
   private List<StockMoveLine> getConsolidatedStockMoveLineList(
       List<StockMoveLine> stockMoveLineList) throws AxelorException {
-    Map<Product, List<StockMoveLine>> stockMoveLineMap = new LinkedHashMap<>();
+    Map<SaleOrderLine, List<StockMoveLine>> stockMoveLineSaleMap = new LinkedHashMap<>();
+    Map<PurchaseOrderLine, List<StockMoveLine>> stockMoveLinePurchaseMap = new LinkedHashMap<>();
+    List<StockMoveLine> resultList = new ArrayList<>();
+
+    List<StockMoveLine> list;
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      List<StockMoveLine> list = stockMoveLineMap.get(stockMoveLine.getProduct());
-      if (list == null) {
-        list = new ArrayList<>();
-        stockMoveLineMap.put(stockMoveLine.getProduct(), list);
+      if (stockMoveLine.getSaleOrderLine() != null) {
+        list = stockMoveLineSaleMap.get(stockMoveLine.getSaleOrderLine());
+        if (list == null) {
+          list = new ArrayList<>();
+          stockMoveLineSaleMap.put(stockMoveLine.getSaleOrderLine(), list);
+        }
+        list.add(stockMoveLine);
+      } else if (stockMoveLine.getPurchaseOrderLine() != null) {
+        list = stockMoveLinePurchaseMap.get(stockMoveLine.getPurchaseOrderLine());
+        if (list == null) {
+          list = new ArrayList<>();
+          stockMoveLinePurchaseMap.put(stockMoveLine.getPurchaseOrderLine(), list);
+        }
+        list.add(stockMoveLine);
+      } else { // if the stock move line does not have a parent line (sale or purchase order line)
+        resultList.add(stockMoveLine);
       }
-      list.add(stockMoveLine);
     }
 
-    List<StockMoveLine> mergedStockMoveLineList = new ArrayList<>();
-    for (List<StockMoveLine> stockMoveLines : stockMoveLineMap.values()) {
-      mergedStockMoveLineList.add(stockMoveLineService.getMergedStockMoveLine(stockMoveLines));
+    for (List<StockMoveLine> stockMoveLines : stockMoveLineSaleMap.values()) {
+      resultList.add(stockMoveLineServiceSupplychain.getMergedStockMoveLine(stockMoveLines));
     }
-    return mergedStockMoveLineList;
+    for (List<StockMoveLine> stockMoveLines : stockMoveLinePurchaseMap.values()) {
+      resultList.add(stockMoveLineServiceSupplychain.getMergedStockMoveLine(stockMoveLines));
+    }
+    return resultList;
   }
 }

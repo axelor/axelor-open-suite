@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,13 +17,25 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
-import com.axelor.apps.base.db.EventsPlanning;
-import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -37,16 +49,16 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
-import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -61,38 +73,19 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.mail.MessagingException;
 
 /** @author axelor */
 public class TimesheetServiceImpl implements TimesheetService {
 
   protected PriceListService priceListService;
-
   protected AppHumanResourceService appHumanResourceService;
-
   protected HRConfigService hrConfigService;
-
   protected TemplateMessageService templateMessageService;
-
   protected ProjectRepository projectRepo;
-
   protected UserRepository userRepo;
-
   protected UserHrService userHrService;
-
   protected TimesheetLineService timesheetLineService;
 
   @Inject
@@ -169,6 +162,55 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     return null;
+  }
+
+  public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException {
+    LeaveService leaveService = Beans.get(LeaveService.class);
+    PublicHolidayHrService publicHolidayHrService = Beans.get(PublicHolidayHrService.class);
+
+    User user = timesheet.getUser();
+    Employee employee = user.getEmployee();
+    if (employee.getPublicHolidayEventsPlanning() == null) {
+      throw new AxelorException(
+          timesheet,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
+          user.getName());
+    }
+    WeeklyPlanning planning = employee.getWeeklyPlanning();
+    if (planning == null) {
+      throw new AxelorException(
+          timesheet,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_DAY_PLANNING),
+          user.getName());
+    }
+    List<DayPlanning> dayPlanningList = planning.getWeekDays();
+    Map<Integer, String> correspMap = getCorresMap();
+
+    List<TimesheetLine> timesheetLines = timesheet.getTimesheetLineList();
+    timesheetLines.sort(Comparator.comparing(TimesheetLine::getDate));
+    for (int i = 0; i < timesheetLines.size(); i++) {
+
+      if (i + 1 < timesheetLines.size()) {
+        LocalDate date1 = timesheetLines.get(i).getDate();
+        LocalDate date2 = timesheetLines.get(i + 1).getDate();
+        LocalDate missingDay = date1.plusDays(1);
+
+        while (ChronoUnit.DAYS.between(date1, date2) > 1) {
+
+          if (isWorkedDay(missingDay, correspMap, dayPlanningList)
+              && !leaveService.isLeaveDay(user, missingDay)
+              && !publicHolidayHrService.checkPublicHolidayDay(missingDay, employee)) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD, "Line for %s is missing.", missingDay);
+          }
+
+          date1 = missingDay;
+          missingDay = missingDay.plusDays(1);
+        }
+      }
+    }
   }
 
   @Override
@@ -259,7 +301,6 @@ public class TimesheetServiceImpl implements TimesheetService {
       Product product)
       throws AxelorException {
 
-    TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
     User user = timesheet.getUser();
     Employee employee = user.getEmployee();
 
@@ -288,7 +329,7 @@ public class TimesheetServiceImpl implements TimesheetService {
           I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
           user.getName());
     }
-    WeeklyPlanning planning = user.getEmployee().getWeeklyPlanning();
+    WeeklyPlanning planning = employee.getWeeklyPlanning();
     if (planning == null) {
       throw new AxelorException(
           timesheet,
@@ -297,9 +338,45 @@ public class TimesheetServiceImpl implements TimesheetService {
           user.getName());
     }
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
+    Map<Integer, String> correspMap = getCorresMap();
 
     LocalDate fromDate = fromGenerationDate;
     LocalDate toDate = toGenerationDate;
+
+    if (employee.getPublicHolidayEventsPlanning() == null) {
+      throw new AxelorException(
+          timesheet,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
+          user.getName());
+    }
+
+    LeaveService leaveService = Beans.get(LeaveService.class);
+    PublicHolidayHrService publicHolidayHrService = Beans.get(PublicHolidayHrService.class);
+
+    while (!fromDate.isAfter(toDate)) {
+      if (isWorkedDay(fromDate, correspMap, dayPlanningList)
+          && !leaveService.isLeaveDay(user, fromDate)
+          && !publicHolidayHrService.checkPublicHolidayDay(fromDate, employee)) {
+
+        TimesheetLine timesheetLine =
+            timesheetLineService.createTimesheetLine(
+                project,
+                product,
+                user,
+                fromDate,
+                timesheet,
+                timesheetLineService.computeHoursDuration(timesheet, logTime, true),
+                "");
+        timesheetLine.setDuration(logTime);
+      }
+
+      fromDate = fromDate.plusDays(1);
+    }
+    return timesheet;
+  }
+
+  private Map<Integer, String> getCorresMap() {
     Map<Integer, String> correspMap = new HashMap<>();
     correspMap.put(1, "monday");
     correspMap.put(2, "tuesday");
@@ -308,79 +385,23 @@ public class TimesheetServiceImpl implements TimesheetService {
     correspMap.put(5, "friday");
     correspMap.put(6, "saturday");
     correspMap.put(7, "sunday");
+    return correspMap;
+  }
 
-    // Leaving list
-    List<LeaveRequest> leaveList =
-        LeaveRequestRepository.of(LeaveRequest.class)
-            .all()
-            .filter("self.user = ?1 AND (self.statusSelect = 2 OR self.statusSelect = 3)", user)
-            .fetch();
-
-    // Public holidays list
-    EventsPlanning publicHolidayEventsPlanning = employee.getPublicHolidayEventsPlanning();
-    List<EventsPlanningLine> publicHolidayList;
-    if (publicHolidayEventsPlanning == null) {
-      throw new AxelorException(
-          timesheet,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TIMESHEET_EMPLOYEE_PUBLIC_HOLIDAY_EVENTS_PLANNING),
-          user.getName());
-    } else {
-      publicHolidayList = employee.getPublicHolidayEventsPlanning().getEventsPlanningLineList();
+  private boolean isWorkedDay(
+      LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
+    DayPlanning dayPlanningCurr = new DayPlanning();
+    for (DayPlanning dayPlanning : dayPlanningList) {
+      if (dayPlanning.getName().equals(correspMap.get(date.getDayOfWeek().getValue()))) {
+        dayPlanningCurr = dayPlanning;
+        break;
+      }
     }
 
-    while (!fromDate.isAfter(toDate)) {
-      DayPlanning dayPlanningCurr = new DayPlanning();
-      for (DayPlanning dayPlanning : dayPlanningList) {
-        if (dayPlanning.getName().equals(correspMap.get(fromDate.getDayOfWeek().getValue()))) {
-          dayPlanningCurr = dayPlanning;
-          break;
-        }
-      }
-      if (dayPlanningCurr.getMorningFrom() != null
-          || dayPlanningCurr.getMorningTo() != null
-          || dayPlanningCurr.getAfternoonFrom() != null
-          || dayPlanningCurr.getAfternoonTo() != null) {
-        /*Check if the day is not a leaving day */
-        boolean noLeave = true;
-        if (leaveList != null) {
-          for (LeaveRequest leave : leaveList) {
-            if ((leave.getFromDate().isBefore(fromDate) && leave.getToDate().isAfter(fromDate))
-                || leave.getFromDate().isEqual(fromDate)
-                || leave.getToDate().isEqual(fromDate)) {
-              noLeave = false;
-              break;
-            }
-          }
-        }
-
-        /*Check if the day is not a public holiday */
-        boolean noPublicHoliday = true;
-        if (publicHolidayList != null) {
-          for (EventsPlanningLine publicHoliday : publicHolidayList) {
-            if (publicHoliday.getDate().isEqual(fromDate)) {
-              noPublicHoliday = false;
-              break;
-            }
-          }
-        }
-
-        if (noLeave && noPublicHoliday) {
-          TimesheetLine timesheetLine =
-              timesheetLineService.createTimesheetLine(
-                  project,
-                  product,
-                  user,
-                  fromDate,
-                  timesheet,
-                  timesheetLineService.computeHoursDuration(timesheet, logTime, true),
-                  "");
-          timesheetLine.setDuration(logTime);
-        }
-      }
-      fromDate = fromDate.plusDays(1);
-    }
-    return timesheet;
+    return dayPlanningCurr.getMorningFrom() != null
+        || dayPlanningCurr.getMorningTo() != null
+        || dayPlanningCurr.getAfternoonFrom() != null
+        || dayPlanningCurr.getAfternoonTo() != null;
   }
 
   @Override
@@ -576,8 +597,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       }
     }
 
-    String description = user.getFullName(),
-        productName = product.getName() + " " + "(" + date + ")";
+    String description = user.getFullName();
+    String productName = product.getName() + " " + "(" + date + ")";
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -704,17 +725,18 @@ public class TimesheetServiceImpl implements TimesheetService {
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.TIMESHEET_NULL_FROM_DATE));
+
     } else if (timesheet.getToDate() != null) {
       if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
         for (TimesheetLine timesheetLine : timesheetLineList) {
           count++;
-          if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
-            listId.add(count);
-          } else if (timesheetLine.getDate().isBefore(timesheet.getFromDate())) {
+          LocalDate date = timesheetLine.getDate();
+          if (date.isAfter(timesheet.getToDate()) || date.isBefore(timesheet.getFromDate())) {
             listId.add(count);
           }
         }
       }
+
     } else {
       if (timesheetLineList != null && !timesheetLineList.isEmpty()) {
         for (TimesheetLine timesheetLine : timesheetLineList) {
@@ -725,12 +747,13 @@ public class TimesheetServiceImpl implements TimesheetService {
         }
       }
     }
+
     if (!listId.isEmpty()) {
       throw new AxelorException(
           timesheet,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT),
-          Joiner.on(",").join(listId));
+          listId.stream().map(Object::toString).collect(Collectors.joining(",")));
     }
   }
 

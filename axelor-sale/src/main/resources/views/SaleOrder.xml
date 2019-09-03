@@ -1011,7 +1011,7 @@
 	</action-record>
 
 	<action-record name="action-record-so-contact-partner-change" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval: contactPartner.mainPartner" if="contactPartner.mainPartner != null"/>
+    	<field name="clientPartner" expr="eval: contactPartner?.mainPartner" if="contactPartner?.mainPartner != null"/>
     </action-record>
 
     <action-method name="action-sale-order-record-compute-end-of-validity-date">

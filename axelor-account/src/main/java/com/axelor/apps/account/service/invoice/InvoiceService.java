@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -145,6 +145,17 @@ public interface InvoiceService {
   public void setDraftSequence(Invoice invoice) throws AxelorException;
 
   public void generateBudgetDistribution(Invoice invoice);
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException;
 
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
