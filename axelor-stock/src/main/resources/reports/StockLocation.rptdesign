@@ -834,7 +834,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 	Location.id as location_id, StockLocationLine.id as location_line_id, Location.name as location_name, Product.name AS product_name,
-		Product.code AS product_code, StockLocationLine.current_qty, Unit.name as unit_code, Product.sale_price,
+		Product.code AS product_code, StockLocationLine.current_qty, Unit.label_to_printing as unit_code, Product.sale_price,
 		Currency.code AS currency_code, ProductFamily.name as product_family,
 		(CASE WHEN Product.cost_type_select = 3 THEN StockLocationLine.avg_price ELSE Product.cost_price END) as "cost_price",
 		StockLocationLine.avg_price as "wap", Product.cost_type_select,
@@ -2731,8 +2731,31 @@ order by Product.code
                             <property name="fontSize">9pt</property>
                             <property name="color">#000000</property>
                             <property name="textAlign">left</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">row["unit_code"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row["unit_code"]}</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4495">

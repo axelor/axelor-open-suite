@@ -1022,7 +1022,7 @@ where CostSheet.id = ?]]></xml-property>
 	CostSheetGroup.name as "CostSheetGroup",
 	CostSheetLine.consumption_qty as "ConsumptionQty",
 	CostSheetLine.type_select_icon as "Type",
-	Unit.name as "Unit",
+	Unit.label_to_printing as "Unit",
 	CostSheetLine.cost_price as "CostPrice"
 from production_cost_sheet as CostSheet 
 LEFT JOIN production_cost_sheet_line as ParentCostSheetLine ON CostSheet.id = ParentCostSheetLine.cost_sheet 
@@ -1488,7 +1488,7 @@ where CostSheet.id = ?]]></xml-property>
 	CostSheetGroup.name as "CostSheetGroup",
 	ParentCostSheetLine.consumption_qty as "ConsumptionQty",
 	ParentCostSheetLine.type_select as "Type",
-	Unit.name as "Unit",
+	Unit.label_to_printing as "Unit",
 	ParentCostSheetLine.cost_price as "CostPrice"
 from production_cost_sheet as CostSheet 
 LEFT JOIN production_cost_sheet_line as ParentCostSheetLine ON CostSheet.id = ParentCostSheetLine.cost_sheet 
@@ -3018,8 +3018,31 @@ str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.pn
                         <text id="391">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">row["Unit"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["Unit"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if( row["translation"] != null) {row["translation"]} else{row["Unit"]}</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="392">
@@ -3244,8 +3267,31 @@ str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.pn
                         <property name="paddingTop">7pt</property>
                         <text id="482">
                             <property name="textAlign">center</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">row["Unit"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["Unit"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if( row["translation"] != null) {row["translation"]} else {row["Unit"]}</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="483">
