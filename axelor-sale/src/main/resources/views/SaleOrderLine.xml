@@ -199,7 +199,7 @@
 			<field name="productName"/>
 			<field name="qty"  hideIf="typeSelect == 2" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="typeSelect == 2"/>
 			<field name="unit"  hideIf="typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-			<field name="taxLine"  hideIf="typeSelect == 2" colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			<field name="taxLine" canEdit="false"  hideIf="typeSelect == 2" colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 			<field name="price" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 			<field name="inTaxPrice" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
