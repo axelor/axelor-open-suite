@@ -98,6 +98,7 @@
 - Move/MoveLine : Changed condition in dispalying fields in form-view and also added translation
 - BANKPAYMENTBATCH : form and grid views are defined for field 'bankStatementFileFormatSet'
 - PAYMENTMODE : form and grid views defined on bankOrderFileFormat
+- EBICS PARTNER SERVICE : ebics-partner-service-form renamed to bo-ebics-partner-service-form
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
