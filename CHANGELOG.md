@@ -167,6 +167,7 @@
 - PARTNER: Checks the consistency of the address list of a partner.
 - DEMO DATA : Rename field data.
 - SALE ORDER/ PURCHASE ORDER : Removal of spacer.
+- ACCOUNTING BATCH : alert when the closing annual accounts batch already ran
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
