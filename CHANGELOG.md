@@ -191,6 +191,7 @@
 - LEAVE REQUEST : Fix non explicit exception on leave line select.
 - RawMaterialRequirement report: fix sql query.
 - Improve exception handling in leave request form.
+- TaxLine: tax field is now readonly and cannot be edited when selected.
 
 ## [5.1.7] - 2019-06-17
 ## Features
