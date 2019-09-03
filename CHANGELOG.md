@@ -14,6 +14,7 @@
 - PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
 - MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
 - EBICS USER : add the possibility to print ebics request log.
+- STOCK : Addition of new selection field 'Stock location value' in Stock Config.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -93,6 +94,13 @@
 - EVENT REMINDER : improved behaviour of event reminders.
 - Production : Remove stockLocation from Machine Type.
 - PRODUCTION: Complete demo data.
+- SALE ORDER LINE VIEW : Removal of spacer.
+- Move/MoveLine : Changed condition in dispalying fields in form-view and also added translation
+- BANKPAYMENTBATCH : form and grid views are defined for field 'bankStatementFileFormatSet'
+- PAYMENTMODE : form and grid views defined on bankOrderFileFormat
+- EBICS PARTNER SERVICE : ebics-partner-service-form renamed to bo-ebics-partner-service-form
+- ACCOUNTING MOVE : Addition of widget boolean-switch in form view
+- MANUF ORDER : copy MO but not operations orders
 - MOVE : add a control on period status
 
 ## Bug Fixes
@@ -178,9 +186,14 @@
 - HELPDESK : Fix NPE when computing a total timer duration
 - BankStatementLineAFB120 : Fix Long index name issue with entity inheritance.
 - EXPENSE : Fix NPE when the RIB is not configured for the receiver
-- ACCOUNT CONFIG: New panel for forecasted invoice accounts 
+- ACCOUNT CONFIG: New panel for forecasted invoice accounts
 - Sale Order: Forbid negative invoicing value.
 - Studio: Fix display of duplicate models and allow to select core models
+- LEAVE REQUEST : Fix NPE on date computation 
+- LEAVE REQUEST : Fix non explicit exception on leave line select.
+- RawMaterialRequirement report: fix sql query.
+- Improve exception handling in leave request form.
+- TaxLine: tax field is now readonly and cannot be edited when selected.
 
 ## [5.1.7] - 2019-06-17
 ## Features
@@ -230,6 +243,7 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
 - TRACKING : Added all fields for all apps and also for company's configuration
 - FISCAL POSTION DEMO DATA : set several tax equivalent with reverse charge to true.
+- MOVE LINE EXPORT : only validated move for FEC Administration
 
 ## Bug Fixes
 - STOCK MOVE : Added fr translation for 'Not Invoiced' tag
