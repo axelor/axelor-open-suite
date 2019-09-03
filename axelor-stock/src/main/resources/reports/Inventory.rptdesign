@@ -703,7 +703,7 @@ where
 	InventoryLine.current_qty,
 	(CASE WHEN Inventory.status_select in (1,2) THEN null ELSE InventoryLine.real_qty END) as "real_qty",
 	InventoryLine.description,
-	Unit.name as "unit",
+	Unit.label_to_printing as "unit",
 	InventoryLine.rack as "rack",
 	TrackingNumber.tracking_number_seq as "TrackingNumberSeq",
 	ProductCategory.name as "ProductCategory",
@@ -2616,6 +2616,29 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopWidth">thin</property>
                         <text id="4701">
                             <property name="textAlign">left</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">row["unit"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>row["unit"]</VALUE-OF>]]></text-property>
                         </text>
@@ -2639,8 +2662,32 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopWidth">thin</property>
                         <text id="4705">
                             <property name="textAlign">left</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">row["unit"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["real_qty"]!=null?row["unit"]:null</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["real_qty"] != null &amp;&amp; row["translation"] != null){row["translation"]} else if 
+(row._outer["real_qty"] != null &amp;&amp; row["translation"] == null) {row._outer["unit"]} else { null}</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4706">

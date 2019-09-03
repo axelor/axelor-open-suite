@@ -111,6 +111,9 @@
 - Action Builder : Add feature to create templates for json models to send email
 - FORECAST RECAP : sequence feature added for ForeCastRecap
 - Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
+- FORECAST RECAP : Add support of printing report in 'xls' and 'ods' format.
+- PERIOD: Add a new popup when closing period to allow user to check and validate move lines.
+- UNIT : add translatable on name and labelToPrinting on unit-form and on every birt that display labelToPrinting unit will be automatically translate in partner's language
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -163,6 +166,7 @@
 - ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
 - PARTNER: Checks the consistency of the address list of a partner.
 - DEMO DATA : Rename field data.
+- SALE ORDER/ PURCHASE ORDER : Removal of spacer.
 - ACCOUNTING BATCH : alert when the closing annual accounts batch already ran
 
 ## Bug Fixes
@@ -208,5 +212,8 @@
 - Update xsd to ADK 5.1
 - Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
+- SaleOrder : Fix NPE on click of generate customer deliveries
+- Advance data import:fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
+- MOVE : Fix NPE while creating new accounting move.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

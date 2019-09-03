@@ -144,4 +144,10 @@
 		<option value="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl">Stock</option>
 	</selection>
 
+	<selection name='stock.stock.location.value.type'>
+		<option value="1">WAP value</option>
+		<option value="2">Accounting value</option>
+		<option value="3">Sale value</option>
+	</selection>
+
 </object-views>

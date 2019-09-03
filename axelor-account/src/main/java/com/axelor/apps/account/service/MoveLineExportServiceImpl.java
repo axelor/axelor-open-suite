@@ -1131,7 +1131,14 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     LocalDate interfaceDate = accountingReport.getDate();
 
-    String moveLineQueryStr = "";
+    String moveLineQueryStr =
+        String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_VALIDATED);
+    if (!administration) {
+      moveLineQueryStr +=
+          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
+    }
+    moveLineQueryStr += ")";
+
     moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
     if (accountingReport.getYear() != null) {
       moveLineQueryStr +=
@@ -1151,6 +1158,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
       }
     }
+
     if (accountingReport.getDate() != null) {
       moveLineQueryStr +=
           String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
@@ -1174,14 +1182,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<MoveLine> moveLineList =
         moveLineRepo
             .all()
-            .filter(
-                "(self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) " + moveLineQueryStr,
-                MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK)
+            .filter(moveLineQueryStr)
             .order("move.validationDate")
             .order("date")
             .order("name")
             .fetch();
+
     if (!moveLineList.isEmpty()) {
       List<Move> moveList = new ArrayList<>();
       for (MoveLine moveLine : moveLineList) {
