@@ -226,6 +226,7 @@
 "Accounting export","Export comptable",,
 "Accounting exports","Exports comptables",,
 "Accounting information",,,
+"Accounting move can not be validated because its fiscal period is closed.","L'écriture ne peut être validée car sa période fiscale est clôturée",,
 "Accounting report","Rapport comptable",,
 "Accounting reports","Rapports comptables",,
 "Accounting settings","Configurations comptables",,
