@@ -207,10 +207,11 @@ public class MoveValidateService {
     log.debug("Validation de l'écriture comptable {}", move.getReference());
 
     this.checkPreconditions(move);
-    
+
     if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.MOVE_11));
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_VALIDATION_FISCAL_PERIOD_CLOSED));
     }
 
     Boolean dayBookMode =
