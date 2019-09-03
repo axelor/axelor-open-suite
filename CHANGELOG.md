@@ -96,6 +96,8 @@
 - PRODUCTION: Complete demo data.
 - SALE ORDER LINE VIEW : Removal of spacer.
 - Move/MoveLine : Changed condition in dispalying fields in form-view and also added translation
+- BANK ORDER : add a viewer with technical origin (Automatic,Entry,Import) information display.
+- BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names

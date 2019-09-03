@@ -81,7 +81,8 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             bankDetails,
             currency,
             expense.getFullName(),
-            expense.getFullName());
+            expense.getFullName(),
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
     bankOrder.addBankOrderLineListItem(
         bankOrderLineService.createBankOrderLine(
