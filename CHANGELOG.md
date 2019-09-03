@@ -113,6 +113,7 @@
 - Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
 - FORECAST RECAP : Add support of printing report in 'xls' and 'ods' format.
 - PERIOD: Add a new popup when closing period to allow user to check and validate move lines.
+- UNIT : add translatable on name and labelToPrinting on unit-form and on every birt that display labelToPrinting unit will be automatically translate in partner's language
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
