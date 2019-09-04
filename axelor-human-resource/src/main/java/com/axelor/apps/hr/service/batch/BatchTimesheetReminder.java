@@ -21,6 +21,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -39,8 +40,18 @@ import javax.mail.MessagingException;
 
 public class BatchTimesheetReminder extends BatchStrategy {
 
-  @Inject protected TimesheetRepository timesheetRepo;
-  @Inject protected MessageService messageService;
+  protected TimesheetRepository timesheetRepo;
+  protected MessageService messageService;
+
+  @Inject
+  public BatchTimesheetReminder(
+      LeaveManagementService leaveManagementService,
+      TimesheetRepository timesheetRepo,
+      MessageService messageService) {
+    super(leaveManagementService);
+    this.timesheetRepo = timesheetRepo;
+    this.messageService = messageService;
+  }
 
   @Override
   protected void process() {
