@@ -76,4 +76,7 @@ public interface ITranslation {
       "SaleOrder.estimatedDeliveryDate"; /*)*/;
   public static final String SALES_ORDER_IS_ISPM_REQUIRED = /*$$(*/
       "SaleOrder.isIspmRequired"; /*)*/;
+
+  public static final String SALES_ORDER_PRODUCT_SEQUENCE = /*$$(*/
+      "SaleOrder.productSequence"; /*)*/
 }

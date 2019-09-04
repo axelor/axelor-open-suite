@@ -107,14 +107,14 @@
 	   		<field name="$totalDebit" title="Total debit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalDebit}}</h3>
+						<h3>{{$fmt('$totalDebit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
 	   		<field name="$totalCredit" title="Total credit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalCredit}}</h3>
+						<h3>{{$fmt('$totalCredit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
@@ -122,8 +122,8 @@
 				<viewer>
 					<![CDATA[
 						<h3>
-							<span ng-show="record.$difference == 0">{{record.$difference}}</span>
-							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{record.$difference}}</span>
+							<span ng-show="record.$difference == 0">{{$fmt('$difference')}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')}}</span>
 						</h3>
 					]]>
 				</viewer>
@@ -209,7 +209,7 @@
     <action-validate name="action-move-validate-check-date-of-reversion">
       <error message="Reverse move date should not be prior to the original move date (${LocalDate.parse(_moveDate).format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))})."
       		if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))"/>
-      <error message="Please select an earlier date or equal to today's date " if="LocalDate.parse(dateOfReversion).isAfter(__date__)"/>
+      <error message="Please select an earlier date or equal to today's date" if="LocalDate.parse(dateOfReversion).isAfter(__date__)"/>
     </action-validate>
 
    	<!-- ACTION RECORD -->
@@ -241,7 +241,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-move-attrs-adjusting-move">
-		<attribute for="adjustingMove" name="readonly" expr="eval: period.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
+		<attribute for="adjustingMove" name="readonly" expr="eval: period?.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
 		<attribute for="adjustingMove" name="readonly" expr="true" if="eval: statusSelect &gt; 2"/>
 	</action-attrs>
 

@@ -16,7 +16,7 @@
         <panel name="amountPanel" showIf="$contains([2,3],$number(operationSelect))">
 			<field name="isPercent" title="Is amount in %" type="boolean"
 				   />
-			<field name="amountToInvoice" title="Amount to invoice" type="decimal"
+			<field name="amountToInvoice" title="Amount to invoice" type="decimal" min="0"
 				   showIf="$contains([3],$number(operationSelect))"/>
 		</panel>
 		<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" hideIf="operationSelect != 2" canNew="false"

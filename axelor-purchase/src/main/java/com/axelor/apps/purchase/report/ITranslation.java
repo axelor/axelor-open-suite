@@ -92,4 +92,6 @@ public interface ITranslation {
       "PurchaseOrder.supplierCode"; /*)*/
   public static final String PURCHASE_ORDER_PRODUCT_PRODUCT_STANDARD = /*$$(*/
       "PurchaseOrder.productStandard"; /*)*/
+  public static final String PURCHASE_ORDER_PRODUCT_LINE_SEQUENCE = /*$$(*/
+      "PurchaseOrder.productSequence"; /*)*/
 }
