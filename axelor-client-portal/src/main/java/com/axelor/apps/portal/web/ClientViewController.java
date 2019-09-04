@@ -14,10 +14,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
+
+import java.util.List;
 import java.util.Map;
 
 public class ClientViewController {
-  static final String TITLE_COMPANY_TICKETS = /*$$(*/ "Tickets %s" /*)*/;
 
   public void completeClientViewIndicators(ActionRequest request, ActionResponse response) {
     Map<String, Object> map;
@@ -34,18 +37,18 @@ public class ClientViewController {
     response.setView(
         ActionView.define(I18n.get("Orders"))
             .model(SaleOrder.class.getName())
-            .add("grid", "sale-order-grid")
-            .add("form", "sale-order-form")
+            .add("grid", "sale-order-grid-client")
+            .add("form", "sale-order-form-client")
             .domain(domain)
             .map());
   }
 
-  public void showClientMyQuotationInProgress(ActionRequest request, ActionResponse response) {
+  public void showClientMyQuotation(ActionRequest request, ActionResponse response) {
     ClientViewService clientViewService = Beans.get(ClientViewService.class);
     User clientUser = clientViewService.getClientUser();
-    String domain = clientViewService.getQuotationInProgressOfUser(clientUser);
+    String domain = clientViewService.getQuotationsOfUser(clientUser);
     response.setView(
-        ActionView.define(I18n.get("Quotation in progress"))
+        ActionView.define(I18n.get("My quotations"))
             .model(SaleOrder.class.getName())
             .add("grid", "sale-order-grid")
             .add("form", "sale-order-form")
@@ -62,7 +65,7 @@ public class ClientViewController {
       response.setView(
           ActionView.define(I18n.get("Last order"))
               .model(SaleOrder.class.getName())
-              .add("form", "sale-order-form")
+              .add("form", "sale-order-form-client")
               .context("_showRecord", saleOrder.getId())
               .map());
     }
@@ -82,15 +85,28 @@ public class ClientViewController {
             .map());
   }
 
+  public void showClientMyNewTasks(ActionRequest request, ActionResponse response) {
+    ClientViewService clientViewService = Beans.get(ClientViewService.class);
+    User clientUser = clientViewService.getClientUser();
+    String domain = clientViewService.getNewTasksOfUser(clientUser);
+    response.setView(
+        ActionView.define(I18n.get("New tasks"))
+            .model(TeamTask.class.getName())
+            .add("grid", "team-task-grid")
+            .add("form", "team-task-form")
+            .domain(domain)
+            .map());
+  }
+
   public void showClientMyTasksInProgress(ActionRequest request, ActionResponse response) {
     ClientViewService clientViewService = Beans.get(ClientViewService.class);
     User clientUser = clientViewService.getClientUser();
     String domain = clientViewService.getTasksInProgressOfUser(clientUser);
     response.setView(
         ActionView.define(I18n.get("Tasks in progress"))
-            .model(Project.class.getName())
-            .add("grid", "project-grid")
-            .add("form", "project-form")
+            .model(TeamTask.class.getName())
+            .add("grid", "team-task-grid")
+            .add("form", "team-task-form")
             .domain(domain)
             .map());
   }
@@ -101,9 +117,9 @@ public class ClientViewController {
     String domain = clientViewService.getTasksDueOfUser(clientUser);
     response.setView(
         ActionView.define(I18n.get("Tasks due"))
-            .model(SaleOrder.class.getName())
-            .add("grid", "project-grid")
-            .add("form", "project-form")
+            .model(TeamTask.class.getName())
+            .add("grid", "team-task-grid")
+            .add("form", "team-task-form")
             .domain(domain)
             .map());
   }
@@ -114,13 +130,15 @@ public class ClientViewController {
     User clientUser = clientViewService.getClientUser();
     String domain = clientViewService.getLastDeliveryOfUser(clientUser);
     StockMove stockMove = Beans.get(StockMoveRepository.class).all().filter(domain).fetchOne();
-    response.setView(
-        ActionView.define(I18n.get("Last delivery"))
-            .model(StockMove.class.getName())
-            .add("form", "stock-move-form")
-            .context("_showRecord", stockMove.getId())
-            .domain(domain)
-            .map());
+    if (stockMove != null) {
+      response.setView(
+          ActionView.define(I18n.get("Last delivery"))
+              .model(StockMove.class.getName())
+              .add("form", "stock-move-form")
+              .context("_showRecord", stockMove.getId())
+              .domain(domain)
+              .map());
+    }
   }
 
   public void showClientMyNextDelivery(ActionRequest request, ActionResponse response) {
@@ -128,21 +146,36 @@ public class ClientViewController {
     User clientUser = clientViewService.getClientUser();
     String domain = clientViewService.getNextDeliveryOfUser(clientUser);
     StockMove stockMove = Beans.get(StockMoveRepository.class).all().filter(domain).fetchOne();
+    if (stockMove != null) {
+      response.setView(
+          ActionView.define(I18n.get("Next delivery"))
+              .model(StockMove.class.getName())
+              .add("form", "stock-move-form")
+              .context("_showRecord", stockMove.getId())
+              .domain(domain)
+              .map());
+    }
+  }
+
+  public void showClientMyPlannedDeliveries(ActionRequest request, ActionResponse response) {
+    ClientViewService clientViewService = Beans.get(ClientViewService.class);
+    User clientUser = clientViewService.getClientUser();
+    String domain = clientViewService.getPlannedDeliveriesOfUser(clientUser);
     response.setView(
-        ActionView.define(I18n.get("Next delivery"))
+        ActionView.define(I18n.get("Planned deliveries"))
             .model(StockMove.class.getName())
+            .add("grid", "stock-move-grid")
             .add("form", "stock-move-form")
-            .context("_showRecord", stockMove.getId())
             .domain(domain)
             .map());
   }
 
-  public void showClientMyRealizedDelivery(ActionRequest request, ActionResponse response) {
+  public void showClientReversions(ActionRequest request, ActionResponse response) {
     ClientViewService clientViewService = Beans.get(ClientViewService.class);
     User clientUser = clientViewService.getClientUser();
-    String domain = clientViewService.getRealizedDeliveryOfUser(clientUser);
+    String domain = clientViewService.getReversionsOfUser(clientUser);
     response.setView(
-        ActionView.define(I18n.get("Realized delivery"))
+        ActionView.define(I18n.get("My reversions"))
             .model(StockMove.class.getName())
             .add("grid", "stock-move-grid")
             .add("form", "stock-move-form")
@@ -159,7 +192,7 @@ public class ClientViewController {
         ActionView.define(I18n.get("Overdue invoices"))
             .model(Invoice.class.getName())
             .add("grid", "invoice-grid")
-            .add("form", "invoice-form")
+            .add("form", "invoice-client-form")
             .domain(domain)
             .map());
   }
@@ -172,7 +205,7 @@ public class ClientViewController {
         ActionView.define(I18n.get("Awaiting invoices"))
             .model(Invoice.class.getName())
             .add("grid", "invoice-grid")
-            .add("form", "invoice-form")
+            .add("form", "invoice-client-form")
             .domain(domain)
             .map());
   }
@@ -185,7 +218,20 @@ public class ClientViewController {
         ActionView.define(I18n.get("Total remaining"))
             .model(Invoice.class.getName())
             .add("grid", "invoice-grid")
-            .add("form", "invoice-form")
+            .add("form", "invoice-client-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void showClientMyRefund(ActionRequest request, ActionResponse response) {
+    ClientViewService clientViewService = Beans.get(ClientViewService.class);
+    User clientUser = clientViewService.getClientUser();
+    String domain = clientViewService.getRefundOfUser(clientUser);
+    response.setView(
+        ActionView.define(I18n.get("My refund"))
+            .model(Invoice.class.getName())
+            .add("grid", "invoice-refund-grid")
+            .add("form", "invoice-client-form")
             .domain(domain)
             .map());
   }
@@ -223,6 +269,19 @@ public class ClientViewController {
     String domain = clientViewService.getResolvedTicketsOfUser(clientUser);
     response.setView(
         ActionView.define(I18n.get("Resolved tickets"))
+            .model(Ticket.class.getName())
+            .add("grid", "ticket-grid")
+            .add("form", "ticket-form")
+            .domain(domain)
+            .map());
+  }
+
+  public void showClientMyLateTickets(ActionRequest request, ActionResponse response) {
+    ClientViewService clientViewService = Beans.get(ClientViewService.class);
+    User clientUser = clientViewService.getClientUser();
+    String domain = clientViewService.getLateTicketsOfUser(clientUser);
+    response.setView(
+        ActionView.define(I18n.get("Late tickets"))
             .model(Ticket.class.getName())
             .add("grid", "ticket-grid")
             .add("form", "ticket-form")

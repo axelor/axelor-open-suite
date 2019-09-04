@@ -12,6 +12,8 @@ public interface ClientViewService {
   /* Project */
   public String getTotalProjectsOfUser(User user);
 
+  public String getNewTasksOfUser(User user);
+
   public String getTasksInProgressOfUser(User user);
 
   public String getTasksDueOfUser(User user);
@@ -19,7 +21,7 @@ public interface ClientViewService {
   /* SaleOrder */
   public String getOrdersOfUser(User user);
 
-  public String getQuotationInProgressOfUser(User user);
+  public String getQuotationsOfUser(User user);
 
   public String getLastOrderOfUser(User user);
 
@@ -28,7 +30,9 @@ public interface ClientViewService {
 
   public String getNextDeliveryOfUser(User user);
 
-  public String getRealizedDeliveryOfUser(User user);
+  public String getPlannedDeliveriesOfUser(User user);
+
+  public String getReversionsOfUser(User user);
 
   /* Invoice */
   public String getOverdueInvoicesOfUser(User user);
@@ -37,10 +41,14 @@ public interface ClientViewService {
 
   public String getTotalRemainingOfUser(User user);
 
+  public String getRefundOfUser(User user);
+
   /* Ticket */
   public String getTicketsOfUser(User user);
 
   public String getCompanyTicketsOfUser(User user);
 
   public String getResolvedTicketsOfUser(User user);
+
+  public String getLateTicketsOfUser(User user);
 }

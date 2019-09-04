@@ -45,3 +45,4 @@
 "perm.helpdesk.Ticket.rwc";"com.axelor.apps.helpdesk.db.Ticket";"true";"true";"true";"false";"false";;
 "perm.helpdesk.TicketType.rwc";"com.axelor.apps.helpdesk.db.TicketType";"true";"true";"true";"false";"false";;
 "perm.helpdesk.Sla.rwc";"com.axelor.apps.helpdesk.db.Sla";"true";"true";"true";"false";"false";;
+"perm.teamTask.rwc";"com.axelor.team.db.TeamTask";"true";"true";"true";"false";"false";;

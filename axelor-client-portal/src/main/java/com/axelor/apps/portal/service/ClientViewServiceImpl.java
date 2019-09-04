@@ -61,22 +61,26 @@ public class ClientViewServiceImpl implements ClientViewService {
     User user = getClientUser();
     /* SaleOrder */
     map.put("$orders", getOrdersIndicator(user));
-    map.put("$quotationInProgress", getQuotationInProgressIndicator(user));
+    map.put("$myQuotation", getQuotationsIndicator(user));
     map.put("$lastOrder", getLastOrderIndicator(user));
     /* StockMove */
     map.put("$lastDelivery", getLastDeliveryIndicator(user));
     map.put("$nextDelivery", getNextDeliveryIndicator(user));
-    map.put("$realizedDelivery", getRealizedDeliveryIndicator(user));
+    map.put("$plannedDeliveries", getPlannedDeliveriesIndicator(user));
+    map.put("$myReversions", getReversionsIndicator(user));
     /* Invoice */
     map.put("$overdueInvoices", getOverdueInvoicesIndicator(user));
     map.put("$awaitingInvoices", getAwaitingInvoicesIndicator(user));
     map.put("$totalRemaining", getTotalRemainingIndicator(user));
+    map.put("$myRefund", getRefundIndicator(user));
     /* Helpdesk */
     map.put("$customerTickets", getCustomerTicketsIndicator(user));
     map.put("$companyTickets", getCompanyTicketsIndicator(user));
     map.put("$resolvedTickets", getResolvedTicketsIndicator(user));
+    map.put("$lateTickets", getLateTicketsIndicator(user));
     /* Project */
     map.put("$totalProjects", getTotalProjectsIndicator(user));
+    map.put("$newTasks", getNewTasksIndicator(user));
     map.put("$tasksInProgress", getTasksInProgressIndicator(user));
     map.put("$tasksDue", getTasksDueIndicator(user));
     return map;
@@ -88,15 +92,16 @@ public class ClientViewServiceImpl implements ClientViewService {
     return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
   }
 
-  protected Integer getQuotationInProgressIndicator(User user) {
-    List<SaleOrder> saleOrderList =
-        saleOrderRepo.all().filter(getQuotationInProgressOfUser(user)).fetch();
+  protected Integer getQuotationsIndicator(User user) {
+    List<SaleOrder> saleOrderList = saleOrderRepo.all().filter(getQuotationsOfUser(user)).fetch();
     return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
   }
 
   protected String getLastOrderIndicator(User user) {
     SaleOrder saleOrder = saleOrderRepo.all().filter(getLastOrderOfUser(user)).fetchOne();
-    return saleOrder != null ? saleOrder.getDeliveryDate().format(DATE_FORMATTER) : "Aucune";
+    return saleOrder != null
+        ? saleOrder.getConfirmationDateTime().format(DATE_FORMATTER)
+        : "Aucune";
   }
 
   /* StockMove Indicators */
@@ -107,12 +112,17 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   protected String getNextDeliveryIndicator(User user) {
     StockMove stockMove = stockMoveRepo.all().filter(getNextDeliveryOfUser(user)).fetchOne();
-    return stockMove != null ? stockMove.getRealDate().format(DATE_FORMATTER) : "Aucune";
+    return stockMove != null ? stockMove.getEstimatedDate().format(DATE_FORMATTER) : "Aucune";
   }
 
-  protected Integer getRealizedDeliveryIndicator(User user) {
+  protected Integer getPlannedDeliveriesIndicator(User user) {
     List<StockMove> stockMoveList =
-        stockMoveRepo.all().filter(getRealizedDeliveryOfUser(user)).fetch();
+        stockMoveRepo.all().filter(getPlannedDeliveriesOfUser(user)).fetch();
+    return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
+  }
+
+  protected Integer getReversionsIndicator(User user) {
+    List<StockMove> stockMoveList = stockMoveRepo.all().filter(getReversionsOfUser(user)).fetch();
     return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
   }
 
@@ -127,15 +137,23 @@ public class ClientViewServiceImpl implements ClientViewService {
     return !invoiceList.isEmpty() ? invoiceList.size() : 0;
   }
 
-  protected BigDecimal getTotalRemainingIndicator(User user) {
+  protected String getTotalRemainingIndicator(User user) {
     List<Invoice> invoiceList = invoiceRepo.all().filter(getTotalRemainingOfUser(user)).fetch();
-    return !invoiceList.isEmpty()
-        ? invoiceList
-            .stream()
-            .map(Invoice::getAmountRemaining)
-            .reduce((x, y) -> x.add(y))
-            .orElse(BigDecimal.ZERO)
-        : BigDecimal.ZERO;
+    if (!invoiceList.isEmpty()) {
+      BigDecimal total =
+          invoiceList
+              .stream()
+              .map(Invoice::getAmountRemaining)
+              .reduce((x, y) -> x.add(y))
+              .orElse(BigDecimal.ZERO);
+      return total.toString() + invoiceList.get(0).getCurrency().getSymbol();
+    }
+    return BigDecimal.ZERO.toString();
+  }
+
+  protected Integer getRefundIndicator(User user) {
+    List<Invoice> invoiceList = invoiceRepo.all().filter(getRefundOfUser(user)).fetch();
+    return !invoiceList.isEmpty() ? invoiceList.size() : 0;
   }
 
   /* Helpdesk Indicators */
@@ -154,10 +172,20 @@ public class ClientViewServiceImpl implements ClientViewService {
     return !ticketList.isEmpty() ? ticketList.size() : 0;
   }
 
+  protected Object getLateTicketsIndicator(User user) {
+    List<Ticket> ticketList = ticketRepo.all().filter(getLateTicketsOfUser(user)).fetch();
+    return !ticketList.isEmpty() ? ticketList.size() : 0;
+  }
+
   /* Project Indicators */
   protected Integer getTotalProjectsIndicator(User user) {
     List<Project> projectList = projectRepo.all().filter(getTotalProjectsOfUser(user)).fetch();
     return !projectList.isEmpty() ? projectList.size() : 0;
+  }
+
+  protected Integer getNewTasksIndicator(User user) {
+    List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getNewTasksOfUser(user)).fetch();
+    return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
   }
 
   protected Integer getTasksInProgressIndicator(User user) {
@@ -173,94 +201,169 @@ public class ClientViewServiceImpl implements ClientViewService {
   /* SaleOrder Query */
   @Override
   public String getOrdersOfUser(User user) {
-    return "self.clientPartner.id = "
-        + user.getPartner().getId()
-        + " AND self.statusSelect IN ("
-        + SaleOrderRepository.STATUS_ORDER_CONFIRMED
-        + ","
-        + SaleOrderRepository.STATUS_ORDER_COMPLETED
-        + ")";
+    String query =
+        "self.clientPartner.id = "
+            + user.getPartner().getId()
+            + " AND self.statusSelect IN ("
+            + SaleOrderRepository.STATUS_ORDER_CONFIRMED
+            + ","
+            + SaleOrderRepository.STATUS_ORDER_COMPLETED
+            + ")";
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   @Override
-  public String getQuotationInProgressOfUser(User user) {
-    return "self.clientPartner.id = "
-        + user.getPartner().getId()
-        + " AND self.statusSelect IN ("
-        + SaleOrderRepository.STATUS_DRAFT_QUOTATION
-        + ","
-        + SaleOrderRepository.STATUS_FINALIZED_QUOTATION
-        + ")";
+  public String getQuotationsOfUser(User user) {
+    String query =
+        "self.clientPartner.id = "
+            + user.getPartner().getId()
+            + " AND self.statusSelect IN ("
+            + SaleOrderRepository.STATUS_DRAFT_QUOTATION
+            + ","
+            + SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+            + ")";
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   @Override
   public String getLastOrderOfUser(User user) {
-    return "self.clientPartner.id = "
-        + user.getPartner().getId()
-        + " AND self.statusSelect = "
-        + SaleOrderRepository.STATUS_ORDER_CONFIRMED
-        + " ORDER BY self.confirmationDateTime DESC";
+    String query =
+        "self.clientPartner.id = "
+            + user.getPartner().getId()
+            + " AND self.statusSelect = "
+            + SaleOrderRepository.STATUS_ORDER_COMPLETED;
+
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    query = query + " ORDER BY self.confirmationDateTime DESC";
+    return query;
   }
 
   /* StockMove Query */
   @Override
   public String getLastDeliveryOfUser(User user) {
-    return "self.partner.id = "
-        + user.getPartner().getId()
-        + " AND self.typeSelect = "
-        + StockMoveRepository.TYPE_OUTGOING
-        + " AND self.statusSelect = "
-        + StockMoveRepository.STATUS_REALIZED
-        + " AND self.isReversion != true ORDER BY self.realDate DESC";
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.typeSelect = "
+            + StockMoveRepository.TYPE_OUTGOING
+            + " AND self.statusSelect = "
+            + StockMoveRepository.STATUS_REALIZED
+            + " AND self.isReversion != true";
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    query = query + " ORDER BY self.realDate DESC";
+    return query;
   }
 
   @Override
   public String getNextDeliveryOfUser(User user) {
-    return "self.partner.id = "
-        + user.getPartner().getId()
-        + " AND self.typeSelect = "
-        + StockMoveRepository.TYPE_OUTGOING
-        + " AND self.statusSelect = "
-        + StockMoveRepository.STATUS_PLANNED
-        + " AND self.isReversion != true ORDER BY self.estimatedDate ASC";
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.typeSelect = "
+            + StockMoveRepository.TYPE_OUTGOING
+            + " AND self.statusSelect = "
+            + StockMoveRepository.STATUS_PLANNED
+            + " AND self.isReversion != true";
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    query = query + " ORDER BY self.estimatedDate ASC";
+    return query;
   }
 
   @Override
-  public String getRealizedDeliveryOfUser(User user) {
-    return "self.partner.id = "
-        + user.getPartner().getId()
-        + " AND self.typeSelect = "
-        + StockMoveRepository.TYPE_OUTGOING
-        + " AND self.statusSelect = "
-        + StockMoveRepository.STATUS_REALIZED
-        + " AND self.isReversion != true";
+  public String getPlannedDeliveriesOfUser(User user) {
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.typeSelect = "
+            + StockMoveRepository.TYPE_OUTGOING
+            + " AND self.statusSelect = "
+            + StockMoveRepository.STATUS_PLANNED
+            + " AND self.isReversion != true";
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
+  }
+
+  @Override
+  public String getReversionsOfUser(User user) {
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.typeSelect = "
+            + StockMoveRepository.TYPE_OUTGOING
+            + " AND self.isReversion = true";
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   /* Invoice Query */
   @Override
   public String getOverdueInvoicesOfUser(User user) {
-    return "self.partner.id = "
-        + user.getPartner().getId()
-        + " AND self.dueDate < current_date() "
-        + " AND self.amountRemaining != 0 AND self.statusSelect != "
-        + InvoiceRepository.STATUS_CANCELED;
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.dueDate < current_date() "
+            + " AND self.amountRemaining != 0 AND self.statusSelect != "
+            + InvoiceRepository.STATUS_CANCELED;
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   @Override
   public String getAwaitingInvoicesOfUser(User user) {
-    return "self.partner.id = "
-        + user.getPartner().getId()
-        + " AND self.dueDate < current_date() "
-        + " AND self.amountRemaining != 0 AND self.statusSelect != "
-        + InvoiceRepository.STATUS_CANCELED;
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.dueDate < current_date() "
+            + " AND self.amountRemaining != 0 AND self.statusSelect != "
+            + InvoiceRepository.STATUS_CANCELED;
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   @Override
   public String getTotalRemainingOfUser(User user) {
-    return "self.partner.id = "
-        + user.getPartner().getId()
-        + " AND self.amountRemaining != 0 AND self.statusSelect != "
-        + InvoiceRepository.STATUS_CANCELED;
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.amountRemaining != 0 AND self.statusSelect != "
+            + InvoiceRepository.STATUS_CANCELED;
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
+  }
+
+  @Override
+  public String getRefundOfUser(User user) {
+    String query =
+        "self.partner.id = "
+            + user.getPartner().getId()
+            + " AND self.operationTypeSelect = "
+            + InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   /* Helpdesk Query */
@@ -268,53 +371,95 @@ public class ClientViewServiceImpl implements ClientViewService {
   public String getTicketsOfUser(User user) {
     return "self.customer.id = "
         + user.getPartner().getId()
-        + " OR self.createdBy.id = "
+        + " AND self.assignedToUser.id = "
         + user.getId();
   }
 
   @Override
   public String getCompanyTicketsOfUser(User user) {
-    return "self.project.company.id = "
-        + user.getActiveCompany().getId()
-        + " OR self.createdBy.id = "
-        + user.getId();
+    return "self.customer.id = "
+        + user.getPartner().getId()
+        + " AND self.assignedToUser.id = "
+        + user.getActiveCompany().getId();
   }
 
   @Override
   public String getResolvedTicketsOfUser(User user) {
-    return "(self.customer.id = "
+    return "self.customer.id = "
         + user.getPartner().getId()
-        + " OR self.createdBy.id = "
+        + " AND self.assignedToUser.id = "
         + user.getId()
-        + ") AND self.statusSelect = "
-        + TicketRepository.STATUS_RESOLVED;
+        + " AND self.statusSelect IN ("
+        + TicketRepository.STATUS_RESOLVED
+        + ", "
+        + TicketRepository.STATUS_CLOSED
+        + ")";
+  }
+
+  @Override
+  public String getLateTicketsOfUser(User user) {
+    return "self.customer.id = "
+        + user.getPartner().getId()
+        + " AND self.assignedToUser.id = "
+        + user.getId()
+        + " AND ((self.endDateT != null AND self.endDateT > self.deadlineDateT) "
+        + " OR (self.endDateT = null and self.deadlineDateT < current_date() ) )";
   }
 
   /* Project Query */
   @Override
   public String getTotalProjectsOfUser(User user) {
-    return "self.isProject = true AND self.clientPartner.id = "
-        + user.getPartner().getId()
-        + " AND self.statusSelect != "
-        + ProjectRepository.STATE_CANCELED;
+    String query =
+        "self.isProject = true AND self.clientPartner.id = "
+            + user.getPartner().getId()
+            + " AND self.statusSelect != "
+            + ProjectRepository.STATE_CANCELED;
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
+  }
+
+  @Override
+  public String getNewTasksOfUser(User user) {
+    String query =
+        "self.status = 'new' "
+            + " AND self.typeSelect = '"
+            + TeamTaskRepository.TYPE_TASK
+            + "' AND self.project.clientPartner.id = "
+            + user.getPartner().getId();
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.project.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   @Override
   public String getTasksInProgressOfUser(User user) {
-    return "self.status = 'in-progress'"
-        + " AND self.typeSelect = '"
-        + TeamTaskRepository.TYPE_TASK
-        + "' AND self.project.clientPartner.id = "
-        + user.getPartner().getId();
+    String query =
+        "self.status = 'in-progress'"
+            + " AND self.typeSelect = '"
+            + TeamTaskRepository.TYPE_TASK
+            + "' AND self.project.clientPartner.id = "
+            + user.getPartner().getId();
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.project.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 
   @Override
   public String getTasksDueOfUser(User user) {
-    return "self.status IN ('in-progress','new')"
-        + " AND self.project.clientPartner.id = "
-        + user.getPartner().getId()
-        + " AND self.typeSelect = '"
-        + TeamTaskRepository.TYPE_TASK
-        + "' AND self.taskEndDate  < current_date() ";
+    String query =
+        "self.status IN ('in-progress','new')"
+            + " AND self.project.clientPartner.id = "
+            + user.getPartner().getId()
+            + " AND self.typeSelect = '"
+            + TeamTaskRepository.TYPE_TASK
+            + "' AND self.taskEndDate  < current_date() ";
+    if (user.getActiveCompany() != null) {
+      query = query + " AND self.project.company.id = " + user.getActiveCompany().getId();
+    }
+    return query;
   }
 }
