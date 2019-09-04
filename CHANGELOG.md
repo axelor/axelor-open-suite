@@ -102,6 +102,8 @@
 - ACCOUNTING MOVE : Addition of widget boolean-switch in form view
 - MANUF ORDER : copy MO but not operations orders
 - MOVE : add a control on period status
+- BANK ORDER : add a viewer with technical origin (Automatic,Entry,Import) information display.
+- BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
