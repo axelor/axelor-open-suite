@@ -59,8 +59,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
       try {
         sendReminder(employee);
 
-      } catch (AxelorException | MessagingException | IOException e) {
-        TraceBackService.trace(new Exception(e), Employee.class.getSimpleName(), batch.getId());
+      } catch (Exception e) {
+        TraceBackService.trace(e, Employee.class.getSimpleName(), batch.getId());
         incrementAnomaly();
 
       } finally {
