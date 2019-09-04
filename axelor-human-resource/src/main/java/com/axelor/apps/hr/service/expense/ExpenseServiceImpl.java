@@ -44,12 +44,16 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.EmployeeVehicle;
@@ -693,8 +697,22 @@ public class ExpenseServiceImpl implements ExpenseService {
       Company company = null;
       if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
         company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+      } else {
+        company = user.getActiveCompany();
       }
+
+      Period period =
+          Beans.get(PeriodRepository.class)
+              .all()
+              .filter(
+                  "self.fromDate <= ?1 AND self.toDate >= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = ?3",
+                  Beans.get(AppBaseService.class).getTodayDate(),
+                  company,
+                  YearBaseRepository.STATUS_OPENED)
+              .fetchOne();
+
       expense.setCompany(company);
+      expense.setPeriod(period);
       expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
     }
     return expense;
