@@ -41,7 +41,6 @@ public class MailBatchService extends AbstractBatchService {
     MailBatch mailBatch = (MailBatch) batchModel;
 
     switch (mailBatch.getActionSelect()) {
-
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,

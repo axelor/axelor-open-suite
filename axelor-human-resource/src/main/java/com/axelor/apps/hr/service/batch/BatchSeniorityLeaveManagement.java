@@ -56,13 +56,13 @@ import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 
 public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
