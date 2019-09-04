@@ -195,6 +195,7 @@
 - Improve exception handling in leave request form.
 - TaxLine: tax field is now readonly and cannot be edited when selected.
 - Message: fix random NPE when sending emails asynchronously.
+- BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 
 ## [5.1.7] - 2019-06-17
 ## Features
