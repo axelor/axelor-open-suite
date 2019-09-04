@@ -76,7 +76,7 @@
                     ]]>
                   </viewer>
                 </field>
-                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
+                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3" widget="boolean-switch"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>

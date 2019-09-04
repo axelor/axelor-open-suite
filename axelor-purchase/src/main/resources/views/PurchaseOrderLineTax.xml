@@ -11,7 +11,7 @@
     
     <form name="purchase-order-line-tax-form" title="PO Tax line" model="com.axelor.apps.purchase.db.PurchaseOrderLineTax">
 	  <panel name="mainPanel">
-	    <field name="taxLine" grid-view="tax-line-grid" form-view="tax-line-form"/>  
+	    <field name="taxLine" canEdit="false" grid-view="tax-line-grid" form-view="tax-line-form"/>
 	    <field name="taxLine.tax.name"/>
 	    <field name="taxLine.value"/>
 	    <field name="exTaxBase"/>
