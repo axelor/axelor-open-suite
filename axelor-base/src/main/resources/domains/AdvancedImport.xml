@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -17,6 +17,7 @@
     <many-to-one name="attachment" ref="com.axelor.meta.db.MetaFile" title="Attachments"/>
     
     <boolean name="isConfigInFile" title="Config included in file"/>
+    <boolean name="isFileTabConfigAdded" title="Tab Config in file"/>
     <boolean name="isHeader" title="Having header" default="true"/>
     <boolean name="isValidateValue" title="Validate values"/>
     

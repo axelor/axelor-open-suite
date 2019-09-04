@@ -62,6 +62,10 @@
 		<attribute name="hidden" for="invoicePanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
 		<attribute name="hidden" for="myTicketsBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
 		<attribute name="hidden" for="ticketPanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
+		<attribute name="hidden" for="myProjectsBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
+		<attribute name="hidden" for="projectPanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
+		<attribute name="hidden" for="myDeliveriesBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
+		<attribute name="hidden" for="deliveryPanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
 	</action-attrs>
 	
 	<action-view name="wizard-client-form-open-my-tickets" title="My tickets"

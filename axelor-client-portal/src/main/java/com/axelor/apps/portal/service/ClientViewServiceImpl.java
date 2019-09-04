@@ -34,6 +34,8 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected static final DateTimeFormatter DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+  static final String CLIENT_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
+
   @Inject
   public ClientViewServiceImpl(
       SaleOrderRepository saleOrderRepo,
@@ -101,18 +103,22 @@ public class ClientViewServiceImpl implements ClientViewService {
     SaleOrder saleOrder = saleOrderRepo.all().filter(getLastOrderOfUser(user)).fetchOne();
     return saleOrder != null
         ? saleOrder.getConfirmationDateTime().format(DATE_FORMATTER)
-        : "Aucune";
+        : CLIENT_PORTAL_NO_DATE;
   }
 
   /* StockMove Indicators */
   protected String getLastDeliveryIndicator(User user) {
     StockMove stockMove = stockMoveRepo.all().filter(getLastDeliveryOfUser(user)).fetchOne();
-    return stockMove != null ? stockMove.getRealDate().format(DATE_FORMATTER) : "Aucune";
+    return stockMove != null
+        ? stockMove.getRealDate().format(DATE_FORMATTER)
+        : CLIENT_PORTAL_NO_DATE;
   }
 
   protected String getNextDeliveryIndicator(User user) {
     StockMove stockMove = stockMoveRepo.all().filter(getNextDeliveryOfUser(user)).fetchOne();
-    return stockMove != null ? stockMove.getEstimatedDate().format(DATE_FORMATTER) : "Aucune";
+    return stockMove != null
+        ? stockMove.getEstimatedDate().format(DATE_FORMATTER)
+        : CLIENT_PORTAL_NO_DATE;
   }
 
   protected Integer getPlannedDeliveriesIndicator(User user) {

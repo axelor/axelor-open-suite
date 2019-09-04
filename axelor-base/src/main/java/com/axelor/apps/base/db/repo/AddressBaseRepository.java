@@ -20,6 +20,7 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.AddressService;
 import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class AddressBaseRepository extends AddressRepository {
 
@@ -29,6 +30,11 @@ public class AddressBaseRepository extends AddressRepository {
   public Address save(Address entity) {
 
     entity.setFullName(addressService.computeFullName(entity));
+    try {
+      addressService.updateLatLong(entity);
+    } catch (Exception e) {
+      throw new PersistenceException(e);
+    }
 
     return super.save(entity);
   }
