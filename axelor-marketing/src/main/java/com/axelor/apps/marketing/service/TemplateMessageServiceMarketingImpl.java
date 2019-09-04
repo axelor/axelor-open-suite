@@ -23,6 +23,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.TemplateContextService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -35,8 +36,9 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
   protected EmailAccount emailAccount;
 
   @Inject
-  public TemplateMessageServiceMarketingImpl(MessageService messageService) {
-    super(messageService);
+  public TemplateMessageServiceMarketingImpl(
+      MessageService messageService, TemplateContextService templateContextService) {
+    super(messageService, templateContextService);
   }
 
   @Override

@@ -424,4 +424,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     return this.getDebitBalance().subtract(this.getDebitBalanceType4());
   }
+
+  public void testReportedDateField(LocalDate reportedDate) throws AxelorException {
+    if (reportedDate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CLOSE_NO_REPORTED_BALANCE_DATE));
+    }
+  }
 }

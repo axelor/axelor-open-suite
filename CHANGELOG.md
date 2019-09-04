@@ -102,6 +102,11 @@
 - MRP : boolean to exclude product without proposal in the result dashlet
 - HR : TRAINING - Optimization of the menu by adding filters
 - MRP : Group proposals per supplier
+- Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList
+- MESSAGE TEMPLATE : added the management of additional contexts (groovy evaluation) in order to allow the use of Json fields.
+- HR : APPRAISALS - Optimization of the menu by adding filters
+- HR : RECRUITMENT - optimization of the menu by adding filters
+- Base : Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -147,6 +152,11 @@
 - INVENTORY : adding ODS file format in report selection type.
 - Quality Control : Set default printing setting and update translation
 - INVOICE : Configure BIRT to generate an Excel and a Word file
+- KEYWORD : remove Keyword model.
+- Advanced Import : trim data before import.
+- USER : don't display the step "Employee" in the workflow when axelor-human-resource module is not installed
+- ACCOUNTING : year and accountSet fields are set empty when company is changed
+- ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
 - CLIENT PORTAL : update the client form view
 
 ## Bug Fixes
@@ -184,5 +194,9 @@
 - Advance Data Import : Fix indexOutOfBound Exception.
 - Advanced Data Import : Specify truncated value to sampleLines for large string.
 - MetaSelect : Update view and domain with latest version.
+- ERROR : Fixed NPE on product selection on invoiceLine
+- QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
+- EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
+- REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
