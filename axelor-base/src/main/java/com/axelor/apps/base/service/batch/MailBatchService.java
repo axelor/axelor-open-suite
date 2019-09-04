@@ -41,9 +41,6 @@ public class MailBatchService extends AbstractBatchService {
     MailBatch mailBatch = (MailBatch) batchModel;
 
     switch (mailBatch.getActionSelect()) {
-        // XXX: Implement actions here
-        //      case MailBatchRepository.ACTION_TIMESHEET_VALIDATION_REMINDER:
-        //        return null;
 
       default:
         throw new AxelorException(
