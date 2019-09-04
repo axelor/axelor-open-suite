@@ -231,5 +231,11 @@
 	<selection name="meta.schedule.batch.service.select" id="bank.payment.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService">com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService</option>
 	</selection>
+		
+	<selection name="bankpayment.bank.order.technical.origin.select">
+		<option value="0">Entry</option>
+		<option value="1">Automatic</option>
+		<option value="2">Import</option>
+	</selection>
 
 </object-views>

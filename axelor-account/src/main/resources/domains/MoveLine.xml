@@ -19,7 +19,7 @@
     
     <one-to-many name="debitReconcileList" ref="Reconcile" title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
     <one-to-many name="creditReconcileList" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
-    <decimal name="amountPaid" title="Amount paid/reconciled" default="0.0" readonly="true"/>
+    <decimal name="amountPaid" title="MoveLine.amountReconciled" default="0.0" readonly="true"/>
     
     <many-to-one name="invoiceReject" ref="com.axelor.apps.account.db.Invoice" title="Invoice rejected"/>
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
