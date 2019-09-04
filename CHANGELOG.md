@@ -170,6 +170,7 @@
 - SALE ORDER/ PURCHASE ORDER : Removal of spacer.
 - ACCOUNTING BATCH : alert when the closing annual accounts batch already ran
 - CLIENT PORTAL : update the client form view
+- MESSAGE MODULE: Refactor code.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
