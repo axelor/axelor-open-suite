@@ -197,6 +197,7 @@
 - Message: fix random NPE when sending emails asynchronously.
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
+- Expense : period / company not getting set on getOrCreateExpense method 
 
 ## [5.1.7] - 2019-06-17
 ## Features
