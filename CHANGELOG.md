@@ -96,6 +96,12 @@
 - PRODUCTION: Complete demo data.
 - SALE ORDER LINE VIEW : Removal of spacer.
 - Move/MoveLine : Changed condition in dispalying fields in form-view and also added translation
+- BANKPAYMENTBATCH : form and grid views are defined for field 'bankStatementFileFormatSet'
+- PAYMENTMODE : form and grid views defined on bankOrderFileFormat
+- EBICS PARTNER SERVICE : ebics-partner-service-form renamed to bo-ebics-partner-service-form
+- ACCOUNTING MOVE : Addition of widget boolean-switch in form view
+- MANUF ORDER : copy MO but not operations orders
+- MOVE : add a control on period status
 - BANK ORDER : add a viewer with technical origin (Automatic,Entry,Import) information display.
 - BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
 
@@ -189,6 +195,10 @@
 - LEAVE REQUEST : Fix non explicit exception on leave line select.
 - RawMaterialRequirement report: fix sql query.
 - Improve exception handling in leave request form.
+- TaxLine: tax field is now readonly and cannot be edited when selected.
+- Message: fix random NPE when sending emails asynchronously.
+- BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
+- CUT OFF: correct message warning.
 
 ## [5.1.7] - 2019-06-17
 ## Features
