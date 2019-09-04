@@ -33,6 +33,7 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -193,6 +194,14 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     }
     if (count == 1) {
 
+      EmploymentContract contract = employee.getMainEmploymentContract();
+      if (contract == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
+      }
+      Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
+
       for (LeaveManagementBatchRule rule :
           Beans.get(HRConfigRepository.class)
               .all()
@@ -200,8 +209,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
               .fetchOne()
               .getLeaveManagementBatchRuleList()) {
 
-        if (rule.getExecutiveStatusSelect()
-            .equals(employee.getMainEmploymentContract().getExecutiveStatusSelect())) {
+        if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
           maker.setContext(employee, "Employee");
           String formula = rule.getFormula();
           formula =
@@ -230,7 +238,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           }
         }
       }
-      if (quantity.compareTo(BigDecimal.ZERO) == 0) {
+      if (quantity.signum() == 0) {
         // If the quantity equals 0, no need to create a leaveManagement and to update the employee,
         // since we won't give them any leaves
         incrementDone();
