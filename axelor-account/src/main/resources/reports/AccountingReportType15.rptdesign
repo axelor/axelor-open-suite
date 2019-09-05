@@ -158,6 +158,38 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4735">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -443,6 +475,11 @@ order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -487,6 +524,11 @@ order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
                     <structure>
                         <property name="position">6</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -535,14 +577,26 @@ order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name,AccountingReport.date_from,AccountingReport.date_to,
-AcYear.name as year_name, AccountingReport.publication_date_time as "ReportDateEdition",
-Currency.code as currency
+            <xml-property name="queryText"><![CDATA[select Company.name as company_name,
+AccountingReport.date_from,
+AccountingReport.date_to,
+AcYear.name as year_name, 
+AccountingReport.publication_date_time as "ReportDateEdition",
+Currency.code as currency,
+MetaFile.file_path AS logo_path
 from public.account_accounting_report as AccountingReport 
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join public.base_year as AcYear on (AccountingReport.year = AcYear.id)
 left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)
+LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 where AccountingReport.id = ? 
 ]]></xml-property>
         </oda-data-set>
@@ -943,11 +997,11 @@ order by Tax.code ASC]]></xml-property>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
-            <property name="headerHeight">0.33in</property>
-            <property name="footerHeight">0.33in</property>
+            <property name="showHeaderOnFirst">false</property>
+            <property name="headerHeight">2cm</property>
+            <property name="footerHeight">1cm</property>
             <page-header>
-                <grid id="3117">
-                    <property name="width">11.033333333333333in</property>
+                <grid id="3982">
                     <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -980,23 +1034,31 @@ order by Tax.code ASC]]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["ReportDateEdition"]</expression>
                             <property name="dataType">date-time</property>
                         </structure>
+                        <structure>
+                            <property name="name">currency</property>
+                            <text-property name="displayName">currency</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
-                    <column id="3118">
-                        <property name="width">9.9in</property>
+                    <column id="3983">
+                        <property name="width">33%</property>
                     </column>
-                    <column id="3119">
-                        <property name="width">1.1333333333333333in</property>
+                    <column id="3984"/>
+                    <column id="3985">
+                        <property name="width">33%</property>
                     </column>
-                    <row id="3120">
-                        <cell id="3121">
-                            <text id="3954">
-                                <property name="textAlign">right</property>
+                    <row id="3993">
+                        <cell id="4228">
+                            <text id="4243">
+                                <property name="fontWeight">bold</property>
+                                <property name="display">inline</property>
                                 <property name="dataSet">TranslateDS</property>
                                 <list-property name="paramBindings">
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">'AccountingReportType15.printDate'</value>
+                                            <value type="javascript">'AccountingReportType15.company'</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -1011,82 +1073,273 @@ order by Tax.code ASC]]></xml-property>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                             </text>
-                        </cell>
-                        <cell id="3122">
-                            <text id="3128">
-                                <property name="fontSize">9pt</property>
+                            <text id="4229">
+                                <property name="fontWeight">normal</property>
+                                <property name="display">inline</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["company_name"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
+                        <cell id="3997">
+                            <text id="4244">
+                                <property name="fontWeight">bold</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType15.year'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
+                            <text id="4231">
+                                <property name="fontWeight">normal</property>
+                                <property name="display">inline</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["year_name"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4232">
+                            <text id="4245">
+                                <property name="fontWeight">bold</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType15.currency'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
+                            <text id="4234">
+                                <property name="fontWeight">normal</property>
+                                <property name="display">inline</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
+                    <row id="4235">
+                        <cell id="4004"/>
+                        <cell id="4236">
+                            <text id="4246">
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType15.from'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
+                            <text id="4237">
+                                <property name="fontWeight">normal</property>
+                                <property name="display">inline</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4238">
+                            <text id="4247">
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType15.to'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                            </text>
+                            <text id="4239">
+                                <property name="fontWeight">normal</property>
+                                <property name="display">inline</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
+                    <row id="4011">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="height">5px</property>
+                        <cell id="4240"/>
+                        <cell id="4241"/>
+                        <cell id="4242"/>
                     </row>
                 </grid>
             </page-header>
             <page-footer>
                 <grid id="3098">
                     <property name="width">11.033333333333333in</property>
-                    <column id="3099">
-                        <property name="width">10.022222222222222in</property>
+                    <property name="dataSet">TranslateDS</property>
+                    <column id="4257">
+                        <property name="width">15%</property>
+                    </column>
+                    <column id="3099"/>
+                    <column id="4249">
+                        <property name="width">15%</property>
+                    </column>
+                    <column id="4251">
+                        <property name="width">6%</property>
+                    </column>
+                    <column id="4253">
+                        <property name="width">3%</property>
                     </column>
                     <column id="3100">
-                        <property name="width">1.011111111111111in</property>
+                        <property name="width">6%</property>
                     </column>
                     <row id="3101">
-                        <cell id="3102"/>
+                        <cell id="4256">
+                            <image id="4733">
+                                <property name="height">44px</property>
+                                <property name="width">107px</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="3102">
+                            <text id="4255">
+                                <property name="fontSize">10pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType15.title'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4248">
+                            <text id="4254">
+                                <property name="fontSize">9pt</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">ReportDateEdition</property>
+                                        <text-property name="displayName">ReportDateEdition</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["ReportDateEdition"]</expression>
+                                        <property name="dataType">date-time</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4250">
+                            <property name="textAlign">right</property>
+                            <auto-text id="3110">
+                                <property name="fontSize">9pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="4252">
+                            <text id="3112">
+                                <property name="fontSize">9pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
                         <cell id="3103">
-                            <grid id="3104">
-                                <property name="textAlign">right</property>
-                                <property name="height">0.3in</property>
-                                <column id="3105"/>
-                                <column id="3106"/>
-                                <column id="3107"/>
-                                <row id="3108">
-                                    <property name="height">0.3333333333333333in</property>
-                                    <cell id="3109">
-                                        <property name="paddingTop">0pt</property>
-                                        <property name="paddingLeft">0pt</property>
-                                        <property name="paddingBottom">0pt</property>
-                                        <property name="paddingRight">0pt</property>
-                                        <auto-text id="3110">
-                                            <property name="fontSize">9pt</property>
-                                            <property name="paddingTop">1pt</property>
-                                            <property name="paddingLeft">1pt</property>
-                                            <property name="paddingBottom">1pt</property>
-                                            <property name="paddingRight">1pt</property>
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="3111">
-                                        <property name="paddingTop">0pt</property>
-                                        <property name="paddingLeft">0pt</property>
-                                        <property name="paddingBottom">0pt</property>
-                                        <property name="paddingRight">0pt</property>
-                                        <text id="3112">
-                                            <property name="fontSize">9pt</property>
-                                            <property name="paddingTop">1pt</property>
-                                            <property name="paddingLeft">1pt</property>
-                                            <property name="paddingBottom">1pt</property>
-                                            <property name="paddingRight">1pt</property>
-                                            <property name="contentType">plain</property>
-                                            <text-property name="content"><![CDATA[/]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="3113">
-                                        <property name="paddingTop">0pt</property>
-                                        <property name="paddingLeft">0pt</property>
-                                        <property name="paddingBottom">0pt</property>
-                                        <property name="paddingRight">0pt</property>
-                                        <auto-text id="3114">
-                                            <property name="fontSize">9pt</property>
-                                            <property name="paddingTop">1pt</property>
-                                            <property name="paddingLeft">1pt</property>
-                                            <property name="paddingBottom">1pt</property>
-                                            <property name="paddingRight">1pt</property>
-                                            <property name="type">total-page</property>
-                                        </auto-text>
-                                    </cell>
-                                </row>
-                            </grid>
+                            <auto-text id="3114">
+                                <property name="fontSize">9pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
                         </cell>
                     </row>
                 </grid>
@@ -1137,27 +1390,28 @@ order by Tax.code ASC]]></xml-property>
                 </structure>
             </list-property>
             <column id="3561">
-                <property name="width">1.6041666666666667in</property>
+                <property name="width">15%</property>
             </column>
             <column id="3947">
-                <property name="width">0.9895833333333334in</property>
+                <property name="width">18%</property>
             </column>
             <column id="3562">
-                <property name="width">2.4791666666666665in</property>
+                <property name="width">15%</property>
             </column>
             <column id="3563">
-                <property name="width">0.9895833333333334in</property>
+                <property name="width">18%</property>
             </column>
             <column id="3564">
-                <property name="width">0.9895833333333334in</property>
+                <property name="width">15%</property>
             </column>
             <column id="3565">
-                <property name="width">4.041666666666667in</property>
+                <property name="width">18%</property>
             </column>
             <row id="3566">
                 <cell id="3567">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
                     <text id="3923">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
@@ -1185,19 +1439,34 @@ order by Tax.code ASC]]></xml-property>
                 </cell>
             </row>
             <row id="3572">
-                <property name="height">0.4375in</property>
-                <cell id="3573"/>
-                <cell id="3942"/>
-                <cell id="3574"/>
-                <cell id="3575"/>
-                <cell id="3576"/>
-                <cell id="3577"/>
+                <property name="height">0.3cm</property>
+                <cell id="3573">
+                    <property name="fontSize">10pt</property>
+                </cell>
+                <cell id="3942">
+                    <property name="fontSize">10pt</property>
+                </cell>
+                <cell id="3574">
+                    <property name="fontSize">10pt</property>
+                </cell>
+                <cell id="3575">
+                    <property name="fontSize">10pt</property>
+                </cell>
+                <cell id="3576">
+                    <property name="fontSize">10pt</property>
+                </cell>
+                <cell id="3577">
+                    <property name="fontSize">10pt</property>
+                </cell>
             </row>
             <row id="3578">
-                <cell id="3579"/>
-                <cell id="3943">
-                    <property name="fontWeight">bold</property>
+                <cell id="3579">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
                     <text id="3926">
+                        <property name="fontWeight">bold</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1218,51 +1487,19 @@ order by Tax.code ASC]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3580">
                     <text id="554">
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["company_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="3581"/>
-                <cell id="3582">
-                    <text id="4221">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'AccountingReportType15.reportDateEdition'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="3583">
-                    <text id="4220">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="3584">
-                <cell id="3585"/>
-                <cell id="3944">
+                <cell id="3580">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
                     <text id="3929">
                         <property name="fontWeight">bold</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1283,52 +1520,19 @@ order by Tax.code ASC]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3586">
                     <text id="555">
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["year_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="3587"/>
-                <cell id="3588">
-                    <text id="3927">
-                        <property name="fontWeight">bold</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'AccountingReportType15.from'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="3589">
-                    <text id="556">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="3590">
-                <property name="height">0.5208333333333334in</property>
-                <cell id="3591"/>
-                <cell id="3945">
+                <cell id="3582">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
                     <text id="3955">
                         <property name="fontWeight">bold</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1349,18 +1553,90 @@ order by Tax.code ASC]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3592">
                     <text id="3956">
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="3593"/>
-                <cell id="3594">
+            </row>
+            <row id="3584">
+                <cell id="3585">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
+                    <text id="4221">
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType15.reportDateEdition'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <text id="4220">
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="3586">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
+                    <text id="3927">
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReportType15.from'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <text id="556">
+                        <property name="display">inline</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="3588">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
                     <text id="3928">
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1381,24 +1657,24 @@ order by Tax.code ASC]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3595">
                     <text id="557">
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
             <row id="3930">
-                <property name="height">0.3958333333333333in</property>
+                <property name="height">5px</property>
                 <cell id="3931">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
-                    <property name="fontSize">14pt</property>
+                    <property name="fontSize">10pt</property>
                 </cell>
                 <cell id="3950">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
+                    <property name="fontSize">10pt</property>
                 </cell>
             </row>
             <row id="3958">
@@ -1406,7 +1682,7 @@ order by Tax.code ASC]]></xml-property>
                 <cell id="3959">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
-                    <property name="fontSize">14pt</property>
+                    <property name="fontSize">10pt</property>
                     <table id="3988">
                         <property name="dataSet">SumByTaxDS</property>
                         <list-property name="boundDataColumns">
@@ -1508,28 +1784,36 @@ balance
                             </structure>
                         </list-property>
                         <column id="4012">
+                            <property name="fontSize">10pt</property>
                             <property name="width">10%</property>
                         </column>
                         <column id="4013">
+                            <property name="fontSize">10pt</property>
                             <property name="width">20%</property>
                         </column>
                         <column id="4151">
+                            <property name="fontSize">10pt</property>
                             <property name="width">10%</property>
                         </column>
                         <column id="4014">
+                            <property name="fontSize">10pt</property>
                             <property name="width">15%</property>
                         </column>
                         <column id="4015">
+                            <property name="fontSize">10pt</property>
                             <property name="width">15%</property>
                         </column>
                         <column id="4175">
+                            <property name="fontSize">10pt</property>
                             <property name="width">15%</property>
                         </column>
                         <column id="4181">
+                            <property name="fontSize">10pt</property>
                             <property name="width">15%</property>
                         </column>
                         <header>
                             <row id="4136">
+                                <property name="fontSize">10pt</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
                                 <property name="borderLeftStyle">solid</property>
@@ -1622,6 +1906,7 @@ balance
                                 </cell>
                             </row>
                             <row id="3989">
+                                <property name="fontSize">10pt</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
                                 <property name="borderLeftStyle">solid</property>
@@ -1879,6 +2164,7 @@ balance
                         </header>
                         <detail>
                             <row id="3998">
+                                <property name="fontSize">10pt</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
                                 <property name="borderLeftStyle">solid</property>
@@ -1893,7 +2179,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4000">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="resultSetColumn">taxcode</property>
                                     </data>
                                 </cell>
@@ -1903,7 +2189,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4002">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="resultSetColumn">taxname</property>
                                     </data>
                                 </cell>
@@ -1913,7 +2199,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4125">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">taxpaymentmovelinetaxrate</property>
                                     </data>
@@ -1924,7 +2210,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4199">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
@@ -1939,7 +2225,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4202">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
@@ -1954,7 +2240,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4201">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
@@ -1969,7 +2255,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4203">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
@@ -2042,6 +2328,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4222">
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
@@ -2059,6 +2346,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4227">
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
@@ -2130,6 +2418,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4225">
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
@@ -2147,6 +2436,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4226">
+                                        <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
@@ -2167,7 +2457,7 @@ balance
                 <cell id="3966">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
-                    <property name="fontSize">14pt</property>
+                    <property name="fontSize">10pt</property>
                     <table id="4056">
                         <property name="dataSet">MoveLineDS</property>
                         <list-property name="boundDataColumns">
@@ -2255,6 +2545,7 @@ balance
                         </column>
                         <header>
                             <row id="4129">
+                                <property name="fontSize">10pt</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
                                 <property name="borderLeftStyle">solid</property>
@@ -2377,6 +2668,7 @@ balance
                                 </cell>
                             </row>
                             <row id="4057">
+                                <property name="fontSize">10pt</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
                                 <property name="borderLeftStyle">solid</property>
@@ -2433,7 +2725,7 @@ balance
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'AccountingReportType15.moveLine.date'</value>
+                                                    <value type="javascript">'AccountingReportType15.date'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2704,6 +2996,7 @@ balance
                         </header>
                         <detail>
                             <row id="4070">
+                                <property name="fontSize">8pt</property>
                                 <property name="borderBottomStyle">solid</property>
                                 <property name="borderBottomWidth">thin</property>
                                 <property name="borderLeftStyle">solid</property>
@@ -2718,7 +3011,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4072">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="resultSetColumn">movelinename</property>
                                     </data>
                                 </cell>
@@ -2728,7 +3021,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4074">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="resultSetColumn">movelinedate</property>
                                     </data>
                                 </cell>
@@ -2738,7 +3031,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4076">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="resultSetColumn">accountcode</property>
                                     </data>
                                 </cell>
@@ -2748,7 +3041,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4078">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="resultSetColumn">accountname</property>
                                     </data>
                                 </cell>
@@ -2758,7 +3051,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4080">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="resultSetColumn">taxcode</property>
                                     </data>
                                 </cell>
@@ -2768,7 +3061,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4193">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
@@ -2783,7 +3076,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4196">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
@@ -2798,7 +3091,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4195">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
@@ -2813,7 +3106,7 @@ balance
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="4197">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Currency</property>
                                             <property name="pattern">#,##0.00{RoundingMode=HALF_UP}</property>
