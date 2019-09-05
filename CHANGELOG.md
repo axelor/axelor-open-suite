@@ -102,6 +102,7 @@
 - ACCOUNTING MOVE : Addition of widget boolean-switch in form view
 - MANUF ORDER : copy MO but not operations orders
 - MOVE : add a control on period status
+- EXPENSE : add the payment move and its generation.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
@@ -197,6 +198,7 @@
 - Message: fix random NPE when sending emails asynchronously.
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
+- EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
 
 ## [5.1.7] - 2019-06-17
 ## Features

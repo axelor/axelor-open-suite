@@ -29,11 +29,15 @@ import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
+
+  protected ExpenseService expenseService;
 
   @Inject
   public BankOrderServiceHRImpl(
@@ -44,7 +48,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
-      BankOrderLineOriginService bankOrderLineOriginService) {
+      BankOrderLineOriginService bankOrderLineOriginService,
+      ExpenseService expenseService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
@@ -54,22 +59,38 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         bankPaymentConfigService,
         sequenceService,
         bankOrderLineOriginService);
+    this.expenseService = expenseService;
   }
 
   @Override
-  public void realize(BankOrder bankOrder) throws AxelorException {
-    super.realize(bankOrder);
+  @Transactional(rollbackOn = {Exception.class})
+  public void validatePayment(BankOrder bankOrder) throws AxelorException {
+    super.validatePayment(bankOrder);
 
-    if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
-      Expense expense =
-          Beans.get(ExpenseRepository.class)
-              .all()
-              .filter("self.bankOrder.id = ?", bankOrder.getId())
-              .fetchOne();
-      if (expense != null) {
-        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-      }
+    Expense expense =
+        Beans.get(ExpenseRepository.class)
+            .all()
+            .filter("self.bankOrder.id = ?", bankOrder.getId())
+            .fetchOne();
+    if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
+      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      expenseService.createMoveForExpensePayment(expense);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelPayment(BankOrder bankOrder) throws AxelorException {
+    super.cancelPayment(bankOrder);
+    Expense expense =
+        Beans.get(ExpenseRepository.class)
+            .all()
+            .filter("self.bankOrder.id = ?", bankOrder.getId())
+            .fetchOne();
+    if (expense != null
+        && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+      expenseService.cancelPayment(expense);
     }
   }
 }

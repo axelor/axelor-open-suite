@@ -103,6 +103,8 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -235,5 +237,7 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
 
     bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+
+    bind(MoveService.class).to(MoveServiceImpl.class);
   }
 }
