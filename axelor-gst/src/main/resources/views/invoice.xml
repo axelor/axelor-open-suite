@@ -472,6 +472,43 @@ InvoiceSet.length > 0))"
 				</panel-mail>
 		</form>
 		<!-- gst for set default value set -->
+
+		<form title="Create invoice" name="invoice-form-dummy-details"
+				model="com.axelor.apps.account.db.Invoice"
+				onNew="action-account-invoice-onnew-group,action-gst-invoice-onnew-group"
+				onLoad="action-account-invoice-onload-group">
+				<field name="partner" onChange="action-group-account-invoice-partner-onchange"
+						onSelect="action-set-partner-domain" form-view="partner-form" grid-view="partner-grid" />
+
+
+				<button name="btnSubmit" title="Submit"
+						onClick="action-method-gst-invoice-get-partner,close" />
+
+		</form>
+
+		<!-- form -wizard for create invoice -->
+		<form name="invoice-form-wizard" title="Create invoice"
+				model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-gst-invoice-line-set-for-wizard">
+
+				<panel>
+						<field name="$invoicePartner"  field="$invoicePartner" title="Contact partner" type="many-to-one"
+								target="com.axelor.apps.base.db.Partner" onSelect="action-set-partner-domain"
+								onChange="action-gst-invoice-calculate-wizard" />
+				</panel>
+
+				<panel-related name="$invoiceLines" field="$invoiceLines"
+						form-view="invoice-line-form" grid-view="invoice-line-grid" title="Invoice Line" colSpan="12"
+						type="many-to-many" target="com.axelor.apps.account.db.InvoiceLine" canSelect="false"
+						canNew="false" canEdit="false" />
+				<panel sidebar="true">
+						<button name="confirmBtn" title="Confirm" onClick="action-invoice-save-wizard"
+								colSpan="12" width="200px" />
+				</panel>
+
+
+		</form>
+
+
 		<action-group name="action-group-gst-invoice-partner-onchange">
 				<action name="action-gst-invoice-partner-contact"
 						if="__config__.app.isApp('gst') &amp;&amp; partner" />
@@ -495,4 +532,20 @@ InvoiceSet.length > 0))"
 				<call class="com.axelor.apps.gst.web.InvoiceController" method="calculate" />
 		</action-method>
 
+		<!-- For invoice popup -->
+		<action-method name="action-method-gst-invoice-get-partner">
+				<call class="com.axelor.apps.gst.web.ProductController" method="setPartnerForInvoice" />
+		</action-method>
+
+		<!-- this action use when invoice save from wizard -->
+		<action-method name="action-invoice-save-wizard">
+				<call class="com.axelor.apps.gst.web.InvoiceController" method="saveInvoice" />
+		</action-method>
+
+		<action-method name="action-gst-invoice-line-set-for-wizard">
+				<call class="com.axelor.apps.gst.web.InvoiceController" method="setInvoiceLineForWizard" />
+		</action-method>
+		<action-method name="action-gst-invoice-calculate-wizard">
+				<call class="com.axelor.apps.gst.web.InvoiceController" method="calculateFoWizard" />
+		</action-method>
 </object-views>

@@ -17,8 +17,8 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +53,7 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
     Map<String, Object> productInformation = super.fillProductInformation(invoice, invoiceLine);
 
     invoiceLine.setPrice(new BigDecimal(productInformation.get("price").toString()));
-    invoiceLine.setGstRate(invoiceLine.getProduct().getGstRate());
+    invoiceLine.setGstRate(invoiceLine.getProduct().getGstRate().setScale(2, RoundingMode.HALF_UP));
     // set tax Line for product base on GSTRate if product have no taxLine
     if (productInformation.get("taxLine") == null) {
       long id =
@@ -76,7 +76,12 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
         productInformation.put("taxLine", taxLine);
       }
     } else {
-      invoiceLine.setGstRate(invoiceLine.getTaxLine().getValue().multiply(new BigDecimal(100)));
+      invoiceLine.setGstRate(
+          invoiceLine
+              .getTaxLine()
+              .getValue()
+              .multiply(new BigDecimal(100))
+              .setScale(2, RoundingMode.HALF_UP));
       // invoiceLine.setTaxLine(productInformation.get("taxLine"));
 
     }
@@ -150,15 +155,15 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
       }
     }
 
-    invoiceLine.setSgst(sgst);
-    invoiceLine.setCgst(cgst);
-    invoiceLine.setIgst(igst);
+    invoiceLine.setSgst(sgst.setScale(2, RoundingMode.HALF_UP));
+    invoiceLine.setCgst(cgst.setScale(2, RoundingMode.HALF_UP));
+    invoiceLine.setIgst(igst.setScale(2, RoundingMode.HALF_UP));
 
     // Net amount + (IGST or SGST + CGST)
     finalGST =
         finalGST.add(invoiceLine.getIgst()).add(invoiceLine.getSgst()).add(invoiceLine.getCgst());
-    grossAmt = netAmt.add(finalGST);
-    invoiceLine.setGrossAmount(grossAmt);
+    grossAmt = netAmt.add(finalGST.setScale(2, RoundingMode.HALF_UP));
+    invoiceLine.setGrossAmount(grossAmt.setScale(2, RoundingMode.HALF_UP));
     return invoiceLine;
   }
 
@@ -179,5 +184,4 @@ public class InvoiceLineServiceGSTImpl extends InvoiceLineSupplychainService
 
     return invoiceLineList;
   }
-
 }

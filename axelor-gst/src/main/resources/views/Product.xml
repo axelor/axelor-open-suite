@@ -3,16 +3,20 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-		<grid name="product-grid" id="product-grid" title="Products"
+		<grid name="product-grid" id="gst-product-grid" title="Products"
 				model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
 				<toolbar>
-						
+
 						<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
 								icon="fa-book" />
 						<button name="checkDuplicateBtn" title="Check Duplicate"
 								onClick="action-general-check-duplicate-records" />
-						<button name="btnCreateInvoice" onClick="action-gst-set-invoice-line"
+						<!-- ,action-gst-set-invoice-line -->
+						<button name="btnCreateInvoice" onClick="action-gst-set-invoice-details-popup"
 								title="Create Invoice" if="__config__.app.isApp('gst')" />
+
+						<button name="btnCreateInvoice" onClick="action-gst-set-invoice-details-wizard"
+								title="Create Invoice(*)" if="__config__.app.isApp('gst')" />
 
 				</toolbar>
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" width="120" />
@@ -485,6 +489,28 @@
 		<action-method name="action-gst-set-invoice-line">
 				<call class="com.axelor.apps.gst.web.ProductController" method="createInvoice" />
 		</action-method>
+
+		<action-view name="action-gst-set-invoice-details-popup" title="Invoice Details"
+				model="com.axelor.apps.account.db.Invoice">
+				<view type="form" name="invoice-form-dummy-details" />
+				<view-param name="popup" value="true" />
+				<view-param name="show-toolbar" value="false" />
+				<view-param name="show-confirm" value="false" />
+				<view-param name="popup-save" value="false" />
+				<domain>self.operationTypeSelect = 3</domain>
+				<context name="_operationTypeSelect" expr="eval:3" />
+				<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+				<context name="productIds" expr="eval:_ids" />
+		</action-view>
+
+		<!-- create invoice with wizard -->
+
+		<action-view name="action-gst-set-invoice-details-wizard"
+				title="Create invoice details" model="com.axelor.apps.base.db.Wizard">
+				<view type="form" name="invoice-form-wizard" />
+				<context name="productIds" expr="eval:_ids" />
+		</action-view>
+
 
 		<!-- End gst -->
 

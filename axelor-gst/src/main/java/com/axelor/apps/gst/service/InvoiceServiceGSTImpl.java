@@ -4,7 +4,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -13,14 +12,20 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +33,8 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
 
   @Inject private AddressService addressService;
   @Inject private InvoiceLineServiceGST invoiceLineServiceGST;
-  @Inject private AccountManagementAccountService accountManagementAccountService;
+  @Inject private ProductRepository productRepository;
+  @Inject private InvoiceRepository invoiceRepository;
 
   @Inject
   public InvoiceServiceGSTImpl(
@@ -96,11 +102,11 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
           invoiceLineList.add(invoiceLinenew);
         }
       }
-      invoice.setNetAmount(totalNetAmt);
-      invoice.setNetIGST(totalIgst);
-      invoice.setNetSGST(totalSgst);
-      invoice.setNetCGST(totalCgst);
-      invoice.setGrossAmount(totalgrossAmt);
+      invoice.setNetAmount(totalNetAmt.setScale(2, RoundingMode.HALF_UP));
+      invoice.setNetIGST(totalIgst.setScale(2, RoundingMode.HALF_UP));
+      invoice.setNetSGST(totalSgst.setScale(2, RoundingMode.HALF_UP));
+      invoice.setNetCGST(totalCgst.setScale(2, RoundingMode.HALF_UP));
+      invoice.setGrossAmount(totalgrossAmt.setScale(2, RoundingMode.HALF_UP));
 
       invoice.setInvoiceLineList(invoiceLineList);
       return invoice;
@@ -147,10 +153,10 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
       companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
       companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 
-      invoiceLine.setExTaxTotal(exTaxTotal);
-      invoiceLine.setInTaxTotal(inTaxTotal);
-      invoiceLine.setCompanyExTaxTotal(companyExTaxTotal);
-      invoiceLine.setCompanyInTaxTotal(companyInTaxTotal);
+      invoiceLine.setExTaxTotal(exTaxTotal.setScale(2, RoundingMode.HALF_UP));
+      invoiceLine.setInTaxTotal(inTaxTotal.setScale(2, RoundingMode.HALF_UP));
+      invoiceLine.setCompanyExTaxTotal(companyExTaxTotal.setScale(2, RoundingMode.HALF_UP));
+      invoiceLine.setCompanyInTaxTotal(companyInTaxTotal.setScale(2, RoundingMode.HALF_UP));
       invoiceLineList.add(invoiceLine);
       /* ................................................End
       tax.................................................................................*/
@@ -166,5 +172,32 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
     Invoice invoiceNew = compute(invoice);
 
     return invoiceNew;
+  }
+
+  @Override
+  public Invoice setInvoiceDetails(Invoice invoice, List<Long> productIds, Integer partnerId)
+      throws AxelorException {
+
+    List<Product> productList =
+        productRepository.all().filter("self.id in (?1)", productIds).fetch();
+    List<InvoiceLine> invoiceLineList =
+        invoiceLineServiceGST.getInvoiceLineFromProduct(productList);
+    Partner partner =
+        Beans.get(PartnerRepository.class).all().filter("self.id = ?", partnerId).fetchOne();
+
+    invoice.setInvoiceLineList(invoiceLineList);
+    invoice.setPartner(partner);
+    invoice.setAddress(partnerService.getInvoicingAddress(partner));
+
+    invoice = calculate(invoice);
+    return invoice;
+  }
+
+  @Override
+  @Transactional
+  public Long saveInvoice(Invoice invoice) throws AxelorException {
+
+    Invoice invoiceTemp = invoiceRepository.save(calculate(invoice));
+    return invoiceTemp.getId();
   }
 }
