@@ -349,12 +349,11 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   protected Move createAndSetMove(Expense expense) throws AxelorException {
-    LocalDate moveDate = expense.getMoveDate();
+    LocalDate moveDate = expense.getPeriod().getToDate();
     if (moveDate == null) {
       moveDate = appAccountService.getTodayDate();
-      expense.setMoveDate(moveDate);
     }
-
+    expense.setMoveDate(moveDate);
     Company company = expense.getCompany();
     Partner partner = expense.getUser().getPartner();
 
