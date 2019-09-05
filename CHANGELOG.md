@@ -15,6 +15,7 @@
 - MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
 - EBICS USER : add the possibility to print ebics request log.
 - STOCK : Addition of new selection field 'Stock location value' in Stock Config.
+- EBICS: fix ClassCastException when adding certificates.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
