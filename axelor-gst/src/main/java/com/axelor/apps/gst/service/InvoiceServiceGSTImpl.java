@@ -59,58 +59,54 @@ public class InvoiceServiceGSTImpl extends InvoiceServiceProjectImpl implements 
 
   @Override
   public Invoice compute(Invoice invoice) throws AxelorException {
-    super.compute(invoice);
-    {
-      BigDecimal totalNetAmt = BigDecimal.ZERO;
-      BigDecimal totalIgst = BigDecimal.ZERO;
-      BigDecimal totalSgst = BigDecimal.ZERO;
-      BigDecimal totalCgst = BigDecimal.ZERO;
-      BigDecimal totalgrossAmt = BigDecimal.ZERO;
-      boolean isNullAddress = false;
-      boolean isSameState = false;
+    invoice = super.compute(invoice);
 
-      if (invoice.getCompany() == null
-          || invoice.getCompany().getAddress() == null
-          || invoice.getCompany().getAddress().getState() == null
-          || invoice.getAddress() == null) {
-        isNullAddress = true;
-      } else {
-        Address companyAddress = invoice.getCompany().getAddress();
-        Address invoiceAddress = invoice.getAddress();
-        //        Address shippingAddress = invoice.getShipingAddress();
-        Address shippingAddress = invoice.getCompany().getAddress();
-        isSameState =
-            addressService.checkAddressStateForInvoice(
-                companyAddress,
-                invoiceAddress,
-                shippingAddress,
-                invoice.getIsUseInvoiceAddressAsShiping());
-      }
+    BigDecimal totalNetAmt = BigDecimal.ZERO;
+    BigDecimal totalIgst = BigDecimal.ZERO;
+    BigDecimal totalSgst = BigDecimal.ZERO;
+    BigDecimal totalCgst = BigDecimal.ZERO;
+    BigDecimal totalgrossAmt = BigDecimal.ZERO;
+    boolean isNullAddress = false;
+    boolean isSameState = false;
 
-      List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
-
-      if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()) {
-
-        for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-          InvoiceLine invoiceLinenew;
-          invoiceLinenew =
-              invoiceLineServiceGST.calculateInvoiceLine(invoiceLine, isSameState, isNullAddress);
-          totalIgst = totalIgst.add(invoiceLinenew.getIgst());
-          totalSgst = totalSgst.add(invoiceLinenew.getSgst());
-          totalCgst = totalCgst.add(invoiceLinenew.getCgst());
-          totalgrossAmt = totalgrossAmt.add(invoiceLinenew.getGrossAmount());
-          invoiceLineList.add(invoiceLinenew);
-        }
-      }
-      invoice.setNetAmount(totalNetAmt.setScale(2, RoundingMode.HALF_UP));
-      invoice.setNetIGST(totalIgst.setScale(2, RoundingMode.HALF_UP));
-      invoice.setNetSGST(totalSgst.setScale(2, RoundingMode.HALF_UP));
-      invoice.setNetCGST(totalCgst.setScale(2, RoundingMode.HALF_UP));
-      invoice.setGrossAmount(totalgrossAmt.setScale(2, RoundingMode.HALF_UP));
-
-      invoice.setInvoiceLineList(invoiceLineList);
-      return invoice;
+    if (invoice.getCompany() == null
+        || invoice.getCompany().getAddress() == null
+        || invoice.getCompany().getAddress().getState() == null
+        || invoice.getAddress() == null) {
+      isNullAddress = true;
+    } else {
+      Address companyAddress = invoice.getCompany().getAddress();
+      Address invoiceAddress = invoice.getAddress();
+      //        Address shippingAddress = invoice.getShipingAddress();
+      Address shippingAddress = invoice.getCompany().getAddress();
+      isSameState =
+          addressService.checkAddressStateForInvoice(
+              companyAddress,
+              invoiceAddress,
+              shippingAddress,
+              invoice.getIsUseInvoiceAddressAsShiping());
     }
+
+    if (invoice.getInvoiceLineList() != null && !invoice.getInvoiceLineList().isEmpty()) {
+
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        invoiceLine =
+            invoiceLineServiceGST.calculateInvoiceLine(invoiceLine, isSameState, isNullAddress);
+        totalIgst = totalIgst.add(invoiceLine.getIgst());
+        totalSgst = totalSgst.add(invoiceLine.getSgst());
+        totalCgst = totalCgst.add(invoiceLine.getCgst());
+        totalgrossAmt = totalgrossAmt.add(invoiceLine.getGrossAmount());
+        // invoiceLineList.add(invoiceLinenew);
+      }
+    }
+    invoice.setNetAmount(totalNetAmt.setScale(2, RoundingMode.HALF_UP));
+    invoice.setNetIGST(totalIgst.setScale(2, RoundingMode.HALF_UP));
+    invoice.setNetSGST(totalSgst.setScale(2, RoundingMode.HALF_UP));
+    invoice.setNetCGST(totalCgst.setScale(2, RoundingMode.HALF_UP));
+    invoice.setGrossAmount(totalgrossAmt.setScale(2, RoundingMode.HALF_UP));
+
+    // invoice.setInvoiceLineList(invoiceLineList);
+    return invoice;
   }
 
   @Override

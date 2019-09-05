@@ -83,6 +83,7 @@ public class ValidateState extends WorkflowInvoice {
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate());
+
     if (invoice.getPartnerAccount() == null) {
       invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice));
     }
