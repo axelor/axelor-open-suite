@@ -487,7 +487,7 @@ public interface ITranslation {
           /*$$(*/ "DescriptiveDocumentationFEC.specificAccountingRules"; /*)*/
   public static final String ACCOUNTING_EXPORT_DESCRIPTIVE_DOCUMENTATION_FEC_FEC_FILE_ANOMALIES =
       /*$$(*/ "DescriptiveDocumentationFEC.FECFileAnomalies"; /*)*/
-  
+
   public static final String ACCOUNTING_EXPORT_DESCRIPTIVE_DOCUMENTATION_FEC_TITLE =
-	      /*$$(*/ "DescriptiveDocumentationFEC.title"; /*)*/
+      /*$$(*/ "DescriptiveDocumentationFEC.title"; /*)*/
 }
