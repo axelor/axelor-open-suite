@@ -342,7 +342,6 @@ public class ExpenseController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      response.setException(e);
     }
   }
 
