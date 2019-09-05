@@ -12,6 +12,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
@@ -62,7 +63,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     Map<String, Object> map = new HashMap<>();
     User user = getClientUser();
     /* SaleOrder */
-    map.put("$orders", getOrdersIndicator(user));
+    map.put("$ordersInProgress", getOrdersInProgressIndicator(user));
     map.put("$myQuotation", getQuotationsIndicator(user));
     map.put("$lastOrder", getLastOrderIndicator(user));
     /* StockMove */
@@ -89,8 +90,8 @@ public class ClientViewServiceImpl implements ClientViewService {
   }
 
   /* SaleOrder Indicators */
-  protected Integer getOrdersIndicator(User user) {
-    List<SaleOrder> saleOrderList = saleOrderRepo.all().filter(getOrdersOfUser(user)).fetch();
+  protected Integer getOrdersInProgressIndicator(User user) {
+    List<SaleOrder> saleOrderList = saleOrderRepo.all().filter(getOrdersInProgressOfUser(user)).fetch();
     return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
   }
 
@@ -103,7 +104,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     SaleOrder saleOrder = saleOrderRepo.all().filter(getLastOrderOfUser(user)).fetchOne();
     return saleOrder != null
         ? saleOrder.getConfirmationDateTime().format(DATE_FORMATTER)
-        : CLIENT_PORTAL_NO_DATE;
+        : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
   /* StockMove Indicators */
@@ -111,14 +112,14 @@ public class ClientViewServiceImpl implements ClientViewService {
     StockMove stockMove = stockMoveRepo.all().filter(getLastDeliveryOfUser(user)).fetchOne();
     return stockMove != null
         ? stockMove.getRealDate().format(DATE_FORMATTER)
-        : CLIENT_PORTAL_NO_DATE;
+        : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
   protected String getNextDeliveryIndicator(User user) {
     StockMove stockMove = stockMoveRepo.all().filter(getNextDeliveryOfUser(user)).fetchOne();
     return stockMove != null
         ? stockMove.getEstimatedDate().format(DATE_FORMATTER)
-        : CLIENT_PORTAL_NO_DATE;
+        : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
   protected Integer getPlannedDeliveriesIndicator(User user) {
@@ -206,15 +207,12 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   /* SaleOrder Query */
   @Override
-  public String getOrdersOfUser(User user) {
+  public String getOrdersInProgressOfUser(User user) {
     String query =
         "self.clientPartner.id = "
             + user.getPartner().getId()
-            + " AND self.statusSelect IN ("
-            + SaleOrderRepository.STATUS_ORDER_CONFIRMED
-            + ","
-            + SaleOrderRepository.STATUS_ORDER_COMPLETED
-            + ")";
+            + " AND self.statusSelect = "
+            + SaleOrderRepository.STATUS_ORDER_CONFIRMED;
     if (user.getActiveCompany() != null) {
       query = query + " AND self.company.id = " + user.getActiveCompany().getId();
     }
