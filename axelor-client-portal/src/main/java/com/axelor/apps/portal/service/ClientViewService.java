@@ -19,7 +19,7 @@ public interface ClientViewService {
   public String getTasksDueOfUser(User user);
 
   /* SaleOrder */
-  public String getOrdersOfUser(User user);
+  public String getOrdersInProgressOfUser(User user);
 
   public String getQuotationsOfUser(User user);
 

@@ -32,11 +32,11 @@ public class ClientViewController {
   }
 
   /* SALEORDER OnCLick */
-  public void showClientMyOrders(ActionRequest request, ActionResponse response) {
+  public void showClientMyOrdersInProgress(ActionRequest request, ActionResponse response) {
     try {
       ClientViewService clientViewService = Beans.get(ClientViewService.class);
       User clientUser = clientViewService.getClientUser();
-      String domain = clientViewService.getOrdersOfUser(clientUser);
+      String domain = clientViewService.getOrdersInProgressOfUser(clientUser);
       response.setView(
           ActionView.define(I18n.get("Orders"))
               .model(SaleOrder.class.getName())
