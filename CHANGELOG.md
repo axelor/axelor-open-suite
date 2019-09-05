@@ -15,6 +15,7 @@
 - MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
 - EBICS USER : add the possibility to print ebics request log.
 - STOCK : Addition of new selection field 'Stock location value' in Stock Config.
+- EBICS: fix ClassCastException when adding certificates.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -88,6 +89,7 @@
 - LUNCH VOUCHER LINE: Display period instead of from- and toDates.
 - SALE/PURCHASE ORDER : new config to display lines sequences
 - TIMESHEET : Throw an alert on timesheet validation.
+- PAYMENT MOVE LINE : add in payment move line a details tax payment grid for taxes on cashing.
 - SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
 - STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
 - MOVE LINES : lettering move lines is now quicker.
@@ -103,6 +105,9 @@
 - MANUF ORDER : copy MO but not operations orders
 - MOVE : add a control on period status
 - EXPENSE : add the payment move and its generation.
+- BANK ORDER : add a viewer with technical origin (Automatic,Entry,Import) information display.
+- BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
+- Expense : Set Move.date and expense.moveDate as expense.period.toDate
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
@@ -182,6 +187,7 @@
 - Workflow: reset domain of model and json field when app builder is changed.
 - Move various fields and actions to convenient modules.
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
+- VAT ON CASHING REPORT : report completely review and now similar to vat on debit report. 
 - Resolve the working of Open Street Map
 - EXPENSE : Improving exception message when expense line date is in the future
 - HELPDESK : Fix NPE when computing a total timer duration
@@ -199,6 +205,7 @@
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
 - EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
+- Expense : period / company not getting set on getOrCreateExpense method 
 
 ## [5.1.7] - 2019-06-17
 ## Features
