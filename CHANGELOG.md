@@ -18,6 +18,7 @@
 - Custom Model : Hide menu panel and allows to create menu from menubuilder only
 - English language : Correction of errors in english words and change gender job word to genderless job word
 - Action Builder: Added option to update or use json field from real model
+- STUDIO : add 'attrs' for User.
 
 ## Bug Fixes
 - Fix injection error during test
