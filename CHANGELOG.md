@@ -88,6 +88,7 @@
 - LUNCH VOUCHER LINE: Display period instead of from- and toDates.
 - SALE/PURCHASE ORDER : new config to display lines sequences
 - TIMESHEET : Throw an alert on timesheet validation.
+- PAYMENT MOVE LINE : add in payment move line a details tax payment grid for taxes on cashing.
 - SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
 - STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
 - MOVE LINES : lettering move lines is now quicker.
@@ -184,6 +185,7 @@
 - Workflow: reset domain of model and json field when app builder is changed.
 - Move various fields and actions to convenient modules.
 - Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
+- VAT ON CASHING REPORT : report completely review and now similar to vat on debit report. 
 - Resolve the working of Open Street Map
 - EXPENSE : Improving exception message when expense line date is in the future
 - HELPDESK : Fix NPE when computing a total timer duration
