@@ -171,6 +171,7 @@
 - ACCOUNTING BATCH : alert when the closing annual accounts batch already ran
 - CLIENT PORTAL : update the client form view
 - MESSAGE MODULE: Refactor code.
+- USER : Mass generation of random passwords
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
