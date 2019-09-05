@@ -1077,6 +1077,8 @@ InvoiceSet.length > 0))"
 
     <action-attrs name="action-invoice-reports-wizard-attrs-set-report-type-select">
     	<attribute name="value" for="$reportType" expr="eval: 1" if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
+    	<attribute name="value" for="$format" expr="pdf" if = "_statusSelect == 3"/>
+    	<attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
     </action-attrs>
 
 	<!-- DOMAIN -->
