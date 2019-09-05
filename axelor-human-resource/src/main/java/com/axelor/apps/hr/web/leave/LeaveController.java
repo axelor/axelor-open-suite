@@ -47,8 +47,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -57,145 +55,166 @@ import java.util.Map;
 @Singleton
 public class LeaveController {
 
-  @Inject private Provider<HRMenuTagService> hrMenuTagServiceProvider;
-  @Inject private Provider<LeaveService> leaveServiceProvider;
-  @Inject private Provider<LeaveRequestRepository> leaveRequestRepositoryProvider;
-  @Inject private HRConfigService hrConfigService;
-
   public void editLeave(ActionRequest request, ActionResponse response) {
+    try {
 
-    User user = AuthUtils.getUser();
+      User user = AuthUtils.getUser();
 
-    List<LeaveRequest> leaveList =
-        Beans.get(LeaveRequestRepository.class)
-            .all()
-            .filter(
-                "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
-                user,
-                user.getActiveCompany())
-            .fetch();
-    if (leaveList.isEmpty()) {
-      response.setView(
-          ActionView.define(I18n.get("LeaveRequest"))
-              .model(LeaveRequest.class.getName())
-              .add("form", "leave-request-form")
-              .map());
-    } else if (leaveList.size() == 1) {
-      response.setView(
-          ActionView.define(I18n.get("LeaveRequest"))
-              .model(LeaveRequest.class.getName())
-              .add("form", "leave-request-form")
-              .param("forceEdit", "true")
-              .context("_showRecord", String.valueOf(leaveList.get(0).getId()))
-              .map());
-    } else {
-      response.setView(
-          ActionView.define(I18n.get("LeaveRequest"))
-              .model(Wizard.class.getName())
-              .add("form", "popup-leave-request-form")
-              .param("forceEdit", "true")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("forceEdit", "true")
-              .param("popup-save", "false")
-              .map());
+      List<LeaveRequest> leaveList =
+          Beans.get(LeaveRequestRepository.class)
+              .all()
+              .filter(
+                  "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
+                  user,
+                  user.getActiveCompany())
+              .fetch();
+      if (leaveList.isEmpty()) {
+        response.setView(
+            ActionView.define(I18n.get("LeaveRequest"))
+                .model(LeaveRequest.class.getName())
+                .add("form", "leave-request-form")
+                .map());
+      } else if (leaveList.size() == 1) {
+        response.setView(
+            ActionView.define(I18n.get("LeaveRequest"))
+                .model(LeaveRequest.class.getName())
+                .add("form", "leave-request-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(leaveList.get(0).getId()))
+                .map());
+      } else {
+        response.setView(
+            ActionView.define(I18n.get("LeaveRequest"))
+                .model(Wizard.class.getName())
+                .add("form", "popup-leave-request-form")
+                .param("forceEdit", "true")
+                .param("popup", "true")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("forceEdit", "true")
+                .param("popup-save", "false")
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   @SuppressWarnings("unchecked")
   public void editLeaveSelected(ActionRequest request, ActionResponse response) {
-    Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
-    Long leaveId = Long.valueOf((long) leaveMap.get("id"));
-    response.setView(
-        ActionView.define(I18n.get("LeaveRequest"))
-            .model(LeaveRequest.class.getName())
-            .add("form", "leave-request-form")
-            .param("forceEdit", "true")
-            .domain("self.id = " + leaveId)
-            .context("_showRecord", leaveId)
-            .map());
+    try {
+      Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
+      Long leaveId = Long.valueOf((long) leaveMap.get("id"));
+      response.setView(
+          ActionView.define(I18n.get("LeaveRequest"))
+              .model(LeaveRequest.class.getName())
+              .add("form", "leave-request-form")
+              .param("forceEdit", "true")
+              .domain("self.id = " + leaveId)
+              .context("_showRecord", leaveId)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void validateLeave(ActionRequest request, ActionResponse response) {
+    try {
+      User user = AuthUtils.getUser();
+      Employee employee = user.getEmployee();
 
-    User user = AuthUtils.getUser();
-    Employee employee = user.getEmployee();
+      ActionViewBuilder actionView =
+          ActionView.define(I18n.get("Leave Requests to Validate"))
+              .model(LeaveRequest.class.getName())
+              .add("grid", "leave-request-validate-grid")
+              .add("form", "leave-request-form");
 
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Leave Requests to Validate"))
-            .model(LeaveRequest.class.getName())
-            .add("grid", "leave-request-validate-grid")
-            .add("form", "leave-request-form");
+      Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
-    Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
-
-    response.setView(actionView.map());
+      response.setView(actionView.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void historicLeave(ActionRequest request, ActionResponse response) {
+    try {
 
-    User user = AuthUtils.getUser();
-    Employee employee = user.getEmployee();
+      User user = AuthUtils.getUser();
+      Employee employee = user.getEmployee();
 
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Colleague Leave Requests"))
-            .model(LeaveRequest.class.getName())
-            .add("grid", "leave-request-grid")
-            .add("form", "leave-request-form");
-
-    actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
-
-    if (employee == null || !employee.getHrManager()) {
-      actionView
-          .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
-          .context("_user", user);
-    }
-
-    response.setView(actionView.map());
-  }
-
-  public void showSubordinateLeaves(ActionRequest request, ActionResponse response) {
-
-    User user = AuthUtils.getUser();
-
-    String domain =
-        "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
-    long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
-
-    if (nbLeaveRequests == 0) {
-      response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
-    } else {
       ActionViewBuilder actionView =
-          ActionView.define(I18n.get("Leaves to be Validated by your subordinates"))
+          ActionView.define(I18n.get("Colleague Leave Requests"))
               .model(LeaveRequest.class.getName())
               .add("grid", "leave-request-grid")
               .add("form", "leave-request-form");
-      response.setView(actionView.domain(domain).context("_user", user).map());
+
+      actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
+
+      if (employee == null || !employee.getHrManager()) {
+        actionView
+            .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
+            .context("_user", user);
+      }
+
+      response.setView(actionView.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showSubordinateLeaves(ActionRequest request, ActionResponse response) {
+    try {
+
+      User user = AuthUtils.getUser();
+
+      String domain =
+          "self.user.employee.managerUser.employee.managerUser = :_user AND self.statusSelect = 2";
+      long nbLeaveRequests = Query.of(ExtraHours.class).filter(domain).bind("_user", user).count();
+
+      if (nbLeaveRequests == 0) {
+        response.setNotify(I18n.get("No Leave Request to be validated by your subordinates"));
+      } else {
+        ActionViewBuilder actionView =
+            ActionView.define(I18n.get("Leaves to be Validated by your subordinates"))
+                .model(LeaveRequest.class.getName())
+                .add("grid", "leave-request-grid")
+                .add("form", "leave-request-form");
+        response.setView(actionView.domain(domain).context("_user", user).map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
   public void testDuration(ActionRequest request, ActionResponse response) {
-    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-    Double duration = leave.getDuration().doubleValue();
-    if (duration % 0.5 != 0) {
-      response.setError(I18n.get("Invalid duration (must be a 0.5's multiple)"));
+    try {
+      LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      double duration = leave.getDuration().doubleValue();
+      if (duration % 0.5 != 0) {
+        response.setError(I18n.get("Invalid duration (must be a 0.5's multiple)"));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
-  public void computeDuration(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-    response.setValue("duration", leaveServiceProvider.get().computeDuration(leave));
+  public void computeDuration(ActionRequest request, ActionResponse response) {
+    try {
+      LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   // sending leave request and an email to the manager
-  public void send(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void send(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = leaveServiceProvider.get();
+      LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
-      leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
+      leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
       if (leaveRequest.getUser().getEmployee().getWeeklyPlanning() == null) {
         response.setAlert(
@@ -251,12 +270,12 @@ public class LeaveController {
    * @param response
    * @throws AxelorException
    */
-  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void validate(ActionRequest request, ActionResponse response) {
 
     try {
-      LeaveService leaveService = leaveServiceProvider.get();
+      LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
-      leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
+      leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
       leaveService.validate(leaveRequest);
 
@@ -290,9 +309,9 @@ public class LeaveController {
   public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
 
     try {
-      LeaveService leaveService = leaveServiceProvider.get();
+      LeaveService leaveService = Beans.get(LeaveService.class);
       LeaveRequest leaveRequest = request.getContext().asType(LeaveRequest.class);
-      leaveRequest = leaveRequestRepositoryProvider.get().find(leaveRequest.getId());
+      leaveRequest = Beans.get(LeaveRequestRepository.class).find(leaveRequest.getId());
 
       leaveService.refuse(leaveRequest);
 
@@ -311,11 +330,11 @@ public class LeaveController {
     }
   }
 
-  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancel(ActionRequest request, ActionResponse response) {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
-      leave = leaveRequestRepositoryProvider.get().find(leave.getId());
-      LeaveService leaveService = leaveServiceProvider.get();
+      leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
+      LeaveService leaveService = Beans.get(LeaveService.class);
 
       leaveService.cancel(leave);
 
@@ -356,7 +375,7 @@ public class LeaveController {
         return;
       }
 
-      hrConfigService.getLeaveReason(company.getHrConfig());
+      Beans.get(HRConfigService.class).getLeaveReason(company.getHrConfig());
 
       Employee employee = leave.getUser().getEmployee();
 
@@ -366,7 +385,7 @@ public class LeaveController {
 
       if (employee != null) {
         employee = Beans.get(EmployeeRepository.class).find(leave.getUser().getEmployee().getId());
-        leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+        leaveLine = Beans.get(LeaveService.class).addLeaveReasonOrCreateIt(employee, leaveReason);
         response.setValue("leaveLine", leaveLine);
       }
     } catch (AxelorException e) {
@@ -376,8 +395,7 @@ public class LeaveController {
 
   public String leaveValidateMenuTag() {
 
-    return hrMenuTagServiceProvider
-        .get()
+    return Beans.get(HRMenuTagService.class)
         .countRecordsTag(LeaveRequest.class, LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
   }
 }
