@@ -1,5 +1,5 @@
-"importId";"name";"code";"stockLocation.importId";"producedProductStockLocation.importId";"company.importId";"statusSelect"
-1;"Assemblage Serv. Cl.";"SERV-CL";1;1;1;3
-2;"Assemblage Serv. HP";"SERV-HP";1;1;1;3
-3;"Préparation Pack Cl.";"PACK-CL";1;1;1;3
-4;"Préparation Pack Perf.";"PACK-PF";1;1;1;3
+"importId";"name";"code";"stockLocation.importId";"producedProductStockLocation.importId";"company.importId";"statusSelect";"product.importId"
+1;"Assemblage Serv. Cl.";"SERV-CL";1;1;1;3;110
+2;"Assemblage Serv. HP";"SERV-HP";1;1;1;3;111
+3;"Préparation Pack Cl.";"PACK-CL";1;1;1;3;100
+4;"Préparation Pack Perf.";"PACK-PF";1;1;1;3;101

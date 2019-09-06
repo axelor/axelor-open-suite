@@ -160,7 +160,10 @@ public class LeaveServiceImpl implements LeaveService {
 
     BigDecimal duration = BigDecimal.ZERO;
 
-    if (from != null && to != null) {
+    if (from != null
+        && to != null
+        && leave.getLeaveLine() != null
+        && leave.getLeaveLine().getLeaveReason() != null) {
       Employee employee = leave.getUser().getEmployee();
       if (employee == null) {
         throw new AxelorException(
@@ -181,7 +184,11 @@ public class LeaveServiceImpl implements LeaveService {
           break;
 
         default:
-          throw new AxelorException(null, TraceBackRepository.CATEGORY_NO_VALUE);
+          throw new AxelorException(
+              leave.getLeaveLine().getLeaveReason(),
+              TraceBackRepository.CATEGORY_NO_VALUE,
+              I18n.get(IExceptionMessage.LEAVE_REASON_NO_UNIT),
+              leave.getLeaveLine().getLeaveReason().getLeaveReason());
       }
     }
 
@@ -191,8 +198,8 @@ public class LeaveServiceImpl implements LeaveService {
   /**
    * Computes the duration in days of a leave, according to the input planning.
    *
-   * @param weeklyPlanning
-   * @param publicHolidayPlanning
+   * @param leave
+   * @param employee
    * @param fromDate
    * @param toDate
    * @param startOn

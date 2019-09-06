@@ -182,4 +182,15 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void computeTaxAmount(ActionRequest request, ActionResponse response) {
+
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine = Beans.get(MoveLineService.class).computeTaxAmount(moveLine);
+      response.setValues(moveLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
