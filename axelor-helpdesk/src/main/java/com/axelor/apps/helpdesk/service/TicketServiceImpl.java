@@ -214,17 +214,12 @@ public class TicketServiceImpl implements TicketService {
   public void checkSLAcompleted(Ticket ticket) {
 
     if (ticket.getSlaPolicy() != null) {
-
       LocalDateTime currentDate = LocalDateTime.now();
+      LocalDateTime deadlineDateT = ticket.getDeadlineDateT();
 
-      if (ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
-          && (currentDate.isBefore(ticket.getDeadlineDateT())
-              || currentDate.isEqual(ticket.getDeadlineDateT()))) {
-
-        ticket.setIsSlaCompleted(true);
-      } else {
-        ticket.setIsSlaCompleted(false);
-      }
+      ticket.setIsSlaCompleted(
+          ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
+              && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
     }
   }
 

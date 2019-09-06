@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<form name="sale-order-invoicing-wizard-form" title="Invoicing"
 		  model="com.axelor.apps.sale.db.SaleOrder"
@@ -16,7 +16,7 @@
         <panel name="amountPanel" showIf="$contains([2,3],$number(operationSelect))">
 			<field name="isPercent" title="Is amount in %" type="boolean"
 				   />
-			<field name="amountToInvoice" title="Amount to invoice" type="decimal"
+			<field name="amountToInvoice" title="Amount to invoice" type="decimal" min="0"
 				   showIf="$contains([3],$number(operationSelect))"/>
 		</panel>
 		<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" hideIf="operationSelect != 2" canNew="false"

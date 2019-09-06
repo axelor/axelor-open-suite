@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" width="large" canDelete="false" canNew="false">
 		<toolbar>
@@ -51,8 +51,8 @@
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
 				<panel name="mapPanel" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
-					<button name="checkMapApiBtn" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
-					<field name="googleMapsApiKey" widget="password"/>
+					<button name="checkMapApiBtn" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi" hideIf="mapApiSelect == 2"/>
+					<field name="googleMapsApiKey" widget="password" hideIf="mapApiSelect == 2"/>
 				</panel>
 				<panel name="qasPanel" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>

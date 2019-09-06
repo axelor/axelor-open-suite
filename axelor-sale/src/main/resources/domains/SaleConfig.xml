@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="sale" package="com.axelor.apps.sale.db"/>
 
-	<entity name="SaleConfig" lang="java" cachable="true">
+	<entity name="SaleConfig" lang="java" cacheable="true">
 		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
 		<decimal name="acceptedCredit" title="Accepted Credit"/>
@@ -20,6 +20,7 @@
 		<boolean name="displayCustomerCodeOnPrinting" title="Display customer code on printing"/>
 		<boolean name="displayProductPictureOnPrinting" title="Display product picture on printing"/>
 		<many-to-one name="defaultValidityDuration" ref="com.axelor.apps.base.db.Duration" title="Validity duration per default"/>
+		<boolean name="isAnalyticDistributionRequired" title="Analytic distribution required on sale order line"/>
 
 	</entity>
 

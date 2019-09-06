@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	
 	<grid name="category-grid" title="Category" model="com.axelor.apps.project.db.ProjectCategory">
 		<field name="name"/>
-		<field name="byDefault"/>
 		<field name="defaultInvoicing" if="__config__.app.isApp('business-support')" if-module="axelor-business-support"/>
 	</grid>
 	
 	<form title="Category" name="category-form"  model="com.axelor.apps.project.db.ProjectCategory">
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="byDefault"/>
 			<field name="defaultInvoicing" if="__config__.app.isApp('business-support')" if-module="axelor-business-support"/>
 		</panel>
-		
 	</form>
 	
 </object-views>

@@ -172,7 +172,9 @@ public class DebtRecoveryActionService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void runManualAction(DebtRecovery debtRecovery) throws AxelorException {
+  public void runManualAction(DebtRecovery debtRecovery)
+      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
+          IllegalAccessException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -215,6 +217,11 @@ public class DebtRecoveryActionService {
       this.debtRecoveryLevelValidate(debtRecovery);
 
       this.saveDebtRecovery(debtRecovery);
+
+      /* Messages are send from this transaction
+      If an exception occurs while sending messages
+      The debtRecovery process is rollbacked */
+      this.runMessage(debtRecovery);
     }
     log.debug("End runManualAction service");
   }

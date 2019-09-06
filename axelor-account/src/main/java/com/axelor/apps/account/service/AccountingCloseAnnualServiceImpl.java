@@ -165,7 +165,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     Move move =
         moveCreateService.createMove(
-            accountConfigService.getAutoMiscOpeJournal(accountConfig),
+            accountConfigService.getReportedBalanceJournal(accountConfig),
             company,
             company.getCurrency(),
             partner,
@@ -249,6 +249,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (partner != null) {
       prepareQuery += " AND self.partner = ?4";
+    } else {
+      prepareQuery += " AND self.partner is null";
     }
 
     Query q = JPA.em().createQuery(prepareQuery, BigDecimal.class);

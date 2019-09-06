@@ -30,9 +30,13 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.actions.ActionGroup;
 import com.axelor.meta.schema.actions.ActionGroup.ActionItem;
+import com.axelor.meta.schema.actions.ActionMethod;
+import com.axelor.meta.schema.actions.ActionMethod.Call;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -61,6 +65,12 @@ public class WkfService {
 
   protected Inflector inflector;
 
+  protected Integer wkfSequence = 0;
+
+  protected String applyCondition = null;
+
+  protected String trackingAction = null;
+
   @Inject protected RoleRepository roleRepo;
 
   @Inject private WkfNodeService nodeService;
@@ -69,6 +79,8 @@ public class WkfService {
   @Inject private MetaJsonFieldRepository jsonFieldRepo;
   @Inject private MetaJsonModelRepository jsonModelRepo;
   @Inject private MetaSelectRepository metaSelectRepo;
+  @Inject private FilterGroovyService filterGroovyService;
+  @Inject private WkfRepository wkfRepository;
 
   /**
    * Method to process workflow. It calls node and transition service for nodes and transitions
@@ -80,14 +92,14 @@ public class WkfService {
   public String process(Wkf wkf) {
 
     try {
-      workflow = wkf;
-      inflector = Inflector.getInstance();
-      setWkfId();
+      initService(wkf);
+      createTrackingAction();
+      setWkfSequence();
       setView();
       List<String[]> actions = nodeService.process();
       actions.addAll(transitionService.process());
       actions.add(new String[] {"save"});
-      actions.add(new String[] {WkfTrackingService.ACTION_TRACK});
+      actions.add(new String[] {trackingAction});
       updateActionGroup("action-group-" + wkfId, actions);
       MetaStore.clear();
 
@@ -99,57 +111,59 @@ public class WkfService {
     return null;
   }
 
-  private void setWkfId() {
-
-    String model = workflow.getModel();
-    if (workflow.getIsJson()) {
-      wkfId = inflector.dasherize(model) + "-wkf";
-    } else {
-      model = model.substring(model.lastIndexOf('.') + 1);
-      wkfId = inflector.dasherize(model) + inflector.dasherize(workflow.getJsonField()) + "-wkf";
-    }
+  private void initService(Wkf wkf) {
+    workflow = wkf;
+    inflector = Inflector.getInstance();
+    wkfId = "wkf" + wkf.getId().toString();
+    trackingAction = "action-method-wkf-track-" + wkfId;
   }
 
   private void setView() {
 
-    clearOldStatusField();
+    //    clearOldStatusField();
 
-    MetaJsonField panel = getJsonField("wkfPanel", "panel");
-    panel.setSequence(-103);
+    MetaJsonField status = workflow.getStatusField();
+
+    applyCondition =
+        filterGroovyService.getGroovyFilters(workflow.getConditions(), workflow.getJsonField());
+
+    MetaJsonField panel = getJsonField(wkfId + "Panel", "panel");
+    panel.setSequence(wkfSequence - 49);
     panel.setVisibleInGrid(false);
     panel.setIsWkf(true);
     panel.setWidgetAttrs("{\"colSpan\": \"12\"}");
     saveJsonField(panel);
 
-    MetaJsonField status = workflow.getStatusField();
-    status.setSequence(-102);
+    status.setSequence(wkfSequence - 48);
     status.setSelection(getSelectName());
     status.setWidget(null);
     status.setIsWkf(true);
     status.setReadonly(true);
+    status.setShowIf(applyCondition);
     status.setWidgetAttrs("{\"colSpan\": \"10\"}");
     if (workflow.getDisplayTypeSelect() == 0) {
       status.setWidget("NavSelect");
     }
     saveJsonField(workflow.getStatusField());
 
-    MetaJsonField trackFlow = getJsonField("trackFlow", "button");
-    trackFlow.setSequence(-101);
+    MetaJsonField trackFlow = getJsonField(wkfId + "TrackFlow", "button");
+    trackFlow.setSequence(wkfSequence - 47);
     trackFlow.setTitle("Track flow");
     trackFlow.setWidgetAttrs("{\"colSpan\": \"2\"}");
     trackFlow.setOnClick(WkfTrackingService.ACTION_OPEN_TRACK);
     trackFlow.setIsWkf(true);
     trackFlow.setVisibleInGrid(false);
+    trackFlow.setHidden(!workflow.getIsTrackFlow());
     saveJsonField(trackFlow);
 
-    MetaJsonField wkfEnd = getJsonField("wkfSeparator", "separator");
-    wkfEnd.setSequence(-1);
+    MetaJsonField wkfEnd = getJsonField(wkfId + "Separator", "separator");
+    wkfEnd.setSequence(wkfSequence);
     wkfEnd.setVisibleInGrid(false);
     wkfEnd.setIsWkf(true);
     wkfEnd.setWidgetAttrs("{\"colSpan\": \"12\"}");
     saveJsonField(panel);
 
-    setTrackOnSave(workflow, false);
+    //    setTrackOnSave(workflow, false);
   }
 
   @Transactional
@@ -295,6 +309,7 @@ public class WkfService {
     field.setType(type);
     field.setName(name);
     field.setIsWkf(true);
+    field.setShowIf(applyCondition);
 
     return saveJsonField(field);
   }
@@ -308,6 +323,8 @@ public class WkfService {
   @Transactional
   public void clearWkf(Wkf wkf) {
 
+    initService(wkf);
+
     String actions = "action-" + wkfId + ",action-group" + wkfId;
     actions = clearFields(wkf, actions);
 
@@ -317,6 +334,7 @@ public class WkfService {
         builder.append("," + nodeService.getActionName(node.getName()));
       }
     }
+    builder.append(trackingAction);
     actions = builder.toString();
 
     metaService.removeMetaActions(actions);
@@ -333,7 +351,7 @@ public class WkfService {
     status.setWidgetAttrs(null);
     saveJsonField(status);
 
-    setTrackOnSave(wkf, true);
+    //    setTrackOnSave(wkf, true);
   }
 
   private String clearFields(Wkf wkf, String actions) {
@@ -357,18 +375,17 @@ public class WkfService {
 
     List<MetaJsonField> fields;
 
+    String query = "self.isWkf = true and self.name LIKE '" + wkfId + "%' and ";
+
     if (wkf.getIsJson()) {
       fields =
-          jsonFieldRepo
-              .all()
-              .filter("self.isWkf = true " + "and self.jsonModel.name = ?1", wkf.getModel())
-              .fetch();
+          jsonFieldRepo.all().filter(query + "self.jsonModel.name = ?1", wkf.getModel()).fetch();
     } else {
       fields =
           jsonFieldRepo
               .all()
               .filter(
-                  "self.isWkf = true " + "and self.model = ?1 and self.modelField = ?2",
+                  query + "self.model = ?1 and self.modelField = ?2",
                   wkf.getModel(),
                   wkf.getJsonField())
               .fetch();
@@ -384,7 +401,7 @@ public class WkfService {
       return null;
     }
 
-    skipList.add("trackFlow");
+    skipList.add(wkfId + "TrackFlow");
 
     ArrayList<String> actions = new ArrayList<>();
 
@@ -397,9 +414,11 @@ public class WkfService {
                   "self.type = 'button' "
                       + "and self.jsonModel.name = ?1 "
                       + "and self.isWkf = true "
-                      + "and self.name not in (?2)",
+                      + "and self.name not in (?2) "
+                      + "and self.name LIKE ?3",
                   workflow.getModel(),
-                  skipList)
+                  skipList,
+                  wkfId + "%")
               .fetch();
     } else {
       fields =
@@ -409,10 +428,12 @@ public class WkfService {
                   "self.type = 'button' "
                       + "and self.model = ?1 "
                       + "and self.modelField = ?2 "
-                      + "and self.name not in (?3)",
+                      + "and self.name not in (?3) "
+                      + "and self.name LIKE ?4",
                   workflow.getModel(),
                   workflow.getJsonField(),
-                  skipList)
+                  skipList,
+                  wkfId + "%")
               .fetch();
     }
 
@@ -450,7 +471,6 @@ public class WkfService {
       if (workflow == null) {
         workflow = node.getWkf();
         inflector = Inflector.getInstance();
-        setWkfId();
       }
       if (!node.getMetaActionSet().isEmpty()) {
         actions.add(nodeService.getActionName(node.getName()));
@@ -460,17 +480,52 @@ public class WkfService {
     metaService.removeMetaActions(Joiner.on(",").join(actions));
   }
 
+  //  @Transactional
+  //  public void setTrackOnSave(Wkf wkf, boolean remove) {
+  //    if (wkf.getIsJson()) {
+  //      MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getModel());
+  //      if (jsonModel != null) {
+  //        String onSave =
+  //            metaService.updateAction(
+  //                jsonModel.getOnSave(), "save," + trackingAction, remove);
+  //        jsonModel.setOnSave(onSave);
+  //        jsonModelRepo.save(jsonModel);
+  //      }
+  //    }
+  //  }
+
   @Transactional
-  public void setTrackOnSave(Wkf wkf, boolean remove) {
-    if (wkf.getIsJson()) {
-      MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getModel());
-      if (jsonModel != null) {
-        String onSave =
-            metaService.updateAction(
-                jsonModel.getOnSave(), "save," + WkfTrackingService.ACTION_TRACK, remove);
-        jsonModel.setOnSave(onSave);
-        jsonModelRepo.save(jsonModel);
-      }
+  public void createTrackingAction() {
+
+    ActionMethod actionMethod = new ActionMethod();
+    actionMethod.setName(trackingAction);
+    Call call = new Call();
+    call.setMethod("track(" + workflow.getId() + "," + "__self__)");
+    call.setController("com.axelor.studio.service.wkf.WkfTrackingService");
+    actionMethod.setCall(call);
+    String xml = XMLViews.toXml(actionMethod, true);
+
+    metaService.updateMetaAction(trackingAction, "action-method", xml, null);
+  }
+
+  @Transactional
+  public void setWkfSequence() {
+
+    Wkf wkf =
+        wkfRepository
+            .all()
+            .filter("self.model = ?1", workflow.getModel())
+            .order("wkfSequence")
+            .fetchOne();
+
+    if (wkf.getId() != workflow.getId() && workflow.getWkfSequence() == 0) {
+      workflow.setWkfSequence(wkf.getWkfSequence() - 50);
+      wkfRepository.save(workflow);
+    } else if (workflow.getWkfSequence() == 0) {
+      workflow.setWkfSequence(-1);
+      wkfRepository.save(workflow);
     }
+
+    wkfSequence = workflow.getWkfSequence();
   }
 }

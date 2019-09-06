@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -96,15 +97,20 @@ public interface LeaveService {
 
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public LeaveLine leaveReasonToJustify(Employee employee, LeaveReason leaveReason)
-      throws AxelorException;
-
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReasonHrConfig)
       throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
   public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
       throws AxelorException;
+
+  /**
+   * Checks if the given day is a leave day.
+   *
+   * @param user
+   * @param date
+   * @return
+   */
+  public boolean isLeaveDay(User user, LocalDate date);
 }

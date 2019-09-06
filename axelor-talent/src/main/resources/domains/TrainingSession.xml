@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="TrainingSession" lang="java" cachable="true">
+	<entity name="TrainingSession" lang="java" cacheable="true">
 		<integer name="statusSelect" title="Status" selection="training.session.status.select" default="1" />
 		<many-to-one name="training" ref="com.axelor.apps.talent.db.Training" title="Training" required="true" />
 		<datetime name="fromDate" title="From date" required="true" />

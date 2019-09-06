@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
   
   <grid name="action-builder-grid" title="Action builder" model="com.axelor.studio.db.ActionBuilder">
   	  <field name="name" />	
@@ -40,8 +40,9 @@
       	  <field name="title" colSpan="12" showIf="typeSelect == 3" requiredIf="typeSelect == 3"/>
       	  <field name="actionBuilderViews"  showIf="typeSelect == 3" colSpan="12">
       	  	<editor>
-      	  		<field name="viewType" colSpan="4" />
-      	  		<field name="viewName" colSpan="8" widget="ref-text" x-target="com.axelor.meta.db.MetaView" x-target-name="name" onSelect="action-action-builder-view-name-domain"/>
+      	  		<field name="viewType" colSpan="3" />
+      	  		<field name="viewName" colSpan="5" widget="ref-text" x-target="com.axelor.meta.db.MetaView" x-target-name="name" onSelect="action-action-builder-view-name-domain"/>
+      	  		<field name="viewConditionToCheck" colSpan="4"/>
       	  	</editor>
       	  </field>
       	  <field name="lines" title="Context"  hideIf="typeSelect != 3" colSpan="12">
@@ -61,7 +62,7 @@
 	      <panel name="scriptPanel" showIf="typeSelect == 2" colSpan="12" >
 	      	<field name="scriptType" />
 	      	<field name="transactional" />
-	      	<field name="scriptText" colSpan="12" />
+	      	<field name="scriptText" widget="CodeEditor" x-code-syntax="javascript" colSpan="12" />
 	      </panel>
 	      <panel name="emailTemplatePanel" colSpan="12">
 	      	<field name="scriptText" widget="html" title="Template" colSpan="12" showIf="typeSelect == 5"/>
@@ -86,7 +87,8 @@
   </action-attrs>
   
   <action-attrs name="action-action-builder-attrs-template-domain">
-  	<attribute name="domain" for="emailTemplate" expr="eval:(model != null) ? &quot; self.metaModel.fullName = '${model}' &quot; : null"/>
+  	<attribute name="domain" for="emailTemplate" expr="eval:(model != null) ? &quot; self.metaModel.fullName = '${model}' AND self.isJson = '${isJson}' &quot; : &quot; self.isJson = '${isJson}' &quot;" if="!isJson"/>
+  	<attribute name="domain" for="emailTemplate" expr="eval:(model != null) ? &quot; self.metaJsonModel.name = '${model}' AND self.isJson = '${isJson}' &quot; : &quot; self.isJson = '${isJson}' &quot;" if="isJson"/>
   </action-attrs>
   
   <action-method name="action-action-builder-method-set-views">

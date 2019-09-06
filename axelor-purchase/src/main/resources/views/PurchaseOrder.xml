@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     <menubar>
@@ -177,7 +177,6 @@
 			<button name="generateInvoiceBtn" title="Generate control invoice" showIf="statusSelect == 3" onClick="save,action-purchase-order-method-generate-control-invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder" if-module="axelor-supplychain"/>
 			<button name="showInvoiceBtn" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <button name="finishManuallyPurchaseOrderBtn" title="Finish the order" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
-			<spacer name="btnSpacer"/>
 			<button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"   onClick="save,action-group-purchase-order-cancel"/>
 		</panel>
   
@@ -401,6 +400,7 @@
     </action-group>
 
     <action-group name="action-group-purchase-order-on-validate-actions">
+      <action name="action-purchase-order-method-check-analytic-distribution-template"/>
     	<action name="action-purchase-order-validate-purchase-order-line"/>
     	<action name="action-purchase-order-validate-stock-location"/>
     	<action name="save"/>
@@ -693,4 +693,7 @@
 		<field name="supplierPartner" expr="eval: __repo__(Partner).find(_partner.id)" />
 	</action-record>
 
+  <action-method name="action-purchase-order-method-check-analytic-distribution-template">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="checkPurchaseOrderAnalyticDistributionTemplate" if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
+  </action-method>
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="account-grid" title="Accounting.Accounts" model="com.axelor.apps.account.db.Account">
 	  <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -43,7 +43,7 @@
 				<field name="name" colSpan="9" css="bold"/>
 			</panel>
 			<panel name="balancePanel" colSpan="4" showIf="id">
-				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"/>
+				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button" onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>

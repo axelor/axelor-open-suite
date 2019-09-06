@@ -17,6 +17,7 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -115,6 +116,7 @@ public class ImportDateTime {
     return datetime;
   }
 
+  @CallMethod
   public String importDate(String inputDate) {
 
     String patDate =
@@ -145,7 +147,6 @@ public class ImportDateTime {
         } else return inputDate;
       } else return null;
     } catch (Exception e) {
-      e.printStackTrace();
       return null;
     }
   }
@@ -197,7 +198,6 @@ public class ImportDateTime {
       }
       return null;
     } catch (Exception e) {
-      e.printStackTrace();
       return null;
     }
   }

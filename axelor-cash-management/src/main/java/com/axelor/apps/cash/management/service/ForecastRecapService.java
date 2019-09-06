@@ -30,6 +30,7 @@ import com.axelor.apps.cash.management.db.repo.ForecastRecapLineRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.axelor.apps.cash.management.report.IReport;
+import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.hr.db.Employee;
@@ -55,6 +56,8 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -73,6 +76,7 @@ public class ForecastRecapService {
 
   @Inject protected CurrencyService currencyService;
 
+  @Transactional
   public void populate(ForecastRecap forecastRecap) throws AxelorException {
     List<ForecastRecapLine> forecastRecapLineList = forecastRecap.getForecastRecapLineList();
     if (forecastRecapLineList != null && !forecastRecapLineList.isEmpty()) {
@@ -94,7 +98,11 @@ public class ForecastRecapService {
     this.populateWithTimetables(forecastRecap);
     this.populateWithForecasts(forecastRecap);
     this.populateWithExpenses(forecastRecap);
+
+    this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
+    forecastRecap.setCalculationDate(appBaseService.getTodayDate());
+    Beans.get(ForecastRecapRepository.class).save(forecastRecap);
   }
 
   public void populateWithOpportunities(ForecastRecap forecastRecap) throws AxelorException {
@@ -136,14 +144,9 @@ public class ForecastRecapService {
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
-        forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
         forecastRecap.addForecastRecapLineListItem(
             this.createForecastRecapLine(
-                opportunity.getExpectedCloseDate(),
-                1,
-                null,
-                amountCompanyCurr,
-                forecastRecap.getCurrentBalance()));
+                opportunity.getExpectedCloseDate(), 1, amountCompanyCurr, null, null, null));
       } else if (forecastRecap.getOpportunitiesTypeSelect()
           == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST) {
         amountCompanyCurr =
@@ -156,14 +159,9 @@ public class ForecastRecapService {
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
-        forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
         forecastRecap.addForecastRecapLineListItem(
             this.createForecastRecapLine(
-                opportunity.getExpectedCloseDate(),
-                1,
-                null,
-                amountCompanyCurr,
-                forecastRecap.getCurrentBalance()));
+                opportunity.getExpectedCloseDate(), 1, amountCompanyCurr, null, null, null));
       } else {
         amountCompanyCurr =
             currencyService
@@ -175,14 +173,9 @@ public class ForecastRecapService {
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
                 .setScale(2, RoundingMode.HALF_UP);
-        forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
         forecastRecap.addForecastRecapLineListItem(
             this.createForecastRecapLine(
-                opportunity.getExpectedCloseDate(),
-                1,
-                null,
-                amountCompanyCurr,
-                forecastRecap.getCurrentBalance()));
+                opportunity.getExpectedCloseDate(), 1, amountCompanyCurr, null, null, null));
       }
     }
   }
@@ -306,24 +299,24 @@ public class ForecastRecapService {
               .divide(invoice.getCompanyInTaxTotal(), 2, RoundingMode.HALF_UP);
       BigDecimal amount = invoice.getCompanyExTaxTotal().subtract(amountPaidExTax);
       if (invoice.getOperationTypeSelect() == 2 || invoice.getOperationTypeSelect() == 3) {
-        forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amount));
         forecastRecap.addForecastRecapLineListItem(
             this.createForecastRecapLine(
                 invoice.getEstimatedPaymentDate(),
                 1,
-                null,
                 amount,
-                forecastRecap.getCurrentBalance()));
+                Invoice.class.getName(),
+                invoice.getId(),
+                invoice.getInvoiceId()));
       }
       if (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 4) {
-        forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().subtract(amount));
         forecastRecap.addForecastRecapLineListItem(
             this.createForecastRecapLine(
                 invoice.getEstimatedPaymentDate(),
                 2,
-                null,
                 amount,
-                forecastRecap.getCurrentBalance()));
+                Invoice.class.getName(),
+                invoice.getId(),
+                invoice.getInvoiceId()));
       }
     }
   }
@@ -398,22 +391,16 @@ public class ForecastRecapService {
       LocalDate monthEnd = itDate.withDayOfMonth(itDate.lengthOfMonth());
       if (itDate.isEqual(monthEnd)) {
         for (Employee employee : employeeList) {
-          forecastRecap.setCurrentBalance(
-              forecastRecap
-                  .getCurrentBalance()
-                  .subtract(
-                      employee
-                          .getHourlyRate()
-                          .multiply(employee.getWeeklyWorkHours().multiply(new BigDecimal(4)))));
           forecastRecap.addForecastRecapLineListItem(
               this.createForecastRecapLine(
                   itDate,
                   2,
-                  null,
                   employee
                       .getHourlyRate()
                       .multiply(employee.getWeeklyWorkHours().multiply(new BigDecimal(4))),
-                  forecastRecap.getCurrentBalance()));
+                  null,
+                  null,
+                  null));
         }
         itDate = itDate.plusMonths(1);
       } else {
@@ -479,14 +466,9 @@ public class ForecastRecapService {
                   timetable.getAmount(),
                   appBaseService.getTodayDate())
               .setScale(2, RoundingMode.HALF_UP);
-      forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
-              timetable.getEstimatedDate(),
-              1,
-              null,
-              amountCompanyCurr,
-              forecastRecap.getCurrentBalance()));
+              timetable.getEstimatedDate(), 1, amountCompanyCurr, null, null, null));
     }
     for (Timetable timetable : timetablePurchaseOrderList) {
       BigDecimal amountCompanyCurr =
@@ -497,15 +479,9 @@ public class ForecastRecapService {
                   timetable.getAmount(),
                   appBaseService.getTodayDate())
               .setScale(2, RoundingMode.HALF_UP);
-      forecastRecap.setCurrentBalance(
-          forecastRecap.getCurrentBalance().subtract(amountCompanyCurr));
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
-              timetable.getEstimatedDate(),
-              2,
-              null,
-              amountCompanyCurr,
-              forecastRecap.getCurrentBalance()));
+              timetable.getEstimatedDate(), 2, amountCompanyCurr, null, null, null));
     }
   }
 
@@ -569,14 +545,9 @@ public class ForecastRecapService {
                   timetable.getAmount(),
                   appBaseService.getTodayDate())
               .setScale(2, RoundingMode.HALF_UP);
-      forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
-              timetable.getEstimatedDate(),
-              1,
-              null,
-              amountCompanyCurr,
-              forecastRecap.getCurrentBalance()));
+              timetable.getEstimatedDate(), 1, amountCompanyCurr, null, null, null));
     }
     for (Timetable timetable : timetablePurchaseOrderList) {
       purchaseOrderList.add(timetable.getPurchaseOrder());
@@ -588,15 +559,9 @@ public class ForecastRecapService {
                   timetable.getAmount(),
                   appBaseService.getTodayDate())
               .setScale(2, RoundingMode.HALF_UP);
-      forecastRecap.setCurrentBalance(
-          forecastRecap.getCurrentBalance().subtract(amountCompanyCurr));
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
-              timetable.getEstimatedDate(),
-              2,
-              null,
-              amountCompanyCurr,
-              forecastRecap.getCurrentBalance()));
+              timetable.getEstimatedDate(), 2, amountCompanyCurr, null, null, null));
     }
     List<SaleOrder> saleOrderNoTimeTableList = new ArrayList<SaleOrder>();
     List<PurchaseOrder> purchaseOrderNoTimetableList = new ArrayList<PurchaseOrder>();
@@ -650,14 +615,14 @@ public class ForecastRecapService {
         BigDecimal amountCompanyCurr =
             saleOrder.getCompanyExTaxTotal().subtract(saleOrder.getAmountInvoiced());
         if (amountCompanyCurr.compareTo(BigDecimal.ZERO) == 0) {
-          forecastRecap.setCurrentBalance(forecastRecap.getCurrentBalance().add(amountCompanyCurr));
           forecastRecap.addForecastRecapLineListItem(
               this.createForecastRecapLine(
                   saleOrder.getExpectedRealisationDate(),
                   1,
-                  null,
                   amountCompanyCurr,
-                  forecastRecap.getCurrentBalance()));
+                  SaleOrder.class.getName(),
+                  saleOrder.getId(),
+                  saleOrder.getSaleOrderSeq()));
         }
       }
     }
@@ -666,15 +631,14 @@ public class ForecastRecapService {
         BigDecimal amountCompanyCurr =
             purchaseOrder.getCompanyExTaxTotal().subtract(purchaseOrder.getAmountInvoiced());
         if (amountCompanyCurr.compareTo(BigDecimal.ZERO) == 0) {
-          forecastRecap.setCurrentBalance(
-              forecastRecap.getCurrentBalance().subtract(amountCompanyCurr));
           forecastRecap.addForecastRecapLineListItem(
               this.createForecastRecapLine(
                   purchaseOrder.getExpectedRealisationDate(),
                   2,
-                  null,
                   amountCompanyCurr,
-                  forecastRecap.getCurrentBalance()));
+                  PurchaseOrder.class.getName(),
+                  purchaseOrder.getId(),
+                  purchaseOrder.getPurchaseOrderSeq()));
         }
       }
     }
@@ -821,20 +785,15 @@ public class ForecastRecapService {
               .fetch();
     }
     for (Forecast forecast : forecastList) {
-      if (forecast.getTypeSelect() == 1) {
-        forecastRecap.setCurrentBalance(
-            forecastRecap.getCurrentBalance().add(forecast.getAmount()));
-      } else {
-        forecastRecap.setCurrentBalance(
-            forecastRecap.getCurrentBalance().subtract(forecast.getAmount()));
-      }
+      ForecastReason forecastReason = forecast.getForecastReason();
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
               forecast.getEstimatedDate(),
               forecast.getTypeSelect(),
-              forecast.getForecastReason(),
               forecast.getAmount(),
-              forecastRecap.getCurrentBalance()));
+              ForecastReason.class.getName(),
+              forecastReason.getId(),
+              forecastReason.getReason()));
       forecast.setRealizedSelect(ForecastRepository.REALISED_SELECT_YES);
       forecastRepo.save(forecast);
     }
@@ -869,20 +828,15 @@ public class ForecastRecapService {
               .fetch();
     }
     for (Forecast forecast : forecastList) {
-      if (forecast.getTypeSelect() == 1) {
-        forecastRecap.setCurrentBalance(
-            forecastRecap.getCurrentBalance().add(forecast.getAmount()));
-      } else {
-        forecastRecap.setCurrentBalance(
-            forecastRecap.getCurrentBalance().subtract(forecast.getAmount()));
-      }
+      ForecastReason forecastReason = forecast.getForecastReason();
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
               forecast.getEstimatedDate(),
               forecast.getTypeSelect(),
-              forecast.getForecastReason(),
               forecast.getAmount(),
-              forecastRecap.getCurrentBalance()));
+              ForecastReason.class.getName(),
+              forecastReason.getId(),
+              forecastReason.getReason()));
     }
   }
 
@@ -965,36 +919,81 @@ public class ForecastRecapService {
               .fetch();
     }
     for (Expense expense : expenseList) {
-      forecastRecap.setCurrentBalance(
-          forecastRecap.getCurrentBalance().subtract(expense.getExTaxTotal()));
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
               expense.getValidationDate(),
               2,
-              null,
               expense.getExTaxTotal(),
-              forecastRecap.getCurrentBalance()));
+              Expense.class.getName(),
+              expense.getId(),
+              expense.getExpenseSeq()));
     }
   }
 
   public ForecastRecapLine createForecastRecapLine(
-      LocalDate date, int type, ForecastReason reason, BigDecimal amount, BigDecimal balance) {
+      LocalDate date,
+      int type,
+      BigDecimal amount,
+      String relatedToSelect,
+      Long relatedToSelectId,
+      String relatedToSelectName) {
     ForecastRecapLine forecastRecapLine = new ForecastRecapLine();
     forecastRecapLine.setEstimatedDate(date);
     forecastRecapLine.setTypeSelect(type);
-    forecastRecapLine.setForecastReason(reason);
     forecastRecapLine.setAmount(amount);
-    forecastRecapLine.setBalance(balance);
+    forecastRecapLine.setRelatedToSelect(relatedToSelect);
+    forecastRecapLine.setRelatedToSelectId(relatedToSelectId);
+    forecastRecapLine.setRelatedToSelectName(relatedToSelectName);
     return forecastRecapLine;
   }
 
-  public String getURLForecastRecapPDF(ForecastRecap forecastRecap) throws AxelorException {
-    String title = I18n.get("ForecastRecap");
-    title += forecastRecap.getId();
+  public void computeForecastRecapLineBalance(ForecastRecap forecastRecap) {
+
+    List<ForecastRecapLine> forecastRecapLines = forecastRecap.getForecastRecapLineList();
+
+    Collections.sort(
+        forecastRecapLines,
+        new Comparator<ForecastRecapLine>() {
+          @Override
+          public int compare(
+              ForecastRecapLine forecastRecapLine1, ForecastRecapLine forecastRecapLine2) {
+            int compareEstimatedDate =
+                forecastRecapLine1
+                    .getEstimatedDate()
+                    .compareTo(forecastRecapLine2.getEstimatedDate());
+            int compareTypeSelect =
+                forecastRecapLine1.getTypeSelect().compareTo(forecastRecapLine2.getTypeSelect());
+            int compareId = forecastRecapLine1.getId().compareTo(forecastRecapLine2.getId());
+            if (compareEstimatedDate == 0) {
+              return compareTypeSelect == 0 ? compareId : compareTypeSelect;
+            }
+            return compareEstimatedDate;
+          }
+        });
+
+    for (ForecastRecapLine forecastRecapLine : forecastRecapLines) {
+      if (forecastRecapLine.getTypeSelect() == 1) {
+        forecastRecap.setCurrentBalance(
+            forecastRecap.getCurrentBalance().add(forecastRecapLine.getAmount()));
+        forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
+      } else {
+        forecastRecap.setCurrentBalance(
+            forecastRecap.getCurrentBalance().subtract(forecastRecapLine.getAmount()));
+        forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
+      }
+    }
+    forecastRecap.setForecastRecapLineList(forecastRecapLines);
+  }
+
+  public String getForecastRecapFileLink(Long forecastRecapId, String reportType)
+      throws AxelorException {
+    String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
+    title += forecastRecapId;
 
     return ReportFactory.createReport(IReport.FORECAST_RECAP, title + "-${date}")
-        .addParam("ForecastRecapId", forecastRecap.getId().toString())
+        .addParam("ForecastRecapId", forecastRecapId.toString())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addFormat(reportType)
         .generate()
         .getFileLink();
   }

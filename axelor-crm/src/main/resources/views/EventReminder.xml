@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="event-reminder-grid" title="Event reminders" model="com.axelor.apps.crm.db.EventReminder">
         <field name="typeSelect"/>
+        <field name="modeSelect"/>
 		<field name="assignToSelect"/>
         <field name="duration"/>
         <field name="durationTypeSelect"/>
+        <field name="sendingDateT"/>
     </grid>
     
     <form name="event-reminder-form" title="Event reminder" model="com.axelor.apps.crm.db.EventReminder"   
@@ -15,17 +17,59 @@
         <panel name="mainPanel" >
 	        <field name="typeSelect" readonly="true"/>
 			<field name="assignToSelect"/>
-	        <field name="duration"/>
-	        <field name="durationTypeSelect"/>
+			<panel>
+				<field name="modeSelect" onChange="action-event-reminder-record-mode-select-on-change" colSpan='12'/>
+			</panel>
+			<panel colSpan="6">
+				<panel name="beforeDatePanel" showTitle="false" showIf="modeSelect == 1" colSpan="12">
+			        <field name="duration" colSpan="6" requiredId="modeSelect == 1"/>
+		        	<field name="durationTypeSelect" colSpan="6" requiredIf="modeSelect == 1"/>
+				</panel>
+				<panel name="atDatePanel" showIf="modeSelect == 2" colSpan="12">
+					<field name="sendingDateT" colSpan="12" requiredIf="modeSelect == 2"/>
+				</panel> 
+			</panel>
+			<button name="deleteBtn" title="Cancel this reminder" showIf="id" readonlyIf="isReminded" onClick="action-event-reminder-method-delete"/>
+			<field name="isReminded" hidden="true"/>
         </panel>
-        
     </form>
     
     <action-record name="action-event-reminder-record-default" model="com.axelor.apps.crm.db.EventReminder">
     	<field name="typeSelect" expr="1"/>
+    	<field name="user" expr="eval: __user__"/>
     	<field name="duration" expr="1"/>
-    	<field name="durationTypeSelect" expr="3"/>
+    	<field name="durationTypeSelect" expr="eval: __repo__(EventReminder).DURATION_TYPE_DAYS"/>
     	<field name="assignToSelect" expr="1"/>
+    	<field name="event" expr="eval: _event" if="_event != null"/>
     </action-record>
+    
+    <action-record name="action-event-reminder-record-mode-select-on-change" model="com.axelor.apps.crm.db.EventReminder">
+    	<field name="duration" expr="eval: 1" if="modeSelect == __repo__(EventReminder).MODE_BEFORE_DATE"/>
+    	<field name="duration" expr="eval: null" if="modeSelect == __repo__(EventReminder).MODE_AT_DATE"/>
+	   	<field name="durationTypeSelect" expr="eval: __repo__(EventReminder).DURATION_TYPE_DAYS" if="modeSelect == __repo__(EventReminder).MODE_BEFORE_DATE"/>
+    	<field name="durationTypeSelect" expr="eval: null" if="modeSelect == __repo__(EventReminder).MODE_AT_DATE"/>
+    	<field name="sendingDateT" expr="eval: null" if="modeSelect == __repo__(EventReminder).MODE_BEFORE_DATE"/>
+    </action-record>
+    
+    <action-view name="action-crm-event-reminder-view-active-user-reminders" title="Reminders" model="com.axelor.apps.crm.db.EventReminder">
+    	<view type="grid" name="event-reminder-grid"/>
+    	<view type="form" name="event-reminder-form"/>
+    	<view-param name="popup" value="reload"/>
+    	<view-param name="show-toolbar" value="false"/>
+    	<domain>self.user = :user AND self.event = :event</domain>
+    	<context name="user" expr="eval: __user__"/>
+    	<context name="event" expr="eval: __self__"/>
+    </action-view>
+    
+    <action-view name="action-crm-event-reminder-view-create-reminder" title="Reminder" model="com.axelor.apps.crm.db.EventReminder">
+    	<view type="form" name="event-reminder-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<context name="_event" expr="eval: __self__"/>
+    </action-view>
+    
+    <action-method name="action-event-reminder-method-delete">
+    	<call method="deleteReminder" class="com.axelor.apps.crm.web.EventController"/>
+    </action-method>
     
 </object-views>
