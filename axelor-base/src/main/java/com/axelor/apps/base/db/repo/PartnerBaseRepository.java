@@ -32,6 +32,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -116,17 +117,22 @@ public class PartnerBaseRepository extends PartnerRepository {
               .bind("partnerId", partner.getId())
               .fetchOne());
 
-    } else if (partner
-        .getPartnerAddressList()
-        .stream()
-        .map(PartnerAddress::getAddress)
-        .noneMatch(address::equals)) {
-      PartnerAddress mainAddress = new PartnerAddress();
-      mainAddress.setAddress(address);
-      mainAddress.setIsDefaultAddr(true);
-      mainAddress.setIsDeliveryAddr(true);
-      mainAddress.setIsInvoicingAddr(true);
-      partner.addPartnerAddressListItem(mainAddress);
+    } else {
+      if (partner.getPartnerAddressList() == null) {
+        partner.setPartnerAddressList(new ArrayList<PartnerAddress>());
+      }
+      if (partner
+          .getPartnerAddressList()
+          .stream()
+          .map(PartnerAddress::getAddress)
+          .noneMatch(address::equals)) {
+        PartnerAddress mainAddress = new PartnerAddress();
+        mainAddress.setAddress(address);
+        mainAddress.setIsDefaultAddr(true);
+        mainAddress.setIsDeliveryAddr(true);
+        mainAddress.setIsInvoicingAddr(true);
+        partner.addPartnerAddressListItem(mainAddress);
+      }
     }
   }
 
