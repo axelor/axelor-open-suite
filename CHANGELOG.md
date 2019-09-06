@@ -211,6 +211,7 @@
 - ERROR : Fixed NPE on product selection on invoiceLine
 - QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
 - EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
+- REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 - PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
 - Update xsd to ADK 5.1
