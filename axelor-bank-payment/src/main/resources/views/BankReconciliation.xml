@@ -202,7 +202,7 @@
 	</action-method>
 	
 	<action-validate name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">
-   		<alert message="There is at least one incomplete bank reconciliation. Are you sure to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
+   		<alert message="There is at least one incomplete bank reconciliation. Are you sure you want to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
    	</action-validate>
     
 </object-views>
