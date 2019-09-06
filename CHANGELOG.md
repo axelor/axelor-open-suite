@@ -198,6 +198,7 @@
 - LEAVE REQUEST : Fix NPE on date computation 
 - LEAVE REQUEST : Fix non explicit exception on leave line select.
 - RawMaterialRequirement report: fix sql query.
+- MOVE LINE : corrected display of reimbursement status.
 - Improve exception handling in leave request form.
 - TaxLine: tax field is now readonly and cannot be edited when selected.
 - Message: fix random NPE when sending emails asynchronously.
