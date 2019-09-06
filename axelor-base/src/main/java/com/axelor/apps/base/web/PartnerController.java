@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -32,6 +33,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -44,6 +46,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -72,6 +75,10 @@ public class PartnerController {
   @Inject private PartnerService partnerService;
 
   @Inject private PartnerRepository partnerRepo;
+
+  @Inject private MapService mapService;
+
+  @Inject protected AppBaseService appBaseService;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -202,6 +209,7 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
+  @CallMethod
   public Company getActiveCompany() {
     Company company = Beans.get(UserService.class).getUser().getActiveCompany();
     if (company == null) {
@@ -351,7 +359,11 @@ public class PartnerController {
       Partner partner = request.getContext().asType(Partner.class);
       response.setView(
           ActionView.define(partner.getFullName())
-              .add("html", Beans.get(MapService.class).getMapURI("partner", partner.getId()))
+              .add(
+                  "html",
+                  appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE
+                      ? mapService.getMapURI("partner", partner.getId())
+                      : mapService.getOsmMapURI("partner", partner.getId()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);

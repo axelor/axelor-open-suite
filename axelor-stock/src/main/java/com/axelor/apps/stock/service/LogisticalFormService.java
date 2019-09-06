@@ -23,6 +23,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -129,6 +130,7 @@ public interface LogisticalFormService {
    * @return
    * @throws AxelorException
    */
+  @CallMethod
   List<Long> getIdList(StockMove stockMove) throws AxelorException;
 
   /**
@@ -148,4 +150,6 @@ public interface LogisticalFormService {
    */
   Optional<String> getCustomerAccountNumberToCarrier(LogisticalForm logisticalForm)
       throws AxelorException;
+
+  void updateProductNetMass(LogisticalForm logisticalForm) throws AxelorException;
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -150,8 +150,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -307,6 +306,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">company</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">location</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">location</text-property>
@@ -374,16 +385,26 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
                         <property name="name">location</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">10</property>
                         <property name="name">producedproductlocation</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">11</property>
                         <property name="name">product</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -435,20 +456,34 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">7</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
                     <property name="name">location</property>
                     <property name="nativeName">location</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">10</property>
                     <property name="name">producedproductlocation</property>
                     <property name="nativeName">producedproductlocation</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">11</property>
                     <property name="name">product</property>
                     <property name="nativeName">product</property>
                     <property name="dataType">string</property>
@@ -460,6 +495,8 @@ Production.name as Name, Production.code as Code,
 Production.is_cons_pro_on_operation as isConsProOnOperation,
 Production.outsourcing as outsourcing,
 Company.name as Company,
+Company.height as logo_height,
+Company.width as logo_width,
 Stock.name as Location,
 DestinationStock.name as producedProductLocation,
 Product.full_name as Product from
@@ -1069,6 +1106,20 @@ where prod.to_consume_prod_process_line = ?;
                     <expression name="expression" type="javascript">dataSetRow["product"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'225px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4231">
                 <property name="width">19.076cm</property>
@@ -1105,21 +1156,23 @@ where prod.to_consume_prod_process_line = ?;
                                 <cell id="3350">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
-                                    <image id="3419">
-                                        <property name="height">91px</property>
-                                        <property name="width">350px</property>
+                                    <text id="5062">
+                                        <property name="fontSize">8pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                             </structure>
                                         </list-property>
-                                        <structure name="toc"/>
-                                        <method name="onRender"><![CDATA[this.getRowData().getColumnName(name);]]></method>
-                                        <property name="source">file</property>
-                                        <property name="proportionalScale">true</property>
-                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                                    </image>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4032">
                                     <property name="colSpan">3</property>
@@ -2478,8 +2531,31 @@ if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 
                                                                         <text id="5031">
                                                                             <property name="fontWeight">normal</property>
                                                                             <property name="textAlign">center</property>
+                                                                            <property name="dataSet">TranslateDS</property>
+                                                                            <list-property name="paramBindings">
+                                                                                <structure>
+                                                                                    <property name="paramName">param_1</property>
+                                                                                    <simple-property-list name="expression">
+                                                                                        <value type="javascript">row["unit"]</value>
+                                                                                    </simple-property-list>
+                                                                                </structure>
+                                                                            </list-property>
+                                                                            <list-property name="boundDataColumns">
+                                                                                <structure>
+                                                                                    <property name="name">message_key</property>
+                                                                                    <text-property name="displayName">message_key</text-property>
+                                                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                                    <property name="dataType">string</property>
+                                                                                </structure>
+                                                                                <structure>
+                                                                                    <property name="name">translation</property>
+                                                                                    <text-property name="displayName">translation</text-property>
+                                                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                                    <property name="dataType">string</property>
+                                                                                </structure>
+                                                                            </list-property>
                                                                             <property name="contentType">html</property>
-                                                                            <text-property name="content"><![CDATA[<VALUE-OF>row["unit"]</VALUE-OF>]]></text-property>
+                                                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"]!=null){row["translation"]}else{row._outer["unit"]}</VALUE-OF>]]></text-property>
                                                                         </text>
                                                                     </cell>
                                                                 </row>

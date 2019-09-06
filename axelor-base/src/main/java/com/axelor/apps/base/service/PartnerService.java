@@ -36,6 +36,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -107,6 +108,7 @@ public class PartnerService {
     partner.setFullName(this.computeFullName(partner));
   }
 
+  @CallMethod
   public String computeFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
       return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
@@ -114,6 +116,7 @@ public class PartnerService {
     return computeSimpleFullName(partner);
   }
 
+  @CallMethod
   public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
         && !Strings.isNullOrEmpty(partner.getFirstName())) {
@@ -302,6 +305,7 @@ public class PartnerService {
     return null;
   }
 
+  @CallMethod
   public Address getInvoicingAddress(Partner partner) {
 
     return getAddress(
@@ -310,6 +314,7 @@ public class PartnerService {
         "self.partner.id = ?1 AND self.isInvoicingAddr = true");
   }
 
+  @CallMethod
   public Address getDeliveryAddress(Partner partner) {
 
     return getAddress(
@@ -513,5 +518,27 @@ public class PartnerService {
       return companyStr.substring(0, companyStr.length() - 1);
     }
     return null;
+  }
+
+  public String getPartnerDomain(Partner partner) {
+    String domain = "";
+
+    if (partner != null) {
+      if (partner.getCurrency() != null) {
+        domain += String.format(" AND self.currency.id = %d", partner.getCurrency().getId());
+      }
+      if (partner.getSalePartnerPriceList() != null) {
+        domain +=
+            String.format(
+                " AND self.salePartnerPriceList.id = %s",
+                partner.getSalePartnerPriceList().getId());
+      }
+      if (partner.getFiscalPosition() != null) {
+        domain +=
+            String.format(" AND self.fiscalPosition.id = %s", partner.getFiscalPosition().getId());
+      }
+    }
+
+    return domain;
   }
 }

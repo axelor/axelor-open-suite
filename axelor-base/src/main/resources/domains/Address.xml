@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
     <module name="base" package="com.axelor.apps.base.db" />
 
@@ -15,7 +15,8 @@
         <many-to-one name="city" ref="City" title="City" />
         <decimal name="latit" title="Latitude" precision="38" scale="18" nullable="true" />
         <decimal name="longit" title="Longitude" precision="38" scale="18" nullable="true" />
-        <integer name="zoom" title="Default zoom" />
+        <boolean name="isValidLatLong" title="Valid Latitude Longitude" default="true"/>
+    <integer name="zoom" title="Default zoom" />
         <string name="inseeCode" title="National Code" readonly="true" />
         <boolean name="certifiedOk" title="Address certified by QAS engine" default="false" readonly="true" />
         <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry" title="QAS Proposal lists" mappedBy="address" />

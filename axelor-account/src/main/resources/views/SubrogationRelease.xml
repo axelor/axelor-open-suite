@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease" orderBy="-sequenceNumber">
 		<field name="sequenceNumber" width="120"/>
@@ -33,7 +33,8 @@
 				domain="self.company = :company AND self.partner.factorizedCustomer = TRUE
                     AND self.statusSelect = 3 
                     AND self.id not in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))
-                    AND ((self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE) or self.originalInvoice.id in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4)))" />
+                    AND ((self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE) or self.originalInvoice.id in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))) 
+                    AND self.operationTypeSelect not in (1,2)" />
 		</panel>
 
 		<panel name="actionsPanel" title="Actions" sidebar="true">

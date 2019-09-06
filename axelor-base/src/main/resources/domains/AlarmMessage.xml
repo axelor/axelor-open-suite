@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
-  <entity name="AlarmMessage" lang="java" cachable="true">
+  <entity name="AlarmMessage" lang="java" cacheable="true">
     
     <string title="Label" name="name" required="true"/>
     <string title="Type" name="typeSelect" required="true" selection="ialarm.type.select"/>

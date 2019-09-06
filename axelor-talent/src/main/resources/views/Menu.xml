@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<!-- Recruitment menus -->
 	<menuitem name="recruitment-root" parent="hr-root" if="__config__.app.isApp('recruitment')" title="Recruitment" icon="fa-handshake-o" icon-background="#84429f" />
@@ -11,30 +11,15 @@
 		<view name="job-position-cards" type="cards" />
 		<view name="job-position-grid" type="grid" />
 		<view name="job-position-form" type="form" />
-		<domain>self.statusSelect &lt; 2</domain>
+		<view-param name="search-filters" value="job-position-filters"/>
 	</action-view>
 	
-	<menuitem name="recruitment-job-position-historic" parent="recruitment-root" title="Historic job positions" action="recruitment.job.position.historic"  />
+	<menuitem name="recruitment-job-application-all" parent="recruitment-root" title="Applications" action="recruitment.job.application.all"  />
 	
-	<action-view name="recruitment.job.position.historic" model="com.axelor.apps.talent.db.JobPosition" title="Historic job positions">
-		<view name="job-position-grid" type="grid" />
-		<view name="job-position-form" type="form" />
-		<domain>self.statusSelect &gt; 1</domain>
-	</action-view>
-	
-	<menuitem name="recruitment-job-application-open" parent="recruitment-root" title="All open Applications" action="recruitment.job.application.open"  />
-	
-	<action-view name="recruitment.job.application.open" model="com.axelor.apps.talent.db.JobApplication" title="All open Applications">
+	<action-view name="recruitment.job.application.all" model="com.axelor.apps.talent.db.JobApplication" title="Applications">
 		<view name="job-application-grid" type="grid" />
 		<view name="job-application-form" type="form" />
-		<domain>self.statusSelect = 0</domain>
-	</action-view>
-	
-	<menuitem name="recruitment-job-application-all" parent="recruitment-root" title="All Applications" action="recruitment.job.application.all"  />
-	
-	<action-view name="recruitment.job.application.all" model="com.axelor.apps.talent.db.JobApplication" title="All Applications">
-		<view name="job-application-grid" type="grid" />
-		<view name="job-application-form" type="form" />
+		<view-param name="search-filters" value="job-application-filters"/>
 	</action-view>
 	
 	<menuitem name="recruitment-config" parent="recruitment-root" title="Configuration" icon="fa-cog"/>
@@ -53,7 +38,7 @@
 		<view name="hiring-stage-form" type="form" />
 	</action-view>
 	
-	<menuitem name="recruitment-config-source" parent="recruitment-config" title="Sources" action="recruitment.config.source"  />
+	<menuitem name="recruitment-config-source" parent="recruitment-config" title="Source" action="recruitment.config.source"  />
 	
 	<action-view name="recruitment.config.source" model="com.axelor.apps.talent.db.TalentSource" title="Source">
 		<view name="talent-source-grid" type="grid" />
@@ -70,33 +55,14 @@
 	<!-- Training menus -->
 	<menuitem name="training-root" parent="hr-root" if="__config__.app.isApp('training')" title="Training" icon="fa-graduation-cap" icon-background="#84429f"/>
     
-	<menuitem name="my-training-register" parent="training-root" title="My trainings" action="my.training.register" />
-
-	<action-view name="my.training.register" model="com.axelor.apps.talent.db.TrainingRegister"	title="My trainings">
-		<view name="training-register-grid" type="grid" />
-		<view name="training-register-calendar" type="calendar" />
-		<view name="training-register-form" type="form" />
-		<view-param name="search-filters" value="my-training-register-fitlers"/>
-		<domain>self.employee.id = :_employeeId</domain>
-		<context name="_employeeId" expr="eval:__user__.employee?.id" />
-	</action-view>
-	
-	<menuitem name="my-team-training-register" parent="training-root" title="My team trainings" action="my.team.training.register" />	
-	
-	<action-view name="my.team.training.register" model="com.axelor.apps.talent.db.TrainingRegister" title="My team trainings">
-		<view name="training-register-grid" type="grid" />
-		<view name="training-register-calendar" type="calendar" />
-		<view name="training-register-form" type="form" />
-		<view-param name="search-filters" value="my-team-training-register-fitlers"/>
-		<domain>self.employee.id in :_employeeList</domain>
-		<context name="_employeeList" expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />
-	</action-view>
-	
 	<menuitem name="training-register-all" parent="training-root" title="All trainings" action="training.register.all" />	
 	
 	<action-view name="training.register.all" model="com.axelor.apps.talent.db.TrainingRegister" title="All trainings">
 		<view name="training-register-grid" type="grid" />
 		<view name="training-register-form" type="form" />
+		<view-param name="search-filters" value="my-training-register-fitlers"/>
+		<context name="_employeeId" expr="eval:__user__.employee?.id" />
+  		<context name="_employeeList" expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()" />	
 	</action-view>
 	
 	<menuitem name="training-dashboard" parent="training-root" title="Training dashboard" action="training.dashboard" />
@@ -131,46 +97,27 @@
 	<!-- Appraisal menus-->
 	<menuitem name="appraisal-root" parent="hr-root" title="Appraisals" if="__config__.app.isApp('appraisal')"  icon="fa-comments-o" icon-background="#84429f"/>
 	
-	<menuitem name="appraisal-my-appraisals" title="My appraisals" action="appraisal.my.appraisals" parent="appraisal-root" />
-	
-	<action-view name="appraisal.my.appraisals" title="My appraisals" model="com.axelor.apps.talent.db.Appraisal">
-		<view type="grid" name="appraisal-grid"/>
-		<view type="calendar" name="appraisal-calendar" />
-		<view type="form" name="appraisal-form"/>
-		<view-param name="search-filters" value="my-appraisal-fitlers"/>
-		<domain>self.employee.user.id = :_userId and self.isTemplate = false</domain>
+	<menuitem name="appraisal-all-appraisals" title="Appraisals" action="appraisal.all.appraisals" parent="appraisal-root" />
+
+	<action-view name="appraisal.all.appraisals"
+		model="com.axelor.apps.talent.db.Appraisal" title="Appraisals">
+		<view name="appraisal-grid" type="grid" />
+		<view name="appraisal-form" type="form" />
+		<view-param name="search-filters" value="appraisal-fitlers" />
+		<domain>self.isTemplate = false</domain>
 		<context name="_userId" expr="eval:__user__.id" />
-	</action-view>
-	
-	<menuitem name="appraisal-my-team-appraisals" title="My team appraisals" action="appraisal.my.team.appraisals" parent="appraisal-root" />
-	
-	<action-view name="appraisal.my.team.appraisals" title="My team appraisals" model="com.axelor.apps.talent.db.Appraisal">
-		<view type="grid" name="appraisal-grid"/>
-		<view type="calendar" name="appraisal-calendar" />
-		<view type="form" name="appraisal-form"/>
-		<view-param name="search-filters" value="my-team-appraisal-fitlers"/>
-		<domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false</domain>
 		<context name="_teamUserIds" expr="eval:([0] + __user__.teamSet.members.id).flatten()" />
 	</action-view>
 	
-	<menuitem name="appraisal-all-appraisals" title="Appraisals" action="appraisal.all.appraisals" parent="appraisal-root" />
+	<menuitem  name="appraisal-config" title="Configuration" parent="appraisal-root" icon="fa-cog"/>
 	
-	<action-view name="appraisal.all.appraisals" title="Appraisals" model="com.axelor.apps.talent.db.Appraisal">
-		<view type="grid" name="appraisal-grid"/>
-		<view type="form" name="appraisal-form"/>
-		<view-param name="search-filters" value="appraisal-fitlers"/>
-		<domain>self.isTemplate = false</domain>
-	</action-view>
-	
-	<menuitem name="appraisal-template-appraisals" title="Appraisal templates" action="appraisal.template.appraisals" parent="appraisal-root" />
+	<menuitem name="appraisal-template-appraisals" title="Appraisal templates" action="appraisal.template.appraisals" parent="appraisal-config" />
 	
 	<action-view name="appraisal.template.appraisals" title="Appraisal template" model="com.axelor.apps.talent.db.Appraisal">
 		<view type="grid" name="appraisal-template-grid"/>
 		<view type="form" name="appraisal-template-form"/>
 		<domain>self.isTemplate = true</domain>
 	</action-view>
-	
-	<menuitem  name="appraisal-config" title="Configuration" parent="appraisal-root" icon="fa-cog"/>
 	
 	<menuitem name="appraisal-config-appraisal-type" title="Appraisal types" action="appraisal.config.appraisal.type" parent="appraisal-config" />
 	

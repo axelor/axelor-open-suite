@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -33,6 +33,17 @@
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
+
+    
+    <!--Report 7 : Partner genereal ledger  --> 
+    <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>
+    
+    
+	<!--Report 1 : genereal ledger  --> 
+    <boolean name="displayCodeAccountOnPrinting" title="Display code account on printing"/>
+    <boolean name="displayNameAccountOnPrinting" title="Display name account on printing"/>
+    <boolean name="displayMoveSequenceOnPrinting" title="Display move sequence on printing"/>
+
 	<unique-constraint columns="ref,company"/>
     
     <extra-code><![CDATA[

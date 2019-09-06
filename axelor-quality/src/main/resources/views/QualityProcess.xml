@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="quality-process-grid" title="Quality process" model="com.axelor.apps.quality.db.QualityProcess">
 		<field name="name"/>
@@ -13,7 +13,7 @@
 			<field name="code"/>
 		</panel>
 		<panel name="controlPointModelPanel">
-			<panel-related name="controlPointModelListPanel" orderBy="-priority" field="controlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form" />
+			<panel-related name="controlPointModelListPanel" orderBy="sequence" field="controlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form" />
 			<panel-related name="optionalControlPointModelListPanel" field="optionalControlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form"/>
 		</panel>
 		<panel name="qualityCorrectiveActionPanel">

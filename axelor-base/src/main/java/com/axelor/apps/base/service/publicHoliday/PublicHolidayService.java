@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -79,12 +80,13 @@ public class PublicHolidayService {
     if (publicHolidayEventsPlanning == null) {
       return false;
     }
+
     List<EventsPlanningLine> publicHolidayDayList =
         eventsPlanningLineRepo
             .all()
             .filter(
                 "self.eventsPlanning = ?1 AND self.date = ?2", publicHolidayEventsPlanning, date)
             .fetch();
-    return publicHolidayDayList != null && !publicHolidayDayList.isEmpty();
+    return ObjectUtils.notEmpty(publicHolidayDayList);
   }
 }

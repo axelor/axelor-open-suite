@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="lunch-voucher-mgt-line-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" editable="true" orderBy="employee">
         <hilite if="statusSelect==2" color="danger"/>
@@ -23,8 +23,7 @@
     </grid>
     
     <grid name="lunch-voucher-mgt-line-employee-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
-        <field name="lunchVoucherMgt.payPeriod.fromDate"/>
-        <field name="lunchVoucherMgt.payPeriod.toDate"/>
+        <field name="lunchVoucherMgt.payPeriod"/>
         <field name="canteenEntries" aggregate="sum" title="Canteen"/>
         <field name="daysOverseas" aggregate="sum" title="Overseas"/>
         <field name="invitation" aggregate="sum" title="Invitation"/>
@@ -36,8 +35,7 @@
     </grid>
     
     <grid name="lunch-voucher-mgt-line-payroll-grid" title="Lunch Voucher Lines" model="com.axelor.apps.hr.db.LunchVoucherMgtLine" orderBy="-lunchVoucherMgt.payPeriod.fromDate">
-        <field name="lunchVoucherMgt.payPeriod.fromDate"/>
-        <field name="lunchVoucherMgt.payPeriod.toDate"/>
+        <field name="lunchVoucherMgt.payPeriod"/>
         <field name="canteenEntries" aggregate="sum" title="Canteen"/>
         <field name="daysOverseas" aggregate="sum" title="Overseas"/>
         <field name="invitation" aggregate="sum" title="Invitation"/>
