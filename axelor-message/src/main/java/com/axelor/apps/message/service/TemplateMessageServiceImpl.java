@@ -36,6 +36,8 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.Context;
 import com.axelor.tool.template.TemplateMaker;
@@ -91,18 +93,23 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
-    MetaModel metaModel = template.getMetaModel();
-    if (metaModel != null) {
-      if (!model.equals(metaModel.getFullName())) {
+    Object modelObj = template.getIsJson() ? template.getMetaJsonModel() : template.getMetaModel();
+
+    if (modelObj != null) {
+      String modelName =
+          template.getIsJson()
+              ? ((MetaJsonModel) modelObj).getName()
+              : ((MetaModel) modelObj).getFullName();
+
+      if (!model.equals(modelName)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL),
-                metaModel.getFullName(),
-                model));
+                I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), modelName, model));
       }
-      initMaker(objectId, model, tag);
-      computeTemplateContexts(template.getTemplateContextList(), objectId, model);
+      initMaker(objectId, model, tag, template.getIsJson());
+      computeTemplateContexts(
+          template.getTemplateContextList(), objectId, model, template.getIsJson());
     }
 
     log.debug("model : {}", model);
@@ -110,14 +117,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     log.debug("object id : {}", objectId);
     log.debug("template : {}", template);
 
-    String content = "",
-        subject = "",
-        from = "",
-        replyToRecipients = "",
-        toRecipients = "",
-        ccRecipients = "",
-        bccRecipients = "",
-        addressBlock = "";
+    String content = "";
+    String subject = "";
+    String from = "";
+    String replyToRecipients = "";
+    String toRecipients = "";
+    String ccRecipients = "";
+    String bccRecipients = "";
+    String addressBlock = "";
     int mediaTypeSelect;
 
     if (!Strings.isNullOrEmpty(template.getContent())) {
@@ -175,7 +182,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     Message message =
         messageService.createMessage(
             model,
-            Long.valueOf(objectId).intValue(),
+            Math.toIntExact(objectId),
             subject,
             content,
             getEmailAddress(from),
@@ -229,27 +236,35 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
   @Override
   @SuppressWarnings("unchecked")
-  public TemplateMaker initMaker(long objectId, String model, String tag)
+  public TemplateMaker initMaker(long objectId, String model, String tag, boolean isJson)
       throws ClassNotFoundException {
 
-    Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
-    maker.setContext(JPA.find(myClass, objectId), tag);
+    if (isJson) {
+      maker.setContext(JPA.find(MetaJsonRecord.class, objectId), tag);
+    } else {
+      Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
+      maker.setContext(JPA.find(myClass, objectId), tag);
+    }
 
     return maker;
   }
 
   @SuppressWarnings("unchecked")
   protected TemplateMaker computeTemplateContexts(
-      List<TemplateContext> templateContextList, long objectId, String model)
+      List<TemplateContext> templateContextList, long objectId, String model, boolean isJson)
       throws ClassNotFoundException {
 
     if (templateContextList == null) {
       return maker;
     }
 
-    Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
-
-    Context context = new com.axelor.rpc.Context(objectId, myClass);
+    Context context = null;
+    if (isJson) {
+      context = new com.axelor.rpc.Context(objectId, MetaJsonRecord.class);
+    } else {
+      Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
+      context = new com.axelor.rpc.Context(objectId, myClass);
+    }
 
     for (TemplateContext templateContext : templateContextList) {
       Object result = templateContextService.computeTemplateContext(templateContext, context);
@@ -287,7 +302,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     EmailAddress emailAddress = emailAddressRepo.findByAddress(recipient);
 
     if (emailAddress == null) {
-      Map<String, Object> values = new HashMap<String, Object>();
+      Map<String, Object> values = new HashMap<>();
       values.put("address", recipient);
       emailAddress = emailAddressRepo.create(values);
     }

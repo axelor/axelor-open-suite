@@ -189,7 +189,7 @@
           onLoad="action-account-invoice-onload-group" >
 
 		<toolbar>
-			<button name="reportsBtn" title="Reports" icon="fa-print" readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
+			<button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4" readonlyIf="!id" onClick="save,action-invoice-view-reports-wizard"/>
 		</toolbar>
 
         <menubar>
@@ -535,7 +535,7 @@ InvoiceSet.length > 0))"
 			<panel name="invoiceTypePanel" colSpan="6">
 				<field name="$reportType" title="Invoice type" type="integer" selection-in="[1]" selection="invoice.report.type" required="true"
 					onChange="action-invoice-reports-wizard-attrs-set-format-select"
-					showIf="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)" colSpan="12" />
+					showIf="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)" readonly="true" colSpan="12" />
 				<field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3]" selection="invoice.report.type" required="true"
 					onChange="action-invoice-reports-wizard-attrs-set-format-select"
 					showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF == null" colSpan="12"/>
@@ -979,7 +979,7 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + companyBankDetails?.specificNoteOnInvoice"/>
+		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
@@ -1077,6 +1077,8 @@ InvoiceSet.length > 0))"
 
     <action-attrs name="action-invoice-reports-wizard-attrs-set-report-type-select">
     	<attribute name="value" for="$reportType" expr="eval: 1" if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
+    	<attribute name="value" for="$format" expr="pdf" if = "_statusSelect == 3"/>
+    	<attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
     </action-attrs>
 
 	<!-- DOMAIN -->

@@ -10,6 +10,7 @@
         <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
 		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 		<boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
+		<boolean name="isDisplayPurchaseOrderLineNumber" title="Display purchase order line number"/>
 		
 		<track>
 			<field name="managePurchaseOrderVersion" on="UPDATE"/>

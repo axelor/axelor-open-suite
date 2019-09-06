@@ -126,6 +126,7 @@ public class ValidatorService {
     this.validateTab(sheets, advancedImport);
 
     boolean isConfig = advancedImport.getIsConfigInFile();
+    boolean isTabConfig = advancedImport.getIsFileTabConfigAdded();
 
     sortFileTabList(advancedImport.getFileTabList());
 
@@ -137,18 +138,24 @@ public class ValidatorService {
       fieldMap = new HashMap<>();
       titleMap = new HashMap<>();
       String sheet = fileTab.getName();
-
       logService.initialize(sheet);
 
       this.validateModel(fileTab);
 
+      int tabConfigRowCount = 0;
+      int totalLines = reader.getTotalLines(fileTab.getName());
+
       if (isConfig) {
         String[] objectRow = reader.read(sheet, 0, 0);
-        this.validateObject(objectRow, fileTab);
+        if (isTabConfig) {
+          tabConfigRowCount =
+              advancedImportService.getTabConfigRowCount(sheet, reader, totalLines, objectRow);
+        }
+        this.validateObject(objectRow, fileTab, isTabConfig);
       }
       this.validateSearchFields(fileTab);
       this.validateObjectRequiredFields(fileTab);
-      this.validateFieldAndData(reader, sheet, fileTab, isConfig);
+      this.validateFieldAndData(reader, sheet, fileTab, isConfig, isTabConfig, tabConfigRowCount);
 
       if (fileTab.getValidationLog() != null) {
         fileTab.setValidationLog(null);
@@ -197,20 +204,25 @@ public class ValidatorService {
     }
   }
 
-  private void validateObject(String[] row, FileTab fileTab) throws IOException, AxelorException {
+  private void validateObject(String[] row, FileTab fileTab, Boolean isTabConfig)
+      throws IOException, AxelorException {
 
-    if (row == null || StringUtils.isBlank(row[0])) {
+    int rowIndex = isTabConfig ? 1 : 0;
+
+    if (isTabConfig && row[0] != null) {
+      rowIndex = 0;
+    }
+    if (row == null || (StringUtils.isBlank(row[rowIndex]))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
     }
 
-    String object = row[0].trim();
+    String object = row[rowIndex].trim();
     if (StringUtils.containsIgnoreCase(object, "Object")) {
       String model = object.split("\\:")[1].trim();
-
       if (fileTab.getMetaModel() != null && !fileTab.getMetaModel().getName().equals(model)) {
-        logService.addLog(LogService.COMMON_KEY, IExceptionMessage.ADVANCED_IMPORT_LOG_1, 0);
+        logService.addLog(LogService.COMMON_KEY, IExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
       }
     }
   }
@@ -273,7 +285,12 @@ public class ValidatorService {
   }
 
   private void validateFieldAndData(
-      DataReaderService reader, String sheet, FileTab fileTab, boolean isConfig)
+      DataReaderService reader,
+      String sheet,
+      FileTab fileTab,
+      boolean isConfig,
+      boolean isTabConfig,
+      int tabConfigRowCount)
       throws ClassNotFoundException, IOException {
 
     AdvancedImport advancedImport = fileTab.getAdvancedImport();
@@ -306,9 +323,10 @@ public class ValidatorService {
     }
 
     int totalLines = reader.getTotalLines(sheet);
+
     startIndex =
         isConfig
-            ? 3
+            ? tabConfigRowCount + 3
             : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
 
     for (int line = startIndex; line < totalLines; line++) {

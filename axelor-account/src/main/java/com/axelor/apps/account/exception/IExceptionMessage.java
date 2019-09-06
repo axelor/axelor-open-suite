@@ -456,6 +456,8 @@ public interface IExceptionMessage {
       "%s : You must configure a year opening account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_44 = /*$$(*/
       "%s : You must configure a year closure account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_45 = /*$$(*/
+      "%s : You must configure a reported balance journal for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -818,4 +820,7 @@ public interface IExceptionMessage {
   /*Check not lettered advance move lines*/
   public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
       "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
+
+  static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
+      "Please set a reported balance date on fiscal year" /*)*/;
 }

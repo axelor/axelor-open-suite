@@ -33,6 +33,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -169,6 +170,7 @@ public class PaymentService {
    * @param creditTotalRemaining
    * @throws AxelorException
    */
+  @Transactional
   private void createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
