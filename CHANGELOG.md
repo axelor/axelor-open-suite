@@ -10,6 +10,7 @@
 - Add DMS Import.
 - Map : Filter out the data with empty address.
 - Studio : Tab display for panel tab
+- JSON-FIELD-FORM : add tracking in form fields
 
 ## Improvements
 - Remove Pack Feature from Product.
