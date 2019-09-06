@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.service.batch;
 
-import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -35,24 +34,18 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import javax.validation.constraints.Digits;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchLeaveManagement extends BatchStrategy {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   int total;
   int noValueAnomaly;
@@ -75,12 +68,12 @@ public class BatchLeaveManagement extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
     if (batch.getHrBatch().getDayNumber() == null
-        || batch.getHrBatch().getDayNumber().compareTo(BigDecimal.ZERO) == 0
+        || batch.getHrBatch().getDayNumber().signum() == 0
         || batch.getHrBatch().getLeaveReason() == null) {
       TraceBackService.trace(
           new AxelorException(
@@ -109,29 +102,13 @@ public class BatchLeaveManagement extends BatchStrategy {
     if (hrBatch.getEmployeeSet() != null && !hrBatch.getEmployeeSet().isEmpty()) {
       String employeeIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getEmployeeSet(),
-                      new Function<Employee, String>() {
-                        @Override
-                        public String apply(Employee obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getEmployeeSet(), obj -> obj.getId().toString()));
       query.add("self.id IN (" + employeeIds + ")");
     }
     if (hrBatch.getEmployeeSet() != null && !hrBatch.getPlanningSet().isEmpty()) {
       String planningIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getPlanningSet(),
-                      new Function<WeeklyPlanning, String>() {
-                        @Override
-                        public String apply(WeeklyPlanning obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getPlanningSet(), obj -> obj.getId().toString()));
 
       query.add("self.weeklyPlanning.id IN (" + planningIds + ")");
     }
