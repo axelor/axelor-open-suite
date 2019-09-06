@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.service.BankService;
 import com.google.inject.Inject;
 import java.io.IOException;
-import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
 
@@ -78,7 +78,7 @@ public class EbicsUserImport {
     try {
       X509Certificate certificate = certificateService.convertToCertificate(pem);
       certificateService.updateCertificate(certificate, cert, false);
-    } catch (IOException | CertificateEncodingException e) {
+    } catch (IOException | CertificateException e) {
       e.printStackTrace();
     }
   }

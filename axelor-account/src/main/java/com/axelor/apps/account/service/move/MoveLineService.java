@@ -981,7 +981,7 @@ public class MoveLineService {
     return moveLineLists;
   }
 
-  @Transactional  
+  @Transactional
   public void reconcileMoveLines(List<MoveLine> moveLineList) {
     List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
     List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
