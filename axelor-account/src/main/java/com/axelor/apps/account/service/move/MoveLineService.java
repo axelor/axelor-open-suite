@@ -49,8 +49,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -82,6 +84,7 @@ public class MoveLineService {
   protected AppAccountService appAccountService;
   protected CurrencyService currencyService;
   protected CompanyConfigService companyConfigService;
+  protected MoveLineRepository moveLineRepository;
 
   public static final boolean IS_CREDIT = false;
   public static final boolean IS_DEBIT = true;
@@ -94,7 +97,8 @@ public class MoveLineService {
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       CurrencyService currencyService,
-      CompanyConfigService companyConfigService) {
+      CompanyConfigService companyConfigService,
+      MoveLineRepository moveLineRepository) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -102,6 +106,7 @@ public class MoveLineService {
     this.appAccountService = appAccountService;
     this.currencyService = currencyService;
     this.companyConfigService = companyConfigService;
+    this.moveLineRepository = moveLineRepository;
   }
 
   public MoveLine computeAnalyticDistribution(MoveLine moveLine) {
@@ -937,8 +942,47 @@ public class MoveLineService {
    *
    * @param moveLineList
    */
-  public void reconcileMoveLines(List<MoveLine> moveLineList) {
+  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList) {
 
+    List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
+    List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
+
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
+
+    populateCredit(moveLineMap, reconciliableCreditMoveLineList);
+
+    populateDebit(moveLineMap, reconciliableDebitMoveLineList);
+
+    Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
+
+    PaymentService paymentService = Beans.get(PaymentService.class);
+
+    for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
+      try {
+        moveLineLists = this.findMoveLineLists(moveLineLists);
+        this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        log.debug(e.getMessage());
+      } finally {
+        JPA.clear();
+      }
+    }
+  }
+
+  protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
+    for (MoveLine moveLine : moveLineLists.getLeft()) {
+      moveLine = moveLineRepository.find(moveLine.getId());
+    }
+    for (MoveLine moveLine : moveLineLists.getRight()) {
+      moveLine = moveLineRepository.find(moveLine.getId());
+    }
+    return moveLineLists;
+  }
+
+  @Transactional  
+  public void reconcileMoveLines(List<MoveLine> moveLineList) {
     List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
     List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
 
@@ -960,6 +1004,19 @@ public class MoveLineService {
       paymentService.useExcessPaymentOnMoveLinesDontThrow(
           companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
     }
+  }
+
+  @Transactional
+  protected void useExcessPaymentOnMoveLinesDontThrow(
+      Comparator<MoveLine> byDate,
+      PaymentService paymentService,
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
+    List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+    List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+    companyPartnerCreditMoveLineList.sort(byDate);
+    companyPartnerDebitMoveLineList.sort(byDate);
+    paymentService.useExcessPaymentOnMoveLinesDontThrow(
+        companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 
   private void populateCredit(
