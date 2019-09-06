@@ -49,7 +49,7 @@ public abstract class BatchStrategy extends AbstractBatch {
   protected void updateEventReminder(EventReminder eventReminder) {
 
     eventReminder.addBatchSetItem(batchRepo.find(batch.getId()));
-
+    eventReminder.setIsReminded(true);
     incrementDone();
     //		eventReminderService.save(eventReminder);
   }

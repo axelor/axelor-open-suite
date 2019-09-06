@@ -22,6 +22,7 @@
       <string name="bpmnXml" title="Bpmn xml" large="true" />
       <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" required="true" />
       <string name="description" title="Description" large="true"/>
+      <boolean name="isTrackFlow" title="Track flow"/>
   </entity>
     
  </domain-models>

@@ -171,6 +171,8 @@ public interface IExceptionMessage {
   static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s." /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -786,4 +788,8 @@ public interface IExceptionMessage {
       "Disposal date must be after the date of the last depreciation." /*)*/;
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
       "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+
+  /*Check not lettered advance move lines*/
+  public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
+      "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
 }

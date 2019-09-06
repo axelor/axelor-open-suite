@@ -22,6 +22,17 @@
 		public static final int STATUS_CANCELLED = 3;
 	
 	]]></extra-code>
+
+	<track on="UPDATE">
+		<field name="forecastDate"/>
+		<field name="qty"/>
+		<field name="unit"/>
+		<field name="product"/>
+		<field name="stockLocation"/>
+		<field name="note"/>
+		<field name="partner"/>
+		<field name="statusSelect"/>
+	</track>
       
   </entity>
 

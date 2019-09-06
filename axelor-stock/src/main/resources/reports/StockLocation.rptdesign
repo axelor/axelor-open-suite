@@ -587,6 +587,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
                     <text-property name="heading">is_display_accounting_value_in_printing</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">is_display_ag_price_in_printing</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_display_ag_price_in_printing</text-property>
+                    <text-property name="heading">is_display_ag_price_in_printing</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters"/>
@@ -665,6 +671,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">15</property>
                         <property name="name">is_display_accounting_value_in_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">is_display_ag_price_in_printing</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -777,13 +788,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">is_display_ag_price_in_printing</property>
+                    <property name="nativeName">is_display_ag_price_in_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 	Location.id as location_id, StockLocationLine.id as location_line_id, Location.name as location_name, Product.name AS product_name,
 		Product.code AS product_code, StockLocationLine.current_qty, Unit.name as unit_code, Product.sale_price,
 		Currency.code AS currency_code, ProductFamily.name as product_family,
 		(CASE WHEN Product.cost_type_select = 3 THEN StockLocationLine.avg_price ELSE Product.cost_price END) as "cost_price",
 		StockLocationLine.avg_price as "wap", Product.cost_type_select,
-		StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing
+		StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
+		StockConfig.is_display_ag_price_in_printing
 FROM 
 	stock_stock_location as Location 
 LEFT OUTER JOIN 
@@ -1676,6 +1695,30 @@ order by Product.code
                     <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">cost_type_select</property>
+                    <text-property name="displayName">cost_type_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cost_type_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_sale_value_in_printing_1</property>
+                    <text-property name="displayName">is_display_sale_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_sale_value_in_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_accounting_value_in_printing_1</property>
+                    <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_accounting_value_in_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_ag_price_in_printing</property>
+                    <text-property name="displayName">is_display_ag_price_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_ag_price_in_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -1715,6 +1758,12 @@ order by Product.code
                 <property name="width">3.1cm</property>
             </column>
             <column id="4639">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_ag_price_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">3.1cm</property>
             </column>
             <header>
