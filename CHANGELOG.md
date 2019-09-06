@@ -97,6 +97,7 @@
 - Contract : Add analytic information to contract lines.
 - MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 - PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
+- Invoice & PurchaseOrder : Added a budget overview.
 - Advanced Import : Add feature to import data with advanced configurations.
 - BPM: More than one workflow support for a same object.
 - MRP : boolean to exclude product without proposal in the result dashlet
