@@ -141,6 +141,8 @@
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- PRICE LIST LINE : No Discount value of base.price.list.line.amount.type.select changed to 0.
+- ORDER LINE & INVOICE LINE : discountTypeSelect cannot be empty.
 - OPPORTUNITY : do not allows select both customer and lead at same time.
 - STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
 - INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
