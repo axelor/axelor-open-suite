@@ -10,8 +10,8 @@
     
     <form name="budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
        <panel name="mainPanel" >
-	   		<field name="budget" required="true" domain="self.statusSelect = 2"/>
-       		<field name="amount"/>
+	   <field name="budget" required="true" domain="self.statusSelect = 2"/>
+       	   <field name="amount"/>
        </panel>
     </form>
 
@@ -23,11 +23,11 @@
     </grid>
 
     <form name="budget-distribution-grid-purchase-order-line-form" title="Committed line" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
-        <panel name="mainPanel" >
-            <field name="purchaseOrderLine.purchaseOrder" readonly="true"/>
-            <field name="purchaseOrderLine.purchaseOrder.orderDate" readonly="true"/>
-            <field name="purchaseOrderLine.product" readonly="true"/>
-            <field name="amount" readonly="true"/>
+        <panel name="mainPanel" readonly="true">
+            <field name="purchaseOrderLine.purchaseOrder"/>
+            <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+            <field name="purchaseOrderLine.product"/>
+            <field name="amount"/>
         </panel>
     </form>
 
@@ -39,11 +39,11 @@
     </grid>
 
     <form name="budget-distribution-grid-invoice-line-form" title="Realized line" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
-        <panel name="mainPanel" >
-            <field name="invoiceLine.invoice" readonly="true"/>
-            <field name="invoiceLine.invoice.invoiceDate" readonly="true"/>
-            <field name="invoiceLine.product" readonly="true"/>
-            <field name="amount" readonly="true"/>
+        <panel name="mainPanel" readonly="true">
+            <field name="invoiceLine.invoice"/>
+            <field name="invoiceLine.invoice.invoiceDate"/>
+            <field name="invoiceLine.product"/>
+            <field name="amount"/>
         </panel>
     </form>
     
