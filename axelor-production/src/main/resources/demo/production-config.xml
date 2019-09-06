@@ -9,7 +9,9 @@
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
-	
+
+	<input file="production_machineType.csv" separator=";" type="com.axelor.apps.production.db.MachineType"/>
+
 	<input file="production_machine.csv" separator=";" type="com.axelor.apps.production.db.Machine"/>
 	
 	<input file="production_workCenter.csv" separator=";" type="com.axelor.apps.production.db.WorkCenter"/>
@@ -45,5 +47,7 @@
 	</input>
 	
 	<input file="base_appProduction.csv" separator=";" type="com.axelor.apps.base.db.AppProduction" search="self.code = :code" update="true" />
+
+	<input file="production_oneLine.csv" type="com.axelor.apps.sale.db.ConfiguratorCreator" call="com.axelor.csv.script.ImportConfiguratorCreator:importConfiguratorCreator" />
 
 </csv-inputs>
