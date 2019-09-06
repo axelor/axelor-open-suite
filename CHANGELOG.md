@@ -200,6 +200,7 @@
 - SALEORDER : fix action with obsolete name
 - ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
 - Transactionnal : correction and standardisation of rollback.
+- CONFIGURATOR BOM : product, qty and unit are displayed in the grid-view.
 - Upgraded to ADK 5.1.
 - SALE ORDER LINE : Fixed Error when selecting a product
 - Studio : Fix readonly fields are enabled when imported an application.
