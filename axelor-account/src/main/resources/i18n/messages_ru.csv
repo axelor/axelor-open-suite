@@ -226,6 +226,7 @@
 "Accounting export","Учет экспорта",,
 "Accounting exports","Учет экспорта",,
 "Accounting information","Бухгалтерская информация",,
+"Accounting move can not be validated because its fiscal period is closed.","Перемещение в учете не может быть проверено, потому что его финансовый период закрыт.",,
 "Accounting report","Бухгалтерский отчёт",,
 "Accounting reports","Бухгалтерская отчётность",,
 "Accounting settings","Бухгалтерские настройки",,

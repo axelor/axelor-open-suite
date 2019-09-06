@@ -226,6 +226,7 @@
 "Accounting export","Export der Buchhaltung",,
 "Accounting exports","Abrechnung der Exporte",,
 "Accounting information","Buchhaltungsinformationen",,
+"Accounting move can not be validated because its fiscal period is closed.","Der Umzug in das Rechnungswesen kann nicht validiert werden, da sein Geschäftszeitraum geschlossen ist.",,
 "Accounting report","Buchhaltungsbericht",,
 "Accounting reports","Buchhaltungsberichte",,
 "Accounting settings","Buchhaltungseinstellungen",,

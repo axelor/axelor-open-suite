@@ -53,6 +53,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -465,7 +466,7 @@ public class PayboxService {
     final byte[] pubKey;
 
     try (final PEMParser reader = new PEMParser(new FileReader(pubKeyPath))) {
-      pubKey = ((X509EncodedKeySpec) reader.readObject()).getEncoded();
+      pubKey = ((SubjectPublicKeyInfo) reader.readObject()).getEncoded();
     }
 
     KeyFactory keyFactory = KeyFactory.getInstance(this.ENCRYPTION_ALGORITHM);

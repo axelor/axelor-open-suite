@@ -226,6 +226,7 @@
 "Accounting export","Contabilidad de exportación",,
 "Accounting exports","Contabilidad de exportaciones",,
 "Accounting information","Información contable",,
+"Accounting move can not be validated because its fiscal period is closed.","El movimiento contable no se puede validar porque su período fiscal está cerrado.",,
 "Accounting report","Informe contable",,
 "Accounting reports","Informes contables",,
 "Accounting settings","Configuraciones de contabilidad",,

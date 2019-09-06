@@ -34,6 +34,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.openssl.PEMParser;
 
 /**
@@ -130,7 +132,8 @@ public class KeyStoreManager {
 
     if (certificate == null) {
       try (final PEMParser reader = new PEMParser(new InputStreamReader(input))) {
-        certificate = (X509Certificate) (reader).readObject();
+        final X509CertificateHolder certificateHolder = (X509CertificateHolder) reader.readObject();
+        certificate = new JcaX509CertificateConverter().getCertificate(certificateHolder);
       }
     }
 

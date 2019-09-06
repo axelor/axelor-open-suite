@@ -87,6 +87,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
+import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.service.TaxPaymentMoveLineServiceImpl;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -235,5 +237,7 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetService.class).to(FixedAssetServiceImpl.class);
 
     bind(FixedAssetLineService.class).to(FixedAssetLineServiceImpl.class);
+
+    bind(TaxPaymentMoveLineService.class).to(TaxPaymentMoveLineServiceImpl.class);
   }
 }
