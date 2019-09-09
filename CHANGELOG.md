@@ -214,6 +214,7 @@
 ## Features
 - USER : filter assigned to user in partner form
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
+- REPORTING : average duration to qualify a lead
 
 ## Improvements
 - SALE ORDER : line not editable if availability request = true
