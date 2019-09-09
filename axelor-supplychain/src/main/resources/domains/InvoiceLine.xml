@@ -7,6 +7,7 @@
   	
   	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" />
   	<many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line" />
+  	<many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line" />
   	<many-to-one name="outgoingStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Customer delivery"/>
 	<many-to-one name="incomingStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Supplier arrival"/>
   	<many-to-one name="parentLine" ref="com.axelor.apps.account.db.InvoiceLine" />
