@@ -44,7 +44,6 @@
 		<field name="bankOrderDate"/>
 		<field name="bankOrderAmount"/>
 		<field name="bankOrderCurrency"/>
-		<field name="bankOrderLineOriginList"/>
 	</grid>
 	
 	<form name="bank-order-line-bank-order-form" model="com.axelor.apps.bankpayment.db.BankOrderLine" onNew="action-bank-order-line-onnew"   title="Bank Order line">
