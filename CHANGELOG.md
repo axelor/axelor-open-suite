@@ -209,6 +209,7 @@
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
 - Expense : period / company not getting set on getOrCreateExpense method 
+- BANK ORDER: bank order line editor view change to bank order line grid view in order to load faster.
 
 ## [5.1.7] - 2019-06-17
 ## Features
