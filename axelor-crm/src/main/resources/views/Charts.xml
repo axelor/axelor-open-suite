@@ -727,7 +727,28 @@
 	  <series key="leads" type="bar" title="Leads"/>
 	</chart>
 	
-	
+   <chart onInit="action.base.chart.set.date.6m" name="chart.created.leads.with.opportunity" title="Created leads with at least one opportunity">
+	   <search-fields>
+		 <field name="fromDate" title="From Date" type="date" x-required="true" />
+		 <field name="toDate" title="To Date" type="date" x-required="true" />
+	   </search-fields>
+	   <dataset type="jpql">
+	    <![CDATA[
+
+          SELECT
+             COUNT(*) as leads,
+             ' ' as title
+          FROM
+             Lead ld
+          WHERE
+             ld.opportunitiesList IS NOT EMPTY         
+             AND DATE(ld.createdOn) BETWEEN DATE(:fromDate) AND DATE(:toDate)             
+                       		
+		]]>
+	   </dataset>
+	   <category key="title" type="text" />
+       <series key="leads" type="bar" title="Leads"/>
+	</chart>	
 	
 	
 	<!-- 	  Target user charts -->
