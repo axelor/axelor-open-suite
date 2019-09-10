@@ -223,5 +223,6 @@
 - Advance data import:fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
 - MOVE : Fix NPE while creating new accounting move.
 - INVOICE : only pdf file format for report when status is ventilated.
+- ACCOUNTING BATCH : corrected direction of move lines generated.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
