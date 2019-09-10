@@ -98,6 +98,7 @@
 "ConformityCertificate.certificateNumber","Certificate number",,
 "ConformityCertificate.customerName","Customer Name",,
 "ConformityCertificate.designation","Designation",,
+"ConformityCertificate.externalReference","Customer reference",,
 "ConformityCertificate.function","Function",,
 "ConformityCertificate.lotNoRef","Lot N°/Ref",,
 "ConformityCertificate.name","Name",,
