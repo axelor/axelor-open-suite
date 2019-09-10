@@ -208,7 +208,8 @@
 - Message: fix random NPE when sending emails asynchronously.
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
-- Expense : period / company not getting set on getOrCreateExpense method 
+- Expense : period / company not getting set on getOrCreateExpense method
+- BANK ORDER : for file format 320c, increased length of receiver name zone if it got greater then 35 characters to a max of 70 characters but in exchange reduced receiver address zone length.
 
 ## [5.1.7] - 2019-06-17
 ## Features
