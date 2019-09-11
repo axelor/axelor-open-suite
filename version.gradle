@@ -1,3 +1,10 @@
 ext.versionFile = "modules/abs/version.txt"
-ext.absVersion = rootProject.file(versionFile).text.trim()
-version absVersion
+ext.baseVersion = rootProject.file(versionFile).text.trim()
+
+version baseVersion
+
+if(project.hasProperty("mavenRepository") && !project.hasProperty("finalRelease")) {
+  version += "-SNAPSHOT"
+}
+
+ext.absVersion = version
