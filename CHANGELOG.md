@@ -20,6 +20,7 @@
 - REPORTING : number of qualified leads
 - REPORTING : average duration to qualify a lead
 - REPORTING : number of new customers
+- CONFORMITY CERTIFICATE : new field on printing
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
