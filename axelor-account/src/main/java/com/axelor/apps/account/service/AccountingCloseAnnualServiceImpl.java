@@ -178,7 +178,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     counter = 0;
 
-    this.generateCloseAnnualMoveLine(move, origin, account, moveDescription, originDate, balance);
+    this.generateCloseAnnualMoveLine(
+        move, origin, account, moveDescription, originDate, balance.negate());
 
     this.generateCloseAnnualMoveLine(
         move,
@@ -186,7 +187,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         getYearClosureOrOpeningAccount(accountConfig, isReverse),
         moveDescription,
         originDate,
-        balance.negate());
+        balance);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
       moveValidateService.validate(move);
@@ -321,15 +322,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Pair<Long, Long>> accountAndPartnerPair = new ArrayList<>();
 
     for (Long accountId : accountIdList) {
-
-      if (allocatePerPartner && accountRepository.find(accountId).getUseForPartnerBalance()) {
-
-        for (Long partnerId : getPartner(accountId, year)) {
-          accountAndPartnerPair.add(Pair.of(accountId, partnerId));
-        }
-
-      } else {
-        accountAndPartnerPair.add(Pair.of(accountId, null));
+      for (Long partnerId : getPartner(accountId, year)) {
+        accountAndPartnerPair.add(Pair.of(accountId, partnerId));
       }
     }
     return accountAndPartnerPair;
