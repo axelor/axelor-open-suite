@@ -299,7 +299,7 @@
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
 				<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
-				<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender'" onChange="action-stock-move-method-verify-product-stock"/>
+				<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender'" onChange="action-stock-move-group-available-qty-onchange"/>
            		<field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
             </panel>
             <spacer/>
@@ -579,6 +579,12 @@
         <action name="action-stock-move-record-mail-configuration"/>
     </action-group>
 
+    <action-group name="action-stock-move-group-available-qty-onchange">
+        <action name="action-stock-move-method-verify-product-stock"/>
+        <action name="action-stock-move-validate-check-reservation"/>
+        <action name="action-stock-move-method-allocate-all"/>
+    </action-group>
+
      <action-attrs name="action-stock-move-attrs-typeselect-change">
     	<attribute name="title" for="stockMoveInformationPanel" expr="eval: com.axelor.i18n.I18n.get('Internal move information')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveInformationPanel" expr="eval: com.axelor.i18n.I18n.get('Outgoing move information')" if="typeSelect == 2"/>
@@ -776,6 +782,10 @@
 		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="verifyProductStock"/>
 	</action-method>
 
+    <action-method name="action-stock-move-method-allocate-all">
+        <call class="com.axelor.apps.supplychain.web.StockMoveController" method="allocateAll"/>
+    </action-method>
+
 	<action-method name="action-stock-move-method-refresh-net-mass">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="refreshProductNetMass"/>
 	</action-method>
@@ -793,6 +803,11 @@
 	<action-validate name="action-stock-move-validate-shipment-informations">
 		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Please filled supplier shipment date and supplier shipment reference."/>
 	</action-validate>
+
+    <action-validate name="action-stock-move-validate-check-reservation">
+        <alert message="Do you want to allocate all the products ?"
+               if="__config__.app.getApp('supplychain')?.manageStockReservation &amp;&amp; company?.supplyChainConfig?.autoAllocateOnAvailabilityRequest &amp;&amp; stockMoveLineList.any{it?.reservedQty.compareTo(it?.realQty) &lt; 0} &amp;&amp; availabilityRequest"/>
+    </action-validate>
 
     <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
         model="com.axelor.apps.stock.db.LogisticalForm">
