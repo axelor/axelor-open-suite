@@ -21,6 +21,7 @@
 - REPORTING : average duration to qualify a lead
 - REPORTING : number of new customers
 - CONFORMITY CERTIFICATE : new field on printing
+- JOURNALS : add new configuration to filter partners
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
