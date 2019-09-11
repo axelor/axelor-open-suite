@@ -49,7 +49,7 @@
 		<button name="next-stageBtn" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click"/>
 		<button name="closed-wonBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click"/>
 		<button name="closed-lostBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
-	</grid>
+  	</grid>
 
   <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner">
 		<field name="name"/>
@@ -323,5 +323,10 @@
     <action-method name="action-opportunity-record-from-lead">
         <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoOpportunity"/>
     </action-method>
+
+	<action-view name="dashlet.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<view type="form" name="opportunity-form" />
+	</action-view>
 
 </object-views>

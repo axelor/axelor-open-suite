@@ -99,4 +99,9 @@
 		<option value="1">Left empty</option>
 	</selection>
 
+	<selection name="supplychain.stock.move.invoicing.wizard.select">
+      <option value="1">Invoice all</option>
+      <option value="2">Invoice partially stock move</option>
+    </selection>
+
 </object-views>

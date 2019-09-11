@@ -20,4 +20,5 @@ package com.axelor.apps.cash.management.translation;
 public interface ITranslation {
 
   public static final String CASH_MANAGEMENT_APP_NAME = /*$$(*/ "value:Cash management"; /*)*/
+  public static final String CASH_MANAGEMENT_REPORT_TITLE = /*$$(*/ "ForecastRecap"; /*)*/
 }

@@ -8,6 +8,7 @@
         <field name="stockMove.stockMoveSeq" width="120"/>	
         <field name="stockMove.realDate"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+        <field name="qtyInvoiced"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -26,6 +27,7 @@
         <field name="stockMove.stockMoveSeq" /> 
         <field name="stockMove.realDate"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+        <field name="qtyInvoiced"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -45,6 +47,7 @@
         <field name="stockMove.stockMoveSeq" /> 
         <field name="stockMove.realDate"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+        <field name="qtyInvoiced"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>

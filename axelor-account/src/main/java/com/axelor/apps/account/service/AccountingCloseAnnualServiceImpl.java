@@ -249,6 +249,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     if (partner != null) {
       prepareQuery += " AND self.partner = ?4";
+    } else {
+      prepareQuery += " AND self.partner is null";
     }
 
     Query q = JPA.em().createQuery(prepareQuery, BigDecimal.class);

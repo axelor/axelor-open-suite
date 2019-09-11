@@ -147,6 +147,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     boolean isConfig = advancedImport.getIsConfigInFile();
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
+    boolean isTabConfig = advancedImport.getIsFileTabConfigAdded();
     List<CSVInput> inputList = new ArrayList<CSVInput>();
 
     validatorService.sortFileTabList(advancedImport.getFileTabList());
@@ -158,7 +159,7 @@ public class DataImportServiceImpl implements DataImportService {
 
       this.initializeVariables();
 
-      String fileName = createDataFileName(fileTab.getMetaModel());
+      String fileName = createDataFileName(fileTab);
       csvInput = this.createCSVInput(fileTab, fileName);
       ifList = new ArrayList<String>();
 
@@ -178,9 +179,16 @@ public class DataImportServiceImpl implements DataImportService {
       String[] headers = this.createHeader(row, fileTab, isConfig, mapper);
       allLines.add(headers);
 
+      int tabConfigRowCount = 0;
+      if (isTabConfig) {
+        String objectRow[] = reader.read(fileTab.getName(), 0, 0);
+        tabConfigRowCount =
+            advancedImportService.getTabConfigRowCount(
+                fileTab.getName(), reader, totalLines, objectRow);
+      }
       startIndex =
           isConfig
-              ? 3
+              ? tabConfigRowCount + 3
               : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
 
       for (int line = startIndex; line < totalLines; line++) {
@@ -448,8 +456,10 @@ public class DataImportServiceImpl implements DataImportService {
         dummyBind.setExpression(expression);
         dummyBind.setAdapter(adapter);
         bind = this.createCSVBind(column, prop.getName(), null, null, null, null);
+        this.setImportIf(prop, bind, column);
       } else {
         bind = this.createCSVBind(column, prop.getName(), null, expression, adapter, null);
+        this.setImportIf(prop, bind, column);
       }
       allBindings.add(bind);
       this.setSearch(column, prop.getName(), fileField, null);
@@ -515,7 +525,6 @@ public class DataImportServiceImpl implements DataImportService {
             subFields, index + 1, column, childProp, fileField, subBind, dummyBind);
 
       } else {
-        String field = childProp.getName();
         String expression = this.setExpression(column, fileField, childProp);
         String adapter = null;
         String dateFormat = fileField.getDateFormat();
@@ -525,11 +534,11 @@ public class DataImportServiceImpl implements DataImportService {
 
         if (!fileField.getIsMatchWithFile()) {
           this.createBindForNotMatchWithFile(
-              column, field, importType, dummyBind, expression, adapter, parentBind);
+              column, importType, dummyBind, expression, adapter, parentBind, childProp);
 
         } else {
           this.createBindForMatchWithFile(
-              column, field, importType, expression, adapter, relationship, parentBind);
+              column, importType, expression, adapter, relationship, parentBind, childProp);
         }
         this.setSearch(column, childProp.getName(), fileField, parentBind);
 
@@ -542,31 +551,32 @@ public class DataImportServiceImpl implements DataImportService {
 
   private void createBindForNotMatchWithFile(
       String column,
-      String field,
       int importType,
       CSVBind dummyBind,
       String expression,
       String adapter,
-      CSVBind parentBind) {
+      CSVBind parentBind,
+      Property childProp) {
 
     dummyBind.setExpression(expression);
     dummyBind.setAdapter(adapter);
 
     if (importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW
         || importType == FileFieldRepository.IMPORT_TYPE_NEW) {
-      CSVBind subBind = this.createCSVBind(column, field, null, null, null, null);
+      CSVBind subBind = this.createCSVBind(column, childProp.getName(), null, null, null, null);
+      this.setImportIf(childProp, subBind, column);
       parentBind.getBindings().add(subBind);
     }
   }
 
   private void createBindForMatchWithFile(
       String column,
-      String field,
       int importType,
       String expression,
       String adapter,
       String relationship,
-      CSVBind parentBind) {
+      CSVBind parentBind,
+      Property childProp) {
 
     if (importType != FileFieldRepository.IMPORT_TYPE_FIND) {
       if (!Strings.isNullOrEmpty(expression)
@@ -576,7 +586,9 @@ public class DataImportServiceImpl implements DataImportService {
         parentBind.setExpression(expression);
         return;
       }
-      CSVBind subBind = this.createCSVBind(column, field, null, expression, adapter, null);
+      CSVBind subBind =
+          this.createCSVBind(column, childProp.getName(), null, expression, adapter, null);
+      this.setImportIf(childProp, subBind, column);
       parentBind.getBindings().add(subBind);
 
     } else {
@@ -782,11 +794,13 @@ public class DataImportServiceImpl implements DataImportService {
     return bind;
   }
 
-  private String createDataFileName(MetaModel model) {
+  private String createDataFileName(FileTab fileTab) {
     String fileName = null;
+    MetaModel model = fileTab.getMetaModel();
+    Long fileTabId = fileTab.getId();
     try {
       Mapper mapper = advancedImportService.getMapper(model.getFullName());
-      fileName = inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + ".csv";
+      fileName = inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
 
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
@@ -850,6 +864,12 @@ public class DataImportServiceImpl implements DataImportService {
       return logFile;
     }
     return null;
+  }
+
+  private void setImportIf(Property prop, CSVBind bind, String column) {
+    if (prop.isRequired()) {
+      bind.setCondition(column.toString() + "!= null && !" + column.toString() + ".empty");
+    }
   }
 
   private MetaFile createImportLogFile(ImporterListener listener) throws IOException {

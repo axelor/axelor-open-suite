@@ -4,6 +4,9 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
+    	<toolbar>
+    		<button name="generateRandomPasswordsBtn" title="Generate random passwords" onClick="action-user-method-open-generate-random-passwords-wizard"/>
+    	</toolbar>
         <field name="name"/>
         <field name="fullName"/>
         <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
@@ -221,6 +224,13 @@
           <field name="transientPassword"/>
         </panel>
 	</form>
+	
+	<form name="generate-random-passwords-wizard" title="Generate random passwords" model="com.axelor.apps.base.db.Wizard">
+		<panel name="mainPanel">
+			<field name="currentUserPassword" title="Your Password" widget="password"/>
+			<button name="generateRandomPasswordsBtn" title="Generate random passwords" readonlyIf="!currentUserPassword" onClick="action-user-method-generate-random-passwords"/>
+		</panel>
+	</form>
 
     <action-attrs name="action-user-attrs-domain-followers">
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
@@ -259,6 +269,7 @@
     <action-record name="action-user-record-step-status-next" model="com.axelor.auth.db.User">
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+        <field name="blocked" expr="false" if="stepStatusSelect == 4"/>
     </action-record>
 
     <action-record name="action-user-record-step-status-previous" model="com.axelor.auth.db.User">
@@ -310,6 +321,14 @@
         <check error="A user with this login already exists." field="code"
             if="code &amp;&amp; ![null, id].contains(__repo__(User).findByCode(code)?.id)"/>
     </action-condition>
+    
+    <action-method name="action-user-method-open-generate-random-passwords-wizard">
+    	<call class="com.axelor.apps.base.web.UserController" method="openGenerateRandomPasswordsWizard"/>
+    </action-method>
+    
+    <action-method name="action-user-method-generate-random-passwords">
+    	<call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
+    </action-method>
     
     <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
     	<filter title="Active users">

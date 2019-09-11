@@ -28,6 +28,7 @@ import com.axelor.apps.crm.message.MessageServiceCrmImpl;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.db.JPA;
@@ -56,19 +57,11 @@ public class BatchEventReminder extends BatchStrategy {
 
   @Inject private EmailAddressRepository emailAddressRepo;
 
-  @Inject private EventReminderRepository eventReminderRepo;
-
   @Inject
   public BatchEventReminder(
       MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 
     super(messageServiceCrmImpl, mailAccountService);
-  }
-
-  @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-
-    super.start();
   }
 
   @Override
@@ -98,10 +91,7 @@ public class BatchEventReminder extends BatchStrategy {
                   || eventStatusSelect == EventRepository.STATUS_NOT_STARTED
                   || eventStatusSelect == EventRepository.STATUS_ON_GOING
                   || eventStatusSelect == EventRepository.STATUS_PENDING;
-          if (this.isExpired(eventReminder)
-              && !eventReminder.getIsReminded()
-              && eventIsNotFinished) {
-            eventReminder.setIsReminded(true);
+          if (!eventReminder.getIsReminded() && isExpired(eventReminder) && eventIsNotFinished) {
             updateEventReminder(eventReminder);
             i++;
           }
@@ -136,41 +126,50 @@ public class BatchEventReminder extends BatchStrategy {
   private boolean isExpired(EventReminder eventReminder) {
 
     LocalDateTime startDateTime = eventReminder.getEvent().getStartDateTime();
-    int durationTypeSelect = eventReminder.getDurationTypeSelect();
-    switch (durationTypeSelect) {
-      case IEventReminder.DURATION_MINUTES:
-        if ((startDateTime.minusMinutes(eventReminder.getDuration()))
-            .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
-          return true;
-        }
-        break;
 
-      case IEventReminder.DURATION_HOURS:
-        if ((startDateTime.minusHours(eventReminder.getDuration()))
-            .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
-          return true;
-        }
-        break;
+    if (EventReminderRepository.MODE_AT_DATE.equals(eventReminder.getModeSelect())) {
+      return eventReminder
+          .getSendingDateT()
+          .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+    } else { // defaults to EventReminderRepository.MODE_BEFORE_DATE
+      int durationTypeSelect = eventReminder.getDurationTypeSelect();
+      switch (durationTypeSelect) {
+        case IEventReminder.DURATION_MINUTES:
+          if ((startDateTime.minusMinutes(eventReminder.getDuration()))
+              .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
+            return true;
+          }
+          break;
 
-      case IEventReminder.DURATION_DAYS:
-        if ((startDateTime.minusDays(eventReminder.getDuration()))
-            .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
-          return true;
-        }
-        break;
+        case IEventReminder.DURATION_HOURS:
+          if ((startDateTime.minusHours(eventReminder.getDuration()))
+              .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
+            return true;
+          }
+          break;
 
-      case IEventReminder.DURATION_WEEKS:
-        if ((startDateTime.minusWeeks(eventReminder.getDuration()))
-            .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
-          return true;
-        }
-        break;
+        case IEventReminder.DURATION_DAYS:
+          if ((startDateTime.minusDays(eventReminder.getDuration()))
+              .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
+            return true;
+          }
+          break;
+
+        case IEventReminder.DURATION_WEEKS:
+          if ((startDateTime.minusWeeks(eventReminder.getDuration()))
+              .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
+            return true;
+          }
+          break;
+      }
     }
 
     return false;
   }
 
   protected void generateMessageProcess() {
+
+    MessageRepository messageRepo = Beans.get(MessageRepository.class);
 
     if (!stop) {
 
@@ -201,6 +200,7 @@ public class BatchEventReminder extends BatchStrategy {
                     eventReminder.getUser().getEmail(),
                     "[" + eventReminder.getUser().getEmail() + "]"));
           } else {
+            messageRepo.remove(message);
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(IExceptionMessage.CRM_CONFIG_USER_EMAIL),
@@ -208,7 +208,7 @@ public class BatchEventReminder extends BatchStrategy {
           }
 
           // Also send to attendees if needed
-          if (eventReminder.getAssignToSelect() == EventReminderRepository.ASSIGN_TO_ALL
+          if (EventReminderRepository.ASSIGN_TO_ALL.equals(eventReminder.getAssignToSelect())
               && eventReminder.getEvent().getAttendees() != null) {
             for (ICalendarUser iCalUser : eventReminder.getEvent().getAttendees()) {
               if (iCalUser.getUser() != null && iCalUser.getUser().getPartner() != null) {

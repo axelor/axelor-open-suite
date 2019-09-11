@@ -7,6 +7,7 @@
 	
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
 	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order"/>
+	<many-to-many name="stockMoveSet" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves"/>
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
 	

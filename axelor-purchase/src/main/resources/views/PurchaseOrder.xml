@@ -26,14 +26,15 @@
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-		<menubar>
-	    <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
-	    </menu>
-	    <menu title="Tools" icon="fa-wrench" showTitle="true">
-        <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
-	    </menu>
+    <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+            </menu>
+            <menu title="Tools" icon="fa-wrench" showTitle="true">
+                <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+                <item title="See budget distribution lines" action="action-purchase-order-see-budget-distribution-lines"/>
+            </menu>
 		</menubar>
 		<field name="purchaseOrderSeq" width="120"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -148,9 +149,10 @@
 				<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
 				<panel-related name="timetableListPanel" field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 			</panel>
-			<panel name="budgetDistributionPanel" title="Budget distribution" if="__config__.app.isApp('budget')" showIf="statusSelect &lt;= 2" if-module="axelor-supplychain">
-				<field name="budget"/>
-				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
+			<panel name="budgetDistributionPanel" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain" showIf="statusSelect &lt;= 4">
+				<field name="budget" showIf="statusSelect &lt;= 2"/>
+				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget" showIf="statusSelect &lt;= 2"/>
+			    <panel-dashlet name="budgetDistributionPanel" action="action-supplychain-budget-distribuion-view-budget-distribution" colSpan="12" showIf="statusSelect &gt;= 3 &amp;&amp; statusSelect &lt;= 4" readonly="true"/>
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
@@ -177,7 +179,6 @@
 			<button name="generateInvoiceBtn" title="Generate control invoice" showIf="statusSelect == 3" onClick="save,action-purchase-order-method-generate-control-invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder" if-module="axelor-supplychain"/>
 			<button name="showInvoiceBtn" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <button name="finishManuallyPurchaseOrderBtn" title="Finish the order" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
-			<spacer name="btnSpacer"/>
 			<button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"   onClick="save,action-group-purchase-order-cancel"/>
 		</panel>
   
@@ -302,6 +303,7 @@
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
 		<toolbar>
     			<button name="seePurchaseOrderLinesBtn" title="See purchase orders lines" onClick="purchase-order-see-purchase-order-lines"/>
+    			<button name="seeBudgetDistributionLinesBtn" title="See budget distribution lines" onClick="action-purchase-order-see-budget-distribution-lines"/>
 		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>

@@ -42,4 +42,5 @@ public interface IException {
   public static final String LEAVE_MANAGEMENT = "leaveManagement";
   public static final String BANK_STATEMENT = "bankStatement";
   public static final String CREDIT_TRANSFER = "creditTransfer";
+  public static final String REPORTED_BALANCE = "reportedBalance";
 }

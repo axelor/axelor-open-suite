@@ -305,6 +305,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveRepo.save(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail() != null
         && stockMove.getPlannedStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
     }
@@ -435,6 +436,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
       partnerProductQualityRatingService.calculate(stockMove);
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getRealStockMoveAutomaticMail() != null
         && stockMove.getRealStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
     }
@@ -1089,15 +1091,16 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.STOCK_MOVE_11));
     }
+    Map<String, Object> result;
     if (appBaseService.getAppBase().getMapApiSelect()
         == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_12));
+      result =
+          Beans.get(MapService.class).getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
+    } else {
+      result =
+          Beans.get(MapService.class)
+              .getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     }
-    Map<String, Object> result =
-        Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     if (result == null) {
       throw new AxelorException(
           stockMove,
