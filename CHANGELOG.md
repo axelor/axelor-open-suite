@@ -213,6 +213,7 @@
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
 - Expense : period / company not getting set on getOrCreateExpense method 
+- CUSTOMER : Wrong domain on action-view
 
 ## [5.1.7] - 2019-06-17
 ## Features
