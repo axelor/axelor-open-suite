@@ -108,9 +108,18 @@ public class ManufOrderWorkflowService {
       manufOrderService.createToProduceProdProductList(manufOrder);
     }
 
-    if (manufOrder.getPlannedStartDateT() == null) {
+    if (manufOrder.getPlannedStartDateT() == null && manufOrder.getPlannedEndDateT() == null) {
       manufOrder.setPlannedStartDateT(
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+    } else if (manufOrder.getPlannedStartDateT() == null
+        && manufOrder.getPlannedEndDateT() != null) {
+      long duration = 0;
+      for (OperationOrder order : manufOrder.getOperationOrderList()) {
+        duration +=
+            operationOrderWorkflowService.computeEntireCycleDuration(
+                order, order.getManufOrder().getQty()); // in seconds
+      }
+      manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
     }
 
     for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
