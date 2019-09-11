@@ -174,6 +174,7 @@
 - CLIENT PORTAL : update the client form view
 - MESSAGE MODULE: Refactor code.
 - USER : Mass generation of random passwords
+- MRP : add cumulative Min qty and generate proposal only for the last mrpLine type stock available (compare to cumulative min qty).
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
