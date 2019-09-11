@@ -17,6 +17,9 @@
 - EBICS USER : add the possibility to print ebics request log.
 - STOCK : Addition of new selection field 'Stock location value' in Stock Config.
 - EBICS: fix ClassCastException when adding certificates.
+- REPORTING : number of qualified leads
+- REPORTING : average duration to qualify a lead
+- REPORTING : number of new customers
 - CONFORMITY CERTIFICATE : new field on printing
 
 ## Improvements
