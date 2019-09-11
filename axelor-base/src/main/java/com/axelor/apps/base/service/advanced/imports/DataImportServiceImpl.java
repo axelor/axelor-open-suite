@@ -159,7 +159,7 @@ public class DataImportServiceImpl implements DataImportService {
 
       this.initializeVariables();
 
-      String fileName = createDataFileName(fileTab.getMetaModel());
+      String fileName = createDataFileName(fileTab);
       csvInput = this.createCSVInput(fileTab, fileName);
       ifList = new ArrayList<String>();
 
@@ -794,11 +794,13 @@ public class DataImportServiceImpl implements DataImportService {
     return bind;
   }
 
-  private String createDataFileName(MetaModel model) {
+  private String createDataFileName(FileTab fileTab) {
     String fileName = null;
+    MetaModel model = fileTab.getMetaModel();
+    Long fileTabId = fileTab.getId();
     try {
       Mapper mapper = advancedImportService.getMapper(model.getFullName());
-      fileName = inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + ".csv";
+      fileName = inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
 
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
