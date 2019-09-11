@@ -178,7 +178,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
     counter = 0;
 
-    this.generateCloseAnnualMoveLine(move, origin, account, moveDescription, originDate, balance);
+    this.generateCloseAnnualMoveLine(move, origin, account, moveDescription, originDate, balance.negate());
 
     this.generateCloseAnnualMoveLine(
         move,
@@ -186,7 +186,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         getYearClosureOrOpeningAccount(accountConfig, isReverse),
         moveDescription,
         originDate,
-        balance.negate());
+        balance);
 
     if (move.getMoveLineList() != null && !move.getMoveLineList().isEmpty()) {
       moveValidateService.validate(move);
