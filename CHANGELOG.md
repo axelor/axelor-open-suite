@@ -215,6 +215,7 @@
 - CUT OFF: correct message warning.
 - Expense : period / company not getting set on getOrCreateExpense method 
 - CUSTOMER : Wrong domain on action-view
+- TIMESHEET : fix computing of the total field 
 
 ## [5.1.7] - 2019-06-17
 ## Features
