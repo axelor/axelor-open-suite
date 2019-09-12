@@ -27,7 +27,7 @@ allprojects {
 	configurations {
    		runtime.exclude group:"org.eclipse.birt.runtime.3_7_1", module:"org.apache.commons.codec"
 	}
-	
+
 	apply plugin: 'idea'
 	apply plugin: 'eclipse'
 
@@ -37,6 +37,10 @@ allprojects {
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 
+}
+
+subprojects {
+  group = "com.axelor.apps"
 }
 
 axelor {
