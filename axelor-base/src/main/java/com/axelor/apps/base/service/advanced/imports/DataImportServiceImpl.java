@@ -800,7 +800,8 @@ public class DataImportServiceImpl implements DataImportService {
     Long fileTabId = fileTab.getId();
     try {
       Mapper mapper = advancedImportService.getMapper(model.getFullName());
-      fileName = inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
+      fileName =
+          inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
 
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
