@@ -15,25 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.app.production.db;
+package com.axelor.apps.cash.management.module;
 
-/**
- * Interface of Event package. Enum all static variable of packages.
- *
- * @author dubaux
- */
-@Deprecated
-public interface IWorkCenter {
+import com.axelor.app.AxelorModule;
+import com.axelor.apps.cash.management.db.repo.CashManagementForecastRecapRepository;
+import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 
-  /** Static work center type select */
-  static final int WORK_CENTER_HUMAN = 1;
+public class CashManagementModule extends AxelorModule {
 
-  static final int WORK_CENTER_MACHINE = 2;
-  static final int WORK_CENTER_BOTH = 3;
-
-  /** Static cost type select */
-  static final int COST_PER_HOUR = 1;
-
-  static final int COST_PER_CYCLE = 2;
-  static final int COST_PER_PIECE = 3;
+  @Override
+  protected void configure() {
+    bind(ForecastRecapRepository.class).to(CashManagementForecastRecapRepository.class);
+  }
 }
