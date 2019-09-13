@@ -27,6 +27,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
@@ -44,14 +45,16 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
       PurchaseOrderRepository purchaseOrderRepo,
       TemplateRepository templateRepo,
       TemplateMessageService templateMessageService,
-      MessageRepository messageRepo) {
+      MessageRepository messageRepo,
+      StockConfigRepository stockConfigRepo) {
     super(
         stockRuleRepo,
         purchaseOrderLineService,
         purchaseOrderRepo,
         templateRepo,
         templateMessageService,
-        messageRepo);
+        messageRepo,
+        stockConfigRepo);
   }
 
   public void generateOrder(
