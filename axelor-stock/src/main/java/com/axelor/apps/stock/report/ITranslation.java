@@ -153,4 +153,6 @@ public interface ITranslation {
   public static final String CONFORMITY_CERTIFICATE_STOCK_MOVE_LINE_ROW_NUM = /*$$(*/
       "ConformityCertificate.stockMoveLineRowNum"; /*)*/
   public static final String CONFORMITY_LOT_NO_REF = /*$$(*/ "ConformityCertificate.lotNoRef"; /*)*/
+  public static final String CONFORMITY_EXTERNAL_REFERENCE = /*$$(*/
+      "ConformityCertificate.externalReference"; /*)*/
 }

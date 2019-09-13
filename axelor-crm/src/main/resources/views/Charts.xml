@@ -727,8 +727,59 @@
 	  <series key="leads" type="bar" title="Leads"/>
 	</chart>
 	
-	
-	
+   <chart onInit="action.base.chart.set.date.6m" name="chart.created.leads.with.opportunity" title="Created leads with at least one opportunity">
+	   <search-fields>
+		 <field name="fromDate" title="From Date" type="date" x-required="true" />
+		 <field name="toDate" title="To Date" type="date" x-required="true" />
+	   </search-fields>
+	   <dataset type="jpql">
+	    <![CDATA[
+
+          SELECT
+             COUNT(*) as leads,
+             ' ' as title
+          FROM
+             Lead ld
+          WHERE
+             ld.opportunitiesList IS NOT EMPTY         
+             AND DATE(ld.createdOn) BETWEEN DATE(:fromDate) AND DATE(:toDate)             
+                       		
+		]]>
+	   </dataset>
+	   <category key="title" type="text" />
+       <series key="leads" type="bar" title="Leads"/>
+	</chart>	
+
+	<chart onInit="action.base.chart.set.date.6m" name="chart.created.leads.average.duration.first.opportunity" title="Average duration between lead and first opportunity (days)">
+	   <search-fields>
+		 <field name="fromDate" title="From Date" type="date" x-required="true" />
+		 <field name="toDate" title="To Date" type="date" x-required="true" />
+	   </search-fields>
+	   <dataset type="jpql">
+	    <![CDATA[
+
+          SELECT
+             AVG(DATE(op.createdOn) - DATE(ld.createdOn)) as average,
+             ' ' as title
+          FROM
+             Lead ld
+          INNER JOIN
+             ld.opportunitiesList op
+          WHERE
+             DATE(ld.createdOn) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+             AND NOT EXISTS (
+                     FROM 
+                       ld.opportunitiesList op2
+                     WHERE
+                       op2 != op
+                       AND op2.createdOn < op.createdOn )
+                       		
+		]]>
+	   </dataset>
+	   <category key="title" type="text" />
+				<series key="average" type="bar" />
+	</chart>
+
 	
 	<!-- 	  Target user charts -->
 	  

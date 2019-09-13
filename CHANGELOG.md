@@ -17,6 +17,11 @@
 - EBICS USER : add the possibility to print ebics request log.
 - STOCK : Addition of new selection field 'Stock location value' in Stock Config.
 - EBICS: fix ClassCastException when adding certificates.
+- REPORTING : number of qualified leads
+- REPORTING : average duration to qualify a lead
+- REPORTING : number of new customers
+- CONFORMITY CERTIFICATE : new field on printing
+- JOURNALS : add new configuration to filter partners
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -105,9 +110,12 @@
 - ACCOUNTING MOVE : Addition of widget boolean-switch in form view
 - MANUF ORDER : copy MO but not operations orders
 - MOVE : add a control on period status
+- EXPENSE : add the payment move and its generation.
 - BANK ORDER : add a viewer with technical origin (Automatic,Entry,Import) information display.
 - BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
 - Expense : Set Move.date and expense.moveDate as expense.period.toDate
+- BankStatementFileFormat : remove wrong data.
+- EBICSUSER : signature certificate editable only if the ebicsPartner mode is "EBICS TS" and the user type is "Signatory"
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
@@ -208,7 +216,9 @@
 - Message: fix random NPE when sending emails asynchronously.
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
-- Expense : period / company not getting set on getOrCreateExpense method
+- EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
+- Expense : period / company not getting set on getOrCreateExpense method 
+- CUSTOMER : Wrong domain on action-view
 - BANK ORDER : for file format 320c, increased length of receiver name zone if it got greater then 35 characters to a max of 70 characters but in exchange reduced receiver address zone length.
 
 ## [5.1.7] - 2019-06-17
