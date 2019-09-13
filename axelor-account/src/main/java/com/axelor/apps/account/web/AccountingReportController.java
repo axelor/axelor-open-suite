@@ -263,7 +263,7 @@ public class AccountingReportController {
           ReportFactory.createReport("DescriptiveDocumentationFEC.rptdesign", name + "-${date}")
               .addParam("AccountingReportId", accountingReport.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat("pdf")
+              .addFormat("odt")
               .toAttach(accountingReport)
               .generate()
               .getFileLink();
