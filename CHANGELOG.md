@@ -219,7 +219,7 @@
 - EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
 - Expense : period / company not getting set on getOrCreateExpense method 
 - CUSTOMER : Wrong domain on action-view
-- ACCOUNTING REPORT : general balance report is now faster to generate.
+- ACCOUNTING REPORT : balance report are now faster to generate.
 
 ## [5.1.7] - 2019-06-17
 ## Features
