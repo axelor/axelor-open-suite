@@ -81,7 +81,9 @@
 						<field name="addressL7Country" onChange="action-address-record-clear-fields"
 								required="true" canEdit="false" form-view="country-form" grid-view="country-grid"
 								colSpan="12" />
+						<!-- use for gst -->
 						<field name="state" if="__config__.app.isApp('gst')" colSpan="12" />
+						<!-- end gst -->
 						<field name="addressL2" x-bind="{{addressL2|uppercase}}"
 								placeholder="e.g. Financial department, CEO" />
 						<field name="addressL3" x-bind="{{addressL3|uppercase}}"

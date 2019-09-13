@@ -23,7 +23,7 @@
 				base_partner party ON (party.id = _invoice.partner)
 			WHERE
 				party.is_customer='t' AND _invoice.status_select!=3
-				AND	DATE(invoice.created_on) BETWEEN DATE(:fromDate) and DATE(:toDate)
+				AND	DATE(_invoice.created_on) BETWEEN DATE(:fromDate) and DATE(:toDate)
 			GROUP BY
 				party.name
           
@@ -47,9 +47,7 @@
 				
   <![CDATA[
 
-     
-     
-     
+         
       SELECT count(_invoice.id) as count, _product.name as pname, _productCategory.name as pcname
 			FROM
 				account_invoice as _invoice

@@ -34,7 +34,7 @@ public class InvoicePrintGSTServiceImpl extends InvoicePrintServiceImpl {
     }
 
     ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.AINVOICE, title + " - ${date}");
+        ReportFactory.createReport(IReport.INVOICE_GST, title + " - ${date}");
 
     return reportSetting.addParam("InvoiceId", invoice.getId()).addParam("Locale", locale);
   }

@@ -488,12 +488,13 @@ InvoiceSet.length > 0))"
 
 		<!-- form -wizard for create invoice -->
 		<form name="invoice-form-wizard" title="Create invoice"
-				model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-gst-invoice-line-set-for-wizard">
+				model="com.axelor.apps.base.db.Wizard" width="large"
+				onNew="action-gst-invoice-line-set-for-wizard">
 
 				<panel>
-						<field name="$invoicePartner"  field="$invoicePartner" title="Contact partner" type="many-to-one"
-								target="com.axelor.apps.base.db.Partner" onSelect="action-set-partner-domain"
-								onChange="action-gst-invoice-calculate-wizard" />
+						<field name="$invoicePartner" field="$invoicePartner" title="Contact partner"
+								type="many-to-one" target="com.axelor.apps.base.db.Partner"
+								onSelect="action-set-partner-domain" onChange="action-gst-invoice-calculate-wizard" />
 				</panel>
 
 				<panel-related name="$invoiceLines" field="$invoiceLines"
@@ -508,6 +509,43 @@ InvoiceSet.length > 0))"
 
 		</form>
 
+
+		<!-- kanban view for invoice -->
+		<action-validate name="action-gst-invoice-kanban-validate">
+				<error message="Invoice status not change into draft." if="statusSelect==1" />
+				<error message="You not change Cancelled invoice status."
+						if="eval:__self__.statusSelect == 4" />
+				<error message="You not change Vantilated invoice status."
+						if="eval:__self__.statusSelect == 	3" />
+		</action-validate>
+
+		<kanban name="invoice-kanban" title="Invoice " model="com.axelor.apps.account.db.Invoice"
+				columnBy="statusSelect" sequenceBy="priority" onMove="action-gst-invoice-kanban-validate">
+
+
+				<field name="statusSelect" />
+				<field name="invoiceId" />
+				<field name="company" />
+				<field name="invoiceDate" />
+				<field name="partner" />
+				<field name="inTaxTotal" />
+				<field name="priority" />
+				<field name="currency" />
+
+				<template><![CDATA[
+   
+				  <h4> Ref: {{reference}} {{invoiceId}} {{company.name}}</h4>  
+				<!--    <img ng-if="company.logo" ng-src="{{$image('company', 'company.logo')}}">   -->
+				  <div class="card-body">Partner : {{partner.fullName}} </div>
+				  <div class="card-body">Total A.T.I.  {{inTaxTotal}} {{currency.symbol}}</div>
+				  <div class="card-footer">  
+				  <i class='fa fa-clock-o'></i> <span>{{invoiceDate|date:'yyyy-MM-dd HH:mm:ss'}}</span>  
+				    </div> 
+ ]]></template>
+
+		</kanban>
+
+		<!-- End kanban view -->
 
 		<action-group name="action-group-gst-invoice-partner-onchange">
 				<action name="action-gst-invoice-partner-contact"

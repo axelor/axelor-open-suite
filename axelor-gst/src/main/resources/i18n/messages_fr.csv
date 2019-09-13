@@ -278,6 +278,9 @@
 "product.code",,,
 "whatever@example.com",,,
 "key","message","comment","context"
-"Invoice.igst","Invoice igst",,
-"Invoice.sgst","Invoice sgst",,
-"Invoice.cgst","Invoice cgst",,
+"Invoice.igst","IGST",,
+"Invoice.sgst","SGST",,
+"Invoice.cgst","CGST",,
+"Invoice.netIGST",Net IGST,,
+"Invoice.netSGST",Net SGST,,
+"Invoice.netCGST",Net CGST,,

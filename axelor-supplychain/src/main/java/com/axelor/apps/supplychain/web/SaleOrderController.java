@@ -541,13 +541,16 @@ public class SaleOrderController {
    */
   public void onSave(ActionRequest request, ActionResponse response) {
     try {
+
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
+
       if (saleOrderView.getOrderBeingEdited()) {
         SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
         saleOrderServiceSupplychain.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
         response.setValues(saleOrderView);
       }
     } catch (Exception e) {
+      e.printStackTrace();
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.1.xsd">
+
+
+		<input file="gst_state.csv" separator="," type="com.axelor.gst.db.State"
+				search="self.name = :name">
+				<bind to="name" column="name" />
+				<bind to="country" column="country" search="self.name= :country" update="false" />
+		</input>
+		
+		<input file="gst_product.csv" type="com.axelor.gst.db.Product"></input>
+
+</csv-inputs>
+	

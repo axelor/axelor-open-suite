@@ -280,4 +280,7 @@
 "Invoice.igst",,,
 "Invoice.sgst",,,
 "Invoice.cgst",,,
+"Invoice.netIGST",,,
+"Invoice.netSGST",,,
+"Invoice.netCGST",,,
 

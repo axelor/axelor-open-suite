@@ -5,6 +5,11 @@
   http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 		<grid model="com.axelor.gst.db.State" title="State" name="state-grid">
+				<toolbar>
+						<button name="btnImport" title="Import" onClick="action-method-gst-import" />
+
+				</toolbar>
+
 				<field name="name" />
 				<field name="country" />
 		</grid>
@@ -15,6 +20,11 @@
 						<field name="country" selection="state.country.selection" />
 				</panel>
 		</form>
+
+		<action-method name="action-method-gst-import" model="com.axelor.gst.db.State">
+				<call class="com.axelor.apps.gst.web.ImportController" method="importCSVData" />
+		</action-method>
+
 
 
 </object-views>
