@@ -34,8 +34,10 @@
             <field name="companyBankDetails" canEdit="false"
                 onSelect="action-invoice-payment-method-bank-details-domain"
                 form-view="bank-details-form" grid-view="bank-details-grid"/>
-            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
-            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
+            <field name="invoicePaymentRef" showIf="paymentMode.typeSelect == 6"/>
+            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4 || paymentMode.typeSelect == 3"/>
+            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
+            <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoice" hidden="true" />
 		</panel>
@@ -62,8 +64,11 @@
                 onSelect="action-invoice-payment-method-bank-details-domain"
                 form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="paymentDate"/>
-            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
-            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
+            
+            <field name="invoicePaymentRef" showIf="paymentMode.typeSelect == 6"/>
+            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4 || paymentMode.typeSelect == 3"/>
+            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
+            <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoicesSelected" hidden="true"/>
        		<button name="validateBtn" title="Validate" onClick="action-invoice-payment-method-validate-mass-payment,close"/>

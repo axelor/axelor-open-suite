@@ -165,6 +165,7 @@
 - PARTNER: Checks the consistency of the address list of a partner.
 - DEMO DATA : Rename field data.
 - SALE ORDER/ PURCHASE ORDER : Removal of spacer.
+- INVOICE PAYMENT : additionnal informations
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -213,3 +214,4 @@
 - Advance data import:fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+
