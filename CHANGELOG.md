@@ -115,6 +115,7 @@
 - BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
 - Expense : Set Move.date and expense.moveDate as expense.period.toDate
 - BankStatementFileFormat : remove wrong data.
+- EBICSUSER : signature certificate editable only if the ebicsPartner mode is "EBICS TS" and the user type is "Signatory"
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
