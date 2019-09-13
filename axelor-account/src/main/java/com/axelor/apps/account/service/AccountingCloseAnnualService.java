@@ -40,7 +40,8 @@ public interface AccountingCloseAnnualService {
       String origin,
       String moveDescription,
       boolean closeYear,
-      boolean openYear)
+      boolean openYear,
+      boolean allocatePerPartner)
       throws AxelorException;
 
   public List<Long> getAllAccountOfYear(Set<Account> accountSet, Year year);
