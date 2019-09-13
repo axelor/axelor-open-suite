@@ -64,7 +64,7 @@ public class BatchDebtRecovery extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 

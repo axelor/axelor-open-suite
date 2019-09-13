@@ -48,6 +48,7 @@ import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,6 +66,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 
 public class DataImportServiceImpl implements DataImportService {
 
@@ -137,6 +139,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
 
     MetaFile logFile = this.importData(inputs);
+    FileUtils.forceDelete(dataDir);
     return logFile;
   }
 
@@ -159,7 +162,7 @@ public class DataImportServiceImpl implements DataImportService {
 
       this.initializeVariables();
 
-      String fileName = createDataFileName(fileTab.getMetaModel());
+      String fileName = createDataFileName(fileTab);
       csvInput = this.createCSVInput(fileTab, fileName);
       ifList = new ArrayList<String>();
 
@@ -794,11 +797,14 @@ public class DataImportServiceImpl implements DataImportService {
     return bind;
   }
 
-  private String createDataFileName(MetaModel model) {
+  private String createDataFileName(FileTab fileTab) {
     String fileName = null;
+    MetaModel model = fileTab.getMetaModel();
+    Long fileTabId = fileTab.getId();
     try {
       Mapper mapper = advancedImportService.getMapper(model.getFullName());
-      fileName = inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + ".csv";
+      fileName =
+          inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
 
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
@@ -872,17 +878,9 @@ public class DataImportServiceImpl implements DataImportService {
 
   private MetaFile createImportLogFile(ImporterListener listener) throws IOException {
 
-    File logFile = File.createTempFile("importLog", ".log");
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(logFile);
-      writer.write(listener.getImportLog());
-    } finally {
-      writer.close();
-    }
     MetaFile logMetaFile =
         metaFiles.upload(
-            new FileInputStream(logFile),
+            new ByteArrayInputStream(listener.getImportLog().getBytes()),
             "importLog-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".log");
 
     return logMetaFile;

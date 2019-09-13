@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
-import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -27,6 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
+import com.axelor.apps.production.db.IWorkCenter;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;

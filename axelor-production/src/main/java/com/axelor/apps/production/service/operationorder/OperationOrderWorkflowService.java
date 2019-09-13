@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
-import com.axelor.app.production.db.IWorkCenter;
+import com.axelor.apps.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
