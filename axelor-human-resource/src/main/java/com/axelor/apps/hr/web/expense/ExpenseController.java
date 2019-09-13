@@ -341,8 +341,7 @@ public class ExpenseController {
       expenseServiceProvider.get().addPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setException(e);
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -359,7 +358,7 @@ public class ExpenseController {
       expenseServiceProvider.get().cancelPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 
