@@ -4,8 +4,8 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery">
-    	<hilite if="$get('debtRecoveryMethodLine.manualValidationOk')" color="warning"/>
-    	<hilite if="batchSet.length &gt; 0" color="success"/>
+		<hilite if="waitDebtRecoveryMethodLine" color="warning"/>
+		<hilite if="!waitDebtRecoveryMethodLine" color="success"/>
     	<field name="company"/>
     	<field name="partnerFullName"/>
         <field name="referenceDate"/>
@@ -14,8 +14,7 @@
         <field name="debtRecoveryMethodLine"/>
         <field name="balanceDue"/>
         <field name="balanceDueDebtRecovery"/>
-        <field name="debtRecoveryMethodLine.manualValidationOk" hidden="true" />
-        <field name="batchSet" hidden="true" />
+		<field name="waitDebtRecoveryMethodLine" hidden="true"/>
         <field name="currency"/>
     </grid>
 
