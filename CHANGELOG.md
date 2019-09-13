@@ -110,6 +110,7 @@
 - ACCOUNTING MOVE : Addition of widget boolean-switch in form view
 - MANUF ORDER : copy MO but not operations orders
 - MOVE : add a control on period status
+- EXPENSE : add the payment move and its generation.
 - BANK ORDER : add a viewer with technical origin (Automatic,Entry,Import) information display.
 - BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
 - Expense : Set Move.date and expense.moveDate as expense.period.toDate
@@ -213,6 +214,7 @@
 - Message: fix random NPE when sending emails asynchronously.
 - BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
 - CUT OFF: correct message warning.
+- EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
 - Expense : period / company not getting set on getOrCreateExpense method 
 - CUSTOMER : Wrong domain on action-view
 
