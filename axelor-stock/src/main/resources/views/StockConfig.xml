@@ -30,6 +30,9 @@
 		 	  <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
 		  </panel>
 	  </panel>
+	  <panel name="stockRuleInfoPanel" title="Stock rule information">
+	    <field name="stockRuleMessageTemplate"/>
+	  </panel>
 	  <panel name="stockLocationValuePanel" title="Stock location value">
 		<field name="stockLocationValue" />
 	  </panel>

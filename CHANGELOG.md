@@ -114,6 +114,7 @@
 - FORECAST RECAP : Add support of printing report in 'xls' and 'ods' format.
 - PERIOD: Add a new popup when closing period to allow user to check and validate move lines.
 - UNIT : add translatable on name and labelToPrinting on unit-form and on every birt that display labelToPrinting unit will be automatically translate in partner's language
+- STOCK RULE : new M2O stockRuleMessageTemplate on StockRule and StockConfig.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
