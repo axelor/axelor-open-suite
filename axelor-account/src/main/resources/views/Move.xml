@@ -74,7 +74,7 @@
                         <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
                     </editor>
                 </field>
-                <field name="$technicalOriginTags" showTitle="false">
+                <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
                   <viewer depends="technicalOriginSelect">
                     <![CDATA[
                       <h4 class="text-right">
