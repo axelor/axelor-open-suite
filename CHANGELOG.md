@@ -176,6 +176,7 @@
 - USER : Mass generation of random passwords
 - MRP : add cumulative Min qty and generate proposal only for the last mrpLine type stock available (compare to cumulative min qty).
 - Advance data import: Set sequence of filetab and removed temporary file at the end which is created during the process
+- QUALITY: removed translation for "Close"
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
