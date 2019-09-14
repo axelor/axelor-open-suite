@@ -30,6 +30,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import java.util.List;
 
 public class ABCAnalysisController {
@@ -62,15 +64,21 @@ public class ABCAnalysisController {
 
   public void printReport(ActionRequest request, ActionResponse response) {
 
-    ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
-
+    Context context = request.getContext();
+    Long abcAnalysisId = Long.parseLong(context.get("_abcAnalysisId").toString());
+    String reportType = (String) context.get("reportTypeSelect");
+    ABCAnalysis abcAnalysis = Beans.get(ABCAnalysisRepository.class).find(abcAnalysisId);
     try {
       String name = I18n.get("ABC Analysis N°") + " " + abcAnalysis.getAbcAnalysisSeq();
-      String fileLink = Beans.get(ABCAnalysisServiceImpl.class).printReport(abcAnalysis);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
+      String fileLink =
+          Beans.get(ABCAnalysisServiceImpl.class).printReport(abcAnalysis, reportType);
+      if (!Strings.isNullOrEmpty(fileLink)) {
+        response.setView(ActionView.define(name).add("html", fileLink).map());
+      }
     } catch (AxelorException e) {
       response.setError(e.getMessage());
     }
+    response.setCanClose(true);
   }
 
   public void checkClasses(ActionRequest request, ActionResponse response) {
