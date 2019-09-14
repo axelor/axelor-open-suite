@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppEvent" lang="java" extends="App">
+<!-- 	<integer name="assignableUsers" title="Assignable Users" selection="event.app.event.assignable.user.select"/> -->
+	<many-to-many name="groupsAssignable" title="Groups Assignable" ref="com.axelor.auth.db.Group"/>
+
+		<track>
+			<field name="assignableUsers" on="UPDATE"/>
+			<field name="groupsAssignable" on="UPDATE"/>
+		</track>
+	</entity>
+
+</domain-models>

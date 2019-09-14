@@ -1,0 +1,4 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Event";"event";10;"Event configuration";"app_gst.png.webp";"axelor-event";"account,supplychain,business-project,message";10
+
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <!-- Invoice Type -->
+
+  <selection name="invoice.status.selection">
+    <option value="Draft">Draft</option>
+    <option value="Validated">Validated</option>
+    <option value="Paid">Paid</option>
+    <option value="Cancelled">Cancelled</option>
+  </selection>
+
+
+  <!-- Address Type -->
+
+  <selection name="address.type.selection">
+    <option value="Default">Default</option>
+    <option value="Invoice">Invoice</option>
+    <option value="Shipping">Shipping</option>
+    <option value="Other">Other</option>
+  </selection>
+
+  <!-- Contact Type -->
+
+  <selection name="contact.type.selection">
+    <option value="Primary">Primary</option>
+    <option value="Secondary">Secondary</option>
+    <option value="Other">Other</option>
+  </selection>
+
+  <selection name="party.type.selection">
+    <option value="Individual">Individual</option>
+    <option value="Company">Company</option>
+  </selection>
+
+
+  <selection name="state.country.selection">
+    <option value="India">India</option>
+    <option value="England">England</option>
+    <option value="France">France</option>
+  </selection>
+
+  <selection name="city.state.selection">
+    <option value="Gujarat">Gujarat</option>
+    <option value="Maharashtra">Maharashtra</option>
+    <option value="Jaipur">Jaipur</option>
+  </selection>
+
+
+</object-views>

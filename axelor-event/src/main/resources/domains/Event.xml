@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+		<module name="event" package="com.axelor.apps.event.db" />
+
+		<entity name="Events" lang="java">
+
+
+				<string name="evnRef" namecolumn="true" required="true"/>
+				<datetime name="startDate" title="Start Date" />
+				<datetime name="endDate" title="End date" />
+				<many-to-one name="venue" ref="com.axelor.apps.event.db.EventAddress" required="true"
+						title="Venue" />
+
+				<date name="registrationOpen" title="Registration open" />
+				<date name="registrationClose" title="Registration close" />
+				<integer name="capacity" required="true" title="Capacity" />
+				<decimal name="eventFees" required="true" title="Event fees" />
+				<string name="description" large="true" title="Description" />
+
+				<one-to-many name="discounts" ref="com.axelor.apps.event.db.Discount"
+						mappedBy="event" />
+
+				<one-to-many name="eventRegistrations"
+						ref="com.axelor.apps.event.db.EventRegistrations" mappedBy="event" />
+				<integer name="totalEntry" readonly="true" />
+
+				<decimal name="amountCollected" readonly="true" title="Amount Collected" />
+				<decimal name="totalDiscount" readonly="true" title="Total Discount" />
+
+
+
+		</entity>
+
+</domain-models>

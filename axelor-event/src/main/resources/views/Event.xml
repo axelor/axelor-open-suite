@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+
+		<cards name="events-cards" title="Event" model="com.axelor.apps.event.db.Events"
+				orderBy="startDate">
+				<field name="venue" />
+				<field name="startDate" />
+				<field name="endDate" />
+				<field name="capacity" />
+				<field name="eventFees" />
+				<field name="description" />
+				<field name="registrationOpen" />
+				<field name="registrationClose" />
+				<field name="totalEntry" />
+				<field name="amountCollected" />
+				<field name="totalDiscount" />
+				<template><![CDATA[
+			      <div class="span4 card-image">
+			        
+			          <strong><b>Start Date :&nbsp&nbsp</b>{{startDate}}</strong>
+			          <strong><b>Start Date :&nbsp&nbsp</b>{{startDate}}</strong>
+			      </div>
+			       
+			      <div class="span8">
+			        <p><b>Venue&nbsp:</b>&nbsp{{venue.fullName}}</p>
+			        <p><b>Capacity&nbsp:</b>&nbsp&nbsp&nbsp{{capacity}}</p>
+				    <p><b>totalEntry&nbsp:</b>&nbsp&nbsp&nbsp{{totalEntry}}</p>
+			        <p><b>AmountCollected&nbsp:</b>&nbsp&nbsp&nbsp{{amountCollected}}</p>
+			        <p><b>Total Discount&nbsp:</b>&nbsp&nbsp&nbsp{{totalDiscount}}</p>
+			      </div>  
+    ]]></template>
+		</cards>
+
+
+
+		<grid model="com.axelor.apps.event.db.Events" title="Event" name="events-grid">
+				<toolbar>
+						<button name="btnImportRegistration" onClick="action-event-import-registration"
+								title="Import Registration" />
+
+				</toolbar>
+				<field name="evnRef" />
+				<field name="startDate" />
+				<field name="endDate" />
+				<field name="venue" />
+				<field name="capacity" />
+				<field name="eventFees" />
+				<field name="description" />
+				<field name="registrationOpen" />
+				<field name="registrationClose" />
+				<field name="totalEntry" />
+				<field name="amountCollected" />
+				<field name="totalDiscount" />
+
+		</grid>
+
+
+		<form name="events-form" title="Event" model="com.axelor.apps.event.db.Events"
+				onLoad="event-action-group-set-onload" onSave="event-action-group-validation,save">
+				<toolbar>
+						<button name="btnImportRegistration" onClick="action-event-import-wizard"
+								title="Import Registration" />
+
+						<button name="btnPrint" title="Print" showIf="id" onClick="print.event.eventDetail"
+								icon="fa-print" />
+						<button name="btnSendMail" title="Send Mail" showIf="id"
+								onClick="send.event.email"  />
+				</toolbar>
+
+				<panel title="Event" css="panel-red">
+						<field name="evnRef" />
+						<field name="startDate" />
+						<field name="endDate" />
+						<field name="venue" />
+						<field name="capacity" />
+						<field name="eventFees" />
+						<field name="description" />
+						<field name="registrationOpen" />
+						<field name="registrationClose" />
+						<field name="totalEntry" />
+						<field name="amountCollected" />
+						<field name="totalDiscount" />
+				</panel>
+
+				<panel-related name="discountsPanel" field="discounts" />
+				<panel-related name="eventRegistrationsPanel" field="eventRegistrations" />
+
+		</form>
+
+
+
+		<action-group name="event-action-group-set-onload">
+				<!-- <action name="event-action-set-totalEntry" /> -->
+				<action name="event-action-set-totalEntry-method" />
+		</action-group>
+
+
+		<action-record name="event-action-set-totalEntry"
+				model="com.axelor.apps.event.db.Events">
+
+				<!-- __repo__(Company).all().fetchOne() &quot -->
+				<!-- <field name="totalEntry" -->
+				<!-- expr="eval:__repo__(EventRegistrations).all().filter('self.event = :__self__').count()" if="id"/> -->
+				<field name="totalEntry"
+						expr="eval:__repo__(EventRegistrations).all().filter('self.event = :__self__').count()"
+						if="id" />
+
+		</action-record>
+
+		<action-method name="event-action-set-totalEntry-method">
+				<call class="com.axelor.apps.event.web.EventRegistrationController" method="totalEntry" />
+		</action-method>
+
+		<action-group name="event-action-group-validation">
+				<action name="action-event-date-validation" />
+		</action-group>
+
+		<!-- date validation -->
+
+		<action-condition name="action-event-date-validation">
+
+				<check field="startDate" />
+				<check field="endDate" />
+				<!-- <check field="endDate" if="startDate &gt;__date__" -->
+				<!-- error="To date is not valid fromDateTime!." /> -->
+				<check field="endDate" if="startDate &gt; endDate" error="Start date is not valid !." />
+
+				<check field="registrationOpen" />
+				<check field="registrationClose" />
+
+				<check field="registrationClose" if="registrationOpen &gt; registrationClose"
+						error="Registration date is not valid !." />
+
+				<check field="registrationClose" if="registrationClose &gt; startDate.toLocalDate()"
+						error="Registration close date must be before event start date." />
+
+		</action-condition>
+
+		<action-report output="EventDetails-${date}${time}" name="print.event.eventDetail"
+				design="EventDetails.rptdesign" format="pdf">
+				<param name="eventId"
+						expr="call:com.axelor.apps.event.db.Events:EventRegistrationController.checkId(id)" />
+
+		</action-report>
+
+		<action-view name="action-event-import-wizard"
+				title="Import event registration details" model="com.axelor.apps.base.db.Wizard">
+				<view type="form" name="event-registration-form-wizard" />
+				<context name="_eventId" expr="eval:id" />
+		</action-view>
+
+</object-views>

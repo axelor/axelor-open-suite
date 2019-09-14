@@ -285,3 +285,5 @@
 "Invoice.netSGST",SGST net,,
 "Invoice.netCGST",CGST net,,
 "Net IGST",IGST net,,
+"Registration date is not valid !.",,,
+"Start date is not valid !.",,,

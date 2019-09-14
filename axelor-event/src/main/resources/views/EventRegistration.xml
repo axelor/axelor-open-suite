@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+		<grid model="com.axelor.apps.event.db.EventRegistrations" title="Event Registration"
+				name="event-registration-grid">
+				<field name="event" />
+				<field name="name" />
+				<field name="email" />
+				<field name="address" />
+				<field name="registrationDate" />
+				<field name="amount" />
+
+
+		</grid>
+
+		<form name="event-registration-form" title="Event Registration"
+				model="com.axelor.apps.event.db.EventRegistrations" css="panel-blue"
+				onSave="event-action-group-registration-validation,save">
+				<panel>
+						<field name="event" onChange="action-event-comput-registration-amount" />
+						<field name="name" />
+						<field name="email"
+								pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
+						<field name="address" />
+						<field name="registrationDate" />
+						<field name="amount" />
+				</panel>
+				<panel-dashlet name="eventPanel" action="action-event-events-dashlet"
+						title="Events" if="_isOpenFromMenu" />
+
+		</form>
+
+		<action-view name="action-event-events-dashlet" title="Event"
+				model="com.axelor.apps.event.db.Events">
+				<view type="grid" name="event-grid" />
+				<view type="form" name="event-form" />
+		</action-view>
+
+
+
+		<!-- Validation -->
+
+		<action-group name="event-action-group-registration-validation">
+				<action name="event-action-registration-check-capacity" />
+		</action-group>
+
+		<action-validate name="event-action-registration-check-capacity">
+				<error message="This event capacity is exceed."
+						if="eval:event.capacity ==(int) __repo__(EventRegistrations).all().filter('self.event= :event').bind('event', event).count()" />
+
+
+		</action-validate>
+
+
+		<action-method name="action-event-comput-registration-amount">
+				<call class="com.axelor.apps.event.web.EventRegistrationController"
+						method="computeRegisterationAmount" />
+		</action-method>
+
+		<!-- wizard open from import -->
+
+
+
+		<form name="event-registration-form-wizard" title="Event Registration"
+				model="com.axelor.apps.base.db.Wizard" width="large">
+
+
+				<panel>
+						<field name="$eventFile" field="$eventFile" title="Event registration"
+								type="many-to-one" target="com.axelor.meta.db.MetaFile"
+								onChange="action-event-check-file-validation" />
+				</panel>
+
+				<panel sidebar="true">
+						<button name="importBtn" title="Import" onClick="action-event-save-wizard" colSpan="12"
+								width="200px" />
+				</panel>
+
+
+		</form>
+
+<!-- 		<action-validate name="action-event-check-file-validation"> -->
+
+<!-- 		</action-validate> -->
+
+		<action-method name="action-event-save-wizard">
+				<call class="com.axelor.apps.event.web.ImportController" method="importCSVData" />
+		</action-method>
+</object-views>

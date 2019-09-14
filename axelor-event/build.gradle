@@ -1,0 +1,18 @@
+apply plugin: "com.axelor.app-module"
+
+apply from: "../version.gradle"
+
+apply {
+	version = absVersion
+}
+
+axelor {
+	title "Axelor Event"
+	description "Axelor Event Module"
+}
+
+dependencies {
+   	compile project(":modules:axelor-account")
+    compile project(":modules:axelor-message")
+    compile project(":modules:axelor-business-project")
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.1.xsd">
+
+
+		<input file="evetnt.csv" separator="," type="com.axelor.apps.event.db.Events"
+				search="self.evnRef = :evnRef">
+				<bind to="name" column="name" />
+				<bind to="evnRef" column="evnRef" />
+
+		</input>
+
+
+		<input file="evetnt_registration.csv" separator=","
+				type="com.axelor.apps.event.db.EventRegistrations" search="self.name = :name">
+				<bind to="name" column="name" />
+				<bind to="email" column="email" />
+				<bind to="evnRef" search="self.evnRef= :evnRef" update="false" column="evnRef" />
+		</input>
+
+
+</csv-inputs>
+	
