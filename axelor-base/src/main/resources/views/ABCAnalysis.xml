@@ -18,7 +18,7 @@
         </toolbar>
         <menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-abc-analysis-method-print-report"/>
+                <item title="Print" action="save,action-abc-analysis-reports-wizard"/>
             </menu>
         </menubar>
         <panel name="statusPanel" hidden="true">
@@ -52,6 +52,22 @@
         </panel>
         <panel-dashlet name="abcAnalysisLinePanel" action="action-abc-analysis-view-abc-analysis-line" colSpan="12" showIf="statusSelect == 3" canSearch="true" height="800" readonly="true"/>
     </form>
+
+	<form model="com.axelor.apps.base.db.Wizard" title="Select Report Format" name="abc-analysis-reports-wizard-form">
+		<panel name="mainPanel">
+			<field name="$reportTypeSelect" title="Report Type" selection="iadministration.export.type.select" colSpan="3"/>
+			<button name="printBtn" title="Print" onClick="action-abc-analysis-method-print-report" readonlyIf="!$reportTypeSelect" colSpan="3"/>
+		</panel>
+	</form>
+	<action-view name="action-abc-analysis-reports-wizard" title="Select Report Format"
+		model="com.axelor.apps.base.db.ABCAnalysis" >
+		<view type="form" name="abc-analysis-reports-wizard-form" />
+		<view-param name="popup" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_abcAnalysisId" expr="eval: id"/>
+	</action-view>
 
     <action-record name="action-abc-analysis-record-default" model="com.axelor.apps.base.db.ABCAnalysis">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
