@@ -17,7 +17,10 @@
  */
 package com.axelor.apps.hr.service.employee;
 
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -234,7 +237,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setCompanyName(payCompany.getName());
     if (employer.getMainAddress() != null) {
       newDPAE.setCompanyCity(
-          employer.getMainAddress().getCity() != null
+          Optional.ofNullable(employer.getMainAddress().getCity()).isPresent()
               ? employer.getMainAddress().getCity().getName()
               : !Strings.isNullOrEmpty(employer.getMainAddress().getAddressL6())
                       && employer.getMainAddress().getAddressL6().length() > 6
@@ -262,9 +265,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setCompanyFixedPhone(employer.getFixedPhone());
     newDPAE.setHealthService(employer.getHealthService());
     newDPAE.setHealthServiceAddress(
-        employer.getHealthServiceAddress() != null
-            ? employer.getHealthServiceAddress().getFullName()
-            : "");
+        Optional.ofNullable(employer.getHealthServiceAddress()).map(Address::getFullName).orElse(""));
 
     // Employee
     newDPAE.setLastName(employee.getContactPartner().getName());
@@ -274,20 +275,19 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setSexSelect(employee.getSexSelect());
     newDPAE.setDateOfBirth(employee.getBirthDate());
     newDPAE.setDepartmentOfBirth(
-        employee.getDepartmentOfBirth() != null
+        Optional.ofNullable(employee.getDepartmentOfBirth()).isPresent()
                 && employee.getDepartmentOfBirth().getCode().length() >= 2
             ? employee.getDepartmentOfBirth().getCode().substring(0, 2)
             : "");
     newDPAE.setCityOfBirth(
-        employee.getCityOfBirth() != null ? employee.getCityOfBirth().getName() : "");
+        Optional.ofNullable(employee.getCityOfBirth()).map(City::getName).orElse(""));
     newDPAE.setCountryOfBirth(
-        employee.getCountryOfBirth() != null ? employee.getCountryOfBirth().getName() : "");
+        Optional.ofNullable(employee.getCountryOfBirth()).map(Country::getName).orElse(""));
 
     // Contract
     newDPAE.setDateOfHire(mainEmploymentContract.getStartDate());
     newDPAE.setTimeOfHire(mainEmploymentContract.getStartTime());
     newDPAE.setTrialPeriodDuration(mainEmploymentContract.getTrialPeriodDuration());
-    // newDPAE.setContractType(mainEmploymentContract.getContractType().getContractTypeSelect());
     newDPAE.setEndDateOfContract(mainEmploymentContract.getEndDate());
 
     employee.addDpaeListItem(newDPAE);

@@ -9,7 +9,12 @@
   	<integer name="commissionExemptionIndexSelect" title="Commission exemption index" selection="bankpayment.bank.statement.line.afb.120.commission.exemption.index.select"/>
   	
   	<integer name="lineTypeSelect" title="Line type" selection="bankpayment.bank.statement.line.afb.120.line.type.select"/>
-  
+
+    <index columns="currency" name="idx_bankpayment_bsl_afb120_bsl_currency"/>
+    <index columns="bank_details" name="idx_bankpayment_bsl_afb120_bsl_bank_details"/>
+    <index columns="operation_interbank_code_line" name="idx_bankpayment_bsl_afb120_bsl_opt_icl"/>
+    <index columns="reject_interbank_code_line" name="idx_bankpayment_bsl_afb120_bsl_rej_icl"/>
+    <index columns="bank_statement" name="idx_bankpayment_bsl_afb120_bsl_bank_statement"/>
 	<extra-code><![CDATA[
 		public static final int LINE_TYPE_INITIAL_BALANCE = 1;
 		public static final int LINE_TYPE_MOVEMENT = 2;

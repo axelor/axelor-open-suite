@@ -66,7 +66,7 @@
     <domain>self.isSent = true</domain>
   </action-view>
   
-  <menuitem name="hr-employee-sent-dpae" title="Sent DPAE" parent="hr-employee-dpae" action="employee.sentdpae.all" if="__user__.activeCompany?.hrConfig?.enableDPAE" order="24"/>
+  <menuitem name="hr-employee-sent-dpae" title="Historic" parent="hr-employee-dpae" action="employee.sentdpae.all" if="__user__.activeCompany?.hrConfig?.enableDPAE" order="24"/>
   <action-view name="employee.sentdpae.all" title="Historic" model="com.axelor.apps.hr.db.SentDPAE">
     <view type="grid" name="sent-dpae-grid"/>
     <view type="form" name="sent-dpae-form"/>

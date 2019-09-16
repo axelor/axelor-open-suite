@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
@@ -24,6 +25,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -72,17 +74,7 @@ public class PartnerBaseRepository extends PartnerRepository {
         }
       }
 
-      if (!partner.getIsContact() && !partner.getIsEmployee()) {
-        partner.setMainAddress(null);
-        if (partner.getPartnerAddressList() != null) {
-          for (PartnerAddress partnerAddress : partner.getPartnerAddressList()) {
-            if (partnerAddress.getIsDefaultAddr()) {
-              partner.setMainAddress(partnerAddress.getAddress());
-              break;
-            }
-          }
-        }
-      }
+      updatePartnerAddress(partner);
 
       if (partner.getPartnerTypeSelect() == PARTNER_TYPE_INDIVIDUAL) {
         partner.setContactPartnerSet(new HashSet<>());
@@ -102,6 +94,83 @@ public class PartnerBaseRepository extends PartnerRepository {
     } catch (Exception e) {
       throw new PersistenceException(e);
     }
+  }
+
+  /**
+   * Updates M2O and O2M fields of partner that manage partner addresses. This method ensures
+   * consistency between these two fields.
+   *
+   * @param partner
+   * @throws AxelorException
+   */
+  private void updatePartnerAddress(Partner partner) throws AxelorException {
+    Address address = partner.getMainAddress();
+
+    if (!partner.getIsContact() && !partner.getIsEmployee()) {
+      partner.setMainAddress(getDefaultAddress(partner));
+
+    } else if (address == null) {
+      partner.removePartnerAddressListItem(
+          JPA.all(PartnerAddress.class)
+              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
+              .bind("partnerId", partner.getId())
+              .fetchOne());
+
+    } else if (partner
+        .getPartnerAddressList()
+        .stream()
+        .map(PartnerAddress::getAddress)
+        .noneMatch(address::equals)) {
+      PartnerAddress mainAddress = new PartnerAddress();
+      mainAddress.setAddress(address);
+      mainAddress.setIsDefaultAddr(true);
+      mainAddress.setIsDeliveryAddr(true);
+      mainAddress.setIsInvoicingAddr(true);
+      partner.addPartnerAddressListItem(mainAddress);
+    }
+  }
+
+  /**
+   * Ensures that there is exactly one default invoicing address and no more than one default
+   * delivery address. If the partner address list is valid, returns the default invoicing address.
+   *
+   * @param partnerAddressList
+   * @throws AxelorException
+   */
+  private Address getDefaultAddress(Partner partner) throws AxelorException {
+    List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+    if (partnerAddressList == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
+    }
+
+    Address defaultInvoicingAddress = null;
+    Address defaultDeliveryAddress = null;
+
+    for (PartnerAddress partnerAddress : partnerAddressList) {
+      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
+        if (defaultInvoicingAddress != null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+        }
+        defaultInvoicingAddress = partnerAddress.getAddress();
+      }
+
+      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
+        if (defaultDeliveryAddress != null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+        }
+        defaultDeliveryAddress = partnerAddress.getAddress();
+      }
+    }
+
+    if (defaultInvoicingAddress == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
+    }
+
+    return defaultInvoicingAddress;
   }
 
   @Override

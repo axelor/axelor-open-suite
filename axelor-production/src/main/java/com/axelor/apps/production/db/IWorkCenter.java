@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.app.production.db;
+package com.axelor.apps.production.db;
 
 /**
  * Interface of Event package. Enum all static variable of packages.

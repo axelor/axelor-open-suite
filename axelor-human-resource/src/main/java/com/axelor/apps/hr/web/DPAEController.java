@@ -59,10 +59,7 @@ public class DPAEController {
                           + metafile.getVersion())
                   .param("download", "true")
                   .map());
-          response.setReload(true);
         }
-        response.setReload(true);
-        response.setFlash(I18n.get(IExceptionMessage.DPAE_SEND));
       } else if (context.get("id") != null) {
         DPAE dpae = context.asType(DPAE.class);
         dpae = Beans.get(DPAERepository.class).find(dpae.getId());
@@ -78,7 +75,6 @@ public class DPAEController {
                           + dpae.getMetaFile().getVersion())
                   .param("download", "true")
                   .map());
-          response.setReload(true);
         }
       } else {
         throw new AxelorException(

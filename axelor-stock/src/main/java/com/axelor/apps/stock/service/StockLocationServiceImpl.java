@@ -265,9 +265,13 @@ public class StockLocationServiceImpl implements StockLocationService {
     Query query =
         JPA.em()
             .createQuery(
-                "SELECT SUM( self.currentQty * CASE WHEN (product.costTypeSelect = 3) THEN "
-                    + "(self.avgPrice) ELSE (self.product.costPrice) END ) AS value "
+                "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockLocationValue = 1 OR self.product.costTypeSelect = 3) THEN "
+                    + "(self.avgPrice)  WHEN (location.company.stockConfig.stockLocationValue = 2) THEN "
+                    + "(self.product.costPrice) WHEN (location.company.stockConfig.stockLocationValue = 3) THEN "
+                    + "(self.product.salePrice) ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
+                    + "LEFT JOIN StockLocation AS location "
+                    + "ON location.id= self.stockLocation "
                     + "WHERE self.stockLocation.id =:id");
     query.setParameter("id", stockLocation.getId());
 

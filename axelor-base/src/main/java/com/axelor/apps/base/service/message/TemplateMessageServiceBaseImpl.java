@@ -59,6 +59,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     super(messageService, templateContextService);
   }
 
+  @Override
   public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
 
     Set<MetaFile> metaFiles = super.getMetaFiles(template);

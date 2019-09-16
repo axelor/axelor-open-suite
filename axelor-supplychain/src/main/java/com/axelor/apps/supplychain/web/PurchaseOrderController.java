@@ -50,6 +50,7 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Singleton
 public class PurchaseOrderController {
@@ -172,6 +173,7 @@ public class PurchaseOrderController {
     // Useful to determine if a difference exists between stock locations of all
     // purchase orders
     boolean existLocationDiff = false;
+    boolean allTradingNamesAreNull = true;
 
     PurchaseOrder purchaseOrderTemp;
     int count = 1;
@@ -186,6 +188,7 @@ public class PurchaseOrderController {
         commonPriceList = purchaseOrderTemp.getPriceList();
         commonLocation = purchaseOrderTemp.getStockLocation();
         commonTradingName = purchaseOrderTemp.getTradingName();
+        allTradingNamesAreNull = commonTradingName == null;
       } else {
         if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -197,9 +200,9 @@ public class PurchaseOrderController {
         if (commonCompany != null && !commonCompany.equals(purchaseOrderTemp.getCompany())) {
           commonCompany = null;
         }
-        if (commonTradingName != null
-            && !commonTradingName.equals(purchaseOrderTemp.getTradingName())) {
+        if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
           commonTradingName = null;
+          allTradingNamesAreNull = false;
         }
         if (commonContactPartner != null
             && !commonContactPartner.equals(purchaseOrderTemp.getContactPartner())) {
@@ -244,7 +247,7 @@ public class PurchaseOrderController {
               com.axelor.apps.purchase.exception.IExceptionMessage
                   .PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
-    if (commonTradingName == null) {
+    if (commonTradingName == null && !allTradingNamesAreNull) {
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.purchase.exception.IExceptionMessage

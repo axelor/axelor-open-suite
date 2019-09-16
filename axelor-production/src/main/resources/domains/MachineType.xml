@@ -8,7 +8,6 @@
     <entity name="MachineType" lang="java">
         <string name="name" title="Name" required="true"/>
         <string name="code" title="Code"/>
-        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
     </entity>
     
 </domain-models>

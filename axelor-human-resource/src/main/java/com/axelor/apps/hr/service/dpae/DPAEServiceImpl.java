@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import org.apache.commons.lang3.StringUtils;
 
 public class DPAEServiceImpl implements DPAEService {
@@ -55,7 +56,9 @@ public class DPAEServiceImpl implements DPAEService {
     this.sentDPAEService = sentDPAEService;
   }
 
-  public void sendSingle(DPAE dpae) throws AxelorException {
+  public void sendSingle(DPAE dpae)
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException, IOException {
     if (exportSingle(dpae) == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -103,31 +106,28 @@ public class DPAEServiceImpl implements DPAEService {
     }
   }
 
-  protected Message sendMessageDPAE(MetaFile fileToSend, DPAE dpae) throws AxelorException {
-    try {
-      Template templateDPAE =
-          Beans.get(AppHumanResourceService.class).getAppEmployee().getTemplateDPAE();
-      if (templateDPAE == null) {
-        throw new AxelorException(
-            DPAE.class,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            IExceptionMessage.DPAE_MISSING_TEMPLATE);
-      }
-      templateDPAE = Beans.get(TemplateRepository.class).find(templateDPAE.getId());
-      Message message =
-          Beans.get(TemplateMessageService.class)
-              .generateMessage(
-                  dpae.getId(),
-                  DPAE.class.getCanonicalName(),
-                  DPAE.class.getSimpleName(),
-                  templateDPAE);
-      messageService.attachMetaFiles(message, ImmutableSet.of(fileToSend));
-      message = Beans.get(MessageService.class).sendByEmail(message);
-      return message;
-    } catch (Exception e) {
+  protected Message sendMessageDPAE(MetaFile fileToSend, DPAE dpae)
+      throws AxelorException, MessagingException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException {
+    Template templateDPAE =
+        Beans.get(AppHumanResourceService.class).getAppEmployee().getTemplateDPAE();
+    if (templateDPAE == null) {
       throw new AxelorException(
-          DPAE.class, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+          DPAE.class,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          IExceptionMessage.DPAE_MISSING_TEMPLATE);
     }
+    templateDPAE = Beans.get(TemplateRepository.class).find(templateDPAE.getId());
+    Message message =
+        Beans.get(TemplateMessageService.class)
+            .generateMessage(
+                dpae.getId(),
+                DPAE.class.getCanonicalName(),
+                DPAE.class.getSimpleName(),
+                templateDPAE);
+    messageService.attachMetaFiles(message, ImmutableSet.of(fileToSend));
+    message = Beans.get(MessageService.class).sendByEmail(message);
+    return message;
   }
 
   public List<String> checkDPAEValidity(DPAE dpae) {
@@ -193,7 +193,9 @@ public class DPAEServiceImpl implements DPAEService {
   }
 
   @Override
-  public MetaFile sendMultiple(List<Long> dpaeIdList) throws AxelorException, IOException {
+  public MetaFile sendMultiple(List<Long> dpaeIdList)
+      throws AxelorException, IOException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, MessagingException {
     DPAERepository dpaeRepo = Beans.get(DPAERepository.class);
     StringBuilder sb = new StringBuilder();
     String dpaeMessage;

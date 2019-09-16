@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.advanced.imports;
 import com.axelor.apps.base.db.AdvancedImport;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.repo.AdvancedImportRepository;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.readers.DataReaderFactory;
@@ -37,8 +38,11 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,6 +55,16 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   @Inject private DataReaderFactory dataReaderFactory;
 
   @Inject private FileFieldService fileFieldService;
+
+  @Inject private AdvancedImportRepository advancedImportRepository;
+
+  @Inject private FileFieldRepository fileFieldRepository;
+
+  private static final String forSelectUseValues = "values";
+  private static final String forSelectUseTitles = "titles";
+  private static final String forSelectUseTranslatedTitles = "translated titles";
+  private List<String> searchFieldList;
+  private boolean isTabWithoutConfig = false;
 
   @Override
   public boolean apply(AdvancedImport advancedImport)
@@ -74,7 +88,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     return this.process(reader, advancedImport);
   }
 
-  private boolean process(DataReaderService reader, AdvancedImport advancedImport)
+  @Transactional
+  public boolean process(DataReaderService reader, AdvancedImport advancedImport)
       throws AxelorException, ClassNotFoundException {
 
     boolean isValid = true;
@@ -86,9 +101,12 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     String[] sheets = reader.getSheetNames();
     boolean isConfig = advancedImport.getIsConfigInFile();
+    boolean isTabConfig = advancedImport.getIsFileTabConfigAdded();
     boolean isHeader = advancedImport.getIsHeader();
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
+    int tabConfigRowCount = 0;
     int startIndex = isConfig ? 0 : linesToIgnore;
+    int fileTabSequence = 1;
 
     for (String sheet : sheets) {
       int totalLines = reader.getTotalLines(sheet);
@@ -98,13 +116,20 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       FileTab fileTab = new FileTab();
       fileTab.setName(sheet);
+      fileTab.setSequence(fileTabSequence);
+      fileTabSequence++;
 
       String[] objectRow = reader.read(sheet, startIndex, 0);
       if (objectRow == null) {
         isValid = false;
         break;
       }
-      isValid = this.applyObject(objectRow, fileTab, isConfig, linesToIgnore);
+
+      if (isConfig && isTabConfig) {
+        tabConfigRowCount = getTabConfigRowCount(sheet, reader, totalLines, objectRow);
+      }
+
+      isValid = this.applyObject(objectRow, fileTab, isConfig, linesToIgnore, isTabConfig);
       if (!isValid) {
         break;
       }
@@ -119,46 +144,63 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         }
 
         if (isConfig) {
-          this.applyWithConfig(row, line, fileFieldList, ignoreFields, fileTab);
+          this.applyWithConfig(
+              row, line, fileFieldList, ignoreFields, fileTab, isTabConfig, tabConfigRowCount);
         } else {
-          this.applyWithoutConfig(row, (line - linesToIgnore), fileFieldList, isHeader);
+          this.applyWithoutConfig(row, (line - linesToIgnore), fileFieldList, fileTab, isHeader);
         }
       }
 
       if (isConfig) {
         fileFieldList.removeIf(field -> field.getImportField() == null);
+        if (!fileTab.getImportType().equals(FileFieldRepository.IMPORT_TYPE_NEW)) {
+          fileTab = this.setSearchField(fileTab, searchFieldList, fileFieldList);
+        }
       }
-
-      fileTab.setFileFieldList(fileFieldList);
       advancedImport.addFileTabListItem(fileTab);
+      advancedImportRepository.save(advancedImport);
     }
     return isValid;
   }
 
-  private boolean applyObject(String[] row, FileTab fileTab, boolean isConfig, int linesToIgnore)
+  private boolean applyObject(
+      String[] row, FileTab fileTab, boolean isConfig, int linesToIgnore, boolean isTabConfig)
       throws AxelorException {
+    int rowIndex = isConfig ? (isTabConfig ? 1 : 0) : 0;
 
-    if (isConfig) {
-      if (StringUtils.containsIgnoreCase(row[0], "Object")) {
-        String objName = row[0].split("\\:")[1].trim();
-        MetaModel model = metaModelRepo.findByName(objName);
-        fileTab.setMetaModel(model);
-      } else {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ADVANCED_IMPORT_4));
-      }
-    } else {
-      if (StringUtils.isBlank(row[0]) && linesToIgnore == 0) {
-        return false;
-      }
-
-      if (StringUtils.containsIgnoreCase(row[0], "Object")) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ADVANCED_IMPORT_3));
-      }
+    if (isTabConfig && row[0] != null) {
+      rowIndex = 0;
+      isTabWithoutConfig = true;
     }
+
+    if (StringUtils.contains(row[rowIndex], "Object") && isConfig) {
+      this.setFileTabConfig(row, fileTab, rowIndex);
+
+    } else if ((StringUtils.containsIgnoreCase(row[0], "Object")
+            || StringUtils.contains(row[1], "Object"))
+        && !isConfig) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ADVANCED_IMPORT_3));
+
+    } else if (isConfig
+        && (!StringUtils.containsIgnoreCase(row[0], "Object")
+            && !StringUtils.contains(row[1], "Object"))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ADVANCED_IMPORT_4));
+
+    } else if (isConfig) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_OBJECT),
+          fileTab.getName());
+    }
+
+    if ((StringUtils.isBlank(row[0]) && StringUtils.isBlank(row[1]) && linesToIgnore == 0)) {
+      return false;
+    }
+
     return true;
   }
 
@@ -167,20 +209,24 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       int line,
       List<FileField> fileFieldList,
       List<Integer> ignoreFields,
-      FileTab fileTab)
+      FileTab fileTab,
+      Boolean isTabConfig,
+      int tabConfigRowCount)
       throws AxelorException, ClassNotFoundException {
 
     Mapper mapper = getMapper(fileTab.getMetaModel().getFullName());
+    FileField fileField = null;
 
     int index = 0;
     for (int i = 0; i < row.length; i++) {
       if (Strings.isNullOrEmpty(row[i])) {
         continue;
       }
+
       index = line;
       String value = row[i].trim();
       if (line == 1) {
-        this.readFields(value, i, fileFieldList, ignoreFields, mapper);
+        this.readFields(value, i, fileFieldList, ignoreFields, mapper, fileTab);
         continue;
       }
 
@@ -188,26 +234,48 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      if (fileFieldList.size() <= i) {
+      if (fileFieldList.size() < i) {
+        break;
+      } else if (!isTabConfig && fileFieldList.size() <= i) {
         break;
       }
 
-      FileField fileField = fileFieldList.get(i);
+      if (row[0] == null) {
+        fileField = fileFieldList.get(i - 1);
+      } else if (!isTabConfig && row[0] != null) {
+        fileField = fileFieldList.get(i);
+      }
+
+      if (isTabWithoutConfig) {
+        fileField = fileFieldList.get(i);
+      }
+
       if (line == 2) {
         fileField.setColumnTitle(value);
         continue;
       }
 
-      line += -2;
-      this.setSampleLines(line, value, fileField);
-      line = index;
+      if (isTabConfig && i > 0 && row[0] != null && line >= 3 && line <= 11) {
+        fileField = fileFieldList.get(i - 1);
+        this.setFileFieldConfig(row, i, fileField);
+      }
+
+      if (isTabConfig && i > 0 && row[0] == null) {
+        line += -(tabConfigRowCount + 2);
+        this.setSampleLines(line, value, fileField);
+        line = index;
+      } else if (!isTabConfig) {
+        line += -2;
+        this.setSampleLines(line, value, fileField);
+        line = index;
+      }
     }
   }
 
-  private void applyWithoutConfig(
-      String[] row, int line, List<FileField> fileFieldList, boolean isHeader)
+  @Transactional
+  public void applyWithoutConfig(
+      String[] row, int line, List<FileField> fileFieldList, FileTab fileTab, boolean isHeader)
       throws AxelorException {
-
     int index = 0;
     for (int i = 0; i < row.length; i++) {
       if (Strings.isNullOrEmpty(row[i])) {
@@ -221,6 +289,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         fileField = new FileField();
         fileField.setIsMatchWithFile(true);
         fileFieldList.add(fileField);
+        fileField.setFileTab(fileTab);
 
         if (isHeader) {
           fileField.setColumnTitle(value);
@@ -229,6 +298,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         }
         fileField.setSequence(i);
         fileField.setFullName(fileFieldService.computeFullName(fileField));
+        fileField = fileFieldRepository.save(fileField);
         continue;
       }
 
@@ -272,12 +342,14 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
   }
 
-  private void readFields(
+  @Transactional
+  public void readFields(
       String value,
       int index,
       List<FileField> fileFieldList,
       List<Integer> ignoreFields,
-      Mapper mapper)
+      Mapper mapper,
+      FileTab fileTab)
       throws AxelorException, ClassNotFoundException {
 
     FileField fileField = new FileField();
@@ -287,7 +359,15 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
 
     String importType = StringUtils.substringBetween(value, "(", ")");
-    fileField.setImportType(this.getImportType(value, importType));
+
+    if (!Strings.isNullOrEmpty(importType)
+        && (importType.equalsIgnoreCase(forSelectUseValues)
+            || importType.equalsIgnoreCase(forSelectUseTitles)
+            || importType.equalsIgnoreCase(forSelectUseTranslatedTitles))) {
+      fileField.setForSelectUse(this.getForStatusSelect(importType));
+    } else {
+      fileField.setImportType(this.getImportType(value, importType));
+    }
 
     value = value.split("\\(")[0];
     String importField = null;
@@ -307,6 +387,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       ignoreFields.add(index);
     }
     fileFieldList.add(fileField);
+    fileField = fileFieldRepository.save(fileField);
+    fileField.setFileTab(fileTab);
   }
 
   private boolean checkFields(Mapper mapper, String importField, String subImportField)
@@ -413,7 +495,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     if (Strings.isNullOrEmpty(importType)) {
       if (value.contains(".")) {
-        return FileFieldRepository.IMPORT_TYPE_FIND;
+        return FileFieldRepository.IMPORT_TYPE_NEW;
       }
       return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }
@@ -433,10 +515,130 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       default:
         if (value.contains(".")) {
-          return FileFieldRepository.IMPORT_TYPE_FIND;
+          return FileFieldRepository.IMPORT_TYPE_NEW;
         }
         return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }
+  }
+
+  private int getForStatusSelect(String importType) {
+
+    switch (importType.toLowerCase()) {
+      case forSelectUseTitles:
+        return FileFieldRepository.SELECT_USE_TITLES;
+      case forSelectUseValues:
+        return FileFieldRepository.SELECT_USE_VALUES;
+      case forSelectUseTranslatedTitles:
+        return FileFieldRepository.SELECT_USE_TRANSLATED_TITLES;
+      default:
+        return FileFieldRepository.SELECT_USE_VALUES;
+    }
+  }
+
+  protected void setFileTabConfig(String row[], FileTab fileTab, int rowIndex)
+      throws AxelorException {
+
+    searchFieldList = new ArrayList<String>();
+    String objName = row[rowIndex].split("\\:")[1].trim();
+    MetaModel model = metaModelRepo.findByName(objName);
+    fileTab.setMetaModel(model);
+
+    if (row.length >= 2 && StringUtils.containsIgnoreCase(row[rowIndex + 1], "importType")) {
+      String type = row[rowIndex + 1].split("\\:")[1].trim();
+
+      if (!type.equals(null)) {
+
+        fileTab.setImportType(this.getImportType(null, type));
+
+        if (!fileTab.getImportType().equals(FileFieldRepository.IMPORT_TYPE_NEW)) {
+          if (StringUtils.containsIgnoreCase(row[rowIndex + 2], "searchFieldSet")) {
+            String searchFieldtype = row[rowIndex + 2].split("\\:")[1].trim();
+            String[] searchFieldArr = searchFieldtype.split("\\,");
+
+            for (String search : searchFieldArr) {
+              searchFieldList.add(search);
+            }
+          } else {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
+                fileTab.getName());
+          }
+        }
+      }
+    }
+  }
+
+  protected void setFileFieldConfig(String[] row, Integer i, FileField fileField) {
+
+    String fieldName = row[0].trim();
+
+    switch (fieldName.toLowerCase()) {
+      case "forselectuse":
+        fileField.setForSelectUse(this.getForStatusSelect(row[i]));
+        break;
+
+      case "noimportif":
+        fileField.setNoImportIf(row[i]);
+        break;
+
+      case "expression":
+        fileField.setExpression(row[i]);
+        break;
+
+      case "dateformat":
+        fileField.setDateFormat(row[i]);
+        break;
+
+      case "importtype":
+        fileField.setImportType(Integer.parseInt(row[i]));
+        break;
+
+      case "subimportfield":
+        fileField.setSubImportField(row[i]);
+        break;
+
+      case "splitby":
+        fileField.setSplitBy(row[i]);
+        break;
+
+      case "defaultifnotfound":
+        fileField.setDefaultIfNotFound(row[i]);
+        break;
+    }
+  }
+
+  protected FileTab setSearchField(
+      FileTab fileTab, List<String> searchFieldList, List<FileField> fileFieldList) {
+    Set<FileField> searchFieldSet = new HashSet<FileField>();
+
+    for (String searchField : searchFieldList) {
+      for (FileField fileField : fileFieldList) {
+        if (fileField.getFullName().endsWith("- " + searchField)) {
+          searchFieldSet.add(fileField);
+        }
+      }
+    }
+    fileTab.setSearchFieldSet(searchFieldSet);
+    return fileTab;
+  }
+
+  @Override
+  public int getTabConfigRowCount(
+      String sheet, DataReaderService reader, int totalLines, String[] objectRow) {
+
+    int tabConfigRowCount = 0;
+    if (objectRow[0] == null && StringUtils.containsIgnoreCase(objectRow[1], "Object")) {
+      int linesForTab;
+      for (linesForTab = 3; linesForTab < totalLines; linesForTab++) {
+        if (reader.read(sheet, linesForTab, 0)[0] != null) {
+          tabConfigRowCount++;
+        } else {
+          break;
+        }
+      }
+    }
+    return tabConfigRowCount;
   }
 
   @SuppressWarnings("unchecked")

@@ -22,6 +22,7 @@ import com.axelor.apps.cash.management.db.ForecastRecapLine;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.exception.IExceptionMessage;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
+import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -29,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -57,20 +59,6 @@ public class ForecastRecapController {
     forecastRecapService.populate(
         Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
     response.setReload(true);
-  }
-
-  public void showReport(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
-
-    String url = forecastRecapService.getURLForecastRecapPDF(forecastRecap);
-
-    String title = I18n.get("ForecastRecap");
-    title += forecastRecap.getId();
-
-    logger.debug("Printing " + title);
-
-    response.setView(ActionView.define(title).add("html", url).map());
   }
 
   public void sales(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -186,5 +174,17 @@ public class ForecastRecapController {
       dataList.add(dataMap);
     }
     response.setData(dataList);
+  }
+
+  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    Long forecastRecapId = new Long(context.get("_forecastRecapId").toString());
+    String reportType = (String) context.get("reportTypeSelect");
+    String fileLink = forecastRecapService.getForecastRecapFileLink(forecastRecapId, reportType);
+    String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
+    title += forecastRecapId;
+    logger.debug("Printing " + title);
+    response.setView(ActionView.define(title).add("html", fileLink).map());
+    response.setCanClose(true);
   }
 }

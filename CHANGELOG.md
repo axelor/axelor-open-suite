@@ -97,6 +97,7 @@
 - Contract : Add analytic information to contract lines.
 - MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
 - PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
+- Invoice & PurchaseOrder : Added a budget overview.
 - Advanced Import : Add feature to import data with advanced configurations.
 - BPM: More than one workflow support for a same object.
 - MRP : boolean to exclude product without proposal in the result dashlet
@@ -107,6 +108,16 @@
 - HR : APPRAISALS - Optimization of the menu by adding filters
 - HR : RECRUITMENT - optimization of the menu by adding filters
 - Base : Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
+- Data import : manage forSelectUse in the file directly.
+- Action Builder : Add feature to create templates for json models to send email
+- FORECAST RECAP : sequence feature added for ForeCastRecap
+- Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
+- FORECAST RECAP : Add support of printing report in 'xls' and 'ods' format.
+- PERIOD: Add a new popup when closing period to allow user to check and validate move lines.
+- UNIT : add translatable on name and labelToPrinting on unit-form and on every birt that display labelToPrinting unit will be automatically translate in partner's language
+- Stock Move : Partial Invoice.
+- STOCK RULE : new M2O stockRuleMessageTemplate on StockRule and StockConfig
+- ABC ANALYSIS : Add support for printing report in 'xls' type.
 - HR : Added the management of DPAE (Generate and Send)
 
 ## Improvements
@@ -158,6 +169,17 @@
 - USER : don't display the step "Employee" in the workflow when axelor-human-resource module is not installed
 - ACCOUNTING : year and accountSet fields are set empty when company is changed
 - ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
+- PARTNER: Checks the consistency of the address list of a partner.
+- PORTAL CLIENT : Add config to choose the type of connection (from ABS or external)
+- DEMO DATA : Rename field data.
+- SALE ORDER/ PURCHASE ORDER : Removal of spacer.
+- ACCOUNTING BATCH : alert when the closing annual accounts batch already ran
+- CLIENT PORTAL : update the client form view
+- MESSAGE MODULE: Refactor code.
+- USER : Mass generation of random passwords
+- MRP : add cumulative Min qty and generate proposal only for the last mrpLine type stock available (compare to cumulative min qty).
+- Advance data import: Set sequence of filetab and removed temporary file at the end which is created during the process
+- QUALITY: removed translation for "Close"
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -186,6 +208,7 @@
 - SALEORDER : fix action with obsolete name
 - ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
 - Transactionnal : correction and standardisation of rollback.
+- CONFIGURATOR BOM : product, qty and unit are displayed in the grid-view.
 - Upgraded to ADK 5.1.
 - SALE ORDER LINE : Fixed Error when selecting a product
 - Studio : Fix readonly fields are enabled when imported an application.
@@ -197,6 +220,17 @@
 - ERROR : Fixed NPE on product selection on invoiceLine
 - QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
 - EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
+- REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
+- PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
+- Update xsd to ADK 5.1
+- Advanced Data import :  fix issue of not generating info in log file when error occurred on import
+- Studio: fix m2o to metafile's widget property, display image,binarylink option.
+- SaleOrder : Fix NPE on click of generate customer deliveries
+- Advance data import:fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
+- MOVE : Fix NPE while creating new accounting move.
+- INVOICE : only pdf file format for report when status is ventilated.
+- USER : Fix for login with a user account that is not valid.
+- Advance data import: Fix Data import error when there is same object in two different sheets.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

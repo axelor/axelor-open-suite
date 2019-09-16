@@ -146,7 +146,11 @@ public interface ITranslation {
       "ConformityCertificate.name"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_FUNCTION = /*$$(*/
       "ConformityCertificate.function"; /*)*/
-  public static final String CONFORMITY_CERTIFICATE_QTY = /*$$(*/ "ConformityCertificate.qty"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_QTY_UNIT = /*$$(*/
+      "ConformityCertificate.qtyUnit"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_SEQUENCE = /*$$(*/
       "ConformityCertificate.sequence"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_STOCK_MOVE_LINE_ROW_NUM = /*$$(*/
+      "ConformityCertificate.stockMoveLineRowNum"; /*)*/
+  public static final String CONFORMITY_LOT_NO_REF = /*$$(*/ "ConformityCertificate.lotNoRef"; /*)*/
 }

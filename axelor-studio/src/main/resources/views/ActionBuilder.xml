@@ -87,7 +87,8 @@
   </action-attrs>
   
   <action-attrs name="action-action-builder-attrs-template-domain">
-  	<attribute name="domain" for="emailTemplate" expr="eval:(model != null) ? &quot; self.metaModel.fullName = '${model}' &quot; : null"/>
+  	<attribute name="domain" for="emailTemplate" expr="eval:(model != null) ? &quot; self.metaModel.fullName = '${model}' AND self.isJson = '${isJson}' &quot; : &quot; self.isJson = '${isJson}' &quot;" if="!isJson"/>
+  	<attribute name="domain" for="emailTemplate" expr="eval:(model != null) ? &quot; self.metaJsonModel.name = '${model}' AND self.isJson = '${isJson}' &quot; : &quot; self.isJson = '${isJson}' &quot;" if="isJson"/>
   </action-attrs>
   
   <action-method name="action-action-builder-method-set-views">

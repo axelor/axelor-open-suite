@@ -8,6 +8,7 @@
 		<hilite color="danger" if="receiptState == 1"/>
 		<hilite color="warning" if="receiptState == 2"/>
 		<hilite color="success" if="receiptState == 3"/>
+		<field name="sequence" if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
 		<field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')" />
     	<field name="productName"/>
     	<field name="productCode"/>

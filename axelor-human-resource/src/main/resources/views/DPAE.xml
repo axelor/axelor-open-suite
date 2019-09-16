@@ -14,7 +14,7 @@
     <field name="contractTypeSelect"/>
     <field name="createdOn"/>
     <field name="isSent"/>
-    <button name="sendBtn" readonlyIf="isSent" icon="fa-location-arrow" onClick="action-method-send-dpaes, reload"/>
+    <button name="sendBtn" readonlyIf="isSent" icon="fa-location-arrow" onClick="action-method-send-dpaes"/>
   </grid>
 
   <form name="dpae-form" title="DPAE" model="com.axelor.apps.hr.db.DPAE" onLoad="action-group-dpae-onload" width="large">

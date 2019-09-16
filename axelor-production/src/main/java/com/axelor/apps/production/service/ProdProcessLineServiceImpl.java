@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.app.production.db.IWorkCenter;
+import com.axelor.apps.production.db.IWorkCenter;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;

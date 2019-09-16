@@ -17,7 +17,9 @@
 			<field name="mediaTypeSelect" colSpan="4"/>
 			<field name="isDefault" colSpan="2"/>
 			<field name="isSystem" colSpan="2"/>
-			<field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+			<field name="isJson" onChange="action-template-record-is-json-change"/>
+			<field name="metaModel" hideIf="isJson" form-view="meta-model-form" grid-view="meta-model-grid"/>
+			<field name="metaJsonModel" showIf="isJson" form-view="json-model-form" grid-view="json-model-grid" />
 			<field name="target"/>
 		</panel>
 		<panel name="recipientAddressPanel" title="Recipient address" showIf="mediaTypeSelect == 1">
@@ -50,6 +52,11 @@
     	<field name="metaModel" expr="eval: _parent?._parent?.metaModel" if="_parent?._parent?.metaModel"/>
     	<field if="_mediaType != null" name="mediaTypeSelect" expr="eval:_mediaType"/>
     </action-record>
+    
+    <action-record name="action-template-record-is-json-change" model="com.axelor.apps.message.db.Template">
+		<field name="metaModel" expr="eval:null"/>
+		<field name="metaJsonModel" expr="eval:null"/>
+  	</action-record>
 
 	<action-view name="template.messages.by.template" title="All messages" model="com.axelor.apps.message.db.Message" >
 		<view type="grid" name="message-grid"/>
@@ -57,5 +64,5 @@
         <domain>self.template.id = :template</domain>
 		<context name="template" expr="eval: id"/>
 	</action-view>
-
+	
 </object-views>

@@ -9,11 +9,13 @@
 
 	 <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
 	 <integer name="typeSelect" title="Type" selection="crm.event.reminder.type.select" default="1"/>
+	 <integer name="modeSelect" title="Operation mode" selection="crm.event.reminder.mode.select" default="1" required="true"/>
 	 <many-to-one name="user" title="User" column="user_id" ref="com.axelor.auth.db.User" required="true"/>
 	 <integer name="duration" title="Duration"/>
-	 <integer name="durationTypeSelect" title="Duration type" selection="crm.eventReminder.duration.type.select" default = "3"/>
+	 <integer name="durationTypeSelect" title="Duration type" selection="crm.eventReminder.duration.type.select"/>
 	 <integer name="assignToSelect" title="Assign to" selection="crm.eventReminder.assign.to.select" default = "1"/>
 	 <boolean name="isReminded" title="Reminded" default="false"/>
+	 <datetime name="sendingDateT" title="Sending date"/>
 	 <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	  
 	 <extra-code>
@@ -21,6 +23,16 @@
       		// ASSIGN TO SELECT
 	  		public static final Integer ASSIGN_TO_ME = 1;
 	  		public static final Integer ASSIGN_TO_ALL = 3;
+	  		
+	  		// MODE SELECT
+	  		public static final Integer MODE_BEFORE_DATE = 1;
+	  		public static final Integer MODE_AT_DATE = 2;
+	  		
+	  		// DURATION TYPE SELECT
+	  		public static final Integer DURATION_TYPE_MINUTES = 1;
+	  		public static final Integer DURATION_TYPE_HOURS = 2;
+	  		public static final Integer DURATION_TYPE_DAYS = 3;
+	  		public static final Integer DURATION_TYPE_WEEKS = 4;
 	   ]]>
 	 </extra-code>
     
