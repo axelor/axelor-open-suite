@@ -974,7 +974,7 @@
     </action-record>
 
     <action-validate name="action-partner-validate-partner-stock-settings-list">
-    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
+    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList != null &amp;&amp; partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
     </action-validate>
    	 
    	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
