@@ -142,19 +142,31 @@ public class PurchaseOrderLineController {
       Map<String, Object> catalogInfo =
           purchaseOrderLineService.updateInfoFromCatalog(purchaseOrder, purchaseOrderLine);
 
+      Product product = purchaseOrderLine.getProduct();
+      String productName = null;
+      String productCode = null;
       if (catalogInfo != null) {
         if (catalogInfo.get("price") != null) {
           price = (BigDecimal) catalogInfo.get("price");
         }
-        response.setValue("productName", catalogInfo.get("productName"));
-        response.setValue("productCode", catalogInfo.get("productCode"));
+        productName =
+            catalogInfo.get("productName") != null
+                ? (String) catalogInfo.get("productName")
+                : product.getName();
+        productCode =
+            catalogInfo.get("productCode") != null
+                ? (String) catalogInfo.get("productCode")
+                : product.getCode();
       } else {
-        Product product = purchaseOrderLine.getProduct();
-        if (product != null) {
-          price = product.getPurchasePrice();
-          response.setValue("productName", product.getName());
-          response.setValue("productCode", product.getCode());
-        }
+        price = product.getPurchasePrice();
+        productName = product.getName();
+        productCode = product.getCode();
+      }
+      if (purchaseOrderLine.getProductName() == null) {
+        response.setValue("productName", productName);
+      }
+      if (purchaseOrderLine.getProductCode() == null) {
+        response.setValue("productCode", productCode);
       }
 
       Map<String, Object> discounts =
