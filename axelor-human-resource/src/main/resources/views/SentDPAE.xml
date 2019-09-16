@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
-	<grid name="sended-dpae-grid" title="Sended DPAE" model="com.axelor.apps.hr.db.SendedDPAE" canNew="false" canDelete="false" canEdit="false" >
+	<grid name="sent-dpae-grid" title="Sent DPAE" model="com.axelor.apps.hr.db.SentDPAE" canNew="false" canDelete="false" canEdit="false" >
 		<field name="message.sentDateT" />
 		<field name="metaFile" />
 		<field name="message"/>
 	</grid>
 	
-	<form name="sended-dpae-form" title="Sended DPAE" model="com.axelor.apps.hr.db.SendedDPAE" width="large" canNew="false" canDelete="false" canEdit="false">
+	<form name="sent-dpae-form" title="Sent DPAE" model="com.axelor.apps.hr.db.SentDPAE" width="large" canNew="false" canDelete="false" canEdit="false">
 		<panel name="mainPanel" >
 			<field name="message.sentDateT" />
 			<field name="metaFile" />

@@ -208,7 +208,10 @@ public interface IExceptionMessage {
   static final String DPAE_SEND_SELECT = /*$$(*/ "Please select one or more DPAE to send." /*)*/;
 
   static final String DPAE_ALREADY_SEND = /*$$(*/
-      "DPAE already sended. Please uncheck the boolean in DPAE." /*)*/;
+      "DPAE already sent. Please uncheck the boolean in DPAE." /*)*/;
 
-  static final String DPAE_SEND = /*$$(*/ "DPAE correctly sended." /*)*/;
+  static final String DPAE_SEND = /*$$(*/ "DPAE correctly sent." /*)*/;
+
+  static final String DPAE_MISSING_TEMPLATE = /*$$(*/
+      "DPAE template is missing. Please select one." /*)*/;
 }

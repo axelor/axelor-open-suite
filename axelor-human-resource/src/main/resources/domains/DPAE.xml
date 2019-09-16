@@ -7,10 +7,10 @@
 
   <!-- Déclaration Préalable À l'Embauche -->
   <entity name="DPAE">
-    <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee"/> <!-- mapping -->
+    <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee" required="true"/> <!-- mapping -->
 	<string name="registrationDPAE" namecolumn="true" title="Registration DPAE"/>
 	<many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File" />
-	<boolean name="isSended" title="Sended" />
+	<boolean name="isSent" title="Sent" />
 	
     <!-- 1) Employer institution -->
     <string name="registrationCode" title="Registration code" />

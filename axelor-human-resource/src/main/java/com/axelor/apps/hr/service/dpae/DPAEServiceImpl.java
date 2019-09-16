@@ -1,17 +1,21 @@
 package com.axelor.apps.hr.service.dpae;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.DPAERepository;
+import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.sendeddpae.SendedDPAEService;
+import com.axelor.apps.hr.service.sentdpae.SentDPAEService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.tool.EmailTool;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -34,7 +38,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
-import org.threeten.bp.LocalDate;
 
 public class DPAEServiceImpl implements DPAEService {
 
@@ -42,9 +45,15 @@ public class DPAEServiceImpl implements DPAEService {
 
   protected static final DateTimeFormatter HOUR_FORMATTER = DateTimeFormatter.ofPattern("HHmm");
 
-  @Inject protected MessageService messageService;
+  protected MessageService messageService;
 
-  @Inject protected SendedDPAEService sendedDPAEService;
+  protected SentDPAEService sentDPAEService;
+
+  @Inject
+  public DPAEServiceImpl(MessageService messageService, SentDPAEService sentDPAEService) {
+    this.messageService = messageService;
+    this.sentDPAEService = sentDPAEService;
+  }
 
   public void sendSingle(DPAE dpae) throws AxelorException {
     if (exportSingle(dpae) == null) {
@@ -53,13 +62,12 @@ public class DPAEServiceImpl implements DPAEService {
           I18n.get(IExceptionMessage.DPAE_ALREADY_SEND),
           dpae);
     }
-    Message message = sendMessageDPAE(dpae.getMetaFile());
-    sendedDPAEService.createSendedDPAE(
-        message, dpae.getMetaFile(), Arrays.asList(dpae.getEmployee()));
+    Message message = sendMessageDPAE(dpae.getMetaFile(), dpae);
+    sentDPAEService.createSentDPAE(message, dpae.getMetaFile(), Arrays.asList(dpae.getEmployee()));
   }
 
   protected String exportSingle(DPAE dpae) throws AxelorException {
-    if (dpae.getIsSended()) {
+    if (dpae.getIsSent()) {
       return null;
     }
     List<String> listErrors = checkDPAEValidity(dpae);
@@ -87,7 +95,7 @@ public class DPAEServiceImpl implements DPAEService {
         DMSFile dmsFile = Beans.get(MetaFiles.class).attach(is, file.getName(), dpae);
         dpae.setMetaFile(dmsFile.getMetaFile());
       }
-      dpae.setIsSended(true);
+      dpae.setIsSent(true);
       return textString;
     } catch (Exception e) {
       throw new AxelorException(
@@ -95,15 +103,24 @@ public class DPAEServiceImpl implements DPAEService {
     }
   }
 
-  protected Message sendMessageDPAE(MetaFile fileToSend) throws AxelorException {
+  protected Message sendMessageDPAE(MetaFile fileToSend, DPAE dpae) throws AxelorException {
     try {
       Template templateDPAE =
           Beans.get(AppHumanResourceService.class).getAppEmployee().getTemplateDPAE();
+      if (templateDPAE == null) {
+        throw new AxelorException(
+            DPAE.class,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            IExceptionMessage.DPAE_MISSING_TEMPLATE);
+      }
       templateDPAE = Beans.get(TemplateRepository.class).find(templateDPAE.getId());
       Message message =
           Beans.get(TemplateMessageService.class)
               .generateMessage(
-                  1L, DPAE.class.getCanonicalName(), DPAE.class.getSimpleName(), templateDPAE);
+                  dpae.getId(),
+                  DPAE.class.getCanonicalName(),
+                  DPAE.class.getSimpleName(),
+                  templateDPAE);
       messageService.attachMetaFiles(message, ImmutableSet.of(fileToSend));
       message = Beans.get(MessageService.class).sendByEmail(message);
       return message;
@@ -159,10 +176,19 @@ public class DPAEServiceImpl implements DPAEService {
     if (dpae.getContractTypeSelect() == DPAERepository.CDD && dpae.getEndDateOfContract() == null) {
       errors.add(I18n.get("End date of contract"));
     }
-    if (dpae.getContractTypeSelect() == DPAERepository.CTT && dpae.getHealthServiceCode() == null) {
+    if (dpae.getContractTypeSelect() != DPAERepository.CTT && dpae.getHealthServiceCode() == null) {
       errors.add(I18n.get("Health service code"));
     }
-
+    HRConfig config = Beans.get(HRConfigRepository.class).find(dpae.getCompany().getId());
+    if (config == null) {
+      errors.add(I18n.get("There is no HR Config for the company"));
+    }
+    if (config.getReceiptMailDPAE() == null) {
+      errors.add(I18n.get("No receipt mail of DPAE"));
+    }
+    if (!EmailTool.isValidEmailAddress(config.getReceiptMailDPAE().getAddress())) {
+      errors.add(I18n.get("Receipt mail of DPAE is invalid"));
+    }
     return errors;
   }
 
@@ -194,14 +220,16 @@ public class DPAEServiceImpl implements DPAEService {
     if (exportDir == null) {
       throw new IllegalArgumentException(I18n.get("Export directory is not configured."));
     }
-    File file = new File(exportDir + "/" + "dpae-" + LocalDate.now() + ".txt");
+    File file =
+        new File(
+            exportDir + "/" + "dpae-" + Beans.get(AppBaseService.class).getTodayDate() + ".txt");
     try (PrintWriter writer = new PrintWriter(file.getAbsoluteFile(), "UTF-8")) {
       writer.print(sb.toString());
     }
     MetaFile metaFile = Beans.get(MetaFiles.class).upload(file);
-    Message message = sendMessageDPAE(metaFile);
+    Message message = sendMessageDPAE(metaFile, dpaeList.get(0));
     employeeList = dpaeList.stream().map(DPAE::getEmployee).distinct().collect(Collectors.toList());
-    sendedDPAEService.createSendedDPAE(message, metaFile, employeeList);
+    sentDPAEService.createSentDPAE(message, metaFile, employeeList);
     return metaFile;
   }
 
@@ -209,6 +237,11 @@ public class DPAEServiceImpl implements DPAEService {
 
     StringBuilder mainBuilder = new StringBuilder(990);
     StringBuilder tmpBuilder = new StringBuilder(917);
+    String email =
+        Beans.get(HRConfigRepository.class)
+            .find(dpae.getCompany().getId())
+            .getReceiptMailDPAE()
+            .getAddress();
 
     // CATEGORIE ENTETE
     // L_IDENT_EMT
@@ -218,12 +251,12 @@ public class DPAEServiceImpl implements DPAEService {
     // "Réservé"
     mainBuilder.append(fillText("", 16));
     // C_ADR_RET_AR
-    mainBuilder.append(fillText("j.chrun@axelor.com", 30));
+    mainBuilder.append(fillText(email, 30));
 
     // C_VERSION
     tmpBuilder.append(fillText("120", 3));
     // C_RET_AR_LOT
-    tmpBuilder.append(fillText("", 2)); // retour
+    tmpBuilder.append(fillText("", 2));
 
     // CATEGORIE DPAE
     // LIBRE
@@ -279,9 +312,9 @@ public class DPAEServiceImpl implements DPAEService {
     }
 
     // R_DOSSIER
-    tmpBuilder.append(fillText("", 5)); // retour
+    tmpBuilder.append(fillText("", 5));
     // C_RETOUR_AR
-    tmpBuilder.append(fillText("", 2)); // retour
+    tmpBuilder.append(fillText("", 2));
 
     // CATEGORIE EMPLOYEUR
     // "Réservé"
@@ -293,7 +326,7 @@ public class DPAEServiceImpl implements DPAEService {
     // "Réservé"
     tmpBuilder.append(fillText("", 107));
     // C_ORIG_SAISIE
-    tmpBuilder.append(fillText("I", 1)); // retour
+    tmpBuilder.append(fillText("I", 1));
     // C_NAF_NN
     tmpBuilder.append(fillText(dpae.getMainActivityCode(), 5));
     // "Réservé"
@@ -327,8 +360,8 @@ public class DPAEServiceImpl implements DPAEService {
     tmpBuilder.append(fillText(dpae.getTrialPeriodDuration(), 3));
     // "Réservé"
     tmpBuilder.append(fillText("", 50));
-    // C_MT_DCL
-    tmpBuilder.append(fillText(dpae.getHealthServiceCode(), 10)); // CODE CENTRE MEDECINE
+    // C_MT_DCL CODE CENTRE MEDECINE
+    tmpBuilder.append(fillText(dpae.getHealthServiceCode(), 10));
 
     // CATEGORIE FORMALITE
     // "Réservé"

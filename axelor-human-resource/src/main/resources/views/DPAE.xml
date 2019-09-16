@@ -13,8 +13,8 @@
     <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="contractTypeSelect"/>
     <field name="createdOn"/>
-    <field name="isSended"/>
-    <button name="sendBtn" readonlyIf="isSended" icon="fa-location-arrow" onClick="action-method-send-dpaes, reload"/>
+    <field name="isSent"/>
+    <button name="sendBtn" readonlyIf="isSent" icon="fa-location-arrow" onClick="action-method-send-dpaes, reload"/>
   </grid>
 
   <form name="dpae-form" title="DPAE" model="com.axelor.apps.hr.db.DPAE" onLoad="action-group-dpae-onload" width="large">
@@ -25,7 +25,7 @@
 
   	<panel name="registration" title="Registration" >
   		<field name="registrationDPAE" pattern="[^U][^P]+$" required="true"/>
-  		<field name="isSended"/>
+  		<field name="isSent"/>
 		<field name="metaFile" readonly="true" showIf="metaFile"/>
   	</panel>
 

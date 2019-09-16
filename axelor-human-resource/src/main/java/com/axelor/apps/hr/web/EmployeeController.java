@@ -30,6 +30,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -143,7 +144,7 @@ public class EmployeeController {
               .context("_showRecord", dpaeId);
       response.setView(builder.map());
     } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
 
     response.setReload(true);
@@ -191,7 +192,7 @@ public class EmployeeController {
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.DPAE_PRINT));
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

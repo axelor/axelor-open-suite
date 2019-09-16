@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="SendedDPAE">
+  <entity name="SentDPAE">
   
     <many-to-one name="message" title="Message" ref="com.axelor.apps.message.db.Message"/> 
 	<many-to-one name="metaFile" title="File sended" ref="com.axelor.meta.db.MetaFile" />

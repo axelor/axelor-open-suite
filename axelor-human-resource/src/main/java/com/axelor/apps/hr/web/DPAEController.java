@@ -3,9 +3,11 @@ package com.axelor.apps.hr.web;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.repo.DPAERepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.dpae.DPAEService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -28,7 +30,12 @@ public class DPAEController {
 
     try {
       DPAEService dpaeService = Beans.get(DPAEService.class);
-
+      if (Beans.get(AppHumanResourceService.class).getAppEmployee().getTemplateDPAE() == null) {
+        throw new AxelorException(
+            DPAE.class,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.DPAE_MISSING_TEMPLATE));
+      }
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
         List<Long> ids =
             Lists.transform(
@@ -81,7 +88,7 @@ public class DPAEController {
       response.setReload(true);
       response.setFlash(I18n.get(IExceptionMessage.DPAE_SEND));
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
