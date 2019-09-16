@@ -181,6 +181,7 @@
 "Display sale value in location financial data printing","Afficher la valorisation de vente sur l'impression des données financières d'emplacements",,
 "Display tracking number details on Picking printing","Afficher les numéros de suivi sur l'impression des bon de préparation",,
 "Display tracking number details on certificate of conformity printing","Afficher les numéros de suivi sur l'impression des certificats de conformité",,
+"Do you want to allocate all the products ?","Souhaitez-vous allouer la marchandise ?",,
 "Do you want to generate backorder for not delivered quantities?","Voulez-vous gérer les reliquats pour les quantités non livrées ?",,
 "Do you want to generate backorder for not received quantities?","Voulez-vous gérer les reliquats pour les quantités non reçues ?",,
 "Draft","Brouillon",,
