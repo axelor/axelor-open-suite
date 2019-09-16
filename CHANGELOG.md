@@ -230,5 +230,6 @@
 - INVOICE : only pdf file format for report when status is ventilated.
 - USER : Fix for login with a user account that is not valid.
 - Advance data import: Fix Data import error when there is same object in two different sheets.
+- Fix nonexistent views
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
