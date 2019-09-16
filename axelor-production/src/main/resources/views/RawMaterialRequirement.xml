@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
-  <grid name="raw-material-requirement-report-grid" title="Raw material requirement" model="com.axelor.apps.production.db.RawMaterialRequirement">
+  <grid name="raw-material-requirement-grid" title="Raw material requirement" model="com.axelor.apps.production.db.RawMaterialRequirement">
     <field name="code" width="120"/>
     <field name="name"/>
     <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>

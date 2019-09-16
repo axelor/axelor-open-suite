@@ -72,7 +72,7 @@
    			</panel>
 		</panel>
 		<panel  name="createContactPanel" title="Contact" showIf="$leadToContactSelect == 1 &amp;&amp; ($leadToPartnerSelect == 1 &amp;&amp; $partner.partnerTypeSelect == 1 || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2)">
-			<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+			<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 				<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-contact" >
 					<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
 					<field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>

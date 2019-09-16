@@ -249,7 +249,7 @@
 
 	<action-view name="debt.recovery.root.history"
 		title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory" >
-		<view type="grid" name="debt-recovery-history-line-grid" />
+		<view type="grid" name="debt-recovery-history-grid" />
 		<view type="form" name="debt-recovery-history-form" />
 	</action-view>
 

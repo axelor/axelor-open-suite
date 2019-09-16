@@ -220,8 +220,9 @@
     </action-method>
 
     <action-view name="dashlet.meeting" title="Meetings" model="com.axelor.apps.crm.db.Event">
-        <view type="grid" name="meeting-grid" />
-        <view type="form" name="meeting-form" />
+        <view type="grid" name="event-grid" />
+        <view type="form" name="event-form" />
+        <domain>self.typeSelect = 2</domain>
     </action-view>
 
     <action-method name="action-event-method-add-email-guest">

@@ -121,8 +121,8 @@
 
 	<action-view name="manufacturing.root.raw.material.requirement" title="Raw material requirement"
 		model="com.axelor.apps.production.db.RawMaterialRequirement">
-		<view type="grid" name="raw-material-requirement-report-grid"/>
-		<view type="form" name="raw-material-requirement-report-form"/>
+		<view type="grid" name="raw-material-requirement-grid"/>
+		<view type="form" name="raw-material-requirement-form"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-cost-calculations" parent="manufacturing-root" title="Cost calculations" action="manufacturing.root.cost.calculations" order="44"/>
