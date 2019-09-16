@@ -142,7 +142,7 @@
 		<action-report output="EventDetails-${date}${time}" name="print.event.eventDetail"
 				design="EventDetails.rptdesign" format="pdf">
 				<param name="eventId"
-						expr="call:com.axelor.apps.event.db.Events:EventRegistrationController.checkId(id)" />
+						expr="call:com.axelor.apps.event.db.Events.EventRegistrationController:checkId(id)" />
 
 		</action-report>
 

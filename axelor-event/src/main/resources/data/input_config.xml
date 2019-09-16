@@ -16,7 +16,7 @@
 				type="com.axelor.apps.event.db.EventRegistrations" search="self.name = :name">
 				<bind to="name" column="name" />
 				<bind to="email" column="email" />
-				<bind to="evnRef" search="self.evnRef= :evnRef" update="false" column="evnRef" />
+				<bind to="event" search="self.evnRef= :evnRef" update="false" column="evnRef" />
 		</input>
 
 
