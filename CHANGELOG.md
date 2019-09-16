@@ -96,6 +96,8 @@
 - PRODUCTION: Complete demo data.
 - SALE ORDER LINE VIEW : Removal of spacer.
 - Move/MoveLine : Changed condition in dispalying fields in form-view and also added translation
+- BANK ORDER LINE : add piece list, piece date list and piece due date list.
+- BANK ORDER LINE ORIGIN : add date and due date.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names

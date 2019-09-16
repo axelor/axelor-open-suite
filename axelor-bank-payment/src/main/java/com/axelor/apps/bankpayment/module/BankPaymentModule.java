@@ -28,6 +28,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.web.InvoicePaymentController;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
@@ -75,6 +77,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankReconciliationRepository.class).to(BankReconciliationManagementRepository.class);
 
     bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
+
+    bind(BankOrderLineRepository.class).to(BankOrderLineManagementRepository.class);
 
     bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
 
