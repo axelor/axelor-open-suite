@@ -24,7 +24,7 @@
 		<field name="invoiceLine.invoice.validatedDate"/>
 		<field name="amount"/>
 	</grid>
-    
+
     <form name="budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
        <panel name="mainPanel" >
 	   		<field name="budget" required="true" domain="self.statusSelect = 2"/>
@@ -59,7 +59,39 @@
 		</panel>
 	</form>
 
-	<action-attrs name="action-budget-distribution-attrs-budget-amount-available">
+    <grid name="budget-distribution-grid-purchase-order-line-grid" title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+        <field name="purchaseOrderLine.purchaseOrder"/>
+        <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+        <field name="purchaseOrderLine.product"/>
+        <field name="amount"/>
+    </grid>
+
+    <form name="budget-distribution-grid-purchase-order-line-form" title="Committed line" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
+        <panel name="mainPanel" readonly="true">
+            <field name="purchaseOrderLine.purchaseOrder"/>
+            <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+            <field name="purchaseOrderLine.product"/>
+            <field name="amount"/>
+        </panel>
+    </form>
+
+    <grid name="budget-distribution-grid-invoice-line-grid" title="Realized lines" model="com.axelor.apps.account.db.BudgetDistribution">
+        <field name="invoiceLine.invoice"/>
+        <field name="invoiceLine.invoice.invoiceDate"/>
+        <field name="invoiceLine.product"/>
+        <field name="amount"/>
+    </grid>
+
+    <form name="budget-distribution-grid-invoice-line-form" title="Realized line" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
+        <panel name="mainPanel" readonly="true">
+            <field name="invoiceLine.invoice"/>
+            <field name="invoiceLine.invoice.invoiceDate"/>
+            <field name="invoiceLine.product"/>
+            <field name="amount"/>
+        </panel>
+    </form>
+
+    <action-attrs name="action-budget-distribution-attrs-budget-amount-available">
 		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining to be incurred')" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine'"/>
 		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')" if="_parent?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
 
