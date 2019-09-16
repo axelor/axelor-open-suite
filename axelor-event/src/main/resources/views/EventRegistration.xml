@@ -68,14 +68,13 @@
 
 
 				<panel>
-						<field name="$eventFile" field="$eventFile" title="Event registration"
-								type="many-to-one" target="com.axelor.meta.db.MetaFile"
-								onChange="action-event-check-file-validation" />
+			<field name="$envimportFile" title="File" type="many-to-one"  widget="binary-link" target="com.axelor.meta.db.MetaFile"/>
+			<field name="$csvMetaFile" title="Csv generated" type="many-to-one"  widget="binary-link" target="com.axelor.meta.db.MetaFile" readonly="true"/>
 				</panel>
 
 				<panel sidebar="true">
 						<button name="importBtn" title="Import" onClick="action-event-save-wizard" colSpan="12"
-								width="200px" />
+								width="200px" readonlyIf="$importFile == null" />
 				</panel>
 
 
