@@ -13,6 +13,8 @@
 		<menuitem title="Event" name="menu-event-all" parent="event-root" action="event.all" />
 
 		<action-view name="event.all" title="Events" model="com.axelor.apps.event.db.Events">
+			
+                               <!--<view type="calendar" name="event-calendar"/>  -->
 				<view type="cards" name="events-cards" />
 				<view type="grid" name="events-grid" />
 				<view type="form" name="events-form" />
