@@ -99,6 +99,7 @@
 "ConformityCertificate.certificateNumber","N° du certificat",,
 "ConformityCertificate.customerName","Raison sociale du client",,
 "ConformityCertificate.designation","Désignation",,
+"ConformityCertificate.externalReference","Référence client",,
 "ConformityCertificate.function","Fonction",,
 "ConformityCertificate.lotNoRef","Lot N°/Réf",,
 "ConformityCertificate.name","Nom",,

@@ -90,6 +90,8 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.account.service.SubrogationReleaseServiceImpl;
+import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.service.TaxPaymentMoveLineServiceImpl;
 import com.axelor.apps.account.service.TemplateMessageAccountService;
 import com.axelor.apps.account.service.TemplateMessageAccountServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -106,6 +108,8 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
+import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
@@ -242,5 +246,9 @@ public class AccountModule extends AxelorModule {
     bind(AccountingCloseAnnualService.class).to(AccountingCloseAnnualServiceImpl.class);
 
     bind(PeriodServiceAccount.class).to(PeriodServiceAccountImpl.class);
+
+    bind(MoveService.class).to(MoveServiceImpl.class);
+
+    bind(TaxPaymentMoveLineService.class).to(TaxPaymentMoveLineServiceImpl.class);
   }
 }

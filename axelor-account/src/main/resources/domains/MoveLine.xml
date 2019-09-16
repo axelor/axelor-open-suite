@@ -25,7 +25,7 @@
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
     
-    <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"/>
+    <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.status.select"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" massUpdate="true"/>
@@ -62,7 +62,8 @@
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
       
-    <decimal name="taxAmount" title="Tax amount" readonly="true"/>
+    <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
+    <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine" ref="com.axelor.apps.account.db.TaxPaymentMoveLine"/>
 
     <many-to-one name="reconcileGroup" title="Reconcile Group"
                  ref="com.axelor.apps.account.db.ReconcileGroup"/>

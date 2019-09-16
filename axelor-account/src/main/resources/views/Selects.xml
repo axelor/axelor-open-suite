@@ -396,4 +396,19 @@
 		<option value="1">Draft</option>
 		<option value="2">Validated</option>
 	</selection>
+	
+	<selection name='move.line.reimbursement.status.select'>
+		<option value='0'></option>
+		<option value='1'>Reimbursement ongoing</option>
+		<option value='2'>Reimbursed</option>
+	</selection>
+
+	<selection name="account.journal.compatible.partner.type.select">
+		<option value="isProspect">Prospect</option>
+		<option value="isCustomer">Customer</option>
+		<option value="isSupplier">Supplier</option>
+		<option value="isCarrier">Carrier</option>
+		<option value="isFactor">Factor</option>
+	</selection>
+
 </object-views>

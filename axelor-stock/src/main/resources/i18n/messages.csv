@@ -99,6 +99,7 @@
 "ConformityCertificate.certificateNumber",,,
 "ConformityCertificate.customerName",,,
 "ConformityCertificate.designation",,,
+"ConformityCertificate.externalReference",,,
 "ConformityCertificate.function",,,
 "ConformityCertificate.lotNoRef",,,
 "ConformityCertificate.name",,,

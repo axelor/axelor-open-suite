@@ -28,7 +28,7 @@ import com.axelor.apps.account.service.move.MoveDueService;
 import com.axelor.apps.account.service.move.MoveExcessPaymentService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -37,7 +37,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
-public class BankPaymentMoveServiceImpl extends MoveService {
+public class BankPaymentMoveServiceImpl extends MoveServiceImpl {
 
   @Inject
   public BankPaymentMoveServiceImpl(

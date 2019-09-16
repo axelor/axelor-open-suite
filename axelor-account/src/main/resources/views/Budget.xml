@@ -49,8 +49,12 @@
     		<field name="totalAmountExpected"/>
     		<field name="totalAmountCommitted" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
     		<field name="totalAmountRealized"/>			
-    	</panel>	
-    	<panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true" collapseIf="true" >
+    	</panel>
+
+		<panel-dashlet name="budgetDistributionLinePurchaseOrderLinePanel" action="action-budget-view-budget-distribution-purchase-order-line" colSpan="12" showIf="statusSelect == 2" canSearch="true" height="350" readonly="true" if="__config__.app.isApp('supplychain')"/>
+		<panel-dashlet name="budgetDistributionLineInvoicePanel" action="action-budget-view-budget-distribution-invoice-line" colSpan="12" showIf="statusSelect == 2" canSearch="true" height="350" readonly="true"/>
+
+		<panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true" collapseIf="true" >
   			<field name="inChargeUser" canNew="false" canView="false" canEdit="false"/>
     	</panel>
     	<panel name="configuration" title="Configuration" canCollapse="true" sidebar="true" collapseIf="true" readonlyIf="statusSelect == 2">
@@ -121,5 +125,21 @@
 	<action-method name="action-budget-check-shared-dates">
 		<call class="com.axelor.apps.account.web.BudgetController" method="checkSharedDates"/>
 	</action-method>
+
+	<action-view name="action-budget-view-budget-distribution-purchase-order-line" title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+		<view type="grid" name="budget-distribution-grid-purchase-order-line-grid"/>
+		<view type="form" name="budget-distribution-grid-purchase-order-line-form"/>
+		<view-param name="limit" value="200"/>
+		<domain>self.budget.id = :_budgetId AND self.purchaseOrderLine != null</domain>
+		<context name="_budgetId" expr="eval: __this__.id"/>
+	</action-view>
+
+	<action-view name="action-budget-view-budget-distribution-invoice-line" title="Realized lines" model="com.axelor.apps.account.db.BudgetDistribution">
+		<view type="grid" name="budget-distribution-grid-invoice-line-grid"/>
+		<view type="form" name="budget-distribution-grid-invoice-line-form"/>
+		<view-param name="limit" value="200"/>
+		<domain>self.budget.id = :_budgetId AND self.invoiceLine != null</domain>
+		<context name="_budgetId" expr="eval: __this__.id"/>
+	</action-view>
 
 </object-views>
