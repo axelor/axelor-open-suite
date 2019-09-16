@@ -14,5 +14,6 @@ axelor {
 dependencies {
     compile project(":modules:axelor-base")
     compile project(":modules:axelor-message")
+    compile project(":modules:axelor-exception")
    
 }
