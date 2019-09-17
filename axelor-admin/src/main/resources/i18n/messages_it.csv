@@ -98,6 +98,7 @@
 "Object not found: %s","Oggetto non trovato: %s",,
 "Objects","Oggetti",,
 "Path","Sentiero",,
+"Path Field",,,
 "Permission Assistant","Assistente di autorizzazione",,
 "Query","Domanda",,
 "Query/path","Domanda/percorso",,
