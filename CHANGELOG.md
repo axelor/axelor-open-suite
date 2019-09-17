@@ -23,6 +23,7 @@
 - CONFORMITY CERTIFICATE : new field on printing
 - JOURNALS : add new configuration to filter partners
 - Availability request: new config to allocate automatically a stock move during availability request.
+- ACCOUNTING SITUATION : show 'dueDate' in moveLinesPanel.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
