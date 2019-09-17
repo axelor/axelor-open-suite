@@ -88,6 +88,7 @@
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name" width="135"/>
         <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
+        <field name="dueDate"/>
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
