@@ -26,7 +26,7 @@
 
 			<panel name="bankStatementPagePanel" title="Bank statement retrieval configuration" showIf="actionSelect == 2">
 				<field name="ebicsPartnerSet" canNew="false" widget="TagSelect" colSpan="12" domain="self.transportEbicsUser.statusSelect = 3"/>
-				<field name="bankStatementFileFormatSet" canNew="false" widget="TagSelect" colSpan="12"/>
+				<field name="bankStatementFileFormatSet" canNew="false" colSpan="12" widget="TagSelect" form-view="bank-statement-file-format-form" grid-view="bank-statement-file-format-grid"/>
 			</panel>
 
     		<panel name="informationPanel" title="Information" >

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -146,9 +146,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs-data3</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1673,7 +1671,7 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
     <body>
         <grid id="3342">
             <property name="marginLeft">2pt</property>
-            <property name="height">13.070416666666667cm</property>
+            <property name="height">16.615833333333335cm</property>
             <property name="width">19.473333333333333cm</property>
             <property name="dataSet">StockMoveDS</property>
             <list-property name="boundDataColumns">
@@ -2132,6 +2130,90 @@ row["first_name"]
 	row["from_address_str"].replace(/\n/g, "<br>")
 }</VALUE-OF>]]></text-property>
                     </text>
+                </cell>
+            </row>
+            <row id="4387">
+                <property name="height">0.8995833333333334cm</property>
+                <cell id="4388">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
+                    <grid id="4394">
+                        <property name="width">19.288125cm</property>
+                        <property name="dataSet">SaleOrderDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["external_reference"]</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">external_reference</property>
+                                <text-property name="displayName">external_reference</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["external_reference"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <column id="4395">
+                            <property name="width">8.466666666666667cm</property>
+                        </column>
+                        <column id="4396"/>
+                        <row id="4397">
+                            <cell id="4398">
+                                <text id="4385">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'ConformityCertificate.externalReference'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">en_translation</property>
+                                            <text-property name="displayName">en_translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["en_translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] || row["en_translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="4399">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <text id="4386">
+                                    <property name="dataSet">SaleOrderDS</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">external_reference</property>
+                                            <text-property name="displayName">external_reference</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["external_reference"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["external_reference"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
                 </cell>
             </row>
             <row id="3377">
