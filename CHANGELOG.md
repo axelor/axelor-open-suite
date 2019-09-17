@@ -118,6 +118,7 @@
 - Expense : Set Move.date and expense.moveDate as expense.period.toDate
 - BankStatementFileFormat : remove wrong data.
 - EBICSUSER : signature certificate editable only if the ebicsPartner mode is "EBICS TS" and the user type is "Signatory"
+- FIXED ASSETS : add Translations in FixedAsset and FixedAssetCategory
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
