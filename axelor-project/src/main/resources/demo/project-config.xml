@@ -9,7 +9,7 @@
  	
  	<input file="business_project_project.csv" type="com.axelor.apps.project.db.Project" separator=";" search="self.importId = :importId"/>
  	
- 	<input file="team_task.csv" type="com.axelor.team.db.TeamTask" separator=";" search="self.importId = :importId">
+ 	<input file="team_task.csv" type="com.axelor.team.db.TeamTask" separator=";" search="self.importId = :importId" call="com.axelor.apps.csv.script.TeamTaskScript:computeFullname">
  		<bind to="taskDate" column="taskDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(taskDate)" />
  	</input>
 

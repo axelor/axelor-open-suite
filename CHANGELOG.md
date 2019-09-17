@@ -241,5 +241,6 @@
 - SALE ORDER : Fix issue of getting name null.
 - Fix nonexistent views
 - INVOICE : fix issue of invoice copy
+- TEAMTASK: Add fullname in demo data.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
