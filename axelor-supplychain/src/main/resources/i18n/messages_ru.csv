@@ -46,6 +46,7 @@
 "Are you sure you want run the calculation ? Calculation can take a long time.","Ты уверен, что хочешь провести расчеты? Расчет может занять много времени.",,
 "At least one sale order line must be selected","Должна быть выбрана хотя бы одна строка заказа на продажу.",,
 "At least one stock move is in litigation, do you really want to validate passed for payment ?",,,
+"Auto allocate during an availability request",,,
 "Auto allocate stock on other stock moves",,,
 "Auto allocate stock on receipt","Автоматическое распределение запасов при получении",,
 "Auto request reserved qty",,,

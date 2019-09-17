@@ -46,6 +46,7 @@
 "Are you sure you want run the calculation ? Calculation can take a long time.","Sind Sie sicher, dass Sie die Kalkulation durchführen wollen? Die Berechnung kann sehr lange dauern.",,
 "At least one sale order line must be selected","Es muss mindestens eine Verkaufsauftragszeile ausgewählt sein.",,
 "At least one stock move is in litigation, do you really want to validate passed for payment ?",,,
+"Auto allocate during an availability request",,,
 "Auto allocate stock on other stock moves",,,
 "Auto allocate stock on receipt","Automatische Bestandszuordnung beim Wareneingang",,
 "Auto request reserved qty",,,
