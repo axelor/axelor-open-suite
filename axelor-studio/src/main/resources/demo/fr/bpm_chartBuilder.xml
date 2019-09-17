@@ -32,9 +32,9 @@
 <!--   	</filters> -->
 <!--   </chart-builder> -->
   
-<!--   <chart-builder name="products-order-per-month-per-customer" title="Ventes de produit par mois et par client"  -->
+<!--   <chart-builder name="products-order-per-month-per-customer" title="Ventes de produit par mois et par customer"  -->
 <!--   	type="bar" model="com.axelor.apps.sale.db.SaleOrderLine"  groupOn="saleOrder" groupOnTarget="saleOrder.orderDate" groupOnTargetType="LocalDate" groupDateType="month" -->
-<!--   	aggregateOn="saleOrder" aggregateOnTarget="saleOrder.clientPartner.fullName" displayField="exTaxTotal"> -->
+<!--   	aggregateOn="saleOrder" aggregateOnTarget="saleOrder.customerPartner.fullName" displayField="exTaxTotal"> -->
 <!--   	<filters> -->
 <!--   		<filter targetType="Integer" operator="in" targetField="saleOrder.statusSelect" value="3,4"  field="saleOrder" /> -->
 <!--   		<filter targetType="LocalDate" operator="notNull" targetField="saleOrder.orderDate"  field="saleOrder" /> -->

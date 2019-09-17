@@ -235,7 +235,7 @@
 "ExpenseLine.amount","Importo",,
 "ExpenseLine.cityFrom","Città di partenza",,
 "ExpenseLine.cityTo","Città di arrivo",,
-"ExpenseLine.client","Cliente",,
+"ExpenseLine.customer","Cliente",,
 "ExpenseLine.distance","Distanza (km)",,
 "ExpenseLine.expenseDate","Data",,
 "ExpenseLine.expenseType","Tipo di spesa",,

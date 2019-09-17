@@ -1494,8 +1494,8 @@ row["180&lt;days"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">SumClient</property>
-                                <text-property name="displayName">SumClient</text-property>
+                                <property name="name">SumCustomer</property>
+                                <text-property name="displayName">SumCustomer</text-property>
                                 <expression name="expression" type="javascript">Total.sum(row["amount_remaining"])</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
@@ -2208,7 +2208,7 @@ row["180&lt;days"]
                                             <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">SumClient</property>
+                                        <property name="resultSetColumn">SumCustomer</property>
                                     </data>
                                 </cell>
                                 <cell id="1164">

@@ -248,11 +248,11 @@
                     <text-property name="heading">ShipmentDate</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">ClientBox</property>
-                    <property name="alias">ClientBox</property>
+                    <property name="columnName">CustomerBox</property>
+                    <property name="alias">CustomerBox</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">ClientBox</text-property>
-                    <text-property name="heading">ClientBox</text-property>
+                    <text-property name="displayName">CustomerBox</text-property>
+                    <text-property name="heading">CustomerBox</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">LegalNote</property>
@@ -308,25 +308,25 @@
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">ClientPartName</property>
-                    <property name="alias">ClientPartName</property>
+                    <property name="columnName">CustomerPartName</property>
+                    <property name="alias">CustomerPartName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">ClientPartName</text-property>
-                    <text-property name="heading">ClientPartName</text-property>
+                    <text-property name="displayName">CustomerPartName</text-property>
+                    <text-property name="heading">CustomerPartName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">ClientPartFirstName</property>
-                    <property name="alias">ClientPartFirstName</property>
+                    <property name="columnName">CustomerPartFirstName</property>
+                    <property name="alias">CustomerPartFirstName</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">ClientPartFirstName</text-property>
-                    <text-property name="heading">ClientPartFirstName</text-property>
+                    <text-property name="displayName">CustomerPartFirstName</text-property>
+                    <text-property name="heading">CustomerPartFirstName</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">ClientTitle</property>
-                    <property name="alias">ClientTitle</property>
+                    <property name="columnName">CustomerTitle</property>
+                    <property name="alias">CustomerTitle</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">ClientTitle</text-property>
-                    <text-property name="heading">ClientTitle</text-property>
+                    <text-property name="displayName">CustomerTitle</text-property>
+                    <text-property name="heading">CustomerTitle</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">ContactName</property>
@@ -660,7 +660,7 @@
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">ClientBox</property>
+                        <property name="name">CustomerBox</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -705,17 +705,17 @@
                     </structure>
                     <structure>
                         <property name="position">18</property>
-                        <property name="name">ClientPartName</property>
+                        <property name="name">CustomerPartName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">19</property>
-                        <property name="name">ClientPartFirstName</property>
+                        <property name="name">CustomerPartFirstName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">20</property>
-                        <property name="name">ClientTitle</property>
+                        <property name="name">CustomerTitle</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -980,8 +980,8 @@
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">ClientBox</property>
-                    <property name="nativeName">ClientBox</property>
+                    <property name="name">CustomerBox</property>
+                    <property name="nativeName">CustomerBox</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -1043,22 +1043,22 @@
                 </structure>
                 <structure>
                     <property name="position">18</property>
-                    <property name="name">ClientPartName</property>
-                    <property name="nativeName">ClientPartName</property>
+                    <property name="name">CustomerPartName</property>
+                    <property name="nativeName">CustomerPartName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
-                    <property name="name">ClientPartFirstName</property>
-                    <property name="nativeName">ClientPartFirstName</property>
+                    <property name="name">CustomerPartFirstName</property>
+                    <property name="nativeName">CustomerPartFirstName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
-                    <property name="name">ClientTitle</property>
-                    <property name="nativeName">ClientTitle</property>
+                    <property name="name">CustomerTitle</property>
+                    <property name="nativeName">CustomerTitle</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
@@ -1346,12 +1346,12 @@
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
 SalemanEmailAddress.address as "SalemanEmail", SaleConfig.display_saleman_on_printing as "DisplaySaleman", 
-SaleOrder.shipment_date as "ShipmentDate", SaleConfig.sale_order_client_box as "ClientBox", 
+SaleOrder.shipment_date as "ShipmentDate", SaleConfig.sale_order_customer_box as "CustomerBox", 
 SaleConfig.sale_order_legal_note as "LegalNote", SaleConfig.display_del_cond_on_printing as "DisplayDeliveryCondition", 
 Company.name as "CompanyName", coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
 Company.height as "logo_height", Company.width as "logo_width",
-ClientPartner.partner_seq as "CustomerCode", ClientPartner.partner_type_select, ClientPartner.name as "ClientPartName",
-ClientPartner.first_name as "ClientPartFirstName", ClientPartner.title_select as "ClientTitle", 
+CustomerPartner.partner_seq as "CustomerCode", CustomerPartner.partner_type_select, CustomerPartner.name as "CustomerPartName",
+CustomerPartner.first_name as "CustomerPartFirstName", CustomerPartner.title_select as "CustomerTitle", 
 ContactPartner.name as "ContactName", ContactPartner.first_name as "ContactFirstName",
 InvoicingCountry.name as "invoicecountry", DeliveryCountry.name as "DeliveryCountry",
 SaleOrder.main_invoicing_address_str as "invoicingAddress",
@@ -1380,7 +1380,7 @@ from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
 left outer join base_app_sale as AppSale on true 
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
-left outer join base_partner as ClientPartner on (SaleOrder.client_partner = ClientPartner.id)
+left outer join base_partner as CustomerPartner on (SaleOrder.customer_partner = CustomerPartner.id)
 left outer join base_partner as ContactPartner on (SaleOrder.contact_partner = ContactPartner.id)
 left outer join base_address as InvoicingAddress on (SaleOrder.main_invoicing_address = InvoicingAddress.id)
 left outer join base_country as InvoicingCountry on (InvoicingAddress.addressl7country = InvoicingCountry.id)
@@ -1972,7 +1972,7 @@ left outer join base_product as Product on (SOLine.product = Product.id)
 left outer join base_unit as Unit on (SOLine.unit = Unit.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join account_tax_line as TaxLine on (SOLine.tax_line = TaxLine.id)
-left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.customer_partner)
 left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
 where SaleOrder.id = ?]]></xml-property>
         </oda-data-set>
@@ -2428,21 +2428,21 @@ from base_app_base]]></xml-property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">ClientPartName</property>
-                    <text-property name="displayName">ClientPartName</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ClientPartName"]</expression>
+                    <property name="name">CustomerPartName</property>
+                    <text-property name="displayName">CustomerPartName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CustomerPartName"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">ClientPartFirstName</property>
-                    <text-property name="displayName">ClientPartFirstName</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ClientPartFirstName"]</expression>
+                    <property name="name">CustomerPartFirstName</property>
+                    <text-property name="displayName">CustomerPartFirstName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CustomerPartFirstName"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">ClientTitle</property>
-                    <text-property name="displayName">ClientTitle</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ClientTitle"]</expression>
+                    <property name="name">CustomerTitle</property>
+                    <text-property name="displayName">CustomerTitle</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CustomerTitle"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -2578,9 +2578,9 @@ from base_app_base]]></xml-property>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">ClientBox</property>
-                    <text-property name="displayName">ClientBox</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ClientBox"]</expression>
+                    <property name="name">CustomerBox</property>
+                    <text-property name="displayName">CustomerBox</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CustomerBox"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3442,15 +3442,15 @@ from base_app_base]]></xml-property>
                         <property name="marginLeft">0pt</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] != "1"){
-	if(row["ClientTitle"] == "1"){"M."}
-	else if(row["ClientTitle"]=="2"){"Mme"}
-	else if(row["ClientTitle"]=="3"){"Mlle"}
-	else if(row["ClientTitle"]=="4"){"Dr"}
-	else if(row["ClientTitle"]=="5"){"Prof."}
+	if(row["CustomerTitle"] == "1"){"M."}
+	else if(row["CustomerTitle"]=="2"){"Mme"}
+	else if(row["CustomerTitle"]=="3"){"Mlle"}
+	else if(row["CustomerTitle"]=="4"){"Dr"}
+	else if(row["CustomerTitle"]=="5"){"Prof."}
 }</VALUE-OF> 
-<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["ClientPartName"]</VALUE-OF>
+<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["CustomerPartName"]</VALUE-OF>
 <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["partner_type_select"] != "1"){
-row["ClientPartFirstName"]
+row["CustomerPartFirstName"]
 }</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3662">
@@ -6416,11 +6416,11 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["ClientBox"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["CustomerBox"] == null</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["ClientBox"]</VALUE-OF>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["CustomerBox"]</VALUE-OF>
 ]]></text-property>
                     </text>
                 </cell>

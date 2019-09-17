@@ -129,7 +129,7 @@
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
 				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
-				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
+				<item title="Customer Situation" action="save,action-partner-method-show-customer-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -320,7 +320,7 @@
 				<field name="salePartnerPriceList" canEdit="false" domain="self.typeSelect = 1" form-view="sale-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 				<field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
-				<panel name="clientPortalAccessPanel" title="Client portal access" if-module="axelor-client-portal" if="__config__.app.isApp('portal')">
+				<panel name="customerPortalAccessPanel" title="Customer portal access" if-module="axelor-customer-portal" if="__config__.app.isApp('portal')">
 					<field name="password" widget="password"/>
 				</panel>
 				<field name="factorizedCustomer" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
@@ -438,7 +438,7 @@
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
 				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
-				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
+				<item title="Customer Situation" action="save,action-partner-method-show-customer-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -635,7 +635,7 @@
 		<menubar>
             <menu title="Reports" icon="fa-files-o" showTitle="true">
 				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
-				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
+				<item title="Customer Situation" action="save,action-partner-method-show-customer-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -776,7 +776,7 @@
     </action-record>
 
 	<action-attrs name="action-partner-attrs-hide-contact-partner">
-		<attribute name="hidden" for="contactPartner" expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
+		<attribute name="hidden" for="contactPartner" expr="#{customerPartner != null &amp;&amp; customerPartner.partnerTypeSelect == 2}" />
 	</action-attrs>
 
 	<action-attrs name="action-partner-attrs-unset-prospect">
@@ -991,7 +991,7 @@
 		<filter title="All Prospects">
 			<domain>self.isProspect = true AND self.isContact = false</domain>
 		</filter>
-		<filter title="All Clients">
+		<filter title="All Customers">
 			<domain>self.isCustomer = true AND self.isContact = false</domain>
 		</filter>
 		<filter title="All Suppliers">

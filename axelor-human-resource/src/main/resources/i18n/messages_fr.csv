@@ -262,7 +262,7 @@
 "ExpenseLine.amount","Montant TTC",,
 "ExpenseLine.cityFrom","Ville de départ",,
 "ExpenseLine.cityTo","Ville d'arrivée",,
-"ExpenseLine.client","Client",,
+"ExpenseLine.customer","Client",,
 "ExpenseLine.distance","Distance (km)",,
 "ExpenseLine.expenseDate","Date",,
 "ExpenseLine.expenseType","Type de frais",,

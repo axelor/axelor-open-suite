@@ -60,7 +60,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
     ProductionOrder productionOrder = new ProductionOrder(this.getProductionOrderSeq());
     if (saleOrder != null) {
-      productionOrder.setClientPartner(saleOrder.getClientPartner());
+      productionOrder.setCustomerPartner(saleOrder.getCustomerPartner());
       productionOrder.setSaleOrder(saleOrder);
     }
     return productionOrder;
@@ -140,7 +140,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     if (manufOrder != null) {
       if (saleOrder != null) {
         manufOrder.setSaleOrder(saleOrder);
-        manufOrder.setClientPartner(saleOrder.getClientPartner());
+        manufOrder.setCustomerPartner(saleOrder.getCustomerPartner());
       }
       productionOrder.addManufOrderListItem(manufOrder);
     }

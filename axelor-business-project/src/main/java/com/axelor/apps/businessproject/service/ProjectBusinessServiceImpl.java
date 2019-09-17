@@ -66,33 +66,33 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   public SaleOrder generateQuotation(Project project) throws AxelorException {
     SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 
-    Partner clientPartner = project.getClientPartner();
+    Partner customerPartner = project.getCustomerPartner();
     Partner contactPartner = project.getContactPartner();
-    if (contactPartner == null && clientPartner.getContactPartnerSet().size() == 1) {
-      contactPartner = clientPartner.getContactPartnerSet().iterator().next();
+    if (contactPartner == null && customerPartner.getContactPartnerSet().size() == 1) {
+      contactPartner = customerPartner.getContactPartnerSet().iterator().next();
     }
 
     Company company = project.getCompany();
 
     order.setProject(projectRepo.find(project.getId()));
-    order.setClientPartner(clientPartner);
+    order.setCustomerPartner(customerPartner);
     order.setContactPartner(contactPartner);
     order.setCompany(company);
 
-    order.setMainInvoicingAddress(partnerService.getInvoicingAddress(clientPartner));
+    order.setMainInvoicingAddress(partnerService.getInvoicingAddress(customerPartner));
     order.setMainInvoicingAddressStr(
         addressService.computeAddressStr(order.getMainInvoicingAddress()));
-    order.setDeliveryAddress(partnerService.getDeliveryAddress(clientPartner));
+    order.setDeliveryAddress(partnerService.getDeliveryAddress(customerPartner));
     order.setDeliveryAddressStr(addressService.computeAddressStr(order.getDeliveryAddress()));
-    order.setIsNeedingConformityCertificate(clientPartner.getIsNeedingConformityCertificate());
+    order.setIsNeedingConformityCertificate(customerPartner.getIsNeedingConformityCertificate());
     order.setCompanyBankDetails(
         Beans.get(AccountingSituationService.class)
-            .getCompanySalesBankDetails(company, clientPartner));
+            .getCompanySalesBankDetails(company, customerPartner));
 
     if (project.getCurrency() != null) {
       order.setCurrency(project.getCurrency());
-    } else if (clientPartner.getCurrency() != null) {
-      order.setCurrency(clientPartner.getCurrency());
+    } else if (customerPartner.getCurrency() != null) {
+      order.setCurrency(customerPartner.getCurrency());
     } else {
       order.setCurrency(company.getCurrency());
     }
@@ -102,23 +102,23 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     } else {
       order.setPriceList(
           Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(clientPartner, PriceListRepository.TYPE_SALE));
+              .getDefaultPriceList(customerPartner, PriceListRepository.TYPE_SALE));
     }
 
     if (order.getPriceList() != null) {
       order.setHideDiscount(order.getPriceList().getHideDiscount());
     }
 
-    if (clientPartner.getPaymentCondition() != null) {
-      order.setPaymentCondition(clientPartner.getPaymentCondition());
+    if (customerPartner.getPaymentCondition() != null) {
+      order.setPaymentCondition(customerPartner.getPaymentCondition());
     } else {
       if (company != null && company.getAccountConfig() != null) {
         order.setPaymentCondition(company.getAccountConfig().getDefPaymentCondition());
       }
     }
 
-    if (clientPartner.getInPaymentMode() != null) {
-      order.setPaymentMode(clientPartner.getInPaymentMode());
+    if (customerPartner.getInPaymentMode() != null) {
+      order.setPaymentMode(customerPartner.getInPaymentMode());
     } else {
       if (company != null && company.getAccountConfig() != null) {
         order.setPaymentMode(company.getAccountConfig().getInPaymentMode());
@@ -133,18 +133,18 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
     if (appSupplychain != null) {
-      order.setShipmentMode(clientPartner.getShipmentMode());
-      order.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
-      if (clientPartner.getFreightCarrierMode() != null) {
-        order.setCarrierPartner(clientPartner.getFreightCarrierMode().getCarrierPartner());
+      order.setShipmentMode(customerPartner.getShipmentMode());
+      order.setFreightCarrierMode(customerPartner.getFreightCarrierMode());
+      if (customerPartner.getFreightCarrierMode() != null) {
+        order.setCarrierPartner(customerPartner.getFreightCarrierMode().getCarrierPartner());
       }
       Boolean interco =
           appSupplychain.getIntercoFromSale()
               && !order.getCreatedByInterco()
-              && clientPartner != null
+              && customerPartner != null
               && Beans.get(CompanyRepository.class)
                       .all()
-                      .filter("self.partner = ?", clientPartner)
+                      .filter("self.partner = ?", customerPartner)
                       .fetchOne()
                   != null;
       order.setInterco(interco);
@@ -168,7 +168,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                 saleOrder.getFullName() + "_project",
                 saleOrder.getSalespersonUser(),
                 saleOrder.getCompany(),
-                saleOrder.getClientPartner())
+                saleOrder.getCustomerPartner())
             : project;
     saleOrder.setProject(project);
     return project;
@@ -180,9 +180,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner customerPartner) {
     Project project =
-        super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
+        super.generateProject(parentProject, fullName, assignedTo, company, customerPartner);
     project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
     if (parentProject != null && parentProject.getTeamTaskInvoicing()) {
@@ -200,7 +200,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             saleOrderLine.getFullName(),
             saleOrderLine.getSaleOrder().getSalespersonUser(),
             parent.getCompany(),
-            parent.getClientPartner());
+            parent.getCustomerPartner());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
     saleOrderLine.setProject(project);
     return project;
@@ -209,23 +209,24 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   @Transactional
   public Project createProjectFromTemplate(
-      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
+      ProjectTemplate projectTemplate, String projectCode, Partner customerPartner)
       throws AxelorException {
 
-    Project project = super.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+    Project project =
+        super.createProjectFromTemplate(projectTemplate, projectCode, customerPartner);
 
     if (projectTemplate.getIsBusinessProject()) {
-      project.setCurrency(clientPartner.getCurrency());
-      if (clientPartner.getPartnerAddressList() != null
-          && !clientPartner.getPartnerAddressList().isEmpty()) {
+      project.setCurrency(customerPartner.getCurrency());
+      if (customerPartner.getPartnerAddressList() != null
+          && !customerPartner.getPartnerAddressList().isEmpty()) {
         project.setCustomerAddress(
-            clientPartner.getPartnerAddressList().iterator().next().getAddress());
+            customerPartner.getPartnerAddressList().iterator().next().getAddress());
       }
-      if (clientPartner.getSalePartnerPriceList() != null
-          && clientPartner.getSalePartnerPriceList().getPriceListSet() != null
-          && !clientPartner.getSalePartnerPriceList().getPriceListSet().isEmpty()) {
+      if (customerPartner.getSalePartnerPriceList() != null
+          && customerPartner.getSalePartnerPriceList().getPriceListSet() != null
+          && !customerPartner.getSalePartnerPriceList().getPriceListSet().isEmpty()) {
         project.setPriceList(
-            clientPartner.getSalePartnerPriceList().getPriceListSet().iterator().next());
+            customerPartner.getSalePartnerPriceList().getPriceListSet().iterator().next());
       }
       project.setTeamTaskInvoicing(projectTemplate.getTeamTaskInvoicing());
       project.setIsInvoicingExpenses(projectTemplate.getIsInvoicingExpenses());

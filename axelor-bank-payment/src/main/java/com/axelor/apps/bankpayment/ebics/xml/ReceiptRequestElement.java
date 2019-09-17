@@ -24,8 +24,8 @@ import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsReque
 import com.axelor.apps.account.ebics.schema.h003.EbicsRequestDocument.EbicsRequest.Header;
 import com.axelor.apps.account.ebics.schema.h003.MutableHeaderType;
 import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType;
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import java.security.MessageDigest;

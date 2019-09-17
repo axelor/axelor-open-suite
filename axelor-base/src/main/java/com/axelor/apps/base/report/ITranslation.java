@@ -24,63 +24,73 @@ public interface ITranslation {
   public static final String PRODUCT_SHEET_PRICE = /*$$(*/ "ProductSheet.price"; /*)*/
   public static final String PRODUCT_SHEET_WARRANTY = /*$$(*/ "ProductSheet.warranty"; /*)*/
 
-  public static final String CLIENT_SITUATION_TITLE = /*$$(*/ "ClientSituation.title"; /*)*/
-  public static final String CLIENT_SITUATION_FOLLOWED_BY = /*$$(*/
-      "ClientSituation.followedBy"; /*)*/
-  public static final String CLIENT_SITUATION_TEAM = /*$$(*/ "ClientSituation.team"; /*)*/
-  public static final String CLIENT_SITUATION_ADDRESS = /*$$(*/ "ClientSituation.address"; /*)*/
-  public static final String CLIENT_SITUATION_FIXED_PHONE = /*$$(*/
-      "ClientSituation.fixedPhone"; /*)*/
-  public static final String CLIENT_SITUATION_EMAIL = /*$$(*/ "ClientSituation.email"; /*)*/
-  public static final String CLIENT_SITUATION_FAX = /*$$(*/ "ClientSituation.fax"; /*)*/
-  public static final String CLIENT_SITUATION_MOBILE = /*$$(*/ "ClientSituation.mobile"; /*)*/
-  public static final String CLIENT_SITUATION_WEBSITE = /*$$(*/ "ClientSituation.website"; /*)*/
-  public static final String CLIENT_SITUATION_NAME = /*$$(*/ "ClientSituation.name"; /*)*/
-  public static final String CLIENT_SITUATION_PHONE = /*$$(*/ "ClientSituation.phone"; /*)*/
-  public static final String CLIENT_SITUATION_FUNCTION = /*$$(*/ "ClientSituation.function"; /*)*/
-  public static final String CLIENT_SITUATION_CONTACTS = /*$$(*/ "ClientSituation.contacts"; /*)*/
-  public static final String CLIENT_SITUATION_ORDERS = /*$$(*/ "ClientSituation.orders"; /*)*/
-  public static final String CLIENT_SITUATION_DATE = /*$$(*/ "ClientSituation.date"; /*)*/
-  public static final String CLIENT_SITUATION_REFERENCE = /*$$(*/ "ClientSituation.reference"; /*)*/
-  public static final String CLIENT_SITUATION_CONTACT = /*$$(*/ "ClientSituation.contact"; /*)*/
-  public static final String CLIENT_SITUATION_TOTAL_HT = /*$$(*/ "ClientSituation.totalHT"; /*)*/
-  public static final String CLIENT_SITUATION_TOTAL_TAX = /*$$(*/ "ClientSituation.totalTax"; /*)*/
-  public static final String CLIENT_SITUATION_TOTAL_ATI = /*$$(*/ "ClientSituation.totalATI"; /*)*/
-  public static final String CLIENT_SITUATION_TO_INVOICE = /*$$(*/
-      "ClientSituation.toInvoice"; /*)*/
-  public static final String CLIENT_SITUATION_STATUS = /*$$(*/ "ClientSituation.status"; /*)*/
-  public static final String CLIENT_SITUATION_INVOICES = /*$$(*/ "ClientSituation.invoices"; /*)*/
-  public static final String CLIENT_SITUATION_COMMERCIAL_DATA = /*$$(*/
-      "ClientSituation.commercialData"; /*)*/
-  public static final String CLIENT_SITUATION_LAST_MEETING_DATE = /*$$(*/
-      "ClientSituation.lastMeetingDate"; /*)*/
-  public static final String CLIENT_SITUATION_WITH = /*$$(*/ "ClientSituation.with"; /*)*/
-  public static final String CLIENT_SITUATION_NEXT_MEETING_DATE = /*$$(*/
-      "ClientSituation.nextMeetingDate"; /*)*/
-  public static final String CLIENT_SITUATION_LAST_CALL = /*$$(*/ "ClientSituation.lastCall"; /*)*/
-  public static final String CLIENT_SITUATION_NEXT_OUTGOING_CALL = /*$$(*/
-      "ClientSituation.nextOutgoingCall"; /*)*/
-  public static final String CLIENT_SITUATION_LAST_ORDER = /*$$(*/
-      "ClientSituation.lastOrder"; /*)*/
-  public static final String CLIENT_SITUATION_AVG_ORDER_AMT = /*$$(*/
-      "ClientSituation.avgOrderAmt"; /*)*/
-  public static final String CLIENT_SITUATION_12_MONTH_TURNOVER = /*$$(*/
-      "ClientSituation.12MonthTurnover"; /*)*/
-  public static final String CLIENT_SITUATION_ORDER_FREQ = /*$$(*/
-      "ClientSituation.orderFreq"; /*)*/
-  public static final String CLIENT_SITUATION_NUM = /*$$(*/ "ClientSituation.num"; /*)*/
-  public static final String CLIENT_SITUATION_REF_DOC = /*$$(*/ "ClientSituation.refDoc"; /*)*/
-  public static final String CLIENT_SITUATION_CUST_REF = /*$$(*/ "ClientSituation.custRef"; /*)*/
-  public static final String CLIENT_SITUATION_TO_PAY = /*$$(*/ "ClientSituation.toPay"; /*)*/
-  public static final String CLIENT_SITUATION_DUE_DATE = /*$$(*/ "ClientSituation.dueDate"; /*)*/
-  public static final String CLIENT_SITUATION_FINANCIAL_DATA = /*$$(*/
-      "ClientSituation.financialData"; /*)*/
-  public static final String CLIENT_SITUATION_TOTAL_BALANCE = /*$$(*/
-      "ClientSituation.totalBalance"; /*)*/
-  public static final String CLIENT_SITUATION_DUE_BALANCE = /*$$(*/
-      "ClientSituation.dueBalance"; /*)*/
-  public static final String CLIENT_SITUATION_RECOVERABLE_BALANCE = /*$$(*/
-      "ClientSituation.recoverableBalance"; /*)*/
+  public static final String CUSTOMER_SITUATION_TITLE = /*$$(*/ "CustomerSituation.title"; /*)*/
+  public static final String CUSTOMER_SITUATION_FOLLOWED_BY = /*$$(*/
+      "CustomerSituation.followedBy"; /*)*/
+  public static final String CUSTOMER_SITUATION_TEAM = /*$$(*/ "CustomerSituation.team"; /*)*/
+  public static final String CUSTOMER_SITUATION_ADDRESS = /*$$(*/ "CustomerSituation.address"; /*)*/
+  public static final String CUSTOMER_SITUATION_FIXED_PHONE = /*$$(*/
+      "CustomerSituation.fixedPhone"; /*)*/
+  public static final String CUSTOMER_SITUATION_EMAIL = /*$$(*/ "CustomerSituation.email"; /*)*/
+  public static final String CUSTOMER_SITUATION_FAX = /*$$(*/ "CustomerSituation.fax"; /*)*/
+  public static final String CUSTOMER_SITUATION_MOBILE = /*$$(*/ "CustomerSituation.mobile"; /*)*/
+  public static final String CUSTOMER_SITUATION_WEBSITE = /*$$(*/ "CustomerSituation.website"; /*)*/
+  public static final String CUSTOMER_SITUATION_NAME = /*$$(*/ "CustomerSituation.name"; /*)*/
+  public static final String CUSTOMER_SITUATION_PHONE = /*$$(*/ "CustomerSituation.phone"; /*)*/
+  public static final String CUSTOMER_SITUATION_FUNCTION = /*$$(*/
+      "CustomerSituation.function"; /*)*/
+  public static final String CUSTOMER_SITUATION_CONTACTS = /*$$(*/
+      "CustomerSituation.contacts"; /*)*/
+  public static final String CUSTOMER_SITUATION_ORDERS = /*$$(*/ "CustomerSituation.orders"; /*)*/
+  public static final String CUSTOMER_SITUATION_DATE = /*$$(*/ "CustomerSituation.date"; /*)*/
+  public static final String CUSTOMER_SITUATION_REFERENCE = /*$$(*/
+      "CustomerSituation.reference"; /*)*/
+  public static final String CUSTOMER_SITUATION_CONTACT = /*$$(*/ "CustomerSituation.contact"; /*)*/
+  public static final String CUSTOMER_SITUATION_TOTAL_HT = /*$$(*/
+      "CustomerSituation.totalHT"; /*)*/
+  public static final String CUSTOMER_SITUATION_TOTAL_TAX = /*$$(*/
+      "CustomerSituation.totalTax"; /*)*/
+  public static final String CUSTOMER_SITUATION_TOTAL_ATI = /*$$(*/
+      "CustomerSituation.totalATI"; /*)*/
+  public static final String CUSTOMER_SITUATION_TO_INVOICE = /*$$(*/
+      "CustomerSituation.toInvoice"; /*)*/
+  public static final String CUSTOMER_SITUATION_STATUS = /*$$(*/ "CustomerSituation.status"; /*)*/
+  public static final String CUSTOMER_SITUATION_INVOICES = /*$$(*/
+      "CustomerSituation.invoices"; /*)*/
+  public static final String CUSTOMER_SITUATION_COMMERCIAL_DATA = /*$$(*/
+      "CustomerSituation.commercialData"; /*)*/
+  public static final String CUSTOMER_SITUATION_LAST_MEETING_DATE = /*$$(*/
+      "CustomerSituation.lastMeetingDate"; /*)*/
+  public static final String CUSTOMER_SITUATION_WITH = /*$$(*/ "CustomerSituation.with"; /*)*/
+  public static final String CUSTOMER_SITUATION_NEXT_MEETING_DATE = /*$$(*/
+      "CustomerSituation.nextMeetingDate"; /*)*/
+  public static final String CUSTOMER_SITUATION_LAST_CALL = /*$$(*/
+      "CustomerSituation.lastCall"; /*)*/
+  public static final String CUSTOMER_SITUATION_NEXT_OUTGOING_CALL = /*$$(*/
+      "CustomerSituation.nextOutgoingCall"; /*)*/
+  public static final String CUSTOMER_SITUATION_LAST_ORDER = /*$$(*/
+      "CustomerSituation.lastOrder"; /*)*/
+  public static final String CUSTOMER_SITUATION_AVG_ORDER_AMT = /*$$(*/
+      "CustomerSituation.avgOrderAmt"; /*)*/
+  public static final String CUSTOMER_SITUATION_12_MONTH_TURNOVER = /*$$(*/
+      "CustomerSituation.12MonthTurnover"; /*)*/
+  public static final String CUSTOMER_SITUATION_ORDER_FREQ = /*$$(*/
+      "CustomerSituation.orderFreq"; /*)*/
+  public static final String CUSTOMER_SITUATION_NUM = /*$$(*/ "CustomerSituation.num"; /*)*/
+  public static final String CUSTOMER_SITUATION_REF_DOC = /*$$(*/ "CustomerSituation.refDoc"; /*)*/
+  public static final String CUSTOMER_SITUATION_CUST_REF = /*$$(*/
+      "CustomerSituation.custRef"; /*)*/
+  public static final String CUSTOMER_SITUATION_TO_PAY = /*$$(*/ "CustomerSituation.toPay"; /*)*/
+  public static final String CUSTOMER_SITUATION_DUE_DATE = /*$$(*/
+      "CustomerSituation.dueDate"; /*)*/
+  public static final String CUSTOMER_SITUATION_FINANCIAL_DATA = /*$$(*/
+      "CustomerSituation.financialData"; /*)*/
+  public static final String CUSTOMER_SITUATION_TOTAL_BALANCE = /*$$(*/
+      "CustomerSituation.totalBalance"; /*)*/
+  public static final String CUSTOMER_SITUATION_DUE_BALANCE = /*$$(*/
+      "CustomerSituation.dueBalance"; /*)*/
+  public static final String CUSTOMER_SITUATION_RECOVERABLE_BALANCE = /*$$(*/
+      "CustomerSituation.recoverableBalance"; /*)*/
 
   public static final String PRODUCT_CATALOG_SUMMARY = /*$$(*/ "ProductCatalog.summary"; /*)*/
   public static final String PRODUCT_CATALOG_REFERENCE = /*$$(*/ "ProductCatalog.reference"; /*)*/

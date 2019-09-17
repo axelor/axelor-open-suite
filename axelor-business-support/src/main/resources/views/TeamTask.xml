@@ -12,7 +12,7 @@
 		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-team-task-method-update-to-invoice"/>
 	</grid>
 	
-	<grid name="team-task-client-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate">
+	<grid name="team-task-customer-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
@@ -25,14 +25,14 @@
 		<field name="targetVersion"/>
 	</grid>
 	
-    <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project Planning Time Spent" name="project-planning-time-spent-client-grid">
+    <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Project Planning Time Spent" name="project-planning-time-spent-customer-grid">
 		<field name="realHours"/>		
 		<field name="project"/>
 		<field name="task"/>
 		<field name="date"/>
     </grid>
 
-	<form name="team-task-client-form" title="Ticket" model="com.axelor.team.db.TeamTask"
+	<form name="team-task-customer-form" title="Ticket" model="com.axelor.team.db.TeamTask"
 		onNew="action-team-task-group-onnew" onLoad="action-team-task-group-timer-process" width="large">
 		<panel name="mainPanel">
 			<panel name="statusSelectPanel" colSpan="8">
@@ -42,7 +42,7 @@
 				<viewer>
 					<![CDATA[
 						<h4 class="text-right">
-							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
+							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the customer</span>
 							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
 							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
 							
@@ -104,7 +104,7 @@
 					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
 					<field name="exTaxTotal" readonly="true" colSpan="4"/>
 				</panel>
-				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-client-dashlet-project-planning-time-spent" showIf="teamTaskInvoicing &amp;&amp; invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
+				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-customer-dashlet-project-planning-time-spent" showIf="teamTaskInvoicing &amp;&amp; invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
 			</panel>
 		</panel-tabs>
 		<panel-mail name="mailPanel">
@@ -113,7 +113,7 @@
 		</panel-mail>
 	</form>
 	
-	<form name="project-planning-time-spent-client-form" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<form name="project-planning-time-spent-customer-form" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<panel name="mainPanel" readonly="true">
 			<field name="realHours"/>	
 			<field name="project"/>
@@ -129,9 +129,9 @@
 		<domain>self.targetVersion.id = :id</domain>
 	</action-view>
 	
-	<action-view name="action-team-task-client-dashlet-project-planning-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
-		<view type="grid" name="project-planning-time-spent-client-grid"/>
-		<view type="form" name="project-planning-time-spent-client-form"/>
+	<action-view name="action-team-task-customer-dashlet-project-planning-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<view type="grid" name="project-planning-time-spent-customer-grid"/>
+		<view type="form" name="project-planning-time-spent-customer-form"/>
 		<view-param name="popup" value="true"/>
 		<domain>self.task.id = :id AND self.typeSelect = 2</domain>
 	</action-view>

@@ -202,7 +202,7 @@ public class TraceBackService {
   }
 
   /**
-   * Trace an exception into the traceback and show it to the client with the specified response
+   * Trace an exception into the traceback and show it to the customer with the specified response
    * message type.
    *
    * @param response
@@ -221,7 +221,7 @@ public class TraceBackService {
   }
 
   /**
-   * Trace an exception into the traceback and show it to the client with the specified response
+   * Trace an exception into the traceback and show it to the customer with the specified response
    * message type.
    *
    * @param response

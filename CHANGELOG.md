@@ -20,6 +20,7 @@
 - English language : Correction of errors in english words and change gender job word to genderless job word
 - Action Builder: Added option to update or use json field from real model
 - STUDIO : add 'attrs' for User.
+- Rename fields with client into customer
 
 ## Bug Fixes
 - Fix injection error during test
@@ -135,6 +136,7 @@
 - Action Builder : Add feature to create templates for json models to send email
 - FORECAST RECAP : sequence feature added for ForeCastRecap
 - Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
+
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
 - ContractLine: hide `isConsumptionLine` if not activated in Contract config

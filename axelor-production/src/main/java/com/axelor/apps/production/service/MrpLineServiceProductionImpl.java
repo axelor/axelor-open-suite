@@ -125,11 +125,11 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
     if (model instanceof ManufOrder) {
 
-      return ((ManufOrder) model).getClientPartner();
+      return ((ManufOrder) model).getCustomerPartner();
 
     } else if (model instanceof OperationOrder) {
 
-      return ((OperationOrder) model).getManufOrder().getClientPartner();
+      return ((OperationOrder) model).getManufOrder().getCustomerPartner();
 
     } else {
 

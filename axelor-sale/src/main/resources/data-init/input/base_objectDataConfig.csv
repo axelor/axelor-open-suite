@@ -1,2 +1,2 @@
 "title";"modelSelect";"status";"metaModel";"typeSelect";"tabName";"path";"fields";"toDeleteFields"
-"Partner data config";"com.axelor.apps.base.db.Partner";1;"SaleOrder";0;"SaleOrder";"clientPartner";"saleorderSeq,orderDate,statusSelect,contactPartner,mainInvoicingAddress,mainInvoicingAddressStr,deliveryAddress,deliveryAddressStr";"contactPartner,mainInvoicingAddress,mainInvoicingAddressStr,deliveryAddress,deliveryAddressStr"
+"Partner data config";"com.axelor.apps.base.db.Partner";1;"SaleOrder";0;"SaleOrder";"customerPartner";"saleorderSeq,orderDate,statusSelect,contactPartner,mainInvoicingAddress,mainInvoicingAddressStr,deliveryAddress,deliveryAddressStr";"contactPartner,mainInvoicingAddress,mainInvoicingAddressStr,deliveryAddress,deliveryAddressStr"

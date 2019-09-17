@@ -12,7 +12,7 @@
 11;"IN_WT";"Wire Transfer Cashing";3;"true";"false";"Payment Rec.";"true";"false";;"1";1;121
 12;"IN_DD";"Direct Debit Cashing";3;"false";"false";"Payment Rec.";"true";"false";;"1";1;122
 13;"IN_OTH";"Other Cashing";3;"false";"false";"Payment Rec.";"true";"false";;"1";1;123
-14;"RBT_CLT";"Client reimbursement";3;"false";"false";"Reimbursement ";"true";"false";;"1";1;125
+14;"RBT_CLT";"Customer reimbursement";3;"false";"false";"Reimbursement ";"true";"false";;"1";1;125
 15;"OUT_CSH";"Cash Payments";3;"true";"true";"Payment Emit.";"true";"false";;"1";1;126
 16;"OUT_CHQ";"Cheque Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1;127
 17;"OUT_CC";"Credit Card Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1;128

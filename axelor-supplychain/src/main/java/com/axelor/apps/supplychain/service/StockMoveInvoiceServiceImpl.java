@@ -125,7 +125,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
       }
 
-      invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
+      invoice.setPartnerTaxNbr(saleOrder.getCustomerPartner().getTaxNbr());
       invoice.setNote(saleOrder.getInvoiceComments());
 
       invoiceRepository.save(invoice);
@@ -182,7 +182,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     if (stockMove.getIsReversion()) {
       if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
-        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND;
       } else if (stockMoveType == StockMoveRepository.TYPE_OUTGOING) {
         invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
       } else {
@@ -192,7 +192,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       if (stockMoveType == StockMoveRepository.TYPE_INCOMING) {
         invoiceOperationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
       } else if (stockMoveType == StockMoveRepository.TYPE_OUTGOING) {
-        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+        invoiceOperationType = InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE;
       } else {
         return null;
       }

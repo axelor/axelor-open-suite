@@ -458,7 +458,7 @@
 "The amount to be spread over the timetable is negative.",,,
 "The amount to invoice is superior than the amount in the sale order",,,
 "The batch has already been running this month. Are you sure to continue ?",,,
-"The client is required and must be the same for all sale orders",,,
+"The customer is required and must be the same for all sale orders",,,
 "The company %s doesn't have any configured sequence for MRP",,,
 "The company is required and must be the same for all purchase orders",,,
 "The company is required and must be the same for all sale orders",,,

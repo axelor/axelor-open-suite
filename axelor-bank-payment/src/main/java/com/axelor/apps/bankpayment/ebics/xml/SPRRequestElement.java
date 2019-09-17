@@ -36,9 +36,9 @@ import com.axelor.apps.account.ebics.schema.h003.StaticHeaderType.Product;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
-import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.customer.OrderAttribute;
 import com.axelor.exception.AxelorException;
 import java.util.Calendar;
 import javax.crypto.spec.SecretKeySpec;
@@ -56,7 +56,7 @@ public class SPRRequestElement extends InitializationRequestElement {
    * @param session the current ebic session.
    */
   public SPRRequestElement(EbicsSession session) throws AxelorException {
-    super(session, com.axelor.apps.bankpayment.ebics.client.OrderType.SPR, "SPRRequest.xml");
+    super(session, com.axelor.apps.bankpayment.ebics.customer.OrderType.SPR, "SPRRequest.xml");
     keySpec = new SecretKeySpec(nonce, "EAS");
   }
 

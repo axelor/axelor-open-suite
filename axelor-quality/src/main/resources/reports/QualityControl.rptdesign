@@ -138,10 +138,10 @@
                     <text-property name="heading">pdf_footer</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">client_name</property>
+                    <property name="columnName">customer_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">client_name</text-property>
-                    <text-property name="heading">client_name</text-property>
+                    <text-property name="displayName">customer_name</text-property>
+                    <text-property name="heading">customer_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">responsible</property>
@@ -226,7 +226,7 @@
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">client_name</property>
+                        <property name="name">customer_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -307,8 +307,8 @@
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">client_name</property>
-                    <property name="nativeName">client_name</property>
+                    <property name="name">customer_name</property>
+                    <property name="nativeName">customer_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -362,7 +362,7 @@ QualityControl.reference,
 Project.full_name,
 PrintingSetting.pdf_header,
 PrintingSetting.pdf_footer,
-Partner.full_name as client_name,
+Partner.full_name as customer_name,
 Employee.name as responsible,
 MetaFile.file_path as logo_path,
 Company.height as logo_height,
@@ -373,7 +373,7 @@ from quality_quality_control as QualityControl
 left outer join base_printing_settings as PrintingSetting on (QualityControl.printing_settings = PrintingSetting.id)
 left outer join project_project as Project on (QualityControl.project = Project.id)
 left outer join base_company as Company on (Project.company = Company.id)
-left outer join base_partner as Partner on (Project.client_partner = Partner.id)
+left outer join base_partner as Partner on (Project.customer_partner = Partner.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join meta_file as MetaFile1 on (MetaFile1.id = QualityControl.inspector_signature)
 left outer join meta_file as MetaFile2 on (MetaFile2.id = QualityControl.customer_signature)
@@ -1181,9 +1181,9 @@ ORDER BY control_point_name;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">client_name</property>
-                    <text-property name="displayName">client_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["client_name"]</expression>
+                    <property name="name">customer_name</property>
+                    <text-property name="displayName">customer_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1393,7 +1393,7 @@ ORDER BY control_point_name;]]></xml-property>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'QualityControl.projectClient'</value>
+                                                <value type="javascript">'QualityControl.projectCustomer'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -1431,7 +1431,7 @@ ORDER BY control_point_name;]]></xml-property>
                                 <text id="5373">
                                     <property name="fontWeight">bold</property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["client_name"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["customer_name"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                             <cell id="5353">

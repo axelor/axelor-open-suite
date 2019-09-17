@@ -58,7 +58,7 @@
       <field name="purchaseOrder"/>
       <field name="purchaseOrder.company"/>
       <field name="purchaseOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
-      <field name="purchaseOrder.clientPartner"/>
+      <field name="purchaseOrder.customerPartner"/>
       <field name="product.code"/>
       <field name="productName"/>
       <field name="qty" aggregate="sum"/>

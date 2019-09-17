@@ -235,7 +235,7 @@
 "ExpenseLine.amount","Bedrag",,
 "ExpenseLine.cityFrom","Beginnende stad",,
 "ExpenseLine.cityTo","Aankomst stad",,
-"ExpenseLine.client","Klant",,
+"ExpenseLine.customer","Klant",,
 "ExpenseLine.distance","Afstand (km)",,
 "ExpenseLine.expenseDate","Datum",,
 "ExpenseLine.expenseType","Soort uitgave",,

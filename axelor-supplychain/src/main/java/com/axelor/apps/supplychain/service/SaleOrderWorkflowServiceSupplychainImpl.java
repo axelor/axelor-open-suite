@@ -95,7 +95,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
     try {
-      accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
+      accountingSituationSupplychainService.updateUsedCredit(saleOrder.getCustomerPartner());
     } catch (Exception e) {
       e.printStackTrace();
     }

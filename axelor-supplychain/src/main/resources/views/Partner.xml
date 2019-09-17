@@ -26,7 +26,7 @@
      <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-partner-grid"/>
 		<view type="form" name="sale-order-form"/>
-		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
+		<domain>(self.customerPartner.id = :id OR self.contactPartner.id = :id)</domain>
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	

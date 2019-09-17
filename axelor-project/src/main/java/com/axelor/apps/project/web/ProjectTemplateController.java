@@ -94,19 +94,19 @@ public class ProjectTemplateController {
 
     String projectCode = (String) context.get("code");
 
-    Object clientPartnerContext = context.get("clientPartner");
-    Partner clientPartner = null;
+    Object customerPartnerContext = context.get("customerPartner");
+    Partner customerPartner = null;
 
-    if (clientPartnerContext != null) {
-      String clientPartnerId =
-          ((LinkedHashMap<String, Object>) clientPartnerContext).get("id").toString();
-      clientPartner = partnerRepo.find(Long.parseLong(clientPartnerId));
+    if (customerPartnerContext != null) {
+      String customerPartnerId =
+          ((LinkedHashMap<String, Object>) customerPartnerContext).get("id").toString();
+      customerPartner = partnerRepo.find(Long.parseLong(customerPartnerId));
     }
 
     Project project;
     try {
       project =
-          projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+          projectService.createProjectFromTemplate(projectTemplate, projectCode, customerPartner);
       response.setCanClose(true);
 
       response.setView(

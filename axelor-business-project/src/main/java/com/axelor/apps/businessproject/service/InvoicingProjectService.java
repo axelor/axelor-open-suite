@@ -98,7 +98,7 @@ public class InvoicingProjectService {
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
     Project project = invoicingProject.getProject();
-    Partner customer = project.getClientPartner();
+    Partner customer = project.getCustomerPartner();
     Partner customerContact = project.getContactPartner();
     if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
       customerContact = customer.getContactPartnerSet().iterator().next();
@@ -113,7 +113,7 @@ public class InvoicingProjectService {
     project.getAssignedTo();
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE,
             company,
             customer.getPaymentCondition(),
             customer.getInPaymentMode(),

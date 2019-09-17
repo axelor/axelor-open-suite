@@ -122,8 +122,8 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
-	<action-method name="action-partner-method-show-client-situation" >
-		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
+	<action-method name="action-partner-method-show-customer-situation" >
+		<call class="com.axelor.apps.base.web.PartnerController" method="printCustomerSituation"/>
 	</action-method>
 	
 	<action-method name="action-partner-method-get-default-specific-tax-note">

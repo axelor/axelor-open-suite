@@ -14,7 +14,7 @@
 <!--   	<dashlets> -->
 <!-- 		<dashlet name="Tous les produits" sequence="0" viewType="grid" colspan="12" view="product-grid" />  	 -->
 <!--   		<dashlet name="Ventes de produit par catégorie" sequence="1" viewType="chart" colspan="6" view="products-order-per-category" /> -->
-<!--   		<dashlet name="Ventes de produit par mois et par client" sequence="2" viewType="chart" colspan="6" view="products-order-per-month-per-customer" /> -->
+<!--   		<dashlet name="Ventes de produit par mois et par customer" sequence="2" viewType="chart" colspan="6" view="products-order-per-month-per-customer" /> -->
 <!--   	</dashlets> -->
 <!--   </dashboard-builder> -->
   

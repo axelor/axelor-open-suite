@@ -249,7 +249,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             null,
             saleOrder.getDeliveryAddress(),
             company,
-            saleOrder.getClientPartner(),
+            saleOrder.getCustomerPartner(),
             saleOrder.getStockLocation(),
             toStockLocation,
             null,

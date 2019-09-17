@@ -904,9 +904,9 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-record-partner-shipment-informations" model="com.axelor.apps.stock.db.StockMove">
-		<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
-    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
-		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
+		<field name="shipmentMode" expr="eval: customerPartner?.shipmentMode"/>
+    	<field name="freightCarrierMode" expr="eval: customerPartner?.freightCarrierMode"/>
+		<field name="carrierPartner" expr="eval: customerPartner?.freightCarrierMode?.carrierPartner"/>
 	</action-record>
 	
 	<action-group name="action-group-stock-stockmove-cancel-click">

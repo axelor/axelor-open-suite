@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.ebics.xml;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument;
 import com.axelor.apps.account.ebics.schema.h003.EbicsResponseDocument.EbicsResponse;
 import com.axelor.apps.bankpayment.db.EbicsUser;
-import com.axelor.apps.bankpayment.ebics.client.EbicsRootElement;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsRootElement;
 import com.axelor.apps.bankpayment.ebics.exception.ReturnCode;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;

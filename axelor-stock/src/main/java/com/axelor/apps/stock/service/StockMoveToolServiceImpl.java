@@ -140,12 +140,12 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   /**
-   * @param clientPartner
+   * @param customerPartner
    * @param toAddress
    * @return default value for {@link StockMove#isIspmRequired}
    */
-  public boolean getDefaultISPM(Partner clientPartner, Address toAddress) {
-    if (clientPartner != null && clientPartner.getIsIspmRequired()) {
+  public boolean getDefaultISPM(Partner customerPartner, Address toAddress) {
+    if (customerPartner != null && customerPartner.getIsIspmRequired()) {
       return true;
     } else {
       return toAddress != null

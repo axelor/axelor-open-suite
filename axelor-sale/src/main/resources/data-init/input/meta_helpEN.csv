@@ -12,5 +12,5 @@
 "axelor-sale";"SaleConfig";"sale-config-form";"displaySalemanOnPrinting";"If the box is checked, the name of the salesperson that is indicated on a quotation/order will appear on the printouts."
 "axelor-sale";"SaleConfig";"sale-config-form";"displayDelCondOnPrinting";"On a quotation/order, in the tab ""Delivery Information"", there is a text field ""Delivery conditions"". If enabled, the contents of this field will appear on the printings.
 "
-"axelor-sale";"SaleConfig";"sale-config-form";"saleOrderClientBox";"It offers the possibility to personalize a customer box with information of your choice on the printing of quotations/orders thanks to a field html."
+"axelor-sale";"SaleConfig";"sale-config-form";"saleOrderCustomerBox";"It offers the possibility to personalize a customer box with information of your choice on the printing of quotations/orders thanks to a field html."
 "axelor-sale";"SaleConfig";"sale-config-form";"saleOrderLegalNote";"You can enter here legal note that will appear on the prints of your orders."

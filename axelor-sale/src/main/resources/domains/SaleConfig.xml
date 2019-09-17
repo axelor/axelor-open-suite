@@ -10,7 +10,7 @@
 
 		<decimal name="acceptedCredit" title="Accepted Credit"/>
 		<integer name="saleOrderInAtiSelect" title="Sale orders ATI/WT" selection="base.in.ati.select" default="1"/>
-		<string name="saleOrderClientBox" large="true" multiline="true" title="Client box in sale order"/>
+		<string name="saleOrderCustomerBox" large="true" multiline="true" title="Customer box in sale order"/>
 		<string name="saleOrderLegalNote" large="true" multiline="true" title="Legal note on sale order" help="Short legal note to be displayed on sales order"/>
 		<boolean name="displaySalemanOnPrinting" title="Display saleman on printing"/>
 		<boolean name="displayDelCondOnPrinting" title="Display delivery condition on printing"/>

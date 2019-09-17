@@ -183,7 +183,7 @@ public class PartnerController {
    * @param response
    * @return
    */
-  public void printClientSituation(ActionRequest request, ActionResponse response)
+  public void printCustomerSituation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Partner partner = request.getContext().asType(Partner.class);
@@ -192,7 +192,7 @@ public class PartnerController {
 
     String name = I18n.get("Customer Situation");
     String fileLink =
-        ReportFactory.createReport(IReport.CLIENT_SITUATION, name + "-${date}")
+        ReportFactory.createReport(IReport.CUSTOMER_SITUATION, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(partner))
             .addParam("UserId", user.getId())
             .addParam("PartnerId", partner.getId())

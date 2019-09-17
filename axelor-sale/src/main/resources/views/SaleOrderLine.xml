@@ -35,7 +35,7 @@
       	<field name="saleOrder"/>
       	<field name="saleOrder.company"/>
       	<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
-  		<field name="saleOrder.clientPartner"/>
+  		<field name="saleOrder.customerPartner"/>
   		<field name="product.code" width="120"/>
 	    <field name="productName"/>
 	    <field name="qty" aggregate="sum"/>
@@ -61,7 +61,7 @@
 	    <field name="inTaxTotal" aggregate="sum"/>
 	</grid>
 
-    <form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client" 
+    <form name="sale-order-line-project-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-customer" 
     		readonlyIf="true" canEdit="false">
         <panel name="mainPanel" title="Sale order">
             <field name="saleOrder.saleOrderSeq" title="Reference" colSpan="4"/>
@@ -72,7 +72,7 @@
     </form>
 
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
-		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
+		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-customer"
 		  onNew="action-group-sale-saleorderline-onnew" width="large">
 
 		<panel name="productPanel" showIf="typeSelect == 1">
@@ -239,7 +239,7 @@
 	</form>
 
 	<form name="sale-order-line-template-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
-		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-template-attrs-hidden-fields-for-client" onNew="action-group-sale-saleorderline-onnew" width="large">
+		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-template-attrs-hidden-fields-for-customer" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel name="product1Panel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
 			<panel name="typeSelect1Panel" colSpan="3">
@@ -303,7 +303,7 @@
 	<form name="sale-order-line-menu-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" 
 	onLoad="action-group-sale-saleorderline-onload" onNew="action-group-sale-saleorderline-onnew" width="large">
 		<panel name="mainPanel" >
-			<field name="saleOrder.clientPartner"/>
+			<field name="saleOrder.customerPartner"/>
 			<field name="saleOrder" grid-view="sale-order-grid" form-view="sale-order-form"/>
 			<field name="saleOrder.company"/>
 			<field name="saleOrder.stockLocation" if="__config__.app.isApp('supplychain')"/>
@@ -323,7 +323,7 @@
 		<panel name="mainPanel">
 			<field name="saleOrder.company" colSpan="3"/>
 			<spacer name="saleOrderCompanySpacer" colSpan="9"/>
-			<field name="saleOrder.clientPartner" grid-view="partner-grid" form-view="partner-form" colSpan="3"/>
+			<field name="saleOrder.customerPartner" grid-view="partner-grid" form-view="partner-form" colSpan="3"/>
 			<field name="saleOrder.saleOrderSeq" grid-view="sale-order-grid" form-view="sale-order-form" colSpan="3"/>
 			<field name="saleOrder.creationDate" colSpan="3"/>
 			<field name="saleOrder.currency" colSpan="3"/>
@@ -359,8 +359,8 @@
 	</action-view>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-project">
-		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${saleOrder.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.customerPartner.id = ${_parent?.customerPartner?.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.customerPartner.id = ${saleOrder.customerPartner?.id} AND self.isBusinessProject = true &quot;" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-set-domain-analytic-distribution-template">
@@ -571,12 +571,12 @@
     	<attribute name="value" for="$companyCurrency" expr="eval:saleOrder?.company?.currency" if="saleOrder != null" />
 	</action-attrs>
 
-	<action-attrs name="action-sale-order-line-attrs-hidden-fields-for-client">
-		<attribute name="hidden" for="toInvoice,allPanelTab,marginPanel" if="eval: __user__.group.isClient" expr="true"/>
+	<action-attrs name="action-sale-order-line-attrs-hidden-fields-for-customer">
+		<attribute name="hidden" for="toInvoice,allPanelTab,marginPanel" if="eval: __user__.group.isCustomer" expr="true"/>
 	</action-attrs>
 
-	<action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
-		<attribute name="hidden" for="allPanelTab" if="eval: __user__.group.isClient" expr="true"/>
+	<action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-customer">
+		<attribute name="hidden" for="allPanelTab" if="eval: __user__.group.isCustomer" expr="true"/>
 	</action-attrs>
 
     <action-attrs name="action-sale-order-line-attrs-show-delivery-panel">

@@ -7,8 +7,8 @@ apply {
 }
 
 axelor {
-	title "Axelor Client Portal"
-	description "Axelor Client Portal Module"
+	title "Axelor Customer Portal"
+	description "Axelor Customer Portal Module"
 }
 
 dependencies {

@@ -235,7 +235,7 @@
 "ExpenseLine.amount","Kwota",,
 "ExpenseLine.cityFrom","Miasto początkowe",,
 "ExpenseLine.cityTo","Przyjazd do miasta",,
-"ExpenseLine.client","Klient",,
+"ExpenseLine.customer","Klient",,
 "ExpenseLine.distance","Odległość (km)",,
 "ExpenseLine.expenseDate","Data",,
 "ExpenseLine.expenseType","Rodzaj wydatków",,

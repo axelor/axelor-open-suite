@@ -110,7 +110,7 @@
 "QualityControl.measuringNote","Note",,
 "QualityControl.observation","Observation",,
 "QualityControl.project","CHANTIER",,
-"QualityControl.projectClient","CLIENT",,
+"QualityControl.projectCustomer","CLIENT",,
 "QualityControl.qualityControlTitle","CONTRÔLE QUALITÉ",,
 "QualityControl.reference","Numéro du contrôle",,
 "QualityControl.responsible","CONTROLEUR",,

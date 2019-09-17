@@ -59,9 +59,9 @@ public class SaleOrderLineTaxService {
     Set<String> specificNotes = new HashSet<String>();
 
     boolean customerSpecificNote = false;
-    if (saleOrder.getClientPartner().getFiscalPosition() != null) {
+    if (saleOrder.getCustomerPartner().getFiscalPosition() != null) {
       customerSpecificNote =
-          saleOrder.getClientPartner().getFiscalPosition().getCustomerSpecificNote();
+          saleOrder.getCustomerPartner().getFiscalPosition().getCustomerSpecificNote();
     }
 
     if (saleOrderLineList != null && !saleOrderLineList.isEmpty()) {
@@ -125,7 +125,7 @@ public class SaleOrderLineTaxService {
     if (!customerSpecificNote) {
       saleOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
     } else {
-      saleOrder.setSpecificNotes(saleOrder.getClientPartner().getSpecificTaxNote());
+      saleOrder.setSpecificNotes(saleOrder.getCustomerPartner().getSpecificTaxNote());
     }
 
     return saleOrderLineTaxList;

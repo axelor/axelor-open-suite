@@ -78,7 +78,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       String externalReference,
       LocalDate orderDate,
       PriceList priceList,
-      Partner clientPartner,
+      Partner customerPartner,
       Team team)
       throws AxelorException {
     return createSaleOrder(
@@ -92,7 +92,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         null,
         orderDate,
         priceList,
-        clientPartner,
+        customerPartner,
         team);
   }
 
@@ -107,7 +107,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       StockLocation stockLocation,
       LocalDate orderDate,
       PriceList priceList,
-      Partner clientPartner,
+      Partner customerPartner,
       Team team)
       throws AxelorException {
 
@@ -115,7 +115,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
         company.getName(),
         externalReference,
-        clientPartner.getFullName());
+        customerPartner.getFullName());
 
     SaleOrder saleOrder =
         super.createSaleOrder(
@@ -128,7 +128,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             externalReference,
             orderDate,
             priceList,
-            clientPartner,
+            customerPartner,
             team);
 
     if (stockLocation == null) {
@@ -137,8 +137,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     saleOrder.setStockLocation(stockLocation);
 
-    saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
-    saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
+    saleOrder.setPaymentMode(customerPartner.getInPaymentMode());
+    saleOrder.setPaymentCondition(customerPartner.getPaymentCondition());
 
     if (saleOrder.getPaymentMode() == null) {
       saleOrder.setPaymentMode(
@@ -150,8 +150,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           this.accountConfigService.getAccountConfig(company).getDefPaymentCondition());
     }
 
-    saleOrder.setShipmentMode(clientPartner.getShipmentMode());
-    saleOrder.setFreightCarrierMode(clientPartner.getFreightCarrierMode());
+    saleOrder.setShipmentMode(customerPartner.getShipmentMode());
+    saleOrder.setFreightCarrierMode(customerPartner.getFreightCarrierMode());
 
     return saleOrder;
   }
@@ -160,7 +160,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   public SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrderList,
       Currency currency,
-      Partner clientPartner,
+      Partner customerPartner,
       Company company,
       StockLocation stockLocation,
       Partner contactPartner,
@@ -195,7 +195,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             stockLocation,
             LocalDate.now(),
             priceList,
-            clientPartner,
+            customerPartner,
             team);
 
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);

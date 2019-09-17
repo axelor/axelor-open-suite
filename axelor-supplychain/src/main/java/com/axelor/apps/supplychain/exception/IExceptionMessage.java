@@ -61,8 +61,8 @@ public interface IExceptionMessage {
 
   static final String STOCK_MOVE_MULTI_INVOICE_CURRENCY = /*$$(*/
       "The currency is required and must be the same for all sale orders" /*)*/;
-  static final String STOCK_MOVE_MULTI_INVOICE_CLIENT_PARTNER = /*$$(*/
-      "The client is required and must be the same for all sale orders" /*)*/;
+  static final String STOCK_MOVE_MULTI_INVOICE_CUSTOMER_PARTNER = /*$$(*/
+      "The customer is required and must be the same for all sale orders" /*)*/;
   static final String STOCK_MOVE_MULTI_INVOICE_SUPPLIER_PARTNER = /*$$(*/
       "The supplier is required and must be the same for all purchase orders" /*)*/;
   static final String STOCK_MOVE_MULTI_INVOICE_COMPANY_SO = /*$$(*/

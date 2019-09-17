@@ -268,7 +268,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       SaleOrder saleOrder = saleOrderRepository.find(stockMove.getOriginId());
       currency = saleOrder.getCurrency();
       if (partner == null) {
-        partner = saleOrder.getClientPartner();
+        partner = saleOrder.getCustomerPartner();
       }
       partnerAccount = accountConfigSupplychainService.getForecastedInvCustAccount(accountConfig);
     }

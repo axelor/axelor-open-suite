@@ -116,7 +116,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       return;
     }
 
-    Partner partner = saleOrder.getClientPartner();
+    Partner partner = saleOrder.getCustomerPartner();
     List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();
     for (AccountingSituation accountingSituation : accountingSituationList) {
       if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
@@ -140,7 +140,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
           if (!saleOrder.getManualUnblock()) {
             String message = accountingSituation.getCompany().getOrderBloquedMessage();
             if (Strings.isNullOrEmpty(message)) {
-              message = I18n.get("Client blocked : maximal accepted credit exceeded.");
+              message = I18n.get("Customer blocked : maximal accepted credit exceeded.");
             }
             throw new BlockedSaleOrderException(accountingSituation, message);
           }
@@ -157,7 +157,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
         Beans.get(SaleOrderRepository.class)
             .all()
             .filter(
-                "self.company = ?1 AND self.clientPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4",
+                "self.company = ?1 AND self.customerPartner = ?2 AND self.statusSelect > ?3 AND self.statusSelect < ?4",
                 accountingSituation.getCompany(),
                 accountingSituation.getPartner(),
                 SaleOrderRepository.STATUS_DRAFT_QUOTATION,

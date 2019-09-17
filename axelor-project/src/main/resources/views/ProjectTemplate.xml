@@ -77,9 +77,9 @@
 		<panel name="mainPanel" colSpan="12">
 			<panel name="infoPanel" colSpan="12">
 					<field name="code" title="Code" type="string" required="true"/>
-					<field name="clientPartner" title="Customer" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isCustomer = true" required="true"/>
+					<field name="customerPartner" title="Customer" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isCustomer = true" required="true"/>
 			</panel>
-			<button name="createBusinessProjectBtn" title="Create business project from this template" colSpan="5" readonlyIf="!clientPartner" onClick="action-project-template-method-generate-project-from-wizard"/>
+			<button name="createBusinessProjectBtn" title="Create business project from this template" colSpan="5" readonlyIf="!customerPartner" onClick="action-project-template-method-generate-project-from-wizard"/>
 			<spacer name="createProjectBtnSpacer" />
 			<button name="createProjectBtn" title="Create project from this template" colSpan="5"  readonlyIf="!code" onClick="action-project-template-method-generate-project-from-wizard"/>			
 		</panel>
@@ -94,7 +94,7 @@
 	</action-method>
 
 	<action-attrs name="action-attrs-project-template-set-wizard-hidden">
-	  <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
+	  <attribute name="hidden" expr="eval:!_businessProject" for="customerPartner"/>
 	  <attribute name="hidden" expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
 	  <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
 	  <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>

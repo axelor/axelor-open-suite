@@ -920,13 +920,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select ExpenseLine.id, ExpenseLine.expense_date,ClientPartner.full_name as cust_full_name, Product.name as product_name,
+            <xml-property name="queryText"><![CDATA[select ExpenseLine.id, ExpenseLine.expense_date,CustomerPartner.full_name as cust_full_name, Product.name as product_name,
 ExpenseLine.comments, Currency.code as "currencyCode", ExpenseLine.total_amount, ExpenseLine.untaxed_amount, ExpenseLine.total_tax, ExpenseLine.kilometric_expense
 from hr_expense as Expense
 inner join hr_expense_line as ExpenseLine on (ExpenseLine.expense = Expense.id)
 left join project_project as Task on (ExpenseLine.project = Task.id)
 left join project_project as Project on (Task.parent_project = Project.id)
-left join base_partner as ClientPartner on ((Task.client_partner is null and Project.client_partner = ClientPartner.id) or (Task.client_partner = ClientPartner.id))
+left join base_partner as CustomerPartner on ((Task.customer_partner is null and Project.customer_partner = CustomerPartner.id) or (Task.customer_partner = CustomerPartner.id))
 left join base_product as Product on (ExpenseLine.expense_product = Product.id)
 left join base_company as Company on (Expense.company = Company.id)
 left join base_currency as Currency on (Currency.id = Company.currency)
@@ -2479,7 +2479,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'ExpenseLine.client'</value>
+                                        <value type="javascript">'ExpenseLine.customer'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

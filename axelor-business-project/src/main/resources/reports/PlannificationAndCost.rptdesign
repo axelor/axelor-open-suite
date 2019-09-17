@@ -417,7 +417,7 @@ FROM project_project Project
 LEFT JOIN base_company Company on (Company.id = Project.company)
 LEFT JOIN meta_file MetaFile on (MetaFile.id = Company.logo)
 LEFT JOIN base_currency Currency on (Currency.id = Company.currency)
-LEFT JOIN base_partner Partner on (Partner.id = Project.client_partner)
+LEFT JOIN base_partner Partner on (Partner.id = Project.customer_partner)
 WHERE Project.id = ?]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">

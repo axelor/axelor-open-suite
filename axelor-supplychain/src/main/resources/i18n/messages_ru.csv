@@ -443,7 +443,7 @@
 "The amount to be spread over the timetable is negative.","Сумма, подлежащая распределению по расписанию, является отрицательной.",,
 "The amount to invoice is superior than the amount in the sale order",,,
 "The batch has already been running this month. Are you sure to continue ?",,,
-"The client is required and must be the same for all sale orders","Клиент является обязательным и должен быть одним и тем же для всех заказов на продажу.",,
+"The customer is required and must be the same for all sale orders","Клиент является обязательным и должен быть одним и тем же для всех заказов на продажу.",,
 "The company is required and must be the same for all purchase orders","Компания является обязательной и должна быть одинаковой для всех заказов на поставку.",,
 "The company is required and must be the same for all sale orders","Компания является обязательной и должна быть одинаковой для всех заказов на продажу.",,
 "The currency is required and must be the same for all sale orders","Валюта является обязательной и должна быть одинаковой для всех заказов на продажу.",,

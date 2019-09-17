@@ -26,10 +26,10 @@
 		</panel>
     </form>
 
-	<form name="sale-order-form-client" id="supplychain-sale-order-form-client" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
+	<form name="sale-order-form-customer" id="supplychain-sale-order-form-customer" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4" 
 		  onNew="action-group-supplychain-saleorder-onnew"
 		  onSave="save,action-sale-order-method-compute,save" onLoad="action-group-supplychain-saleorder-onload" width="large">
-		<panel-include view="sale-order-form-client" from="axelor-sale"/>
+		<panel-include view="sale-order-form-customer" from="axelor-sale"/>
 	</form>
 	
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form"
@@ -123,14 +123,14 @@
 	</action-record>
 
 	<action-record name="action-sale-order-record-payment-mode" model="com.axelor.apps.sale.db.SaleOrder">
-		<field name="paymentMode" expr="eval: clientPartner?.inPaymentMode" if="clientPartner?.inPaymentMode != null"/>
-		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="clientPartner?.inPaymentMode == null"/>
+		<field name="paymentMode" expr="eval: customerPartner?.inPaymentMode" if="customerPartner?.inPaymentMode != null"/>
+		<field name="paymentMode" expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode" if="customerPartner?.inPaymentMode == null"/>
 	</action-record>
 
 	<action-record name="action-sale-order-record-interco"
 				   model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="interco" expr="eval: __config__.app.getApp('supplychain')?.intercoFromSale
-            &amp;&amp; !createdByInterco &amp;&amp; clientPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne()"/>
+            &amp;&amp; !createdByInterco &amp;&amp; customerPartner &amp;&amp; __repo__(Company).all().filter('self.partner = ?', customerPartner).fetchOne()"/>
 	</action-record>
 
   <action-record name="action-sale-order-record-direct-order-location-onchange" model="com.axelor.apps.sale.db.SaleOrder">
@@ -140,7 +140,7 @@
 
 	<action-attrs name="action-sale-order-attrs-interco">
 		<attribute for="interco" name="hidden"
-				   expr="eval: createdByInterco || !clientPartner || __repo__(Company).all().filter('self.partner = ?', clientPartner).fetchOne() == null"/>
+				   expr="eval: createdByInterco || !customerPartner || __repo__(Company).all().filter('self.partner = ?', customerPartner).fetchOne() == null"/>
 		<attribute for="interco" name="readonly" expr="eval: true"
 				   if="eval: statusSelect &gt; 3"/>
 	</action-attrs>
@@ -195,15 +195,15 @@
 	</action-record>
 	
 	<action-record name="action-sale-order-record-partner-supplychain" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
-    	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
-		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
-		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
-		<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
+    	<field name="shipmentMode" expr="eval: customerPartner?.shipmentMode"/>
+    	<field name="freightCarrierMode" expr="eval: customerPartner?.freightCarrierMode"/>
+		<field name="carrierPartner" expr="eval: customerPartner?.freightCarrierMode?.carrierPartner"/>
+		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, customerPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; customerPartner != null"/>
+		<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(customerPartner, company)"/>
     </action-record>
 
     <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
-    	<attribute name="value" for="isIspmRequired" expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
+    	<attribute name="value" for="isIspmRequired" expr="eval: customerPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
     </action-attrs>
 
 	<action-method name="action-sale-order-method-allocate-all">

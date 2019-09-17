@@ -99,8 +99,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   public void computeFullName(SaleOrder saleOrder) {
     try {
-      if (saleOrder.getClientPartner() != null) {
-        String fullName = saleOrder.getClientPartner().getName();
+      if (saleOrder.getCustomerPartner() != null) {
+        String fullName = saleOrder.getCustomerPartner().getName();
         if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) {
           fullName = saleOrder.getSaleOrderSeq() + "-" + fullName;
         }

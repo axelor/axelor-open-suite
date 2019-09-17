@@ -160,7 +160,7 @@
 	 </kanban>
 
 	<action-record name="action-ticket-record-value-on-customer-and-contact" model="com.axelor.apps.helpdesk.db.Ticket">
-		<field name="customer" expr="eval: project.clientPartner"/>
+		<field name="customer" expr="eval: project.customerPartner"/>
 		<field name="contactPartner" expr="eval: project.contactPartner"/>
 	</action-record>
 

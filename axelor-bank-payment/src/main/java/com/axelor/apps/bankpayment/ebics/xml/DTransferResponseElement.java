@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.ebics.xml;
 
 import com.axelor.apps.bankpayment.db.EbicsUser;
-import com.axelor.apps.bankpayment.ebics.client.OrderType;
+import com.axelor.apps.bankpayment.ebics.customer.OrderType;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.exception.AxelorException;
 

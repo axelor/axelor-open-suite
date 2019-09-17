@@ -129,11 +129,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
-    if (saleOrder.getClientPartner() != null) {
+    if (saleOrder.getCustomerPartner() != null) {
       TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
       saleOrderLine.setTaxLine(taxLine);
 
-      FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
+      FiscalPosition fiscalPosition = saleOrder.getCustomerPartner().getFiscalPosition();
 
       Tax tax =
           accountManagementService.getProductTax(
@@ -307,7 +307,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             saleOrder.getCreationDate(),
             saleOrderLine.getProduct(),
             saleOrder.getCompany(),
-            saleOrder.getClientPartner().getFiscalPosition(),
+            saleOrder.getCustomerPartner().getFiscalPosition(),
             false);
   }
 

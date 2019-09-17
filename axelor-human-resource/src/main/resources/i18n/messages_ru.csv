@@ -235,7 +235,7 @@
 "ExpenseLine.amount","Сумма",,
 "ExpenseLine.cityFrom","Начинающий город",,
 "ExpenseLine.cityTo","Прибывающий город",,
-"ExpenseLine.client","Клиент",,
+"ExpenseLine.customer","Клиент",,
 "ExpenseLine.distance","Расстояние (км)",,
 "ExpenseLine.expenseDate","Дата",,
 "ExpenseLine.expenseType","Тип расходов",,

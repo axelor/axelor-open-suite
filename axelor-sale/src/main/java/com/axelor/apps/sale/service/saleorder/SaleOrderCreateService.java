@@ -41,11 +41,11 @@ public interface SaleOrderCreateService {
    * @param currency Order's currency, should not be <code>null</code>.
    * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
    * @param internalReference Unused (…)
-   * @param externalReference Client reference for order, if any
+   * @param externalReference Customer reference for order, if any
    * @param orderDate Date of order (if <code>null</code>, will be set to today's date).
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
    *     price list.
-   * @param clientPartner Customer bound to the order, should not be <code>null</code>
+   * @param customerPartner Customer bound to the order, should not be <code>null</code>
    * @param team Team managing the order, if <code>null</code>, will default to salesperson active
    *     team.
    * @return The created order
@@ -61,7 +61,7 @@ public interface SaleOrderCreateService {
       String externalReference,
       LocalDate orderDate,
       PriceList priceList,
-      Partner clientPartner,
+      Partner customerPartner,
       Team team)
       throws AxelorException;
 
@@ -70,7 +70,7 @@ public interface SaleOrderCreateService {
   public SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrderList,
       Currency currency,
-      Partner clientPartner,
+      Partner customerPartner,
       Company company,
       Partner contactPartner,
       PriceList priceList,

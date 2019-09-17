@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.ebics.client;
+package com.axelor.apps.bankpayment.ebics.customer;
 
 import java.io.Serializable;
 import java.util.Locale;
 
 /**
- * Optional information about the client product.
+ * Optional information about the customer product.
  *
  * @author Hachani
  */

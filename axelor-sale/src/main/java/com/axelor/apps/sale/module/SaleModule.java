@@ -78,7 +78,7 @@ public class SaleModule extends AxelorModule {
     bind(AppSaleService.class).to(AppSaleServiceImpl.class);
     bind(SaleConfigService.class).to(SaleConfigServiceImpl.class);
     bind(SaleBatchRepository.class).to(SaleBatchSaleRepository.class);
-    PartnerAddressRepository.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");
+    PartnerAddressRepository.modelPartnerFieldMap.put(SaleOrder.class.getName(), "customerPartner");
     bind(AdvancePaymentRepository.class).to(AdvancePaymentSaleRepository.class);
     bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);
     bind(ConfiguratorService.class).to(ConfiguratorServiceImpl.class);

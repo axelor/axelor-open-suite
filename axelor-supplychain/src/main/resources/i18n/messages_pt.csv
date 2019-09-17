@@ -443,7 +443,7 @@
 "The amount to be spread over the timetable is negative.","O montante a repartir ao longo do calendário é negativo.",,
 "The amount to invoice is superior than the amount in the sale order",,,
 "The batch has already been running this month. Are you sure to continue ?",,,
-"The client is required and must be the same for all sale orders","O cliente é exigido e deve ser o mesmo para todas as ordens de venda",,
+"The customer is required and must be the same for all sale orders","O cliente é exigido e deve ser o mesmo para todas as ordens de venda",,
 "The company is required and must be the same for all purchase orders","A sociedade é necessária e deve ser a mesma para todos os pedidos",,
 "The company is required and must be the same for all sale orders","A sociedade é necessária e deve ser a mesma para todas as ordens de venda",,
 "The currency is required and must be the same for all sale orders","A moeda é necessária e deve ser a mesma para todas as ordens de venda",,

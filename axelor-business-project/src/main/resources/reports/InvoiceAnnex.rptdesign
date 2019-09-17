@@ -394,10 +394,10 @@
                     <text-property name="heading">footer</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">ClientBox</property>
+                    <property name="columnName">CustomerBox</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">ClientBox</text-property>
-                    <text-property name="heading">ClientBox</text-property>
+                    <text-property name="displayName">CustomerBox</text-property>
+                    <text-property name="heading">CustomerBox</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">DisplayDelAddr</property>
@@ -622,7 +622,7 @@
                     </structure>
                     <structure>
                         <property name="position">37</property>
-                        <property name="name">ClientBox</property>
+                        <property name="name">CustomerBox</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -914,8 +914,8 @@
                 </structure>
                 <structure>
                     <property name="position">37</property>
-                    <property name="name">ClientBox</property>
-                    <property name="nativeName">ClientBox</property>
+                    <property name="name">CustomerBox</property>
+                    <property name="nativeName">CustomerBox</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -998,7 +998,7 @@
 	Invoice.external_reference, 
 	PrintingSettings.pdf_header as "header", 
 	PrintingSettings.pdf_footer as "footer", 
-	AccountConfig.invoice_client_box as "ClientBox", 
+	AccountConfig.invoice_customer_box as "CustomerBox", 
 	AccountConfig.display_del_addr_on_printing as "DisplayDelAddr",
 	AccountConfig.display_tax_detail_on_printing as "displayTaxDetailOnPrinting", 
 	Invoice.hide_discount as "hideDiscount", 
@@ -2549,9 +2549,9 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">ClientBox</property>
-                    <text-property name="displayName">ClientBox</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["ClientBox"]</expression>
+                    <property name="name">CustomerBox</property>
+                    <text-property name="displayName">CustomerBox</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["CustomerBox"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3188,7 +3188,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                                                 <value type="javascript">if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
 'Invoice.supplyRef'
 }else{
-'Invoice.clientRef'
+'Invoice.customerRef'
 }</value>
                                                             </simple-property-list>
                                                         </structure>

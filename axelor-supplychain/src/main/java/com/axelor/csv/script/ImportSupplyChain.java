@@ -173,7 +173,7 @@ public class ImportSupplyChain {
         saleOrderWorkflowService.confirmSaleOrder(saleOrder);
         // Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
         //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
-        // saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
+        // saleOrder.setCustomerPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
         // Generate invoice from sale order
         Invoice invoice = Beans.get(SaleOrderInvoiceService.class).generateInvoice(saleOrder);
         if (saleOrder.getConfirmationDateTime() != null) {

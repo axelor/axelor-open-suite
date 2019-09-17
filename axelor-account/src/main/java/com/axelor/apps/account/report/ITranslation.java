@@ -44,7 +44,7 @@ public interface ITranslation {
   public static final String INVOICE_CHEQUE = /*$$(*/ "Invoice.cheque"; /*)*/
   public static final String INVOICE_BANK_DETAILS = /*$$(*/ "Invoice.bankDetails"; /*)*/
   public static final String INVOICE_BANKING_INFO = /*$$(*/ "Invoice.bankingInfo"; /*)*/
-  public static final String INVOICE_CLIENT_REF = /*$$(*/ "Invoice.clientRef"; /*)*/
+  public static final String INVOICE_CUSTOMER_REF = /*$$(*/ "Invoice.customerRef"; /*)*/
   public static final String INVOICE_SUPPLY_REF = /*$$(*/ "Invoice.supplyRef"; /*)*/
   public static final String INVOICE_PURCHASE_INVOICE_NO = /*$$(*/
       "Invoice.purchaseInvoiceNo"; /*)*/

@@ -1,0 +1,4 @@
+"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+"perm.customer.portal.OnlinePaymentMethod;r";"com.axelor.apps.customer.portal.db.OnlinePaymentMethod";"x";;;;;;;"Portal Read"
+"perm.customer.portal.OnlinePaymentMethod;rwc";"com.axelor.apps.customer.portal.db.OnlinePaymentMethod";"x";"x";"x";;;;;"Portal User"
+"perm.customer.portal.OnlinePaymentMethod;rwcde";"com.axelor.apps.customer.portal.db.OnlinePaymentMethod";"x";"x";"x";"x";"x";;;"Portal Manager"

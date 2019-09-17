@@ -124,13 +124,14 @@ public class SaleOrderLineController {
 
     if (saleOrder == null
         || saleOrderLine == null
-        || saleOrder.getClientPartner() == null
+        || saleOrder.getCustomerPartner() == null
         || saleOrderLine.getTaxLine() == null) return;
 
     response.setValue(
         "taxEquiv",
         fiscalPositionService.getTaxEquiv(
-            saleOrder.getClientPartner().getFiscalPosition(), saleOrderLine.getTaxLine().getTax()));
+            saleOrder.getCustomerPartner().getFiscalPosition(),
+            saleOrderLine.getTaxLine().getTax()));
   }
 
   public void getDiscount(ActionRequest request, ActionResponse response) {

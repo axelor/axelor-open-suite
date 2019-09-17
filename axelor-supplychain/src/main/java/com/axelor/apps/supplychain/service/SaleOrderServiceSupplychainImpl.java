@@ -64,18 +64,18 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
     this.saleOrderStockService = saleOrderStockService;
   }
 
-  public SaleOrder getClientInformations(SaleOrder saleOrder) {
-    Partner client = saleOrder.getClientPartner();
+  public SaleOrder getCustomerInformations(SaleOrder saleOrder) {
+    Partner customer = saleOrder.getCustomerPartner();
     PartnerService partnerService = Beans.get(PartnerService.class);
-    if (client != null) {
-      saleOrder.setPaymentCondition(client.getPaymentCondition());
-      saleOrder.setPaymentMode(client.getInPaymentMode());
-      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(client));
+    if (customer != null) {
+      saleOrder.setPaymentCondition(customer.getPaymentCondition());
+      saleOrder.setPaymentMode(customer.getInPaymentMode());
+      saleOrder.setMainInvoicingAddress(partnerService.getInvoicingAddress(customer));
       this.computeAddressStr(saleOrder);
-      saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(client));
+      saleOrder.setDeliveryAddress(partnerService.getDeliveryAddress(customer));
       saleOrder.setPriceList(
           Beans.get(PartnerPriceListService.class)
-              .getDefaultPriceList(client, PriceListRepository.TYPE_SALE));
+              .getDefaultPriceList(customer, PriceListRepository.TYPE_SALE));
     }
     return saleOrder;
   }

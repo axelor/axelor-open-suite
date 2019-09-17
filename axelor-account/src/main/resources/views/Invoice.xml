@@ -34,7 +34,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-customer,action-send-by-email-with-template"/>
   </grid>
 
   <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -68,7 +68,7 @@
     <field name="currency" width="60"/>
     <field name="statusSelect" width="100"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-customer,action-send-by-email-with-template"/>
   </grid>
 
   <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -167,7 +167,7 @@
         <field name="currency"/>
         <field name="statusSelect"/>
         <button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
-        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+        <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-customer,action-send-by-email-with-template"/>
     </grid>
 
     <grid name="invoice-refund-invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
@@ -550,7 +550,7 @@ InvoiceSet.length > 0))"
 		</panel>
 	</form>
 
-    <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+    <form name="invoice-customer-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
 		  onNew="action-account-invoice-onnew-group"
 		  onLoad="action-account-invoice-onload-group">
 
@@ -612,7 +612,7 @@ InvoiceSet.length > 0))"
 
 		<panel-tabs name="invoiceDetails">
 			<panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
-				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-client-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence" x-can-copy="statusSelect == 1"/>
+				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-customer-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence" x-can-copy="statusSelect == 1"/>
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 		</panel-tabs>
@@ -887,7 +887,7 @@ InvoiceSet.length > 0))"
     </action-attrs>
 
     <action-attrs name="action-invoice-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.customerPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-attrs>
 
@@ -1042,7 +1042,7 @@ InvoiceSet.length > 0))"
     </action-attrs>
 
 	<action-attrs name="action-invoice-attrs-change-create-refund-title">
-		<attribute name="title" for="createRefundBtn" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CLIENT_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
+		<attribute name="title" for="createRefundBtn" expr="eval: com.axelor.i18n.I18n.get('Generate invoice')" if="operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_CUSTOMER_REFUND || operationTypeSelect == __repo__(Invoice).OPERATION_TYPE_SUPPLIER_REFUND"/>
 	</action-attrs>
   
     <action-attrs name="action-account-invoice-atts-suppier-invoice-nbr">
@@ -1087,8 +1087,8 @@ InvoiceSet.length > 0))"
 		<error message="You have to choose at least one invoice" if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
 	</action-validate>
 
-	<action-validate name="action-validate-send-email-remove-access-for-client">
-		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
+	<action-validate name="action-validate-send-email-remove-access-for-customer">
+		<error message="Error - You are not authorized to perform this action" if="__user__.group.isCustomer"/>
     </action-validate>
     
 	<!-- ACTION METHOD -->

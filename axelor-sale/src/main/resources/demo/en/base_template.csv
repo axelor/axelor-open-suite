@@ -9,7 +9,7 @@ $SaleOrder.saleOrderLineList:{ line | <li>$line.productName$ x$line.qty$ pour $l
 </ul>
 
 <p>Je reste à votre disposition pour des informations complémentaires sur ce devis.</p>
-";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+";"$SaleOrder.customerPartner.emailAddress.address$";;;2
 "Sale order";"SaleOrder";1;;;;"true";;"Quote N° $SaleOrder.saleOrderSeq$";"<p>Good morning,</p> 
 
 <p>Following our conversations, please find attached our quote $SaleOrder.saleOrderSeq$.</p>
@@ -23,4 +23,4 @@ $SaleOrder.saleOrderLineList:{ line | <li>$line.productName$ x$line.qty$ for $li
 
 <p>Best regards<br/>
 $SaleOrder.user.partner.firstName$ $SaleOrder.user.partner.name$</p>
-";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+";"$SaleOrder.customerPartner.emailAddress.address$";;;2

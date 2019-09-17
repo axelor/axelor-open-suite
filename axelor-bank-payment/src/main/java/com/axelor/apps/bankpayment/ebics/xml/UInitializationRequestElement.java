@@ -40,9 +40,9 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.certificate.KeyUtil;
-import com.axelor.apps.bankpayment.ebics.client.EbicsSession;
-import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
-import com.axelor.apps.bankpayment.ebics.client.OrderAttribute;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsSession;
+import com.axelor.apps.bankpayment.ebics.customer.EbicsUtils;
+import com.axelor.apps.bankpayment.ebics.customer.OrderAttribute;
 import com.axelor.apps.bankpayment.ebics.interfaces.ContentFactory;
 import com.axelor.apps.bankpayment.ebics.io.Splitter;
 import com.axelor.exception.AxelorException;
@@ -77,7 +77,7 @@ public class UInitializationRequestElement extends InitializationRequestElement 
    */
   public UInitializationRequestElement(
       EbicsSession session,
-      com.axelor.apps.bankpayment.ebics.client.OrderType orderType,
+      com.axelor.apps.bankpayment.ebics.customer.OrderType orderType,
       byte[] userData,
       byte[] userSignatureData)
       throws AxelorException {

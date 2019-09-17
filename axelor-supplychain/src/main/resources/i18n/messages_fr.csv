@@ -458,7 +458,7 @@
 "The amount to be spread over the timetable is negative.","Le montant restant à répartir sur l'échéancier est négatif.",,
 "The amount to invoice is superior than the amount in the sale order","Le montant à facturer est supérieur au montant de la commande",,
 "The batch has already been running this month. Are you sure to continue ?","Attention, le batch a déjà été lancé ce mois-ci. Êtes-vous sûr de vouloir continuer ?",,
-"The client is required and must be the same for all sale orders","Le client est obligatoire et doit être le même pour toutes les cmdes client",,
+"The customer is required and must be the same for all sale orders","Le client est obligatoire et doit être le même pour toutes les cmdes client",,
 "The company %s doesn't have any configured sequence for MRP",,,
 "The company is required and must be the same for all purchase orders","La société est obligatoire et doit être la même pour toutes les cmdes d'achat",,
 "The company is required and must be the same for all sale orders","La société est obligatoire et doit être la même pour toutes les cmdes client",,

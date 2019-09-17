@@ -158,10 +158,10 @@ public abstract class InvoiceGenerator {
         return InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
         return InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        return InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        return InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE:
+        return InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND;
+      case InvoiceRepository.OPERATION_TYPE_CUSTOMER_REFUND:
+        return InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,

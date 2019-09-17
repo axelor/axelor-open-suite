@@ -20,7 +20,7 @@
 	<string name="title" title="Title"/>
 	
 <!--   	Onglet Coordonnées client -->
-  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" massUpdate="true"/>
+  	<many-to-one name="customerPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" massUpdate="true"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
   	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Main/Invoicing address"/>
 
@@ -134,7 +134,7 @@
    	
    	 <track>
       <field name="saleOrderSeq" />
-      <field name="clientPartner" />
+      <field name="customerPartner" />
       <field name="statusSelect"/>
       <field name="creationDate" on="CREATE" />
       <field name="confirmationDateTime" on="UPDATE"/>

@@ -262,7 +262,7 @@
 "ExpenseLine.amount",,,
 "ExpenseLine.cityFrom",,,
 "ExpenseLine.cityTo",,,
-"ExpenseLine.client",,,
+"ExpenseLine.customer",,,
 "ExpenseLine.distance",,,
 "ExpenseLine.expenseDate",,,
 "ExpenseLine.expenseType",,,

@@ -22,8 +22,8 @@ public interface ITranslation {
   public static final String QUALITY_CONTROL_TITLE = /*$$(*/
       "QualityControl.qualityControlTitle"; /*)*/
 
-  public static final String QUALITY_CONTROL_PROJECT_CLIENT = /*$$(*/
-      "QualityControl.projectClient"; /*)*/
+  public static final String QUALITY_CONTROL_PROJECT_CUSTOMER = /*$$(*/
+      "QualityControl.projectCustomer"; /*)*/
 
   public static final String QUALITY_CONTROL_PROJECT = /*$$(*/ "QualityControl.project"; /*)*/
 

@@ -82,7 +82,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
               saleOrder.getSaleOrderSeq()),
           saleOrder);
     }
-    String locale = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
+    String locale = ReportSettings.getPrintingLocale(saleOrder.getCustomerPartner());
 
     String title = saleOrderService.getFileName(saleOrder);
 

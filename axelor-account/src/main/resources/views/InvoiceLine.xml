@@ -115,14 +115,14 @@
 			</panel>
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 
-				<field name="saleOrderLine" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
+				<field name="saleOrderLine" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.customerPartner = i.partner )"/>
 				<field name="purchaseOrderLine" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
 
 			</panel>
 		</panel-tabs>
 	</form>
 
-	<form name="invoice-line-client-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
+	<form name="invoice-line-customer-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		  onNew="action-account-invoice-line-onnew-group"
 		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-form">
 		<panel name="titlePanel">
@@ -180,9 +180,9 @@
 	</action-attrs>
     
     <action-attrs name="action-invoice-line-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.partner.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent?.operationTypeSelect == 3 || _parent?.operationTypeSelect == 4)"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.customerPartner.id = ${_parent?.partner.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent?.operationTypeSelect == 3 || _parent?.operationTypeSelect == 4)"/>
     	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent?.operationTypeSelect == 1 || _parent?.operationTypeSelect == 2)"/>
-    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${invoice.partner.id} AND self.isBusinessProject = true &quot;" if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.customerPartner.id = ${invoice.partner.id} AND self.isBusinessProject = true &quot;" if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'"/>
     	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'"/>
     </action-attrs>
 

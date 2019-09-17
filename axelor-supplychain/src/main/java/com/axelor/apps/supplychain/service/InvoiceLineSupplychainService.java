@@ -89,7 +89,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
     Map<String, Object> discounts = new HashMap<>();
 
-    if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+    if (invoice.getOperationTypeSelect() < InvoiceRepository.OPERATION_TYPE_CUSTOMER_SALE) {
       Map<String, Object> catalogInfo = this.updateInfoFromCatalog(invoice, invoiceLine);
 
       if (catalogInfo != null) {

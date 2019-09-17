@@ -32,7 +32,7 @@
   <json-model name="ProductOrder" title="Commande produit" appBuilder="PRD">
   	<fields>
 		<field name="reference" title="Réf" type="string" sequence="1" visibleInGrid="true"/>
-		<field name="customer" title="Client" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2" visibleInGrid="true"/>
+		<field name="customer" title="Customer" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2" visibleInGrid="true"/>
 		<field name="orderDate" title="Date de commande" type="date" sequence="3" visibleInGrid="true"/>
 		<field name="total" title="Total" type="decimal" sequence="4" visibleInGrid="true"/>
 		<field name="lines" title="Lignes" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5" onChange="action-product-order-update-total"/>
