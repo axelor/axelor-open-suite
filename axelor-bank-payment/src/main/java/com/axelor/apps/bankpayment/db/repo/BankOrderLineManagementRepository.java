@@ -3,6 +3,8 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.tool.StringTool;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class BankOrderLineManagementRepository extends BankOrderLineRepository {
@@ -19,17 +21,15 @@ public class BankOrderLineManagementRepository extends BankOrderLineRepository {
     for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLine.getBankOrderLineOriginList()) {
       if (bFirst) {
         pieceReferenceList += changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
-        pieceDateList += changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectDate());
-        pieceDueDateList +=
-            changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectDueDate());
+        pieceDateList += changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDate());
+        pieceDueDateList += changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
         bFirst = false;
       } else {
         pieceReferenceList +=
             "," + changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
-        pieceDateList +=
-            "," + changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectDate());
+        pieceDateList += "," + changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDate());
         pieceDueDateList +=
-            "," + changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectDueDate());
+            "," + changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
       }
     }
 
@@ -45,6 +45,14 @@ public class BankOrderLineManagementRepository extends BankOrderLineRepository {
       return "";
     } else {
       return object.toString();
+    }
+  }
+
+  protected String changeDateNullToString(LocalDate date) {
+    if (date == null) {
+      return "";
+    } else {
+      return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
   }
 }
