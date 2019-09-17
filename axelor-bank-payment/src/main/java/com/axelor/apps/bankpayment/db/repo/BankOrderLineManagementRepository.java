@@ -21,15 +21,15 @@ public class BankOrderLineManagementRepository extends BankOrderLineRepository {
     for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLine.getBankOrderLineOriginList()) {
       if (bFirst) {
         pieceReferenceList += changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
-        pieceDateList += changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDate());
-        pieceDueDateList += changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
+        pieceDateList += changeDateToString(bankOrderLineOrigin.getRelatedToSelectDate());
+        pieceDueDateList += changeDateToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
         bFirst = false;
       } else {
         pieceReferenceList +=
             "," + changeNullToEmptyString(bankOrderLineOrigin.getRelatedToSelectName());
-        pieceDateList += "," + changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDate());
+        pieceDateList += "," + changeDateToString(bankOrderLineOrigin.getRelatedToSelectDate());
         pieceDueDateList +=
-            "," + changeDateNullToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
+            "," + changeDateToString(bankOrderLineOrigin.getRelatedToSelectDueDate());
       }
     }
 
@@ -48,7 +48,7 @@ public class BankOrderLineManagementRepository extends BankOrderLineRepository {
     }
   }
 
-  protected String changeDateNullToString(LocalDate date) {
+  protected String changeDateToString(LocalDate date) {
     if (date == null) {
       return "";
     } else {
