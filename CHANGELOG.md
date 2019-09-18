@@ -118,6 +118,7 @@
 - Stock Move : Partial Invoice.
 - STOCK RULE : new M2O stockRuleMessageTemplate on StockRule and StockConfig
 - ABC ANALYSIS : Add support for printing report in 'xls' type.
+- EBICSUSER : replace the O2M ebicsRequestLogList per a dashlet
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

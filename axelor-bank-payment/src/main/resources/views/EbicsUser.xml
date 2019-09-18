@@ -59,7 +59,7 @@
 					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-related name="ebicsRequestLogListPanel" field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
+			<panel-dashlet action="action-ebics-user-view-ebics-request-log" name="ebicsRequestLogPanel" title="Request log"/>
 		</panel-tabs>
 		
 		<panel name="actionBtnsPanel" sidebar="true">
@@ -162,6 +162,12 @@
     	<view-param name="show-toolbar" value="false"/>
     </action-view>
     
+    <action-view name="action-ebics-user-view-ebics-request-log" title="Request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
+        <view type="grid" name="ebics-request-log-grid"/>
+        <view type="form" name="ebics-request-log-form"/>
+        <domain>self.ebicsUser = :id</domain>
+    </action-view>
+
     <action-export name="action-export-ebics-user" output="${date}${time}" download="true">
 	  <export name="EbicsExport-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
 	    	  template="data-export/export-ebics-user.txt"
