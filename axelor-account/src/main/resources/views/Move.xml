@@ -42,7 +42,7 @@
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
                 </panel>
-                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+                <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
 
             <panel name="otherDetailsPanel" colSpan="3">
@@ -268,6 +268,10 @@
 	
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
+	</action-method>
+
+	<action-method name="action-account-move-method-filter-partner">
+		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
