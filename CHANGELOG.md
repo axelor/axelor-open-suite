@@ -220,6 +220,7 @@
 - EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
 - Expense : period / company not getting set on getOrCreateExpense method 
 - CUSTOMER : Wrong domain on action-view
+- MoveLine : Fix issue for Accounting reconcile
 
 ## [5.1.7] - 2019-06-17
 ## Features

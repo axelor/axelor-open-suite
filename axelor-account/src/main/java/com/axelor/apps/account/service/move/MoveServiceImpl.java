@@ -74,7 +74,6 @@ public class MoveServiceImpl implements MoveService {
       MoveRemoveService moveRemoveService,
       ReconcileService reconcileService,
       MoveDueService moveDueService,
-      PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
       AccountConfigService accountConfigService) {
@@ -86,7 +85,6 @@ public class MoveServiceImpl implements MoveService {
     this.moveToolService = moveToolService;
     this.reconcileService = reconcileService;
     this.moveDueService = moveDueService;
-    this.paymentService = paymentService;
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;

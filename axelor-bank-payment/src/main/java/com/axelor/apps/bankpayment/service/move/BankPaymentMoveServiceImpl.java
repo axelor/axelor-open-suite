@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -49,7 +48,6 @@ public class BankPaymentMoveServiceImpl extends MoveServiceImpl {
       MoveRemoveService moveRemoveService,
       ReconcileService reconcileService,
       MoveDueService moveDueService,
-      PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
       AccountConfigService accountConfigService) {
@@ -62,7 +60,6 @@ public class BankPaymentMoveServiceImpl extends MoveServiceImpl {
         moveRemoveService,
         reconcileService,
         moveDueService,
-        paymentService,
         moveExcessPaymentService,
         moveRepository,
         accountConfigService);
