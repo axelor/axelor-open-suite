@@ -98,6 +98,7 @@
 "Object not found: %s","Przedmiot nie znaleziono: %s",,
 "Objects","Przedmioty",,
 "Path","Ścieżka",,
+"Path Field",,,
 "Permission Assistant","Asystent ds. pozwoleń",,
 "Query","Zapytanie",,
 "Query/path","Kwerenda/ścieżka",,

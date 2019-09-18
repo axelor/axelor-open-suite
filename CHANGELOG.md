@@ -117,6 +117,7 @@
 - UNIT : add translatable on name and labelToPrinting on unit-form and on every birt that display labelToPrinting unit will be automatically translate in partner's language
 - Stock Move : Partial Invoice.
 - STOCK RULE : new M2O stockRuleMessageTemplate on StockRule and StockConfig
+- ABC ANALYSIS : Add support for printing report in 'xls' type.
 - EBICSUSER : replace the O2M ebicsRequestLogList per a dashlet
 
 ## Improvements

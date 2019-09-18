@@ -759,7 +759,7 @@
 
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 	<toolbar>
-			<button name="mergeSaleOrdersBtn" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
+			<button name="mergeQuotationOrderBtn" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
 	</toolbar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>

@@ -116,7 +116,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                   origin,
                   moveDescription,
                   closeYear,
-                  openYear);
+                  openYear,
+                  allocatePerPartner);
 
           if (generateMoves != null && !generateMoves.isEmpty()) {
             updateAccount(account);

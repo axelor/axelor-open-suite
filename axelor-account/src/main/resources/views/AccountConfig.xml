@@ -244,11 +244,7 @@
 					</editor>
 				</field>
 			</panel>
-
-
-			<panel name="payboxPanel" title="Paybox">
-				<field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
-			</panel>
+			
 		</panel-tabs>
 		
 		<panel-mail name="mailPanel">
