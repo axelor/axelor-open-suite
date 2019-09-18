@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -631,6 +632,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     moveService.getMoveValidateService().validate(move);
     expense.setPaymentMove(move);
+
+    Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);
 
     expenseRepository.save(expense);
 
