@@ -892,10 +892,11 @@
     	<action name="action-partner-attrs-hide-contact-partner" />
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
-			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
+		<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
 		<action name="action-sale-order-attrs-external-reference"/>
 		<action name="action-sale-order-attrs-availability-request-label"/>
-		</action-group>
+		<action name="action-sale-order-attrs-set-required"/>
+	</action-group>
 
 	<action-group name="action-sale-group-confirmed">
     <action name="action-sale-order-method-check-analytic-distribution-template"/>
@@ -1342,6 +1343,10 @@
 
 	<action-attrs name="action-sale-order-attrs-template-deafult-currency">
 		<attribute name="value" for="currency" expr="eval: _clientPartnerCurrency" if="_clientPartnerCurrency"/>
+	</action-attrs>
+
+	<action-attrs name="action-sale-order-attrs-set-required">
+		<attribute name="required" for="$_projectGeneratorType" expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
 	</action-attrs>
 
   <action-method name="action-sale-order-method-check-analytic-distribution-template">
