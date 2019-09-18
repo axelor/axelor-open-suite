@@ -219,7 +219,7 @@ public class ImportSupplyChain {
               Beans.get(StockLocationLineRepository.class)
                   .all()
                   .filter(
-                      "self.stockLocation = ?1 AND self.product = ?2 AND  AND self.trackingNumber != null",
+                      "self.stockLocation = ?1 AND self.product = ?2 AND self.trackingNumber != null",
                       stockMove.getFromStockLocation().getId(),
                       product.getId())
                   .fetchOne();
