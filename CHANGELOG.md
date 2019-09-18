@@ -20,6 +20,7 @@
 - English language : Correction of errors in english words and change gender job word to genderless job word
 - Action Builder: Added option to update or use json field from real model
 - STUDIO : add 'attrs' for User.
+- Studio: Added colSpan,title for the label and  visibleInGrid option for button.
 
 ## Bug Fixes
 - Fix injection error during test
