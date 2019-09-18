@@ -109,6 +109,8 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
+import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.account.service.payment.PaymentServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -243,5 +245,7 @@ public class AccountModule extends AxelorModule {
     bind(MoveService.class).to(MoveServiceImpl.class);
 
     bind(TaxPaymentMoveLineService.class).to(TaxPaymentMoveLineServiceImpl.class);
+
+    bind(PaymentService.class).to(PaymentServiceImpl.class);
   }
 }
