@@ -34,6 +34,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
 
@@ -66,16 +67,17 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void validatePayment(BankOrder bankOrder) throws AxelorException {
     super.validatePayment(bankOrder);
-
-    Expense expense =
+    List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()
             .filter("self.bankOrder.id = ?", bankOrder.getId())
-            .fetchOne();
-    if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
-      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-      expenseService.createMoveForExpensePayment(expense);
+            .fetch();
+    for (Expense expense : expenseList) {
+      if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
+        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+        expenseService.createMoveForExpensePayment(expense);
+      }
     }
   }
 
@@ -83,14 +85,16 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(BankOrder bankOrder) throws AxelorException {
     super.cancelPayment(bankOrder);
-    Expense expense =
+    List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()
             .filter("self.bankOrder.id = ?", bankOrder.getId())
-            .fetchOne();
-    if (expense != null
-        && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
-      expenseService.cancelPayment(expense);
+            .fetch();
+    for (Expense expense : expenseList) {
+      if (expense != null
+          && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+        expenseService.cancelPayment(expense);
+      }
     }
   }
 }
