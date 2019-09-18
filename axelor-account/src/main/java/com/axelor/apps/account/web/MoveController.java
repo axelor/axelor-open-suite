@@ -250,9 +250,9 @@ public class MoveController {
         domain += "self." + partner + " = true";
         if (!partner.equals(lastPartner)) {
           domain += " OR ";
+        }
       }
-    }
-    domain += ")";
+      domain += ")";
     }
     response.setAttr("partner", "domain", domain);
   }

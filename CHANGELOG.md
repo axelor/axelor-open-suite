@@ -22,6 +22,8 @@
 - REPORTING : number of new customers
 - CONFORMITY CERTIFICATE : new field on printing
 - JOURNALS : add new configuration to filter partners
+- Availability request: new config to allocate automatically a stock move during availability request.
+- ACCOUNTING SITUATION : show 'dueDate' in moveLinesPanel.
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
@@ -116,6 +118,7 @@
 - Expense : Set Move.date and expense.moveDate as expense.period.toDate
 - BankStatementFileFormat : remove wrong data.
 - EBICSUSER : signature certificate editable only if the ebicsPartner mode is "EBICS TS" and the user type is "Signatory"
+- FIXED ASSETS : add Translations in FixedAsset and FixedAssetCategory
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
@@ -220,6 +223,8 @@
 - Expense : period / company not getting set on getOrCreateExpense method 
 - CUSTOMER : Wrong domain on action-view
 - BANK ORDER : for file format 320c, increased length of receiver name zone if it got greater then 35 characters to a max of 70 characters but in exchange reduced receiver address zone length.
+- TIMESHEET : fix computing of the total field 
+- REPORTING : Fix 'number of customers' chart
 
 ## [5.1.7] - 2019-06-17
 ## Features
@@ -601,6 +606,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Translation : Fix english translation of accounting export types.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
+- PURCHASE ORDER : product code and product name
 
 ## [5.1.3] - 2019-02-21
 ## Features
