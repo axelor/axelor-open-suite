@@ -74,7 +74,7 @@ public class SaleOrderProjectController {
               .map());
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e , ResponseMessageType.ERROR);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
       response.setReload(true);
     }
   }
