@@ -547,6 +547,7 @@
 "Description","Description",,
 "Description to display on delivery","Description à afficher sur les BL",,
 "Description to display on invoice","Description à afficher sur la facture",,
+"Description to display on picking order","Description à afficher sur les bons de préparation",,
 "Description to display on purchase order","Description à afficher sur la commande d'achat",,
 "Description to display on sale order","Description à afficher sur la commande de vente",,
 "Destination Currency","Devise arrivée",,
