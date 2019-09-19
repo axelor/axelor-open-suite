@@ -441,6 +441,7 @@
 "PickingStockMove.lineNumber","N° ligne",,
 "PickingStockMove.manual","Notice",,
 "PickingStockMove.mark","Marquage",,
+"PickingStockMove.note","Remarques",,
 "PickingStockMove.qty","Qté",,
 "PickingStockMove.signaling","Signalisation",,
 "PickingStockMove.visa","Visa",,
