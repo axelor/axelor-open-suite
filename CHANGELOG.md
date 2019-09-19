@@ -222,6 +222,8 @@
 - EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
 - Expense : period / company not getting set on getOrCreateExpense method 
 - CUSTOMER : Wrong domain on action-view
+- BANK ORDER : for file format 320c, increased length of receiver name zone if it got greater then 35 characters to a max of 70 characters but in exchange reduced receiver address zone length.
+- TIMESHEET : fix computing of the total field 
 - REPORTING : Fix 'number of new customers' chart
 - JOB COSTING : Fix division by zero error on financial report
 
