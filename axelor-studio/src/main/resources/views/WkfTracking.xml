@@ -28,7 +28,7 @@
   </form>
   
   <action-method name="action-method-wkf-track">
-  	<call class="com.axelor.studio.service.wkf.WkfTrackingService" method="track(__self__)"/>
+  	<call class="com.axelor.studio.web.WkfController" method="track"/>
   </action-method>
   
   <action-view name="action-wkf-open-wkf-tracking" title="Track workflow" model="com.axelor.studio.db.WkfTracking">

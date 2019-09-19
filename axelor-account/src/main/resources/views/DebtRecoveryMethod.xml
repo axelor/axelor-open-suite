@@ -8,7 +8,7 @@
     </grid>
     <form name="debt-recovery-method-form" title="Debt recovery method" model="com.axelor.apps.account.db.DebtRecoveryMethod" width="large">
     	<panel name="mainPanel" >
-    		<field name="name"/>
+    		<field name="name" required="true"/>
     		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
        	</panel>
        	<panel-related name="debtRecoveryMethodLineListPanel" field="debtRecoveryMethodLineList" colSpan="12" orderBy="debtRecoveryLevel" form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid"/>

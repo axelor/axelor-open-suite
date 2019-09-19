@@ -18,6 +18,8 @@
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
 
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+   	<decimal name="customerPaymentDelay" title="Customers payment delay (Average in days)"/>
+	<decimal name="supplierPaymentDelay" title="Suppliers payment delay (Average in days)"/>
 
 	<!--  Onglet Bank Details -->
 	<many-to-one name="defaultBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Account"/>
@@ -33,6 +35,8 @@
    	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" />
     <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning"/>
 
+    <integer name="width" title="Width" min="0"/>
+    <integer name="height" title="Height" help="Maximum height should be 60 px." min="0" max="60"/>
   </entity>
   
 </domain-models>

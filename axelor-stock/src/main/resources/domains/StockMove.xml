@@ -81,9 +81,8 @@
 
     <many-to-one name="stockCorrectionReason" ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Correction Reason"/>
 
-	<boolean name="pickingIsEdited" title="Outgoing Stock Move is edited"/>
-	<date name="pickingEditDate" title="Outgoing Stock Move edit date"/>
-
+	<boolean name="pickingIsEdited" title="Picking order is edited"/>
+	<date name="pickingEditDate" title="Picking order edit date"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
     <string name="note" title="Notes" large="true"/>

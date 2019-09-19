@@ -6,8 +6,7 @@
 	<module name="project" package="com.axelor.apps.project.db"/>
 	
 	<entity name="ProjectCategory">
-  		<string name="name" title="Name"/>
-  		<boolean name="byDefault" title="By Default"/>
+		<string name="name" title="Name" required="true"/>
 	</entity>
 
 </domain-models>

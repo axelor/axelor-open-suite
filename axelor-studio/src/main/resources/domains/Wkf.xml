@@ -22,6 +22,9 @@
       <string name="bpmnXml" title="Bpmn xml" large="true" />
       <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" required="true" />
       <string name="description" title="Description" large="true"/>
+      <one-to-many name="conditions" ref="Filter" title="Apply if" mappedBy="wkf"/>
+      <integer name="wkfSequence" title="Wkf sequence" />
+      <boolean name="isTrackFlow" title="Track flow"/>
   </entity>
     
  </domain-models>

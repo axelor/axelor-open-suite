@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -40,6 +41,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -213,6 +215,18 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     Project project = super.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
 
     if (projectTemplate.getIsBusinessProject()) {
+      project.setCurrency(clientPartner.getCurrency());
+      if (clientPartner.getPartnerAddressList() != null
+          && !clientPartner.getPartnerAddressList().isEmpty()) {
+        project.setCustomerAddress(
+            clientPartner.getPartnerAddressList().iterator().next().getAddress());
+      }
+      if (clientPartner.getSalePartnerPriceList() != null
+          && clientPartner.getSalePartnerPriceList().getPriceListSet() != null
+          && !clientPartner.getSalePartnerPriceList().getPriceListSet().isEmpty()) {
+        project.setPriceList(
+            clientPartner.getSalePartnerPriceList().getPriceListSet().iterator().next());
+      }
       project.setTeamTaskInvoicing(projectTemplate.getTeamTaskInvoicing());
       project.setIsInvoicingExpenses(projectTemplate.getIsInvoicingExpenses());
       project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
@@ -222,5 +236,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     }
 
     return project;
+  }
+
+  @Override
+  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
+    TeamTask task = super.createTask(taskTemplate, project);
+    task.setTeamTaskInvoicing(taskTemplate.getTeamTaskInvoicing());
+    return task;
   }
 }

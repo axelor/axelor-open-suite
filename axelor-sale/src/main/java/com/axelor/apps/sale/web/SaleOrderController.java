@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -713,5 +714,26 @@ public class SaleOrderController {
     Beans.get(SaleOrderCreateService.class).updateSaleOrderLineList(saleOrder);
 
     response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+  }
+
+  public void getSaleOrderPartnerDomain(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Company company = saleOrder.getCompany();
+    long companyId = company.getPartner().getId();
+    String domain =
+        String.format(
+            "self.id != %d AND self.isContact = false AND (self.isCustomer = true or self.isProspect = true)",
+            companyId);
+    domain += " AND :company member of self.companySet";
+    try {
+      if (!(saleOrder.getSaleOrderLineList() == null
+          || saleOrder.getSaleOrderLineList().isEmpty())) {
+        domain += Beans.get(PartnerService.class).getPartnerDomain(saleOrder.getClientPartner());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
+    }
+    response.setAttr("clientPartner", "domain", domain);
   }
 }

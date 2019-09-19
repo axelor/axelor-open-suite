@@ -122,16 +122,6 @@
 		<view type="form" name="sequence-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-general-keyword"
-		parent="admin-root-general" title="Keywords"
-		action="admin.root.general.keyword" />
-
-	<action-view name="admin.root.general.keyword"
-		title="Keywords" model="com.axelor.apps.base.db.Keyword" >
-		<view type="grid" name="keyword-grid"/>
-		<view type="form" name="keyword-form"/>
-	</action-view>
-	
 	<menuitem name="admin-root-general-barcode"
 		parent="admin-root-general" title="Barcode type configurations"
 		action="admin.root.general.barcode"/>
@@ -611,6 +601,15 @@
 		model="com.axelor.apps.base.db.ImportConfiguration" >
 		<view type="grid" name="import-configuration-grid" />
 		<view type="form" name="import-configuration-form" />
+	</action-view>
+	
+	<menuitem name="admin-root-advanced-import" parent="admin-root-maintenance"
+   		title="Advanced import" action="admin.root.advanced.import"/>
+  
+	<action-view name="admin.root.advanced.import" title="Advanced import"
+		model="com.axelor.apps.base.db.AdvancedImport" >
+		<view type="grid" name="advanced-import-grid"/>
+		<view type="form" name="advanced-import-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-convert-demo-file" parent="admin-root-maintenance"

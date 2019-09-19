@@ -10,6 +10,7 @@
 		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 		<decimal name="qty" title="Qty"/>
         <decimal name="cumulativeQty" title="Cumulative qty"/>
+        <decimal name="cumulativeMinQty" title="Cumulative min qty"/>
         <many-to-one name="mrpLineType" ref="com.axelor.apps.supplychain.db.MrpLineType" title="Type"/>
       	<date name="maturityDate" title="Maturity"/>      
       	<integer name="maxLevel" title="Maximum level"/>
@@ -23,6 +24,7 @@
     
         <!-- TRANSIENT FIELD -->
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" transient="true"/>
+        <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" transient="true"/>
     
 		
   </entity>

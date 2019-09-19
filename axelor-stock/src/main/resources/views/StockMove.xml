@@ -147,6 +147,9 @@
     
     <form name="stock-move-customer-deliveries-form" title="Customer delivery" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
+					<toolbar>
+						<button name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-stock-move-method-refresh-net-mass"/>
+					</toolbar>
     	<panel-include view="stock-move-form"/>
 	</form>
 	
@@ -235,16 +238,18 @@
                         </viewer>
                     </field>
                     <field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
-                    	<viewer depends="invoice.statusSelect">
-				<![CDATA[
-					<h4 class="text-left">
-						<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="([2,3].includes(record.typeSelect) && !record.isReversion) && record.invoice && record.invoice.statusSelect == 3" x-translate>Invoiced</span>
-						<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="([2,3].includes(record.typeSelect) && !record.isReversion) && (!record.invoice || (record.invoice && [1,2].includes(record.invoice.statusSelect)))" x-translate>Not Invoiced</span>
-					</h4>
-				]]>
-            	</viewer>
+                    	<viewer depends="$invoiceStatus">
+							<![CDATA[
+								<h4 class="text-left">
+									<span class="label label-important" ng-show="record.$invoiceStatus == 0"  x-translate>Not invoiced</span>
+							        <span class="label label-warning" ng-show="record.$invoiceStatus == 1" x-translate>Partially invoiced</span>
+							        <span class="label label-success" ng-show="record.$invoiceStatus == 2" x-translate>Invoiced</span>
+								</h4>
+							]]>
+		            	</viewer>
                     </field>
-					<field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+					<field name="$invoiceStatus" hidden="true" colSpan="12"/>
+					<field name="$pfpValidationTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 						<viewer depends="pfpValidateStatusSelect">
 								<![CDATA[
 								<h4 class="text-left">
@@ -271,10 +276,10 @@
 				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="Authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="Litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
                 <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-                <button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-generate-invoice" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+                <button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
                 <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
-                <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action.stock.move.view.cancel"/>
-                <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="action-group-stock-stockmove-draft-click"/>
+                <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action-group-stock-stockmove-cancel-click"/>
+                <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="action-stock-move-method-draft"/>
             </panel>
         </panel>
 
@@ -315,7 +320,7 @@
 			</panel>
 			<panel name="ShipmentOperationsInformations" colSpan="12">
 				<field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
-				<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" onChange="action-stock-move-method-verify-product-stock"/>
+				<field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender'" onChange="action-stock-move-group-available-qty-onchange"/>
            		<field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
             </panel>
             <spacer/>
@@ -379,7 +384,7 @@
                 <panel name="OriginPanel" itemSpan="3" colSpan="12">
                   <field name="originTypeSelect" title="Origin" widget="RefSelect" x-related="originId" readonly="true"/>
                   <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form" form-view="stock-move-form" showIf="reversionOriginStockMove" />
-                  <field name="invoice" readonlyIf="statusSelect != 1" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" showIf="invoice"/>
+                  <field name="invoiceSet" readonly="true" grid-view="invoice-grid" form-view="invoice-form" canEdit="false" showIf="invoiceSet" colSpan="12"/>
                   <button name="backOrderBtn" title="Backorder" colSpan="3" hidden="true" showIf="backorderId" onClick="action-stock-move-view-back-order"/>
             	  <field name="backorderId" hidden="true"/>
                 </panel>
@@ -535,6 +540,8 @@
     	<action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
 		<action name="action-stock-move-hide-reserved-qty"/>
+		<action name="action-record-supply-chain-stock-move-onnew"  if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<action name="action-attrs-supply-chain-stock-move-onnew" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
 
@@ -544,6 +551,7 @@
         <action name="action-stock-move-hide-reserved-qty"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
+		<action name="action-supplychain-stock-move-record-set-invoice-status"/>
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
@@ -574,12 +582,6 @@
     <call class="com.axelor.apps.stock.web.StockMoveController" method="manageBackorder"/>
   </action-method>
 
-  	<action-group name="action-group-stock-stockmove-draft-click">
-	  	<action name="save"/>
-    	<action name="action-stock-move-record-draft"/>
-    	<action name="save"/>
-  	</action-group>
-
 	<action-group name="action-stock-move-group-to-location-onchange">
 		<action name="action-stock-move-set-to-address"/>
         <action name="action-stock-move-method-set-addresses-str"/>
@@ -601,6 +603,12 @@
     <action-group name="action-stock-move-group-onchange-company">
         <action name="action-stock-move-record-update-info-company"/>
         <action name="action-stock-move-record-mail-configuration"/>
+    </action-group>
+
+    <action-group name="action-stock-move-group-available-qty-onchange">
+        <action name="action-stock-move-method-verify-product-stock"/>
+        <action name="action-stock-move-validate-check-reservation"/>
+        <action name="action-stock-move-method-allocate-all"/>
     </action-group>
 
      <action-attrs name="action-stock-move-attrs-typeselect-change">
@@ -643,9 +651,10 @@
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
 	
-    <action-record name="action-stock-move-record-draft" model="com.axelor.apps.stock.db.StockMove">
-    	<field name="statusSelect" expr="eval: 1"/>
-    </action-record>
+    <action-method name="action-stock-move-method-draft" model="com.axelor.apps.stock.db.StockMove">
+    	<call class="com.axelor.apps.stock.web.StockMoveController" method="draft"/>
+    </action-method>
+    
     
     <action-record name="action-stock-move-record-new" model="com.axelor.apps.stock.db.StockMove">
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
@@ -799,6 +808,14 @@
 		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="verifyProductStock"/>
 	</action-method>
 
+    <action-method name="action-stock-move-method-allocate-all">
+        <call class="com.axelor.apps.supplychain.web.StockMoveController" method="allocateAll"/>
+    </action-method>
+
+	<action-method name="action-stock-move-method-refresh-net-mass">
+		<call class="com.axelor.apps.stock.web.StockMoveController" method="refreshProductNetMass"/>
+	</action-method>
+
 	<action-validate name="action-stock-move-check-stock-move-line-real-qty">
 		<alert message="The move doesn't contain any product, do you wish to continue ?" if="stockMoveLineList != null &amp;&amp; stockMoveLineList.sum{it->it.realQty} == 0"/>
 	</action-validate>
@@ -812,6 +829,11 @@
 	<action-validate name="action-stock-move-validate-shipment-informations">
 		<error if="__config__.app.getApp('stock').isRequiredShipmentSupplierDetails &amp;&amp; (!supplierShipmentDate || !supplierShipmentRef)" message="Please filled supplier shipment date and supplier shipment reference."/>
 	</action-validate>
+
+    <action-validate name="action-stock-move-validate-check-reservation">
+        <alert message="Do you want to allocate all the products ?"
+               if="__config__.app.getApp('supplychain')?.manageStockReservation &amp;&amp; company?.supplyChainConfig?.autoAllocateOnAvailabilityRequest &amp;&amp; stockMoveLineList.any{it?.reservedQty.compareTo(it?.realQty) &lt; 0} &amp;&amp; availabilityRequest"/>
+    </action-validate>
 
     <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
         model="com.axelor.apps.stock.db.LogisticalForm">
@@ -920,5 +942,15 @@
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 	</action-record>
-
+	
+	<action-group name="action-group-stock-stockmove-cancel-click">
+		<action name="save"/>
+		<action name="action-validate-stock-move-validate-cancel"/>
+		<action name="action.stock.move.view.cancel"/>
+	</action-group>
+	
+	<action-validate name="action-validate-stock-move-validate-cancel">
+	  <error if="statusSelect == 2 &amp;&amp; pickingIsEdited &amp;&amp; availabilityRequest" message="Picking order has been edited for this stock move, it can not be canceled."/>
+	</action-validate>
+	
 </object-views>

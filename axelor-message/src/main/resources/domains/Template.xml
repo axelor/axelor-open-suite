@@ -21,6 +21,11 @@
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
 	<boolean name="isDefault" title="Default"/>
 	<boolean name="isSystem" title="System"/>
+	<boolean name="isJson" title="Json"/>
+  	<many-to-one name="metaJsonModel" ref="com.axelor.meta.db.MetaJsonModel" title="Model"/>
+	
+	<one-to-many name="templateContextList" ref="com.axelor.apps.message.db.TemplateContext" mappedBy="template" title="Context"/>
+	
 
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT

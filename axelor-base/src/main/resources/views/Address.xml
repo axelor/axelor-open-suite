@@ -36,6 +36,7 @@
                 <button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
             </button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
+			<field name="isValidLatLong" hidden="true"/>
 		</panel>
 		<panel name="qasCertificationPanel" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>
@@ -74,6 +75,7 @@
                 <button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
             </button-group>
 			<field name="isUsed" hidden="true" type="boolean"/>
+			<field name="isValidLatLong" hidden="true"/>
 		</panel>
 		<panel name="qasCertificationPanel" title="QAS certification" colSpan="12" if="__config__.app.getApp('base').getHasQasValidation()">
 			<field name="certifiedOk" colSpan="4"/>

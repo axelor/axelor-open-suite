@@ -13,7 +13,7 @@
 			<field name="code"/>
 		</panel>
 		<panel name="controlPointModelPanel">
-			<panel-related name="controlPointModelListPanel" orderBy="-priority" field="controlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form" />
+			<panel-related name="controlPointModelListPanel" orderBy="sequence" field="controlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form" />
 			<panel-related name="optionalControlPointModelListPanel" field="optionalControlPointModelList" colSpan="6" grid-view="control-point-model-grid" form-view="control-point-model-form"/>
 		</panel>
 		<panel name="qualityCorrectiveActionPanel">

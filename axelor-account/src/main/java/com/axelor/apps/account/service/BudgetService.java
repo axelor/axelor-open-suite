@@ -226,6 +226,7 @@ public class BudgetService {
 
     invoiceLineList
         .stream()
+        .filter(invoiceLine -> invoiceLine.getBudgetDistributionList() != null)
         .flatMap(x -> x.getBudgetDistributionList().stream())
         .forEach(
             budgetDistribution -> {

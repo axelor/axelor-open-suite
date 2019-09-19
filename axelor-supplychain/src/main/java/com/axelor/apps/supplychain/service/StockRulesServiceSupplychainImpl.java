@@ -33,9 +33,11 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.auth.AuthUtils;
@@ -48,6 +50,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javax.mail.MessagingException;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
@@ -56,6 +59,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
   protected TemplateRepository templateRepo;
   protected TemplateMessageService templateMessageService;
   protected MessageRepository messageRepo;
+  protected StockConfigRepository stockConfigRepo;
 
   @Inject
   public StockRulesServiceSupplychainImpl(
@@ -64,13 +68,15 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
       PurchaseOrderRepository purchaseOrderRepo,
       TemplateRepository templateRepo,
       TemplateMessageService templateMessageService,
-      MessageRepository messageRepo) {
+      MessageRepository messageRepo,
+      StockConfigRepository stockConfigRepo) {
     super(stockRuleRepo);
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.templateRepo = templateRepo;
     this.templateMessageService = templateMessageService;
     this.messageRepo = messageRepo;
+    this.stockConfigRepo = stockConfigRepo;
   }
 
   @Override
@@ -98,20 +104,36 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
       if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_ALERT) {
 
-        Template template =
-            templateRepo
-                .all()
-                .filter(
-                    "self.metaModel.fullName = ?1 AND self.isSystem != true",
-                    StockRules.class.getName())
-                .fetchOne();
+        Template template = stockRules.getStockRuleMessageTemplate();
+
+        if (template == null) {
+          StockConfig stockConfig =
+              stockConfigRepo
+                  .all()
+                  .filter(
+                      "self.company = ?1 AND self.stockRuleMessageTemplate IS NOT NULL",
+                      stockRules.getStockLocation().getCompany())
+                  .fetchOne();
+          if (stockConfig != null) {
+            template = stockConfig.getStockRuleMessageTemplate();
+          } else {
+            template =
+                templateRepo
+                    .all()
+                    .filter(
+                        "self.metaModel.fullName = ?1 AND self.isSystem != true",
+                        StockRules.class.getName())
+                    .fetchOne();
+          }
+        }
+
         if (template != null) {
           try {
-            Message message = templateMessageService.generateMessage(stockRules, template);
-            messageRepo.save(message);
+            Message message = templateMessageService.generateAndSendMessage(stockRules, template);
           } catch (ClassNotFoundException
               | InstantiationException
               | IllegalAccessException
+              | MessagingException
               | IOException e) {
             throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
           }

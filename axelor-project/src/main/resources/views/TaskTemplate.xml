@@ -28,7 +28,10 @@
 		</panel>
 		<panel if="__config__.app.isApp('business-support')" if-module="axelor-business-support" name="internalDescriptionPanel" title="Internal Description">
 			<field name="internalDescription" colSpan="12" widget="html"/>
-		</panel>		
+		</panel>
+		<panel name="financialDataPanel" title="Financial Data" colSpan="12">
+				<field name="teamTaskInvoicing" colSpan="4" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+		</panel>
 	</form>
 
 </object-views>

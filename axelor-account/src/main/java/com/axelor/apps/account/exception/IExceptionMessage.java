@@ -171,6 +171,8 @@ public interface IExceptionMessage {
   static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s." /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -456,6 +458,8 @@ public interface IExceptionMessage {
       "%s : You must configure a year opening account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_44 = /*$$(*/
       "%s : You must configure a year closure account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_45 = /*$$(*/
+      "%s : You must configure a reported balance journal for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -500,37 +504,6 @@ public interface IExceptionMessage {
       "%s : You must configure a CFONB TIP and cheque TIP code for the company %s" /*)*/;
   static final String CFONB_CONFIG_16 = /*$$(*/
       "%s : You must configure a CFONB TIP code for the company %s" /*)*/;
-
-  /** Paybox config service */
-  static final String PAYBOX_CONFIG_1 = /*$$(*/
-      "%s : You must configure Paybox for the company %s" /*)*/;
-
-  static final String PAYBOX_CONFIG_2 = /*$$(*/
-      "%s : You must add a site number for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_3 = /*$$(*/
-      "%s : You must add a rank number for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_4 = /*$$(*/
-      "%s : You must add a transaction devise for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_5 = /*$$(*/
-      "%s : You must add a variables to return by Paybox's list for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_6 = /*$$(*/
-      "%s : You must add a returned URL from Paybox once payment is done for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_7 = /*$$(*/
-      "%s : You must add a returned URL from Paybox once payment is refused for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_8 = /*$$(*/
-      "%s : You must add a returned URL from Paybox once payment is canceled for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_9 = /*$$(*/
-      "%s : You must add an intern id for Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_10 = /*$$(*/
-      "%s : You must select an algorithm hashing type used when calculating the footprint for the configuration of Paybox %s" /*)*/;
-  static final String PAYBOX_CONFIG_11 = /*$$(*/
-      "%s : You must add a calculated signature with secret key for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_12 = /*$$(*/
-      "%s : You must add an environment URL for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_13 = /*$$(*/
-      "%s : You must add a Paybox public key's path for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_14 = /*$$(*/
-      "%s : You must add a Axelor back-office email for Paybox for Paybox's configuration %s" /*)*/;
 
   /** Payer quality service */
   static final String PAYER_QUALITY_1 = /*$$(*/
@@ -661,20 +634,8 @@ public interface IExceptionMessage {
   String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH = /*$$(*/
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
-  /** Paybox service and controller */
-  static final String PAYBOX_1 = /*$$(*/
-      "%s : You must configure an amount paid for the payment entry %s." /*)*/;
-
-  static final String PAYBOX_2 = /*$$(*/
-      "%s : The amount paid for the CB payment entry can't be higher than payer's balance." /*)*/;
-  static final String PAYBOX_3 = /*$$(*/
+  static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
       "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
-  static final String PAYBOX_4 = /*$$(*/ "%s : You must add an email for partner %s." /*)*/;
-  static final String PAYBOX_5 = /*$$(*/ "Paybox payment" /*)*/;
-  static final String PAYBOX_6 = /*$$(*/ "Payment realized" /*)*/;
-  static final String PAYBOX_7 = /*$$(*/ "Payment failed" /*)*/;
-  static final String PAYBOX_8 = /*$$(*/ "Payment canceled" /*)*/;
-  static final String PAYBOX_9 = /*$$(*/ "Paybox's informations feedback incorrect" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -693,8 +654,6 @@ public interface IExceptionMessage {
   static final String PAYMENT_VOUCHER_CONTROL_2 = /*$$(*/ "%s : There's no line to pay." /*)*/;
   static final String PAYMENT_VOUCHER_CONTROL_3 = /*$$(*/
       "%s : You must add a journal and a treasury account into payment mode." /*)*/;
-  static final String PAYMENT_VOUCHER_CONTROL_4 = /*$$(*/
-      "%s : Payment's amount (%s) is different than Paybox's collected amount (%s)" /*)*/;
 
   /** Payment voucher load service */
   static final String PAYMENT_VOUCHER_LOAD_1 = /*$$(*/ "%s : You must add an amount paid." /*)*/;
@@ -814,4 +773,11 @@ public interface IExceptionMessage {
   /* MOVE REVERSE*/
   static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
       "There is no reverse date select value of value %d" /*)*/;
+
+  /*Check not lettered advance move lines*/
+  public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
+      "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
+
+  static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
+      "Please set a reported balance date on fiscal year" /*)*/;
 }

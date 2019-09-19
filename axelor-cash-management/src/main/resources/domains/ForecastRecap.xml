@@ -5,6 +5,7 @@
   
   <entity name="ForecastRecap" lang="java">
 	
+	<string name="forecastRecapSeq" readonly="true" title="Seq." />
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
 	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
 	<decimal name="startingBalance" title="Starting Balance" required="true"/>
@@ -18,6 +19,10 @@
 	<many-to-one name="salesMan" ref="com.axelor.auth.db.User" title="SalesMan"/>
 	<integer name="displayTypeSelect" title="Display" selection="display.type.select" default="3"/>
 	<boolean name="isReport"/>
+	<date name="calculationDate" title="Calculation Date" readonly="true"/>
+	
+	<unique-constraint columns="forecastRecapSeq,company"/>
+	
 	<extra-code><![CDATA[
 	
 	   

@@ -22,23 +22,27 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,30 +53,40 @@ import java.util.Optional;
 public class StockMoveInvoiceController {
 
   @Inject private StockMoveInvoiceService stockMoveInvoiceService;
-  @Inject private SaleOrderRepository saleRepo;
-  @Inject private PurchaseOrderRepository purchaseRepo;
 
+  @SuppressWarnings("unchecked")
   public void generateInvoice(ActionRequest request, ActionResponse response) {
     try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Context context = request.getContext();
+      if (context.containsKey("operationSelect")) {
+        Integer operationSelect = Integer.parseInt(context.get("operationSelect").toString());
+        List<Map<String, Object>> stockMoveLineListContext = null;
+        if (operationSelect == StockMoveRepository.INVOICE_PARTILLY
+            && context.containsKey("stockMoveLines")) {
+          stockMoveLineListContext = (List<Map<String, Object>>) context.get("stockMoveLines");
+        }
+        StockMove stockMove =
+            Beans.get(StockMoveRepository.class)
+                .find(Long.parseLong(request.getContext().get("_id").toString()));
+        stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+        Invoice invoice =
+            Beans.get(StockMoveInvoiceService.class)
+                .createInvoice(stockMove, operationSelect, stockMoveLineListContext);
 
-      Invoice invoice = Beans.get(StockMoveInvoiceService.class).createInvoice(stockMove);
-
-      if (invoice != null) {
-        // refresh stockMove context
-        response.setReload(true);
-        // Open the generated invoice in a new tab
-        response.setView(
-            ActionView.define("Invoice")
-                .model(Invoice.class.getName())
-                .add("grid", "invoice-grid")
-                .add("form", "invoice-form")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(invoice.getId()))
-                .context("_operationTypeSelect", invoice.getOperationTypeSelect())
-                .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
-                .map());
+        if (invoice != null) {
+          // Open the generated invoice in a new tab
+          response.setView(
+              ActionView.define(I18n.get(ITranslation.INVOICE))
+                  .model(Invoice.class.getName())
+                  .add("grid", "invoice-grid")
+                  .add("form", "invoice-form")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(invoice.getId()))
+                  .context("_operationTypeSelect", invoice.getOperationTypeSelect())
+                  .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                  .map());
+          response.setCanClose(true);
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -459,6 +473,58 @@ public class StockMoveInvoiceController {
       }
       if (warningMessage != null && !warningMessage.isEmpty()) {
         response.setFlash(warningMessage);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillDefaultValueWizard(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = Long.parseLong(request.getContext().get("_id").toString());
+      StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+
+      BigDecimal TotalInvoicedQty =
+          stockMove
+              .getStockMoveLineList()
+              .stream()
+              .map(StockMoveLine::getQtyInvoiced)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (TotalInvoicedQty.compareTo(BigDecimal.ZERO) == 0) {
+        response.setValue("operationSelect", StockMoveRepository.INVOICE_ALL);
+      } else {
+        response.setValue("operationSelect", StockMoveRepository.INVOICE_PARTILLY);
+      }
+      List<Map<String, Object>> stockMoveLines =
+          stockMoveInvoiceService.getStockMoveLinesToInvoice(stockMove);
+      response.setValue("$stockMoveLines", stockMoveLines);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void openInvoicingWizard(ActionRequest request, ActionResponse response) {
+    try {
+      response.setReload(true);
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      List<Map<String, Object>> stockMoveLines =
+          stockMoveInvoiceService.getStockMoveLinesToInvoice(stockMove);
+
+      if (stockMoveLines.size() > 0) {
+        response.setView(
+            ActionView.define(I18n.get(ITranslation.INVOICING))
+                .model(StockMove.class.getName())
+                .add("form", "stock-move-invoicing-wizard-form")
+                .param("popup", "reload")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("width", "large")
+                .param("popup-save", "false")
+                .context("_id", stockMove.getId())
+                .map());
+      } else {
+        response.setAlert(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_ERROR));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

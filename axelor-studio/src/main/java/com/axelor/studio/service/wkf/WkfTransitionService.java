@@ -110,7 +110,7 @@ class WkfTransitionService {
 
     List<ActionAttrs.Attribute> fields = new ArrayList<ActionAttrs.Attribute>();
 
-    Integer buttonSeq = -100;
+    Integer buttonSeq = wkfService.wkfSequence - 46;
 
     for (WkfTransition transition : wkfService.workflow.getTransitions()) {
 
@@ -126,6 +126,10 @@ class WkfTransitionService {
       String filters = getFilters(transition.getConditions());
       if (filters != null) {
         condition += " && (" + filters + ")";
+      }
+
+      if (wkfService.applyCondition != null) {
+        condition += " && " + wkfService.applyCondition;
       }
 
       if (transition.getIsButton()) {
@@ -186,7 +190,7 @@ class WkfTransitionService {
     String title = transition.getButtonTitle();
     //    String name = wkfService.inflector.camelize(source + "-" + title, true);
     // FIXME:Have to check if its working with import export of workflow.
-    String name = "transition" + transition.getId();
+    String name = wkfService.wkfId + "Transition" + transition.getId();
     if (name.equals("save") || name.equals("cancel") || name.equals("back")) {
       name = "wkf" + name;
     }
@@ -194,12 +198,11 @@ class WkfTransitionService {
 
     MetaJsonField button = wkfService.getJsonField(name, "button");
     button.setTitle(title);
-    ;
     button.setShowIf(condition);
     button.setSequence(sequence);
     button.setVisibleInGrid(false);
     button.setIsWkf(true);
-    button.setWidgetAttrs("{\"colSpan\": \"3\"}");
+    button.setWidgetAttrs("{\"colSpan\": \"" + transition.getColSpan() + "\"}");
     button.setOnClick(addButtonActions(transition, name));
 
     if (transition.getRoleSet() != null) {
@@ -255,8 +258,8 @@ class WkfTransitionService {
     actions.add(actionName);
     xml = getActionXML(actionName, attrs);
     metaService.updateMetaAction(actionName, "action-record", xml, null);
-    // actions.add("save");
-    //		actions.add(WkfTrackingService.ACTION_TRACK);
+    //    actions.add("save");
+    //    actions.add(wkfService.trackingAction);
 
     String successMsg = transition.getSuccessMsg();
     if (successMsg != null) {
@@ -267,7 +270,8 @@ class WkfTransitionService {
     }
     actions.add("save");
     actions.add("action-group-" + wkfService.wkfId);
-    actions.add("save");
+    //    actions.add("save");
+    //    actions.add(wkfService.trackingAction);
 
     return Joiner.on(",").join(actions);
   }

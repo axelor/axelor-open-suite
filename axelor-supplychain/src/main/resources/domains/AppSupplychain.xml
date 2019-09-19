@@ -45,8 +45,8 @@
 
         <string name="sOFilterOnStockDetailStatusSelect" title="Status considered to filter a sale order" selection="sale.order.status.select" default="3"/>
 	    <string name="pOFilterOnStockDetailStatusSelect" title="Status considered to filter a purchase order" selection="purchase.purchase.order.status.select" default="3"/>
-    <boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
-<boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
+	    <boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
+	    <boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
     
     <track>

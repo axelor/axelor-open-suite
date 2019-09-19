@@ -64,6 +64,11 @@
 		<option value="1">Email</option>
 	</selection>
 	
+	<selection name="crm.event.reminder.mode.select">
+		<option value="1">Before start date</option>
+		<option value="2">At specific date</option>
+	</selection>
+	
 	<selection name="crm.eventReminder.duration.type.select">
 		<option value="1">Minutes</option>
 		<option value="2">Hours</option>
@@ -73,7 +78,6 @@
 	
 	<selection name="crm.eventReminder.assign.to.select">
 		<option value="1">For me</option>
-		<option value="2">For me and internal guests</option>
 		<option value="3">For all</option>
 	</selection>
 	

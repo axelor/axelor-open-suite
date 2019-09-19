@@ -150,4 +150,6 @@ public interface LogisticalFormService {
    */
   Optional<String> getCustomerAccountNumberToCarrier(LogisticalForm logisticalForm)
       throws AxelorException;
+
+  void updateProductNetMass(LogisticalForm logisticalForm) throws AxelorException;
 }

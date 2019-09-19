@@ -25,7 +25,7 @@
       		<field name="valueField" onSelect="action-action-builder-line-value-field-domain" onChange="action-action-builder-line-set-src-field-meta" />
       	</panel>
       	<field name="name" showIf="dummy" colSpan="6" required="true" />
-      	<field name="value"/>
+      	<field name="value" colSpan="12"/>
       	<field name="conditionText" hideIf="dummy" />
       	<field name="filter" showIf="!dummy &amp;&amp; (metaField.relationship != null || metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null)"/>
       	<field name="metaJsonField.type" hidden="true" />

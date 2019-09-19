@@ -21,7 +21,6 @@
 		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Type of authorized activities"/>
 		<string name="fullName" namecolumn="true" title="Name"/>
 		<boolean name="excludePlanning" title="Exclude planning"/>
-		<boolean name="isProject" title="Project/Phase" default="true"/>
 		<boolean name="isBusinessProject" title="Business project"/>
 		<many-to-many name="taskTemplateSet" ref="com.axelor.apps.project.db.TaskTemplate" title="Task templates"/>
 	</entity>

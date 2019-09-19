@@ -99,6 +99,18 @@ public class TranslationServiceImpl implements TranslationService {
   }
 
   @Override
+  public String getTranslationKey(String message, String language) {
+    MetaTranslation metaTranslation =
+        metaTranslationRepo
+            .all()
+            .filter("self.message = ?1 AND self.language = ?2", message, language)
+            .fetchOne();
+    return metaTranslation != null && !StringUtils.isBlank(metaTranslation.getKey())
+        ? metaTranslation.getKey()
+        : message;
+  }
+
+  @Override
   public String getValueTranslation(String key, String language) {
     String valueKey = VALUE_KEY_PREFIX + key;
     String translation = getTranslation(valueKey, language);

@@ -11,23 +11,36 @@
 	</grid>
  
 	 <form name="forecast-recap-form" title="Forecast Recap" model="com.axelor.apps.cash.management.db.ForecastRecap"
-	 	onNew="action-forecast-recap-record-default-on-new">
+	 	onNew="action-forecast-recap-record-default-on-new" width="large">
+	 	<toolbar>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-forecast-recap-view-reports-wizard"/>
+	 	</toolbar>
 	 	<panel name="mainPanel" >
-			<field name="company" canEdit="false" onChange="action-forecast-record-bank, action-forecast-recap-record-currency"/>
-	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
-	       	<field name="fromDate" onChange="action-forecast-recap-validate-dates"/>
-       		<field name="toDate" onChange="action-forecast-recap-validate-dates"/>
-       		<field name="opportunitiesTypeSelect"/>
-       		<field name="startingBalance"/>
-       		<button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate, action-forecast-recap-method-populate"/>
-       		<panel-related name="forecastRecapLineListPanel" field="forecastRecapLineList" readonly="true" colSpan="12"/>
-       		<field name="endingBalance"/>
-       		<field name="currency" readonly="true"/>
-       		<button name="showReportBtn" title="Show histrogram" colOffset="6" onClick="save,action-forecast-recap-method-show-report"/>
-       		<field name="isReport" hidden="true"/>
+	 	   <panel name="seqPanel" colSpan="12">
+                       <field name="forecastRecapSeq" showTitle="false" colSpan="12" css="label-bold bold large"/>
+                   </panel>
+		   <field name="company" canEdit="false" onChange="action-forecast-record-bank, action-forecast-recap-record-currency"/>
+	       	   <field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+	       	   <field name="fromDate" onChange="action-forecast-recap-validate-dates"/>
+       		   <field name="toDate" onChange="action-forecast-recap-validate-dates"/>
+       		   <field name="opportunitiesTypeSelect"/>
+       		   <field name="startingBalance"/>
+       		   <button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
+       		   <panel-dashlet name="forecastRecapLineListPanel" showIf="id" height="500" action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
+       		   <field name="endingBalance" readonly="true" colSpan="4"/>
+       		   <field name="currency" readonly="true" colSpan="4"/>
+       		   <field name="calculationDate" colSpan="4"/>
+       		   <field name="isReport" hidden="true"/>
 	 	</panel>
 	 </form>
 	 
+	 <form model="com.axelor.apps.base.db.Wizard" title="Reports" name="forecast-recap-print-wizard-form">
+		<panel name="mainPanel">
+			<field name="$reportTypeSelect" title="Format" selection="forecast.recap.report.type.select" colSpan="3" type="string"/>
+			<button name="printBtn" title="Print" onClick="action-forecast-recap-method-print" readonlyIf="$reportTypeSelect == null" colSpan="3"/>
+		</panel>
+	</form>
+
 	 <grid name="forecast-report-grid" title="Forecast Reports" model="com.axelor.apps.cash.management.db.ForecastRecap">
        <field name="company"/>
        <field name="bankDetails" if="__config__.app.getApp('base').getManageMultiBanks()"/>
@@ -67,6 +80,14 @@
 	  <view type="chart" name="chart.forecast.report.marges"/>
 	  <context name="_id" expr="eval: id" />
 	</action-view>
+	
+	<action-view name="action-forecast-recap-view-show-forecast-recap-line-list" title="Details" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+		<view type="grid" name="forecast-recap-line-grid"/>
+		<view type="form" name="forecast-recap-line-form"/>
+		<view-param name="limit" value="100"/>
+		<domain>self.forecastRecap.id = :forecastRecap</domain>
+		<context name="forecastRecap" expr="eval: __self__?.id"/>
+	</action-view>
 	 
 	 <action-attrs name="action-forecast-report-refresh">
 	  <attribute for="reportDashlet" name="refresh" expr="true"/>
@@ -104,8 +125,18 @@
 		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="populate"/>
 	</action-method>
 	
-	<action-method name="action-forecast-recap-method-show-report">
-		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="showReport"/>
-	</action-method>
-    
+	<action-view name="action-forecast-recap-view-reports-wizard" title="Reports"
+		model="com.axelor.apps.cash.management.db.ForecastRecap" >
+		<view type="form" name="forecast-recap-print-wizard-form" />
+		<view-param name="popup" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_forecastRecapId" expr="eval: id"/>
+	</action-view>
+
+    <action-method name="action-forecast-recap-method-print">
+		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="print"/>
+    </action-method>
+
 </object-views>

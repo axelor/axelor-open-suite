@@ -10,6 +10,7 @@
 		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="controlPointType"/>
+			<field name="sequence"/>
 		</panel>
 		<panel name="measuringPointPanel">
 			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-model-grid" form-view="quality-measuring-point-model-form"/>

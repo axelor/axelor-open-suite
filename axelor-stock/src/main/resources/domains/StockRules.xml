@@ -12,16 +12,17 @@
 	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" massUpdate="true" required="true"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" massUpdate="true" required="true"/>
   	<decimal name="minQty" title="Min. Qty" massUpdate="true" required="true"/>
-  	<decimal name="idealQty" title="Ideal Qty" required="false"/>
+  	<decimal name="idealQty" title="Ideal Qty" required="false" />
   	<decimal name="maxQty" title="Max. Qty" required="false"/>
   	<decimal name="reOrderQty" title="Refill Qty" required="true"/>
   	<boolean name="useIdealQty" title="Define ideal Qty" default="false"/>
   	<boolean name="useMaxQty" title="Define max Qty" default="false"/>
 	<integer name="useCaseSelect" title="Use Case" selection="stock.stock.rules.use.case.select" required="true"/>
-  	<integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select" required="true"/>
+  	<integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select" nullable="true" />
   	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select" massUpdate="true" required="true"/>
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
+	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
   	
   	 <extra-code><![CDATA[
 	   	// USE CASE SELECT

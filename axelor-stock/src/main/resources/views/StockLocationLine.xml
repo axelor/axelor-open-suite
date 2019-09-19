@@ -24,7 +24,7 @@
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
             <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
-            <field name="stockLocation" hidden="true"/>
+            <field name="stockLocation"/>
             <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
 		<panel name="lastInventoryPanel" title="Last inventory">
@@ -143,6 +143,7 @@
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
+            <field name="detailsStockLocation"/>
         </panel>
 		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <simple-property-list name="includeResource">
         <value>translation_fr_FR</value>
         <value>translation_en_US</value>
@@ -420,6 +420,18 @@ order by ABCLine.cumulated_worth;]]></xml-property>
                     <text-property name="heading">abc_analysis_seq</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
@@ -448,6 +460,16 @@ order by ABCLine.cumulated_worth;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -464,6 +486,20 @@ order by ABCLine.cumulated_worth;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
@@ -472,6 +508,8 @@ order by ABCLine.cumulated_worth;]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 	abc_analysis.abc_analysis_seq,
+	Company.height as logo_height,
+	Company.width as logo_width,
 	MetaFile.file_path as logo_path 
 from base_abc_analysis abc_analysis
 left outer join base_company Company on (Company.id = abc_analysis.company)
@@ -1055,12 +1093,32 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                                         <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                                         <property name="dataType">string</property>
                                     </structure>
+                                    <structure>
+                                        <property name="name">abc_analysis_seq</property>
+                                        <text-property name="displayName">abc_analysis_seq</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["abc_analysis_seq"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_height</property>
+                                        <text-property name="displayName">logo_height</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0 &amp;&amp; dataSetRow["logo_height"]&lt;48){dataSetRow["logo_height"]+'px'}else{'48px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_width</property>
+                                        <text-property name="displayName">logo_width</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<TABLE >
 	<TR>
 		<VALUE-OF format="HTML">
-		"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%' height='48'/></TD>"
+		"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='"+row["logo_width"]+"' height='"+row["logo_height"]+"'/></TD>"
  		</VALUE-OF>
 	</TR>
 </TABLE>]]></text-property>

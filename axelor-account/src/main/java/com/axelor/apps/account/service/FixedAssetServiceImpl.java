@@ -37,9 +37,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -156,59 +158,62 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void createFixedAsset(Invoice invoice) throws AxelorException {
+  public List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException {
 
-    if (invoice != null && invoice.getInvoiceLineList() != null) {
-
-      AccountConfig accountConfig =
-          Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
-
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-
-        if (accountConfig.getFixedAssetCatReqOnInvoice()
-            && invoiceLine.getFixedAssets()
-            && invoiceLine.getFixedAssetCategory() == null) {
-          throw new AxelorException(
-              invoiceLine,
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(IExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
-              invoiceLine.getProductName());
-        }
-
-        if (invoiceLine.getFixedAssets() && invoiceLine.getFixedAssetCategory() != null) {
-
-          FixedAsset fixedAsset = new FixedAsset();
-          fixedAsset.setFixedAssetCategory(invoiceLine.getFixedAssetCategory());
-          if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
-            fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
-          } else {
-            fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
-          }
-          fixedAsset.setAcquisitionDate(invoice.getInvoiceDate());
-          fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
-          fixedAsset.setReference(invoice.getInvoiceId());
-          fixedAsset.setName(invoiceLine.getProductName() + " (" + invoiceLine.getQty() + ")");
-          fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
-          fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
-          fixedAsset.setComputationMethodSelect(
-              fixedAsset.getFixedAssetCategory().getComputationMethodSelect());
-          fixedAsset.setDegressiveCoef(fixedAsset.getFixedAssetCategory().getDegressiveCoef());
-          fixedAsset.setNumberOfDepreciation(
-              fixedAsset.getFixedAssetCategory().getNumberOfDepreciation());
-          fixedAsset.setPeriodicityInMonth(
-              fixedAsset.getFixedAssetCategory().getPeriodicityInMonth());
-          fixedAsset.setDurationInMonth(fixedAsset.getFixedAssetCategory().getDurationInMonth());
-          fixedAsset.setGrossValue(invoiceLine.getCompanyExTaxTotal());
-          fixedAsset.setPartner(invoice.getPartner());
-          fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
-          fixedAsset.setInvoiceLine(invoiceLine);
-
-          this.generateAndcomputeLines(fixedAsset);
-
-          fixedAssetRepo.save(fixedAsset);
-        }
-      }
+    if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return null;
     }
+
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    List<FixedAsset> fixedAssetList = new ArrayList<FixedAsset>();
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+
+      if (accountConfig.getFixedAssetCatReqOnInvoice()
+          && invoiceLine.getFixedAssets()
+          && invoiceLine.getFixedAssetCategory() == null) {
+        throw new AxelorException(
+            invoiceLine,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.INVOICE_LINE_ERROR_FIXED_ASSET_CATEGORY),
+            invoiceLine.getProductName());
+      }
+
+      if (!invoiceLine.getFixedAssets() || invoiceLine.getFixedAssetCategory() == null) {
+        continue;
+      }
+
+      FixedAsset fixedAsset = new FixedAsset();
+      fixedAsset.setFixedAssetCategory(invoiceLine.getFixedAssetCategory());
+      if (fixedAsset.getFixedAssetCategory().getIsValidateFixedAsset()) {
+        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
+      } else {
+        fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_DRAFT);
+      }
+      fixedAsset.setAcquisitionDate(invoice.getInvoiceDate());
+      fixedAsset.setFirstDepreciationDate(invoice.getInvoiceDate());
+      fixedAsset.setReference(invoice.getInvoiceId());
+      fixedAsset.setName(invoiceLine.getProductName() + " (" + invoiceLine.getQty() + ")");
+      fixedAsset.setCompany(fixedAsset.getFixedAssetCategory().getCompany());
+      fixedAsset.setJournal(fixedAsset.getFixedAssetCategory().getJournal());
+      fixedAsset.setComputationMethodSelect(
+          fixedAsset.getFixedAssetCategory().getComputationMethodSelect());
+      fixedAsset.setDegressiveCoef(fixedAsset.getFixedAssetCategory().getDegressiveCoef());
+      fixedAsset.setNumberOfDepreciation(
+          fixedAsset.getFixedAssetCategory().getNumberOfDepreciation());
+      fixedAsset.setPeriodicityInMonth(fixedAsset.getFixedAssetCategory().getPeriodicityInMonth());
+      fixedAsset.setDurationInMonth(fixedAsset.getFixedAssetCategory().getDurationInMonth());
+      fixedAsset.setGrossValue(invoiceLine.getCompanyExTaxTotal());
+      fixedAsset.setPartner(invoice.getPartner());
+      fixedAsset.setPurchaseAccount(invoiceLine.getAccount());
+      fixedAsset.setInvoiceLine(invoiceLine);
+
+      this.generateAndcomputeLines(fixedAsset);
+
+      fixedAssetList.add(fixedAssetRepo.save(fixedAsset));
+    }
+    return fixedAssetList;
   }
 
   @Override

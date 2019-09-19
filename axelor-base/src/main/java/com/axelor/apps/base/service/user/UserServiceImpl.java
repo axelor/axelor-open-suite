@@ -47,6 +47,8 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -54,6 +56,7 @@ import javax.mail.MessagingException;
 import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
+import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,7 +184,13 @@ public class UserServiceImpl implements UserService {
       return null;
     }
 
-    return metaFiles.getDownloadLink(company.getLogo(), company);
+    MetaFile logo = company.getLogo();
+
+    if (logo == null) {
+      return null;
+    }
+
+    return metaFiles.getDownloadLink(logo, company);
   }
 
   @Override
@@ -375,5 +384,43 @@ public class UserServiceImpl implements UserService {
   @Override
   public String getPasswordPatternDescription() {
     return I18n.get(PATTERN_DESCRIPTION);
+  }
+
+  @Override
+  public boolean verifyCurrentUserPassword(String password) {
+
+    if (!StringUtils.isBlank(password)) {
+      final User current = AuthUtils.getUser();
+      final AuthService authService = AuthService.getInstance();
+
+      if (authService.match(password, current.getPassword())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateRandomPasswordForUsers(List<Long> userIds) {
+    AuthService authService = Beans.get(AuthService.class);
+    LocalDateTime todayDateTime =
+        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+
+    for (Long userId : userIds) {
+      User user = userRepo.find(userId);
+      String password = this.generateRandomPassword().toString();
+      user.setTransientPassword(password);
+      password = authService.encrypt(password);
+      user.setPassword(password);
+      user.setPasswordUpdatedOn(todayDateTime);
+      userRepo.save(user);
+    }
+
+    // Update login date in session so that user changing own password doesn't get logged out.
+    if (userIds.contains(getUserId())) {
+      Session session = AuthUtils.getSubject().getSession();
+      session.setAttribute("loginDate", todayDateTime);
+    }
   }
 }

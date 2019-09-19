@@ -19,6 +19,7 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -29,15 +30,44 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 @Singleton
 public class ProductionOrderWizardController {
 
   @Inject private ProductionOrderWizardService productionOrderWizardService;
+  @Inject private AppProductionService appProductionService;
 
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
+
+    ZonedDateTime startDateT = null, endDateT = null;
+    if (context.get("_startDate") != null) {
+      startDateT =
+          ZonedDateTime.parse(
+              context.get("_startDate").toString(),
+              DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
+
+      if (ChronoUnit.MINUTES.between(appProductionService.getTodayDateTime(), startDateT) < 0) {
+        response.setError(I18n.get(IExceptionMessage.PRODUCTION_ORDER_5));
+      }
+    }
+
+    if (context.get("_endDate") != null) {
+      endDateT =
+          ZonedDateTime.parse(
+              context.get("_endDate").toString(),
+              DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
+
+      if ((startDateT != null && ChronoUnit.MINUTES.between(startDateT, endDateT) < 0)
+          || ChronoUnit.MINUTES.between(appProductionService.getTodayDateTime(), endDateT) < 0) {
+        response.setError(I18n.get(IExceptionMessage.PRODUCTION_ORDER_5));
+      }
+    }
 
     if (context.get("qty") == null
         || new BigDecimal((String) context.get("qty")).compareTo(BigDecimal.ZERO) <= 0) {

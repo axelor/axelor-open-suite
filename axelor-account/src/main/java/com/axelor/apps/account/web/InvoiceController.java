@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -41,11 +42,13 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -61,7 +64,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -210,6 +212,21 @@ public class InvoiceController {
 
     try {
       String msg = invoiceService.checkNotImputedRefunds(invoice);
+      if (msg != null) {
+        response.setFlash(msg);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkNotLetteredAdvancePaymentMoveLines(
+      ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = invoiceRepo.find(invoice.getId());
+
+    try {
+      String msg = invoiceService.checkNotLetteredAdvancePaymentMoveLines(invoice);
       if (msg != null) {
         response.setFlash(msg);
       }
@@ -825,54 +842,8 @@ public class InvoiceController {
                   }
                 });
 
-        Company company = null;
-        Currency currency = null;
-
-        List<Long> invoiceToPay = new ArrayList<>();
-        Boolean isActivatePassedForPayment =
-            Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment();
-
-        for (Long invoiceId : invoiceIdList) {
-          Invoice invoice = invoiceRepo.find(invoiceId);
-
-          if (invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
-              && (invoice.getOperationSubTypeSelect()
-                      == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-                  && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED)) {
-
-            continue;
-          }
-          if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) == 0) {
-
-            continue;
-          }
-
-          if (company == null) {
-            company = invoice.getCompany();
-          }
-          if (currency == null) {
-            currency = invoice.getCurrency();
-          }
-
-          if (invoice.getCompany() == null
-              || company == null
-              || !invoice.getCompany().equals(company)) {
-            response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
-            return;
-          }
-          if (invoice.getCurrency() == null
-              || currency == null
-              || !invoice.getCurrency().equals(currency)) {
-            response.setError(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
-            return;
-          }
-          if (isActivatePassedForPayment
-              && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
-            response.setError(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION);
-            return;
-          }
-          invoiceToPay.add(invoiceId);
-        }
+        List<Long> invoiceToPay =
+            Beans.get(InvoicePaymentCreateService.class).getInvoiceIdsToPay(invoiceIdList);
 
         if (invoiceToPay.isEmpty()) {
           response.setError(I18n.get(IExceptionMessage.INVOICE_NO_INVOICE_TO_PAY));
@@ -891,7 +862,7 @@ public class InvoiceController {
                 .map());
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -932,5 +903,33 @@ public class InvoiceController {
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
         "value",
         invoice.getPfpValidatorUser().equals(invoiceService.getPfpValidatorUser(invoice)));
+  }
+
+  public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Company company = invoice.getCompany();
+
+    long companyId = company.getPartner().getId();
+
+    String domain =
+        String.format(
+            "self.id != %d AND self.isContact = false AND self.isCustomer = true", companyId);
+    domain += " AND :company member of self.companySet";
+
+    int invoiceTypeSelect = invoiceService.getPurchaseTypeOrSaleType(invoice);
+
+    try {
+
+      if ((!(invoice.getInvoiceLineList() == null || invoice.getInvoiceLineList().isEmpty()))
+          && (invoiceTypeSelect == 1)) {
+
+        domain += Beans.get(PartnerService.class).getPartnerDomain(invoice.getPartner());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
+    }
+    response.setAttr("partner", "domain", domain);
   }
 }

@@ -19,9 +19,9 @@
 			<extra-code>
 			<![CDATA[
 				// AMOUNT TYPE SELECT
+				public static final int AMOUNT_TYPE_NONE = 0;
 				public static final int AMOUNT_TYPE_PERCENT = 1;
 				public static final int AMOUNT_TYPE_FIXED = 2;
-				public static final int AMOUNT_TYPE_NONE = 3;
 
 				// AMOUNT TYPE SELECT
 				public static final int TYPE_DISCOUNT = 1;

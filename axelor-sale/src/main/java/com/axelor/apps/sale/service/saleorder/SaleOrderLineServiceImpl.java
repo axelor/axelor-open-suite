@@ -261,7 +261,6 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     HashMap<String, BigDecimal> map = new HashMap<>();
     if (saleOrder == null
-        || (saleOrderLine.getProduct() == null && saleOrderLine.getProductName() == null)
         || saleOrderLine.getPrice() == null
         || saleOrderLine.getInTaxPrice() == null
         || saleOrderLine.getQty() == null) {

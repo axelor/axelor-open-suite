@@ -22,10 +22,10 @@
 	</grid>
 
 	<grid name="move-grid-period" orderBy="date,id" title="Account moves to validate" model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
+        <field name="date" width="90"/>
         <field name="reference" width="200"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
         <field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false" canView="false"/>
-        <field name="date" width="90"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
         <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
@@ -52,7 +52,7 @@
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
                 </panel>
-                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+                <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
 
             <panel name="otherDetailsPanel" colSpan="3">
@@ -74,7 +74,7 @@
                         <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
                     </editor>
                 </field>
-                <field name="$technicalOriginTags" showTitle="false">
+                <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
                   <viewer depends="technicalOriginSelect">
                     <![CDATA[
                       <h4 class="text-right">
@@ -86,7 +86,7 @@
                     ]]>
                   </viewer>
                 </field>
-                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
+                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3" widget="boolean-switch"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
@@ -107,14 +107,14 @@
 	   		<field name="$totalDebit" title="Total debit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalDebit}}</h3>
+						<h3>{{$fmt('$totalDebit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
 	   		<field name="$totalCredit" title="Total credit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalCredit}}</h3>
+						<h3>{{$fmt('$totalCredit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
@@ -122,8 +122,8 @@
 				<viewer>
 					<![CDATA[
 						<h3>
-							<span ng-show="record.$difference == 0">{{record.$difference}}</span>
-							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{record.$difference}}</span>
+							<span ng-show="record.$difference == 0">{{$fmt('$difference')}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')}}</span>
 						</h3>
 					]]>
 				</viewer>
@@ -152,9 +152,9 @@
             </panel>
 
             <panel name="othersPanel" title="Others">
-                <field name="ignoreInAccountingOk"/>
+                <field name="ignoreInAccountingOk" showIf="ignoreInAccountingOk" readonly="true"/>
                 <field name="ignoreInDebtRecoveryOk"/>
-                <field name="rejectOk"/>
+                <field name="rejectOk" showIf="rejectOk" readonly="true"/>
             </panel>
         </panel-tabs>
         
@@ -209,7 +209,7 @@
     <action-validate name="action-move-validate-check-date-of-reversion">
       <error message="Reverse move date should not be prior to the original move date (${LocalDate.parse(_moveDate).format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))})."
       		if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))"/>
-      <error message="Please select an earlier date or equal to today's date " if="LocalDate.parse(dateOfReversion).isAfter(__date__)"/>
+      <error message="Please select an earlier date or equal to today's date" if="LocalDate.parse(dateOfReversion).isAfter(__date__)"/>
     </action-validate>
 
    	<!-- ACTION RECORD -->
@@ -241,7 +241,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-move-attrs-adjusting-move">
-		<attribute for="adjustingMove" name="readonly" expr="eval: period.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
+		<attribute for="adjustingMove" name="readonly" expr="eval: period?.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
 		<attribute for="adjustingMove" name="readonly" expr="true" if="eval: statusSelect &gt; 2"/>
 	</action-attrs>
 
@@ -307,7 +307,9 @@
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
 	</action-method>
-
+<action-method name="action-account-move-method-filter-partner">
+		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
+	</action-method>
 	<!-- ACTION VIEW -->
 	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
 		<view type="form" name="move-wizard-generate-reverse-form"/>
@@ -320,11 +322,11 @@
 		<context name="_moveDate" expr="eval: date"/>
 	</action-view>
 
-
 	<action-view name="action-move-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
 		<view type="grid" name="move-grid-period"/>
 		<view type="form" name="move-form"/>
-		<domain>self.period = :_id AND self.statusSelect NOT IN (3,4)</domain>
+		<view-param name="showArchived" value="true"/>
+		<domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR  (self.statusSelect = 1 AND (self.archived = false OR self.archived is null) ))</domain>
 	</action-view>
 
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">

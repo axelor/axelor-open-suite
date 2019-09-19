@@ -78,7 +78,7 @@ public class BatchReimbursementExport extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -154,20 +154,18 @@ public class BatchReimbursementExport extends BatchStrategy {
   public void runCreateReimbursementExport(Company company) {
 
     List<Reimbursement> reimbursementList =
-        (List<Reimbursement>)
-            reimbursementRepo
-                .all()
-                .filter(
-                    "self.statusSelect != ?1 AND self.statusSelect != ?2 AND self.company = ?3 "
-                        + "AND self.partner.id NOT IN ("
-                        + Beans.get(BlockingService.class)
-                            .listOfBlockedPartner(
-                                company, BlockingRepository.REIMBURSEMENT_BLOCKING)
-                        + " )",
-                    ReimbursementRepository.STATUS_REIMBURSED,
-                    ReimbursementRepository.STATUS_CANCELED,
-                    company)
-                .fetch();
+        reimbursementRepo
+            .all()
+            .filter(
+                "self.statusSelect != ?1 AND self.statusSelect != ?2 AND self.company = ?3 "
+                    + "AND self.partner.id NOT IN ("
+                    + Beans.get(BlockingService.class)
+                        .listOfBlockedPartner(company, BlockingRepository.REIMBURSEMENT_BLOCKING)
+                    + " )",
+                ReimbursementRepository.STATUS_REIMBURSED,
+                ReimbursementRepository.STATUS_CANCELED,
+                company)
+            .fetch();
 
     int i = 0;
 
@@ -188,19 +186,18 @@ public class BatchReimbursementExport extends BatchStrategy {
         log.debug("Tiers n° {}", partner.getName());
 
         List<MoveLine> moveLineList =
-            (List<MoveLine>)
-                moveLineRepo
-                    .all()
-                    .filter(
-                        "self.account.useForPartnerBalance = 'true' "
-                            + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
-                            + "self.reimbursementStatusSelect = ?5 ",
-                        MoveRepository.STATUS_VALIDATED,
-                        MoveRepository.STATUS_DAYBOOK,
-                        partnerRepository.find(partner.getId()),
-                        companyRepo.find(company.getId()),
-                        MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
-                    .fetch();
+            moveLineRepo
+                .all()
+                .filter(
+                    "self.account.useForPartnerBalance = 'true' "
+                        + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
+                        + "self.reimbursementStatusSelect = ?5 ",
+                    MoveRepository.STATUS_VALIDATED,
+                    MoveRepository.STATUS_DAYBOOK,
+                    partnerRepository.find(partner.getId()),
+                    companyRepo.find(company.getId()),
+                    MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
+                .fetch();
 
         log.debug("Liste des trop perçus : {}", moveLineList);
 
@@ -263,14 +260,13 @@ public class BatchReimbursementExport extends BatchStrategy {
 
     // On récupère les remboursements dont les trop perçu ont été annulés
     List<Reimbursement> reimbursementToCancelList =
-        (List<Reimbursement>)
-            reimbursementRepo
-                .all()
-                .filter(
-                    "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse = 0",
-                    ReimbursementRepository.STATUS_VALIDATED,
-                    company)
-                .fetch();
+        reimbursementRepo
+            .all()
+            .filter(
+                "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse = 0",
+                ReimbursementRepository.STATUS_VALIDATED,
+                company)
+            .fetch();
 
     // On annule les remboursements
     for (Reimbursement reimbursement : reimbursementToCancelList) {
@@ -279,16 +275,15 @@ public class BatchReimbursementExport extends BatchStrategy {
 
     // On récupère les remboursement à rembourser
     List<Reimbursement> reimbursementList =
-        (List<Reimbursement>)
-            reimbursementRepo
-                .all()
-                .filter(
-                    "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0 AND self.partner",
-                    company,
-                    ReimbursementRepository.STATUS_VALIDATED)
-                .fetch();
+        reimbursementRepo
+            .all()
+            .filter(
+                "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0 AND self.partner",
+                company,
+                ReimbursementRepository.STATUS_VALIDATED)
+            .fetch();
 
-    List<Reimbursement> reimbursementToExport = new ArrayList<Reimbursement>();
+    List<Reimbursement> reimbursementToExport = new ArrayList<>();
 
     for (Reimbursement reimbursement : reimbursementList) {
       try {
@@ -344,7 +339,7 @@ public class BatchReimbursementExport extends BatchStrategy {
       }
     }
 
-    if (reimbursementToExport != null && reimbursementToExport.size() != 0) {
+    if (reimbursementToExport != null && !reimbursementToExport.isEmpty()) {
       /*
       try {
 

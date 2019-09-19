@@ -84,7 +84,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     Product product = productRepository.find(productId);
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
-    if (stockLocationId != 0L) {
+    if (stockLocationId != 0L && companyId != 0L) {
       List<StockLocation> stockLocationList =
           stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
       if (!stockLocationList.isEmpty()) {
@@ -96,6 +96,11 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
         BigDecimal purchaseOrderQty = BigDecimal.ZERO;
         BigDecimal availableQty = BigDecimal.ZERO;
 
+        saleOrderQty = this.getSaleOrderQty(product, company, stockLocation);
+        purchaseOrderQty = this.getPurchaseOrderQty(product, company, stockLocation);
+        availableQty = this.getAvailableQty(product, company, stockLocation);
+        requestedReservedQty = this.getRequestedReservedQty(product, company, stockLocation);
+
         for (StockLocation sl : stockLocationList) {
           realQty = realQty.add(stockLocationService.getRealQty(productId, sl.getId(), companyId));
           futureQty =
@@ -103,12 +108,8 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
           reservedQty =
               reservedQty.add(
                   stockLocationServiceSupplychain.getReservedQty(productId, sl.getId(), companyId));
-          requestedReservedQty =
-              requestedReservedQty.add(this.getRequestedReservedQty(product, company, sl));
-          saleOrderQty = saleOrderQty.add(this.getSaleOrderQty(product, company, sl));
-          purchaseOrderQty = purchaseOrderQty.add(this.getPurchaseOrderQty(product, company, sl));
         }
-        availableQty = this.getAvailableQty(product, company, stockLocation);
+
         map.put("$realQty", realQty.setScale(2));
         map.put("$futureQty", futureQty.setScale(2));
         map.put("$reservedQty", reservedQty.setScale(2));

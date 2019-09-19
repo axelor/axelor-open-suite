@@ -72,6 +72,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,10 +177,28 @@ public class MrpServiceImpl implements MrpService {
 
     // Initialize
     this.mrp = mrp;
-    this.stockLocationList =
-        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
-    this.assignProductAndLevel(this.getProductList());
+    List<StockLocation> slList;
+    if (mrp.getBrowseStockLocation()) {
+      slList =
+          stockLocationService
+              .getAllLocationAndSubLocation(mrp.getStockLocation(), false)
+              .stream()
+              .filter(x -> !x.getIsNotInMrp())
+              .collect(Collectors.toList());
+    } else {
+      slList = new ArrayList<>();
+      slList.add(mrp.getStockLocation());
+    }
 
+    this.stockLocationList = slList;
+
+    this.assignProductAndLevel(this.getProductList());
+    if (stockLocationList.isEmpty()) {
+      throw new AxelorException(
+          Mrp.class,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.MRP_MISSING_STOCK_LOCATION_VALID));
+    }
     // Get the stock for each product on each stock location
     this.createAvailableStockMrpLines();
 
@@ -260,39 +279,29 @@ public class MrpServiceImpl implements MrpService {
   protected void checkInsufficientCumulativeQty(Product product, boolean firstPass)
       throws AxelorException {
 
-    boolean doASecondPass = false;
-
-    this.computeCumulativeQty(productRepository.find(product.getId()), false);
+    this.computeCumulativeQty(productRepository.find(product.getId()));
 
     JPA.clear();
 
-    List<MrpLine> mrpLineList =
+    MrpLine mrpLine =
         mrpLineRepository
             .all()
-            .filter("self.mrp.id = ?1 AND self.product.id = ?2", mrp.getId(), product.getId())
-            .order("maturityDate")
-            .order("mrpLineType.typeSelect")
-            .order("mrpLineType.sequence")
-            .order("id")
-            .fetch();
-
-    for (MrpLine mrpLine : mrpLineList) {
-
-      doASecondPass =
-          this.checkInsufficientCumulativeQty(
-              mrpLineRepository.find(mrpLine.getId()),
-              productRepository.find(product.getId()),
-              firstPass);
-      JPA.clear();
-      if (doASecondPass) {
-        break;
-      }
+            .filter(
+                "self.mrp.id = ?1 AND self.product.id = ?2 "
+                    + " AND self.cumulativeMinQty != 0"
+                    + " AND self.mrpLineType.typeSelect = ?3",
+                mrp.getId(),
+                product.getId(),
+                MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK)
+            .order("-cumulativeMinQty")
+            .fetchOne();
+    if (mrpLine != null) {
+      this.checkInsufficientCumulativeQty(
+          mrpLineRepository.find(mrpLine.getId()),
+          productRepository.find(product.getId()),
+          firstPass);
     }
-
-    if (doASecondPass) {
-
-      this.checkInsufficientCumulativeQty(product, false);
-    }
+    JPA.clear();
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -305,7 +314,7 @@ public class MrpServiceImpl implements MrpService {
 
     boolean isProposalElement = this.isProposalElement(mrpLineType);
 
-    BigDecimal minQty = mrpLine.getMinQty();
+    BigDecimal minQty = mrpLine.getCumulativeMinQty();
 
     if ((((mrpLine.getMrpLineType().getElementSelect()
                     != MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK)
@@ -314,7 +323,7 @@ public class MrpServiceImpl implements MrpService {
             || (mrpLine.getMrpLineType().getElementSelect()
                     == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK
                 && firstPass))
-        && cumulativeQty.compareTo(mrpLine.getMinQty()) < 0) {
+        && cumulativeQty.compareTo(minQty) < 0) {
 
       log.debug(
           "Cumulative qty ({} < {}) is insufficient for product ({}) at the maturity date ({})",
@@ -515,12 +524,12 @@ public class MrpServiceImpl implements MrpService {
 
     for (Long productId : this.productMap.keySet()) {
 
-      this.computeCumulativeQty(productRepository.find(productId), false);
+      this.computeCumulativeQty(productRepository.find(productId));
     }
   }
 
   @Transactional
-  protected void computeCumulativeQty(Product product, boolean isProjectedStock) {
+  protected void computeCumulativeQty(Product product) {
 
     List<MrpLine> mrpLineList =
         mrpLineRepository
@@ -533,19 +542,15 @@ public class MrpServiceImpl implements MrpService {
             .fetch();
 
     BigDecimal previousCumulativeQty = BigDecimal.ZERO;
+    BigDecimal previousCumulativeMinQty = BigDecimal.ZERO;
 
     for (MrpLine mrpLine : mrpLineList) {
-
       if (mrpLine.getMrpLineType().getElementSelect()
-              == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK
-          && !isProjectedStock) {
-
-        mrpLine.setCumulativeQty(mrpLine.getQty());
-      } else {
-
-        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+          == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK) {
+        mrpLine.setCumulativeMinQty(previousCumulativeMinQty.add(mrpLine.getMinQty()));
+        previousCumulativeMinQty = mrpLine.getCumulativeMinQty();
       }
-
+      mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
       previousCumulativeQty = mrpLine.getCumulativeQty();
 
       log.debug(
@@ -563,7 +568,6 @@ public class MrpServiceImpl implements MrpService {
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
     String statusSelect = purchaseOrderMrpLineType.getStatusSelect();
     List<Integer> statusList = StringTool.getIntegerList(statusSelect);
-
     if (statusList.isEmpty()) {
       statusList.add(PurchaseOrderRepository.STATUS_VALIDATED);
     }
@@ -822,22 +826,19 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createAvailableStockMrpLines() throws AxelorException {
-
     MrpLineType availableStockMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK);
 
     for (Long productId : this.productMap.keySet()) {
 
       for (StockLocation stockLocation : this.stockLocationList) {
-
         this.createAvailableStockMrpLine(
             mrpRepository.find(mrp.getId()),
             productRepository.find(productId),
             stockLocationRepository.find(stockLocation.getId()),
             mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
-
-        JPA.clear();
       }
+      JPA.clear();
     }
   }
 
@@ -1011,10 +1012,10 @@ public class MrpServiceImpl implements MrpService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateProposals(Mrp mrp) throws AxelorException {
+  public void generateProposals(Mrp mrp, boolean isProposalPerSupplier) throws AxelorException {
 
     Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders = new HashMap<>();
-
+    Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier = new HashMap<>();
     List<MrpLine> mrpLineList =
         mrpLineRepository
             .all()
@@ -1025,7 +1026,8 @@ public class MrpServiceImpl implements MrpService {
     for (MrpLine mrpLine : mrpLineList) {
 
       if (!mrpLine.getProposalGenerated()) {
-        mrpLineService.generateProposal(mrpLine, purchaseOrders);
+        mrpLineService.generateProposal(
+            mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
       }
     }
   }
@@ -1051,7 +1053,15 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public Mrp completeProjectedStock(
+  public Mrp createProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
+    this.completeProjectedStock(mrp, product, company, stockLocation);
+    this.computeCumulativeQty(product);
+    return mrp;
+  }
+
+  protected Mrp completeProjectedStock(
       Mrp mrp, Product product, Company company, StockLocation stockLocation)
       throws AxelorException {
     this.mrp = mrp;
@@ -1084,8 +1094,6 @@ public class MrpServiceImpl implements MrpService {
     this.createPurchaseMrpLines();
 
     this.createSaleOrderMrpLines();
-
-    this.computeCumulativeQty(product, true);
 
     return mrp;
   }

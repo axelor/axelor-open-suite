@@ -21,13 +21,17 @@ import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import javax.mail.MessagingException;
 
 public class ICalendarEventServiceImpl implements ICalendarEventService {
+
+  @Inject protected UserRepository userRepository;
 
   @Override
   public List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)
@@ -42,8 +46,12 @@ public class ICalendarEventServiceImpl implements ICalendarEventService {
         ICalendarUser calUser = new ICalendarUser();
         calUser.setEmail(email.getAddress());
         calUser.setName(email.getName());
-        if (email.getPartner() != null && email.getPartner().getUser() != null) {
-          calUser.setUser(email.getPartner().getUser());
+        if (email.getPartner() != null) {
+          calUser.setUser(
+              userRepository
+                  .all()
+                  .filter("self.partner.id = ?1", email.getPartner().getId())
+                  .fetchOne());
         }
         event.addAttendee(calUser);
       }

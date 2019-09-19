@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface AccountingReportService {
 
@@ -67,4 +68,6 @@ public interface AccountingReportService {
   public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter);
 
   public BigDecimal getCreditBalanceType4();
+
+  public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
 }

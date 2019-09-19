@@ -50,8 +50,8 @@
 			<panel-dashlet name="confSupplyChainConfigDashletPanel" action="admin.root.conf.supply.chain.config" colSpan="12"/>
 		</panel>
 		        
-        	<panel-mail name="mailPanel">
-		    	<mail-messages limit="4" />
+        <panel-mail name="mailPanel">
+		    <mail-messages limit="4" />
 			<mail-followers />
 		</panel-mail>
 	</form>
