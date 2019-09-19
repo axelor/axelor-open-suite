@@ -71,6 +71,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineServiceSupplychain stockMoveLineSupplychainService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -81,7 +82,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
       StockMoveLineRepository stockMoveLineRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderRepository saleOrderRepository) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -91,6 +93,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineSupplychainService = stockMoveLineSupplychainService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -184,7 +187,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     SupplyChainConfig supplychainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
-    if (supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
+
+    if (supplychainConfig.getDefaultEstimatedDate() != null
+        && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
     }
@@ -532,5 +537,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
     return deliveryState;
+  }
+
+  public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
+    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+        && stockMove.getOriginId() != null) {
+      return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
+    } else {
+      return Optional.empty();
+    }
   }
 }

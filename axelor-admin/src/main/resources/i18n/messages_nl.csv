@@ -98,6 +98,7 @@
 "Object not found: %s","Object niet gevonden: %s",,
 "Objects","Voorwerpen",,
 "Path","Pad",,
+"Path Field",,,
 "Permission Assistant","Toestemming Assistent",,
 "Query","Vraag",,
 "Query/path","Vraag/pad",,

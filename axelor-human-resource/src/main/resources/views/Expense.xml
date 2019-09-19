@@ -146,6 +146,7 @@
 					<field name="paymentMode" showIf="paymentMode" readonly="true" colSpan="4"/>
 					<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
 					<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
+					<field name="paymentMove" showIf="paymentMove" readonlyIf="paymentMove" colSpan="4" form-view="move-form" grid-view="move-grid"/>
 				</panel>
 			</panel>
 		</panel-tabs>
@@ -306,7 +307,7 @@
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="true" />
-		<view-param name="popup-save" value="true"/>
+		<view-param name="popup-save" value="false"/>
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: id"/>
 	</action-view>

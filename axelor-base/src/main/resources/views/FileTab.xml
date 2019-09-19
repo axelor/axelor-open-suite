@@ -4,9 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
    
 	<grid name="file-tab-grid" title="File tabs" model="com.axelor.apps.base.db.FileTab">
+		<hilite color="danger" if="validationLog != null"/>
 		<field name="name"/>
 		<field name="metaModel"/>
 		<field name="importType"/>
+		<field name="validationLog" hidden="true"/>
 	</grid> 
     
 	<form name="file-tab-form" title="File tab" model="com.axelor.apps.base.db.FileTab">

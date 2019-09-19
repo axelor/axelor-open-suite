@@ -18,13 +18,21 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.PartnerServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class PartnerSaleService extends PartnerService {
+public class PartnerSaleServiceImpl extends PartnerServiceImpl {
+
+  @Inject
+  public PartnerSaleServiceImpl(PartnerRepository partnerRepo, AppBaseService appBaseService) {
+    super(partnerRepo, appBaseService);
+  }
 
   @Override
   public List<Long> findPartnerMails(Partner partner) {

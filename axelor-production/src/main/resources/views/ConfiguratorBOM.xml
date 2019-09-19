@@ -60,6 +60,9 @@
 
     <grid name="configurator-bom-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
         <field name="name"/>
+        <field name="product"/>
+        <field name="qty"/>
+        <field name="unit"/>
     </grid>
 
      <action-view name="action-configurator-bom-view" title="Configurator BOM"

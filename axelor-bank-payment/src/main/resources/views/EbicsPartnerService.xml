@@ -8,7 +8,7 @@
         <field name="ebicsCodification" required="true"/>
     </grid>
 
-    <form name="ebics-partner-service-form" title="Ebics partner B.O. service" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
+    <form name="bo-ebics-partner-service-form" title="Ebics partner B.O. service" model="com.axelor.apps.bankpayment.db.EbicsPartnerService">
         <panel name="mainPanel">
             <field name="bankOrderFileFormat" onChange="action-ebics-partner-service-record-default-bank-order-codification"
                 canNew="false" canEdit="false" required="true"/>

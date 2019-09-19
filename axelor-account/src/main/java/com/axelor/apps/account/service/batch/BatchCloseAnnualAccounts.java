@@ -62,7 +62,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
     super.start();
     try {
       Beans.get(AccountingReportService.class)
@@ -116,7 +116,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                   origin,
                   moveDescription,
                   closeYear,
-                  openYear);
+                  openYear,
+                  allocatePerPartner);
 
           if (generateMoves != null && !generateMoves.isEmpty()) {
             updateAccount(account);

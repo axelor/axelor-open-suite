@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1109,21 +1109,31 @@ order by po_seq]]></xml-property>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Invoice" id="4655">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">inv_no</property>
+                    <property name="alias">inv_no</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">inv_no</text-property>
                     <text-property name="heading">inv_no</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">inv_date</property>
+                    <property name="alias">inv_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">inv_date</text-property>
                     <text-property name="heading">inv_date</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">inv_oper_type_select</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">inv_oper_type_select</text-property>
+                    <text-property name="heading">inv_oper_type_select</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">inv_total</property>
+                    <property name="alias">inv_total</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">inv_total</text-property>
                     <text-property name="heading">inv_total</text-property>
@@ -1181,6 +1191,11 @@ order by po_seq]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
+                        <property name="name">inv_oper_type_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">inv_total</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1204,6 +1219,13 @@ order by po_seq]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
+                    <property name="name">inv_oper_type_select</property>
+                    <property name="nativeName">inv_oper_type_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">inv_total</property>
                     <property name="nativeName">inv_total</property>
                     <property name="dataType">decimal</property>
@@ -1212,7 +1234,9 @@ order by po_seq]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select invoice.invoice_id as inv_no,
        invoice.invoice_date as inv_date,
-       sum(invl.company_ex_tax_total) as inv_total
+       invoice.operation_type_select as inv_oper_type_select,
+       sum(CASE WHEN invoice.operation_type_select = 1 OR invoice.operation_type_select = 3 THEN  
+       invl.company_ex_tax_total ELSE -invl.company_ex_tax_total END ) as inv_total
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
@@ -1220,7 +1244,7 @@ left join project_project parent_project on (parent_project.id = project.parent_
 where (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 and invoice.status_select = 3
 and invoice.operation_type_select in (?,?)
-group by invoice.invoice_id,invoice.invoice_date]]></xml-property>
+group by invoice.invoice_id,invoice.invoice_date,inv_oper_type_select]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -3562,6 +3586,12 @@ order by task_end_date]]></xml-property>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">inv_oper_type_select</property>
+                                <text-property name="displayName">inv_oper_type_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["inv_oper_type_select"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <column id="4669">
@@ -3658,6 +3688,7 @@ order by task_end_date]]></xml-property>
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
+                                        <structure name="toc"/>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>

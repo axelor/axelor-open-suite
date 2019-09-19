@@ -108,13 +108,6 @@
       	<bind to="typeSelect" eval="'authentication'" />
       	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null"/>
       </bind>
-      <bind node="ebicsRequestLogList/requestLog" to="ebicsRequestLogList">
-   		<bind node="requestType" to="requestType" />
-   		<bind node="requestTime" to="requestTime" />
-   		<bind node="responseCode" to="responseCode" />
-   		<bind node="requestTraceText" to="requestTraceText" />
-   		<bind node="responseTraceText" to="responseTraceText" />
-      </bind>
     </bind>
   </input> 
     	

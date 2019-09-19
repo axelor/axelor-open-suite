@@ -1,2 +1,2 @@
-"code";"name";"password";"group.code";"language";"importId"
-"admin";"Admin";"admin";"admins";"en";1
+"code";"name";"password";"group.code";"language";"importId";"blocked";"stepStatusSelect"
+"admin";"Admin";"admin";"admins";"en";1;"false";"5"

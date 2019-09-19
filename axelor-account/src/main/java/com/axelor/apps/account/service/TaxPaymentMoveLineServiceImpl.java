@@ -15,16 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.app.cash.management.module;
+package com.axelor.apps.account.service;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.cash.management.db.repo.CashManagementForecastRecapRepository;
-import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
+import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-public class CashManagementModule extends AxelorModule {
+public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService {
 
   @Override
-  protected void configure() {
-    bind(ForecastRecapRepository.class).to(CashManagementForecastRecapRepository.class);
+  public TaxPaymentMoveLine computeTaxAmount(TaxPaymentMoveLine taxPaymentMoveLine)
+      throws AxelorException {
+    BigDecimal taxRate = taxPaymentMoveLine.getTaxRate();
+    BigDecimal base = taxPaymentMoveLine.getDetailPaymentAmount();
+    taxPaymentMoveLine.setTaxAmount(base.multiply(taxRate).setScale(2, RoundingMode.HALF_UP));
+    return taxPaymentMoveLine;
   }
 }

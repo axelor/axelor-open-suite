@@ -49,7 +49,7 @@
 					<button name="generateDnBtn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
 					<field name="dn" readonly="true" showTitle="false" />
 				</panel>
-				<panel name="electronicSignatureCertiPanel" title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+				<panel name="electronicSignatureCertiPanel" title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0 || userTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
 					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false" canNew="true"/>
 				</panel>
 				<panel name="encryptedCertiPanel" title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
@@ -59,7 +59,7 @@
 					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-related name="ebicsRequestLogListPanel" field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
+			<panel-dashlet action="action-ebics-user-view-ebics-request-log" name="ebicsRequestLogPanel" title="Request log"/>
 		</panel-tabs>
 		
 		<panel name="actionBtnsPanel" sidebar="true">
@@ -162,6 +162,12 @@
     	<view-param name="show-toolbar" value="false"/>
     </action-view>
     
+    <action-view name="action-ebics-user-view-ebics-request-log" title="Request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
+        <view type="grid" name="ebics-request-log-grid"/>
+        <view type="form" name="ebics-request-log-form"/>
+        <domain>self.ebicsUser = :id</domain>
+    </action-view>
+
     <action-export name="action-export-ebics-user" output="${date}${time}" download="true">
 	  <export name="EbicsExport-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
 	    	  template="data-export/export-ebics-user.txt"

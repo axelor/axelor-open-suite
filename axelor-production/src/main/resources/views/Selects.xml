@@ -127,9 +127,4 @@
 		<option value="3">Costs updated</option>
 	</selection>
 
-	<selection name="production.cost.calculations.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Costs computed</option>
-		<option value="3">Costs updated</option>
-	</selection>
 </object-views>

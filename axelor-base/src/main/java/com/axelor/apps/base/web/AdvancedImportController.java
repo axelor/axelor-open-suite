@@ -50,7 +50,7 @@ public class AdvancedImportController {
 
       boolean isValid = advancedImportService.apply(advancedImport);
       if (isValid) {
-        response.setValue("fileTabList", advancedImport.getFileTabList());
+        response.setReload(true);
       } else {
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_FILE_FORMAT_INVALID));
       }
@@ -69,6 +69,7 @@ public class AdvancedImportController {
       boolean isLog = validatorService.validate(advancedImport);
       if (isLog) {
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
+        response.setReload(true);
       } else {
         response.setValue("statusSelect", 1);
       }
