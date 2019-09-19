@@ -31,11 +31,15 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -97,6 +101,19 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
     if (invoice.getInterco() || invoice.getCreatedByInterco()) {
       updateIntercoReference(invoice);
+    }
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
+      if (stockMoveLine != null) {
+        BigDecimal qty = stockMoveLine.getQtyInvoiced().add(invoiceLine.getQty());
+        if (stockMoveLine.getRealQty().compareTo(qty) != -1) {
+          stockMoveLine.setQtyInvoiced(qty);
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
+        }
+      }
     }
   }
 

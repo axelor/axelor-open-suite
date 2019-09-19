@@ -57,19 +57,11 @@ public class BatchEventReminder extends BatchStrategy {
 
   @Inject private EmailAddressRepository emailAddressRepo;
 
-  @Inject private EventReminderRepository eventReminderRepo;
-
   @Inject
   public BatchEventReminder(
       MessageServiceCrmImpl messageServiceCrmImpl, MailAccountService mailAccountService) {
 
     super(messageServiceCrmImpl, mailAccountService);
-  }
-
-  @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-
-    super.start();
   }
 
   @Override
@@ -135,7 +127,7 @@ public class BatchEventReminder extends BatchStrategy {
 
     LocalDateTime startDateTime = eventReminder.getEvent().getStartDateTime();
 
-    if (eventReminder.getModeSelect() == EventReminderRepository.MODE_AT_DATE) {
+    if (EventReminderRepository.MODE_AT_DATE.equals(eventReminder.getModeSelect())) {
       return eventReminder
           .getSendingDateT()
           .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
@@ -216,7 +208,7 @@ public class BatchEventReminder extends BatchStrategy {
           }
 
           // Also send to attendees if needed
-          if (eventReminder.getAssignToSelect() == EventReminderRepository.ASSIGN_TO_ALL
+          if (EventReminderRepository.ASSIGN_TO_ALL.equals(eventReminder.getAssignToSelect())
               && eventReminder.getEvent().getAttendees() != null) {
             for (ICalendarUser iCalUser : eventReminder.getEvent().getAttendees()) {
               if (iCalUser.getUser() != null && iCalUser.getUser().getPartner() != null) {

@@ -26,6 +26,7 @@
 	<decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
 	<boolean name="testMode" title="Test mode"/>
     <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="Batch" />
+    <integer name="technicalOriginSelect" title="Technical Origin" selection="bankpayment.bank.order.technical.origin.select" default="0"/>
 
 	<!-- Sender -->
 	<many-to-one name="senderCompany" ref="com.axelor.apps.base.db.Company" title="Company"/>
@@ -77,6 +78,11 @@
 		public static final int REJECT_STATUS_NOT_REJECTED = 0;
 		public static final int REJECT_STATUS_PARTIALLY_REJECTED = 1;
 		public static final int REJECT_STATUS_TOTALLY_REJECTED = 2;
+		
+		//TECHNICAL ORIGIN SELECT
+		public static final int TECHNICAL_ORIGIN_ENTRY = 0;
+		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 1;
+		public static final int TECHNICAL_ORIGIN_IMPORT = 2;
 	
 	]]></extra-code>
 

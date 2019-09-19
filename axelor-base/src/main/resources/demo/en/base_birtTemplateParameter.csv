@@ -101,3 +101,4 @@
 100;32;"__locale";"en_EN";"string"
 101;32;"Locale";"en";"string"
 102;32;"TimesheetId";"$Timesheet.id$";"decimal"
+103;8;"ReportType";2;"integer"

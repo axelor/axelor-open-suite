@@ -269,6 +269,7 @@
     <action-record name="action-user-record-step-status-next" model="com.axelor.auth.db.User">
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+        <field name="blocked" expr="false" if="stepStatusSelect == 4"/>
     </action-record>
 
     <action-record name="action-user-record-step-status-previous" model="com.axelor.auth.db.User">

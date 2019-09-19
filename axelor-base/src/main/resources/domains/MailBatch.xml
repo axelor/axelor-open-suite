@@ -24,7 +24,7 @@
   	<extra-code><![CDATA[
 	
 	   	// ACTION TYPE
-		public static final int ACTION_REMIN_TIMESHEET = 1;
+		public static final int ACTION_TIMESHEET_VALIDATION_REMINDER = 1;
 		
 		public static final String CODE_BATCH_EMAIL_TIME_SHEET = "M_TS_REM";
 		public static final String CODE_BATCH_EMAIL_ALL_TIME_SHEET = "M_A_TS_REM";

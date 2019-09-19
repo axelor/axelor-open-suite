@@ -106,6 +106,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
     int tabConfigRowCount = 0;
     int startIndex = isConfig ? 0 : linesToIgnore;
+    int fileTabSequence = 1;
 
     for (String sheet : sheets) {
       int totalLines = reader.getTotalLines(sheet);
@@ -115,6 +116,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       FileTab fileTab = new FileTab();
       fileTab.setName(sheet);
+      fileTab.setSequence(fileTabSequence);
+      fileTabSequence++;
 
       String[] objectRow = reader.read(sheet, startIndex, 0);
       if (objectRow == null) {

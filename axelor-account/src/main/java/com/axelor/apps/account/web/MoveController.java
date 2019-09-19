@@ -38,6 +38,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
@@ -245,5 +246,24 @@ public class MoveController {
       moveService.getMoveLineService().autoTaxLineGenerate(move);
       response.setValue("moveLineList", move.getMoveLineList());
     }
+  }
+
+  public void filterPartner(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    String domain = "self.isContact = false AND :company member of self.companySet";
+    if (move.getJournal() != null
+        && !Strings.isNullOrEmpty(move.getJournal().getCompatiblePartnerTypeSelect())) {
+      domain += " AND (";
+      String[] partnerSet = move.getJournal().getCompatiblePartnerTypeSelect().split(", ");
+      String lastPartner = partnerSet[partnerSet.length - 1];
+      for (String partner : partnerSet) {
+        domain += "self." + partner + " = true";
+        if (!partner.equals(lastPartner)) {
+          domain += " OR ";
+        }
+      }
+      domain += ")";
+    }
+    response.setAttr("partner", "domain", domain);
   }
 }
