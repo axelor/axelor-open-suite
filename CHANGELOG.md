@@ -225,6 +225,7 @@
 - BANK ORDER : for file format 320c, increased length of receiver name zone if it got greater then 35 characters to a max of 70 characters but in exchange reduced receiver address zone length.
 - TIMESHEET : fix computing of the total field 
 - REPORTING : Fix 'number of customers' chart
+- CRM : Fix NPE when creating a new Client with just the name
 
 ## [5.1.7] - 2019-06-17
 ## Features
