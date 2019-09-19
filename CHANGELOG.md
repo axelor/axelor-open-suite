@@ -222,7 +222,8 @@
 - EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
 - Expense : period / company not getting set on getOrCreateExpense method 
 - CUSTOMER : Wrong domain on action-view
-- REPORTING : Fix 'number of customers' chart
+- REPORTING : Fix 'number of new customers' chart
+- JOB COSTING : Fix division by zero error on financial report
 
 ## [5.1.7] - 2019-06-17
 ## Features
