@@ -496,7 +496,7 @@
 Company.height as logo_height,
 Company.width as logo_width,
 ManufOrder.manuf_order_seq, BOM.name as bom_name, Product.name as product_name,
-Product.code as product_code, ManufOrder.qty, Unit.name as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet,Product.bar_code as bar_code,
+Product.code as product_code, ManufOrder.qty, Unit.label_to_printing as unit_code, ProdProcess.name as prod_process, ManufOrder.planned_start_datet,Product.bar_code as bar_code,
 BarCodeFile.file_path as barcode_picture, ManufOrder.status_select, ManufOrder.is_cons_pro_on_operation
 FROM production_manuf_order AS ManufOrder
 LEFT JOIN base_company AS Company ON (Company.id = ManufOrder.company)
@@ -1147,7 +1147,7 @@ WHERE ManufOrder.id IN (@INJECTID)
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,Unit.name as unit_code,
+	ManufOrder.id as manuf_order_id, StockMoveLine.id, Product.name as product_name, Product.code as product_code, BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,Unit.label_to_printing as unit_code,
 	TrackingNumber.tracking_number_seq, StockMoveLine.qty, StockLocation.name as "stockLocationName", StockLocationLine.rack
 FROM
 	stock_stock_move_line AS StockMoveLine 
@@ -1396,7 +1396,7 @@ WHERE ManufOrder.id IN (@INJECTID) AND StockLocationLine.product = Product.id]]>
 SELECT 
 	ManufOrder.id as manuf_order_id, OperationOrderLine.id, OperationOrderLine.priority, ProdProcessLine.id as prod_process_line,
 	Product.name as product_name, Product.code as product_code, BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
-	Unit.name as unit_code, ProdProduct.qty
+	Unit.label_to_printing as unit_code, ProdProduct.qty
 	
 FROM production_prod_product as ProdProduct
 	LEFT JOIN base_product AS Product ON (Product.id = ProdProduct.product)
@@ -1864,6 +1864,7 @@ INNER JOIN
                                                     <property name="marginTop">1pt</property>
                                                     <property name="marginLeft">2pt</property>
                                                     <property name="textAlign">left</property>
+                                                    <property name="display">inline</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="paramBindings">
                                                         <structure>
@@ -1888,7 +1889,35 @@ INNER JOIN
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["qty"]</VALUE-OF> &amp;nbsp;<VALUE-OF>row._outer["unit_code"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["qty"]</VALUE-OF> &amp;nbsp;]]></text-property>
+                                                </text>
+                                                <text id="4828">
+                                                    <property name="display">inline</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">row["unit_code"]</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row["unit_code"]}</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="4756">
@@ -3585,8 +3614,31 @@ INNER JOIN
                                         <text id="4199">
                                             <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">row["unit_code"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">message_key</property>
+                                                    <text-property name="displayName">message_key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["unit_code"]}</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4176">
@@ -4589,8 +4641,31 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <text id="4516">
                                                                 <property name="fontSize">8.5pt</property>
                                                                 <property name="fontWeight">normal</property>
+                                                                <property name="dataSet">TranslateDS</property>
+                                                                <list-property name="paramBindings">
+                                                                    <structure>
+                                                                        <property name="paramName">param_1</property>
+                                                                        <simple-property-list name="expression">
+                                                                            <value type="javascript">row["unit_code"]</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="boundDataColumns">
+                                                                    <structure>
+                                                                        <property name="name">message_key</property>
+                                                                        <text-property name="displayName">message_key</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="name">translation</property>
+                                                                        <text-property name="displayName">translation</text-property>
+                                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                        <property name="dataType">string</property>
+                                                                    </structure>
+                                                                </list-property>
                                                                 <property name="contentType">html</property>
-                                                                <text-property name="content"><![CDATA[<VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
+                                                                <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"]!=null){row["translation"]}else{row._outer["unit_code"]}</VALUE-OF>]]></text-property>
                                                             </text>
                                                         </cell>
                                                     </row>

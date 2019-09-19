@@ -180,7 +180,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               ? invoicePayment.getInvoicePaymentRef()
               : origin;
     }
-
+    if (invoicePayment.getInvoice().getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoicePayment.getInvoice().getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      origin = invoicePayment.getInvoice().getSupplierInvoiceNb();
+    }
     Move move =
         moveService
             .getMoveCreateService()
@@ -218,9 +223,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             2,
             origin,
             invoicePayment.getDescription());
-    customerMoveLine.setTaxAmount(invoice.getTaxTotal());
 
     move.addMoveLineListItem(customerMoveLine);
+
+    Beans.get(MoveRepository.class).save(move);
+
+    customerMoveLine =
+        moveLineService.generateTaxPaymentMoveLineList(invoicePayment, customerMoveLine);
 
     moveService.getMoveValidateService().validate(move);
 

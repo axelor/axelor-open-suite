@@ -16,19 +16,15 @@
 				<field name="logo" widget="Image" colSpan="12" onChange="action-company-logo-onchange-update-dimension"/>
 				<field name="width" requiredIf="height" onChange="action-company-condition-validate-logo-height-and-width">
 				  <viewer depends="width"><![CDATA[
-				    <h4>
 				      {{record.width}}
 				      <span x-translate>px</span>
-				    </h4>
 				  ]]></viewer>
 				</field>
 				<spacer name="widthSpacer"/>
 				<field name="height" requiredIf="width" onChange="action-company-condition-validate-logo-height-and-width">
 				  <viewer depends="height"><![CDATA[
-				    <h4>
 				      {{record.height}}
               <span x-translate>px</span>
-				    </h4>
 				  ]]></viewer>
 				</field>
 				<spacer name="heightSpacer"/>

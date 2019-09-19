@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1370,7 +1370,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
 BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
-StockMoveLine.real_qty, Unit.name as unit_code, TrackingNumber.tracking_number_seq,
+StockMoveLine.real_qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 StockMoveLine.sequence,
 ( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine"
@@ -1386,27 +1386,6 @@ left join stock_stock_location as Location on (Location.id = StockMove.from_stoc
 left join stock_stock_location_line as StockLocationLine on (Location.id = StockLocationLine.stock_location AND StockLocationLine.product = Product.id)
 where StockMove.id = ?
 order by StockMoveLine.sequence]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -3157,8 +3136,31 @@ rowNumD=0;]]></method>
                                             <property name="fontSize">9pt</property>
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">left</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'value:'+row["unit_code"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">message_key</property>
+                                                    <text-property name="displayName">message_key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[- <VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[- <VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["unit_code"]}</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="3811">

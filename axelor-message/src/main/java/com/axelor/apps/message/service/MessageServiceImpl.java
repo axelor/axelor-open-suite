@@ -46,13 +46,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
@@ -103,7 +100,6 @@ public class MessageServiceImpl implements MessageService {
             id,
             null,
             0,
-            ZonedDateTime.now().toLocalDateTime(),
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -147,7 +143,6 @@ public class MessageServiceImpl implements MessageService {
       long relatedTo1SelectId,
       String relatedTo2Select,
       long relatedTo2SelectId,
-      LocalDateTime sentDate,
       boolean sentByEmail,
       int statusSelect,
       String subject,
@@ -160,10 +155,10 @@ public class MessageServiceImpl implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount) {
 
-    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet(),
-        bccEmailAddressSet = Sets.newHashSet(),
-        toEmailAddressSet = Sets.newHashSet(),
-        ccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
 
     if (mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL) {
       if (replyToEmailAddressList != null) {
@@ -217,7 +212,7 @@ public class MessageServiceImpl implements MessageService {
       } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
         return sendToUser(message);
       }
-    } catch (MessagingException | IOException e) {
+    } catch (MessagingException e) {
       TraceBackService.trace(e);
     }
     return message;
@@ -250,8 +245,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendByEmail(Message message)
-      throws MessagingException, IOException, AxelorException {
+  public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
     EmailAccount mailAccount = message.getMailAccount();
 
@@ -269,10 +263,10 @@ public class MessageServiceImpl implements MessageService {
             mailAccountService.getDecryptPassword(mailAccount.getPassword()),
             mailAccountService.getSecurity(mailAccount));
 
-    List<String> replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
-        toRecipients = this.getEmailAddresses(message.getToEmailAddressSet()),
-        ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
-        bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+    List<String> replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet());
+    List<String> toRecipients = this.getEmailAddresses(message.getToEmailAddressSet());
+    List<String> ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet());
+    List<String> bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
 
     if (toRecipients.isEmpty() && ccRecipients.isEmpty() && bccRecipients.isEmpty()) {
       throw new AxelorException(
@@ -316,26 +310,26 @@ public class MessageServiceImpl implements MessageService {
       mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
     }
 
+    // Make sure message can be found in sending thread below.
+    JPA.flush();
+
     // send email using a separate process to avoid thread blocking
     executor.submit(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() {
-            try {
-              mailBuilder.send();
-              Message updateMessage = messageRepository.find(message.getId());
-              JPA.em().getTransaction().begin();
-              updateMessage.setSentByEmail(true);
-              updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
-              updateMessage.setSentDateT(LocalDateTime.now());
-              updateMessage.setSenderUser(AuthUtils.getUser());
-              messageRepository.save(updateMessage);
-              JPA.em().getTransaction().commit();
-            } catch (Exception e) {
-              TraceBackService.trace(e);
-            }
-            return true;
+        () -> {
+          try {
+            mailBuilder.send();
+            Message updateMessage = messageRepository.find(message.getId());
+            JPA.em().getTransaction().begin();
+            updateMessage.setSentByEmail(true);
+            updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
+            updateMessage.setSentDateT(LocalDateTime.now());
+            updateMessage.setSenderUser(AuthUtils.getUser());
+            messageRepository.save(updateMessage);
+            JPA.em().getTransaction().commit();
+          } catch (Exception e) {
+            TraceBackService.trace(e);
           }
+          return true;
         });
 
     return message;

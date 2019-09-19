@@ -81,6 +81,7 @@
 				<item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 				<item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
 				<item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+				<item title="See budget distribution lines" action="action-invoice-see-budget-distribution-lines"/>
 			</menu>
 		</menubar>
 		<hilite color="primary" if="statusSelect == 1"/>
@@ -117,7 +118,8 @@
 	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
 	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
 	      <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
-        <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+          <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+          <item title="See budget distribution lines" action="action-invoice-see-budget-overview-lines"/>
       </menu>
 		</menubar>
 	 	<hilite color="primary" if="statusSelect == 1"/>
@@ -286,7 +288,7 @@
 
               	</field>
             </panel>
-            
+
             <field name="supplierInvoiceNb" showIf="operationTypeSelect == 1 || operationTypeSelect == 2" requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect == 2" onChange="action-account-invoice-atts-suppier-invoice-nbr"/>
 		    <field name="$duplicateInvoiceNbr" hidden="true" colSpan="12" showTitle="false" readonly="true">
               <viewer>
@@ -314,7 +316,7 @@
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 " if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
-				<panel-dashlet name="showStockMovePanel" action="action-invoice-view-show-stock-move" colSpan="12" />
+				<panel-related field="stockMoveSet" readonlyIf="statusSelect == 2 || statusSelect == 3" colSpan="12" grid-view="stock-move-grid" form-view="stock-move-form" onNew="action-group-stock-stockmove-onnew" onSelect="action-invoice-attrs-domain-stock-move" domain="self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect &gt; 1"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
 				<field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" colSpan="6"/>
@@ -412,6 +414,9 @@ InvoiceSet.length > 0))"
 					<field name="company.accountConfig.isManagePassedForPayment"/>
 				</panel>
 			</panel>
+            <panel name="budgetPanel" title="Budget" showIf="operationTypeSelect == 1 &amp;&amp; statusSelect >= 2 &amp;&amp; statusSelect &lt; 4">
+                <panel-dashlet name="budgetDistributionPanel" title="Budget distribution" action="action-budget-distribution-view-budget-distribution" colSpan="12" readonly="true"/>
+            </panel>
 
 			<panel  name="directDebitPanel" title="Direct debit" showIf="statusSelect == 3 &amp;&amp; schedulePaymentOk" showTitle="false">
 				<panel name="paymentSchedulePanel" title="Payment schedule" colSpan="12" >
@@ -898,6 +903,11 @@ InvoiceSet.length > 0))"
     	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-attrs>
+    
+    <action-attrs name="action-invoice-attrs-domain-stock-move">
+      <attribute name="domain" for="stockMoveSet" expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 2&quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+      <attribute name="domain" for="stockMoveSet" expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 3&quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+    </action-attrs>
 
 	<!-- ACTION RECORD -->
 
@@ -979,7 +989,7 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + companyBankDetails?.specificNoteOnInvoice"/>
+		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
@@ -1077,6 +1087,8 @@ InvoiceSet.length > 0))"
 
     <action-attrs name="action-invoice-reports-wizard-attrs-set-report-type-select">
     	<attribute name="value" for="$reportType" expr="eval: 1" if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
+    	<attribute name="value" for="$format" expr="pdf" if = "_statusSelect == 3"/>
+    	<attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
     </action-attrs>
 
 	<!-- DOMAIN -->
@@ -1277,15 +1289,7 @@ InvoiceSet.length > 0))"
     <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="customer-invoices-merge-form"/>
 	</action-view>
-	
-	<action-view name="action-invoice-view-show-stock-move" title="Stock Move" model="com.axelor.apps.stock.db.StockMove">	
-		<view type="grid" name="stock-move-grid" />
-		<view type="form" name="stock-move-form" />
-		<domain>self.invoice.id=:invoiceId</domain>
-		<context name="invoiceId" expr="eval:id" />
-		<context name="_fromInvoice" expr="eval: true"/>
-	</action-view>
-	
+
 	<action-view name="action-invoice-view-show-subrogation-release" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">	
 		<view type="grid" name="subrogation-release-grid" />
 		<view type="form" name="subrogation-release-form" />
