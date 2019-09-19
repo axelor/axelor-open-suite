@@ -130,6 +130,7 @@
 "Description to display",,,
 "Description to display on delivery",,,
 "Description to display on invoice",,,
+"Description to display on picking order",,,
 "Desired delivery date",,,
 "Details Lines",,,
 "Discount",,,

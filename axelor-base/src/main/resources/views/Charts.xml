@@ -124,6 +124,34 @@
 	  <category key="_industry_sector" type="text" title="Industry Sector"/>
 	  <series key="_total_partner" type="donut" title="Partners"/>
 	</chart>
+	
+	<chart onInit="action.base.chart.set.date.6m" name="chart.customers.with.first.sale.order" title="New customers with first sale order">
+	   <search-fields>
+		 <field name="fromDate" title="From Date" type="date" x-required="true" />
+		 <field name="toDate" title="To Date" type="date" x-required="true" />
+	   </search-fields>
+	   <dataset type="jpql">
+	    <![CDATA[
+          
+          SELECT
+             COUNT(*) as customers
+          FROM
+             Partner self                          
+          WHERE
+             self.isCustomer = true
+             AND DATE(self.createdOn) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+             AND EXISTS (
+                 FROM
+                   SaleOrder so
+                 WHERE
+                   so.clientPartner = self
+                   AND (so.statusSelect = 3 OR so.statusSelect = 4 ))         
+                       		
+		]]>
+	   </dataset>
+	   <category key="title" type="text" />
+	   <series key="customers" type="bar" />
+	</chart>
 
 	
 </object-views>

@@ -24,7 +24,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.mail.MessagingException;
@@ -55,8 +54,7 @@ public interface MessageService {
   public Message sendMessage(Message message) throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendByEmail(Message message)
-      throws MessagingException, IOException, AxelorException;
+  public Message sendByEmail(Message message) throws MessagingException, AxelorException;
 
   @Transactional
   public Message sendToUser(Message message);

@@ -33,6 +33,7 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -53,23 +54,17 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchSeniorityLeaveManagement extends BatchStrategy {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   int total;
   int noValueAnomaly;
@@ -94,7 +89,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -128,7 +123,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   public List<Employee> getEmployees(HrBatch hrBatch) {
 
-    List<Employee> employeeList = Lists.newArrayList();
+    List<Employee> employeeList;
     if (hrBatch.getCompany() != null) {
       employeeList =
           JPA.all(Employee.class)
@@ -199,6 +194,14 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     }
     if (count == 1) {
 
+      EmploymentContract contract = employee.getMainEmploymentContract();
+      if (contract == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT);
+      }
+      Integer executiveStatusSelect = contract.getExecutiveStatusSelect();
+
       for (LeaveManagementBatchRule rule :
           Beans.get(HRConfigRepository.class)
               .all()
@@ -206,8 +209,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
               .fetchOne()
               .getLeaveManagementBatchRuleList()) {
 
-        if (rule.getExecutiveStatusSelect()
-            == employee.getMainEmploymentContract().getExecutiveStatusSelect()) {
+        if (rule.getExecutiveStatusSelect().equals(executiveStatusSelect)) {
           maker.setContext(employee, "Employee");
           String formula = rule.getFormula();
           formula =
@@ -236,7 +238,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           }
         }
       }
-      if (quantity.compareTo(BigDecimal.ZERO) == 0) {
+      if (quantity.signum() == 0) {
         // If the quantity equals 0, no need to create a leaveManagement and to update the employee,
         // since we won't give them any leaves
         incrementDone();

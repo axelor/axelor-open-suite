@@ -129,8 +129,8 @@ public class GenerateMessageController {
 
   public Map<String, Object> generateMessage(
       long objectId, String model, String tag, Template template)
-      throws SecurityException, NoSuchFieldException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException, AxelorException, IOException {
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException {
 
     LOG.debug("template : {} ", template);
     LOG.debug("object id : {} ", objectId);
@@ -143,7 +143,7 @@ public class GenerateMessageController {
       message =
           messageService.createMessage(
               model,
-              Long.valueOf(objectId).intValue(),
+              Math.toIntExact(objectId),
               null,
               null,
               null,

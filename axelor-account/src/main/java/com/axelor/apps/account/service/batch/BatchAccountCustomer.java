@@ -24,7 +24,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -51,10 +50,8 @@ public class BatchAccountCustomer extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-
+  protected void start() throws IllegalAccessException {
     super.start();
-
     checkPoint();
   }
 
@@ -70,8 +67,7 @@ public class BatchAccountCustomer extends BatchStrategy {
         accountingBatch.getUpdateDueDebtRecoveryCustAccountOk();
 
     List<AccountingSituation> accountingSituationList =
-        (List<AccountingSituation>)
-            accountingSituationRepo.all().filter("self.company = ?1", company).fetch();
+        accountingSituationRepo.all().filter("self.company = ?1", company).fetch();
     int i = 0;
     JPA.clear();
     for (AccountingSituation accountingSituation : accountingSituationList) {
@@ -142,18 +138,13 @@ public class BatchAccountCustomer extends BatchStrategy {
 
     if (company != null) {
       accountingSituationList =
-          (List<AccountingSituation>)
-              accountingSituationRepo
-                  .all()
-                  .filter("self.company = ?1 and self.custAccountMustBeUpdateOk = 'true'", company)
-                  .fetch();
+          accountingSituationRepo
+              .all()
+              .filter("self.company = ?1 and self.custAccountMustBeUpdateOk = 'true'", company)
+              .fetch();
     } else {
       accountingSituationList =
-          (List<AccountingSituation>)
-              accountingSituationRepo
-                  .all()
-                  .filter("self.custAccountMustBeUpdateOk = 'true'")
-                  .fetch();
+          accountingSituationRepo.all().filter("self.custAccountMustBeUpdateOk = 'true'").fetch();
     }
 
     int i = 0;

@@ -80,7 +80,7 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
       for (StockMove stockMove : stockMoveList) {
         try {
           stockMoveInvoiceService.createInvoiceFromSaleOrder(
-              stockMove, saleRepo.find(stockMove.getOriginId()));
+              stockMove, saleRepo.find(stockMove.getOriginId()), null);
           incrementDone();
         } catch (Exception e) {
           incrementAnomaly();

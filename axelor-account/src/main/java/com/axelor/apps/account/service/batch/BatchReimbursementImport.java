@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ public class BatchReimbursementImport extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -137,13 +138,13 @@ public class BatchReimbursementImport extends BatchStrategy {
 
       int i = 0;
 
-      for (List<String[]> rejectList : data.keySet()) {
+      for (Entry<List<String[]>, String> entry : data.entrySet()) {
 
-        LocalDate rejectDate = rejectImportService.createRejectDate(data.get(rejectList));
+        LocalDate rejectDate = rejectImportService.createRejectDate(entry.getValue());
 
         Move move = this.createMove(company, rejectDate);
 
-        for (String[] reject : rejectList) {
+        for (String[] reject : entry.getKey()) {
 
           try {
 

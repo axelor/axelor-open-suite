@@ -22,7 +22,6 @@ import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -46,17 +45,11 @@ public class BatchTarget extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-
-    super.start();
-  }
-
-  @Override
   protected void process() {
 
     int i = 0;
 
-    List<TargetConfiguration> targetConfigurationList = new ArrayList<TargetConfiguration>();
+    List<TargetConfiguration> targetConfigurationList = new ArrayList<>();
     if (batch.getCrmBatch().getTargetConfigurationSet() != null
         && !batch.getCrmBatch().getTargetConfigurationSet().isEmpty()) {
       targetConfigurationList.addAll(batch.getCrmBatch().getTargetConfigurationSet());

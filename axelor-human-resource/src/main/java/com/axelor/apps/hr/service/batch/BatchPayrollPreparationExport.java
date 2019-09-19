@@ -40,16 +40,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchPayrollPreparationExport extends BatchStrategy {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected int total;
   protected HrBatch hrBatch;
@@ -71,7 +66,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -124,11 +119,11 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   public MetaFile standardExport(List<PayrollPreparation> payrollPreparationList)
       throws IOException {
 
-    List<String[]> list = new ArrayList<String[]>();
+    List<String[]> list = new ArrayList<>();
     LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      String item[] = new String[5];
+      String[] item = new String[5];
       item[0] = payrollPreparation.getEmployee().getName();
       item[1] = payrollPreparation.getDuration().toString();
       item[2] = payrollPreparation.getLunchVoucherNumber().toString();
@@ -168,7 +163,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   public MetaFile nibelisExport(List<PayrollPreparation> payrollPreparationList)
       throws IOException, AxelorException {
 
-    List<String[]> list = new ArrayList<String[]>();
+    List<String[]> list = new ArrayList<>();
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
 

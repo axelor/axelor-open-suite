@@ -5,12 +5,21 @@
 	
 	<form name="app-portal-config-form" title="App Portal" model="com.axelor.apps.base.db.AppPortal" canDelete="false" canNew="false" width="large">
 		<panel name="appPortalConfigPanel" colSpan="12">
-	    	<field name="manageSaleOrders" widget="boolean-switch"/>
-	    	<field name="canConfirmOnline" widget="boolean-switch"/>
-	    	<field name="manageInvoices"  widget="boolean-switch"/>
-	    	<field name="canPayOnline"  widget="boolean-switch"/>
-	    	<field name="manageTickets" widget="boolean-switch"/>
-	    	<field name="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
+			<panel name="moduleManager" colSpan="12" title="Modules">
+		    	<field name="manageSaleOrders" widget="boolean-switch"/>
+		    	<field name="manageInvoices"  widget="boolean-switch"/>
+		    	<field name="manageDelivery" widget="boolean-switch"/>
+		    	<field name="manageTickets" widget="boolean-switch"/>
+		    	<field name="manageProjects"  widget="boolean-switch"/>
+		    </panel>
+		    <panel name="portalSelectConfigPanel" colSpan="12">
+		    	<field name="portalSelect"/>
+		    	<panel name="onlineActionPanel" colSpan="12">
+			    	<field name="canConfirmOnline" widget="boolean-switch" showIf="portalSelect == 2"/>
+				    <field name="canPayOnline"  widget="boolean-switch" showIf="portalSelect == 2"/>
+				    <field name="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
+		    	</panel>
+		    	</panel>
 		</panel>
 				        
 		<panel-mail name="mailPanel">
