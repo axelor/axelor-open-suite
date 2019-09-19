@@ -181,6 +181,7 @@
 - Advance data import: Set sequence of filetab and removed temporary file at the end which is created during the process
 - QUALITY: removed translation for "Close"
 - BIRT TEMPLATE PARAMETER: new paratmeter "ReportType" is added.
+- ACCOUNTING REPORT : add ODS file formate in report export type
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
