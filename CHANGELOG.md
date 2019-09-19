@@ -182,6 +182,7 @@
 - QUALITY: removed translation for "Close"
 - BIRT TEMPLATE PARAMETER: new paratmeter "ReportType" is added.
 - ACCOUNTING REPORT : add ODS file formate in report export type
+- FORECAST RECAP : reset fields while creating duplicate record
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
