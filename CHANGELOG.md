@@ -117,6 +117,9 @@
 - UNIT : add translatable on name and labelToPrinting on unit-form and on every birt that display labelToPrinting unit will be automatically translate in partner's language
 - Stock Move : Partial Invoice.
 - STOCK RULE : new M2O stockRuleMessageTemplate on StockRule and StockConfig
+- ABC ANALYSIS : Add support for printing report in 'xls' type.
+- EBICSUSER : replace the O2M ebicsRequestLogList per a dashlet
+- TEAMTASK : Addition of field 'project' in grid and kanban view
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -178,6 +181,10 @@
 - MRP : add cumulative Min qty and generate proposal only for the last mrpLine type stock available (compare to cumulative min qty).
 - Advance data import: Set sequence of filetab and removed temporary file at the end which is created during the process
 - QUALITY: removed translation for "Close"
+- BIRT TEMPLATE PARAMETER: new paratmeter "ReportType" is added.
+- ACCOUNTING REPORT : add ODS file formate in report export type
+- FORECAST RECAP : reset fields while creating duplicate record
+- PICKING ORDER : new comment field 'pickingOrderComments' on partner
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -230,6 +237,7 @@
 - INVOICE : only pdf file format for report when status is ventilated.
 - USER : Fix for login with a user account that is not valid.
 - Advance data import: Fix Data import error when there is same object in two different sheets.
+- SALE ORDER : Fix issue of getting name null.
 - Fix nonexistent views
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

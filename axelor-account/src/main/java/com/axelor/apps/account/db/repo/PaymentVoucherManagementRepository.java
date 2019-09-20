@@ -40,8 +40,6 @@ public class PaymentVoucherManagementRepository extends PaymentVoucherRepository
     copy.setBankCardTransactionNumber(null);
     copy.clearBatchSet();
     copy.setImportId(null);
-    copy.setPayboxAmountPaid(null);
-    copy.setPayboxPaidOk(false);
     copy.setReceiptNo(null);
     copy.setRemainingAmount(null);
     copy.setRemainingAllocatedAmount(null);

@@ -8,6 +8,7 @@
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
 		<field name="name"/>
+		<field name="project"/>
 		<field name="taskDate"/>
 		<field name="taskEndDate" hidden="true"/>
 		<field name="status"/>
@@ -267,6 +268,7 @@
 	
 	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence"  model="com.axelor.team.db.TeamTask">
 		<field name="name"/>
+		<field name="project"/>
 		<field name="status"/>
 		<field name="assignedTo"/>
 		<field name="taskDate"/>
@@ -279,6 +281,7 @@
 		<template>
 		<![CDATA[
 			<h4>{{name}}</h4>
+			<h3>{{project.fullName}}</h3>
 			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
 			<div class="card-body">
 				<div>

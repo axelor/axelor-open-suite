@@ -585,15 +585,6 @@
 		<view type="form" name="payment-mode-form"/>
 	</action-view>
 	
-	<menuitem name="account-conf-payment-paybox" parent="account-conf-payment" 
-		title="Paybox" action="account.conf.payment.paybox" />
-
-	<action-view name="account.conf.payment.paybox"
-		title="Paybox" model="com.axelor.apps.account.db.Paybox" >
-		<view type="grid" name="paybox-grid"/>
-		<view type="form" name="paybox-form"/>
-	</action-view>
-	
 	<menuitem name="account-conf-payment-payment-condition" parent="account-conf-payment" 
 		title="Payment conditions" action="account.conf.payment.payment.condition" />
 

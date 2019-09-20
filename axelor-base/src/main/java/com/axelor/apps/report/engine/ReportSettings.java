@@ -19,7 +19,7 @@ package com.axelor.apps.report.engine;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
@@ -242,7 +242,7 @@ public class ReportSettings {
   public static String getPrintingLocale(Partner partner) {
 
     if (partner != null) {
-      return Beans.get(PartnerService.class).getPartnerLanguageCode(partner);
+      return Beans.get(PartnerServiceImpl.class).getPartnerLanguageCode(partner);
     } else {
       return Beans.get(UserService.class).getLanguage();
     }

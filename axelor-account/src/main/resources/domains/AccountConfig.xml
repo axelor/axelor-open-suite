@@ -112,8 +112,6 @@
 		<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
 		<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
 
-		<!-- Onglet Paybox -->
-		<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 
 		<!-- Invoice page -->
 		<boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
@@ -262,7 +260,6 @@
 		<field name="irrecoverableReasonPassage" on="UPDATE"/>
 		<field name="irrecoverableStandardRateTax" on="UPDATE"/>
 		
-		<field name="payboxConfig" on="UPDATE"/>
 
 		<field name="allowCancelVentilatedInvoice" on="UPDATE"/>
 		<field name="allowRemovalValidatedMove" on="UPDATE"/>

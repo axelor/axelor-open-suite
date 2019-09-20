@@ -27,13 +27,14 @@ public class TestURLService {
   @Test
   public void testNotExist() {
 
-    Assert.assertNull(URLService.notExist("http://www.google.com"));
+    String url = "http://www.google.com";
+    Assert.assertNull(URLService.notExist(url));
 
-    String url = "www.google.com";
+    url = "www.google.com";
     Assert.assertEquals(
         String.format(I18n.get(IExceptionMessage.URL_SERVICE_2), url), URLService.notExist(url));
 
-    url = "http://www.testtrgfgfdg.com/";
+    url = "http://testnotfound.axelor.com/";
     Assert.assertEquals(
         String.format(I18n.get(IExceptionMessage.URL_SERVICE_3), url), URLService.notExist(url));
   }
