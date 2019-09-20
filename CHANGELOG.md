@@ -239,5 +239,6 @@
 - Advance data import: Fix Data import error when there is same object in two different sheets.
 - SALE ORDER : Fix issue of getting name null.
 - Fix nonexistent views
+- INVOICE : fix issue of invoice copy
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
