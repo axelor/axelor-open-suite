@@ -4826,7 +4826,7 @@ rowNumD=0;]]></method>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["picking_comment"] != null) row["picking_comment"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["picking_comment"] != null) row["picking_comment"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
