@@ -281,7 +281,7 @@
 		<template>
 		<![CDATA[
 			<h4>{{name}}</h4>
-			<h3>{{project.fullName}}</h3>
+			<h4><span style="font-weight:normal;">{{project.fullName}}</span></h4>
 			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
 			<div class="card-body">
 				<div>
