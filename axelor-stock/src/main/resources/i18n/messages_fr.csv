@@ -180,6 +180,7 @@
 "Display average price in printing","Afficher la valorisation au PMP sur l'impression des données financières d'emplacements",,
 "Display barcode on Picking printing","Afficher les codes barres sur l'impression des bon de préparation",,
 "Display customer code on picking printing","Afficher le code client sur l'impression",,
+"Display external ref. on certificate of conformity printing","Afficher référence client sur certificat de conformité",,
 "Display line details on printing","Afficher le détail des lignes sur l'impression",,
 "Display partner sequence on printing","Afficher la référence tiers sur les impressions",,
 "Display sale value in location financial data printing","Afficher la valorisation de vente sur l'impression des données financières d'emplacements",,
