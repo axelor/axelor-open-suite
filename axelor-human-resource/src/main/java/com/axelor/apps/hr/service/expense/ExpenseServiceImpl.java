@@ -290,10 +290,9 @@ public class ExpenseServiceImpl implements ExpenseService {
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDate(appAccountService.getTodayDate());
-    if(expense.getUser().getPartner() !=  null)
-    {
-	    PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
-	    expense.setPaymentMode(paymentMode);
+    if (expense.getUser().getPartner() != null) {
+      PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+      expense.setPaymentMode(paymentMode);
     }
     expenseRepository.save(expense);
   }
