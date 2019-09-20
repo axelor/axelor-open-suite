@@ -50,7 +50,6 @@
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
     
     <track>
-    	<field name="manageInvoicedAmountByLine" on="UPDATE"/>
     	<field name="custStockMoveMgtOnSO" on="UPDATE"/>
     	<field name="customerStockMoveGenerationAuto" on="UPDATE"/>
     	<field name="supplStockMoveMgtOnPO" on="UPDATE"/>
