@@ -94,7 +94,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String origin,
       String moveDescription,
       boolean closeYear,
-      boolean openYear)
+      boolean openYear,
+      boolean allocatePerPartner)
       throws AxelorException {
 
     List<Move> moveList = new ArrayList<>();
@@ -105,7 +106,15 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     if (closeYear) {
       closeYearMove =
           generateCloseAnnualAccountMove(
-              year, account, endOfYearDate, endOfYearDate, origin, moveDescription, partner, false);
+              year,
+              account,
+              endOfYearDate,
+              endOfYearDate,
+              origin,
+              moveDescription,
+              partner,
+              false,
+              allocatePerPartner);
 
       if (closeYearMove == null) {
         return null;
@@ -123,7 +132,8 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
               origin,
               moveDescription,
               partner,
-              true);
+              true,
+              allocatePerPartner);
 
       if (openYearMove == null) {
         return null;
@@ -146,14 +156,15 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       String origin,
       String moveDescription,
       Partner partner,
-      boolean isReverse)
+      boolean isReverse,
+      boolean allocatePerPartner)
       throws AxelorException {
 
     Company company = account.getCompany();
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    BigDecimal balance = computeBalance(year, account, partner);
+    BigDecimal balance = computeBalance(year, account, partner, allocatePerPartner);
 
     if (balance.compareTo(BigDecimal.ZERO) == 0) {
       return null;
@@ -240,17 +251,20 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     return moveLine;
   }
 
-  protected BigDecimal computeBalance(Year year, Account account, Partner partner) {
+  protected BigDecimal computeBalance(
+      Year year, Account account, Partner partner, boolean allocatePerPartner) {
 
     String prepareQuery =
         "select SUM(self.debit - self.credit) FROM MoveLine as self "
             + "WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 AND self.account = ?2 "
             + "AND self.move.statusSelect = ?3 AND self.move.autoYearClosureMove is not true";
 
-    if (partner != null) {
-      prepareQuery += " AND self.partner = ?4";
-    } else {
-      prepareQuery += " AND self.partner is null";
+    if (allocatePerPartner && account.getUseForPartnerBalance()) {
+      if (partner != null) {
+        prepareQuery += " AND self.partner = ?4";
+      } else {
+        prepareQuery += " AND self.partner is null";
+      }
     }
 
     Query q = JPA.em().createQuery(prepareQuery, BigDecimal.class);
@@ -304,7 +318,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
         JPA.em()
             .createQuery(
                 "select distinct(self.account.id) FROM MoveLine as self "
-                    + "WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 AND self.account.id in (?2) "
+                    + "WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year  = ?1 AND self.account.id in (?2) "
                     + "AND self.move.statusSelect = ?3 AND self.move.autoYearClosureMove is not true",
                 Long.class);
     q.setParameter(1, year);
@@ -322,9 +336,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     List<Pair<Long, Long>> accountAndPartnerPair = new ArrayList<>();
 
     for (Long accountId : accountIdList) {
-
       if (allocatePerPartner && accountRepository.find(accountId).getUseForPartnerBalance()) {
-
         for (Long partnerId : getPartner(accountId, year)) {
           accountAndPartnerPair.add(Pair.of(accountId, partnerId));
         }

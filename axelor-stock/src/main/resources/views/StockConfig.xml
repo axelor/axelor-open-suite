@@ -80,6 +80,7 @@
 			<field name="isDisplayAccountingValueInPrinting" widget="boolean-switch"/>
 			<field name="isDisplayAgPriceInPrinting" widget="boolean-switch"></field>
 			<field name="displayTrackNbrOnCertificateOfConformityPrinting" widget="boolean-switch"/>
+			<field name="displayExtRefOnCertificateOfConformityPrinting" widget="boolean-switch"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">

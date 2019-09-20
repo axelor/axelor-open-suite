@@ -320,9 +320,12 @@
 	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
 	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
 	      <panel name="deliveryCommentsPanel" title="Description to display on delivery" colSpan="12">
-          <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
+             <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
 	      </panel>
-	    </panel>
+          <panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+             <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+	      </panel>
+	      </panel>
 	    <panel name="invoicingPanel" title="Invoicing">
 	    	<panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order" colSpan="12"/>
 				<panel name="invoiceCommentsPanel" title="Description to display on invoice" colSpan="12">
@@ -759,7 +762,7 @@
 
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 	<toolbar>
-			<button name="mergeSaleOrdersBtn" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
+			<button name="mergeQuotationOrderBtn" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
 	</toolbar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
@@ -892,10 +895,11 @@
     	<action name="action-partner-attrs-hide-contact-partner" />
     	<action name="action-sale-order-attrs-in-ati"/>
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
-			<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
+		<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
 		<action name="action-sale-order-attrs-external-reference"/>
 		<action name="action-sale-order-attrs-availability-request-label"/>
-		</action-group>
+		<action name="action-sale-order-attrs-set-required"/>
+	</action-group>
 
 	<action-group name="action-sale-group-confirmed">
     <action name="action-sale-order-method-check-analytic-distribution-template"/>
@@ -959,7 +963,7 @@
     <action-record name="action-sale-order-record-set-contact-partner" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="contactPartner" expr="eval: clientPartner?.contactPartnerSet?.size() == 1 ? clientPartner.contactPartnerSet.collect{it}[0] : null"/>
     </action-record>
-
+    
     <action-record name="action-sale-order-record-from-partner" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
@@ -1105,6 +1109,7 @@
 		<field name="invoiceComments" expr="eval: clientPartner?.invoiceComments"/>
 		<field name="deliveryComments" expr="eval: clientPartner?.deliveryComments"/>
 		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
+		<field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1342,6 +1347,10 @@
 
 	<action-attrs name="action-sale-order-attrs-template-deafult-currency">
 		<attribute name="value" for="currency" expr="eval: _clientPartnerCurrency" if="_clientPartnerCurrency"/>
+	</action-attrs>
+
+	<action-attrs name="action-sale-order-attrs-set-required">
+		<attribute name="required" for="$_projectGeneratorType" expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
 	</action-attrs>
 
   <action-method name="action-sale-order-method-check-analytic-distribution-template">

@@ -249,7 +249,7 @@
 
 	<action-view name="debt.recovery.root.history"
 		title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory" >
-		<view type="grid" name="debt-recovery-history-line-grid" />
+		<view type="grid" name="debt-recovery-history-grid" />
 		<view type="form" name="debt-recovery-history-form" />
 	</action-view>
 
@@ -583,15 +583,6 @@
 		title="Payment modes" model="com.axelor.apps.account.db.PaymentMode" >
 		<view type="grid" name="payment-mode-grid"/>
 		<view type="form" name="payment-mode-form"/>
-	</action-view>
-	
-	<menuitem name="account-conf-payment-paybox" parent="account-conf-payment" 
-		title="Paybox" action="account.conf.payment.paybox" />
-
-	<action-view name="account.conf.payment.paybox"
-		title="Paybox" model="com.axelor.apps.account.db.Paybox" >
-		<view type="grid" name="paybox-grid"/>
-		<view type="form" name="paybox-form"/>
 	</action-view>
 	
 	<menuitem name="account-conf-payment-payment-condition" parent="account-conf-payment" 

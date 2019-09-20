@@ -33,8 +33,8 @@
 		
 	<action-view name="mail.root.email.conf.email.address" title="Email addresses" 
 		model="com.axelor.apps.message.db.EmailAddress" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="email-address-grid"/>
+		<view type="form" name="email-address-form"/>
 		<context name="_duplicateFinderFields" expr="address"/>
 	</action-view>
 	

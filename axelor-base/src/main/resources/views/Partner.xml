@@ -328,6 +328,9 @@
 				<panel name="saleOrderCommentsPanel" title="Description to display on sale order" colSpan="12">
 				  <field name="saleOrderComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
+				<panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+                  <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+	            </panel>
 			</panel>
 			<panel name="supplierPanel" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
@@ -931,11 +934,6 @@
     <action-method name="action-partner-method-show-on-map">
         <call class="com.axelor.apps.base.web.PartnerController" method="showPartnerOnMap"/>
     </action-method>
-
-	<action-view name="action-partner-view-search-profile" title="Search Profile" model="com.axelor.apps.network.db.SnSearch">
-		<view type="form" name="sn-search-form"/>
-		<context name="_idPartner" expr="eval: id"/>
-	</action-view>
 
 	<action-view name="action-contact-partner-dashlet" title="Partners"  model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
