@@ -121,6 +121,7 @@
 - FIXED ASSETS : add Translations in FixedAsset and FixedAssetCategory
 - Advanced Export : Update security issues in query to create joins.
 - Stock Move: forbid negative quantity in stock move lines.
+- Inventory: Generate two stock moves to avoid generating negative quantity.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
