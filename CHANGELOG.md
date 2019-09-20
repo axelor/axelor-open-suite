@@ -230,6 +230,7 @@
 - Removed word 'Agresso' from files.
 - Remove tracking on non existent fields.
 - EXPENSE : fix NPE on validate Expense.
+- PayrollPreparation : Fix computation of payrollLeave.duration
 
 ## [5.1.7] - 2019-06-17
 ## Features

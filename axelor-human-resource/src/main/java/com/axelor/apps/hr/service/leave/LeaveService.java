@@ -43,6 +43,17 @@ public interface LeaveService {
       LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
       throws AxelorException;
 
+  public BigDecimal computeDurationInDays(
+      LeaveRequest leave,
+      Employee employee,
+      LocalDate fromDate,
+      LocalDate toDate,
+      int startOn,
+      int endOn)
+      throws AxelorException;
+
+  public int getStartOrEndSelect(LocalDateTime dateTime, Employee employee);
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void manageSentLeaves(LeaveRequest leave) throws AxelorException;
 

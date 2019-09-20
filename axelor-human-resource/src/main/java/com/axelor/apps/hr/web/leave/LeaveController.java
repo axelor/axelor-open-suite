@@ -202,6 +202,23 @@ public class LeaveController {
   public void computeDuration(ActionRequest request, ActionResponse response) {
     try {
       LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      LeaveLine line = leave.getLeaveLine();
+
+      if (line != null
+          && line.getLeaveReason() != null
+          && line.getLeaveReason().getUnitSelect() != null
+          && line.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_HOURS) {
+
+        response.setValue(
+            "startOnSelect",
+            Beans.get(LeaveService.class)
+                .getStartOrEndSelect(leave.getFromDateT(), leave.getUser().getEmployee()));
+
+        response.setValue(
+            "endOnSelect",
+            Beans.get(LeaveService.class)
+                .getStartOrEndSelect(leave.getToDateT(), leave.getUser().getEmployee()));
+      }
       response.setValue("duration", Beans.get(LeaveService.class).computeDuration(leave));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

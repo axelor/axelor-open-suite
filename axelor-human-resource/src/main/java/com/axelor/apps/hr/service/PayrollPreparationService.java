@@ -152,21 +152,29 @@ public class PayrollPreparationService {
     for (LeaveRequest leaveRequest : leaveRequestList) {
 
       PayrollLeave payrollLeave = new PayrollLeave();
+      LocalDate leaveReqFromDate = leaveRequest.getFromDateT().toLocalDate();
+      LocalDate leaveReqToDate = leaveRequest.getToDateT().toLocalDate();
 
-      if (leaveRequest.getFromDateT().toLocalDate().isBefore(fromDate)) {
+      if (leaveReqFromDate.isBefore(fromDate)) {
         payrollLeave.setFromDate(fromDate);
       } else {
-        payrollLeave.setFromDate(leaveRequest.getFromDateT().toLocalDate());
+        payrollLeave.setFromDate(leaveReqFromDate);
       }
 
-      if (leaveRequest.getToDateT().toLocalDate().isAfter(toDate)) {
+      if (leaveReqToDate.isAfter(toDate)) {
         payrollLeave.setToDate(toDate);
       } else {
-        payrollLeave.setToDate(leaveRequest.getToDateT().toLocalDate());
+        payrollLeave.setToDate(leaveReqToDate);
       }
 
       payrollLeave.setDuration(
-          leaveService.computeLeaveDaysByLeaveRequest(fromDate, toDate, leaveRequest, employee));
+          leaveService.computeDurationInDays(
+              leaveRequest,
+              employee,
+              leaveReqFromDate,
+              leaveReqToDate,
+              leaveRequest.getStartOnSelect(),
+              leaveRequest.getEndOnSelect()));
       payrollLeave.setLeaveReason(leaveRequest.getLeaveLine().getLeaveReason());
       payrollLeave.setLeaveRequest(leaveRequest);
       payrollLeaveList.add(payrollLeave);

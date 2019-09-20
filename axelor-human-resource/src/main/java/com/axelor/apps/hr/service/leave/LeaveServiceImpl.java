@@ -46,6 +46,7 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -207,7 +208,7 @@ public class LeaveServiceImpl implements LeaveService {
    * @return
    * @throws AxelorException
    */
-  protected BigDecimal computeDurationInDays(
+  public BigDecimal computeDurationInDays(
       LeaveRequest leave,
       Employee employee,
       LocalDate fromDate,
@@ -902,5 +903,32 @@ public class LeaveServiceImpl implements LeaveService {
       }
     }
     return false;
+  }
+
+  @Override
+  public int getStartOrEndSelect(LocalDateTime dateTime, Employee employee) {
+    if (dateTime != null && employee.getWeeklyPlanning() != null) {
+      DayPlanning dayPlanning =
+          Beans.get(WeeklyPlanningService.class)
+              .findDayPlanning(employee.getWeeklyPlanning(), dateTime.toLocalDate());
+      LocalTime time = dateTime.toLocalTime();
+      if (dayPlanning != null) {
+        if (dayPlanning.getMorningFrom() != null
+            && dayPlanning.getMorningTo() != null
+            && time.compareTo(dayPlanning.getMorningFrom()) >= 0
+            && time.compareTo(dayPlanning.getMorningTo()) <= 0) {
+
+          return (LeaveRequestRepository.SELECT_MORNING);
+
+        } else if (dayPlanning.getAfternoonFrom() != null
+            && dayPlanning.getAfternoonTo() != null
+            && time.compareTo(dayPlanning.getAfternoonFrom()) >= 0
+            && time.compareTo(dayPlanning.getAfternoonTo()) <= 0) {
+
+          return (LeaveRequestRepository.SELECT_AFTERNOON);
+        }
+      }
+    }
+    return 0;
   }
 }
