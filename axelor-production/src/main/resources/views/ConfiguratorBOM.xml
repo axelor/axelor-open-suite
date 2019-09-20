@@ -27,7 +27,7 @@
                 <field name="product" colSpan="12"
                        showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
                        onSelect="action-configurator-bom-attrs-product-domain"
-                       form-view="product-view" grid-view="product-grid"/>
+                       form-view="product-form" grid-view="product-grid"/>
                 <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                        x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
             </panel>

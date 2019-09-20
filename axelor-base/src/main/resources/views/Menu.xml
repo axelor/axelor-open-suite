@@ -54,7 +54,7 @@
     <menuitem id="calendar.root.menu.configuration.calendars" name="menu-calendar-configuration-calendars" title="My calendars" parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars"/>
 
 	<action-view name="calendar.root.menu.my.calendars" title="My calendars" model="com.axelor.apps.base.db.ICalendar">
-		<view type="grid" name="calendar-user-calendars-grid"/>
+		<view type="grid" name="calendar-user-grid"/>
 		<view type="form" name="calendar-form"/>
 		<domain>self.user = :__user__</domain>
 	</action-view>
