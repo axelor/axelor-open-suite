@@ -228,6 +228,7 @@
 - Logistical Form: Fix npe on adding stock move line with no sale orders.
 - Removed word 'Agresso' from files.
 - Remove tracking on non existent fields.
+- EXPENSE : fix NPE on validate Expense.
 
 ## [5.1.7] - 2019-06-17
 ## Features
