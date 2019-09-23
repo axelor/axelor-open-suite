@@ -664,37 +664,44 @@ public class LeaveServiceImpl implements LeaveService {
       throws AxelorException {
     BigDecimal leaveDays = BigDecimal.ZERO;
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
-
-    // Seems to be executed twice
-    if (leaveRequest.getFromDateT().toLocalDate().equals(fromDate)) {
-      leaveDays =
-          leaveDays.add(
-              BigDecimal.valueOf(
-                  computeStartDateWithSelect(
-                      fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning)));
-    }
-    if (leaveRequest.getToDateT().toLocalDate().equals(toDate)) {
-      leaveDays =
-          leaveDays.add(
-              BigDecimal.valueOf(
-                  computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning)));
-    }
+    LocalDate leaveFrom = leaveRequest.getFromDateT().toLocalDate();
+    LocalDate leaveTo = leaveRequest.getToDateT().toLocalDate();
 
     LocalDate itDate = fromDate;
-    if (fromDate.isBefore(leaveRequest.getFromDateT().toLocalDate())
-        || fromDate.equals(leaveRequest.getFromDateT().toLocalDate())) {
-      itDate = leaveRequest.getFromDateT().toLocalDate();
+    if (fromDate.isBefore(leaveFrom) || fromDate.equals(leaveFrom)) {
+      itDate = leaveFrom;
     }
 
-    while (!itDate.isEqual(leaveRequest.getToDateT().toLocalDate().plusDays(1))
-        && !itDate.isAfter(toDate)) {
-      leaveDays =
-          leaveDays.add(
-              BigDecimal.valueOf(
-                  weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, itDate)));
-      if (publicHolidayHrService.checkPublicHolidayDay(itDate, employee)) {
-        leaveDays = leaveDays.subtract(BigDecimal.ONE);
+    boolean morningHalf = false;
+    boolean eveningHalf = false;
+    BigDecimal daysToAdd = BigDecimal.ZERO;
+    if (leaveTo.equals(leaveFrom)
+        && leaveRequest.getStartOnSelect() == leaveRequest.getEndOnSelect()) {
+      eveningHalf = leaveRequest.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON;
+      morningHalf = leaveRequest.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING;
+    }
+
+    while (!itDate.isEqual(leaveTo.plusDays(1)) && !itDate.isEqual(toDate.plusDays(1))) {
+
+      if (itDate.equals(leaveFrom) && !morningHalf) {
+        daysToAdd =
+            BigDecimal.valueOf(
+                computeStartDateWithSelect(
+                    fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning));
+      } else if (itDate.equals(leaveTo) && !eveningHalf) {
+        daysToAdd =
+            BigDecimal.valueOf(
+                computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning));
+      } else {
+        daysToAdd =
+            BigDecimal.valueOf(
+                weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, itDate));
       }
+
+      if (!publicHolidayHrService.checkPublicHolidayDay(itDate, employee)) {
+        leaveDays = leaveDays.add(daysToAdd);
+      }
+
       itDate = itDate.plusDays(1);
     }
 
