@@ -753,10 +753,6 @@
 		<field name="clientPartner" expr="eval: _parent?.clientPartner"/>
 	</action-record>
 	
-	<action-method name="action-project-method-set-stored-time-spent" model="com.axelor.apps.project.db.Project">
-		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredTimeSpent"/>
-	</action-method>
-	
 	<action-method name="action-method-project-compute-progress">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="computeProgress"/>
 	</action-method>
