@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1858,7 +1858,7 @@ group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
 	sum(planned_hours) as total_hours,
 	case
 		when prod.unit = (select unit_hours from base_app_base) then
-			sum((planned_hours / planned_hours) * prod.sale_price)
+			sum((planned_hours / NULLIF(planned_hours, 0)) * prod.sale_price)
 		else	
 			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
 	end as revenue
@@ -2284,7 +2284,7 @@ union
 select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, 
 case
 	when prod.unit = (select unit_hours from base_app_base) then
-		sum((planned_hours / planned_hours) * prod.sale_price)
+		sum((planned_hours / NULLIF(planned_hours, 0)) * prod.sale_price)
 	else	
 		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
 end as turnover
