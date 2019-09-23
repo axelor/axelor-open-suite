@@ -963,6 +963,7 @@
 "Number of tasks generated at most at once",,,
 "Numeric code (ISO)",,,
 "N° and Street label",,,
+"ODS",,,
 "OK",,,
 "Object",,,
 "Object is missing for tab configuration(%s)",,,
