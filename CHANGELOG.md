@@ -120,6 +120,7 @@
 - ABC ANALYSIS : Add support for printing report in 'xls' type.
 - EBICSUSER : replace the O2M ebicsRequestLogList per a dashlet
 - TEAMTASK : Addition of field 'project' in grid and kanban view
+- CONFORMITY CERTIFICATE : new field on printing
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -185,7 +186,8 @@
 - ACCOUNTING REPORT : add ODS file formate in report export type
 - FORECAST RECAP : reset fields while creating duplicate record
 - PICKING ORDER : new comment field 'pickingOrderComments' on partner
-- PROJECT : remove unused action and method.
+- INVOCIE : Add field 'language' to change report language in company
+- PROJECT : remove unused action and method
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
