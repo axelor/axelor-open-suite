@@ -672,21 +672,23 @@ public class LeaveServiceImpl implements LeaveService {
       itDate = leaveFrom;
     }
 
+    boolean morningHalf = false;
+    boolean eveningHalf = false;
+    BigDecimal daysToAdd = BigDecimal.ZERO;
+    if (leaveTo.equals(leaveFrom)
+        && leaveRequest.getStartOnSelect() == leaveRequest.getEndOnSelect()) {
+      eveningHalf = leaveRequest.getStartOnSelect() == LeaveRequestRepository.SELECT_AFTERNOON;
+      morningHalf = leaveRequest.getStartOnSelect() == LeaveRequestRepository.SELECT_MORNING;
+    }
+
     while (!itDate.isEqual(leaveTo.plusDays(1)) && !itDate.isEqual(toDate.plusDays(1))) {
 
-      BigDecimal daysToAdd = BigDecimal.ZERO;
-      if (leaveTo.equals(leaveFrom)
-          && leaveRequest.getStartOnSelect() == leaveRequest.getEndOnSelect()) {
-        leaveDays = leaveDays.add(BigDecimal.valueOf(0.5));
-        break;
-      }
-
-      if (itDate.equals(leaveFrom)) {
+      if (itDate.equals(leaveFrom) && !morningHalf) {
         daysToAdd =
             BigDecimal.valueOf(
                 computeStartDateWithSelect(
                     fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning));
-      } else if (itDate.equals(leaveTo)) {
+      } else if (itDate.equals(leaveTo) && !eveningHalf) {
         daysToAdd =
             BigDecimal.valueOf(
                 computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning));
