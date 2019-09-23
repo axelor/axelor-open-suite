@@ -21,6 +21,7 @@
 - Action Builder: Added option to update or use json field from real model
 - STUDIO : add 'attrs' for User.
 - Studio: Added colSpan,title for the label and  visibleInGrid option for button.
+- Studio: Added restriction for model and model field names, allowed only alphanumberic characters
 
 ## Bug Fixes
 - Fix injection error during test

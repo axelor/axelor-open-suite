@@ -527,9 +527,9 @@ public class ActionScriptBuilderService {
       stb.append(format("if (!val) {", 2));
       stb.append(format("val = $json.create('" + model + "');", 3));
       stb.append(format("}", 2));
-      // stb.append(format("if($ instanceof MetaJsonRecord){$ =
-      // $json.create($json.find($.id))};",
-      // 2));
+      stb.append(format("else {", 2));
+      stb.append(format("val = $json.create(val);", 3));
+      stb.append(format("}", 2));
       stb.append(addFieldsBinding("val", lines, 2));
       stb.append(format("val = $json.save(val);", 2));
     }
