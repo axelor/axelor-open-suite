@@ -116,6 +116,7 @@
 - Expense : Set Move.date and expense.moveDate as expense.period.toDate
 - BankStatementFileFormat : remove wrong data.
 - EBICSUSER : signature certificate editable only if the ebicsPartner mode is "EBICS TS" and the user type is "Signatory"
+- EBICS USER : password should be filled one time and used to sign the BankOrders in EBICS T mode.
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
