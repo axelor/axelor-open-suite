@@ -369,6 +369,7 @@ InvoiceSet.length > 0))"
 				<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
+				<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" hidden="true"/>
 			</panel>
       <panel name="automaticMailPanel" title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate">
         <panel name="afterValidationAutomaticMailPanel" hideIf="statusSelect &gt;= 2 &amp;&amp; !invoiceAutomaticMailOnValidate" colSpan="12">
@@ -551,6 +552,7 @@ InvoiceSet.length > 0))"
 			<panel name="formatPanel" colSpan="6">
 				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
 			</panel>
+			<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" showIf="$reportType ==1 || $reportType==3"/>
 			<button name="printBtn" title="Print" onClick="action-invoice-group-report-print" readonlyIf="$reportType==null || $format==null"/>
 		</panel>
 	</form>
@@ -793,19 +795,20 @@ InvoiceSet.length > 0))"
 
     <action-group name="action-account-invoice-onnew-group">
 	    <action name="action-invoice-record-default"/>
-		<action name="action-invoice-method-payment-mode-condition" if="company != null"/>
+		  <action name="action-invoice-method-payment-mode-condition" if="company != null"/>
 	    <action name="action-invoice-method-fill-company-bank-details"/>
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-record-in-ati"/>
 	    <action name="action-invoice-attrs-in-ati"/>
-		<action name="action-invoice-attrs-hidden-bank-details"/>
-		<action name="action-invoice-method-fill-advance-payment-set"/>
-        <action name="action-invoice-attrs-show-validate-button"/>
-		<action name="action-invoice-attrs-interco-supplychain"/>
-		<action name="action-invoice-record-interco-supplychain"/>
-		<action name="action-invoice-attrs-change-create-refund-title"/>
+		  <action name="action-invoice-attrs-hidden-bank-details"/>
+		  <action name="action-invoice-method-fill-advance-payment-set"/>
+      <action name="action-invoice-attrs-show-validate-button"/>
+			<action name="action-invoice-attrs-interco-supplychain"/>
+			<action name="action-invoice-record-interco-supplychain"/>
+			<action name="action-invoice-attrs-change-create-refund-title"/>
 	    <action name="action-invoice-record-printing-fields" if="__config__.app.isApp('business-project')"/>
-        <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
+			<action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
+      <action name="action-invoice-record-set-dummy-field-language"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -813,15 +816,16 @@ InvoiceSet.length > 0))"
 	    <action name="action-invoice-attrs-collapse-irrecoverable-group"/>
 	    <action name="action-invoice-attrs-in-ati"/>
 	    <action name="action-invoice-attrs-printing-fields"/>
-		<action name="action-invoice-attrs-hidden-bank-details"/>
-        <action name="action-invoice-attrs-show-validate-button"/>
-		<action name="action-invoice-attrs-interco-supplychain"/>
-		<action name="action-invoice-attrs-change-create-refund-title"/>
-        <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
-        <action name="action-account-invoice-atts-suppier-invoice-nbr"/>
-        <action name="action-invoice-method-check-partner-bank-details-list"/>
-        <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
+      <action name="action-invoice-attrs-hidden-bank-details"/>
+      <action name="action-invoice-attrs-show-validate-button"/>
+			<action name="action-invoice-attrs-interco-supplychain"/>
+			<action name="action-invoice-attrs-change-create-refund-title"/>
+      <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
+      <action name="action-account-invoice-atts-suppier-invoice-nbr"/>
+      <action name="action-invoice-method-check-partner-bank-details-list"/>
+      <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
     	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
+      <action name="action-invoice-record-set-dummy-field-language"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-operationtype-onchange">
@@ -834,22 +838,25 @@ InvoiceSet.length > 0))"
         <action name="action-invoice-record-specific-note-on-invoice"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
         <action name="action-invoice-record-update-info-company"/>
+        <action name="action-invoice-record-set-dummy-field-language"/>
     </action-group>
 
     <action-group name="action-group-account-invoice-partner-onchange">
     	<action name="action-invoice-record-partner-change"/>
-		<action name="action-invoice-method-payment-mode-condition"/>
+		  <action name="action-invoice-method-payment-mode-condition"/>
     	<action name="action-invoice-record-due-date"/>
     	<action name="action-invoice-record-estimated-payment-date"/>
-		<action name="action-invoice-method-fill-company-bank-details"/>
-		<action name="action-invoice-record-specific-note-on-invoice"/>
-		<action name="action-invoice-method-fill-advance-payment-set"/>
-		<action name="action-invoice-method-set-default-mail"/>
-		<action name="action-invoice-method-fill-price-list"/>
-		<action name="action-invoice-attrs-interco-supplychain"/>
-		<action name="action-invoice-record-interco-supplychain"/>
-		<action name="action-invoice-method-check-partner-bank-details-list"/>
-		<action name="action-invoice-method-set-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
+			<action name="action-invoice-method-fill-company-bank-details"/>
+			<action name="action-invoice-record-specific-note-on-invoice"/>
+			<action name="action-invoice-method-fill-advance-payment-set"/>
+			<action name="action-invoice-method-set-default-mail"/>
+			<action name="action-invoice-method-fill-price-list"/>
+			<action name="action-invoice-attrs-interco-supplychain"/>
+			<action name="action-invoice-record-interco-supplychain"/>
+			<action name="action-invoice-method-check-partner-bank-details-list"/>
+			<action name="action-invoice-method-set-pfp-validator-user"
+        if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
+      <action name="action-invoice-record-set-dummy-field-language"/>
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -1003,6 +1010,10 @@ InvoiceSet.length > 0))"
 		<field name="reasonOfRefusalToPayStr" expr="eval: reasonOfRefusalToPay?.name"/>
 	</action-record>
 
+	<action-record name="action-invoice-record-set-dummy-field-language" model="com.axelor.apps.account.db.Invoice">
+		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language"/>
+	</action-record>
+
     <!-- ACTION ATTRS -->
 
     <action-attrs name="action-invoice-attrs-bank-details-from-partner-domain">
@@ -1089,6 +1100,7 @@ InvoiceSet.length > 0))"
     	<attribute name="value" for="$reportType" expr="eval: 1" if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
     	<attribute name="value" for="$format" expr="pdf" if = "_statusSelect == 3"/>
     	<attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
+    	<attribute name="value" expr="eval: _language" for="$language" />
     </action-attrs>
 
 	<!-- DOMAIN -->
@@ -1307,6 +1319,7 @@ InvoiceSet.length > 0))"
 		<context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
 		<context name="_printedPDF" expr="eval: printedPDF"/>
 		<context name="id" expr="eval: id"/>
+		<context name="_language" expr="eval: language"/>
 	</action-view>
 
 

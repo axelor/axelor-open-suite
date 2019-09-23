@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BankDetailsService;
@@ -332,12 +333,25 @@ public class InvoiceController {
             context.get("reportType") != null
                 ? Integer.parseInt(context.get("reportType").toString())
                 : null;
+
+        Map languageMap =
+            (reportType == 1 || reportType == 3) && context.get("language") != null
+                ? (Map<String, Object>) request.getContext().get("language")
+                : null;
+        String locale =
+            languageMap != null && languageMap.get("id") != null
+                ? Beans.get(LanguageRepository.class)
+                    .find(Long.parseLong(languageMap.get("id").toString()))
+                    .getCode()
+                : null;
+
         fileLink =
             invoicePrintService.printInvoice(
                 invoiceRepo.find(Long.parseLong(context.get("id").toString())),
                 false,
                 format,
-                reportType);
+                reportType,
+                locale);
         title = I18n.get("Invoice");
         response.setCanClose(true);
       } else {
@@ -363,7 +377,7 @@ public class InvoiceController {
       response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
-              .add("html", invoicePrintService.printInvoice(invoice, true, "pdf", reportType))
+              .add("html", invoicePrintService.printInvoice(invoice, true, "pdf", reportType, null))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
