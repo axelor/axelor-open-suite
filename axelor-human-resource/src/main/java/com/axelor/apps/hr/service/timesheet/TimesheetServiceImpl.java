@@ -470,9 +470,16 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     timesheet.setUser(user);
     Company company = null;
-    if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
-      company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+    Employee employee = user.getEmployee();
+    if (employee != null && employee.getMainEmploymentContract() != null) {
+      company = employee.getMainEmploymentContract().getPayCompany();
+    } else {
+      company = user.getActiveCompany();
     }
+
+    String timeLoggingPreferenceSelect =
+        employee == null ? null : employee.getTimeLoggingPreferenceSelect();
+    timesheet.setTimeLoggingPreferenceSelect(timeLoggingPreferenceSelect);
     timesheet.setCompany(company);
     timesheet.setFromDate(fromDate);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
