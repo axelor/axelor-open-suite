@@ -188,6 +188,7 @@
 - PICKING ORDER : new comment field 'pickingOrderComments' on partner
 - INVOCIE : Add field 'language' to change report language in company
 - PROJECT : remove unused action and method
+- QUALITY CONTROL : Add send email option when status is finished.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

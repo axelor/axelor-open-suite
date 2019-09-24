@@ -26,12 +26,17 @@ import com.axelor.apps.quality.db.repo.QualityProcessRepository;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
@@ -41,6 +46,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 @Singleton
 public class QualityControlController {
@@ -137,5 +143,41 @@ public class QualityControlController {
             .printQualityControl(qualityControl, ReportSettings.FORMAT_PDF);
 
     response.setView(ActionView.define(title).add("html", fileLink).map());
+  }
+
+  @SuppressWarnings("unchecked")
+  public void sendEmail(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      QualityControlService qualityControlService = Beans.get(QualityControlService.class);
+
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> idList =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+
+        QualityControlRepository qualityControlRepo = Beans.get(QualityControlRepository.class);
+
+        for (Long id : idList) {
+          QualityControl qualityControl = qualityControlRepo.find(id);
+          if (qualityControl.getStatusSelect() == QualityControlRepository.STATUS_FINISHED) {
+            qualityControlService.sendEmail(qualityControl);
+          }
+        }
+      } else if (!ObjectUtils.isEmpty(context.get("id"))) {
+        QualityControl qualityControl = context.asType(QualityControl.class);
+        qualityControlService.sendEmail(qualityControl);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
