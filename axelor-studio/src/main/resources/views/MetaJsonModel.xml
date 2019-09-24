@@ -3,6 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
   
+	<grid id="studio-json-model-grid" name="json-model-grid" title="Custom models" model="com.axelor.meta.db.MetaJsonModel" groupBy="appBuilder">
+		<field name="title"/>
+		<field name="name"/>
+		<field name="appBuilder" hidden="true"/>
+  	</grid>
+  
   <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel">
     <!-- Studio changes -->
     <toolbar>
