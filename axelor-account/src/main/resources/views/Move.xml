@@ -40,7 +40,7 @@
                     <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
                     <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-                    <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
+                    <field name="date" onChange="action-move-method-get-period,action-move-update-move-line-date" hideIf="statusSelect == 3"/>
                 </panel>
                 <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
@@ -85,8 +85,8 @@
 		</panel>
 		
 		<panel>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-move-update-move-line-dates,action-account-move-method-compute-totals"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-move-update-move-line-dates,action-account-move-method-compute-totals"/>
 			<field name="$totalLines" title="Total lines" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
@@ -273,6 +273,11 @@
 	<action-method name="action-account-move-method-filter-partner">
 		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
+	
+	<action-method name="action-move-update-move-line-dates">
+		<call class="com.axelor.apps.account.web.MoveController" method="updateMoveLineDates"/>
+	</action-method>
+	
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
