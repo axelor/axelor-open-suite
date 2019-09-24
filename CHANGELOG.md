@@ -25,6 +25,7 @@
 
 ## Bug Fixes
 - Fix injection error during test
+- Studio : Fix access to json fields of base model in chart builder form.
 
 ## [Unreleased 5.2.0]
 ## Features
