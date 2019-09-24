@@ -49,7 +49,7 @@
                     <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
                     <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-                    <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
+                    <field name="date" onChange="action-move-method-get-period,action-move-update-move-line-date" hideIf="statusSelect == 3"/>
                 </panel>
                 <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
@@ -94,8 +94,8 @@
 		</panel>
 		
 		<panel>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-move-update-move-line-dates,action-account-move-method-compute-totals"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-move-update-move-line-dates,action-account-move-method-compute-totals"/>
 			<field name="$reconcileTags" colSpan="12" hidden="true" readonly="true" showTitle="false">
                     <viewer depends="moveLineList">
                         <![CDATA[
@@ -326,12 +326,20 @@
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
 	</action-method>
-<action-method name="action-account-move-method-filter-partner">
+	
+    <action-method name="action-account-move-method-filter-partner">
 		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
-<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
+	
+	<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
 		<call class="com.axelor.apps.account.web.MoveController" method="isHiddenMoveLineListViewer"/>
-	</action-method>	<!-- ACTION VIEW -->
+	</action-method>	
+	
+	<action-method name="action-move-update-move-line-dates">
+		<call class="com.axelor.apps.account.web.MoveController" method="updateMoveLineDates"/>
+	</action-method>
+	
+	<!-- ACTION VIEW -->
 	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
 		<view type="form" name="move-wizard-generate-reverse-form"/>
 		<view-param name="popup" value="reload"/>
@@ -342,13 +350,14 @@
 		<context name="_showRecord" expr="eval: __this__.id"/>
 		<context name="_moveDate" expr="eval: date"/>
 	</action-view>
+	
 	<action-view name="action-move-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
 		<view type="grid" name="move-grid-period"/>
 		<view type="form" name="move-form"/>
 		<view-param name="showArchived" value="true"/>
 		<domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR  (self.statusSelect = 1 AND (self.archived = false OR self.archived is null) ))</domain>
 	</action-view>
-
+	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>

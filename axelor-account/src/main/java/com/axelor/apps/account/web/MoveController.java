@@ -328,4 +328,21 @@ public class MoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateMoveLineDates(ActionRequest request, ActionResponse response) {
+
+    Move move = request.getContext().asType(Move.class);
+
+    try {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (moveLine.getDate().isBefore(move.getPeriod().getFromDate())
+            || moveLine.getDate().isAfter(move.getPeriod().getToDate())) {
+          moveLine.setDate(move.getDate());
+        }
+      }
+      response.setValue("moveLineList", move.getMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

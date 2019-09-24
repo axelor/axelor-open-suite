@@ -47,6 +47,7 @@
 - PURCHASE REQUEST : translate "Purchase Request Lines" in french "Ligne de demandes d'achat"
 - LOGIN : Fixed js code page redirection.
 - LEAVE REQUEST : corrected error when trying to change user.
+- MOVE/MOVE LINE : remove the possibility to select a date for a move line out of the move period.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements

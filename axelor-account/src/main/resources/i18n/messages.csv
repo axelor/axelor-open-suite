@@ -1829,6 +1829,7 @@
 "The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
 "The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
 "The sale order must be the same for all invoices",,,
+"The selected date is out of the accounting period.",,,
 "The sum of line amounts (%s) must match the amount of the payment schedule (%s).",,,
 "The to date is incorrect",,,
 "The total amount is greater than the budget distribution total.",,,

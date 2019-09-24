@@ -1829,6 +1829,7 @@
 "The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.","Le compte de vente ou d'achat est associé à une entreprise différente. Veuillez vous assurer de sélectionner le bon compte associé au plan de compte de la société en cours avant de modifier la société.",,
 "The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.","Le compte de vente ou d'achat ou de banque est associé à une entreprise différente. Veuillez vous assurer de sélectionner le bon compte associé au plan de compte de la société en cours avant de modifier la société.",,
 "The sale order must be the same for all invoices","La Comm. client doit être la même pour l'ensemble des factures",,
+"The selected date is out of the accounting period.","La date sélectionnée ne fait pas partie de la période comptable de l'écriture.",,
 "The sum of line amounts (%s) must match the amount of the payment schedule (%s).","La somme des montants des lignes (%s) doit correspondre au montant de l’échéancier de paiement (%s).",,
 "The to date is incorrect","La date d’arrivée est incorrecte",,
 "The total amount is greater than the budget distribution total.","Le montant total est supérieur à la totalité de la répartition budgetaire.",,
