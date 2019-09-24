@@ -148,6 +148,7 @@
 - SALE ORDER : set company's printing settings on sale order print when it is null.
 - ACCOUNTING REPORT : change french title for field "displayOnlyNotCompletelyLetteredMoveLines"
 - EBICS USER : password should be filled one time and used to sign the BankOrders in EBICS T mode
+- PROJECT : Fix financial report to follow the Axelor report guidelines
 
 ## Bug Fixes
 - ACCOUNT : Fix NPE in Move Template
