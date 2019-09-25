@@ -24,6 +24,7 @@
 - JOURNALS : add new configuration to filter partners
 - Availability request: new config to allocate automatically a stock move during availability request.
 - ACCOUNTING SITUATION : show 'dueDate' in moveLinesPanel.
+- SALE : Add new boolean to manage advance payment from payment condition
 
 ## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
