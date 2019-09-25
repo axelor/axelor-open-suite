@@ -236,6 +236,7 @@
 - PAYROLL PREPARATION: Fix leave days calculation
 - JOB COSTING : Fix division by zero error on financial report
 - Manuf Order: updating planned quantities correctly changes planned dates.
+- MOVES TEMPLATE: Fixed NPE on move generation
 
 ## [5.1.7] - 2019-06-17
 ## Features
