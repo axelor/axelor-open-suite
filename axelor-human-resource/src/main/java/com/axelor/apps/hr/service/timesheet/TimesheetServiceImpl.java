@@ -393,7 +393,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     return timesheet;
   }
 
-  private Map<Integer, String> getCorresMap() {
+  protected Map<Integer, String> getCorresMap() {
     Map<Integer, String> correspMap = new HashMap<>();
     correspMap.put(1, "monday");
     correspMap.put(2, "tuesday");
@@ -405,7 +405,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     return correspMap;
   }
 
-  private boolean isWorkedDay(
+  protected boolean isWorkedDay(
       LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
     DayPlanning dayPlanningCurr = new DayPlanning();
     for (DayPlanning dayPlanning : dayPlanningList) {
