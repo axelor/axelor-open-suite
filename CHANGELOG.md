@@ -124,6 +124,7 @@
 - Inventory: Generate two stock moves to avoid generating negative quantity.
 - SALE ORDER : set company's printing settings on sale order print when it is null.
 - ACCOUNTING REPORT : change french title for field "displayOnlyNotCompletelyLetteredMoveLines"
+- ACCOUNT : Fix NPE in Move Template
 
 ## Bug Fixes
 - PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
