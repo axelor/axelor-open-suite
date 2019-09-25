@@ -16,6 +16,7 @@
 		<boolean name="keepProject" title="Keep Project for Start&amp;Stop Timer" default="true"/>
 		
 		<boolean name="timesheetEditor" title="Timesheet editor"/>
+		<boolean name="displayTimesheetLineNumber" title="Display timesheet line number"/>
 		
 		<track>
 			<field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
