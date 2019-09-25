@@ -122,7 +122,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Reimbursement createReimbursement(Partner partner, Company company)
       throws AxelorException {
     List<MoveLine> moveLineList =

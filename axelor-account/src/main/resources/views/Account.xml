@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="account-grid" title="Accounting.Accounts" model="com.axelor.apps.account.db.Account">
 	  <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -43,12 +43,12 @@
 				<field name="name" colSpan="9" css="bold"/>
 			</panel>
 			<panel name="balancePanel" colSpan="4" showIf="id">
-				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"/>
+				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button" onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
-				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
-				<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-account-validate" readonlyIf="parentAccount != null" form-view="company-form" grid-view="company-grid"/>
+				<field name="parentAccount" onChange="action-account-validate" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 				<spacer name="parentAccountSpacer" colSpan="6"/>
 				<field name="useForPartnerBalance" colSpan="3"/>
 				<field name="reconcileOk" colSpan="3"/>
@@ -63,6 +63,9 @@
 				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      
       		</panel>
 		</panel>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+		</panel-mail>
 	</form>
 
     <form name="customer-account-form" model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-group-new-customer-account" title="New customer account">
@@ -82,8 +85,8 @@
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
 			<field name="name" colSpan="9" css="bold"/>
 			<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
-			<field name="company" canEdit="false"  widget="SuggestBox" onChange="action-group-account-account-onchange-common" form-view="company-form" grid-view="company-grid"/>
-			<field name="parentAccount" onChange="action-group-account-account-onchange-common" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+			<field name="company" canEdit="false"  widget="SuggestBox" onChange="action-account-validate" readonlyIf="parentAccount != null" form-view="company-form" grid-view="company-grid"/>
+			<field name="parentAccount" onChange="action-account-validate" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 			<spacer name="parentAccountSpacer" colSpan="6"/>
 			<field name="useForPartnerBalance" colSpan="3"/>
 			<field name="reconcileOk" colSpan="3"/>
@@ -101,11 +104,6 @@
     	<context name="_showRecord" expr="eval: id"/>
 	</action-view>
 	
-    <action-group name="action-group-account-account-onchange-common">
-    	<action name="action-account-clean-company"/>
-    	<action name="action-account-validate"/>
-    </action-group>
-
     <action-group name="action-account-group-new-customer-account">
         <action  name="action-account-record-new-from-partner"/>
         <action  name="action-account-record-new-customer-account"/>
@@ -130,10 +128,6 @@
      	<error message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company." if="parentAccount != null &amp;&amp; company != null &amp;&amp; parentAccount?.company?.id != company?.id"/>
     </action-validate>
     
-    <action-record name="action-account-clean-company" model="com.axelor.apps.account.db.Account">
-        <field name="company"  expr="eval:null" if="parentAccount != null &amp;&amp; company != null &amp;&amp; parentAccount?.company?.id != company?.id"/>
-    </action-record>
-
     <!-- action-record shared among customer/supplier/employee account -->
     <action-record name="action-account-record-new-from-partner" model="com.axelor.apps.account.db.Account">
         <field name="name" expr="eval:__parent__.partner.fullName"/>

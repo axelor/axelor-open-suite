@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
   
   <grid name="action-builder-line-grid" title="Fields" model="com.axelor.studio.db.ActionBuilderLine" >
       <field name="name" />
@@ -11,21 +11,22 @@
       <field name="dummy" />
   </grid>
   
-  <form name="action-builder-line-form" title="Field" model="com.axelor.studio.db.ActionBuilderLine"
-  	  onNew="action-builder-line-set-default-attrs" onLoad="action-builder-line-set-default-attrs">
+  <form name="action-builder-line-form" title="Field" model="com.axelor.studio.db.ActionBuilderLine">
+<!--   	  onNew="action-builder-line-set-default-attrs" onLoad="action-builder-line-set-default-attrs"> -->
       <panel name="mainPanel">
-      	<field name="dummy"/>
-      	<spacer name="dummySpacer"/>
+      	<field name="dummy" colSpan="4"/>
+      	<field name="isTargetJson" hideIf="dummy" colSpan="4"/>
+      	<field name="isSourceJson" hideIf="dummy" colSpan="4"/>
       	<panel name="metaFieldsPanel" colSpan="6" itemSpan="12" hideIf="dummy">
-      		<field name="metaJsonField" onSelect="action-action-builder-line-meta-json-field-domain" onChange="action-action-builder-line-set-name-json"/>
-      		<field name="metaField" onSelect="action-action-builder-line-meta-field-domain" onChange="action-action-builder-line-set-name-meta"/>
+      		<field name="metaJsonField" showIf="isTargetJson"  onSelect="action-action-builder-line-meta-json-field-domain" onChange="action-action-builder-line-set-name-json"/>
+      		<field name="metaField" showIf="!isTargetJson" onSelect="action-action-builder-line-meta-field-domain" onChange="action-action-builder-line-set-name-meta"/>
       	</panel>
       	<panel name="valuePanel" colSpan="6" itemSpan="12" hideIf="dummy">
-      		<field name="valueJson" onSelect="action-action-builder-line-value-json-domain" onChange="action-action-builder-line-set-src-field-json" />
-      		<field name="valueField" onSelect="action-action-builder-line-value-field-domain" onChange="action-action-builder-line-set-src-field-meta" />
+      		<field name="valueJson" showIf="isSourceJson" onSelect="action-action-builder-line-value-json-domain" onChange="action-action-builder-line-set-src-field-json" />
+      		<field name="valueField" showIf="!isSourceJson"  onSelect="action-action-builder-line-value-field-domain" onChange="action-action-builder-line-set-src-field-meta" />
       	</panel>
       	<field name="name" showIf="dummy" colSpan="6" required="true" />
-      	<field name="value"/>
+      	<field name="value" colSpan="12"/>
       	<field name="conditionText" hideIf="dummy" />
       	<field name="filter" showIf="!dummy &amp;&amp; (metaField.relationship != null || metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null)"/>
       	<field name="metaJsonField.type" hidden="true" />
@@ -54,14 +55,19 @@
   </form>
   
   <action-attrs name="action-action-builder-line-meta-json-field-domain">
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.model}'  and self.model = 'com.axelor.meta.db.MetaJsonRecord'&quot;" if="_parent.typeSelect == 1"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.targetModel}'  and self.model = 'com.axelor.meta.db.MetaJsonRecord'&quot;" if="_parent.typeSelect == 0"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.id = ${_parent.metaJsonField?.targetJsonModel?.id} and self.model = 'com.axelor.meta.db.MetaJsonRecord'&quot;" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.model = '${_parent.model}'&quot;" if="_parent.typeSelect == 1 &amp;&amp; !_parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.model = '${_parent.targetModel}'&quot;" if="_parent.typeSelect == 0 &amp;&amp; !_parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.model}'&quot;" if="_parent.typeSelect == 1 &amp;&amp; _parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.targetModel}'&quot;" if="_parent.typeSelect == 0 &amp;&amp; _parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.id = ${_parent.metaJsonField?.targetJsonModel?.id} &quot;" if="_parent.isTargetJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.model LIKE '%.${_parent?.metaField.typeName}' &quot;" if="!_parent.isTargetJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
   </action-attrs>
   
   <action-attrs name="action-action-builder-line-value-json-domain">
-  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' and self.model = 'com.axelor.meta.db.MetaJsonRecord'&quot;"/>
-  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.jsonModel.id = ${_parent.valueJson?.targetJsonModel?.id} and self.model = 'com.axelor.meta.db.MetaJsonRecord'&quot;" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' &quot;" if="_parent.isJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilder'"/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.model = '${_parent.model}' &quot;" if="!_parent.isJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilder' "/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.jsonModel.id = ${_parent.valueJson?.targetJsonModel?.id} &quot;" if="_parent.isSourceJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.model LIKE '%.${_parent?.valueField.typeName}' &quot;" if="!_parent.isSourceJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
   </action-attrs>
   
   <action-attrs name="action-action-builder-line-meta-field-domain">
@@ -93,16 +99,16 @@
   	<field name="value" expr="eval:valueJson != null ? '$.' + valueJson.name : null"/>
   </action-record>
   
-  <action-attrs name="action-builder-line-set-default-attrs">
-  	<attribute name="hidden" for="metaJsonField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; !_parent.isJson"/>
-  	<attribute name="hidden" for="metaJsonField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp; (_parent.metaField != null || _parent.metaJsonField?.targetModel != null)"/>
-  	<attribute name="hidden" for="metaField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; _parent.isJson"/>
-  	<attribute name="hidden" for="metaField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp; _parent.metaField == null &amp;&amp; _parent.metaJsonField?.targetModel == null" />
-  	<attribute name="hidden" for="valueJson" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; !_parent.isJson"/>
-  	<attribute name="hidden" for="valueJson" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp;(_parent.valueField != null || _parent.valueJson?.targetModel != null)"/>
-  	<attribute name="hidden" for="valueField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; _parent.isJson"/>
-  	<attribute name="hidden" for="valueField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp; _parent.valueField == null &amp;&amp; _parent.valueJson?.targetModel == null"/>
-  </action-attrs>
+<!--   <action-attrs name="action-builder-line-set-default-attrs"> -->
+<!--   	<attribute name="hidden" for="metaJsonField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; !_parent.isJson"/> -->
+<!--   	<attribute name="hidden" for="metaJsonField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp; (_parent.metaField != null || _parent.metaJsonField?.targetModel != null)"/> -->
+<!--   	<attribute name="hidden" for="metaField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; _parent.isJson"/> -->
+<!--   	<attribute name="hidden" for="metaField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp; _parent.metaField == null &amp;&amp; _parent.metaJsonField?.targetModel == null" /> -->
+<!--   	<attribute name="hidden" for="valueJson" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; !_parent.isJson"/> -->
+<!--   	<attribute name="hidden" for="valueJson" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp;(_parent.valueField != null || _parent.valueJson?.targetModel != null)"/> -->
+<!--   	<attribute name="hidden" for="valueField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilder' &amp;&amp; _parent.isJson"/> -->
+<!--   	<attribute name="hidden" for="valueField" expr="eval:true" if="_parent._model == 'com.axelor.studio.db.ActionBuilderLine' &amp;&amp; _parent.valueField == null &amp;&amp; _parent.valueJson?.targetModel == null"/> -->
+<!--   </action-attrs> -->
   
 </object-views>
 

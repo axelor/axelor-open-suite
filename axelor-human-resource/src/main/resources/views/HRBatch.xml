@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
@@ -71,7 +71,7 @@
             	<button name="employmentContractExportBatchBtn" readonlyIf="employmentContractExportTypeSelect == null" title="Employment contract export batch" onClick="save,action-hrbatch-method-hr-batch" colSpan="4"/>
             </panel>
 
-			<panel name="informationsPanel" title="Informations">
+			<panel name="informationsPanel" title="Information">
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid" canEdit="false"/>
 				<field name="description" colSpan="12" />

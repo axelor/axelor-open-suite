@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -66,14 +66,18 @@
 
 	<selection name="supplychain.sale.order.invoicing.wizard.select">
 		<option value="1">Invoice all</option>
-		<option value="2">Invoice a fraction</option>
-		<option value="3">Invoice selected lines</option>
-		<option value="4">Invoice an advance payment</option>
+		<option value="2">Invoice selected lines</option>
+		<option value="3">Invoice an advance payment</option>
 	</selection>
 
 	<selection name="supplychain.sale.order.type.select">
 		<option value="1">Standard</option>
 		<option value="2">Subscription</option>
+	</selection>
+	
+	<selection name="supplychain.sale.order.line.available.status.select">
+		<option value="1">Available</option>
+		<option value="2">Missing</option>
 	</selection>
 	
 	<selection name='iinvoice.operation.sub.type.select' id="supplychain.iinvoice.operation.sub.type.select">
@@ -93,6 +97,11 @@
 	
 	<selection name="sequence.generic.code.select" id="supplychain.sequence.generic.code.select">
 		<option value="mrp">MRP</option>
+	</selection>	
+	
+	<selection name="supplychain.estimated.date.select">
+		<option value="0">Current date</option>
+		<option value="1">Left empty</option>
 	</selection>
 
 </object-views>

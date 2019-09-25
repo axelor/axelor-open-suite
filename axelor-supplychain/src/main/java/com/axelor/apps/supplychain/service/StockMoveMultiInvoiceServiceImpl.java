@@ -85,7 +85,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         stockMoveRepository
             .all()
             .filter("self.id IN :stockMoveIdList")
-            .bind("stockMoveIdList", stockMoveIdList);
+            .bind("stockMoveIdList", stockMoveIdList)
+            .order("id");
     int offset = 0;
 
     while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
@@ -303,7 +304,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(
       List<StockMove> stockMoveList,
       PaymentCondition paymentConditionIn,
@@ -319,7 +320,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
 
@@ -399,7 +400,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiIncomingStockMove(
       List<StockMove> stockMoveList,
       PaymentCondition paymentConditionIn,
@@ -415,7 +416,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiIncomingStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
     if (stockMoveList == null || stockMoveList.isEmpty()) {
@@ -748,7 +749,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
               ? saleOrderRepository.find(stockMove.getOriginId())
               : null;
       if (saleOrder != null) {
-        externalRefList.add(saleOrder.getSaleOrderSeq());
+        externalRefList.add(saleOrder.getExternalReference());
       }
       internalRefList.add(
           stockMove.getStockMoveSeq()
@@ -781,7 +782,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
               ? purchaseOrderRepository.find(stockMove.getOriginId())
               : null;
       if (purchaseOrder != null) {
-        externalRefList.add(purchaseOrder.getPurchaseOrderSeq());
+        externalRefList.add(purchaseOrder.getExternalReference());
       }
       internalRefList.add(
           stockMove.getStockMoveSeq()

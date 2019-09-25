@@ -58,7 +58,9 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     copy.setJournal(null);
     copy.clearInvoicePaymentList();
     copy.setPrintedPDF(null);
-
+    copy.setValidatedDate(null);
+    copy.setVentilatedByUser(null);
+    copy.setVentilatedDate(null);
     return copy;
   }
 

@@ -34,7 +34,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMParser;
 
 /**
  * Key store loader. This class loads a key store from a given path and allow to get private keys
@@ -129,9 +129,9 @@ public class KeyStoreManager {
             CertificateFactory.getInstance("X.509", provider).generateCertificate(input);
 
     if (certificate == null) {
-      PEMReader reader = new PEMReader(new InputStreamReader(input));
-      certificate = (X509Certificate) (reader).readObject();
-      reader.close();
+      try (final PEMParser reader = new PEMParser(new InputStreamReader(input))) {
+        certificate = (X509Certificate) (reader).readObject();
+      }
     }
 
     return certificate;

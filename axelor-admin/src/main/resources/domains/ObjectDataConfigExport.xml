@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ObjectDataConfigExport" cacheable="true">
+    <![CDATA[
+    This object store the detail of export data
+    ]]>
+    <string name="modelSelect" title="Model" selection="object.data.config.model.select" required="true"/>
+    <long name="modelSelectId"/>
+    <string name="recordName" title="Record name"/>
+    <string name="exportFormatSelect" title="Export format" selection="object.data.export.format.select" />
+    <string name="langSelect" title="Language" selection="select.language" />
+    <many-to-one name="objectDataConfig" ref="com.axelor.apps.base.db.ObjectDataConfig" title="Object data config"/>
+    
+  </entity>
+
+</domain-models>

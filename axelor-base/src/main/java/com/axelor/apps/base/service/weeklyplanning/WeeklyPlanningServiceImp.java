@@ -33,7 +33,7 @@ import java.util.List;
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public WeeklyPlanning initPlanning(WeeklyPlanning planning) {
     String[] dayTab =
         new String[] {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
@@ -128,6 +128,10 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       WeeklyPlanning weeklyPlanning, LocalDate date, LocalTime from, LocalTime to) {
     double value = 0;
     DayPlanning dayPlanning = this.findDayPlanning(weeklyPlanning, date);
+
+    if (dayPlanning == null) {
+      return BigDecimal.valueOf(value);
+    }
 
     // Compute morning leave duration
     LocalTime morningFrom = dayPlanning.getMorningFrom();

@@ -1,5 +1,5 @@
 /*
- * Axelor Business Solutions
+< * Axelor Business Solutions
  *
  * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
@@ -49,6 +49,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -276,26 +277,6 @@ public class ExpenseController {
     }
   }
 
-  public void validateDates(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Expense expense = request.getContext().asType(Expense.class);
-
-    List<Integer> expenseLineId = new ArrayList<>();
-    int compt = 0;
-    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
-      compt++;
-      if (expenseLine.getExpenseDate().isAfter(appBaseServiceProvider.get().getTodayDate())) {
-        expenseLineId.add(compt);
-      }
-    }
-    if (!expenseLineId.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get("Date problem for line(s) : %s"),
-          expenseLineId.stream().map(id -> id.toString()).collect(Collectors.joining(",")));
-    }
-  }
-
   public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
@@ -480,11 +461,33 @@ public class ExpenseController {
     }
   }
 
-  public void computeAmounts(ActionRequest request, ActionResponse response) {
+  public void validateAndCompute(ActionRequest request, ActionResponse response) {
 
     Expense expense = request.getContext().asType(Expense.class);
 
-    ExpenseService expenseService = expenseServiceProvider.get();
+    List<Integer> expenseLineListId = new ArrayList<>();
+    int compt = 0;
+    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
+      compt++;
+      if (expenseLine.getExpenseDate().isAfter(appBaseServiceProvider.get().getTodayDate())) {
+        expenseLineListId.add(compt);
+      }
+    }
+    try {
+      if (!expenseLineListId.isEmpty()) {
+
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get("Date can't be in the future for line(s) : %s"),
+            expenseLineListId.stream().map(id -> id.toString()).collect(Collectors.joining(",")));
+      }
+
+    } catch (AxelorException e) {
+
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+
+    expenseService = expenseServiceProvider.get();
 
     response.setValue(
         "personalExpenseAmount", expenseService.computePersonalExpenseAmount(expense));
@@ -494,6 +497,8 @@ public class ExpenseController {
         && !expense.getKilometricExpenseLineList().isEmpty()) {
       response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList());
     }
+
+    compute(request, response);
   }
 
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)

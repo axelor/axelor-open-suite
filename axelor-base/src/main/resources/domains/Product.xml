@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
@@ -21,7 +21,7 @@
 		<many-to-one name="productCategory" ref="ProductCategory"
 			title="Product category" initParam="true" massUpdate="true" />
 		<many-to-one name="productFamily" ref="ProductFamily"
-			title="Family" initParam="true" massUpdate="true"/>
+			title="Accounting family" initParam="true" massUpdate="true"/>
 		<many-to-one name="unit" ref="Unit" title="Unit"
 			initParam="true" massUpdate="true" />
 

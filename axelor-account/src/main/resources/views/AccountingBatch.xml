@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
 		<field name="actionSelect" />
@@ -15,8 +15,8 @@
 	<panel name="mainPanel" >
 		<field name="actionSelect" onChange="action-accounting-batch-record-default-currency"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
-		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+		<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
+		<field name="bankDetails" hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		<field name="archived" title="Archived"/>
 	</panel>
 	<panel-tabs name="mainPanelTab">
@@ -48,18 +48,27 @@
 			<field name="debtRecoveryTypeSelect"/>
 		</panel>
 
-		<!--<page name="doubtfulCustormerPage" title="Doubtful customers configuration" hideIf="actionSelect != 16"  />-->
 		<panel name="accountCustomerPagePanel" title="Account calculation configuration" hideIf="actionSelect != 17">
-			<!--<group title="Update"    >-->
-			  <field name="updateCustAccountOk"/>
-			  <field name="updateDueCustAccountOk"/>
-			  <field name="updateDueDebtRecoveryCustAccountOk"/>
-			<!--</group>-->
+			 <field name="updateCustAccountOk"/>
+			 <field name="updateDueCustAccountOk"/>
+			 <field name="updateDueDebtRecoveryCustAccountOk"/>
 		</panel>
 		<panel name="moveLineExportPagePanel" title="Move Lines Export Config" hideIf="actionSelect != 18">
 			<field name="moveLineExportTypeSelect"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
+		</panel>
+		<panel name="yearOpeningOrClosureAccountsPagePanel" title="Close/open the accounts" hideIf="actionSelect != 21">
+<!-- 		TODO FILTER ON STATUS -->
+			<field name="closeYear"/>
+			<field name="openYear"/>
+			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" canEdit="false"/>		
+			<field name="allocatePerPartner"/>
+    		<field name="year.toDate" showIf="closeYear" hidden="true"/>
+    		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>
+    		<field name="moveDescription"/>
+			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company"/> 
+<!-- 			<field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid" widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
 		</panel>
 		<panel name="informationPanel" title="Information"  >
 			<field name="createdOn" title="Created on"/>
@@ -77,6 +86,7 @@
 	    <button name="moveLineExportBatchBtn" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
 	    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 	    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-method-action-fixed-asset-lines-realize" colSpan="12"/>
+	    <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-method-action-close-annual-accounts" colSpan="12"/>
 	</panel>
 </form>
 
@@ -126,6 +136,10 @@
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionRealizeFixedAssetLines"/>
 	</action-method>
 	
+	<action-method name="action-accounting-batch-method-action-close-annual-accounts">
+		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionCloseAnnualAccounts"/>
+	</action-method>
+	
 
     <!-- ACTION ATTRS -->
     
@@ -134,6 +148,10 @@
         	if="!company.bankDetailsSet.isEmpty()"/>
        	<attribute name="domain" expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;" for="bankDetails"
         	if="company.bankDetailsSet.isEmpty()"/>
+    </action-attrs>
+    
+    <action-attrs name="action-accounting-batch-attrs-set-empty-year-and-accountset-value">
+    	<attribute name="value" expr="eval: null" for="year,accountSet"/>
     </action-attrs>
 
 </object-views>

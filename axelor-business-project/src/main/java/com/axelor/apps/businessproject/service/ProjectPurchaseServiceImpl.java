@@ -39,7 +39,7 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder createPurchaseOrder(
       Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
       throws AxelorException {

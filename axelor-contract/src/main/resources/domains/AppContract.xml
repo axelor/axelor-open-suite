@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
@@ -16,6 +16,15 @@
 
 		<boolean name="isConfigContract" title="Configurable contract" />
 
+		<track>
+			<field name="isUnchangableContract" on="UPDATE"/>
+			<field name="isAmendmentManagement" on="UPDATE"/>
+			<field name="isRenewalManagement" on="UPDATE"/>
+			<field name="isInvoicingManagement" on="UPDATE"/>
+			<field name="isConsumptionManagement" on="UPDATE"/>
+			<field name="isAdditionalBenefitManagement" on="UPDATE"/>
+			<field name="isConfigContract" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

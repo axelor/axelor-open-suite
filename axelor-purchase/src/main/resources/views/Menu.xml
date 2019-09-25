@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	
 	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.app.isApp('purchase')"
@@ -53,11 +53,11 @@
 
 	<!-- Purchase request menus -->
 	<menuitem name="sc-root-purchase-request" parent="sc-root-purchase" if="__config__.app.isApp('purchase-request')"
-		title="Purchase requests" order="16" icon="fa-bullhorn" icon-background="#b6473f"
+		title="Internal purchase requests" order="16" icon="fa-bullhorn" icon-background="#b6473f"
 		action="sc.root.purchase.request.all" />
 
 	<action-view name="sc.root.purchase.request.all" model="com.axelor.apps.purchase.db.PurchaseRequest"
-		title="All purchase requests">
+		title="Internal purchase requests">
 		<view type="grid" name="purchase-request-grid"/>
 		<view type="form" name="purchase-request-form"/>
 	</action-view>
@@ -91,7 +91,17 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_status" expr="eval: 3"/>
 	</action-view>
-	
+
+	<menuitem name="purchase-root-abc-analysis" title="ABC analysis" order="27"
+		action="purchase.root.abc.analysis" parent="sc-root-purchase"/>
+
+	<action-view name="purchase.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.typeSelect = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl"/>
+	</action-view>
 	
 	<menuitem name="sc-root-purchase-historical" title="Historical" order="30" parent="sc-root-purchase" 
 		action="purchase.historical.orders"/>

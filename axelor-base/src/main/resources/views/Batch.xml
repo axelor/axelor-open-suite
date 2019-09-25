@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
     canEdit="false" canDelete="false" canNew="false" canSave="false">
@@ -34,6 +34,7 @@
 		    <button name="showPaymentVoucherBtn" title="Payment vouchers" hidden="true" colSpan="4" onClick="action-batch-show-payment-voucher,close" if-module="axelor-account"/>
         	<button name="showAccountingReportBtn" title="Accounting Exports" hidden="true" colSpan="4" onClick="action-batch-show-accounting-report,close" if-module="axelor-account"/>
         	<button name="showStockMoveBtn" title="Stock moves" hidden="true" colSpan="4" onClick="action-batch-show-stock-move,close" if-module="axelor-supplychain"/>
+        	<button name="showStockMoveLinesBtn" title="Stock move lines" hidden="true" colSpan="4" onClick="action-batch-show-stock-move-lines,close" if-module="axelor-supplychain"/>
         	<button name="showAccountMoveBtn" title="Account moves" hidden="true" colSpan="4" onClick="action-batch-show-move,close" if-module="axelor-supplychain"/>
             <button name="showBankOrderBtn" title="Show bank order" hidden="true" colSpan="4" onClick="action-batch-show-bank-order,close" if-module="axelor-bank-payment"/>
   		    <button name="showEbicsCertificatesBtn" title="Ebics certificates" hidden="true" colSpan="4" onClick="action-batch-show-ebics-certificates,close" if-module="axelor-bank-payment"/>
@@ -60,6 +61,8 @@
     	<attribute name="hidden" for="showEbicsCertificatesBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
 
     	<attribute name="hidden" for="showStockMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
+    	<attribute name="hidden" for="showStockMoveLinesBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
+    	<attribute name="hidden" for="showAccountMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
     	<attribute name="hidden" for="showAccountMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
 
     </action-attrs>

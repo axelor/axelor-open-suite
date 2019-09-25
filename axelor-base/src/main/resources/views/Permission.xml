@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
- 
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
    <form name="permission-form" id="base-permission-form" title="Permission" model="com.axelor.auth.db.Permission">
   	   <panel-include view="permission-form" from="axelor-core"/>
   	   <panel-tabs name="permissionPanelTab">
   	   		<panel-dashlet name="permissionRolePanel" title="Role" action="action-dashlet-permission-role" colSpan="12" />
    			<panel-dashlet name="permissionUserPanel" title="User" action="action-dashlet-permission-user" colSpan="12" />
-   			<panel-dashlet name="permissionGroupPanel" title="Group" action="action-dashlet-permission-group" colSpan="12" />  			
-	   </panel-tabs>   
+   			<panel-dashlet name="permissionGroupPanel" title="Group" action="action-dashlet-permission-group" colSpan="12" />
+	   </panel-tabs>
+     <panel-mail name="mailsPanel">
+       <mail-messages limit="4"/>
+       <mail-followers/>
+     </panel-mail>
    </form>
-    
+
    <action-view name="action-dashlet-permission-group" title="Group" model="com.axelor.auth.db.Group">
 		<view type="grid" name="base-group-grid"/>
 		<view type="form" name="base-group-form"/>
 		<domain>self.permissions.id = :permission</domain>
   		<context name="permission" expr="eval: id"/>
    </action-view>
-   
+
    <action-view name="action-dashlet-permission-user" title="User" model="com.axelor.auth.db.User">
 		<view type="grid" name="user-grid-base"/>
 		<view type="form" name="user-form-base"/>
 		<domain>self.permissions.id = :permission</domain>
   		<context name="permission" expr="eval: id"/>
    </action-view>
-   
+
     <action-view name="action-dashlet-permission-role" title="Role" model="com.axelor.auth.db.Role">
 		<view type="grid" name="role-grid"/>
 		<view type="form" name="role-form"/>
 		<domain>self.permissions.id = :permission</domain>
   		<context name="permission" expr="eval: id"/>
    </action-view>
-      
+
 </object-views>

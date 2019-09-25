@@ -93,6 +93,7 @@
 "Template Rules","Шаблоны правил",,
 "Templates","Шаблоны",,
 "Test connection","Тестовое соединение",,
+"The email template model (%s) is different than the entity generating the email (%s)",,,
 "There is already a default account","Уже есть учетная запись по умолчанию",,
 "To","К",,
 "Type","Тип",,

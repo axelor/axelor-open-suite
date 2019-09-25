@@ -48,7 +48,7 @@ import java.util.List;
 public class TimetableServiceImpl implements TimetableService {
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(Timetable timetable) throws AxelorException {
     if (Strings.isNullOrEmpty(timetable.getProductName())) {
       throw new AxelorException(
@@ -86,7 +86,7 @@ public class TimetableServiceImpl implements TimetableService {
           };
       Invoice invoice = invoiceGenerator.generate();
       invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
-      this.fillInLines(invoice);
+
       return invoice;
     }
 
@@ -114,14 +114,6 @@ public class TimetableServiceImpl implements TimetableService {
     }
 
     return null;
-  }
-
-  @Override
-  public void fillInLines(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      invoiceLine.setSaleOrder(invoice.getSaleOrder());
-    }
   }
 
   @Override

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -39,7 +40,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +73,7 @@ public class MoveController {
         response.setValue(
             "period",
             Beans.get(PeriodService.class)
-                .rightPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
       } else {
         response.setValue("period", null);
       }
@@ -84,21 +84,17 @@ public class MoveController {
 
   public void generateReverse(ActionRequest request, ActionResponse response) {
 
-    Context context = request.getContext();
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> moveMap = (LinkedHashMap<String, Object>) context.get("_move");
-    Integer moveId = (Integer) moveMap.get("id");
-    boolean isAutomaticReconcile = (boolean) context.get("isAutomaticReconcile");
-    boolean isAutomaticAccounting = (boolean) context.get("isAutomaticAccounting");
-    boolean isUnreconcileOriginalMove = (boolean) context.get("isUnreconcileOriginalMove");
-
     try {
-      Move newMove =
-          moveService.generateReverse(
-              moveRepo.find(new Long(moveId)),
-              isAutomaticReconcile,
-              isAutomaticAccounting,
-              isUnreconcileOriginalMove);
+      Context context = request.getContext();
+
+      Move move = context.asType(Move.class);
+      move = moveRepo.find(move.getId());
+
+      Map<String, Object> assistantMap =
+          Beans.get(ExtractContextMoveService.class)
+              .getMapFromMoveWizardGenerateReverseForm(context);
+
+      Move newMove = moveService.generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
             ActionView.define(I18n.get("Account move"))
@@ -116,7 +112,8 @@ public class MoveController {
   @SuppressWarnings("unchecked")
   public void validateMultipleMoves(ActionRequest request, ActionResponse response) {
     List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-    if (!moveIds.isEmpty()) {
+    if (moveIds != null && !moveIds.isEmpty()) {
+
       List<? extends Move> moveList =
           moveRepo
               .all()

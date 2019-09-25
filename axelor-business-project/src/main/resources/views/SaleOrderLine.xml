@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	
 	<grid name="sale-order-line-project-grid" title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
         <hilite if="$get('saleOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
         <hilite if="invoiced" color="success"/>
         <field name="project" />
-        <field name="saleOrder.saleOrderSeq" title="Reference"/>
+        <field name="saleOrder.saleOrderSeq" width="120" title="Reference"/>
         <field name="saleOrder.creationDate"/>
-        <field name="product.code"/>
+        <field name="product.code" width="120"/>
         <field name="productName" readonly="true"/>
         <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>

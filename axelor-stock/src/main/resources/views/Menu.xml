@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  order="-85"  if="__config__.app.isApp('stock')"
 	icon="fa-cubes"  icon-background="#b6473f" />
@@ -240,6 +240,17 @@
 		model="com.axelor.apps.stock.db.StockCorrection">
 		<view type="grid" name="stock-correction-grid"/>
 		<view type="form" name="stock-correction-form"/>
+	</action-view>
+
+	<menuitem name="stock-root-abc-analysis" title="ABC analysis" order="27"
+		action="stock.root.abc.analysis" parent="stock-root"/>
+
+	<action-view name="stock.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.typeSelect = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"/>
 	</action-view>
 		
 	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>

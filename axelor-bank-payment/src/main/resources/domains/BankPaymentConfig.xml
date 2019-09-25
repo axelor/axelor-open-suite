@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
     <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-    <entity name="BankPaymentConfig" cachable="true">
+    <entity name="BankPaymentConfig" cacheable="true">
         <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
         <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User" title="Default signatory"/>
@@ -24,6 +24,27 @@
 
         <!-- SEPA Direct Debit -->
         <string name="icsNumber" title="ICS Number" min="13" max="13"/>
+        
+        <track>
+        	<field name="company" on="UPDATE"/>
+        	
+        	<field name="defaultSignatoryUser" on="UPDATE"/>
+        	<field name="generateMoveOnBankOrderValidation" on="UPDATE"/>
+        	<field name="internalBankToBankAccount" on="UPDATE"/>
+        	<field name="externalBankToBankAccount" on="UPDATE"/>
+        	
+        	<field name="sepaCreditTransSequence" on="UPDATE"/>
+        	<field name="sepaDirectDebitSequence" on="UPDATE"/>
+        	<field name="intCreditTransSequence" on="UPDATE"/>
+        	<field name="intDirectDebitSequence" on="UPDATE"/>
+        	
+        	<field name="intTreasuryTransSequence" on="UPDATE"/>
+        	<field name="natTreasuryTransSequence" on="UPDATE"/>
+        	<field name="otherBankOrderSequence" on="UPDATE"/>
+        	
+        	<field name="icsNumber" on="UPDATE"/>
+        </track>
+        
     </entity>
 
 </domain-models>

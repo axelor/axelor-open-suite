@@ -74,7 +74,10 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     BigDecimal qty = BigDecimal.ZERO;
 
     if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE) {
-      unit = saleOrderLine.getProduct().getPurchasesUnit();
+
+      if (saleOrderLine.getProduct() != null) {
+        unit = saleOrderLine.getProduct().getPurchasesUnit();
+      }
       qty = saleOrderLine.getQty();
       if (unit == null) {
         unit = saleOrderLine.getUnit();
@@ -96,7 +99,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
 
     purchaseOrderLine.setIsTitleLine(
         saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE);
-    this.computeAnalyticDistribution(purchaseOrderLine);
+    this.getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
     return purchaseOrderLine;
   }
 
@@ -171,7 +174,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
             appBaseService.getTodayDate());
 
-    purchaseOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
+    purchaseOrderLine.clearAnalyticMoveLineList();
+    analyticMoveLineList.forEach(purchaseOrderLine::addAnalyticMoveLineListItem);
     return purchaseOrderLine;
   }
 

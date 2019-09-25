@@ -120,7 +120,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile standardExport(List<PayrollPreparation> payrollPreparationList)
       throws IOException {
 
@@ -164,7 +164,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     return metaFile;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile nibelisExport(List<PayrollPreparation> payrollPreparationList)
       throws IOException, AxelorException {
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery">
     	<hilite if="$get('debtRecoveryMethodLine.manualValidationOk')" color="warning"/>
@@ -73,13 +73,13 @@
 		<panel sidebar="true" canCollapse="true" name="caracteristics"
 			title="Caracteristics">
 			<field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
-				grid-view="debt-recovery-method-grid" />
+				grid-view="debt-recovery-method-grid" canEdit="false"/>
 			<field name="debtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
 			<field name="waitDebtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
 		</panel>
 		<panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
 			<button name="validateDebtRecoveryBtn" title="Validate Debt Recovery" onClick="save,action-debt-recovery-method-validate-debtRecovery"/>

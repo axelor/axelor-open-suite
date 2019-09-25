@@ -122,7 +122,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
    * @throws IOException
    * @throws JAXBException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected BankOrder createBankOrder(
       AccountingBatch accountingBatch, List<Reimbursement> reimbursementList)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {

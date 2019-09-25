@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="forecast-recap-grid" title="Forecast Recaps" model="com.axelor.apps.cash.management.db.ForecastRecap">
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -11,20 +11,26 @@
 	</grid>
  
 	 <form name="forecast-recap-form" title="Forecast Recap" model="com.axelor.apps.cash.management.db.ForecastRecap"
-	 	onNew="action-forecast-recap-record-default-on-new">
+	 	onNew="action-forecast-recap-record-default-on-new" width="large">
+	 	<toolbar>
+	 		<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-forecast-recap-method-show-report"/>
+	 	</toolbar>
 	 	<panel name="mainPanel" >
-			<field name="company" canEdit="false" onChange="action-forecast-record-bank, action-forecast-recap-record-currency"/>
-	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
-	       	<field name="fromDate" onChange="action-forecast-recap-validate-dates"/>
-       		<field name="toDate" onChange="action-forecast-recap-validate-dates"/>
-       		<field name="opportunitiesTypeSelect"/>
-       		<field name="startingBalance"/>
-       		<button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate, action-forecast-recap-method-populate"/>
-       		<panel-related name="forecastRecapLineListPanel" field="forecastRecapLineList" readonly="true" colSpan="12"/>
-       		<field name="endingBalance"/>
-       		<field name="currency" readonly="true"/>
-       		<button name="showReportBtn" title="Show histrogram" colOffset="6" onClick="save,action-forecast-recap-method-show-report"/>
-       		<field name="isReport" hidden="true"/>
+	 	   <panel name="seqPanel" colSpan="12">
+                       <field name="forecastRecapSeq" showTitle="false" colSpan="12" css="label-bold bold large"/>
+                   </panel>
+		   <field name="company" canEdit="false" onChange="action-forecast-record-bank, action-forecast-recap-record-currency"/>
+	       	   <field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+	       	   <field name="fromDate" onChange="action-forecast-recap-validate-dates"/>
+       		   <field name="toDate" onChange="action-forecast-recap-validate-dates"/>
+       		   <field name="opportunitiesTypeSelect"/>
+       		   <field name="startingBalance"/>
+       		   <button name="populateRecapBtn" title="Populate" onClick="action-forecast-recap-validate-dates-before-populate,save,action-forecast-recap-method-populate"/>
+       		   <panel-dashlet name="forecastRecapLineListPanel" showIf="id" height="500" action="action-forecast-recap-view-show-forecast-recap-line-list" colSpan="12"/>
+       		   <field name="endingBalance" readonly="true" colSpan="4"/>
+       		   <field name="currency" readonly="true" colSpan="4"/>
+       		   <field name="calculationDate" colSpan="4"/>
+       		   <field name="isReport" hidden="true"/>
 	 	</panel>
 	 </form>
 	 
@@ -66,6 +72,14 @@
 	<action-view title="Marges" name="forecast.report.marges.dashlet">
 	  <view type="chart" name="chart.forecast.report.marges"/>
 	  <context name="_id" expr="eval: id" />
+	</action-view>
+	
+	<action-view name="action-forecast-recap-view-show-forecast-recap-line-list" title="Details" model="com.axelor.apps.cash.management.db.ForecastRecapLine">
+		<view type="grid" name="forecast-recap-line-grid"/>
+		<view type="form" name="forecast-recap-line-form"/>
+		<view-param name="limit" value="100"/>
+		<domain>self.forecastRecap.id = :forecastRecap</domain>
+		<context name="forecastRecap" expr="eval: __self__?.id"/>
 	</action-view>
 	 
 	 <action-attrs name="action-forecast-report-refresh">

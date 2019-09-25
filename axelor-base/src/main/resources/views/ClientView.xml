@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<form name="wizard-client-form" title="My space" model="com.axelor.apps.base.db.Wizard">
 		<field name="id" hidden="true"/>
@@ -11,8 +11,7 @@
 	    <button name="myTicketsBtn"   title="My tickets" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu" icon="img/128px/clientMenuTicket_128px.jpg" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk') &amp;&amp; __config__.app.getApp('portal').getManageTickets()"/>
 	</form>
 	
-	<action-view name="wizard-client-form-open-my-sale-order" title="My sale orders"
-		model="com.axelor.apps.sale.db.SaleOrder" icon="img/16px/orderSmall_16px.png">
+	<action-view name="wizard-client-form-open-my-sale-order" title="My sale orders" model="com.axelor.apps.sale.db.SaleOrder">
 		<view type="grid" name="sale-order-grid-client"/>
 		<view type="form" name="sale-order-form-client" />
 		<domain>self.clientPartner = :_myPartner</domain>
@@ -20,7 +19,7 @@
 	</action-view>
 	
 	<action-view name="wizard-client-form-open-my-invoices" title="My invoices"
-		model="com.axelor.apps.account.db.Invoice" icon="img/16px/invoiceSmall_16px.png">
+		model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
     	<view type="form" name="invoice-client-form"/>
 		<domain>self.partner = :_myPartner</domain>
@@ -32,7 +31,7 @@
  	</action-view>
 
 	<action-view name="wizard-client-form-open-my-tickets" title="My tickets"
-		model="com.axelor.apps.helpdesk.db.Ticket" icon="img/16px/crmSmall_16px.png">
+		model="com.axelor.apps.helpdesk.db.Ticket">
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<domain>self.customer = :_myPartner or self.createdBy =:_user</domain>

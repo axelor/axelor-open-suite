@@ -36,6 +36,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
@@ -56,10 +57,11 @@ import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** UserService is a class that implement all methods for user informations */
+/** UserService is a class that implement all methods for user information */
 public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;
+  @Inject private MetaFiles metaFiles;
 
   public static final String DEFAULT_LOCALE = "en";
 
@@ -168,6 +170,24 @@ public class UserServiceImpl implements UserService {
     }
 
     return company.getLogo();
+  }
+
+  @Override
+  public String getUserActiveCompanyLogoLink() {
+
+    final Company company = this.getUserActiveCompany();
+
+    if (company == null) {
+      return null;
+    }
+
+    MetaFile logo = company.getLogo();
+
+    if (logo == null) {
+      return null;
+    }
+
+    return metaFiles.getDownloadLink(logo, company);
   }
 
   @Override
@@ -304,7 +324,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {

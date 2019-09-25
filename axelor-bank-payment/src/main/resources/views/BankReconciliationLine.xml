@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
    
     <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false" canNew="false">
         <field name="effectDate"/>
@@ -13,7 +13,7 @@
         <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
         <field name="account" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-account-domain" form-view="account-form" grid-view="account-grid"/>
         <field name="partner" canEdit="false" onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"  onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form" grid-view="partner-grid"/>
-   	    <field name="moveLine" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
+   	    <field name="moveLine" width="135" canEdit="false" onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form" grid-view="move-line-grid"/>
   	    <field name="isPosted"/>
     </grid>
   

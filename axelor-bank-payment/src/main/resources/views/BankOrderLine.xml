@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
    
 
 	<grid name="bank-order-line-bank-to-bank-grid" title="Bank Order lines"
 		model="com.axelor.apps.bankpayment.db.BankOrderLine" canDelete="false"
-		canNew="false" canEdit="false" orderBy="sequence">
+		canNew="false" canEdit="false" orderBy="-bankOrder.bankOrderDate">
 		<field name="sequence" />
 		<field name="receiverCompany" />
 		<field name="receiverBankDetails" />
 		<field name="receiverReference" />
 		<field name="receiverLabel" />
 		<field name="bankOrderAmount" />
+		<field name="bankOrder.partnerTypeSelect"/>
+		<field name="bankOrder.bankOrderDate"/>
+		<field name="bankOrder.confirmationDateTime"/>
+		<field name="bankOrder.senderCompany"/>
+		<field name="bankOrder.statusSelect"/>
 	</grid>
 
 	<grid name="bank-order-line-grid" title="Bank Order lines"
 		model="com.axelor.apps.bankpayment.db.BankOrderLine" canDelete="false"
-		canNew="false" canEdit="false" orderBy="sequence">
+		canNew="false" canEdit="false" orderBy="-bankOrder.bankOrderDate">
 		<field name="sequence" />
 		<field name="partner" />
 		<field name="receiverBankDetails" />
 		<field name="receiverReference" />
 		<field name="receiverLabel" />
 		<field name="bankOrderAmount" />
+		<field name="bankOrder.partnerTypeSelect"/>
+		<field name="bankOrder.bankOrderDate"/>
+		<field name="bankOrder.confirmationDateTime"/>
+		<field name="bankOrder.senderCompany"/>
+		<field name="bankOrder.statusSelect"/>
 	</grid>
 
 	<!-- TODO -->

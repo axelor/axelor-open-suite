@@ -157,7 +157,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addMultipleProjectPlanningTime(Map<String, Object> datas) throws AxelorException {
 
     if (datas.get("project") == null

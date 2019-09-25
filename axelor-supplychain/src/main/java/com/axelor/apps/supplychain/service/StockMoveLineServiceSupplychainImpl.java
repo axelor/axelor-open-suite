@@ -174,7 +174,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
                 stockMove.getOriginId(),
                 stockMove.getName()));
       } else {
-        unitPriceUntaxed = saleOrderLine.getPrice();
+        unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
         unitPriceTaxed = saleOrderLine.getInTaxPrice();
         orderUnit = saleOrderLine.getUnit();
       }
@@ -407,5 +407,24 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setDescription(purchaseOrderLine.getDescription());
     }
     stockMoveLine.setQty(purchaseOrderLine.getQty());
+  }
+
+  @Override
+  public boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine) {
+    if (stockMoveLine.getProduct() == null
+        || (stockMoveLine.getProduct() != null && !stockMoveLine.getProduct().getStockManaged())) {
+      return true;
+    }
+    updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+    BigDecimal availableQty = stockMoveLine.getAvailableQty();
+    if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null
+        && stockMoveLine.getTrackingNumber() == null) {
+      availableQty = stockMoveLine.getAvailableQtyForProduct();
+    }
+    BigDecimal realQty = stockMoveLine.getRealQty();
+    if (availableQty.compareTo(realQty) < 0) {
+      return false;
+    }
+    return true;
   }
 }

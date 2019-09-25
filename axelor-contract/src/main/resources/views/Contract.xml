@@ -2,10 +2,10 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
-		<field name="contractId"/>
+		<field name="contractId" width="120"/>
 		<field name="name"/>
 		<field name="targetTypeSelect"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -181,8 +181,9 @@
                                     <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
                                 <panel  colSpan="6">
-                                    <field name="automaticInvoicing" colSpan="6" widget="boolean-switch"/>
-                                    <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
+                                    <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
+                                    <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing" colSpan="4" requiredIf="automaticInvoicing"/>
+                                    <field name="numberOfDays" showIf="invoicingMomentSelect == 3 || invoicingMomentSelect == 4" colSpan="4"/>
                                 </panel>
                             </editor>
                         </field>
@@ -293,7 +294,7 @@
     </action-method>
 
     <form name="contract-archived-version-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
-        <panel title="Informations" name="informationsPanel">
+        <panel title="Information" name="informationsPanel">
             <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
             <panel showIf="id" colSpan="12" name="creationDetailsPanel">
                 <field name="createdOn"/>
@@ -387,7 +388,7 @@
           currentContractVersion.isTimeProratedInvoice,currentContractVersion.isVersionProratedInvoice,currentContractVersion.isTacitRenewal,
           currentContractVersion.renewalDuration,currentContractVersion.isAutoEnableVersionOnRenew,currentContractVersion.isWithEngagement,
           currentContractVersion.engagementDuration,currentContractVersion.engagementStartFromVersion,currentContractVersion.isWithPriorNotice,
-          currentContractVersion.priorNoticeDuration,currentContractVersion.isPeriodicInvoicing,firstPeriodEndDate"
+          currentContractVersion.priorNoticeDuration,currentContractVersion.isPeriodicInvoicing,firstPeriodEndDate,currentContractVersion.numberOfDays"
           name="readonly" expr="eval: (__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 2)
           || (!__config__.app.getApp('contract').isUnchangableContract &amp;&amp; currentContractVersion.statusSelect > 3)"/>
         <attribute for="currentContractVersion.contractLineList"

@@ -34,6 +34,7 @@ public class WorkflowValidationServiceSupplychainImpl extends WorkflowValidation
 
   @Override
   public void afterValidation(Invoice invoice) throws AxelorException {
+    super.afterValidation(invoice);
     if (invoice.getInterco()) {
       intercoService.generateIntercoInvoice(invoice);
     }

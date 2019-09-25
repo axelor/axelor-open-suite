@@ -172,7 +172,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createPaymentMove(
       PaymentScheduleLine paymentScheduleLine,
       BankDetails companyBankDetails,

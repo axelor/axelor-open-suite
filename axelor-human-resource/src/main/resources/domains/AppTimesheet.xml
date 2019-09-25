@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -17,6 +17,17 @@
 		
 		<boolean name="timesheetEditor" title="Timesheet editor"/>
 		
+		<track>
+			<field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
+			<field name="consolidateTSLine" on="UPDATE"/>
+			<field name="defaultEndFormat" on="UPDATE"/>
+			
+			<field name="enableTimer" on="UPDATE"/>
+			<field name="editModeTSTimer" on="UPDATE"/>
+			<field name="keepProject" on="UPDATE"/>
+			
+			<field name="timesheetEditor" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

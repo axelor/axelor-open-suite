@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,product.code,useCaseSelect">
         <toolbar>
         <button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
         </toolbar>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="product.code" title="Product code" form-view="product-form" grid-view="product-grid"/>
+        <field name="product.code" width="120" title="Product code" form-view="product-form" grid-view="product-grid"/>
         <field name="product.name" title="Product name" form-view="product-form" grid-view="product-grid"/>
         <field name="minQty" aggregate="min"/>
         <field name="idealQty" aggregate="min"/>
@@ -24,8 +24,8 @@
     	<panel name="mainPanel" >
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false"/>
 			<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
-			<field name="typeSelect" colSpan="3" showIf="useCaseSelect == 2"/>
-	        <field name="product" canEdit="false" domain="self.productTypeSelect = 'storable'" onChange="action-stock-rules-record-product-change" form-view="product-form" grid-view="product-grid"/>
+			<field name="typeSelect" colSpan="3" showIf="useCaseSelect == 2" requiredIf="useCaseSelect == 2"/>
+	        <field name="product" canEdit="false" domain="self.productTypeSelect = 'storable' and self.stockManaged = true " onChange="action-stock-rules-record-product-change" form-view="product-form" grid-view="product-grid"/>
 			<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]"/>
 			<field name="product.procurementMethodSelect" hidden="true"/>
 	        <field name="minQty" onChange="action-stock-rules-minqty-change"

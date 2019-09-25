@@ -44,7 +44,7 @@ public class QualityControlServiceImpl implements QualityControlService {
    * @throws AxelorException
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(QualityControl qualityControl, QualityProcess process)
       throws AxelorException {
 

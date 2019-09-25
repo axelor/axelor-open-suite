@@ -1,7 +1,7 @@
-"forecastDate";"product.code";"qty";"unit.importId";"stockLocation.importId"
-"TODAY[+1M]";"EQPT-0002";100;1;1
-"TODAY[+20d]";"EQPT-0002";20;1;1
-"TODAY[+2M]";"CONS-0005";100;7;1
-"TODAY[+3M]";"CONS-0005";100;7;1
-"TODAY[+4M]";"CONS-0005";100;7;1
-"TODAY[+45d]";"EQPT-0003";50;1;1
+"forecastDate";"product.code";"qty";"unit.importId";"stockLocation.importId";"statusSelect"
+"TODAY[+1M]";"EQPT-0002";100;1;1;2
+"TODAY[+20d]";"EQPT-0002";20;1;1;2
+"TODAY[+2M]";"CONS-0005";100;7;1;2
+"TODAY[+3M]";"CONS-0005";100;7;1;2
+"TODAY[+4M]";"CONS-0005";100;7;1;2
+"TODAY[+45d]";"EQPT-0003";50;1;1;2

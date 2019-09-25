@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<selection name="contract.status.select">
 		<option value="1">Draft</option>
@@ -18,6 +18,8 @@
 	<selection name="contract.version.invoicing.moment.select">
 		<option value="1">End of period</option>
 		<option value="2">Start of period</option>
+		<option value="3">End of period plus</option>
+		<option value="4">Start of period plus</option>
 	</selection>
 
 	<selection name="contract.invoice.period.statut.select">
@@ -46,6 +48,10 @@
 		<option value="2">Terminate</option>
 		<option value="3">Current version activation</option>
 		<option value="4">Next version activation</option>
+	</selection>
+	
+	<selection name="account.analytic.move.line.type.select" id="contract.account.analytic.move.line.type.select">
+		<option value="4">Forecast (contract)</option>
 	</selection>
 
 </object-views>

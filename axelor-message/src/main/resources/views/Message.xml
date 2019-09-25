@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
         <field name="sentDateT"/>
@@ -28,7 +28,7 @@
 	        <button name="sendBtn" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
         	<button name="trashBtn" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 3 "/>
 		</toolbar>
-    	<panel name="informationsPanel" title="Informations" readonlyIf="statusSelect == 2 || statusSelect == 3">
+    	<panel name="informationsPanel" title="Information" readonlyIf="statusSelect == 2 || statusSelect == 3">
             <field name="mediaTypeSelect" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
 			<field name="statusSelect"/>
 			<field name="senderUser" form-view="user-form" grid-view="user-grid"/>

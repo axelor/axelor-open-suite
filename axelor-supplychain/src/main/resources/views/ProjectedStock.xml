@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+  <form name="projected-stock-form" model="com.axelor.apps.supplychain.db.MrpLine" canNew="false" canDelete="false" canEdit="false" canSave="false" width="large" title="Projected stock" onNew="action-record-supplychain-projected-stock-on-new">
+      <panel colSpan="12" name="projectedStockPanel">
+        <panel-dashlet action="action.projected.stock.dashlet" showTitle="false" colSpan="12"/>
+        <field name="$mrpLineList" target="com.axelor.apps.supplychain.db.MrpLine" height="150" grid-view="projected-stock-grid" type="one-to-many" readonly="true" colSpan="12"/>
+      </panel>
+   </form>
+   
+   <grid name="projected-stock-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Projected stock" orderBy="product.code,maturityDate,mrpLineType.typeSelect,mrpLineType.sequence,id" edit-icon="false" >
+    <hilite color="info" strong="true" if="[5,8,9].indexOf($get('mrpLineType.elementSelect')) != -1"/>
+      <field name="product" hidden="true"/>
+      <field name="maturityDate" width="110"/>
+      <field name="mrpLineType" width="210"/>
+      <field name="qty" width="100"/>
+      <field name="cumulativeQty" css="bold" width="130"/>
+      <field name="unit" width="80"/>
+      <field name="company" />
+      <field name="stockLocation" />
+      <field name="relatedToSelectName" width="150"/>
+      <field name="partner"/>
+      <field name="mrpLineType.elementSelect" hidden="true"/>
+   </grid>
+   
+
+   <action-record name="action-record-supplychain-projected-stock-on-new" model="com.axelor.apps.supplychain.db.MrpLine">
+      <field name="$mrpLineList" expr="eval: _mrpLineList"/>
+   </action-record>
+
+   <action-view title="Projected Stock" name="action.projected.stock.dashlet">
+      <view type="chart" name="chart.projected.stock"/>
+      <context name="_mrpLineListToProject" expr="eval: _mrpLineList" />
+   </action-view>
+   
+</object-views> 

@@ -63,8 +63,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class AddressController {
 
-  @Inject private AddressService addressService;
-
+  @Inject protected AddressService addressService;
   @Inject protected AppBaseService appBaseService;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -118,7 +117,7 @@ public class AddressController {
             || verifyLevel.value().equals("PremisesPartial"))) {
       LOG.debug("retDict.verifyLevel = {}", retDict.get("verifyLevel"));
       QAPicklistType qaPicklist = (QAPicklistType) retDict.get("qaPicklist");
-      List<PickListEntry> pickList = new ArrayList<PickListEntry>();
+      List<PickListEntry> pickList = new ArrayList<>();
       if (qaPicklist != null) {
         for (PicklistEntryType p : qaPicklist.getPicklistEntry()) {
           PickListEntry e = new PickListEntry();
@@ -159,7 +158,7 @@ public class AddressController {
     Address a = request.getContext().asType(Address.class);
     PickListEntry pickedEntry = null;
 
-    if (a.getPickList().size() > 0) {
+    if (!a.getPickList().isEmpty()) {
 
       // if (a.pickList*.selected.count { it == true} > 0)
       //	pickedEntry = a.pickList.find {it.selected == true}
@@ -231,7 +230,10 @@ public class AddressController {
   public void viewDirection(ActionRequest request, ActionResponse response) {
     try {
       MapService mapService = Beans.get(MapService.class);
-      String key = mapService.getGoogleMapsApiKey();
+      String key = null;
+      if (appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE) {
+        key = mapService.getGoogleMapsApiKey();
+      }
 
       Company company = AuthUtils.getUser().getActiveCompany();
       if (company == null) {
@@ -241,10 +243,6 @@ public class AddressController {
       Address departureAddress = company.getAddress();
       if (departureAddress == null) {
         response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
-        return;
-      }
-      if (appBaseService.getAppBase().getMapApiSelect() != AppBaseRepository.MAP_API_GOOGLE) {
-        response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
         return;
       }
 
@@ -261,7 +259,7 @@ public class AddressController {
       Address arrivalAddress = request.getContext().asType(Address.class);
       arrivalAddress = Beans.get(AddressRepository.class).find(arrivalAddress.getId());
       Optional<Pair<BigDecimal, BigDecimal>> arrivalLatLong =
-          addressService.getOrUpdateLatLong(departureAddress);
+          addressService.getOrUpdateLatLong(arrivalAddress);
 
       if (!arrivalLatLong.isPresent()) {
         response.setFlash(
@@ -348,5 +346,11 @@ public class AddressController {
       partnerService.addPartnerAddress(partner, address, isDefault, invoicing, delivery);
       partnerService.savePartner(partner);
     }
+  }
+
+  public void autocompleteAddress(ActionRequest request, ActionResponse response) {
+    Address address = request.getContext().asType(Address.class);
+    Beans.get(AddressService.class).autocompleteAddress(address);
+    response.setValues(address);
   }
 }

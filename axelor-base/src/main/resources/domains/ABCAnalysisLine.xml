@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+    <module name="base" package="com.axelor.apps.base.db"/>
+
+    <entity name="ABCAnalysisLine" lang="java">
+
+        <many-to-one name="abcAnalysis" ref="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis"/>
+        <many-to-one name="abcAnalysisClass" ref="com.axelor.apps.base.db.ABCAnalysisClass" title="Class"/>
+        <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+        <decimal name="decimalQty" title="Qty"/>
+        <decimal name="qty" title="Qty (%)" precision="6" scale="3"/>
+        <decimal name="cumulatedQty" title="Cumulated qty (%)" precision="6" scale="3"/>
+        <decimal name="decimalWorth" title="Worth"/>
+        <decimal name="worth" title="Worth (%)" precision="6" scale="3"/>
+        <decimal name="cumulatedWorth" title="Cumulated worth (%)" precision="6" scale="3"/>
+
+    </entity>
+
+</domain-models>

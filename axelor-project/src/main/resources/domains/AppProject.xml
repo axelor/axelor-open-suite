@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -9,6 +9,11 @@
 		<boolean name="resourceManagement" title="Resource management" />
 		<boolean name="isEnableSignature" title="Enable task signature" />
 		<boolean name="generateProjectSequence" title="Generate sequence for project"/>
+
+		<track>
+			<field name="projectLabel" on="UPDATE"/>
+			<field name="resourceManagement" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

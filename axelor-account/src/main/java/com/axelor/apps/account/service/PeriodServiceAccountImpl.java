@@ -25,14 +25,13 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-import java.util.List;
 import javax.inject.Singleton;
 
 @Singleton
-public class PeriodServiceAccountImpl extends PeriodServiceImpl {
+public class PeriodServiceAccountImpl extends PeriodServiceImpl implements PeriodServiceAccount {
 
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
@@ -48,26 +47,25 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl {
     this.moveRepository = moveRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void close(Period period) {
+  public void close(Period period) throws AxelorException {
 
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
-      moveValidateService.validateMultiple(getMoveListToValidate(period));
+      moveValidateService.validateMultiple(getMoveListToValidateQuery(period));
+      period = periodRepo.find(period.getId());
     }
-
     super.close(period);
   }
 
-  public List<Move> getMoveListToValidate(Period period) {
-
+  public Query<Move> getMoveListToValidateQuery(Period period) {
     return moveRepository
         .all()
         .filter(
-            "self.period.id = ?1 AND self.statusSelect NOT IN (?2, ?3)",
+            "self.period.id = ?1 AND (self.statusSelect NOT IN (?2,?3, ?4) OR (self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)))",
             period.getId(),
+            MoveRepository.STATUS_NEW,
             MoveRepository.STATUS_VALIDATED,
             MoveRepository.STATUS_CANCELED)
         .order("date")
-        .fetch();
+        .order("id");
   }
 }

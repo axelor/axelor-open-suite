@@ -161,9 +161,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs-wip</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -283,6 +281,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">company</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">report_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">report_date</text-property>
@@ -340,31 +350,41 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">2</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">report_date</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
-                        <property name="position">3</property>
+                        <property name="position">5</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">6</property>
                         <property name="name">journal</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">7</property>
                         <property name="name">cash_account</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">8</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">9</property>
                         <property name="name">account</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -377,46 +397,69 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">company</property>
                     <property name="nativeName">company</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">report_date</property>
-                    <property name="nativeName">report_date</property>
-                    <property name="dataType">date-time</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">currency</property>
-                    <property name="nativeName">currency</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">journal</property>
-                    <property name="nativeName">journal</property>
-                    <property name="dataType">string</property>
+                    <property name="name">report_date</property>
+                    <property name="nativeName">report_date</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">cash_account</property>
-                    <property name="nativeName">cash_account</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
+                    <property name="name">journal</property>
+                    <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
+                    <property name="name">cash_account</property>
+                    <property name="nativeName">cash_account</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
                     <property name="name">account</property>
                     <property name="nativeName">account</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-company.name AS company ,
+company.name AS company,
+company.height as logo_height,
+company.width as logo_width,
 bankReconciliation.created_on AS report_date ,
 currency.code AS currency ,  
 journal.name AS journal , 
@@ -1251,6 +1294,20 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <expression name="expression" type="javascript">dataSetRow["account"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">logo_height</property>
+                            <text-property name="displayName">logo_height</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_width</property>
+                            <text-property name="displayName">logo_width</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
                     </list-property>
                     <column id="6199">
                         <property name="suppressDuplicates">true</property>
@@ -1302,61 +1359,23 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
                             <property name="verticalAlign">middle</property>
-                            <image id="6212">
-                                <property name="overflow">hidden</property>
-                                <property name="height">35px</property>
-                                <property name="width">154px</property>
-                                <expression name="altText">""</expression>
-                                <property name="dataSet">BankReconciliationDS</property>
-                                <list-property name="boundDataColumns">
+                            <text id="6409">
+                                <property name="fontSize">8pt</property>
+                                <list-property name="visibility">
                                     <structure>
-                                        <property name="name">company</property>
-                                        <text-property name="displayName">company</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date</property>
-                                        <text-property name="displayName">report_date</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                        <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">currency</property>
-                                        <text-property name="displayName">currency</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">journal</property>
-                                        <text-property name="displayName">journal</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">cash_account</property>
-                                        <text-property name="displayName">cash_account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">account</property>
-                                        <text-property name="displayName">account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["account"]</expression>
-                                        <property name="dataType">string</property>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <structure name="toc"/>
-                                <property name="source">file</property>
-                                <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
-                            </image>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
                         </cell>
                         <cell id="6213">
                             <property name="verticalAlign">middle</property>

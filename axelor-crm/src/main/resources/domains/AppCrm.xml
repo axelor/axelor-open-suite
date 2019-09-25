@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppCrm" lang="java" extends="App">
+	<integer name="assignableUsers" title="Assignable Users" selection="crm.app.crm.assignable.user.select"/>
+	<many-to-many name="groupsAssignable" title="Groups Assignable" ref="com.axelor.auth.db.Group"/>
+		<boolean name="displayCustomerDescriptionInOpportunity" title="Display customer description in opportunity"/>
+
+		<track>
+			<field name="assignableUsers" on="UPDATE"/>
+			<field name="groupsAssignable" on="UPDATE"/>
+			<field name="displayCustomerDescriptionInOpportunity" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

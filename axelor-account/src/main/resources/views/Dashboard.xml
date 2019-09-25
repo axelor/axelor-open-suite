@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <!--  Account Invoice Dashboard  -->    
     
@@ -116,13 +116,13 @@
 		<view type="chart" name="chart.purchase.buyer.dashboard.supplier.invoices.per.month"/>
 	</action-view>	
 	
-	<action-view name="dashlet.supplier.invoices.unpaid" title="Unpaid Supplier's Invoices" icon="img/16px/invoiceSmall_16px.png" model="com.axelor.apps.account.db.Invoice" >
+	<action-view name="dashlet.supplier.invoices.unpaid" title="Unpaid Supplier's Invoices" model="com.axelor.apps.account.db.Invoice" >
 	    <view type="grid" name="invoice-supplier-grid"/>
 	    <view type="form" name="invoice-form"/>
 	    <domain>self.operationTypeSelect = 1 AND self.companyInTaxTotalRemaining &gt; 0 </domain>    
 	</action-view>    
 	
-	<action-view name="dashlet.supplier.invoices.due" title="Supplier's Invoices Due" icon="img/16px/invoiceSmall_16px.png" model="com.axelor.apps.account.db.Invoice">
+	<action-view name="dashlet.supplier.invoices.due" title="Supplier's Invoices Due" model="com.axelor.apps.account.db.Invoice">
 	    <view type="grid" name="invoice-supplier-grid"/>
 	    <view type="form" name="invoice-form"/>
 	    <domain>self.operationTypeSelect = 1 AND self.companyInTaxTotalRemaining &gt; 0 AND CURRENT_DATE &gt;= self.dueDate</domain>    

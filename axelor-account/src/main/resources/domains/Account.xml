@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
     <module name="account" package="com.axelor.apps.account.db"/>
 
-    <entity name="Account" lang="java" cachable="true">
+    <entity name="Account" lang="java" cacheable="true">
 
         <string name="name" title="Name" required="true"/>
         <string name="code" title="Code" required="true" hashKey="true"/>
@@ -28,5 +28,23 @@
         <boolean name="analyticDistributionAuthorized" title="Analytic distribution authorized" massUpdate="true"/>
         <boolean name="isTaxAuthorizedOnMoveLine" title="Tax authorized on move line" massUpdate="true"/>
     	<boolean name="isTaxRequiredOnMoveLine" title="Tax required on move line" massUpdate="true"/>
+   	   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
+
+        <track>
+      		<field name="name"/>
+      		<field name="code"/>
+      		<field name="parentAccount"/>
+      		<field name="accountType"/>
+      		<field name="reconcileOk"/>
+      		<field name="company"/>
+      		<field name="useForPartnerBalance"/>
+      		<field name="analyticDistributionRequiredOnInvoiceLines"/>
+      		<field name="analyticDistributionRequiredOnMoveLines"/>
+      		<field name="analyticDistributionAuthorized"/>
+      		<field name="isTaxAuthorizedOnMoveLine"/>
+      		<field name="isTaxRequiredOnMoveLine"/>
+      	</track>
+
     </entity>
 </domain-models>

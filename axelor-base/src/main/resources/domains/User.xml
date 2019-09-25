@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
@@ -9,7 +9,7 @@
   
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company" title="Active company" massUpdate="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <datetime name="today" title="Today date" tz="true"/>
     <many-to-many name="teamSet" ref="com.axelor.team.db.Team"  title="Teams" mappedBy="members"/>
     <many-to-one name="activeTeam" ref="com.axelor.team.db.Team"  title="Active Team" massUpdate="true"/>
@@ -45,7 +45,35 @@
     
     <integer name="stepStatusSelect" selection="base.user.form.step.select" default="0"/>
 
+    <string name="attrs" json="true"/>
+
     <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
+
+    <track>
+			<field name="name"/>
+			<field name="code"/>
+			<field name="email"/>
+			<field name="theme"/>
+			<field name="activateOn"/>
+			<field name="expiresOn"/>
+			<field name="activeCompany"/>
+			<field name="partner"/>
+			<field name="today"/>
+			<field name="activeTeam"/>
+			<field name="fullName"/>
+			<field name="iCalendar"/>
+			<field name="electronicSignature"/>
+			<field name="useSignatureForQuotations"/>
+			<field name="group"/>
+			<field name="language"/>
+			<field name="singleTab"/>
+			<field name="noHelp"/>
+			<field name="blocked"/>
+			<field name="sendEmailUponPasswordChange"/>
+			<field name="homeAction"/>
+			<field name="receiveEmails"/>
+	</track>
+
   </entity>
 
 </domain-models>

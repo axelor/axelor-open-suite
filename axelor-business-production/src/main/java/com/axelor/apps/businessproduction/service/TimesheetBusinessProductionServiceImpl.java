@@ -59,7 +59,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
     super.confirm(timesheet);
     Beans.get(OperationOrderTimesheetServiceImpl.class)

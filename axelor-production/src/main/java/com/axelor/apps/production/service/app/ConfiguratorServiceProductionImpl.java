@@ -32,7 +32,7 @@ import com.google.inject.persist.Transactional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   /**
-   * In this implementation, we also create a bill of material.
+   * In this implementation, we also create a bill of materials.
    *
    * @param configurator
    * @param jsonAttributes
@@ -40,7 +40,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generate(
       Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
       throws AxelorException {
@@ -58,7 +58,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
   protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)
       throws AxelorException {
     String condition = configuratorBOM.getUseCondition();
-    // no condition = we always generate the bill of material
+    // no condition = we always generate the bill of materials
     if (condition == null) {
       return true;
     }

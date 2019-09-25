@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
-	<module name="base" package="com.axelor.apps.base.db"/>
+    <module name="base" package="com.axelor.apps.base.db" />
 
-  	<entity name="Address" lang="java">
+    <entity name="Address" lang="java">
 
-    <string name="addressL2" title="Recipient details"/>
-    <string name="addressL3" title="Address precisions" />
-    <string name="addressL4" title="N° and Street label" required="true"/>
-    <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
-    <string name="addressL6" title="Zip/City"/>
-    <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country"/>
-    <many-to-one name="city" ref="City" title="City"/>
-    <decimal name="latit" title="Latitude" precision="38" scale="18" nullable="true"/>
-    <decimal name="longit" title="Longitude" precision="38" scale="18" nullable="true"/>
-    <integer name="zoom" title="Default zoom"/>
-    <string name="inseeCode" title="National Code" readonly="true"/>
-    <boolean name="certifiedOk" title="Address certified by QAS engine" default="false" readonly="true"/>
-    <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry" title="QAS Proposal lists" mappedBy="address"/>
-    <string name="zip" title="Zip code"/>
+        <string name="addressL2" title="Recipient details" />
+        <string name="addressL3" title="Address precisions" />
+        <string name="addressL4" title="N° and Street label" required="true" />
+        <string name="addressL5" title="Distribution precisions (POB, Village...)" />
+        <string name="addressL6" title="Zip/City" />
+        <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country" title="Country" />
+        <many-to-one name="city" ref="City" title="City" />
+        <decimal name="latit" title="Latitude" precision="38" scale="18" nullable="true" />
+        <decimal name="longit" title="Longitude" precision="38" scale="18" nullable="true" />
+        <boolean name="isValidLatLong" title="Valid Latitude Longitude" default="true"/>
+    <integer name="zoom" title="Default zoom" />
+        <string name="inseeCode" title="National Code" readonly="true" />
+        <boolean name="certifiedOk" title="Address certified by QAS engine" default="false" readonly="true" />
+        <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry" title="QAS Proposal lists" mappedBy="address" />
+        <string name="zip" title="Zip code" />
+        <string name="streetNumber" title="Street number" />
+        <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street" />
 
-    <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
-    
-  </entity>
+        <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address" />
 
-  <!--
-  streetNum: String title="Numéro"
-  -->
+    </entity>
+
 </domain-models>

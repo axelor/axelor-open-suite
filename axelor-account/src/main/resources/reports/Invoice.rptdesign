@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -324,6 +324,18 @@
                     <text-property name="heading">companyName</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">iban</property>
                     <property name="alias">iban</property>
                     <property name="analysis">dimension</property>
@@ -601,106 +613,116 @@
                     </structure>
                     <structure>
                         <property name="position">23</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
                         <property name="name">iban</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">24</property>
+                        <property name="position">26</property>
                         <property name="name">bic</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">25</property>
+                        <property name="position">27</property>
                         <property name="name">bank_address</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">26</property>
+                        <property name="position">28</property>
                         <property name="name">note</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">27</property>
+                        <property name="position">29</property>
                         <property name="name">specific_notes</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">28</property>
+                        <property name="position">30</property>
                         <property name="name">internal_reference</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">29</property>
+                        <property name="position">31</property>
                         <property name="name">partner_tax_nbr</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">30</property>
+                        <property name="position">32</property>
                         <property name="name">external_reference</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">31</property>
+                        <property name="position">33</property>
                         <property name="name">header</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">32</property>
+                        <property name="position">34</property>
                         <property name="name">footer</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">33</property>
+                        <property name="position">35</property>
                         <property name="name">logoPosition</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">34</property>
+                        <property name="position">36</property>
                         <property name="name">ClientBox</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">35</property>
+                        <property name="position">37</property>
                         <property name="name">SaleLegalNote</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">36</property>
+                        <property name="position">38</property>
                         <property name="name">DisplayDelAddr</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">37</property>
+                        <property name="position">39</property>
                         <property name="name">displayTaxDetailOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">38</property>
+                        <property name="position">40</property>
                         <property name="name">termsAndConditions</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">39</property>
+                        <property name="position">41</property>
                         <property name="name">displayPartnerSeqOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">40</property>
+                        <property name="position">42</property>
                         <property name="name">hideDiscount</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">41</property>
+                        <property name="position">43</property>
                         <property name="name">displayProductCodeOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">42</property>
+                        <property name="position">44</property>
                         <property name="name">subscription_from_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">43</property>
+                        <property name="position">45</property>
                         <property name="name">subscription_to_date</property>
                         <property name="dataType">date</property>
                     </structure>
@@ -869,146 +891,160 @@
                 </structure>
                 <structure>
                     <property name="position">23</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
                     <property name="name">iban</property>
                     <property name="nativeName">iban</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">24</property>
+                    <property name="position">26</property>
                     <property name="name">bic</property>
                     <property name="nativeName">bic</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">25</property>
+                    <property name="position">27</property>
                     <property name="name">bank_address</property>
                     <property name="nativeName">bank_address</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">26</property>
+                    <property name="position">28</property>
                     <property name="name">note</property>
                     <property name="nativeName">note</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">27</property>
+                    <property name="position">29</property>
                     <property name="name">specific_notes</property>
                     <property name="nativeName">specific_notes</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">28</property>
+                    <property name="position">30</property>
                     <property name="name">internal_reference</property>
                     <property name="nativeName">internal_reference</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">29</property>
+                    <property name="position">31</property>
                     <property name="name">partner_tax_nbr</property>
                     <property name="nativeName">partner_tax_nbr</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">30</property>
+                    <property name="position">32</property>
                     <property name="name">external_reference</property>
                     <property name="nativeName">external_reference</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">31</property>
+                    <property name="position">33</property>
                     <property name="name">header</property>
                     <property name="nativeName">header</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">32</property>
+                    <property name="position">34</property>
                     <property name="name">footer</property>
                     <property name="nativeName">footer</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">33</property>
+                    <property name="position">35</property>
                     <property name="name">logoPosition</property>
                     <property name="nativeName">logoPosition</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">34</property>
+                    <property name="position">36</property>
                     <property name="name">ClientBox</property>
                     <property name="nativeName">ClientBox</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">35</property>
+                    <property name="position">37</property>
                     <property name="name">SaleLegalNote</property>
                     <property name="nativeName">SaleLegalNote</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">36</property>
+                    <property name="position">38</property>
                     <property name="name">DisplayDelAddr</property>
                     <property name="nativeName">DisplayDelAddr</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">37</property>
+                    <property name="position">39</property>
                     <property name="name">displayTaxDetailOnPrinting</property>
                     <property name="nativeName">displayTaxDetailOnPrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">38</property>
+                    <property name="position">40</property>
                     <property name="name">termsAndConditions</property>
                     <property name="nativeName">termsAndConditions</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">39</property>
+                    <property name="position">41</property>
                     <property name="name">displayPartnerSeqOnPrinting</property>
                     <property name="nativeName">displayPartnerSeqOnPrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">40</property>
+                    <property name="position">42</property>
                     <property name="name">hideDiscount</property>
                     <property name="nativeName">hideDiscount</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">41</property>
+                    <property name="position">43</property>
                     <property name="name">displayProductCodeOnPrinting</property>
                     <property name="nativeName">displayProductCodeOnPrinting</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">42</property>
+                    <property name="position">44</property>
                     <property name="name">subscription_from_date</property>
                     <property name="nativeName">subscription_from_date</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">43</property>
+                    <property name="position">45</property>
                     <property name="name">subscription_to_date</property>
                     <property name="nativeName">subscription_to_date</property>
                     <property name="dataType">date</property>
@@ -1043,7 +1079,9 @@
 	Invoice.in_tax_total as "invoice_in_tax_total", 
 	Invoice.ex_tax_total as "invoice_ex_tax_total", 
 	Invoice.tax_total as "invoice_tax_total", 
-	Company.name as "companyName", 
+	Company.name as "companyName",
+	Company.height as "logo_height",
+	Company.width as "logo_width",
 	BankDetail.iban, 
 	Bank.code as "bic",
 	BankAddress.address as "bank_address",
@@ -2949,31 +2987,37 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">
-if(row["operation_type_select"] == "1" ){
-	if (row["operation_sub_type_select"] == "2") {
-			'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.purchaseInvoiceBalanceNo'
-	} else {
-			'Invoice.purchaseInvoiceNo'
-	}
-} else if(row["operation_type_select"] == "2" ){
-	'Invoice.purchaseRefundNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
+                                            <value type="javascript">if (row["status_select"] == "1") {
 	'Invoice.draftInvoiceNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
-	if (row["operation_sub_type_select"] == "2") {
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
 		'Invoice.invoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.invoiceBalanceNo'
 	} else {
-		'Invoice.invoiceNo'
+		'Invoice.draftInvoiceNo'
 	}
-} else if(row["operation_type_select"] == "4" ){
-	'Invoice.refundNo'
-}
-                                            </value>
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
+}</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3266,6 +3310,20 @@ if(row["operation_type_select"] == "1" ){
                     <expression name="expression" type="javascript">dataSetRow["displayPartnerSeqOnPrinting"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100%'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -3334,13 +3392,13 @@ if(row["operation_type_select"] == "1" ){
                         <text-property name="content"><![CDATA[<TABLE >
 	<TR>
 		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></td>"
+		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></td>"
 		} else if(row["logoPosition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD/><TD>"+row["header"]+"</TD>"
+		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD/><TD>"+row["header"]+"</TD>"
 		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD>"+row["header"]+"</TD>"
+			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD>"+row["header"]+"</TD>"
 		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/>"
+			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/>"
 		}else {
 		"<TD/><TD/><TD>"+row["header"]+"</TD>"
 		}
@@ -3381,28 +3439,36 @@ if(row["operation_type_select"] == "1" ){
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["operation_type_select"] == "1" ){
-	if (row["operation_sub_type_select"] == "2") {
-			'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.purchaseInvoiceBalanceNo'
-	} else {
-			'Invoice.purchaseInvoiceNo'
-	}
-}else if(row["operation_type_select"] == "2" ){
-'Invoice.purchaseRefundNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
-'Invoice.draftInvoiceNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
-	if (row["operation_sub_type_select"] == "2") {
+                                    <value type="javascript">if (row["status_select"] == "1") {
+	'Invoice.draftInvoiceNo'
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
 		'Invoice.invoiceAdvPaymentNo'
-		} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.invoiceBalanceNo'
 	} else {
-		'Invoice.invoiceNo'
+		'Invoice.draftInvoiceNo'
 	}
-}else if(row["operation_type_select"] == "4" ){
-'Invoice.refundNo'
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
 }</value>
                                 </simple-property-list>
                             </structure>
@@ -4955,7 +5021,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["advanceInvoiceId"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["advanceInvoiceId"] == null || params["ReportType"].value == 3</expression>
                             </structure>
                         </list-property>
                         <list-property name="boundDataColumns">
@@ -5420,7 +5486,6 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                             <column id="4531"/>
                             <column id="4535"/>
                             <row id="5252">
-                                <property name="height">10.874375cm</property>
                                 <cell id="5253">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
@@ -5480,6 +5545,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         </column>
                                         <header>
                                             <row id="4705">
+                                                <property name="fontSize">8pt</property>
                                                 <cell id="4706">
                                                     <property name="borderBottomStyle">solid</property>
                                                     <property name="borderBottomWidth">thin</property>
@@ -5610,6 +5676,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         </header>
                                         <detail>
                                             <row id="4712">
+                                                <property name="fontSize">8pt</property>
                                                 <cell id="4713">
                                                     <property name="borderBottomColor">#000000</property>
                                                     <property name="borderBottomStyle">solid</property>
@@ -5664,8 +5731,34 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                                     <text id="4718">
                                                         <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["tax_total"]</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["tax_total"]</VALUE-OF>]]></text-property>
                                                     </text>
+                                                </cell>
+                                            </row>
+                                            <row id="5597">
+                                                <property name="fontSize">8pt</property>
+                                                <property name="borderBottomStyle">none</property>
+                                                <property name="borderLeftStyle">none</property>
+                                                <property name="borderRightStyle">none</property>
+                                                <property name="borderTopStyle">none</property>
+                                                <property name="height">0.5cm</property>
+                                                <cell id="5598">
+                                                    <property name="borderBottomStyle">none</property>
+                                                    <property name="borderLeftStyle">none</property>
+                                                    <property name="borderRightStyle">none</property>
+                                                    <property name="borderTopStyle">none</property>
+                                                </cell>
+                                                <cell id="5599">
+                                                    <property name="borderBottomStyle">none</property>
+                                                    <property name="borderLeftStyle">none</property>
+                                                    <property name="borderRightStyle">none</property>
+                                                    <property name="borderTopStyle">none</property>
+                                                </cell>
+                                                <cell id="5600">
+                                                    <property name="borderBottomStyle">none</property>
+                                                    <property name="borderLeftStyle">none</property>
+                                                    <property name="borderRightStyle">none</property>
+                                                    <property name="borderTopStyle">none</property>
                                                 </cell>
                                             </row>
                                         </detail>
@@ -5676,7 +5769,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">params["ReportType"].value == null || params["ReportType"].value != 3 || row["totalRow"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">params["ReportType"].value != 3 || row["totalRow"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -6406,6 +6499,8 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </cell>
                                         </row>
                                         <row id="3524">
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
                                             <cell id="3525">
                                                 <property name="backgroundAttachment">scroll</property>
@@ -6522,6 +6617,8 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </cell>
                                         </row>
                                         <row id="4443">
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -6657,6 +6754,12 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         </row>
                                         <row id="5301">
                                             <property name="verticalAlign">middle</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value == 1</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5302">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
@@ -6798,6 +6901,12 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         </row>
                                         <row id="5589">
                                             <property name="verticalAlign">middle</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ReportType"].value != 3</expression>
+                                                </structure>
+                                            </list-property>
                                             <cell id="5590">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>

@@ -218,7 +218,7 @@ public class WkfDesignerService {
    * @throws SAXException
    * @throws Exception
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Wkf processXml(Wkf instance)
       throws ParserConfigurationException, SAXException, IOException {
 
@@ -269,6 +269,7 @@ public class WkfDesignerService {
         if (transition.getVersion() == null) {
           transition.setIsButton(true);
           transition.setButtonTitle(transition.getName());
+          transition.setColSpan(transition.getColSpan());
         }
         instance.addTransition(transition);
       }

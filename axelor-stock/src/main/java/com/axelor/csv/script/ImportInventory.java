@@ -30,7 +30,7 @@ public class ImportInventory {
 
   @Inject InventoryService inventoryService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object validateInventory(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof InventoryLine;

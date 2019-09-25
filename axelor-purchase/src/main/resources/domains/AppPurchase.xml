@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,6 +10,16 @@
         <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
 		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 		<boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
+		<boolean name="isDisplayPurchaseOrderLineNumber" title="Display purchase order line number"/>
+		
+		<track>
+			<field name="managePurchaseOrderVersion" on="UPDATE"/>
+			<field name="managePurchasesUnits" on="UPDATE"/>
+			<field name="manageMultiplePurchaseQuantity" on="UPDATE"/>
+			<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
+			<field name="manageSupplierCatalog" on="UPDATE"/>
+		</track>
+		
 	</entity>
 
 </domain-models>

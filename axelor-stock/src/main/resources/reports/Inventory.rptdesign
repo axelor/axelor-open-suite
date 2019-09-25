@@ -205,10 +205,52 @@
                     <text-property name="heading">companyName</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_family</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_family</text-property>
+                    <text-property name="heading">product_family</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product</text-property>
+                    <text-property name="heading">product</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_category</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_category</text-property>
+                    <text-property name="heading">product_category</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">from_rack</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">from_rack</text-property>
+                    <text-property name="heading">from_rack</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">to_rack</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">to_rack</text-property>
+                    <text-property name="heading">to_rack</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -248,7 +290,42 @@
                     </structure>
                     <structure>
                         <property name="position">5</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
                         <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">product_family</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">product</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">product_category</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">from_rack</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">to_rack</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -285,8 +362,57 @@
                 </structure>
                 <structure>
                     <property name="position">5</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">product_family</property>
+                    <property name="nativeName">product_family</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">product</property>
+                    <property name="nativeName">product</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">product_category</property>
+                    <property name="nativeName">product_category</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">from_rack</property>
+                    <property name="nativeName">from_rack</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">to_rack</property>
+                    <property name="nativeName">to_rack</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -296,6 +422,8 @@
 	Location.name as "inventoryLocation",
 	Inventory.dateT as "inventoryDate",
 	Company.name as "companyName",
+	Company.height as "logo_height",
+	Company.width as "logo_width",
 	MetaFile.file_path as logo_path,
 	ProductFamily.name as "product_family",
 	Product.name as "product",
@@ -1185,9 +1313,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="paddingBottom">0pt</property>
                             <property name="paddingRight">1pt</property>
                             <property name="textAlign">left</property>
-                            <image id="3894">
-                                <property name="height">35px</property>
-                                <property name="width">184px</property>
+                            <text id="5377">
+                                <property name="fontSize">8pt</property>
                                 <property name="dataSet">InventoryDS</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -1215,16 +1342,71 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="dataType">date-time</property>
                                     </structure>
                                     <structure>
+                                        <property name="name">companyName</property>
+                                        <text-property name="displayName">companyName</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_height</property>
+                                        <text-property name="displayName">logo_height</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_width</property>
+                                        <text-property name="displayName">logo_width</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'105px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
                                         <property name="name">logo_path</property>
                                         <text-property name="displayName">logo_path</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                                         <property name="dataType">string</property>
                                     </structure>
+                                    <structure>
+                                        <property name="name">product_family</property>
+                                        <text-property name="displayName">product_family</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["product_family"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">product</property>
+                                        <text-property name="displayName">product</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["product"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">product_category</property>
+                                        <text-property name="displayName">product_category</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["product_category"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">from_rack</property>
+                                        <text-property name="displayName">from_rack</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["from_rack"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">to_rack</property>
+                                        <text-property name="displayName">to_rack</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["to_rack"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
                                 </list-property>
-                                <property name="source">file</property>
-                                <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            </image>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
                         </cell>
                         <cell id="3798">
                             <property name="fontSize">8.5pt</property>

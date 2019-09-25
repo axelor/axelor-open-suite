@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -12,6 +12,14 @@
 		<boolean name="canConfirmOnline" title="Can confirm online" default="false"/>
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
 		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
+		
+		<track>
+			<field name="manageSaleOrders" on="UPDATE"/>
+			<field name="manageInvoices" on="UPDATE"/>
+			<field name="manageTickets" on="UPDATE"/>
+			<field name="canConfirmOnline" on="UPDATE"/>
+			<field name="canPayOnline" on="UPDATE"/>
+		</track>
    	</entity>
 
 </domain-models>

@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     <form name="configurator-prod-process-form" title="Configurator Prod Process"
           model="com.axelor.apps.production.db.ConfiguratorProdProcess">
         <panel name="mainPanel">
             <field name="name"/>
             <field name="company"/>
-            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+            <field name="statusSelect" selection-in="[2,3]"/>
+
+            <panel name="codePanel" title="Code">
+                <field name="defCodeAsFormula" colSpan="6"/>
+                <field name="code" colSpan="12" showIf="!defCodeAsFormula"/>
+                <field name="codeFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defCodeAsFormula"/>
+            </panel>
+            <panel name="stockLocationPanel" title="Stock Location">
+                <field name="defStockLocationAsFormula" colSpan="6"/>
+                <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" showIf="!defStockLocationAsFormula"/>
+                <field name="stockLocationFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defStockLocationAsFormula"/>
+            </panel>
+            <panel name="producedProductStockLocationPanel" title="Stock location for produced product">
+                <field name="defProducedProductStockLocationAsFormula" colSpan="6"/>
+                <field name="producedProductStockLocation" colSpan="12" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company" showIf="!defProducedProductStockLocationAsFormula"/>
+                <field name="producedProductStockLocationFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defProducedProductStockLocationAsFormula"/>
+            </panel>
+            <panel name="workshopStockLocationPanel" title="Workshop" if="__config__.app.getApp('production').getManageWorkshop()">
+                <field name="defWorkshopStockLocationAsFormula" colSpan="6"/>
+                <field name="workshopStockLocation" canEdit="false" colSpan="12" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" showIf="!defWorkshopStockLocationAsFormula"/>
+                <field name="workshopStockLocationFormula" colSpan="12" height="120"
+                       widget="CodeEditor" x-code-syntax="groovy"
+                       showTitle="false" showIf="defWorkshopStockLocationAsFormula"/>
+            </panel>
             <field name="configuratorProdProcessLineList" colSpan="12"
                    form-view="configurator-prod-process-line-form"
                    grid-view="configurator-prod-process-line-grid"/>

@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 
 public interface PartnerStockSettingsService {
 
@@ -48,5 +49,6 @@ public interface PartnerStockSettingsService {
    * @param partner
    * @param company
    */
+  @CallMethod
   public StockLocation getDefaultStockLocation(Partner partner, Company company);
 }

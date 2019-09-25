@@ -54,4 +54,6 @@ public interface IExceptionMessage {
       "%d messages has been regenerated successfully and %d errors append." /*)*/;
   static final String SET_EMAIL_TEMPLATE_MESSAGE = /*$$(*/
       "Please set the email template to send" /*)*/;
+  static final String INVALID_MODEL_TEMPLATE_EMAIL = /*$$(*/
+      "The email template model (%s) is different than the entity generating the email (%s)" /*)*/;
 }

@@ -124,13 +124,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       SaleOrder saleOrder = null;
-
-      if (appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
-        saleOrder = this.saleOrderLineProcess(invoice, invoiceLine);
-      } else {
-        saleOrder = invoiceLine.getSaleOrder();
-      }
-
+      saleOrder = this.saleOrderLineProcess(invoice, invoiceLine);
       if (saleOrder != null) {
         saleOrderSet.add(saleOrder);
       }
@@ -191,13 +185,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       PurchaseOrder purchaseOrder = null;
-
-      if (appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()) {
-        purchaseOrder = this.purchaseOrderLineProcess(invoice, invoiceLine);
-      } else {
-        purchaseOrder = invoiceLine.getPurchaseOrder();
-      }
-
+      purchaseOrder = this.purchaseOrderLineProcess(invoice, invoiceLine);
       if (purchaseOrder != null) {
         purchaseOrderSet.add(purchaseOrder);
       }

@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockConfig" lang="java" cachable="true">
+  <entity name="StockConfig" lang="java" cacheable="true">
       <many-to-one name="productionVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production virtual stock location"/>
       <many-to-one name="wasteStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Waste stock location"/>
       <many-to-one name="componentDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Components default stock location"/>
       <many-to-one name="finishedProductsDefaultStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Finished products default stock location"/>
+      
+      <track>
+      	<field name="productionVirtualStockLocation" on="UPDATE"/>
+      	<field name="wasteStockLocation" on="UPDATE"/>
+      	<field name="componentDefaultStockLocation" on="UPDATE"/>
+      	<field name="finishedProductsDefaultStockLocation" on="UPDATE"/>
+      </track>
+      
   </entity>
 
 </domain-models>

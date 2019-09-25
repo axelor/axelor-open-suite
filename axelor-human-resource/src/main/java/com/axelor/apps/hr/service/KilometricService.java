@@ -199,7 +199,7 @@ public class KilometricService {
     return price.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateKilometricLog(ExpenseLine expenseLine, Employee employee)
       throws AxelorException {
 

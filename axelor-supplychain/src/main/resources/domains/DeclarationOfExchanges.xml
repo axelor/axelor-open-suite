@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
@@ -13,7 +13,7 @@
       default="storable" title="Product type"/>
     <integer name="stockMoveTypeSelect" required="true" selection="stock.move.type.select"
       default="2" title="Stock move type"/>
-    <string name="formatSelect" selection="iadministration.export.type.select" required="true"
+    <string name="formatSelect" selection="iadministration.declaration.of.exchanges.export.type.select" required="true"
       default="pdf" title="Format"/>
   </entity>
 

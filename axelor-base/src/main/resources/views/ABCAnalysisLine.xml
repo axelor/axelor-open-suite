@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+    <grid name="abc-analysis-line-grid" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis lines" orderBy="cumulatedWorth">
+        <field name="product.code" />
+        <field name="product.name"/>
+        <field name="product.productCategory"/>
+        <field name="decimalWorth" width="90px"/>
+        <field name="worth" width="95px" x-scale="2"/>
+        <field name="cumulatedWorth" width="160px" x-scale="2"/>
+        <field name="decimalQty" width="75px"/>
+        <field name="qty" width="70px" x-scale="2"/>
+        <field name="cumulatedQty" width="150px" x-scale="2"/>
+        <field name="abcAnalysisClass.sequence" hidden="true"/>
+        <field name="abcAnalysisClass" width="145px" x-scale="2">
+            <hilite background="primary" if="$get('abcAnalysisClass.sequence') == 0"/>
+            <hilite background="info" if="$get('abcAnalysisClass.sequence') == 1"/>
+            <hilite background="warning" if="$get('abcAnalysisClass.sequence') % 2 == 0"/>
+            <hilite background="danger" if="$get('abcAnalysisClass.sequence') % 2 != 0"/>
+        </field>
+    </grid>
+
+    <form name="abc-analysis-line-form" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis line" canEdit="false" canNew="false">
+        <panel name="mainPanel">
+            <field name="product" readonly="true"/>
+            <field name="abcAnalysisClass" readonly="true"/>
+            <field name="decimalWorth" readonly="true"/>
+            <field name="decimalQty" readonly="true"/>
+            <field name="worth" x-scale="2" readonly="true"/>
+            <field name="qty" x-scale="2" readonly="true"/>
+        </panel>
+    </form>
+</object-views>

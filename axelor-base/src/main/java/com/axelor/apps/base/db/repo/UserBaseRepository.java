@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -67,5 +68,18 @@ public class UserBaseRepository extends UserRepository {
     copy.setNoHelp(entity.getNoHelp());
 
     return super.copy(copy, deep);
+  }
+
+  @Override
+  public void remove(User user) {
+    if (user.getPartner() != null) {
+      PartnerBaseRepository partnerRepo = Beans.get(PartnerBaseRepository.class);
+      Partner partner = partnerRepo.find(user.getPartner().getId());
+      if (partner != null) {
+        partner.setLinkedUser(null);
+        partnerRepo.save(partner);
+      }
+    }
+    super.remove(user);
   }
 }

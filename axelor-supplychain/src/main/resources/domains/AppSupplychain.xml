@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppSupplychain" lang="java" extends="App">
-		<boolean name="manageInvoicedAmountByLine" title="Manage the invoiced amount by line" default="false"/>
 		<boolean name="custStockMoveMgtOnSO" title="Customer deliveries management" default="false"/>
 		<boolean name="customerStockMoveGenerationAuto" title="Generate customer deliveries automatically" default="false"/>
 		<boolean name="supplStockMoveMgtOnPO" title="Supplier arrivals management" default="false"/>
@@ -42,6 +41,51 @@
         <boolean name="intercoSaleOrderCreateFinalized" title="Create interco sale quotation as finalized"/>
         <boolean name="intercoPurchaseOrderCreateRequested" title="Create interco purchase quotation as requested"/>
         <boolean name="intercoInvoiceCreateValidated" title="Create interco invoice as validated"/>
+        <boolean name="blockDeallocationOnAvailabilityRequest" title="Block deallocation on availability request"/>
+
+        <string name="sOFilterOnStockDetailStatusSelect" title="Status considered to filter a sale order" selection="sale.order.status.select" default="3"/>
+	    <string name="pOFilterOnStockDetailStatusSelect" title="Status considered to filter a purchase order" selection="purchase.purchase.order.status.select" default="3"/>
+	    <boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
+	    <boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
+    	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
+    
+    <track>
+    	<field name="manageInvoicedAmountByLine" on="UPDATE"/>
+    	<field name="custStockMoveMgtOnSO" on="UPDATE"/>
+    	<field name="customerStockMoveGenerationAuto" on="UPDATE"/>
+    	<field name="supplStockMoveMgtOnPO" on="UPDATE"/>
+    	<field name="supplierStockMoveGenerationAuto" on="UPDATE"/>
+    	<field name="allowSusbcriptionSaleOrder" on="UPDATE"/>
+    	<field name="checkSaleStocks" on="UPDATE"/>
+    	<field name="generateInvoiceFromStockMove" on="UPDATE"/>
+
+    	<field name="terminateSaleOrderOnDelivery" on="UPDATE"/>
+    	<field name="terminatePurchaseOrderOnReceipt" on="UPDATE"/>
+
+    	<field name="allowCompleteManuallySaleOrder" on="UPDATE"/>
+
+    	<field name="purchaseOrderGenerationAuto" on="UPDATE"/>
+
+    	<field name="allowFinishManuallyPurchaseOrder" on="UPDATE"/>
+
+    	<field name="generateInvoiceFromSaleOrder" on="UPDATE"/>
+    	<field name="generateInvoiceFromPurchaseOrder" on="UPDATE"/>
+    	<field name="allowTimetableInvoicing" on="UPDATE"/>
+
+    	<field name="intercoFromPurchase" on="UPDATE"/>
+    	<field name="intercoFromSale" on="UPDATE"/>
+    	<field name="intercoFromInvoice" on="UPDATE"/>
+
+    	<field name="intercoPurchaseCreatingStatusSelect" on="UPDATE"/>
+    	<field name="intercoSaleCreatingStatusSelect" on="UPDATE"/>
+    	<field name="manageStockReservation" on="UPDATE"/>
+    	<field name="cancelReasonOnChangingSaleOrder" on="UPDATE"/>
+    	<field name="intercoSaleOrderCreateFinalized" on="UPDATE"/>
+    	<field name="intercoPurchaseOrderCreateRequested" on="UPDATE"/>
+    	<field name="intercoInvoiceCreateValidated" on="UPDATE"/>
+    	<field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
+    	<field name="isVerifyProductStock" on="UPDATE"/>
+    </track>
 	</entity>
 
 </domain-models>

@@ -68,7 +68,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
 
     Move paymentMove = invoicePayment.getMove();
@@ -97,7 +97,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException {
 
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);

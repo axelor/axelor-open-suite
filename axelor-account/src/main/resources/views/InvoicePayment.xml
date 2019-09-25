@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 		<hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
@@ -11,7 +11,7 @@
     	<field name="paymentMode" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
 		<field name="companyBankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    <field name="typeSelect"/>
-    	<field name="move" form-view="move-form" grid-view="move-grid"/>
+    	<field name="move" width="120" form-view="move-form" grid-view="move-grid"/>
     	<field name="statusSelect"/>
    		<button name="cancelBtn" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
 	</grid>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
 	     icon-background="#84429f"/>
@@ -182,7 +182,7 @@
 
 	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
 		model="com.axelor.apps.base.db.ICalendarEvent" >
-		<view type="calendar" name="calendar-event-all"/>
+		<view type="calendar" name="calendar-event-leave-request"/>
 		<view type="grid" name="calendar-event-grid"/>
 		<view type="form" name="calendar-event-form"/>
 		<domain>self.typeSelect = 4</domain>

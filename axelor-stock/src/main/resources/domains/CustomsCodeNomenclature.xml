@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="stock" package="com.axelor.apps.stock.db" />
 
-	<entity name="CustomsCodeNomenclature" lang="java" cachable="true">
+	<entity name="CustomsCodeNomenclature" lang="java" cacheable="true">
 	
 		<string name="code" max="10" namecolumn="true" unique="true" nullable="false"/>
 		<string name="wording" large="true"/>

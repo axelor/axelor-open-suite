@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	
 	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
@@ -20,16 +20,29 @@
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromProduction" expr="eval:true" />
 	</action-view>
-	
-	<menuitem name="manufacturing-root-bill-of-material" parent="manufacturing-root"
-		title="Bills of materials" action="manufacturing.root.bill.of.material" order="10" />
 
-	<action-view name="manufacturing.root.bill.of.material" title="Bills of materials"
-		model="com.axelor.apps.production.db.BillOfMaterial" >
+	<menuitem name="manufacturing-root-bill-of-material-root" parent="manufacturing-root"
+			  title="Bills of materials" order="10" />
+
+	<menuitem name="manufacturing-root-general-bill-of-material" parent="manufacturing-root-bill-of-material-root"
+			  title="General BoM" action="manufacturing.root.general.bill.of.material" order="1"/>
+
+	<action-view name="manufacturing.root.general.bill.of.material" title="General BoM"
+				 model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
 		<domain>self.personalized = false AND self.isSpecific = false</domain>
-	</action-view>	
+	</action-view>
+
+	<menuitem name="manufacturing-root-personalized-bill-of-material" parent="manufacturing-root-bill-of-material-root"
+			  title="Personalized BoM" action="manufacturing.root.personalized.bill.of.material" order="2"/>
+
+	<action-view name="manufacturing.root.personalized.bill.of.material" title="Personalized BoM"
+				 model="com.axelor.apps.production.db.BillOfMaterial" >
+		<view type="grid" name="bill-of-material-grid" />
+		<view type="form" name="bill-of-material-form" />
+		<domain>self.personalized = true AND self.isSpecific = false</domain>
+	</action-view>
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
 		title="Production processes" action="manufacturing.root.prod.process" order="5" />

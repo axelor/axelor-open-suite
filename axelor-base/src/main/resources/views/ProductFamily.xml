@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
-    <grid name="product-family-grid" title="Products families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
+    <grid name="product-family-grid" title="Product accounting families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
         <field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     
-    <form name="product-family-form" title="Product family" model="com.axelor.apps.base.db.ProductFamily" width="large">
+    <form name="product-family-form" title="Accounting family" model="com.axelor.apps.base.db.ProductFamily" width="large">
 	    <toolbar>
 			<button name="viewProductsBtn" title="View Products" onClick="action-view-product-by-family"/>
 		</toolbar>

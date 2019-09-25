@@ -18,12 +18,13 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 
 public interface ObjectDataExportService {
 
   public MetaFile export(
-      ObjectDataConfig objectDataConfig, Long recorId, String language, String format)
+      ObjectDataConfig objectDataConfig, ObjectDataConfigExport objDataConfigExport)
       throws AxelorException;
 }

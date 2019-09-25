@@ -174,6 +174,13 @@ public interface IExceptionMessage {
       "Feature currently not available with Open Street Maps." /*)*/;
   public static final String ADDRESS_7 = /*$$(*/
       "Current user's active company address is not set" /*)*/;
+  public static final String ADDRESS_8 = /*$$(*/
+      "You can select only one default invoicing address." /*)*/;
+  public static final String ADDRESS_9 = /*$$(*/
+      "You can select only one default delivery address." /*)*/;
+  public static final String ADDRESS_10 = /*$$(*/
+      "You must specify a default invoicing address." /*)*/;
+
   public static final String ADDRESS_CANNOT_BE_NULL = "Address cannot be null.";
 
   /** Bank details controller */
@@ -307,17 +314,75 @@ public interface IExceptionMessage {
   public static final String INVALID_HEADER = /*$$(*/ "Header is not valid." /*)*/;
 
   /** Import demo data from excel */
-  public static final String MODULE = /*$$*/ "Module" /*)*/;
+  public static final String MODULE = /*$$(*/ "Module" /*)*/;
 
-  public static final String MODULE_NOT_EXIST = /*$$*/ "%s module is not exist." /*)*/;
-  public static final String DATA_FILE = /*$$*/ "Data file" /*)*/;
-  public static final String CONFIGURATION_FILE = /*$$*/ "Configuration file" /*)*/;
-  public static final String CONFIGURATION_FILE_NOT_EXIST = /*$$*/
+  public static final String MODULE_NOT_EXIST = /*$$(*/ "%s module does not exist." /*)*/;
+  public static final String DATA_FILE = /*$$(*/ "Data file" /*)*/;
+  public static final String CONFIGURATION_FILE = /*$$(*/ "Configuration file" /*)*/;
+  public static final String CONFIGURATION_FILE_NOT_EXIST = /*$$(*/
       "%s configuration file is not exist." /*)*/;
-  public static final String ROW_NOT_EMPTY = /*$$*/ "%s row must not be Empty." /*)*/;
-  public static final String CELL_NOT_VALID = /*$$*/ "%s  cell is not valid." /*)*/;
-  public static final String IMPORT_COMPLETED_MESSAGE = /*$$*/
-      "Import completed successfully.Please check the log for more details" /*)*/;
-  public static final String INVALID_DATA_FORMAT_ERROR = /*$$*/
+  public static final String ROW_NOT_EMPTY = /*$$(*/ "%s row must not be empty." /*)*/;
+  public static final String CELL_NOT_VALID = /*$$(*/ "%s cell is not valid." /*)*/;
+  public static final String IMPORT_COMPLETED_MESSAGE = /*$$(*/
+      "Import completed successfully. Please check the log for more details." /*)*/;
+  public static final String INVALID_DATA_FORMAT_ERROR = /*$$(*/
       "Invalid data format. Please check log for more details." /*)*/;
+
+  /* ABC Analysis */
+  public static final String ABC_CLASSES_INVALID_STATE_FOR_REPORTING = /*$$(*/
+      "The analysis must be completed before the report can be printed." /*)*/;
+  public static final String ABC_CLASSES_INVALID_QTY_OR_WORTH = /*$$(*/
+      "The classes total quantity and total worth must equal 100%." /*)*/;
+  public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
+      "The worth and quantity value of each class must be greater than 0." /*)*/;
+
+  /* DMS Import */
+  public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
+      "File loaded successfully" /*)*/;
+  public static final String DMS_IMPORT_FILE_PROCESS_ERROR = /*$$(*/
+      "Error while processing zip file" /*)*/;
+  public static final String DMS_IMPORT_INVALID_ZIP_ERROR = /*$$(*/
+      "Uploaded file is not a valid zip file" /*)*/;
+
+  /** Advanced Import */
+  public static final String ADVANCED_IMPORT_NO_IMPORT_FILE = /*$$(*/
+      "Data file doesn't exist" /*)*/;
+
+  public static final String ADVANCED_IMPORT_FILE_FORMAT_INVALID = /*$$(*/
+      "Data file format is invalid" /*)*/;
+  public static final String ADVANCED_IMPORT_ATTACHMENT_FORMAT = /*$$(*/
+      "Attachments must be in zip format" /*)*/;
+  public static final String ADVANCED_IMPORT_1 = /*$$(*/
+      "Field(%s) doesn't exist for the object(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_2 = /*$$(*/
+      "Sub field(%s) doesn't exist of field(%s) for the object(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_3 = /*$$(*/
+      "Config exist in the file. Please check 'Config included in file'" /*)*/;
+  public static final String ADVANCED_IMPORT_4 = /*$$(*/
+      "Config doesn't exist in the file. Please uncheck 'Config included in file'" /*)*/;
+  public static final String ADVANCED_IMPORT_5 = /*$$(*/
+      "Sub field doesn't exist of field(%s) for the object(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_6 = /*$$(*/
+      "Search fields are missing for the object(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_TAB_ERR = /*$$(*/
+      "File tab is not matched inside file" /*)*/;
+  public static final String ADVANCED_IMPORT_NO_OBJECT = /*$$(*/
+      "Object is missing for tab configuration(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_NO_FIELDS = /*$$(*/
+      "There is no field for tab configuration(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_CHECK_LOG = /*$$(*/
+      "Check log file in tabs configuration" /*)*/;
+  public static final String ADVANCED_IMPORT_IMPORT_DATA = /*$$(*/
+      "Data imported successfully" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_1 = /*$$(*/ "Object is not matched" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_2 = /*$$(*/ "Missing import fields" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_3 = /*$$(*/ "Missing required fields" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_4 = /*$$(*/ "Missing sub fields for" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_5 = /*$$(*/ "Fields can't be ignore" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_6 = /*$$(*/
+      "Missing date format or expression" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_7 = /*$$(*/ "Invalid fields" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_8 = /*$$(*/
+      "Missing data for required fields" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_9 = /*$$(*/ "Invalid type of data" /*)*/;
 }

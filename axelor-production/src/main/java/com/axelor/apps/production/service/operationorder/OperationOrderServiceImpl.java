@@ -75,7 +75,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -90,7 +90,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,
@@ -355,23 +355,38 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                     LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
                         .toLocalDate());
             if (dayPlanning != null) {
-              numberOfMinutesPerDay =
-                  Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
-                      .toMinutes();
-              numberOfMinutesPerDay +=
-                  Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo())
-                      .toMinutes();
+              if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null) {
+                numberOfMinutesPerDay =
+                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
+                        .toMinutes();
+              }
+              if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null) {
+                numberOfMinutesPerDay +=
+                    Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo())
+                        .toMinutes();
+              }
+              if (dayPlanning.getMorningFrom() != null
+                  && dayPlanning.getMorningTo() == null
+                  && dayPlanning.getAfternoonFrom() == null
+                  && dayPlanning.getAfternoonTo() != null) {
+                numberOfMinutesPerDay +=
+                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getAfternoonTo())
+                        .toMinutes();
+              }
+
             } else {
               numberOfMinutesPerDay = 0;
             }
           } else {
-            numberOfMinutesPerDay = 60 * 8;
+            numberOfMinutesPerDay = 60 * 24;
           }
           if (numberOfMinutesPerDay != 0) {
+
             BigDecimal percentage =
                 new BigDecimal(numberOfMinutes)
                     .multiply(new BigDecimal(100))
                     .divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
+
             if (map.containsKey(machine)) {
               map.put(machine, map.get(machine).add(percentage));
             } else {
@@ -432,7 +447,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException {
     this.updateDiffProdProductList(operationOrder);

@@ -31,7 +31,7 @@ import javax.mail.MessagingException;
 
 public interface MessageService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Message createMessage(
       String model,
       int id,
@@ -47,21 +47,21 @@ public interface MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount);
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);
 
   public Set<MetaAttachment> getMetaAttachments(Message message);
 
   public Message sendMessage(Message message) throws AxelorException;
 
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message)
       throws MessagingException, IOException, AxelorException;
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendToUser(Message message);
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendByMail(Message message);
 
   public String printMessage(Message message) throws AxelorException;

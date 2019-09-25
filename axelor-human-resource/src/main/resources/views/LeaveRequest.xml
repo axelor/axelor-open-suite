@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
-	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDateT,startOnSelect">
+	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
 		 <hilite color="danger" if="statusSelect == 4"/>
 		 <hilite color="success" if="statusSelect == 3"/>
 		 <hilite color="warning" if="statusSelect == 2"/>
 		 <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		 <field name="user" form-view="user-form" grid-view="user-grid"/>
+		 <field name="leaveLine" />
 		 <field name="requestDate" />
 		 <field name="fromDateT" />
 		 <field name="startOnSelect" />
@@ -16,7 +17,7 @@
 		 <field name="statusSelect" />
 	</grid>
 	
-	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDateT,startOnSelect">
+	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
 		 <toolbar>
 			<button name="showSubordinateLeaveToValidateBtn" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
 		 </toolbar>
@@ -24,6 +25,7 @@
   		<hilite background="warning" if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/> 
 		 <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		 <field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates"/>
+		 <field name="leaveLine" />
 		 <field name="requestDate" />
 		 <field name="fromDateT" onChange="action-leave-request-validate-dates"/>
 		 <field name="startOnSelect" />

@@ -3,13 +3,28 @@
 ## Features
 - Add Pack Feature in sale order.
 - FLEET : Manage rental cars and minor fixes
-- Studio: New features - Label with color,multiline string,grid column sequence,form width and order by properties. 
+- Studio: New features - Label with color,multiline string,grid column sequence,form width,spacer and order by properties. 
+- JOURNAL : viewer to display the balance
+- SALE ORDER LINE : Display availability status on sale order line grid view if sale order status is 'Confirmed'.
+- Studio: sidebar option for panel
+- Add DMS Import.
+- Map : Filter out the data with empty address.
+- Studio : Tab display for panel tab
+- JSON-FIELD-FORM : add tracking in form fields
 
 ## Improvements
 - Remove Pack Feature from Product.
 - Account : Remove DirectDebitManagement
 - MENU BUILDER : Add selection support for icon and iconBackground
 - Custom Model : Hide menu panel and allows to create menu from menubuilder only
+- English language : Correction of errors in english words and change gender job word to genderless job word
+- Action Builder: Added option to update or use json field from real model
+- STUDIO : add 'attrs' for User.
+- Studio: Added colSpan,title for the label and  visibleInGrid option for button.
+- Studio: Added restriction for model and model field names, allowed only alphanumberic characters
+
+## Bug Fixes
+- Fix injection error during test
 
 ## [Unreleased 5.2.0]
 ## Features
@@ -91,7 +106,37 @@
 - Quality module : Changes in views.
 - OPPORTUNITY : Changes on opportunityType field.
 - INVOICE : Change form view's organization to fit the SaleOrder view.
-
+- OPPORTUNITY : Create event from opportunity.
+- PARTNER : Link to employee form and changed domain
+- PRICE LIST : Add dashlets to display partner
+- SALE ORDER : Recompute unit price when hideDiscount is true.
+- OPPORTUNITY : Auto fill sale-order form and cancel linked sale orders on 'closed lost' status
+- PROJECT : Add an analytic tab.
+- OBJECT DATA CONFIG : UX improvements  and Translations and Change in Export Type
+- ANALYTIC MOVE LINE : project field title changed and domain filter added.
+- CONTRACT : Set Invoice date with newly added options for invoicing Moment
+- Inventory : Added new field 'typeSelect' and change in product doman filter.
+- Address: Street have now a dedicated object.
+- SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
+- ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
+- PROJECT : Add new feature 'Project template'
+- Contract : Add analytic information to contract lines.
+- MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
+- PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
+- Advanced Import : Add feature to import data with advanced configurations.
+- BPM: More than one workflow support for a same object.
+- MRP : boolean to exclude product without proposal in the result dashlet
+- HR : TRAINING - Optimization of the menu by adding filters
+- MRP : Group proposals per supplier
+- Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList
+- MESSAGE TEMPLATE : added the management of additional contexts (groovy evaluation) in order to allow the use of Json fields.
+- HR : APPRAISALS - Optimization of the menu by adding filters
+- HR : RECRUITMENT - optimization of the menu by adding filters
+- Base : Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
+- Data import : manage forSelectUse in the file directly.
+- Action Builder : Add feature to create templates for json models to send email
+- FORECAST RECAP : sequence feature added for ForeCastRecap
+- Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
 - ContractLine: hide `isConsumptionLine` if not activated in Contract config
@@ -123,6 +168,27 @@
 - TeamTask : copy object with empty fields
 - ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
 - PRICE LIST : hide O2M historized price lists in pop-up view
+- MARKETING : Precise domain for model in message template
+- Change titles for productFamily.
+- CONTRACT : Set project on generated invoices
+- LEAVE REQUEST : Set message for leave reason has no unit
+- LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
+- ACCOUNT MOVE REVERSE: Selected reverse move date must not be after the date of the day
+- ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation  
+- Change google-plus icon by google one.
+- Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
+- SUPPLY CHAIN : delete boolean manageInvoicedAmountByLine.
+- EMPLOYEE : Fix issue with full name view
+- INVENTORY : adding ODS file format in report selection type.
+- Quality Control : Set default printing setting and update translation
+- INVOICE : Configure BIRT to generate an Excel and a Word file
+- KEYWORD : remove Keyword model.
+- Advanced Import : trim data before import.
+- CHARGEBYMACHINE : Correction of values with and without weekly planning of machine in the Previsional charge by machine (per days) graph.
+- USER : don't display the step "Employee" in the workflow when axelor-human-resource module is not installed
+- ACCOUNTING : year and accountSet fields are set empty when company is changed
+- ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
+- PARTNER: Checks the consistency of the address list of a partner.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -138,5 +204,31 @@
 - Marketing : Fix error when trying to generate an event per target
 - Contract : Fix import error in data-init. 
 - Sale Quotation : Move menu from CRM to Sale module.
+- BoM:  added a menu showing personalized bills of materials
+- BUSINESS PROJECT : Report printing Division by zero
+- UnitCostCalculation : Fixed the date format in the csv export name file.
+- BONUS MGT : Fix Formula Variable Error of Human Resource when computing amounts.
+- INVOICE :  Hide Due amount in report while printing "Original invoice / Updated copy"
+- PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
+- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
+- INVOICE : Reduce font size of tax table in Invoice printing
+- PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
+- ACCOUNT MOVE REVERSE: add translation
+- SALEORDER : fix action with obsolete name
+- ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
+- Transactionnal : correction and standardisation of rollback.
+- Upgraded to ADK 5.1.
+- Wkf : Fix unable to edit status field.
+- Advance Data Import : Fix indexOutOfBound Exception.
+- Advanced Data Import : Specify truncated value to sampleLines for large string.
+- MetaSelect : Update view and domain with latest version.
+- ERROR : Fixed NPE on product selection on invoiceLine
+- QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
+- EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
+- REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
+- PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
+- Update xsd to ADK 5.1
+- Advanced Data import :  fix issue of not generating info in log file when error occurred on import
+- Studio: fix m2o to metafile's widget property, display image,binarylink option.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

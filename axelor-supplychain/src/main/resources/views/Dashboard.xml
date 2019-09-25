@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<dashboard name="supplychain.products.dashboard.view.1" title="Products DB 1">
 		<dashlet action="dashlet.nbr.product.per.family" height="350" />
@@ -11,11 +11,11 @@
 		<dashlet action="dashlet.product.sale.turnover.last.12.month" height="350"/>		
 	</dashboard>
 	
-	<dashboard name="supplychain.products.family.dashboard.view.1" title="Family Dashboard">
+	<dashboard name="supplychain.products.family.dashboard.view.1" title="Accounting Family Dashboard">
 		<dashlet action="dashlet.nbr.product.per.family" canSearch="true" height="350" />
 	</dashboard>
 	
-	<dashboard name="supplychain.products.category.dashboard.view.1" title="Family Dashboard">
+	<dashboard name="supplychain.products.category.dashboard.view.1" title="Accounting Family Dashboard">
 		<dashlet action="dashlet.nbr.product.per.category" canSearch="true" height="350" />
 	</dashboard>
 	
@@ -28,7 +28,7 @@
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 	
-	<action-view name="dashlet.nbr.product.per.family" title="Number of Product per Family" model="com.axelor.apps.base.db.Product">
+	<action-view name="dashlet.nbr.product.per.family" title="Number of Product per Accounting Family" model="com.axelor.apps.base.db.Product">
 	  <view type="chart" name="chart.nbr.product.per.family"/>
 	</action-view>
 	

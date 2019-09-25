@@ -235,7 +235,7 @@ public class ConvertLeadWizardController {
     AppBase appBase = appBaseService.getAppBase();
     response.setAttr("lead", "value", lead);
     response.setAttr("amount", "value", lead.getEstimatedBudget());
-    response.setAttr("description", "value", lead.getDescription());
+    response.setAttr("customerDescription", "value", lead.getDescription());
     response.setAttr("source", "value", lead.getSource());
     response.setAttr("partner", "value", lead.getPartner());
     response.setAttr("user", "value", lead.getUser());
@@ -276,8 +276,6 @@ public class ConvertLeadWizardController {
     Map leadMap = (Map) context.get("_lead");
     if (leadMap != null && leadMap.get("id") != null) {
       lead = leadRepo.find(Long.parseLong(leadMap.get("id").toString()));
-    } else {
-      lead = (Lead) context.get("lead");
     }
 
     if (lead == null) {

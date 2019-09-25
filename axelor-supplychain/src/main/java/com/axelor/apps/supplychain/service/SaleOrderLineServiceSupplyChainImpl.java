@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
@@ -30,10 +31,18 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -44,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.persistence.Query;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
@@ -186,5 +196,73 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     } else {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
     }
+  }
+
+  @Override
+  public String getSaleOrderLineListForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+    List<Integer> statusList = new ArrayList<>();
+    statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    String status =
+        Beans.get(AppSupplychainService.class)
+            .getAppSupplychain()
+            .getsOFilterOnStockDetailStatusSelect();
+    if (!StringUtils.isBlank(status)) {
+      statusList = StringTool.getIntegerList(status);
+    }
+    String statusListQuery =
+        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.deliveryState != "
+            + SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+            + " AND self.saleOrder.statusSelect IN ("
+            + statusListQuery
+            + ")";
+
+    if (companyId != 0L) {
+      query += " AND self.saleOrder.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        StockLocation stockLocation =
+            Beans.get(StockLocationRepository.class).find(stockLocationId);
+        List<StockLocation> stockLocationList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocation(stockLocation, false);
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+          query +=
+              " AND self.saleOrder.stockLocation.id IN ("
+                  + StringTool.getIdListString(stockLocationList)
+                  + ") ";
+        }
+      }
+    }
+    return query;
+  }
+
+  @Override
+  public BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine) {
+    BigDecimal qty = saleOrderLine.getQty();
+    BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
+    BigDecimal invoicedQty = BigDecimal.ZERO;
+
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT SUM(self.qty) FROM InvoiceLine self WHERE self.invoice.statusSelect = :statusSelect AND self.saleOrderLine.id = :saleOrderLineId");
+    query.setParameter("statusSelect", InvoiceRepository.STATUS_VENTILATED);
+    query.setParameter("saleOrderLineId", saleOrderLine.getId());
+
+    invoicedQty = (BigDecimal) query.getSingleResult();
+
+    if (invoicedQty != null
+        && qty.compareTo(invoicedQty) == -1
+        && invoicedQty.compareTo(deliveredQty) > 0) {
+      return invoicedQty;
+    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
+      return deliveredQty;
+    }
+
+    return qty;
   }
 }

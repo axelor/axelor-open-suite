@@ -47,7 +47,7 @@ public class WorkflowCancelServiceProjectImpl extends WorkflowCancelServiceSuppl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void afterCancel(Invoice invoice) throws AxelorException {
     super.afterCancel(invoice);
 

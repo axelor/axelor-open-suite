@@ -33,9 +33,9 @@ public interface SaleOrderCreateService {
   /**
    * Initialize a new sale order
    *
-   * @param salemanUser User recorded as salesman on order, if <code>null</code>, will be set to
-   *     current user.
-   * @param company Company bound to the order, if <code>null</code>, will be bound to salesman
+   * @param salespersonUser User recorded as salesperson on order, if <code>null</code>, will be set
+   *     to current user.
+   * @param company Company bound to the order, if <code>null</code>, will be bound to salesperson
    *     active company.
    * @param contactPartner Customer contact to assign to the user, might be <code>null</code>.
    * @param currency Order's currency, should not be <code>null</code>.
@@ -46,13 +46,13 @@ public interface SaleOrderCreateService {
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
    *     price list.
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
-   * @param team Team managing the order, if <code>null</code>, will default to salesman active
+   * @param team Team managing the order, if <code>null</code>, will default to salesperson active
    *     team.
    * @return The created order
    * @throws AxelorException
    */
   public SaleOrder createSaleOrder(
-      User salemanUser,
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -80,7 +80,7 @@ public interface SaleOrderCreateService {
   @Transactional
   public SaleOrder createTemplate(SaleOrder context);
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrder(
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList) throws AxelorException;
 

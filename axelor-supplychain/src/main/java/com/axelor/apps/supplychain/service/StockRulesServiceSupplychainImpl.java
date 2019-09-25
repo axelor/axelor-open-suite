@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javax.mail.MessagingException;
 
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
@@ -74,7 +75,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generatePurchaseOrder(
       Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException {
@@ -107,11 +108,11 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
                 .fetchOne();
         if (template != null) {
           try {
-            Message message = templateMessageService.generateMessage(stockRules, template);
-            messageRepo.save(message);
+            Message message = templateMessageService.generateAndSendMessage(stockRules, template);
           } catch (ClassNotFoundException
               | InstantiationException
               | IllegalAccessException
+              | MessagingException
               | IOException e) {
             throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
           }

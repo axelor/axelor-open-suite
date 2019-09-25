@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="stock-config-grid" title="Stock configurations" model="com.axelor.apps.stock.db.StockConfig">
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -11,13 +11,13 @@
 	  <panel name="mainPanel" >
 	    <field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  </panel>
-	  <panel name="virtualStockLocationsInfoPanel" title="Virtual stock locations informations">
+	  <panel name="virtualStockLocationsInfoPanel" title="Virtual stock locations information">
 	    <field name="customerVirtualStockLocation" onSelect="action-stock-config-attrs-customer-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="supplierVirtualStockLocation" onSelect="action-stock-config-attrs-supplier-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="inventoryVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		  <field name="productionVirtualStockLocation" domain="self.usableOnProduction = True AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	  </panel>
-	  <panel name="stockMoveInfoPanel" title="Stock move informations">
+	  <panel name="stockMoveInfoPanel" title="Stock move information">
 		  <panel colSpan="12" name="subStockMoveInfoPanel">
 			  <field name="receiptDefaultStockLocation" onSelect="action-stock-config-attrs-receipt-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			  <field name="pickupDefaultStockLocation" onSelect="action-stock-config-attrs-pickup-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -70,7 +70,16 @@
 			<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
 			<field name="displayLineDetailsOnPrinting" widget="boolean-switch"/>
 			<field name="pickingOrderPrintingDetailed" widget="boolean-switch"/>
+			<field name="isDisplaySaleValueInPrinting" widget="boolean-switch"/>
+			<field name="isDisplayAccountingValueInPrinting" widget="boolean-switch"/>
+			<field name="displayTrackNbrOnCertificateOfConformityPrinting" widget="boolean-switch"/>
+			<field name="isDisplayAgPriceInPrinting" widget="boolean-switch"></field>
 		</panel>
+				
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-record name="action-stock-config-record-default" model="com.axelor.apps.stock.db.StockConfig">

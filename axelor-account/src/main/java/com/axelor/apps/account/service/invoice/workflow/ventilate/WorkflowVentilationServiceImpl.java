@@ -52,7 +52,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void afterVentilation(Invoice invoice) throws AxelorException {
     Company company = invoice.getCompany();
 

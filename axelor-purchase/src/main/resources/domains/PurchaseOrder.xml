@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -58,8 +58,8 @@
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
-	<boolean name="priceDisplay" title="Display price on requested purchase printing"/>
-  	
+	<boolean name="displayPriceOnQuotationRequest" title="Display price on requested purchase printing"/>
+    
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
 
 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>

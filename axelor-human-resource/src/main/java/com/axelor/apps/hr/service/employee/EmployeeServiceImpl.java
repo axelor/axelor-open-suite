@@ -152,7 +152,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         Beans.get(LeaveRequestRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDate BETWEEN ?3 AND ?4 OR self.toDate BETWEEN ?3 AND ?4)",
+                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4)",
                 employee.getUser(),
                 LeaveRequestRepository.STATUS_VALIDATED,
                 fromDate,
@@ -202,7 +202,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Long generateNewDPAE(Employee employee) throws AxelorException {
     EmploymentContract mainEmploymentContract = employee.getMainEmploymentContract();
     if (mainEmploymentContract == null) {

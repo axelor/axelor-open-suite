@@ -41,6 +41,6 @@ public interface EmployeeService extends UserService {
   public Map<String, String> getSocialNetworkUrl(String name, String firstName);
 
   /** Generates a new {@link DPAE} for given {@link Employee} and returns its id. */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Long generateNewDPAE(Employee employee) throws AxelorException;
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -13,11 +13,11 @@
   	<datetime name="dateT" title="Date" required="true" tz="true"/>
   	<string name="description" title="Description" large="true"/>
   	<one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
-  	<string name="formatSelect" title="File Format" selection="iadministration.export.type.select"/>
+  	<string name="formatSelect" title="File Format" selection="inventory.export.format.select"/>
   	<many-to-one name="importFile" title="File (CSV)" ref="com.axelor.meta.db.MetaFile" />
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
-  	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Product family"/>
+  	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Accounting family"/>
   	<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<boolean name="excludeOutOfStock" title="Excl. out of stock products"/>
@@ -27,6 +27,7 @@
   	<many-to-one name="validatedBy" title="Validated By" ref="com.axelor.auth.db.User"/>
   	<many-to-one name="completedBy" title="User" ref="com.axelor.auth.db.User"/>
   	<date name="validatedOn" title="Validated On"/>
+    <integer name="typeSelect" title="Type" selection="product.inventory.type.select" required="true"/>
   	
   	<unique-constraint columns="inventorySeq,stockLocation"/>
   	

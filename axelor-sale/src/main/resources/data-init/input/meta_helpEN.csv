@@ -9,7 +9,7 @@
 "axelor-sale";"AppSale";"app-sale-config-form";"printingConfigPerSaleOrder";"If this option is not enabled, the print settings by default for quotations/orders will be those of the company. By enabling this option, you will be able to configure specific print parameters by quotation/order."
 "axelor-sale";"AppSale";"app-sale-config-form";"closeOpportunityUponSaleOrderConfirmation";"When an order is linked to an opportunity, by enabling this option, the opportunity will be automatically closed when the order is confirmed."
 "axelor-sale";"SaleConfig";"sale-config-form";"saleOrderInAtiSelect";"It is possible to choose if in sale quotations/orders the prices are always in WT, always in ATI, by default in WT or by default in ATI. The choices ""by default in WT"" and ""by default in ATI"" leave the possibility of modifying the type of price applied on a case by case basis (via a check box)."
-"axelor-sale";"SaleConfig";"sale-config-form";"displaySalemanOnPrinting";"If the box is checked, the name of the salesman that is indicated on a quotation/order will appear on the printouts."
+"axelor-sale";"SaleConfig";"sale-config-form";"displaySalemanOnPrinting";"If the box is checked, the name of the salesperson that is indicated on a quotation/order will appear on the printouts."
 "axelor-sale";"SaleConfig";"sale-config-form";"displayDelCondOnPrinting";"On a quotation/order, in the tab ""Delivery Information"", there is a text field ""Delivery conditions"". If enabled, the contents of this field will appear on the printings.
 "
 "axelor-sale";"SaleConfig";"sale-config-form";"saleOrderClientBox";"It offers the possibility to personalize a customer box with information of your choice on the printing of quotations/orders thanks to a field html."

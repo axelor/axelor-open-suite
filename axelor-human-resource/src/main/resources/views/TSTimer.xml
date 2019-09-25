@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="ts-timer-grid" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer" editable="true"
 	onNew="action-hr-ts-timer-record-default" canNew="false">
@@ -56,7 +56,7 @@
 	</action-record>
 	
 	<action-record name="action-ts-timer-record-start" model="com.axelor.apps.hr.db.TSTimer">
-		<field name="startDateTime" expr="eval:__config__.app.getTodayDateTime()"  if="statusSelect != TSTimerRepository.STATUS_PAUSE "/>
+		<field name="startDateTime" expr="eval:__config__.app.getTodayDateTime()"  if="startDateTime == null || statusSelect != TSTimerRepository.STATUS_PAUSE "/>
 		<field name="timerStartDateT" expr="eval:__config__.app.getTodayDateTime()"/>
 		<field name="statusSelect" expr="eval:TSTimerRepository.STATUS_START"/>
 	</action-record>

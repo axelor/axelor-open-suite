@@ -27,20 +27,20 @@ import java.util.List;
 
 public interface LunchVoucherMgtService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public int updateStock(
       List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
       List<LunchVoucherMgtLine> oldLunchVoucherMgtLines,
       Company company)
       throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException;
 
   public int checkStock(Company company, int numberToUse) throws AxelorException;

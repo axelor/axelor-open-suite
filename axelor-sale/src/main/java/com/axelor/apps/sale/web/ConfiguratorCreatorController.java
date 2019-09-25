@@ -19,10 +19,12 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -92,7 +94,8 @@ public class ConfiguratorCreatorController {
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {
     try {
       String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
-      String importLog = configuratorCreatorService.importConfiguratorCreators(pathDiff);
+      String importLog =
+          Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
       response.setValue("importLog", importLog);
     } catch (Exception e) {
       TraceBackService.trace(e);

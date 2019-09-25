@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://axelor.com/xml/ns/object-views"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -57,9 +57,15 @@
 					<panel name="accountFactorPanel" if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
 						<field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 						<field name="factorCreditAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					</panel>
+					<panel name="accountGeneralPanel" colSpan="12">
+						<field name="yearOpeningAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="yearClosureAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 						<field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 						<field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 					</panel>
+
+
 				</panel>
 				<panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
@@ -99,6 +105,10 @@
 				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
 
+				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()">
+					<field name="isManagePassedForPayment" widget="boolean-switch"/>
+				</panel>
+
 				<panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
 					<field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
 					<field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
@@ -122,6 +132,7 @@
 					<field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
 					<field name="termsAndConditions" widget="html" colSpan="12"/>
 				</panel>
+
 			</panel>
 
 			<panel name="journalsPanel" title="Journals">
@@ -141,6 +152,7 @@
 				<field name="manualMiscOpeJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
                 <field name="expenseJournal" domain="self.statusSelect = 1 AND self.company = :company" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" grid-view="journal-grid"
                        form-view="journal-form"/>
+				<field name="reportedBalanceJournal" domain="self.statusSelect = 1 AND self.company = :company" grid-view="journal-grid" form-view="journal-form"/>
 			</panel>
 
 			<panel name="cfonbPanel" title="CFONB" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment">
@@ -238,6 +250,11 @@
 				<field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
 		</panel-tabs>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 
 	</form>
 

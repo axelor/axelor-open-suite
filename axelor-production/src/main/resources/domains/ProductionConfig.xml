@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ProductionConfig" lang="java" cachable="true">
+  <entity name="ProductionConfig" lang="java" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
 	<integer name="stockMoveRealizeOrderSelect" default="1"
@@ -26,6 +26,15 @@
    		]]>
 	  </extra-code>
 
+		<track>
+			<field name="company" on="UPDATE"/>
+			<field name="stockMoveRealizeOrderSelect" on="UPDATE"/>
+			<field name="manufOrderSequence" on="UPDATE"/>
+			<field name="finishMoAutomaticEmail" on="UPDATE"/>
+			<field name="finishMoMessageTemplate" on="UPDATE"/>
+			<field name="partFinishMoAutomaticEmail" on="UPDATE"/>
+			<field name="partFinishMoMessageTemplate" on="UPDATE"/>
+		</track>
 
   </entity>
   

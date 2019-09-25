@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -126,12 +127,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .all()
             .filter(
                 "self.product.id in (?1) AND self.prodProcess.stockLocation in (?2) "
-                    + "AND self.statusSelect NOT IN (?3) AND self.plannedStartDateT > ?4",
+                    + "AND self.statusSelect IN (?3)",
                 this.productMap.keySet(),
                 this.stockLocationList,
-                statusList, // TODO ETRANGE ICI : DEVRAIT ETRE
-                // L'INVERSE.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                today.atStartOfDay())
+                statusList)
             .fetch();
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -145,7 +144,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createManufOrderMrpLines(
       Mrp mrp,
       ManufOrder manufOrder,
@@ -229,7 +228,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
           // A component of a manuf order that is not loaded on MRP because there is no default
           // BOM or
-          // because the component of manuf order is not a component of the bill of material, we
+          // because the component of manuf order is not a component of the bill of materials, we
           // add it with the level of manuf order product + 1.
           if (!this.productMap.containsKey(product.getId())) {
             this.assignProductAndLevel(product, manufOrder.getProduct());
@@ -367,7 +366,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   /**
-   * Update the level of Bill of material. The highest for each product (0: product with parent, 1:
+   * Update the level of Bill of materials. The highest for each product (0: product with parent, 1:
    * product with a parent, 2: product with a parent that have a parent, ...)
    *
    * @param billOfMaterial
@@ -406,7 +405,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   /**
    * Add a component product of a manuf order where the component product is not contained on the
-   * default bill of material of the produced product.
+   * default bill of materials of the produced product.
    *
    * @param manufOrderComponentProduct
    * @param manufOrderProducedProduct
@@ -431,5 +430,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             productRepository.find(product.getId()),
             stockLocation,
             availableStockMrpLineType));
+  }
+
+  @Override
+  protected Mrp completeProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException {
+    super.completeProjectedStock(mrp, product, company, stockLocation);
+    this.createManufOrderMrpLines();
+    return mrp;
   }
 }

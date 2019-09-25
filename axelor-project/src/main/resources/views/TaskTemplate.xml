@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<grid name="task-template-grid" title="Task template" model="com.axelor.apps.project.db.TaskTemplate">
+		<field name="name"/>
+		<field name="assignedTo"/>
+		<field name="team"/>
+		<field name="delayToStart"/>
+		<field name="duration"/>
+		<field name="totalPlannedHrs"/>
+		<field name="isUniqueTaskForMultipleQuantity"/>
+	</grid>
+
+	<form name="task-template-form" title="Task template" model="com.axelor.apps.project.db.TaskTemplate" width="large">
+		<panel name="mainPanel">
+			<field name="name" colSpan="12" css="label-bold bold large"/>
+			<field name="delayToStart"/>
+			<field name="duration"/>
+			<field name="totalPlannedHrs"/>
+			<field name="assignedTo" canEdit="false"/>
+			<field name="team" canEdit="false"/>
+			<field name="isUniqueTaskForMultipleQuantity" widget="boolean-switch"/>
+		</panel>
+		<panel name="contentPanel" title="Description" colSpan="12">
+			<field name="description" showTitle="false" colSpan="12" widget="html"/>
+		</panel>
+		<panel if="__config__.app.isApp('business-support')" if-module="axelor-business-support" name="internalDescriptionPanel" title="Internal Description">
+			<field name="internalDescription" colSpan="12" widget="html"/>
+		</panel>
+		<panel name="financialDataPanel" title="Financial Data" colSpan="12">
+				<field name="teamTaskInvoicing" colSpan="4" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+		</panel>
+	</form>
+
+</object-views>

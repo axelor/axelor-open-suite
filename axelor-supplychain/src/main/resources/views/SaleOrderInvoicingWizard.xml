@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<form name="sale-order-invoicing-wizard-form" title="Invoicing"
 		  model="com.axelor.apps.sale.db.SaleOrder"
 		  onLoad="action-group-sale-order-invoicing-wizard-onload">
 		<panel name="operationSelectPanel">
-            <field name="operationSelect" title="Operation choice"
-				   type="selection"
-				   selection="supplychain.sale.order.invoicing.wizard.select"
-                   selection-in="[invoiceAll, invoiceFraction, invoiceLines, invoiceAdvPayment]"
-				   required="true" if="!__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
+
 			<field name="operationSelect" title="Operation choice"
 				   type="selection"
 				   selection="supplychain.sale.order.invoicing.wizard.select"
-                   selection-in="[invoiceAll, invoiceLines, invoiceAdvPayment]"
-				   required="true" if="__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
-
+				   required="true"/>
 		</panel>
-        <panel name="amountPanel" showIf="[2,3,4].includes($number(operationSelect))">
+        <panel name="amountPanel" showIf="$contains([2,3],$number(operationSelect))">
 			<field name="isPercent" title="Is amount in %" type="boolean"
 				   />
 			<field name="amountToInvoice" title="Amount to invoice" type="decimal"
-				   showIf="[2,4].includes($number(operationSelect))"/>
+				   showIf="$contains([3],$number(operationSelect))"/>
 		</panel>
-		<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" hideIf="operationSelect != 3" canNew="false"
+		<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" hideIf="operationSelect != 2" canNew="false"
 					   grid-view="invoicing-wizard-sale-order-line-grid"
 					   editable="true"/>
 
-		<panel name="actionPanel" showIf="operationSelect &lt; 5">
+		<panel name="actionPanel" showIf="operationSelect &lt; 4">
 			<button name="createInvoiceBtn" title="Generate the invoice"
 					onClick="action-group-sale-order-invoicing-wizard-generate"/>
 		</panel>
@@ -41,7 +35,7 @@
 
 	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice" edit-icon="false"
 		  model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="product.code"/>
+		<field name="product.code" width="120"/>
 		<field name="productName" readonly="true"/>
 		<field name="qty" readonly="true" aggregate="sum"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
@@ -71,8 +65,6 @@
 	<action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
 		<attribute for="operationSelect" name="value" expr="eval: 1"
 				   if="amountInvoiced == 0"/>
-		<attribute for="operationSelect" name="value" expr="eval: 2"
-				   if="amountInvoiced > 0"/>
 		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
 				   expr="eval: exTaxTotal - amountInvoiced"/>
 	</action-attrs>

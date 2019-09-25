@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
@@ -70,16 +70,18 @@
 						</viewer>
 				</field>
 			</panel>
-			<panel name="seqPanel" colSpan="2" if="__config__.app.getApp('project')?.generateProjectSequence">
-				<field name="projectSeq" showTitle="false" colSpan="12" css="label-bold bold large" readonly="true"/>
-			</panel>
+
 			<panel name="informationPanel" colSpan="10">
 				<field name="fullName" showTitle="false" colSpan="12"
 					css="label-bold bold large">
 					<editor x-show-titles="false">
-						<field name="code" showTitle="false" colSpan="3"
+						<panel name="seq" colSpan="3">
+						<field name="code" showTitle="false" colSpan="12" required="true" if="__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
-						<field name="name" showTitle="false" colSpan="9"
+						<field name="code" showTitle="false" colSpan="12" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
+							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
+						</panel>
+						<field name="name" showTitle="false" colSpan="6" required="true"
 							css="label-bold bold large" />
 					</editor>
 				</field>
@@ -165,8 +167,8 @@
 		                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
 		       			]]></viewer>
 					</field>
-					
-					<button name="planPlanningBtn" title="Plan project" css="btn-custom text-left" onClick="save,action-project-view-project-planning-wizard"  hideIf="$popup()" colSpan="3"/>				
+
+					<button name="planPlanningBtn" title="Plan project" css="btn-custom text-left" onClick="save,action-project-view-project-planning-wizard"  hideIf="$popup()" colSpan="3"/>
 					<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3" hideIf="$popup()"/>
 					<button name="addProjectPlanningTimeLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-add-new,save" />
 					<button name="removeProjectPlanningTimeLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-remove,save" />
@@ -176,14 +178,14 @@
 					<button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 					<button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
 					<panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning" action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
-					
+
 					<spacer name="timeSpentSpacer" colSpan="4"/>
-					
+
 					<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-spent-time" colSpan="3" hideIf="$popup()"/>
 					<button name="addProjectPlanningTimeSpentLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-spent-add-new,save" />
 					<button name="removeProjectPlanningTimeSpentLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-spent-remove,save" />
 					<field name="$projectPlanningTimeSpentSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time Spent"
-					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" 
+					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
 					grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
 					<button name="removeSelectedPlanningTimeSpentBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time-spent"/>
 					<button name="cancelRemovePlanningTimeSpentBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-spent-cancel-remove" />
@@ -320,6 +322,10 @@
 				<panel-dashlet name="advancePaymentInvoicesDashletPanel" action="action-project-dashlet-advance-payment-invoices" colSpan="12" 
 					if="__config__.app.getApp('business-project').getShowPurchaseInvoiceLineRelatedToProject() || __config__.app.getApp('business-project').getShowSaleInvoiceLineRelatedToProject()" canSearch="true"/>
 			</panel>
+			<panel title="Analytic" name="analyticPanel" showIf="isBusinessProject"
+			     if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<panel-dashlet name="analyticDashletPanel" action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
+    		</panel>
 			<panel title="Wiki"  name="wikiPanel" >
 				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
@@ -370,7 +376,7 @@
 			<button name="finishBtn" title="Finish" hidden="true" showIf="statusSelect == 2"
 				colSpan="12" icon="fa-check" onClick="action-project-record-status-finished,save" />
 			<button name="cancelBtn" title="Cancel" hidden="true"
-				showIf="statusSelect == 2 || statusSelect == 3" colSpan="12" css="btn-danger"
+				showIf="statusSelect != 4" colSpan="12" css="btn-danger"
 				icon="fa-times-circle" onClick="action-project-record-status-canceled,save" />
 			<button name="newStatusBtn" title="Reset to New" hidden="true"
 				showIf="statusSelect == 4" colSpan="12" css="btn-danger"
@@ -383,9 +389,9 @@
 					name="isProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
-				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 			</panel>
 			<panel if-module="axelor-business-project" name="project"
 				showIf="isProject" colSpan="12">
@@ -808,10 +814,9 @@
 		<view-param name="popup" value="reload"/>
 		<context name="_project" expr="eval:__this__"/>
 	</action-view>
-	
+
 	<action-attrs name="action-business-support-attrs-project-default">
-		<attribute name="value" for="project" expr="eval:_parent" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
-		<attribute name="readonly" for="project" expr="eval:true" if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
+		<attribute name="hidden" for="project" expr="eval:true" if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
 	</action-attrs>
 
 	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">
@@ -843,5 +848,10 @@
 		<view type="form" name="invoice-form"/>
 		<domain>self.contract.project.id = :_id</domain>
 	</action-view>
-	
+
+    <action-view name="dashlet.task" title="Tasks" model="com.axelor.apps.project.db.Project">
+        <view type="grid" name="task-grid" />
+        <view type="form" name="task-form" />
+    </action-view>
+
 </object-views>

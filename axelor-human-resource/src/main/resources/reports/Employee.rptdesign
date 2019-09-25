@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.5.0.v201506092134 Build &lt;@BUILD@></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -477,7 +477,7 @@
             <xml-property name="queryText"><![CDATA[select Employee.name as "Name",
 Employee.weekly_work_hours as "WeeklyWorkHours",
 Employee.daily_work_hours as "DailyWorkHours",
-Employee.department as "Department",
+Contract.company_department as "Department",
 Employee.birth_date as "BirthDate",
 Employee.date_of_hire as "DateOfHire",
 Employee.hourly_rate as "HourlyRate",
@@ -493,7 +493,7 @@ Contract.end_date as "EndDate",
 Contract.monthly_global_cost as "MonthlyCost",
 Contract.pay_company as "PayCompany",
 Contract.position as "Position",
-Contract.contract_type_select as "ContractType",
+Contract.contract_type as "ContractType",
 Company.name as "Company",
 SlctItem.title as "MaritalStatus"
 from hr_employee as Employee
@@ -503,8 +503,7 @@ left outer join hr_employment_contract as Contract on (Employee.id = Contract.em
 left outer join base_company as Company on (Contract.pay_company = Company.id)
 left outer join meta_select as Slct on (Slct.name = 'hr.employee.marital.status')
 left outer join meta_select_item as SlctItem on (Slct.id = SlctItem.select_id) and (SlctItem.value = Employee.marital_status)
-left outer join meta_select as SlctContract on (SlctContract.name = 'hr.employment.contract.contract.type.select')
-left outer join meta_select_item as SlctContractItem on (SlctContract.id = SlctContractItem.select_id)]]></xml-property>
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1385,7 +1384,7 @@ EMPLOYEE RESUME
                         <property name="paddingBottom">1pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<H2>Personal Informations</H2>]]></text-property>
+                        <text-property name="content"><![CDATA[<H2>Personal Information</H2>]]></text-property>
                     </text>
                     <grid id="281">
                         <column id="282"/>

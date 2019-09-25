@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -118,6 +118,8 @@
     <!-- Invoice mail -->
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
     <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate" default="false" />
+	<many-to-one name="invoiceMessageTemplateOnValidate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 
     <many-to-many name="advancePaymentInvoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Advance payments"/>
 
@@ -127,6 +129,12 @@
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
 	
+	<date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
+	<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
+	<integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+	<many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay" ref="com.axelor.apps.base.db.CancelReason"/>
+	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[
@@ -154,12 +162,18 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
-	    
+
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;
 		public static final int REPORT_TYPE_ORIGINAL_INVOICE = 2;
 		public static final int REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS= 3;
 		public static final int REPORT_TYPE_UPDATED_COPY = 4;
+
+
+	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_STATUS_AWAITING = 1;
+	    public static final int PFP_STATUS_VALIDATED = 2;
+	    public static final int PFP_STATUS_LITIGATION = 3;
 
 	]]></extra-code>
 	

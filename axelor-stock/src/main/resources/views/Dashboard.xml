@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	
 	<action-view title="Customer deliveries by country" name="dashlet.stockMove.nbr.delivery.by.country">
@@ -16,7 +16,7 @@
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
 	
-	<action-view title="Product deliveries in qty by country by family" name="dashlet.stockMoveLine.product.delivery.by.country.by.family">
+	<action-view title="Product deliveries in qty by country by accounting family" name="dashlet.stockMoveLine.product.delivery.by.country.by.family">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
@@ -102,13 +102,13 @@
 		  <context name="active_company" expr="eval:__user__.activeCompany" />
 	</action-view>
 	
-	<action-view title="Production Stock Move in Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.stock.db.StockMove" name="dashlet.production.stock.move.in.planned">
+	<action-view title="Production Stock Move in Planned" model="com.axelor.apps.stock.db.StockMove" name="dashlet.production.stock.move.in.planned">
 	    <view type="grid" name="stock-move-in-grid"/>
 	    <view type="form"/>
 		<domain>(self.inManufOrder IS NOT NULL AND self.inManufOrder.statusSelect = 3) OR (self.inOperationOrder IS NOT NULL and self.inOperationOrder.statusSelect = 3)</domain>
 	</action-view>
 	
-	<action-view title="Production Stock Move out Planned" icon="img/16px/productSmall_16px.png" model="com.axelor.apps.stock.db.StockMove" name="dashlet.production.stock.move.out.planned">
+	<action-view title="Production Stock Move out Planned" model="com.axelor.apps.stock.db.StockMove" name="dashlet.production.stock.move.out.planned">
 	    <view type="grid" name="stock-move-out-grid"/>
 	    <view type="form"/>
 		<domain>self.outManufOrder IS NOT NULL AND self.outManufOrder.statusSelect = 3</domain>

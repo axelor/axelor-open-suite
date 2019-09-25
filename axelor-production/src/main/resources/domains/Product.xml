@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
  
   <module name="base" package="com.axelor.apps.base.db"/>
  
@@ -7,9 +7,6 @@
   
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="10"/>
 	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
-  
-  	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
-  	
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
     <integer name="realOrEstimatedPriceSelect" title="MO's valuation method" selection="production.product.price.method.select" default="1"/>
     <integer name="manufOrderCompValuMethodSelect" title="Components valuation method for manuf. order" selection="production.product.components.valuation.select" default="1"/>

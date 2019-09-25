@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="cheque-rejection-grid" title="Cheque Rejections" model="com.axelor.apps.account.db.ChequeRejection">
-		<field name="name"/>
+		<field name="name" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="dateTime"/>
 		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -65,7 +65,7 @@
     </action-method>
     
     <action-attrs name="action-cheque-rejection-attrs-domain-payment-voucher">
-      	<attribute name="domain" for="paymentVoucher" expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode.id = ${paymentMode?.id} and self.base.id = ${partner?.id}&quot;" if="partner != null"/>
+      	<attribute name="domain" for="paymentVoucher" expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode.id = ${paymentMode?.id} and self.partner.id = ${partner?.id}&quot;" if="partner != null"/>
     </action-attrs>
     
      <action-record name="default-cheque-rejection-record" model="com.axelor.apps.account.db.ChequeRejection">

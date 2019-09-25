@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppSale" lang="java" extends="App">
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
-    <boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
+    	<boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
 		<boolean name="enableConfigurator" title="Enable business configurator"/>
 		<boolean name="allowPendingOrderModification" />
@@ -17,6 +17,21 @@
         <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
 		<boolean name="enablePackManagement" title="Pack Management"/>
+		<boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
+
+		<track>
+			<field name="manageSaleOrderVersion" on="UPDATE"/>
+			<field name="printingOnSOFinalization" on="UPDATE"/>
+			<field name="manageSalesUnits" on="UPDATE"/>
+			<field name="productPackMgt" on="UPDATE"/>
+			<field name="enableConfigurator" on="UPDATE"/>
+			<field name="allowPendingOrderModification" on="UPDATE"/>
+			<field name="manageMultipleSaleQuantity" on="UPDATE"/>
+			<field name="printingConfigPerSaleOrder" on="UPDATE"/>
+			<field name="closeOpportunityUponSaleOrderConfirmation" on="UPDATE"/>
+			<field name="salemanSelect" on="UPDATE"/>
+			<field name="enableCustomerCatalogMgt" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="human-resource" package="com.axelor.apps.hr.db"/>
 	
-	<entity name="Employee" cachable="true">
+	<entity name="Employee" cacheable="true">
 		<many-to-many name="trainingSkillSet" ref="com.axelor.apps.talent.db.Skill" title="Training skills"/>
 		<many-to-many name="experienceSkillSet" ref="com.axelor.apps.talent.db.Skill" title="Experience skills"/>
 		<many-to-many name="skillSet" ref="com.axelor.apps.talent.db.Skill" title="Other skills" />

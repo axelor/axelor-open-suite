@@ -107,7 +107,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String sequenceNumber =
@@ -194,7 +194,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease)
       throws AxelorException {
     MoveService moveService = Beans.get(MoveService.class);
@@ -215,6 +215,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
       if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) == 0) {
         continue;
+      }
+
+      boolean isRefund = false;
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        isRefund = true;
       }
 
       LocalDate date = subrogationRelease.getAccountingDate();
@@ -239,12 +244,12 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   invoice.getPartner(),
                   factorDebitAccount,
                   invoice.getCompanyInTaxTotalRemaining(),
-                  true,
+                  !isRefund,
                   date,
                   null,
                   1,
                   subrogationRelease.getSequenceNumber(),
-                  null);
+                  invoice.getInvoiceId());
 
       creditMoveLine =
           moveService
@@ -254,12 +259,12 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   invoice.getPartner(),
                   factorCreditAccount,
                   invoice.getCompanyInTaxTotalRemaining(),
-                  false,
+                  isRefund,
                   date,
                   null,
                   2,
                   subrogationRelease.getSequenceNumber(),
-                  null);
+                  invoice.getInvoiceId());
 
       move.addMoveLineListItem(debitMoveLine);
       move.addMoveLineListItem(creditMoveLine);

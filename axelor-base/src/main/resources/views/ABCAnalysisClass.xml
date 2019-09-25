@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+    <grid name="abc-analysis-class-grid" model="com.axelor.apps.base.db.ABCAnalysisClass" title="ABC classes" editable="true">
+        <field name="name" required="true"/>
+        <field name="sequence" hidden="true"/>
+        <field name="worth" required="true"/>
+        <field name="qty" required="true"/>
+    </grid>
+
+    <form name="abc-analysis-class-form" model="com.axelor.apps.base.db.ABCAnalysisClass" title="ABC class">
+        <panel name="mainPanel">
+            <field name="name" required="true"/>
+            <field name="sequence"/>
+            <field name="worth" required="true"/>
+            <field name="qty" required="true"/>
+        </panel>
+    </form>
+</object-views>

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -45,6 +47,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -68,6 +71,8 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
+
+  @Inject ProductRepository productRepository;
 
   @Override
   public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove)
@@ -564,7 +569,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void processCollected(LogisticalForm logisticalForm) throws AxelorException {
     if (logisticalForm.getLogisticalFormLineList() == null) {
       return;
@@ -661,5 +666,25 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     logisticalFormLine.setUnitNetMass(stockMoveLine.getNetMass());
 
     return logisticalFormLine;
+  }
+
+  public void updateProductNetMass(LogisticalForm logisticalForm) {
+    BigDecimal totalNetMass = BigDecimal.ZERO;
+    if (logisticalForm.getLogisticalFormLineList() != null) {
+      for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+        if (logisticalFormLine.getStockMoveLine() != null
+            && logisticalFormLine.getStockMoveLine().getProduct() != null
+            && logisticalFormLine
+                .getTypeSelect()
+                .equals(LogisticalFormLineRepository.TYPE_DETAIL)) {
+          Product product =
+              productRepository.find(logisticalFormLine.getStockMoveLine().getProduct().getId());
+          logisticalFormLine.setUnitNetMass(product.getNetMass());
+          totalNetMass =
+              totalNetMass.add(logisticalFormLine.getQty().multiply(product.getNetMass()));
+        }
+      }
+      logisticalForm.setTotalNetMass(totalNetMass);
+    }
   }
 }

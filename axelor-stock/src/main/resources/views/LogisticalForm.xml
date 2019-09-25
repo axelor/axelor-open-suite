@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
   <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms" name="logistical-form-grid" orderBy="-deliveryNumberSeq,-collectionDate">
 		<field name="tracking" />
-		<field name="deliveryNumberSeq" />
+		<field name="deliveryNumberSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="deliverToCustomerPartner" form-view="partner-customer-form" grid-view="partner-customer-grid" canEdit="false" />
 		<field name="carrierPartner" />
@@ -14,7 +14,7 @@
 
     <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms" name="logistical-form-stock-move-grid"
         orderBy="-deliveryNumberSeq,-collectionDate">
-        <field name="deliveryNumberSeq" />
+        <field name="deliveryNumberSeq" width="120"/>
         <field name="collectionDate" />
         <field name="statusSelect" />
     </grid>
@@ -24,6 +24,7 @@
         <toolbar>
             <button name="packingListBtn" title="Print packing list" readonlyIf="!logisticalFormLineList.length"
                 onClick="action-group-logistical-form-print-packing-list" icon="fa-print" if="__config__.app.isApp('supplychain')" />
+            <button name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-logistical-form-method-refresh-net-mass,save" />
         </toolbar>
         <panel colSpan="12" name="mainPanel">
 			<panel name="statusSelectPanel" colSpan="4" itemSpan="12">
@@ -176,5 +177,9 @@
     <action-method name="action-logistical-form-method-set-customer-account-number">
         <call class="com.axelor.apps.stock.web.LogisticalFormController" method="setCustomerAccountNumberToCarrier" />
     </action-method>
+
+	<action-method name="action-logistical-form-method-refresh-net-mass">
+		<call class="com.axelor.apps.stock.web.LogisticalFormController" method="refreshProductNetMass"/>
+	</action-method>
 
 </object-views>

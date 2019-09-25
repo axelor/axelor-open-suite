@@ -115,10 +115,10 @@ public class BillOfMaterialController {
       message =
           String.format(
               I18n.get(
-                  "This bill of material already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
+                  "This bill of materials already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
               existingVersions);
     } else {
-      message = I18n.get("Do you really wish to create a new version of this bill of material ?");
+      message = I18n.get("Do you really wish to create a new version of this bill of materials ?");
     }
 
     response.setAlert(message);
@@ -132,7 +132,7 @@ public class BillOfMaterialController {
     BillOfMaterial copy = billOfMaterialService.generateNewVersion(billOfMaterial);
 
     response.setView(
-        ActionView.define("Bill of material")
+        ActionView.define("Bill of materials")
             .model(BillOfMaterial.class.getName())
             .add("form", "bill-of-material-form")
             .add("grid", "bill-of-material-grid")
@@ -182,7 +182,7 @@ public class BillOfMaterialController {
       TempBomTree tempBomTree = billOfMaterialService.generateTree(billOfMaterial);
 
       response.setView(
-          ActionView.define(I18n.get("Bill of material"))
+          ActionView.define(I18n.get("Bill of materials"))
               .model(TempBomTree.class.getName())
               .add("tree", "bill-of-material-tree")
               .context("_tempBomTreeId", tempBomTree.getId())

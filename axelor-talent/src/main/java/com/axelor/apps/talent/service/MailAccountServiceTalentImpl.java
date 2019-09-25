@@ -41,7 +41,7 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
   @Inject private JobPositionService jobPositionService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date)
       throws MessagingException, IOException {

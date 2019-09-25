@@ -129,7 +129,7 @@ public class MoveService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMove(Invoice invoice) throws AxelorException {
     Move move = null;
 
@@ -420,15 +420,14 @@ public class MoveService {
     return oDmove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(
       Move move,
       boolean isAutomaticReconcile,
       boolean isAutomaticAccounting,
-      boolean isUnreconcileOriginalMove)
+      boolean isUnreconcileOriginalMove,
+      LocalDate dateOfReversion)
       throws AxelorException {
-
-    LocalDate todayDate = move.getDate();
 
     Move newMove =
         moveCreateService.createMove(
@@ -436,11 +435,12 @@ public class MoveService {
             move.getCompany(),
             move.getCurrency(),
             move.getPartner(),
-            todayDate,
+            dateOfReversion,
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
             move.getIgnoreInDebtRecoveryOk(),
-            move.getIgnoreInAccountingOk());
+            move.getIgnoreInAccountingOk(),
+            move.getAutoYearClosureMove());
 
     move.setInvoice(move.getInvoice());
     move.setPaymentVoucher(move.getPaymentVoucher());
@@ -453,17 +453,8 @@ public class MoveService {
       log.debug("Moveline {}", moveLine);
       Boolean isDebit = moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
 
-      MoveLine newMoveLine =
-          moveLineService.createMoveLine(
-              newMove,
-              moveLine.getPartner(),
-              moveLine.getAccount(),
-              moveLine.getCurrencyAmount(),
-              !isDebit,
-              todayDate,
-              moveLine.getCounter(),
-              moveLine.getName(),
-              null);
+      MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
+
       newMove.addMoveLineListItem(newMoveLine);
 
       if (isUnreconcileOriginalMove) {
@@ -537,5 +528,33 @@ public class MoveService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
+    move =
+        generateReverse(
+            move,
+            (boolean) assistantMap.get("isAutomaticReconcile"),
+            (boolean) assistantMap.get("isAutomaticAccounting"),
+            (boolean) assistantMap.get("isUnreconcileOriginalMove"),
+            (LocalDate) assistantMap.get("dateOfReversion"));
+    return move;
+  }
+
+  protected MoveLine generateReverseMoveLine(
+      Move reverseMove, MoveLine orgineMoveLine, LocalDate dateOfReversion, boolean isDebit)
+      throws AxelorException {
+    MoveLine reverseMoveLine =
+        moveLineService.createMoveLine(
+            reverseMove,
+            orgineMoveLine.getPartner(),
+            orgineMoveLine.getAccount(),
+            orgineMoveLine.getCurrencyAmount(),
+            !isDebit,
+            dateOfReversion,
+            orgineMoveLine.getCounter(),
+            orgineMoveLine.getName(),
+            null);
+    return reverseMoveLine;
   }
 }

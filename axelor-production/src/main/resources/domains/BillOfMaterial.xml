@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -29,10 +29,10 @@
 
 	<string name="fullName" namecolumn="true" title="Label"/>
 	<integer name="versionNumber" title="Version number" default="1"/>
-	<many-to-one name="originalBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Original bill of material" />
+	<many-to-one name="originalBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Original bill of materials" />
      	
     <string name="note" large="true"/>
-    
+
     <extra-code><![CDATA[
 
     	// STATUS SELECT

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="payment-voucher-grid" title="Payment vouchers" model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
-        <field name="ref"/>
+        <field name="ref" width="120"/>
         <field name="operationTypeSelect"/>
         <field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
         <field name="paymentDate"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="paidAmount" aggregate="sum"/>
-        <field name="generatedMove" form-view="move-form" grid-view="move-grid"/>
+        <field name="generatedMove" width="120" form-view="move-form" grid-view="move-grid"/>
         <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="statusSelect"/>
     </grid>

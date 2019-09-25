@@ -66,7 +66,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException {
 
     Product product = billOfMaterial.getProduct();
@@ -91,7 +91,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine)
       throws AxelorException {
 
@@ -100,14 +100,14 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial)
       throws AxelorException {
     return customizeBillOfMaterial(billOfMaterial, 0);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException {
     if (depth > 1000) {
@@ -207,7 +207,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public String getFileName(BillOfMaterial billOfMaterial) {
 
-    return I18n.get("Bill of Material")
+    return I18n.get("Bill of Materials")
         + "-"
         + billOfMaterial.getName()
         + ((billOfMaterial.getVersionNumber() > 1) ? "-V" + billOfMaterial.getVersionNumber() : "");

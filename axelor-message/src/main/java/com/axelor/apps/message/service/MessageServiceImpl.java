@@ -75,7 +75,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Message createMessage(
       String model,
       int id,
@@ -124,7 +124,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles) {
 
     Preconditions.checkNotNull(message.getId());
@@ -223,7 +223,7 @@ public class MessageServiceImpl implements MessageService {
     return message;
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendToUser(Message message) {
 
     if (message.getRecipientUser() == null) {
@@ -239,7 +239,7 @@ public class MessageServiceImpl implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendByMail(Message message) {
 
     log.debug("Sent mail");
@@ -249,7 +249,7 @@ public class MessageServiceImpl implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendByEmail(Message message)
       throws MessagingException, IOException, AxelorException {
 
@@ -375,7 +375,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional(rollbackOn = {Exception.class})
   public Message regenerateMessage(Message message) throws Exception {
     Preconditions.checkNotNull(
         message.getTemplate(),

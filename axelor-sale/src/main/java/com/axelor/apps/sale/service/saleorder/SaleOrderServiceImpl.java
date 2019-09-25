@@ -96,8 +96,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
-  public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+  @Transactional(rollbackOn = {Exception.class})
+  public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
     if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED) {
       throw new AxelorException(
           saleOrder,
@@ -106,6 +106,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     saleOrder.setOrderBeingEdited(true);
+    return false;
   }
 
   @Override
@@ -115,7 +116,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
     // Nothing to do if we don't have supplychain.
   }

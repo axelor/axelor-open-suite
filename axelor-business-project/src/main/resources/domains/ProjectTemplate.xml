@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="project" package="com.axelor.apps.project.db"/>
+
+	<entity name="ProjectTemplate">
+		<boolean name="teamTaskInvoicing" title="Tasks Invoicing"/>
+		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
+		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
+		<integer name="invoicingTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type"/>
+		<string name="invoicingComment" title="Invoicing comment" large="true"/>
+	</entity>
+  
+</domain-models>

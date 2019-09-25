@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+    <grid name="abc-analysis-grid" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" orderBy="-abcAnalysisSeq">
+        <field name="abcAnalysisSeq"/>
+        <field name="name"/>
+        <field name="company"/>
+        <field name="createdOn"/>
+        <field name="createdBy"/>
+        <field name="statusSelect"/>
+    </grid>
+
+    <form name="abc-analysis-form" model="com.axelor.apps.base.db.ABCAnalysis" title="ABC Analysis" width="large" onNew="action-abc-analysis-group-onnew" onSave="action-abc-analysis-method-set-sequence, action-abc-analysis-method-check-classes">
+        <toolbar>
+            <button name="runAnalysisBtn" title="Run analysis" onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-method-check-classes,action-abc-analysis-method-run-analysis" prompt="Are you sure you want run the analysis ? It can take a long time." showIf="statusSelect != 2"/>
+        </toolbar>
+        <menubar>
+            <menu title="Reports" icon="fa-files-o" showTitle="true">
+                <item title="Print" action="action-abc-analysis-method-print-report"/>
+            </menu>
+        </menubar>
+        <panel name="statusPanel" hidden="true">
+            <field name="statusSelect"/>
+            <field name="typeSelect"/>
+        </panel>
+        <panel name="informationsPanel">
+            <field name="abcAnalysisSeq" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
+                <viewer>
+                    <![CDATA[
+                        <span>{{record.abcAnalysisSeq}}</span>
+                    ]]>
+                </viewer>
+            </field>
+            <field name="name" readonlyIf="statusSelect != 1" required="true"/>
+            <field name="company" onChange="action-abc-analysis-record-reset-stock-location" readonlyIf="statusSelect == 2"/>
+            <field name="createdOn"/>
+            <field name="createdBy"/>
+            <field name="startDate" showIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
+            <field name="endDate" showIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
+            <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-stock" colSpan="6" showIf="company &amp;&amp; typeSelect=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" domain="self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2)" requiredIf="company &amp;&amp; typeSelect=='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'" readonlyIf="statusSelect == 2"/>
+        </panel>
+        <panel name="descriptionPanel" title="Description" canCollapse="true" collapseIf="statusSelect != 1">
+            <field name="description" colSpan="12" showTitle="false" widget="html"/>
+        </panel>
+        <panel name="classesProductsPanel" title="Classes and products" canCollapse="true" collapseIf="statusSelect != 1">
+            <panel-related name="abcAnalysisClassListPanel" field="abcAnalysisClassList" form-view="abc-analysis-class-form" grid-view="abc-analysis-class-grid" colSpan="12" required="true" canMove="true" orderBy="sequence" readonlyIf="statusSelect == 2"/>
+            <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" onSelect="action-abc-analysis-attrs-product-set-domain" readonlyIf="statusSelect == 2"/>
+            <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12" readonlyIf="statusSelect == 2"/>
+            <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12" readonlyIf="statusSelect == 2"/>
+        </panel>
+        <panel-dashlet name="abcAnalysisLinePanel" action="action-abc-analysis-view-abc-analysis-line" colSpan="12" showIf="statusSelect == 3" canSearch="true" height="800" readonly="true"/>
+    </form>
+
+    <action-record name="action-abc-analysis-record-default" model="com.axelor.apps.base.db.ABCAnalysis">
+        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+        <field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+        <field name="typeSelect" expr="eval: _type"/>
+    </action-record>
+
+    <action-record name="action-abc-analysis-record-reset-stock-location" model="com.axelor.apps.base.db.ABCAnalysis">
+        <field name="stockLocation" expr="eval: null" if="__config__.app.isApp('stock')"/>
+    </action-record>
+
+    <action-view name="action-abc-analysis-view-abc-analysis-line" title="Results" model="com.axelor.apps.base.db.ABCAnalysisLine">
+        <view type="grid" name="abc-analysis-line-grid"/>
+        <view type="form" name="abc-analysis-line-form"/>
+        <view-param name="limit" value="200"/>
+        <domain>self.abcAnalysis.id = :_abcAnalysisId</domain>
+        <context name="_abcAnalysisId" expr="eval: __this__.id"/>
+    </action-view>
+
+    <action-validate name="action-abc-analysis-validate-check-dates">
+        <error message="Enter proper 'Start' and 'End' date." if="(__config__.app.isApp('purchase') || __config__.app.isApp('sale')) &amp;&amp; startDate != null &amp;&amp; endDate != null &amp;&amp; startDate &gt; endDate" action="action-abc-analysis-record-set-empty-dates"/>
+    </action-validate>
+
+    <action-record name="action-abc-analysis-record-set-empty-dates" model="com.axelor.apps.base.db.ABCAnalysisLine">
+        <field name="startDate" expr="eval:null" />
+        <field name="endDate" expr="eval:null" />
+    </action-record>
+
+    <action-group name="action-abc-analysis-group-onnew">
+        <action name="action-abc-analysis-record-default"/>
+        <action name="action-abc-analysis-method-init-abc-classes"/>
+    </action-group>
+
+    <action-attrs name="action-abc-analysis-attrs-product-set-domain">
+        <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl'"
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true&quot; "/>
+        <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'"
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.sellable = true&quot; "/>
+        <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true&quot; "/>
+    </action-attrs>
+
+    <action-method name="action-abc-analysis-method-init-abc-classes">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="initABCClasses"/>
+    </action-method>
+
+    <action-method name="action-abc-analysis-method-check-classes">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="checkClasses"/>
+    </action-method>
+
+    <action-method name="action-abc-analysis-method-run-analysis">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="runAnalysis"/>
+    </action-method>
+
+    <action-method name="action-abc-analysis-method-set-sequence">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="setSequence"/>
+    </action-method>
+
+    <action-method name="action-abc-analysis-method-print-report">
+        <call class="com.axelor.apps.base.web.ABCAnalysisController" method="printReport"/>
+    </action-method>
+
+</object-views>

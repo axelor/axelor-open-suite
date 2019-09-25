@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TSTimer" cachable="true">
+  <entity name="TSTimer" cacheable="true">
 
       	<many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
       	<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>

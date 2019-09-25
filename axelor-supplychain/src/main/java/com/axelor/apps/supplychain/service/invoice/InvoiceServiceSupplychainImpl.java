@@ -18,7 +18,6 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -56,7 +55,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
-      InvoiceLineService invoiceLineService) {
+      InvoiceLineService invoiceLineService,
+      AccountConfigService accountConfigService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -65,7 +65,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
         invoiceRepo,
         appAccountService,
         partnerService,
-        invoiceLineService);
+        invoiceLineService,
+        accountConfigService);
   }
 
   @Override
@@ -116,8 +117,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
         invoice
             .getInvoiceLineList()
             .stream()
-            .map(InvoiceLine::getSaleOrder)
+            .map(invoiceLine -> invoice.getSaleOrder())
             .collect(Collectors.toList());
+
     saleOrderList.add(saleOrder);
 
     // remove null value and duplicates

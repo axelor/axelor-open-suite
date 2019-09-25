@@ -79,7 +79,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoice(StockMove stockMove) throws AxelorException {
 
     Long origin = stockMove.getOriginId();
@@ -94,7 +94,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
       throws AxelorException {
 
@@ -116,7 +116,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     if (invoice != null) {
       invoice.setSaleOrder(saleOrder);
-      saleOrderInvoiceService.fillInLines(invoice);
       this.extendInternalReference(stockMove, invoice);
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
@@ -139,7 +138,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -174,7 +173,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromOrderlessStockMove(StockMove stockMove) throws AxelorException {
 
     int stockMoveType = stockMove.getTypeSelect();
@@ -231,7 +230,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoice, this.createInvoiceLines(invoice, stockMove.getStockMoveLineList()));
 
     if (invoice != null) {
-      saleOrderInvoiceService.fillInLines(invoice);
+
       this.extendInternalReference(stockMove, invoice);
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));

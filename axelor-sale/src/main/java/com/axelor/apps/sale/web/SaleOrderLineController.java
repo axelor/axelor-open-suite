@@ -96,8 +96,8 @@ public class SaleOrderLineController {
       try {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
-        response.setValues(saleOrderLine);
         response.setValue("saleSupplySelect", product.getSaleSupplySelect());
+        response.setValues(saleOrderLine);
       } catch (Exception e) {
         resetProductInformation(response, saleOrderLine);
         TraceBackService.trace(response, e);
@@ -110,8 +110,8 @@ public class SaleOrderLineController {
   public void resetProductInformation(ActionResponse response, SaleOrderLine line) {
     Beans.get(SaleOrderLineService.class).resetProductInformation(line);
     response.setValue("saleSupplySelect", null);
-    response.setValues(line);
     response.setValue("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
+    response.setValues(line);
   }
 
   public void getTaxEquiv(ActionRequest request, ActionResponse response) {

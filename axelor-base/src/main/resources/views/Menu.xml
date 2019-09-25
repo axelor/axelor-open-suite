@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
@@ -122,16 +122,6 @@
 		<view type="form" name="sequence-form"/>
 	</action-view>
 
-	<menuitem name="admin-root-general-keyword"
-		parent="admin-root-general" title="Keywords"
-		action="admin.root.general.keyword" />
-
-	<action-view name="admin.root.general.keyword"
-		title="Keywords" model="com.axelor.apps.base.db.Keyword" >
-		<view type="grid" name="keyword-grid"/>
-		<view type="form" name="keyword-form"/>
-	</action-view>
-	
 	<menuitem name="admin-root-general-barcode"
 		parent="admin-root-general" title="Barcode type configurations"
 		action="admin.root.general.barcode"/>
@@ -321,9 +311,9 @@
     </action-view>
 
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
-		title="Product families" action="referential.conf.product.family" order="180"/>
+		title="Product accounting families" action="referential.conf.product.family" order="180"/>
 
-	<action-view name="referential.conf.product.family" title="Product families"
+	<action-view name="referential.conf.product.family" title="Product accounting families"
 		model="com.axelor.apps.base.db.ProductFamily" >
 		<view type="grid" name="product-family-grid"/>
 		<view type="form" name="product-family-form"/>
@@ -405,7 +395,17 @@
 		<view type="grid" name="territory-grid"/>
 		<view type="form" name="territory-form"/>
 	</action-view>
+    
+    <menuitem name="admin-root-organisation-territory-street"
+        parent="admin-root-organisation-territory" title="Streets"
+        action="admin.root.organisation.territory.street" if="__config__.app.getApp('base').getStoreStreets()" />
 
+    <action-view name="admin.root.organisation.territory.street"
+        title="Streets" model="com.axelor.apps.base.db.Street" >
+        <view type="grid" name="street-grid"/>
+        <view type="form" name="street-form"/>
+    </action-view>
+    
 	<menuitem name="admin-root-organisation-territory-city"
 		parent="admin-root-organisation-territory" title="Cities"
 		action="admin.root.organisation.territory.city" />
@@ -603,6 +603,15 @@
 		<view type="form" name="import-configuration-form" />
 	</action-view>
 	
+	<menuitem name="admin-root-advanced-import" parent="admin-root-maintenance"
+   		title="Advanced import" action="admin.root.advanced.import"/>
+  
+	<action-view name="admin.root.advanced.import" title="Advanced import"
+		model="com.axelor.apps.base.db.AdvancedImport" >
+		<view type="grid" name="advanced-import-grid"/>
+		<view type="form" name="advanced-import-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-convert-demo-file" parent="admin-root-maintenance"
 		title="Convert demo file" action="admin.root.convert.demo.file"/>
 		
@@ -650,7 +659,17 @@
 		<view type="grid" name="printing-setting-grid"/>
 		<view type="form" name="printing-setting-form"/>
 	</action-view>
-	
+
+	<menuitem title="DMS Import" name="menu-dms-import-wizard"
+		parent="admin-root-maintenance" action="menu.dms.import.wizard" />
+
+	<action-view name="menu.dms.import.wizard" model="com.axelor.apps.base.db.Wizard"
+		title="DMS Import">
+		<view name="dms-import-wizard-form" type="form" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="show-toolbar" value="false" />
+	</action-view>
+
 	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
 			  title="Calendars" order="50"/>
 

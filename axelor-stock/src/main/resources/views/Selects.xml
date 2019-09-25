@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -127,10 +127,21 @@
 		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
 		<option value="com.axelor.apps.stock.db.StockCorrection" data-grid="stock-correction-grid" data-form="stock-correction-form">Stock correction</option>
 	</selection>
+	
+	<selection name='inventory.export.format.select'>
+		<option value="pdf">PDF</option>
+		<option value="xlsx">XLS</option>
+		<option value="csv">CSV</option>
+		<option value="ods">ODS</option>
+	</selection>
 
 	<selection name="stock.correction.status.select">
 		<option value="1">Draft</option>
 		<option value="2">Validated</option>
+	</selection>
+
+	<selection name="abc.analysis.type.select" id="stock.abc.analysis.type.select">
+		<option value="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl">Stock</option>
 	</selection>
 
 </object-views>

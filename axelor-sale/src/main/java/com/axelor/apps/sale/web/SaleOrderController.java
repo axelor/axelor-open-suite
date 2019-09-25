@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
@@ -245,7 +246,7 @@ public class SaleOrderController {
 
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -577,8 +578,12 @@ public class SaleOrderController {
             .find(request.getContext().asType(SaleOrder.class).getId());
 
     try {
-      Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
+      boolean checkAvailabiltyRequest =
+          Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
+      if (checkAvailabiltyRequest) {
+        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -721,5 +726,26 @@ public class SaleOrderController {
     saleOrder = saleOrderService.addPack(saleOrder, pack, packQty);
 
     response.setCanClose(true);
+  }
+
+  public void getSaleOrderPartnerDomain(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Company company = saleOrder.getCompany();
+    long companyId = company.getPartner().getId();
+    String domain =
+        String.format(
+            "self.id != %d AND self.isContact = false AND (self.isCustomer = true or self.isProspect = true)",
+            companyId);
+    domain += " AND :company member of self.companySet";
+    try {
+      if (!(saleOrder.getSaleOrderLineList() == null
+          || saleOrder.getSaleOrderLineList().isEmpty())) {
+        domain += Beans.get(PartnerService.class).getPartnerDomain(saleOrder.getClientPartner());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
+    }
+    response.setAttr("clientPartner", "domain", domain);
   }
 }

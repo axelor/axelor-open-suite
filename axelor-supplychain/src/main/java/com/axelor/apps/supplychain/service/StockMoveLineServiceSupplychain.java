@@ -76,4 +76,6 @@ public interface StockMoveLineServiceSupplychain {
    */
   StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
+
+  boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine);
 }

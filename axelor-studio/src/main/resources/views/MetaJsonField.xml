@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults" 
 	onLoad="action-studio-meta-json-field-attrs-on-load">
@@ -24,6 +24,16 @@
 	    <panel-include view="json-field-form-base" />
     </form>
     
+    <form name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" id="studio-json-field-form" extension="true">
+		<extend target="panel-include[last()]">
+			<insert position="after">
+				<panel-mail name="mailPanel">
+					<mail-messages limit="4"/>
+				</panel-mail>
+			</insert>
+		</extend>
+    </form>
+
 	<grid name="studio-meta-json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
 	  <field name="name"/>
 	  <field name="title" />

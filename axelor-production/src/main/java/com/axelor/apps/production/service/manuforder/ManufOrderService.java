@@ -54,7 +54,7 @@ public interface ManufOrderService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
@@ -62,17 +62,18 @@ public interface ManufOrderService {
       boolean isToInvoice,
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT,
       int originType)
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);
 
   /**
-   * Compute the quantity on generated prod product line. If the quantity of the bill of material is
-   * equal to the quantity of manuf order then the prod product line will have the same quantity as
-   * configured line.
+   * Compute the quantity on generated prod product line. If the quantity of the bill of materials
+   * is equal to the quantity of manuf order then the prod product line will have the same quantity
+   * as configured line.
    *
-   * @param bomQty quantity of the bill of material.
+   * @param bomQty quantity of the bill of materials.
    * @param manufOrderQty quantity configured of the manuf order.
    * @param lineQty quantity of the line.
    * @return the quantity for the prod product line.
@@ -89,10 +90,11 @@ public interface ManufOrderService {
       boolean isToInvoice,
       Company company,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
       throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException;
 
   public String getManufOrderSeq(ManufOrder manufOrder) throws AxelorException;
@@ -218,4 +220,23 @@ public interface ManufOrderService {
    */
   void updateStockMoveFromManufOrder(List<StockMoveLine> stockMoveLineList, StockMove stockMove)
       throws AxelorException;
+
+  /**
+   * Create a query to find product's consume and missing qty of a specific/all company and a
+   * specific/all stock location in a Manuf Order
+   *
+   * @param productId, companyId and stockLocationId
+   * @return the query.
+   */
+  public String getConsumeAndMissingQtyForAProduct(
+      Long productId, Long companyId, Long stockLocationId);
+
+  /**
+   * Create a query to find product's building qty of a specific/all company and a specific/all
+   * stock location in a Manuf Order
+   *
+   * @param productId, companyId and stockLocationId
+   * @return the query.
+   */
+  public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
 		 <toolbar>
 			<button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
-		 </toolbar>	
-		 <field name="contactPartner.partnerSeq"/>
+		 </toolbar>
+		 <field name="contactPartner.partnerSeq" width="120"/>
 		 <field name="contactPartner.simpleFullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
@@ -40,7 +40,7 @@
     </panel>
 
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5">
-      <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
+      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <field name="picture" colSpan="2" css="center" showTitle="false" widget="Image"/>
           <panel name="contactDetailsPanel" colSpan="10">
@@ -143,7 +143,7 @@
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
-    
+
     <!-- User creation -->
     <panel name="userPanel" title="User" showIf="stepByStepSelect == 4">
     	<field name="user" title="Attach to"/>
@@ -153,7 +153,7 @@
     <!-- END OF New employee wizard -->
 
     <panel name="contactPanel" showIf="stepByStepSelect == 5">
-      <field name="contactPartner" colSpan="12" domain="self.partnerTypeSelect = 2 OR self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
+      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <panel name="imagePanel" colSpan="2">
             <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
@@ -296,9 +296,9 @@
                 <field name="vehicleMake"/>
                 <field name="vehicleModel"/>
                 <field name="plateNo"/>
-                <field name="kilometricAllowParam" widget="SuggestBox"/>
-                <field name="startDate"/>
-                <field name="endDate"/>
+                <field name="kilometricAllowParam" canEdit="false" widget="SuggestBox"/>
+                <field name="startDate" onChange="action-employee-validate-dates"/>
+                <field name="endDate" onChange="action-employee-validate-dates"/>
               </panel>
             </editor>
           </field>
@@ -344,6 +344,9 @@
 		<field name="contactPartner.fullName" />
 		<field name="contactPartner.fixedPhone" />
 		<field name="contactPartner.mobilePhone" />
+		<field name="mainEmploymentContract.payCompany"/>
+		<field name="mainEmploymentContract.companyDepartment"/>
+		<field name="hrManager"/>
 		<template><![CDATA[
 			<div>
 			  <div class="span4 card-image">
@@ -351,17 +354,21 @@
 			  </div>
 			  <div class="span8">
 			  	<span>
-				<strong>{{contactPartner.fullName}}</strong><br/>
-			    FP : {{contactPartner.fixedPhone}}<br/>
-			    MP : {{contactPartner.mobilePhone}}
+				   <strong>{{contactPartner.fullName}}</strong><br/>
+			       <span ng-if="contactPartner.fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/> {{ contactPartner.fixedPhone}}<br/></span>
+	               <span ng-if="contactPartner.mobilePhone"><i class='fa fa-mobile' style="margin-right:9px;"/>{{contactPartner.mobilePhone}}<br/></span>
+	               <span  ng-if="mainEmploymentContract.payCompany.name"><strong><span x-translate>Company</span></strong> : {{mainEmploymentContract.payCompany.name}}<br/></span>
+                   <span  ng-if="mainEmploymentContract.companyDepartment.name"><strong><span x-translate>Department</span></strong> : {{mainEmploymentContract.companyDepartment.name}}<br/></span>
 			    </span>
+			  </div>
+			  <div class="span12" style="margin-left:30px;">
+			   <span class="label label-important" ng-show="hrManager" x-translate>{{ "HR manager" }}</span>
 			  </div>
 			</div>
 		]]>
 		</template>
 	</cards>
-
-
+	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.app.getApp('base').getDailyWorkHours()"/>
@@ -409,7 +416,7 @@
 				 model="com.axelor.apps.hr.db.Timesheet">
 		<view type="grid" name="my-timesheets-grid"/>
 		<view type="form" name="timesheet-form"/>
-        <domain>self.user = :__user__</domain>
+        <domain>self.user.employee = :id</domain>
 	</action-view>
 
 	<action-method name="action-employee-method-show-annual-report">
@@ -439,11 +446,15 @@
     <action-method name="action-employee-method-normalize-emergencyNumber">
         <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
     </action-method>
-    
+
     <action-method name="action-print-employee-phonebook" >
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeePhonebook"/>
 	</action-method>
-    
+
+	<action-condition name="action-employee-validate-dates">
+		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
+	</action-condition>
+	
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
         <field name="mainEmploymentContract.payCompany"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,7 +10,8 @@
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
 		<boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
-		
+        <boolean name="storeStreets" title="Store streets" default="false" />
+        
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
@@ -61,12 +62,12 @@
 
 		<boolean name="enableCalendars" title="Calendar" default="true"/>
 
-    <boolean name="enableMultiCompany" title="Enable multi-company management" default="true"/>
-
-    <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
-
-    <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
-
+        <boolean name="enableMultiCompany" title="Enable multi-company management" default="true"/>
+    
+        <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
+    
+        <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
+    
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -77,6 +78,46 @@
 	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
 	   		]]>
 	   	</extra-code>
+	   	
+	   	<track>
+		   	<field name="today"  on="UPDATE"/>
+		   	<field name="defaultProjectUnit" on="UPDATE"/>
+		   	<field name="defaultPartnerLanguage" on="UPDATE"/>
+		   	<field name="emailAccountByUser" on="UPDATE"/>
+
+		   	<field name="qasWsdlUrl" on="UPDATE"/>
+		   	<field name="mapApiSelect" on="UPDATE"/>
+		   	<field name="googleMapsApiKey" on="UPDATE"/>
+		   	<field name="currencyWsURL" on="UPDATE"/>
+		   	<field name="hasQasValidation" on="UPDATE"/>
+		   	<field name="productInAtiSelect" on="UPDATE"/>
+		   	<field name="nbDecimalDigitForUnitPrice" on="UPDATE"/>
+		   	<field name="computeMethodDiscountSelect" on="UPDATE"/>
+		   	<field name="timeLoggingPreferenceSelect" on="UPDATE"/>
+		   	<field name="dailyWorkHours" on="UPDATE"/>
+		   	
+			<field name="unitDays" on="UPDATE"/>
+		   	<field name="unitHours" on="UPDATE"/>
+		   	<field name="unitMinutes" on="UPDATE"/>
+		   	
+			<field name="teamManagement" on="UPDATE"/>
+		   	<field name="activateSendingEmail" on="UPDATE"/>
+		   	
+			<field name="activateBarCodeGeneration" on="UPDATE"/>
+		   	<field name="editProductBarcodeType" on="UPDATE"/>
+		   	<field name="barcodeTypeConfig" on="UPDATE"/>
+		   	<field name="generateProductSequence" on="UPDATE"/>
+		   	
+			<field name="manageMultiBanks" on="UPDATE"/>
+		   	<field name="manageProductVariants" on="UPDATE"/>
+		   	<field name="enterpriseCommunication" on="UPDATE"/>
+		   	<field name="document" on="UPDATE"/>
+		   	<field name="enableTradingNamesManagement" on="UPDATE"/>
+		   	<field name="enableCalendars" on="UPDATE"/>
+		   	<field name="passwordChangedTemplate" on="UPDATE"/>
+<!-- 		   	31 fields -->
+	   	</track>
+	   	
    	</entity>
 
 </domain-models>

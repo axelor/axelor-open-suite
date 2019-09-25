@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
 		<panel name="productionConfigurationPanel" colSpan="12">
@@ -14,7 +14,7 @@
 			<panel name="configuratorPanel" title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
 			</panel>
-			<panel name="billOfMaterialPanel" title="Bill of material">
+			<panel name="billOfMaterialPanel" title="Bill of materials">
 				<field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
 			    <field name="nbDecimalDigitForBomQty"/>
@@ -42,12 +42,19 @@
 			</panel>
 			<panel name="stockLocationPanel" title="Stock Location">
 				<field name="manageWorkshop" widget="boolean-switch"/>
+                <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4" selection="production.manuf.order.status.select"/>
 			</panel>
 		</panel>
 		<panel name="actionsPanel">
 			<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
 			<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+		
 	</form>
 	
 	<action-view name="admin.root.conf.production.config" title="Production configurations"

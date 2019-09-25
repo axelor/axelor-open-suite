@@ -29,7 +29,7 @@ import java.util.List;
 
 public interface PurchaseOrderInvoiceService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
 
   public Invoice createInvoice(PurchaseOrder purchaseOrder) throws AxelorException;

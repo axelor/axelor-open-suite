@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,6 +10,17 @@
 		<boolean name="isVentilationSkipped" title="Skip ventilation"/>
 		<boolean name="isEnabledProductDescriptionCopyForCustomers" title="Enable product description copy for customers"/>
 		<boolean name="isEnabledProductDescriptionCopyForSuppliers" title="Enable product description copy for suppliers"/>
+		<boolean name="autoGenerateInvoicePrintingFileOnSaleInvoice" default="true" title="Auto generate invoice printing file on sale invoice"/>
+		<boolean name="autoGenerateInvoicePrintingFileOnPurchaseInvoice" default="false" title="Auto generate invoice printing file on purchase invoice"/>
+		
+		<track>
+			<field name="isInvoiceMoveConsolidated" on="UPDATE"/>
+			<field name="isVentilationSkipped" on="UPDATE"/>
+			<field name="isEnabledProductDescriptionCopyForCustomers" on="UPDATE"/>
+			<field name="isEnabledProductDescriptionCopyForSuppliers" on="UPDATE"/>
+			<field name="autoGenerateInvoicePrintingFileOnSaleInvoice" on="UPDATE"/>
+			<field name="autoGenerateInvoicePrintingFileOnPurchaseInvoice" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

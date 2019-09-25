@@ -28,12 +28,10 @@ import java.util.List;
 
 public interface TimetableService {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(Timetable timetable) throws AxelorException;
 
   public Invoice createInvoice(Timetable timetable) throws AxelorException;
-
-  public void fillInLines(Invoice invoice);
 
   public List<InvoiceLine> createInvoiceLine(Invoice invoice, Timetable timetable)
       throws AxelorException;

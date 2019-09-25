@@ -152,7 +152,8 @@ public class MoveLineController {
             } else {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_NO_VALUE,
-                  I18n.get("Cannot find the move line with id: ") + id.longValue());
+                  I18n.get("Cannot find the move line with id: %s"),
+                  id.longValue());
             }
           } else {
             throw new AxelorException(
@@ -175,7 +176,7 @@ public class MoveLineController {
                 .context("_balance", finalBalance)
                 .map());
       } else {
-        response.setAlert(IExceptionMessage.NO_MOVE_LINE_SELECTED);
+        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

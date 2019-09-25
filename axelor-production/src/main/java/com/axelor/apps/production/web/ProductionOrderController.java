@@ -99,6 +99,7 @@ public class ProductionOrderController {
             billOfMaterial,
             qty,
             startDateT.toLocalDateTime(),
+            null,
             productionOrder.getSaleOrder(),
             ManufOrderService.ORIGIN_TYPE_OTHER);
       } else {

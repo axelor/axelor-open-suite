@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
         <toolbar>
@@ -10,7 +10,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="orderTypeSelect"/>
         <field name="bankOrderDate"/>
 		<field name="confirmationDateTime"/>
@@ -30,7 +30,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
@@ -49,7 +49,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="orderTypeSelect"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
@@ -69,7 +69,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="generatedMetaFile"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
@@ -218,8 +218,8 @@
     		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
     		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
 <!-- 			<button name="reject" title="Reject" showIf="statusSelect == 3 || statusSelect == 4" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		 -->
-    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
-			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
+    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" prompt="This action is irreversible, do you want to continue ?" onClick="save,action-bank-order-method-cancel,save"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
   		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
@@ -286,8 +286,8 @@
     		<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
     		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
     		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
-    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
-			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
+    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" prompt="This action is irreversible, do you want to continue ?" onClick="save,action-bank-order-method-cancel"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
   		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
@@ -446,10 +446,6 @@
 		<field name="statusSelect" expr="5"/>
 		<field name="rejectStatusSelect" expr="2"/>
 	</action-record>
-	
-	<action-record name="action-bank-order-record-cancel" model="com.axelor.apps.bankpayment.db.BankOrder">
-		<field name="statusSelect" expr="6"/>
-	</action-record>
 
 	<action-record name="action-bank-order-record-correct" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="statusSelect" expr="1"/>
@@ -508,6 +504,10 @@
     <action-method name="action-bank-order-method-reset-receivers">
         <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="resetReceivers"/>
     </action-method>
+	
+	<action-method name="action-bank-order-method-cancel" model="com.axelor.apps.bankpayment.db.BankOrder">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="cancel"/>
+	</action-method>
 
 	<!-- BANK ORDER LINES ACTIONS -->
 

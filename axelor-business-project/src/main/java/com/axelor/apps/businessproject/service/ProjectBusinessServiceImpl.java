@@ -29,6 +29,8 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -39,6 +41,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -59,7 +62,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateQuotation(Project project) throws AxelorException {
     SaleOrder order = Beans.get(SaleOrderCreateService.class).createSaleOrder(project.getCompany());
 
@@ -163,7 +166,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             ? this.generateProject(
                 null,
                 saleOrder.getFullName() + "_project",
-                saleOrder.getSalemanUser(),
+                saleOrder.getSalespersonUser(),
                 saleOrder.getCompany(),
                 saleOrder.getClientPartner())
             : project;
@@ -195,11 +198,50 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         generateProject(
             parent,
             saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalemanUser(),
+            saleOrderLine.getSaleOrder().getSalespersonUser(),
             parent.getCompany(),
             parent.getClientPartner());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
     saleOrderLine.setProject(project);
     return project;
+  }
+
+  @Override
+  @Transactional
+  public Project createProjectFromTemplate(
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
+      throws AxelorException {
+
+    Project project = super.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+
+    if (projectTemplate.getIsBusinessProject()) {
+      project.setCurrency(clientPartner.getCurrency());
+      if (clientPartner.getPartnerAddressList() != null
+          && !clientPartner.getPartnerAddressList().isEmpty()) {
+        project.setCustomerAddress(
+            clientPartner.getPartnerAddressList().iterator().next().getAddress());
+      }
+      if (clientPartner.getSalePartnerPriceList() != null
+          && clientPartner.getSalePartnerPriceList().getPriceListSet() != null
+          && !clientPartner.getSalePartnerPriceList().getPriceListSet().isEmpty()) {
+        project.setPriceList(
+            clientPartner.getSalePartnerPriceList().getPriceListSet().iterator().next());
+      }
+      project.setTeamTaskInvoicing(projectTemplate.getTeamTaskInvoicing());
+      project.setIsInvoicingExpenses(projectTemplate.getIsInvoicingExpenses());
+      project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
+      project.setInvoicingType(projectTemplate.getInvoicingTypeSelect());
+      project.setInvoicingComment(projectTemplate.getInvoicingComment());
+      project.setIsBusinessProject(projectTemplate.getIsBusinessProject());
+    }
+
+    return project;
+  }
+
+  @Override
+  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
+    TeamTask task = super.createTask(taskTemplate, project);
+    task.setTeamTaskInvoicing(taskTemplate.getTeamTaskInvoicing());
+    return task;
   }
 }

@@ -122,7 +122,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   @Transactional(
-    rollbackOn = {AxelorException.class, RuntimeException.class},
+    rollbackOn = {Exception.class},
     ignore = {BlockedSaleOrderException.class}
   )
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
@@ -143,19 +143,20 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       }
     }
 
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
-      this.saveSaleOrderPDFAsAttachment(saleOrder);
-    }
     if (saleOrder.getVersionNumber() == 1
         && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
       saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+    }
+
+    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
+    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
+      this.saveSaleOrderPDFAsAttachment(saleOrder);
     }
     saleOrderRepo.save(saleOrder);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrder.setConfirmationDateTime(appSaleService.getTodayDateTime().toLocalDateTime());
@@ -174,8 +175,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     saleOrderRepo.save(saleOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+  @Transactional
+  public void completeSaleOrder(SaleOrder saleOrder) {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     saleOrder.setOrderBeingEdited(false);
 
@@ -198,8 +199,15 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
+    String fileNamePrefix;
+    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      fileNamePrefix = "Sale quotation";
+    } else {
+      fileNamePrefix = "Sale order";
+    }
 
-    return I18n.get("Sale order")
+    return I18n.get(fileNamePrefix)
         + " "
         + saleOrder.getSaleOrderSeq()
         + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");

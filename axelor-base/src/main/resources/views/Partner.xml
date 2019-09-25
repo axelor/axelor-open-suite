@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<toolbar>
@@ -11,7 +11,7 @@
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
-    <field name="partnerSeq"/>
+    <field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
@@ -35,7 +35,7 @@
 	      <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
       </menu>
     </menubar>
-		<field name="partnerSeq"/>
+		<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
@@ -59,7 +59,7 @@
 	      <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	    </menu>
 	  </menubar>
-    <field name="partnerSeq"/>
+    <field name="partnerSeq" width="120" />
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
@@ -77,7 +77,7 @@
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -90,7 +90,7 @@
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -100,11 +100,8 @@
 
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
-		  onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery-btn"
+		  onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
 		  onSave="action-partner-validate-partner-stock-settings-list" width="large">
-		<toolbar>
-			<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-partner-view-show-customer-debt-recovery" if="__config__.app.isApp('account')"/>
-		</toolbar>
 		<panel-include view="partner-form" />
 	</form>
 
@@ -152,7 +149,7 @@
 					</viewer>
 				</field>
 				<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
-					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="googleLabel" title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
@@ -248,7 +245,7 @@
 							<field name="address" form-view="address-form" grid-view="address-grid" colSpan="3" canNew="true"/>
 							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
 							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
+							<field name="isDefaultAddr" widget="toggle" x-exclusive="true" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
 						</editor>
 					</field>
 				</panel>
@@ -283,10 +280,15 @@
 						<field name="sellerCode" showIf="isFactor" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 					</panel>
 				</panel>
+
+				<panel name="employeePanel" hidden="true">
+    				<button name="openEmployeeFormBtn" title="Open employee form" colSpan="6" onClick="action-partner-view-open-employee-form"/>
+ 		 		</panel>
+
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false"/>
-					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
-						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
+					<panel name="assignedToPanel" title="Assigned to" colSpan="12" >
+						<field name="user" colSpan="6" form-view="user-form" onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
@@ -298,7 +300,9 @@
 			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
 				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
-				<field name="invoiceComments" widget="html" colSpan="12"/>
+				<panel name="invoiceCommentsPanel" title="Description to display on invoice" colSpan="12">
+				  <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
 			</panel>
 			<panel-related name="accountingSituationListPanel" if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
@@ -321,7 +325,9 @@
 				</panel>
 				<field name="factorizedCustomer" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 				<field name="customerCatalogList" colSpan="12" form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
-				<field name="saleOrderComments" widget="html" colSpan="12"/>
+				<panel name="saleOrderCommentsPanel" title="Description to display on sale order" colSpan="12">
+				  <field name="saleOrderComments" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
 			</panel>
 			<panel name="supplierPanel" title="Supplier" if-module="axelor-purchase" showIf="isSupplier" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation"/>
@@ -331,7 +337,9 @@
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer name="supplierSpacer"/>
 				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
-				<field name="purchaseOrderComments" widget="html" colSpan="12"/>
+				<panel name="purchaseOrderCommentsPanel" title="Description to display on purchase order" colSpan="12">
+				  <field name="purchaseOrderComments" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
 			</panel>
 			<panel name="carrierPanel" title="Carrier" showIf="isCarrier">
 				<field name="freightCarrierModeList" title="Freight Carrier Mode" form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
@@ -347,7 +355,9 @@
 				<field name="partnerStockSettingsList" colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
                 <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>
-                <field name="deliveryComments" widget="html" colSpan="12"/>
+                <panel name="deliveryCommentsPanel" title="Description to display on delivery" colSpan="12">
+                  <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
+                </panel>
             </panel>
         </panel-tabs>
         <panel name="partnerAttrsPanel">
@@ -387,7 +397,7 @@
 			</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel name="informationPanel" title="Informations">
+			<panel name="informationPanel" title="Information">
 				<panel name="departmentPanel" title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 					<field name="department" form-view="department-form" grid-view="department-grid"/>
 					<field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
@@ -447,7 +457,7 @@
 					</viewer>
 				</field>
 				<panel name="socialNetworkPanel" colSpan="12">
-					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="googleLabel" title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
@@ -492,6 +502,11 @@
 			</panel>
 			<panel-dashlet name="contactPartnerPanel" action="action-contact-partner-dashlet" title="Partners"/>
 		</panel-tabs>
+
+		<panel name="employeePanel" hidden="true" sidebar="true">
+        	<button name="openEmployeeFormBtn" title="Open employee form" onClick="action-partner-view-open-employee-form"/>
+      	</panel>
+
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq"/>
 			<field name="language" canEdit="false"/>
@@ -628,7 +643,7 @@
 			<panel name="imagePanel" colSpan="3">
 				<field name="picture" widget="Image" showTitle="false" colSpan="12"/>
 				<panel colSpan="12" name="socialNetworkPanel">
-					<label name="googleLabel" title="&lt;a class='fa fa-google-plus' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
+					<label name="googleLabel" title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
 					<label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
@@ -686,6 +701,7 @@
 		<action name="action-partner-attrs-change-name"/>
 		<action name="action-partner-attrs-show-specific-tax-note"/>
 		<action name="action-partner-method-set-social-network-url"/>
+		<action name="action-partner-attrs-hide-employee-panel"/>
 		<action name="action-partner-account-attrs-hide-supplier-account"/>
 		<action name="action-partner-account-attrs-hide-customer-account"/>
 		<action name="action-partner-account-attrs-hide-employee-account"/>
@@ -748,6 +764,7 @@
     </action-group>
     
     <action-group name="action-group-partner-contact-onload">
+    	<action name="action-partner-attrs-hide-employee-panel"/>
     	<action name="action-partner-method-check-name"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
@@ -784,8 +801,14 @@
 		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true) AND self.isEmployee = false &quot;"/>
 	</action-attrs>
 	
-	<action-attrs name="action-partner-attrs-hide-customer-recovery-btn">
-		<attribute name="hidden" for="customerRecoveryBtn" expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}"/>
+	<action-attrs name="action-partner-attrs-hide-customer-recovery">
+		<attribute name="hidden" for="customerRecovery" expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}"/>
+	</action-attrs>
+
+	<action-attrs name="action-partner-attrs-hide-employee-panel">
+		<attribute name="hidden" for="employeePanel"
+		expr="eval:!( __this__.employee != null &amp;&amp; __user__.employee != null  &amp;&amp;
+		(__user__.employee.hrManager &amp;&amp;  __user__ == __this__.employee.managerUser))"/>
 	</action-attrs>
 
     <action-record name="action-partner-record-set-balance"
@@ -816,7 +839,7 @@
 	</action-record>
 	
 	<action-record name="action-partner-record-simple-and-full-name" model="com.axelor.apps.base.db.Partner" >
-		<field name="simpleFullName" expr="call:com.axelor.apps.base.service.PartnerService:computeFullName(__this__)"/>
+		<field name="simpleFullName" expr="call:com.axelor.apps.base.service.PartnerService:computeSimpleFullName(__this__)"/>
 		<field name="fullName" expr="call:com.axelor.apps.base.service.PartnerService:computeFullName(__this__)"/>
 	</action-record>
 	
@@ -928,6 +951,12 @@
 		<context name="partnerId" expr="eval: id"/>
 	</action-view>
 
+	<action-view name="action-partner-view-open-employee-form" model="com.axelor.apps.hr.db.Employee" title="Employee">
+    	<view name="employee-form" type="form"/>
+        <view name="employee-grid" type="grid"/>
+        <context name="_showRecord" expr="eval:employee.id"/>
+   	</action-view>
+
 	<action-method name="action-convert-into-individual-partner">
 		<call class="com.axelor.apps.base.web.PartnerController" method="convertToIndividualPartner"/>
 	</action-method>
@@ -947,7 +976,11 @@
     <action-validate name="action-partner-validate-partner-stock-settings-list">
     	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
     </action-validate>
-
+   	 
+   	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
+		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 1"/>
+	</action-attrs>
+   	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>

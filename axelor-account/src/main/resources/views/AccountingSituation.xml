@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -20,11 +20,14 @@
 		  onNew="action-accounting-situation-group-form-onnew" width="large">
 		<panel name="mainPanel">
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
-			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
+			<field name="pfpValidatorUser" required="true" domain=":company member of self.companySet and self.isPfpValidator = true" canEdit="false" showIf="company.accountConfig.isManagePassedForPayment" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+			<field name="company.accountConfig" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+			<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
 		</panel>
 		<panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
 			<field name="balanceCustAccount"/>
@@ -32,6 +35,8 @@
 			<field name="balanceDueDebtRecoveryCustAccount"/>
 		</panel>
 		<panel name="automaticMailPanel" title="Automatic mail">
+			<field name="invoiceAutomaticMailOnValidate"/>
+			<field name="invoiceMessageTemplateOnValidate" requiredIf="invoiceAutomaticMailOnValidate" showIf="invoiceAutomaticMailOnValidate" domain="self.metaModel.name = 'Invoice'"/>
 			<field name="invoiceAutomaticMail"/>
 			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
@@ -68,15 +73,16 @@
     </grid>
     
 	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
-	     onNew="action-account-accounting-situation-default-set" >
+	     onNew="action-account-accounting-situation-default-set,action-accounting-situation-attrs-hidden-multi-banks"
+	     onLoad="action-accounting-situation-attrs-hidden-multi-banks">
 		<panel name="mainPanel" >
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain=":company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
-			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
 	    	
 		<panel name="customerBalancePanel" title="Customer balance"  itemSpan="4" >
@@ -103,12 +109,15 @@
 	<action-group name="action-accounting-situation-group-form-onnew">
 		<action name="action-account-accounting-situation-default-set"/>
         <action name="action-accounting-situation-method-set-default-mail"/>
+        <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
 	</action-group>
 
 	<action-group name="action-accounting-situation-group-form-onload">
 		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
 		<action name="action-accounting-situation-attrs-hide-customer-account"/>
 		<action name="action-accounting-situation-attrs-hide-employee-account"/>
+		<action name="action-accounting-situation-attrs-hide-pfp-validator-user"/>
+		<action name="action-accounting-situation-attrs-hidden-multi-banks"/>
 	</action-group>
 
 	<action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
@@ -123,10 +132,20 @@
 		<attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
 	</action-attrs>
 
+	<action-attrs name="action-accounting-situation-attrs-hide-pfp-validator-user">
+		<attribute name="hidden" for="pfpValidatorUser" expr="eval: !__parent__?.isSupplier"/>
+	</action-attrs>
+
+
+		<action-attrs name="action-accounting-situation-attrs-hidden-multi-banks">
+    	<attribute name="hidden" for="companyInBankDetails" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+    	<attribute name="hidden" for="companyOutBankDetails" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+	</action-attrs>
+
 	<action-method name="action-supplychain-method-compute-used-credit">
 		<call class="com.axelor.apps.supplychain.web.AccountingSituationSupplychainController" method="computeUsedCredit" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageCustomerCredit()"/>
 	</action-method>
-	
+
 	<action-view name="action-accounting-situation-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
         <view type="grid" name="move-line-accounting-situation-grid"/>
     	<view type="form" name="move-line-form"/>

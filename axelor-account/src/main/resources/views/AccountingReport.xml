@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 <!--     ACCOUNTING REPORT -->
     
 	<grid name="accounting-report-grid" title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
-		<field name="ref"/>
+		<field name="ref" width="120"/>
 		<field name="date"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="currency"/>
@@ -53,11 +53,15 @@
 				<field name="partnerSet" hideIf="typeSelect == 2000 || typeSelect == 16 || typeSelect == 17 || typeSelect == 12" colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect" canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
 				<field name="analyticJournal" showIf="typeSelect == 2000" domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 			</panel>
-			<panel name="printingInformationsPanel" title="Printing informations" hideIf="!typeSelect || [16,17].indexOf(typeSelect) != -1">
+			<panel name="printingInformationsPanel" title="Printing information" hideIf="!typeSelect || [16,17].indexOf(typeSelect) != -1">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13,15,16,17].indexOf(typeSelect) != -1"	onChange="action-accounting-report-record-global" />
 				<field name="globalByDate" hideIf="!typeSelect || [3,4,5,10,11,12,13,14,15,16,17].indexOf(typeSelect) != -1" onChange="action-accounting-report-record-global-by-date" />
-				<field name="globalByPartner" hideIf="typeSelect != 3" onChange="action-accounting-report-record-global-by-partner" />
+				<field name="globalByPartner" hideIf="typeSelect != 3 &amp;&amp; typeSelect != 7" onChange="action-accounting-report-record-global-by-partner" />
 				<field name="detailed" hideIf="typeSelect != 4" onChange="action-accounting-report-record-detailed" />
+				<field name="displayOnlyNotCompletelyLetteredMoveLines" hideIf="typeSelect != 7"/>
+				<field name="displayCodeAccountOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayNameAccountOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayMoveSequenceOnPrinting" showIf="typeSelect == 1"/>
 			</panel>
 		</panel-tabs>
 		
@@ -73,7 +77,7 @@
 <!--     MOVE LINE EXPORT -->
     
     <grid name="accounting-report-export-grid" title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport">
-        <field name="ref"/>
+        <field name="ref" width="120"/>
         <field name="date"/>
 		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="typeSelect" selection="accounting.report.type.select.export"/>

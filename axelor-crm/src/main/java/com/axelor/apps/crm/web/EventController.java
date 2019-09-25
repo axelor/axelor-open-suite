@@ -19,8 +19,10 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
+import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
@@ -230,7 +232,7 @@ public class EventController {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateRecurrentEvents(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
@@ -255,7 +257,7 @@ public class EventController {
   }
 
   @Transactional
-  public void deleteThis(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteThis(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);
     Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
@@ -268,7 +270,7 @@ public class EventController {
   }
 
   @Transactional
-  public void deleteNext(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteNext(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);
     Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
@@ -283,7 +285,7 @@ public class EventController {
   }
 
   @Transactional
-  public void deleteAll(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteAll(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);
     Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
@@ -303,7 +305,7 @@ public class EventController {
     response.setReload(true);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void changeAll(ActionRequest request, ActionResponse response) throws AxelorException {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
     Event event = eventRepo.find(eventId);
@@ -505,6 +507,20 @@ public class EventController {
       if (emailAddress != null) {
         response.setValue("attendees", iCalendarEventService.addEmailGuest(emailAddress, event));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void deleteReminder(ActionRequest request, ActionResponse response) {
+    try {
+      EventReminderRepository eventReminderRepository = Beans.get(EventReminderRepository.class);
+
+      EventReminder eventReminder =
+          eventReminderRepository.find((long) request.getContext().get("id"));
+      eventReminderRepository.remove(eventReminder);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

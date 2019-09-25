@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate" title="Project template">
+		<field name="name"/>
+		<field name="assignedTo"/>
+	</grid>
+
+	<form name="project-template-form" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate" onNew="action-project-group-on-new-project">
+
+		<panel name="mainPanel">
+			<panel name="informationPanel" colSpan="12">
+				<field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+					<editor x-show-titles="false">
+						<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" />
+					</editor>
+				</field>
+			</panel>
+			<panel name="actionPanel" colSpan="6">
+				<button name="createProjectBtn" icon="fa-copy" title="Create project from this template" onClick="save,action-project-template-method-generate-project" hidden="true" showIf="!isBusinessProject" colSpan="12"/>
+				<button name="createBusinessProjectBtn" icon="fa-copy" title="Create business project from this template" onClick="save,action-project-template-method-generate-project" hidden="true" showIf="isBusinessProject" colSpan="12"/>
+			</panel>
+		</panel>
+
+		<panel name="detailsPanel">
+			<panel name="generalInfoPanel" colSpan="12">
+				<field name="company" form-view="company-form" grid-view="company-grid" colSpan="3" canEdit="false"/>
+			</panel>
+			<field name="description" colSpan="12" widget="html" />
+		</panel>
+
+		<panel-tabs name="mainPanelTab">
+			<panel title="Task template" name="taskPanel">
+				<field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
+			</panel>
+
+			<panel title="Members" name="membersPanel">
+				<field name="team" title="Team" readonlyIf="synchronize" colSpan="6" canNew="false" canEdit="false" />
+				<field name="synchronize" colSpan="2" widget="boolean-switch" />
+				<field name="membersUserSet" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid" hideIf="synchronize" />
+			</panel>
+
+			<panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+				<field name="teamTaskInvoicing" colSpan="4" onChange="action-project-record-set-invoicing-type"/>
+				<field name="isInvoicingExpenses" colSpan="4" />
+				<field name="isInvoicingPurchases" colSpan="4" />
+				<field name="invoicingTypeSelect" showIf="teamTaskInvoicing" colSpan="6"/>
+				<field name="invoicingComment" colSpan="12" />
+			</panel>
+
+			<panel title="Wiki" name="wikiPanel" >
+				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
+			</panel>
+
+			<panel title="Configurations" name="configurationsPanel" >
+				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" canEdit="false" domain="self.isActivity = true" form-view="product-activity-form" grid-view="product-activity-grid" />
+				<field name="projectCategorySet" colSpan="12" widget="TagSelect" />
+				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
+				<field name="imputable" colSpan="4" widget="boolean-switch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
+				<field name="excludePlanning" if-module="axelor-business-project"/>
+			</panel>
+		</panel-tabs>
+
+		<panel name="characteristicsPanel" title="Characteristics" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="12" sidebar="true" canCollapse="true">
+			<field name="isBusinessProject" colSpan="6" widget="boolean-switch"/>
+			<field name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
+		</panel>
+
+		<panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true" canCollapse="true">
+			<field name="assignedTo" title="Person In Charge" canNew="false" canView="false" canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form" grid-view="user-grid" />
+		</panel>
+	</form>
+
+
+	<form model="com.axelor.apps.base.db.Wizard" title="Create project from this template" name="project-template-wizard-form" onNew="action-attrs-project-template-set-wizard-hidden" onLoad="action-attrs-project-template-set-wizard-hidden">
+		<panel name="mainPanel" colSpan="12">
+			<panel name="infoPanel" colSpan="12">
+					<field name="code" title="Code" type="string" required="true"/>
+					<field name="clientPartner" title="Customer" type="many-to-one" target="com.axelor.apps.base.db.Partner" domain="self.isCustomer = true" required="true"/>
+			</panel>
+			<button name="createBusinessProjectBtn" title="Create business project from this template" colSpan="5" readonlyIf="!clientPartner" onClick="action-project-template-method-generate-project-from-wizard"/>
+			<spacer name="createProjectBtnSpacer" />
+			<button name="createProjectBtn" title="Create project from this template" colSpan="5"  readonlyIf="!code" onClick="action-project-template-method-generate-project-from-wizard"/>			
+		</panel>
+	</form>
+
+	<action-method name="action-project-template-method-generate-project">
+		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromTemplate"/>
+	</action-method>
+
+	<action-method name="action-project-template-method-generate-project-from-wizard">
+		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromWizard"/>
+	</action-method>
+
+	<action-attrs name="action-attrs-project-template-set-wizard-hidden">
+	  <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
+	  <attribute name="hidden" expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
+	  <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
+	  <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
+	</action-attrs>
+	
+</object-views>

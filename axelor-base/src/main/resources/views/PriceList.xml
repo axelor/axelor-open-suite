@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	
     <grid name="price-list-grid" title="Price lists" model="com.axelor.apps.base.db.PriceList"> 
@@ -44,6 +44,7 @@
 			<panel-related name="historizedPriceListPanel" field="historizedPriceList" colSpan="12" readonly="true" form-view="price-list-form" grid-view="price-list-hist-grid"/>
 			<button name="historizePriceListBtn" hideIf="!id" title="Historize Price List" onClick="save,com.axelor.apps.base.web.PriceListController:historizePriceList"/>
 		</panel>
+		<panel-dashlet name="partnerPriceListPanel" title="Partner price lists" action="action-price-list-view-dashlet-partner-price-list" colSpan="12"/>
    </form>
    
    <form name="sale-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
@@ -99,6 +100,14 @@
 		<call class="com.axelor.apps.base.web.PriceListController"
 			  method="checkDates"/>
 	</action-method>
-   
+
+	<action-view name="action-price-list-view-dashlet-partner-price-list" title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
+		<view type="grid" name="partner-price-list-grid" />
+		<view type="form" name="sale-partner-price-list-form" if="typeSelect == 1"/>
+		<view type="form" name="purchase-partner-price-list-form" if="typeSelect == 2"/>
+		<domain>:priceList MEMBER OF self.priceListSet</domain>
+		<context name="priceList" expr="eval: __self__"/>
+	</action-view>
+
 </object-views>
 

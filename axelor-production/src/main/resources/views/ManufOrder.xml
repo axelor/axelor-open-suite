@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
   <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
 		<toolbar>
@@ -13,7 +13,7 @@
 		<hilite color="primary" if="prioritySelect == 2"/>
 		<hilite color="info" if="prioritySelect == 1"/>
     <field name="prioritySelect" hidden="true"/>
-		<field name="manufOrderSeq"/>
+		<field name="manufOrderSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
 		<field name="product" form-view="product-form" grid-view="product-grid"/>
@@ -37,8 +37,8 @@
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
     </toolbar>
-    <field name="productionOrder"/>
-		<field name="manufOrderSeq"/>
+    <field name="productionOrder" width="120"/>
+		<field name="manufOrderSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="product" form-view="product-form" grid-view="product-grid"/>
 		<field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
@@ -58,8 +58,8 @@
   </grid>
     
   <grid name="manuf-order-invoicing-project-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
-    <field name="productionOrder"/>
-    <field name="manufOrderSeq"/>
+    <field name="productionOrder" width="120"/>
+    <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -69,8 +69,8 @@
   </grid>
     
   <grid name="manuf-order-time-tracking-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder" >
-	  <field name="productionOrder"/>
-	  <field name="manufOrderSeq"/>
+	  <field name="productionOrder" width="120" />
+	  <field name="manufOrderSeq" width="120"/>
 	  <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 	  <field name="product" form-view="product-form" grid-view="product-grid"/>
 	  <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
@@ -94,7 +94,7 @@
 		</menubar>
 		<panel name="mainPanel">
 		<panel name="detailsPanel" colSpan="8">
-			<field name="manufOrderSeq" readonly="true" css="bold" colSpan="2"/>
+			<field name="manufOrderSeq"  readonly="true" css="bold" colSpan="2"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
 			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
 			<field name="workshopStockLocation" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
@@ -174,7 +174,7 @@
 			<panel name="consumedProductsPanel" title="Consumed products" hideIf="isConsProOnOperation || statusSelect &lt; 3">
 				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form" orderBy="product.code"/>
-				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="[4,5].includes(statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="$contains([4,5],statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related name="diffStockMoveLineListPanel" field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
 			</panel>

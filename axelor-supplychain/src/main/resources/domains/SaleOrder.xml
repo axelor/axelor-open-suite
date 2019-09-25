@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -39,9 +39,8 @@
             <![CDATA[
                 // INVOICE
                 public static final int INVOICE_ALL = 1;
-                public static final int INVOICE_PART = 2;
-                public static final int INVOICE_LINES = 3;
-                public static final int INVOICE_ADVANCE_PAYMENT = 4;
+                public static final int INVOICE_LINES = 2;
+                public static final int INVOICE_ADVANCE_PAYMENT = 3;
 
                 // SALE ORDER TYPE
                 public static final int SALE_ORDER_TYPE_NORMAL = 1;

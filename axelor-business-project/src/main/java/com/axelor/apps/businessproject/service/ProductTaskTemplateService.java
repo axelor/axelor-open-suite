@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.businessproject.db.ProductTaskTemplate;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -45,11 +44,4 @@ public interface ProductTaskTemplateService {
       LocalDateTime startDate,
       BigDecimal qty,
       SaleOrderLine saleOrderLine);
-
-  /**
-   * Remove the product task template from product.
-   *
-   * @param productTaskTemplate The task template to remove.
-   */
-  void remove(ProductTaskTemplate productTaskTemplate);
 }

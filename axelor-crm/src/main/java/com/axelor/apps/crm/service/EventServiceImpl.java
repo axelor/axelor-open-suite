@@ -135,7 +135,7 @@ public class EventServiceImpl implements EventService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void manageFollowers(Event event) {
     MailFollowerRepository mailFollowerRepo = Beans.get(MailFollowerRepository.class);
     List<MailFollower> followers = mailFollowerRepo.findAll(event);

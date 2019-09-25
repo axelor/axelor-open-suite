@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="AccountConfig" lang="java" cachable="true">
+	<entity name="AccountConfig" lang="java" cacheable="true">
 
 		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
@@ -20,6 +20,7 @@
 		<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
 		<many-to-one name="autoMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Auto Misc. Operation Journal"/>
 		<many-to-one name="manualMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Manual Misc. Operation Journal"/>
+		<many-to-one name="reportedBalanceJournal" ref="com.axelor.apps.account.db.Journal" title="Reported Balance Journal"/>
 
 		<many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
 		<many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
@@ -37,6 +38,9 @@
 		<many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
 		<many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
 		<many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
+		<many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account" title="Year opening account"/>
+		<many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account" title="Year closure account"/>
+		
 
         <!-- Automatic account creation for partners -->
         <integer name="partnerAccountGenerationModeSelect" selection="account.create.mode.select" default="0" title="Automatic partner account creation mode"/>
@@ -150,6 +154,8 @@
 		<!-- Invoice mail -->
 		<boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
 		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+		
+		<boolean name="isManagePassedForPayment" title="Passed for payment"/>
 
 		<finder-method name="findByCompany" using="company"/>
 
@@ -168,6 +174,128 @@
 	
 	
 	]]></extra-code>
+	
+	<track>
+		<field name="company" on="UPDATE"/>
+		
+		<field name="customerSalesJournal" on="UPDATE"/>
+		<field name="customerCreditNoteJournal" on="UPDATE"/>
+		<field name="supplierPurchaseJournal" on="UPDATE"/>
+		<field name="supplierCreditNoteJournal" on="UPDATE"/>
+		<field name="rejectJournal" on="UPDATE"/>
+		<field name="accountClearanceJournal" on="UPDATE"/>
+		<field name="reimbursementJournal" on="UPDATE"/>
+		<field name="irrecoverableJournal" on="UPDATE"/>
+		<field name="autoMiscOpeJournal" on="UPDATE"/>
+		<field name="manualMiscOpeJournal" on="UPDATE"/>
+		
+		<field name="saleJournalType" on="UPDATE"/>
+		<field name="purchaseJournalType" on="UPDATE"/>
+		<field name="cashJournalType" on="UPDATE"/>
+		<field name="creditNoteJournalType" on="UPDATE"/>
+		
+		<field name="customerAccount" on="UPDATE"/>
+		<field name="supplierAccount" on="UPDATE"/>
+		<field name="doubtfulCustomerAccount" on="UPDATE"/>
+		<field name="employeeAccount" on="UPDATE"/>
+		<field name="irrecoverableAccount" on="UPDATE"/>
+		<field name="cashPositionVariationAccount" on="UPDATE"/>
+		<field name="advancePaymentAccount" on="UPDATE"/>
+		<field name="factorDebitAccount" on="UPDATE"/>
+		<field name="factorCreditAccount" on="UPDATE"/>
+		
+		<field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
+		<field name="customerAccountPrefix" on="UPDATE"/>
+		<field name="supplierAccountPrefix" on="UPDATE"/>
+		<field name="employeeAccountPrefix" on="UPDATE"/>
+		<field name="customerAccountSequence" on="UPDATE"/>
+		<field name="supplierAccountSequence" on="UPDATE"/>
+		<field name="employeeAccountSequence" on="UPDATE"/>
+		
+		<field name="thresholdDistanceFromRegulation" on="UPDATE"/>
+		
+		<field name="autoReconcileOnInvoice" on="UPDATE"/>
+		<field name="autoReconcileOnPayment" on="UPDATE"/>
+		
+		<field name="payingBackTax" on="UPDATE"/>
+		
+		<field name="inPaymentMode" on="UPDATE"/>
+		<field name="outPaymentMode" on="UPDATE"/>
+		
+		<field name="defPaymentCondition" on="UPDATE"/>
+		<field name="cfonbConfig" on="UPDATE"/>
+		
+		<field name="sixMonthDebtPassReason" on="UPDATE"/>
+		<field name="threeMonthDebtPassReason" on="UPDATE"/>
+		<field name="sixMonthDebtMonthNumber" on="UPDATE"/>
+		<field name="threeMonthDebtMontsNumber" on="UPDATE"/>
+		
+		<field name="mailTransitTime" on="UPDATE"/>
+		<field name="factorPartner" on="UPDATE"/>
+		
+		<field name="reimbursementExportFolderPathCFONB" on="UPDATE"/>
+		<field name="reimbursementExportFolderPath" on="UPDATE"/>
+		<field name="lowerThresholdReimbursement" on="UPDATE"/>
+		<field name="upperThresholdReimbursement" on="UPDATE"/>
+		<field name="reimbursementAccount" on="UPDATE"/>
+		<field name="reimbursementTemplate" on="UPDATE"/>
+		
+		<field name="reimbursementImportFolderPathCFONB" on="UPDATE"/>
+		<field name="tempReimbImportFolderPathCFONB" on="UPDATE"/>
+		
+		<field name="exportPath" on="UPDATE"/>
+		<field name="exportFileName" on="UPDATE"/>
+		
+		<field name="paymentScheduleExportFolderPathCFONB" on="UPDATE"/>
+		
+		<field name="directDebitPaymentMode" on="UPDATE"/>
+		<field name="rejectionPaymentMode" on="UPDATE"/>
+		<field name="paymentScheduleRejectNumLimit" on="UPDATE"/>
+		<field name="invoiceRejectNumLimit" on="UPDATE"/>
+		<field name="rejectImportPathAndFileName" on="UPDATE"/>
+		<field name="tempImportPathAndFileName" on="UPDATE"/>
+		<field name="rejectPaymentScheduleTemplate" on="UPDATE"/>
+		
+		<field name="profitAccount" on="UPDATE"/>
+		<field name="standardRateTax" on="UPDATE"/>
+		
+		<field name="irrecoverableReasonPassage" on="UPDATE"/>
+		<field name="irrecoverableStandardRateTax" on="UPDATE"/>
+		
+		<field name="payboxConfig" on="UPDATE"/>
+
+		<field name="allowCancelVentilatedInvoice" on="UPDATE"/>
+		<field name="allowRemovalValidatedMove" on="UPDATE"/>
+		<field name="generateMoveForInvoicePayment" on="UPDATE"/>
+		<field name="generateMoveForAdvancePayment" on="UPDATE"/>
+		<field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
+		
+		<field name="accountChart" on="UPDATE"/>
+		<field name="hasChartImported" on="UPDATE"/>
+		<field name="invoiceInAtiSelect" on="UPDATE"/>
+		
+		<field name="accountingDaybook" on="UPDATE"/>
+		
+		<field name="custInvSequence" on="UPDATE"/>
+		<field name="custRefSequence" on="UPDATE"/>
+		<field name="suppInvSequence" on="UPDATE"/>
+		<field name="suppRefSequence" on="UPDATE"/>
+		
+		<field name="invoicingProduct" on="UPDATE"/>
+		<field name="advancePaymentProduct" on="UPDATE"/>
+		
+		<field name="displayDelAddrOnPrinting" on="UPDATE"/>
+		<field name="displayProductCodeOnPrinting" on="UPDATE"/>
+		<field name="displayTaxDetailOnPrinting" on="UPDATE"/>
+		<field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
+		<field name="invoiceClientBox" on="UPDATE"/>
+		<field name="saleInvoiceLegalNote" on="UPDATE"/>
+
+		<field name="termsAndConditions" on="UPDATE"/>
+
+		<field name="invoiceAutomaticMail" on="UPDATE"/>
+		<field name="invoiceMessageTemplate" on="UPDATE"/>
+	</track>
 
 	</entity>
 

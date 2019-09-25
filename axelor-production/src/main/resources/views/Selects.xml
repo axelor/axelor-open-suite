@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -113,7 +113,7 @@
 		<option value="1">Partial end of production</option>
 		<option value="2">End of production</option>
 		<option value="3">Work in progress</option>
-		<option value="4">Bill of material</option>
+		<option value="4">Bill of materials</option>
 	</selection>
 
 	<selection name="production.weekly.planning.type.select">
@@ -126,4 +126,5 @@
 		<option value="2">Costs computed</option>
 		<option value="3">Costs updated</option>
 	</selection>
+
 </object-views>

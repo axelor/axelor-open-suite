@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -165,6 +165,8 @@
 		<option value="18">Move export</option>
 		<option value="19">Credit Transfer</option>
 		<option value="20">Realize fixed asset lines</option>
+		<option value="21">Close the annual accounts of the past year</option>
+		<option value="22">Open the annual accounts of the next year</option>
 	</selection>
 	
 	<selection name="iaccount.account.batch.transfer.type.select">
@@ -383,6 +385,7 @@
 	<selection name="account.move.date.of.reversion.type.select">
 		<option value="1">Today</option>
 		<option value="2">Date of original move</option>
+		<option value="3">Choose date</option>
 	</selection>
 
 	<selection name="invoice.report.type">
@@ -397,9 +400,18 @@
 		<option value="doc">Word</option>
 		<option value="pdf">PDF</option>
 	</selection>
-
+	<selection name="invoice.pfp.validate.status.select">
+		<option value="1">Awaiting</option>
+		<option value="2">PFP validated</option>
+		<option value="3">Litigation</option>
+	</selection>
 	<selection name="account.tax.type.select">
 		<option value="1">Collection</option>
 		<option value="2">Debit</option>
+	</selection>
+
+	<selection name="account.budget.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
 	</selection>
 </object-views>

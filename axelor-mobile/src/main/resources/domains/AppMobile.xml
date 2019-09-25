@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -21,6 +21,15 @@
 		<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
 		
 		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+		
+		<track>
+			<field name="isSaleAppEnable" on="UPDATE"/>
+			<field name="isCrmAppEnable" on="UPDATE"/>
+			<field name="isTimesheetAppEnable" on="UPDATE"/>
+			<field name="isLeaveAppEnable" on="UPDATE"/>
+			<field name="isExpenseAppEnable" on="UPDATE"/>
+			<field name="offlineRecordLimit" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

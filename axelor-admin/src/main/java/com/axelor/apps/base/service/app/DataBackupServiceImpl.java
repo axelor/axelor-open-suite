@@ -59,7 +59,7 @@ public class DataBackupServiceImpl implements DataBackupService {
 
   private ExecutorService executor = Executors.newCachedThreadPool();
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   @Override
   public void createBackUp(DataBackup dataBackup) {
     DataBackup obj = dataBackupRepository.find(dataBackup.getId());
@@ -85,7 +85,7 @@ public class DataBackupServiceImpl implements DataBackupService {
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional(rollbackOn = {Exception.class})
   protected void startBackup(DataBackup dataBackup) throws Exception {
     final AuditableRunner runner = Beans.get(AuditableRunner.class);
     final Callable<Boolean> job =
@@ -105,7 +105,7 @@ public class DataBackupServiceImpl implements DataBackupService {
     runner.run(job);
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   @Override
   public void restoreBackUp(DataBackup dataBackup) {
     DataBackup obj = dataBackupRepository.find(dataBackup.getId());

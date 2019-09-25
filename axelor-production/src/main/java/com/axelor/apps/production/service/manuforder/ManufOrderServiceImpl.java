@@ -46,9 +46,13 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -101,7 +105,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
       BigDecimal qtyRequested,
@@ -109,6 +113,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       boolean isToInvoice,
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT,
       int originType)
       throws AxelorException {
 
@@ -126,7 +131,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             IS_TO_INVOICE,
             company,
             billOfMaterial,
-            plannedStartDateT);
+            plannedStartDateT,
+            plannedEndDateT);
 
     if (originType == ORIGIN_TYPE_SALE_ORDER
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
@@ -249,7 +255,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       boolean isToInvoice,
       Company company,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
       throws AxelorException {
 
     logger.debug("Création d'un OF {}", priority);
@@ -267,6 +274,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             product,
             prodProcess,
             plannedStartDateT,
+            plannedEndDateT,
             ManufOrderRepository.STATUS_DRAFT);
 
     if (appProductionService.getAppProduction().getManageWorkshop()) {
@@ -292,7 +300,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void preFillOperations(ManufOrder manufOrder) throws AxelorException {
 
     BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
@@ -405,7 +413,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public StockMove generateWasteStockMove(ManufOrder manufOrder) throws AxelorException {
     StockMove wasteStockMove = null;
     Company company = manufOrder.getCompany();
@@ -460,7 +468,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePlannedQty(ManufOrder manufOrder) throws AxelorException {
     manufOrder.clearToConsumeProdProductList();
     manufOrder.clearToProduceProdProductList();
@@ -472,7 +480,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);
@@ -577,7 +585,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateConsumedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     this.updateDiffProdProductList(manufOrder);
     List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
@@ -601,7 +609,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProducedStockMoveFromManufOrder(ManufOrder manufOrder) throws AxelorException {
     List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
     ManufOrderStockMoveService manufOrderStockMoveService =
@@ -723,5 +731,93 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
     return consumedQty.subtract(prodProduct.getQty());
+  }
+
+  @Override
+  public String getConsumeAndMissingQtyForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+    List<Integer> statusList = getMOFiltersOnProductionConfig();
+    String statusListQuery =
+        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.stockMove.statusSelect = "
+            + StockMoveRepository.STATUS_PLANNED
+            + " AND self.stockMove.fromStockLocation.typeSelect != "
+            + StockLocationRepository.TYPE_VIRTUAL
+            + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
+            + statusListQuery
+            + "))"
+            + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN ( "
+            + statusListQuery
+            + ") ) ) ";
+    if (companyId != 0L) {
+      query += " AND self.stockMove.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        if (stockLocationId != 0L) {
+          StockLocation stockLocation =
+              Beans.get(StockLocationRepository.class).find(stockLocationId);
+          List<StockLocation> stockLocationList =
+              Beans.get(StockLocationService.class)
+                  .getAllLocationAndSubLocation(stockLocation, false);
+          if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+            query +=
+                " AND self.stockMove.fromStockLocation.id IN ("
+                    + StringTool.getIdListString(stockLocationList)
+                    + ") ";
+          }
+        }
+      }
+    }
+
+    return query;
+  }
+
+  @Override
+  public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId) {
+    List<Integer> statusList = getMOFiltersOnProductionConfig();
+    String statusListQuery =
+        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.stockMove.statusSelect = "
+            + StockMoveRepository.STATUS_PLANNED
+            + " AND self.stockMove.toStockLocation.typeSelect != "
+            + StockLocationRepository.TYPE_VIRTUAL
+            + " AND self.producedManufOrder IS NOT NULL "
+            + " AND self.producedManufOrder.statusSelect IN ( "
+            + statusListQuery
+            + " )";
+    if (companyId != 0L) {
+      query += "AND self.stockMove.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        StockLocation stockLocation =
+            Beans.get(StockLocationRepository.class).find(stockLocationId);
+        List<StockLocation> stockLocationList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocation(stockLocation, false);
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+          query +=
+              " AND self.stockMove.toStockLocation.id IN ("
+                  + StringTool.getIdListString(stockLocationList)
+                  + ") ";
+        }
+      }
+    }
+
+    return query;
+  }
+
+  private List<Integer> getMOFiltersOnProductionConfig() {
+    List<Integer> statusList = new ArrayList<>();
+    statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
+    statusList.add(ManufOrderRepository.STATUS_STANDBY);
+    String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
+    if (!StringUtils.isBlank(status)) {
+      statusList = StringTool.getIntegerList(status);
+    }
+    return statusList;
   }
 }

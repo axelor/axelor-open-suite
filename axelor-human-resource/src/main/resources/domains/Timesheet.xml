@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Timesheet" cachable="true">
+  <entity name="Timesheet" cacheable="true">
 
       <date name="sentDate" title="Sent Date" readonly="true"/>
       <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select" default="1" readonly="true"/>
@@ -49,6 +49,9 @@
 	  		public static final int STATUS_CANCELED = 5;
 	  ]]>
       </extra-code>
+      <track>
+          <field name="statusSelect"/>
+      </track>
   </entity>
   
 </domain-models>

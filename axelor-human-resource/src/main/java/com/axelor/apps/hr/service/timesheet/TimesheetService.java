@@ -40,7 +40,7 @@ import javax.mail.MessagingException;
 
 public interface TimesheetService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException;
 
   public Message sendConfirmationEmail(Timesheet timesheet)
@@ -51,7 +51,15 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  /**
+   * Checks that there is a line for each working day of the timesheet.
+   *
+   * @param timesheet
+   * @throws AxelorException
+   */
+  public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException;
 
   public Message sendValidationEmail(Timesheet timesheet)
@@ -62,7 +70,7 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Timesheet timesheet) throws AxelorException;
 
   public Message sendRefusalEmail(Timesheet timesheet)
@@ -151,10 +159,10 @@ public interface TimesheetService {
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
   public TimesheetLine generateTimesheetLine(

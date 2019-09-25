@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.app.isApp('sale')"
@@ -105,6 +105,17 @@
 			<context name="_user" value="__user__"/>
 		</filter>
 	</search-filters>
+
+	<menuitem name="sc-root-abc-analysis" title="ABC analysis" order="27"
+			  action="sale.root.abc.analysis" parent="sc-root-sale"/>
+
+	<action-view name="sale.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.typeSelect = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl"/>
+	</action-view>
 	
 	<menuitem title="Historical" name="sc-root-sale-historical" parent="sc-root-sale" order="30" 
 			action="sc.hist.sale.orders" />
@@ -284,9 +295,9 @@
 	</action-view>
 		
 	<menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="-205"
-		title="Salesman"  action="saleman.dashboard.view.sample" />
+		title="Salesperson"  action="saleman.dashboard.view.sample" />
 		
-	<action-view name="saleman.dashboard.view.sample" title="Salesman Details">
+	<action-view name="saleman.dashboard.view.sample" title="Salesperson Details">
 		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>

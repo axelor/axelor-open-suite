@@ -187,9 +187,7 @@ public class InvoiceController {
       fieldErrors.append(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_PARTNER));
     }
 
-    if (commonSaleOrder == null
-        && !appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()
-        && saleOrderIsNull == false) {
+    if (commonSaleOrder == null && saleOrderIsNull == false) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<action-attrs name="action-template-attrs-meta-model-domain">
+		<attribute name="domain" for="metaModel" expr="eval: &quot; self.name = 'Partner' OR self.name = 'Lead' &quot;" if="_mediaType == 4"/>
+	</action-attrs>
+	
+	<action-attrs name="action-template-attrs-onnew-onload">
+		<attribute name="hidden" for="isJson" expr="eval: _mediaType != null"/>
+	</action-attrs>
+
+</object-views>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -24,6 +24,8 @@
 		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
         <boolean name="paymentVouchersOnInvoice" />
         
+        <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
+        
 		<extra-code><![CDATA[
 	
 	   
@@ -34,6 +36,20 @@
 	
 		]]></extra-code>
 		
+		<track>
+			<field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
+			<field name="chequeInterbankCode" on="UPDATE"/>
+	
+			<field name="manageCustomerCredit" on="UPDATE"/>
+
+			<field name="manageAnalyticAccounting" on="UPDATE"/>
+			<field name="analyticDistributionTypeSelect" on="UPDATE"/>
+
+			<field name="manageFactors" on="UPDATE"/>
+			<field name="partnerBalConfigSelect" on="UPDATE"/>
+			<field name="manageAdvancePaymentInvoice" on="UPDATE"/>
+			<field name="paymentVouchersOnInvoice" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

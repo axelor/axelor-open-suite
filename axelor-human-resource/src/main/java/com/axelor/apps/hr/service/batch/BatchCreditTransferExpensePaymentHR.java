@@ -175,7 +175,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
    * @param bankDetails
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
     log.debug(
         String.format(
@@ -190,7 +190,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
    * @param doneList
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void mergeBankOrders(List<Expense> doneList) throws AxelorException {
     List<Expense> expenseList = new ArrayList<>();
     List<BankOrder> bankOrderList = new ArrayList<>();

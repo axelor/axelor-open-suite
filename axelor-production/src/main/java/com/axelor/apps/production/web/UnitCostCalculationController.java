@@ -89,7 +89,7 @@ public class UnitCostCalculationController {
               + "-"
               + Beans.get(AppProductionService.class)
                   .getTodayDateTime()
-                  .format(DateTimeFormatter.ofPattern("YYYYMMDDHHmm"))
+                  .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
               + ".csv";
       MetaFile metaFile =
           unitCostCalculationServiceProvider

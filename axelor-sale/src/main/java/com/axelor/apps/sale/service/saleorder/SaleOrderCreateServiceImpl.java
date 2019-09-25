@@ -76,8 +76,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       saleOrder.setCompany(company);
       saleOrder.setCurrency(company.getCurrency());
     }
-    saleOrder.setSalemanUser(AuthUtils.getUser());
-    saleOrder.setTeam(saleOrder.getSalemanUser().getActiveTeam());
+    saleOrder.setSalespersonUser(AuthUtils.getUser());
+    saleOrder.setTeam(saleOrder.getSalespersonUser().getActiveTeam());
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrderService.computeEndOfValidityDate(saleOrder);
     return saleOrder;
@@ -85,7 +85,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
   @Override
   public SaleOrder createSaleOrder(
-      User salemanUser,
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -114,18 +114,18 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
-    if (salemanUser == null) {
-      salemanUser = AuthUtils.getUser();
+    if (salespersonUser == null) {
+      salespersonUser = AuthUtils.getUser();
     }
-    saleOrder.setSalemanUser(salemanUser);
+    saleOrder.setSalespersonUser(salespersonUser);
 
     if (team == null) {
-      team = salemanUser.getActiveTeam();
+      team = salespersonUser.getActiveTeam();
     }
     saleOrder.setTeam(team);
 
     if (company == null) {
-      company = salemanUser.getActiveCompany();
+      company = salespersonUser.getActiveCompany();
     }
     saleOrder.setCompany(company);
 
@@ -151,7 +151,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrderList,
       Currency currency,
@@ -223,7 +223,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrder(
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
       throws AxelorException {

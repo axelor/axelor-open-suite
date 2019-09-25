@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Employee" cachable="true">
+  <entity name="Employee" cacheable="true">
       
       <one-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" mappedBy="employee"/>
-      <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+      <one-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Contact"/>
       <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20" />
       <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" massUpdate="true"/>
       <decimal name="weeklyWorkHours" title="Weekly work hours" scale="2" precision="20" />

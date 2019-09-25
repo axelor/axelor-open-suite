@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     <grid name="debt-recovery-method-grid" title="Debt recovery methods" model="com.axelor.apps.account.db.DebtRecoveryMethod">
     	<field name="name"/>
     	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     </grid>
     <form name="debt-recovery-method-form" title="Debt recovery method" model="com.axelor.apps.account.db.DebtRecoveryMethod" width="large">
     	<panel name="mainPanel" >
-    		<field name="name"/>
+    		<field name="name" required="true"/>
     		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
        	</panel>
        	<panel-related name="debtRecoveryMethodLineListPanel" field="debtRecoveryMethodLineList" colSpan="12" orderBy="debtRecoveryLevel" form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid"/>

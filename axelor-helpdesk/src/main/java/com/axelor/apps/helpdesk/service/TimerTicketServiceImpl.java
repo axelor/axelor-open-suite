@@ -60,7 +60,7 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public TimerHistory start(Model model, Timer timer, LocalDateTime dateTime)
       throws AxelorException {
     Ticket ticket = (Ticket) model;
@@ -108,8 +108,13 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   @Override
   public Duration compute(Ticket task) {
     Duration total = Duration.ZERO;
-    for (Timer timer : task.getTimerList()) {
-      total = total.plus(compute(timer));
+    if (task != null) {
+      task = repository.find(task.getId());
+      if (task.getTimerList() != null && !task.getTimerList().isEmpty()) {
+        for (Timer timer : task.getTimerList()) {
+          total = total.plus(compute(timer));
+        }
+      }
     }
     return total;
   }

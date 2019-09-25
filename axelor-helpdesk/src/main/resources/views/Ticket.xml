@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
 		<toolbar>
 			<button name="takeChargeBtn" title="Assign to me" icon="fa-suitcase" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
 		</toolbar>
-		<field name="ticketSeq"/>
+		<field name="ticketSeq" width="120"/>
 		<field name="subject"/>
 		<field name="ticketType"/>
 		<field name="startDateT"/>

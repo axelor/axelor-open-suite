@@ -31,15 +31,15 @@ public interface StockMoveInvoiceService {
 
   Invoice createInvoice(StockMove stockMove) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromPurchaseOrder(StockMove stockMove, PurchaseOrder purchaseOrder)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createInvoiceFromOrderlessStockMove(StockMove stockMove) throws AxelorException;
 
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);

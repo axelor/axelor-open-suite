@@ -360,6 +360,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">company_logo_file_path</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">company_addressl2</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company_addressl2</text-property>
@@ -480,46 +492,56 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">11</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
                         <property name="name">company_addressl2</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">14</property>
                         <property name="name">company_addressl3</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">15</property>
                         <property name="name">company_addressl4</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">16</property>
                         <property name="name">company_addressl5</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">17</property>
                         <property name="name">company_addressl6</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">18</property>
                         <property name="name">company_country</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">19</property>
                         <property name="name">customer_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">20</property>
                         <property name="name">customer_full_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">21</property>
                         <property name="name">unit_label</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -599,62 +621,76 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">11</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
                     <property name="name">company_addressl2</property>
                     <property name="nativeName">company_addressl2</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">14</property>
                     <property name="name">company_addressl3</property>
                     <property name="nativeName">company_addressl3</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">15</property>
                     <property name="name">company_addressl4</property>
                     <property name="nativeName">company_addressl4</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">16</property>
                     <property name="name">company_addressl5</property>
                     <property name="nativeName">company_addressl5</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">17</property>
                     <property name="name">company_addressl6</property>
                     <property name="nativeName">company_addressl6</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">18</property>
                     <property name="name">company_country</property>
                     <property name="nativeName">company_country</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">19</property>
                     <property name="name">customer_seq</property>
                     <property name="nativeName">customer_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">20</property>
                     <property name="name">customer_full_name</property>
                     <property name="nativeName">customer_full_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">21</property>
                     <property name="name">unit_label</property>
                     <property name="nativeName">unit_label</property>
                     <property name="dataType">string</property>
@@ -672,6 +708,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	internal_delivery_comment,
 	external_delivery_comment,
 	CompanyLogo.file_path as company_logo_file_path,
+	Company.height as logo_height,
+	Company.width as logo_width,
 	StockLocationAddress.addressl2 as company_addressl2,
 	StockLocationAddress.addressl3 as company_addressl3,
 	StockLocationAddress.addressl4 as company_addressl4,
@@ -1170,6 +1208,7 @@ where LogisticalForm.id = ?
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="LogisticalFormLineDS" id="142">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="computedColumns">
                 <structure>
                     <property name="name">pc_number</property>
@@ -1232,6 +1271,12 @@ pcNumber;</expression>
                     <text-property name="heading">dimensions</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">unit_net_mass</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">unit_net_mass</text-property>
+                    <text-property name="heading">unit_net_mass</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">stock_move_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">stock_move_seq</text-property>
@@ -1242,12 +1287,6 @@ pcNumber;</expression>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_code</text-property>
                     <text-property name="heading">product_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_description</text-property>
-                    <text-property name="heading">product_description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sale_order_seq</property>
@@ -1272,6 +1311,12 @@ pcNumber;</expression>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">net_mass</text-property>
                     <text-property name="heading">net_mass</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">line_format</property>
@@ -1336,17 +1381,17 @@ pcNumber;</expression>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">unit_net_mass</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">stock_move_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
-                        <property name="name">product_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
                         <property name="position">9</property>
-                        <property name="name">product_description</property>
+                        <property name="name">product_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -1371,16 +1416,21 @@ pcNumber;</expression>
                     </structure>
                     <structure>
                         <property name="position">14</property>
-                        <property name="name">line_format</property>
+                        <property name="name">product_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">pc_number</property>
+                        <property name="name">line_format</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
+                        <property name="name">pc_number</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
                         <property name="name">order_ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -1432,22 +1482,22 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="position">7</property>
+                    <property name="name">unit_net_mass</property>
+                    <property name="nativeName">unit_net_mass</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
                     <property name="name">stock_move_seq</property>
                     <property name="nativeName">stock_move_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">product_code</property>
                     <property name="nativeName">product_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">product_description</property>
-                    <property name="nativeName">product_description</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -1481,6 +1531,13 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">product_name</property>
+                    <property name="nativeName">product_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">line_format</property>
                     <property name="nativeName">line_format</property>
                     <property name="dataType">string</property>
@@ -1494,13 +1551,14 @@ pcNumber;</expression>
 	LogisticalFormLine.parcel_pallet_number,
 	LogisticalFormLine.gross_mass,
 	LogisticalFormLine.dimensions,
+	LogisticalFormLine.unit_net_mass,
 	StockMove.stock_move_seq,
 	Product.code as product_code,
-	Product.name as product_description,
 	SaleOrder.sale_order_seq,
 	SaleOrder.order_number,
 	SaleOrder.external_reference,
 	StockMoveLine.net_mass,
+	StockMoveLine.product_name,
 	coalesce(nullif(translat.message_value, ''), translat.message_key) as line_format
 
 from stock_logistical_form_line as LogisticalFormLine
@@ -2009,6 +2067,26 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["company_country"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">logo_height</property>
+                            <text-property name="displayName">logo_height</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_width</property>
+                            <text-property name="displayName">logo_width</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">unit_label</property>
+                            <text-property name="displayName">unit_label</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["unit_label"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <column id="13"/>
                     <column id="14">
@@ -2024,34 +2102,28 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                 <row id="25">
                                     <property name="height">0.8020833333333334in</property>
                                     <cell id="26">
-                                        <image id="30">
-                                            <property name="height">67px</property>
-                                            <property name="width">180px</property>
-                                            <expression name="altText">""</expression>
-                                            <property name="source">file</property>
-                                            <expression name="uri" type="javascript">params["AttachmentPath"].value + row["company_logo_file_path"]</expression>
-                                        </image>
+                                        <text id="4532">
+                                            <property name="fontSize">8pt</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["company_logo_file_path"] == null</expression>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["company_logo_file_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                                        </text>
                                     </cell>
                                 </row>
                                 <row id="27">
                                     <property name="height">0.59375in</property>
-                                    <cell id="28">
-                                        <text id="29">
-                                            <property name="fontSize">10pt</property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="html">
-[
-	row["company_addressl2"],
-	row["company_addressl3"],
-	row["company_addressl4"],
-	row["company_addressl5"],
-	row["company_addressl6"],
-	row["company_country"]
-].filter(function(x) { return x; }).join("<br />");
-</VALUE-OF>
-]]></text-property>
-                                        </text>
-                                    </cell>
+                                    <cell id="28"/>
                                 </row>
                             </grid>
                         </cell>
@@ -2087,7 +2159,24 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="19"/>
+                        <cell id="19">
+                            <text id="29">
+                                <property name="fontSize">10pt</property>
+                                <property name="marginLeft">35%</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="html">
+[
+	row["company_addressl2"],
+	row["company_addressl3"],
+	row["company_addressl4"],
+	row["company_addressl5"],
+	row["company_addressl6"],
+	row["company_country"]
+].filter(function(x) { return x; }).join("<br />");
+</VALUE-OF>
+]]></text-property>
+                            </text>
+                        </cell>
                     </row>
                     <row id="31">
                         <property name="height">0.5729166666666666in</property>
@@ -2593,19 +2682,6 @@ if (String.myFormat === undefined) {
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">product_description</property>
-                                <text-property name="displayName">product_description</text-property>
-                                <expression name="expression" type="javascript">var maxLen = 100;
-var ellipse = "...";
-if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description"].length > maxLen) {
-  dataSetRow["product_description"].substring(0, maxLen - ellipse.length) + ellipse;
-} else {
-  dataSetRow["product_description"];
-}</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">sale_order_seq</property>
                                 <text-property name="displayName">sale_order_seq</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["sale_order_seq"]</expression>
@@ -2645,8 +2721,9 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                             <structure>
                                 <property name="name">product_description_1</property>
                                 <text-property name="displayName">product_description</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["product_description"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
                                 <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">net_mass_1</property>
@@ -2664,7 +2741,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["net_mass"] * row["qty"]</expression>
+                                        <expression name="value" type="javascript">row["unit_net_mass"] * row["qty"]</expression>
                                     </structure>
                                 </list-property>
                                 <expression name="filterExpr" type="javascript">row["type_select"] == 3</expression>
@@ -2712,6 +2789,25 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <text-property name="displayName">order_ref</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["order_ref"]</expression>
                                 <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">product_name</property>
+                                <text-property name="displayName">product_name</text-property>
+                                <expression name="expression" type="javascript">var maxLen = 100;
+var ellipse = "...";
+if (dataSetRow["product_name"] &amp;&amp; dataSetRow["product_name"].length > maxLen) {
+  dataSetRow["product_name"].substring(0, maxLen - ellipse.length) + ellipse;
+} else {
+  dataSetRow["product_name"];
+}</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">unit_net_mass</property>
+                                <text-property name="displayName">unit_net_mass</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["unit_net_mass"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <method name="onCreate"><![CDATA[
@@ -3069,7 +3165,7 @@ default:
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'value:'+row["product_description"]</value>
+                                                    <value type="javascript">'value:'+row["product_name"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3088,7 +3184,7 @@ default:
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_description"]}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_name"]}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="194">
@@ -3098,13 +3194,13 @@ default:
                                     <property name="borderRightWidth">thin</property>
                                     <property name="paddingLeft">4pt</property>
                                     <property name="paddingRight">4pt</property>
-                                    <data id="195">
+                                    <data id="4535">
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
                                             <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">net_mass</property>
+                                        <property name="resultSetColumn">unit_net_mass</property>
                                     </data>
                                 </cell>
                                 <cell id="255">
@@ -3153,6 +3249,7 @@ default:
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
+                                        <structure name="toc"/>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>
 var total_gross_mass = row._outer._outer["total_gross_mass"] ? Formatter.format(row._outer._outer["total_gross_mass"],  "#,##0.00") : "N/A";

@@ -32,7 +32,7 @@ public class StockLocationLineReservationServiceImpl
     implements StockLocationLineReservationService {
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void allocateAll(StockLocationLine stockLocationLine) throws AxelorException {
     // qty to allocate is the minimum value between requested and current qty subtracted by reserved
     // qty
@@ -52,8 +52,8 @@ public class StockLocationLineReservationServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public void deallocateAll(StockLocationLine stockLocationLine) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void deallocateAll(StockLocationLine stockLocationLine) throws AxelorException {
     List<StockMoveLine> stockMoveLineList =
         Beans.get(StockMoveLineRepository.class)
             .all()
@@ -61,6 +61,8 @@ public class StockLocationLineReservationServiceImpl
                 "self.product = :product "
                     + "AND self.stockMove.fromStockLocation = :stockLocation "
                     + "AND self.stockMove.statusSelect = :planned "
+                    + "AND (self.stockMove.availabilityRequest IS FALSE "
+                    + "OR self.stockMove.availabilityRequest IS NULL) "
                     + "AND self.reservedQty > 0")
             .bind("product", stockLocationLine.getProduct())
             .bind("stockLocation", stockLocationLine.getStockLocation())
@@ -73,6 +75,6 @@ public class StockLocationLineReservationServiceImpl
         saleOrderLine.setReservedQty(BigDecimal.ZERO);
       }
     }
-    stockLocationLine.setReservedQty(BigDecimal.ZERO);
+    Beans.get(ReservedQtyService.class).updateReservedQty(stockLocationLine);
   }
 }

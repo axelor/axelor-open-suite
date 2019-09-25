@@ -139,7 +139,7 @@ public class IrrecoverableService {
    * @param irrecoverable Un objet Irrécouvrable
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void getIrrecoverable(Irrecoverable irrecoverable) throws AxelorException {
 
     Company company = irrecoverable.getCompany();
@@ -349,7 +349,7 @@ public class IrrecoverableService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public IrrecoverableCustomerLine createIrrecoverableCustomerLine(
       Irrecoverable irrecoverable,
       Partner payerPartner,
@@ -496,7 +496,7 @@ public class IrrecoverableService {
     return anomaly;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createMoveForPaymentScheduleLineReject(
       Irrecoverable irrecoverable, PaymentScheduleLine paymentScheduleLine) throws AxelorException {
 
@@ -514,7 +514,7 @@ public class IrrecoverableService {
     irrecoverable.getMoveSet().add(move);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createIrrecoverableInvoiceLineMove(Irrecoverable irrecoverable, Invoice invoice)
       throws AxelorException {
 
@@ -1074,7 +1074,7 @@ public class IrrecoverableService {
    * @param generateEvent Un évènement à t'il déjà été créé par un autre objet ?
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void passInIrrecoverable(Invoice invoice, boolean generateEvent) throws AxelorException {
     invoice.setIrrecoverableStatusSelect(
         InvoiceRepository.IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE);
@@ -1138,7 +1138,7 @@ public class IrrecoverableService {
    * @param invoice Une facture
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void notPassInIrrecoverable(Invoice invoice) throws AxelorException {
     invoice.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
 
@@ -1159,7 +1159,7 @@ public class IrrecoverableService {
    * @param passInvoice La procédure doit-elle passer aussi en irrécouvrable la facture ?
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void passInIrrecoverable(MoveLine moveLine, boolean generateEvent, boolean passInvoice)
       throws AxelorException {
     moveLine.setIrrecoverableStatusSelect(
@@ -1209,7 +1209,7 @@ public class IrrecoverableService {
    * @param passInvoice La procédure doit-elle passer aussi en irrécouvrable la facture ?
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void notPassInIrrecoverable(MoveLine moveLine, boolean passInvoice)
       throws AxelorException {
     moveLine.setIrrecoverableStatusSelect(
@@ -1230,7 +1230,7 @@ public class IrrecoverableService {
    * @param paymentSchedule Un échéancier de paiement
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void passInIrrecoverable(PaymentSchedule paymentSchedule) throws AxelorException {
     Company company = paymentSchedule.getCompany();
 
@@ -1278,7 +1278,7 @@ public class IrrecoverableService {
    * @param paymentSchedule Un échéancier de paiement
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void notPassInIrrecoverable(PaymentSchedule paymentSchedule) throws AxelorException {
     paymentSchedule.setIrrecoverableStatusSelect(
         PaymentScheduleRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);

@@ -99,11 +99,13 @@ public class MoveExcessPaymentService {
     if (invoice.getInvoicePaymentList() != null) {
 
       for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+        if (invoicePayment.getMove() != null
+            && invoicePayment.getMove().getMoveLineList() != null) {
+          for (MoveLine moveLine : invoicePayment.getMove().getMoveLineList()) {
 
-        for (MoveLine moveLine : invoicePayment.getMove().getMoveLineList()) {
-
-          if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
-            moveLineList.add(moveLine);
+            if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
+              moveLineList.add(moveLine);
+            }
           }
         }
       }

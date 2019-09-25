@@ -18,6 +18,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.apps.base.db.repo.ObjectDataConfigRepository;
 import com.axelor.apps.base.service.ObjectDataAnonymizeService;
 import com.axelor.apps.base.service.ObjectDataExportService;
@@ -40,15 +41,13 @@ public class ObjectDataExportController {
 
   public void export(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    Context context = request.getContext();
-    Long recordId = Long.parseLong(context.get("modelSelectId").toString());
-    Long objectDataconfigId = Long.parseLong(context.get("objectDataConfigId").toString());
-    String language = (String) context.get("langSelect");
-    String format = (String) context.get("exportFormatSelect");
+    ObjectDataConfigExport objDataConfigExport =
+        request.getContext().asType(ObjectDataConfigExport.class);
+
+    Long objectDataconfigId = objDataConfigExport.getObjectDataConfig().getId();
 
     ObjectDataConfig objectDataConfig = objectDataConfigRepo.find(objectDataconfigId);
-    MetaFile dataFile =
-        objectDataExportService.export(objectDataConfig, recordId, language, format);
+    MetaFile dataFile = objectDataExportService.export(objectDataConfig, objDataConfigExport);
 
     if (dataFile != null) {
       response.setView(

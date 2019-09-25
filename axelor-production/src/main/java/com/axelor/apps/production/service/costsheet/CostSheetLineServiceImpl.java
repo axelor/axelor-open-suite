@@ -40,7 +40,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.AxelorException;
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -216,7 +216,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
           }
         }
         // If we didn't have a computed price in cost calculation session, so we compute the price
-        // from its bill of material
+        // from its bill of materials
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
         costPrice =
             this.getComponentCostPrice(

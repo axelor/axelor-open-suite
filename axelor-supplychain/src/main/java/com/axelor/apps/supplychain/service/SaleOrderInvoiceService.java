@@ -46,7 +46,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
 
   /**
@@ -58,7 +58,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected)
       throws AxelorException;
 
@@ -72,7 +72,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLinesSelected,
@@ -132,19 +132,6 @@ public interface SaleOrderInvoiceService {
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLineList,
       Map<Long, BigDecimal> qtyToInvoiceMap)
-      throws AxelorException;
-
-  /**
-   * Allows to partially invoice a {@link SaleOrder} by creating an {@link Invoice} with one line
-   * per different tax lines in the {@link SaleOrder}.
-   *
-   * @param saleOrder
-   * @param amountToInvoice
-   * @param isPercent
-   * @return the generated invoice
-   * @throws AxelorException
-   */
-  Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException;
 
   /**
@@ -272,9 +259,7 @@ public interface SaleOrderInvoiceService {
    */
   List<Invoice> getInvoices(SaleOrder saleOrder);
 
-  void fillInLines(Invoice invoice);
-
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company cmpany,
@@ -300,4 +285,24 @@ public interface SaleOrderInvoiceService {
    * @return the domain for the operation select field in the invoicing wizard form
    */
   Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
+
+  /**
+   * throw exception if all invoices amount generated from the sale order and amountToInvoice is
+   * greater than saleOrder's amount
+   *
+   * @param saleOrder
+   * @param amountToInvoice
+   * @param isPercent
+   * @throws AxelorException
+   */
+  void displayErrorMessageIfSaleOrderIsInvoiceable(
+      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+
+  /**
+   * Display error message if all invoices have been generated for the sale order
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 }

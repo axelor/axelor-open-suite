@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="AccountConfig" lang="java" cachable="true">
+	<entity name="AccountConfig" lang="java" cacheable="true">
 
 		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
@@ -13,6 +13,11 @@
 		<many-to-one name="forecastedInvCustAccount" ref="com.axelor.apps.account.db.Account" title="Forecasted invoice customer account"/>
 		<many-to-one name="forecastedInvSuppAccount" ref="com.axelor.apps.account.db.Account" title="Forecasted invoice supplier account"/>
 
+	<track>
+		<field name="company" on="UPDATE"/>
+		<field name="forecastedInvCustAccount" on="UPDATE"/>
+		<field name="forecastedInvSuppAccount" on="UPDATE"/>
+	</track>
 	</entity>
 
 </domain-models>

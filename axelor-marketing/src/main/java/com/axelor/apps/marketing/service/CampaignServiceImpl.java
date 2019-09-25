@@ -147,7 +147,7 @@ public class CampaignServiceImpl implements CampaignService {
     return errors.toString();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {
@@ -187,7 +187,7 @@ public class CampaignServiceImpl implements CampaignService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateEvents(Campaign campaign) {
 
     LocalDateTime eventStartDateTime = campaign.getEventStartDateTime();
@@ -237,7 +237,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateTargets(Campaign campaign) {
 
     TargetListService targetListService = Beans.get(TargetListService.class);
@@ -250,7 +250,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void inviteSelectedTargets(Campaign campaign, Campaign campaignContext) {
 
     Set<Partner> partners = campaign.getPartners();
@@ -277,7 +277,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void inviteAllTargets(Campaign campaign) {
 
     Set<Partner> partners = campaign.getPartners();
@@ -301,7 +301,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addParticipatingTargets(Campaign campaign, Campaign campaignContext) {
 
     for (Partner partner : campaignContext.getInvitedPartnerSet()) {
@@ -322,7 +322,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addNotParticipatingTargets(Campaign campaign, Campaign campaignContext) {
 
     for (Partner partner : campaignContext.getInvitedPartnerSet()) {
@@ -343,7 +343,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void markLeadPresent(Campaign campaign, Lead lead) {
 
     campaign.addPresentLeadSetItem(lead);
@@ -351,7 +351,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void markPartnerPresent(Campaign campaign, Partner partner) {
 
     campaign.addPresentPartnerSetItem(partner);

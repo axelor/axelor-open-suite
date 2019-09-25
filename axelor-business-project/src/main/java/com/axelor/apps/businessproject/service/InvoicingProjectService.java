@@ -95,7 +95,7 @@ public class InvoicingProjectService {
 
   protected static final String DATE_FORMAT_YYYYMMDDHHMM = "YYYYMMddHHmm";
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(InvoicingProject invoicingProject) throws AxelorException {
     Project project = invoicingProject.getProject();
     Partner customer = project.getClientPartner();
@@ -185,7 +185,6 @@ public class InvoicingProjectService {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       invoiceLine.setSequence(sequence);
       sequence++;
-      invoiceLine.setSaleOrder(invoiceLine.getInvoice().getSaleOrder());
     }
 
     return invoiceLineList;
@@ -473,7 +472,8 @@ public class InvoicingProjectService {
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
       fileList.add(
-          Beans.get(InvoicePrintServiceImpl.class).print(invoicingProject.getInvoice(), null));
+          Beans.get(InvoicePrintServiceImpl.class)
+              .print(invoicingProject.getInvoice(), null, ReportSettings.FORMAT_PDF));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));

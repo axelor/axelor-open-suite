@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="Budget" lang="java" cachable="true">
+  <entity name="Budget" lang="java" cacheable="true">
+  	<integer name="statusSelect" selection="account.budget.status.select" default="1"/>
     <string name="name" title="Name"/>
     <string name="code" title="Code"/>
     <date name="fromDate" title="From"/>
@@ -13,10 +14,20 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="inChargeUser" ref="com.axelor.auth.db.User" title="Person in charge"/>
     <decimal name="totalAmountExpected" title="Expected total amount" precision="20" scale="2"/>
+    <decimal name="totalAmountRealized" title="Realized total amount" precision="20" scale="2"/>
     <one-to-many name="budgetLineList" ref="com.axelor.apps.account.db.BudgetLine" title="Budget Lines" mappedBy="budget"/>
   	<integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select"/>
   	<decimal name="amountForGeneration" title="Amount for each line"/>
+  	<boolean name="checkAvailableBudget" title="Check available budget"/>
   	
+  	<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+	
+	]]></extra-code> 
+	
   </entity>
 
 </domain-models>

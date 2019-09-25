@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppStock" lang="java" cachable="true" extends="App">
+	<entity name="AppStock" lang="java" cacheable="true" extends="App">
 		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 		<boolean name="requireToFillConformityOnReceipt" title="Require to fill conformity for products ticked 'Control on Receipt'" default="true"/>
 		<boolean name="isSeparateShipmentOperations" title="Separate the shipment operations"/>
-		<boolean name="isRequiredShipmentSupplierDetails" title="Require to fill the shipment informations"/>
+		<boolean name="isRequiredShipmentSupplierDetails" title="Require to fill the shipment information"/>
         <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
+
+        <track>
+        	<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
+        	<field name="requireToFillConformityOnReceipt" on="UPDATE"/>
+        	<field name="isSeparateShipmentOperations" on="UPDATE"/>
+        	<field name="isRequiredShipmentSupplierDetails" on="UPDATE"/>
+        	<field name="economicArea" on="UPDATE"/>
+        </track>
 	</entity>
 
 </domain-models>

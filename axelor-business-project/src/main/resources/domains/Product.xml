@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Product">
-    <one-to-many name="taskTemplateList"
-      ref="com.axelor.apps.businessproject.db.ProductTaskTemplate" mappedBy="product"/>
+    <many-to-many name="taskTemplateSet" ref="com.axelor.apps.project.db.TaskTemplate" title="Task templates"/>
   </entity>
 
 </domain-models>

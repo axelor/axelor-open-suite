@@ -55,20 +55,24 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       throws AxelorException, IOException {
     String fileName = getInvoiceFilesName(false, format);
     return PdfTool.getFileLinkFromPdfFile(
-        printCopiesToFile(invoice, forceRefresh, reportType), fileName);
+        printCopiesToFile(invoice, forceRefresh, reportType, format), fileName);
   }
 
   @Override
-  public File printCopiesToFile(Invoice invoice, boolean forceRefresh, Integer reportType)
+  public File printCopiesToFile(
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format)
       throws AxelorException, IOException {
-    File file = getPrintedInvoice(invoice, forceRefresh, reportType);
+    File file = getPrintedInvoice(invoice, forceRefresh, reportType, format);
     int copyNumber = invoice.getInvoicesCopySelect();
-    return PdfTool.printCopiesToFile(file, copyNumber);
+    return format.equals(ReportSettings.FORMAT_PDF)
+        ? PdfTool.printCopiesToFile(file, copyNumber)
+        : file;
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, IOException.class, RuntimeException.class})
-  public File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType)
+  @Transactional(rollbackOn = {Exception.class})
+  public File getPrintedInvoice(
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format)
       throws AxelorException {
 
     // if invoice is ventilated (or just validated for advance payment invoices)
@@ -89,24 +93,25 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         // generate a new printing
         return reportType != null
                 && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
-            ? print(invoice, reportType)
-            : printAndSave(invoice, reportType);
+            ? print(invoice, reportType, format)
+            : printAndSave(invoice, reportType, format);
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
       // don't save
-      return print(invoice, reportType);
+      return print(invoice, reportType, format);
     }
   }
 
-  public File print(Invoice invoice, Integer reportType) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(invoice, reportType);
+  public File print(Invoice invoice, Integer reportType, String format) throws AxelorException {
+    ReportSettings reportSettings = prepareReportSettings(invoice, reportType, format);
     return reportSettings.generate().getFile();
   }
 
-  public File printAndSave(Invoice invoice, Integer reportType) throws AxelorException {
+  public File printAndSave(Invoice invoice, Integer reportType, String format)
+      throws AxelorException {
 
-    ReportSettings reportSettings = prepareReportSettings(invoice, reportType);
+    ReportSettings reportSettings = prepareReportSettings(invoice, reportType, format);
     MetaFile metaFile;
 
     reportSettings.toAttach(invoice);
@@ -142,7 +147,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         new ThrowConsumer<Invoice>() {
           @Override
           public void accept(Invoice invoice) throws Exception {
-            printedInvoices.add(printCopiesToFile(invoice, false, null));
+            printedInvoices.add(printCopiesToFile(invoice, false, null, ReportSettings.FORMAT_PDF));
           }
         });
 
@@ -164,7 +169,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   }
 
   @Override
-  public ReportSettings prepareReportSettings(Invoice invoice, Integer reportType)
+  public ReportSettings prepareReportSettings(Invoice invoice, Integer reportType, String format)
       throws AxelorException {
 
     if (invoice.getPrintingSettings() == null) {
@@ -188,7 +193,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
-        .addParam("ReportType", reportType == null ? 0 : reportType);
+        .addParam("ReportType", reportType == null ? 0 : reportType)
+        .addFormat(format);
   }
 
   /**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<action-view name="wizard-supplier-view" title="My space" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="wizard-supplier-form"/>
@@ -73,7 +73,7 @@
 	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12"/>
 	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
 	    </panel>
-	    <panel name="stockMoveInformationsPanel" title="Stock move informations">
+	    <panel name="stockMoveInformationsPanel" title="Stock move information">
 	      <field name="estimatedDate" colSpan="12"/>
 	      <field name="realDate" title="Receipt date" colSpan="12"/>
 	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>

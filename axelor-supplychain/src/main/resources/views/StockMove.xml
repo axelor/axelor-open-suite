@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
      <grid name="stock-move-manuf-order-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
         <field name="stockMoveSeq"/>
@@ -40,7 +40,7 @@
     </grid>
 
 	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
-		<panel-related name="$customerStockMoveToInvoicePanel" field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 2 AND self.isReversion = false) OR (self.typeSelect = 3 AND self.isReversion = true)) AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-out-grid" form-view="stock-move-form"/>
+		<panel-related name="$customerStockMoveToInvoicePanel" field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 2 AND self.isReversion = false) OR (self.typeSelect = 3 AND self.isReversion = true)) AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-out-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
 			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-cust-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-customer-invoice"/>
@@ -48,7 +48,7 @@
     </form>
     
     <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
-		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 3 AND self.isReversion = false) OR (self.typeSelect = 2 AND self.isReversion = true)) AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-in-grid" form-view="stock-move-form"/>
+		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 3 AND self.isReversion = false) OR (self.typeSelect = 2 AND self.isReversion = true)) AND (self.invoice IS null OR self.invoice.statusSelect = 4)" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-in-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
 			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-suppl-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-supplier-invoice"/>
@@ -115,6 +115,14 @@
 		<field name="paymentModeToCheck" expr="eval: contextPaymentModeToCheck"/>
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>
 		<field name="partnerId" expr="eval: contextPartnerId"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-record-pfp-validate" model="com.axelor.apps.stock.db.StockMove">
+		<field name="pfpValidateStatusSelect" expr="eval: 2"/>
+	</action-record>
+
+	<action-record name="action-stock-move-record-pfp-refusal-to-pay" model="com.axelor.apps.stock.db.StockMove">
+		<field name="pfpValidateStatusSelect" expr="eval: 3"/>
 	</action-record>
 
 	<action-view name="action-stock-move-view-account-moves" title="Moves" model="com.axelor.apps.account.db.Move" if-module="axelor-supplychain">

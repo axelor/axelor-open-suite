@@ -54,7 +54,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.PEMWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -304,9 +304,9 @@ public class EbicsCertificateService {
 
     X509Certificate cert = null;
     StringReader reader = new StringReader(pemString);
-    PEMReader pr = new PEMReader(reader);
-    cert = (X509Certificate) pr.readObject();
-    pr.close();
+    try (final PEMParser pr = new PEMParser(reader)) {
+      cert = (X509Certificate) pr.readObject();
+    }
 
     return cert;
   }

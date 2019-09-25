@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<menubar>
@@ -114,8 +114,8 @@
 		</panel>
 		
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
-		    <field name="$fromGenerationDate" title="From generation date" widget="Date"/>
-			<field name="$toGenerationDate" title="To generation date" widget="Date"/>
+		    <field name="$fromGenerationDate" title="From generation date" widget="Date" onChange="action-hr-condition-automatic-from-generation-date"/>
+			<field name="$toGenerationDate" title="To generation date" widget="Date" onChange="action-hr-condition-automatic-to-generation-date"/>
 			<field name="$project" title="Project" target="com.axelor.apps.project.db.Project" domain="self.imputable=true and self." type="many-to-one" form-view="project-form" grid-view="project-grid" onSelect="action-hr-timesheet-attrs-domain-project" onChange="action-hr-timesheet-record-empty-product"/>
 			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="$logTime" type="decimal"/>
@@ -465,4 +465,18 @@
 	<action-record name="action-hr-record-empty-user" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="user" expr="eval: null"/>
 	</action-record>
+
+	<action-condition name="action-hr-condition-automatic-from-generation-date">
+		<check if="eval: fromGenerationDate != null &amp;&amp; ((toDate == null &amp;&amp; fromGenerationDate &lt; fromDate.toString()) || 
+			(toDate != null &amp;&amp; (fromGenerationDate &lt; fromDate.toString() || fromGenerationDate == toDate.toString() || fromGenerationDate &gt; toDate.toString())) ||
+			(toGenerationDate != null &amp;&amp; fromGenerationDate > toGenerationDate))" 
+			field="$fromGenerationDate" error="Automatic generation dates must be included in the timesheet period"/>
+	</action-condition>
+
+	<action-condition name="action-hr-condition-automatic-to-generation-date">
+		<check if="eval: toGenerationDate != null &amp;&amp; ((toDate != null &amp;&amp; (toGenerationDate &gt; toDate.toString() || toGenerationDate == fromDate.toString() || toGenerationDate &lt; fromDate.toString())) || 
+			(fromGenerationDate != null &amp;&amp; fromGenerationDate > toGenerationDate))" 
+			field="$toGenerationDate" error="Automatic generation dates must be included in the timesheet period"/>
+	</action-condition>
+
 </object-views>

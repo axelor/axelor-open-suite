@@ -159,7 +159,7 @@ public class TicketController {
         hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
         hideCancel =
             timer.getTimerHistoryList().isEmpty()
-                || timer.getStatusSelect().equals(TicketRepository.STATUS_CLOSED);
+                || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED);
       }
 
       response.setAttr("startTimerBtn", HIDDEN_ATTR, hideStart);

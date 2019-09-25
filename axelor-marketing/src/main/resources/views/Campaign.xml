@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
         <field name="name"/>
@@ -29,7 +29,7 @@
 				</editor>
 			</field>
 			<spacer name="nameSpacer"/>
-			<panel name="informationPanel" title="Informations" colSpan="12">
+			<panel name="informationPanel" title="Information" colSpan="12">
 				<field name="campaignType" canEdit="false" colSpan="4"/>
 				<field name="eventStartDateT" colSpan="4"/>
 				<field name="eventEndDateT" colSpan="4"/>

@@ -214,7 +214,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder generateSequence(BankOrder bankOrder) throws AxelorException {
     if (bankOrder.getBankOrderSeq() == null) {
 
@@ -258,7 +258,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePayment(BankOrder bankOrder) throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
@@ -281,7 +281,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(BankOrder bankOrder) throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList = invoicePaymentRepo.findByBankOrder(bankOrder).fetch();
@@ -295,7 +295,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(BankOrder bankOrder)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
     checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
@@ -308,8 +308,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     setSequenceOnBankOrderLines(bankOrder);
 
+    generateFile(bankOrder);
+
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
-      generateFile(bankOrder);
 
       bankOrder.setConfirmationDateTime(
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
@@ -323,7 +324,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void sign(BankOrder bankOrder) {
 
     // TODO
@@ -331,7 +332,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(BankOrder bankOrder) throws AxelorException {
 
     bankOrder.setValidationDateTime(LocalDateTime.now());
@@ -367,6 +368,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       sendBankOrderFile(bankOrder);
     }
     realizeBankOrder(bankOrder);
+    validatePayment(bankOrder);
   }
 
   protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException {
@@ -389,7 +391,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     sendFile(bankOrder, dataFileToSend, signatureFileToSend);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
@@ -453,7 +455,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException {
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);

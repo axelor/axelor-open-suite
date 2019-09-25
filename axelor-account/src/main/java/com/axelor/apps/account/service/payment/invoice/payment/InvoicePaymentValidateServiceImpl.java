@@ -90,7 +90,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
    * @throws JAXBException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
@@ -121,7 +121,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(InvoicePayment invoicePayment)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
     validate(invoicePayment, false);
@@ -135,7 +135,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();

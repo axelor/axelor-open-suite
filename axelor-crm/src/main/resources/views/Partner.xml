@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
  	
     <form name="incl-activities-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
 	    <panel-dashlet name="partnerUpcomingEventsPanel" colSpan="12" action="action-partner-view-upcoming-events"/>
@@ -27,6 +27,7 @@
 	            <item title="Create purchase quotation" action="save,action-partner-view-create-purchase-quotation" readonlyIf="id == null || id &lt; 1" if-module="axelor-purchase" if="__config__.app.isApp('purchase')" showIf="isSupplier"/>
 	            <item title="Generate Project" action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project" if="__config__.app.isApp('project')"/>
 	            <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
+	            <item title="Customer recovery" name="customerRecovery" action="action-partner-view-show-customer-debt-recovery" if="__config__.app.isApp('account')" />
 	        </menu>
 	        
 	    </menubar>

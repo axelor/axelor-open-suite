@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="CrmConfig" lang="java" cachable="true">
+  <entity name="CrmConfig" lang="java" cacheable="true">
     
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+    <many-to-one name="eventTemplate" ref="com.axelor.apps.message.db.Template" title="Event reminder template"/>
   	<many-to-one name="taskTemplate" ref="com.axelor.apps.message.db.Template" title="Task reminder template"/>
   	<many-to-one name="meetingTemplate" ref="com.axelor.apps.message.db.Template" title="Meeting reminder template"/>
   	<many-to-one name="callTemplate" ref="com.axelor.apps.message.db.Template" title="Call reminder template"/>
   	<many-to-one name="meetingDateChangeTemplate" ref="com.axelor.apps.message.db.Template" title="Meeting's date changed template"/>
   	<many-to-one name="meetingGuestAddedTemplate" ref="com.axelor.apps.message.db.Template" title="Meeting's guest added template"/>
   	<many-to-one name="meetingGuestDeletedTemplate" ref="com.axelor.apps.message.db.Template" title="Meeting's guest deleted template"/>
-    <boolean name="sendMail" title="Send mail"/>
+    
+    <track>
+    	<field name="company" on="UPDATE"/>
+    	<field name="eventTemplate" on="UPDATE"/>
+    	<field name="taskTemplate" on="UPDATE"/>
+    	<field name="meetingTemplate" on="UPDATE"/>
+    	<field name="callTemplate" on="UPDATE"/>
+    	<field name="meetingDateChangeTemplate" on="UPDATE"/>
+    	<field name="meetingGuestAddedTemplate" on="UPDATE"/>
+    	<field name="meetingGuestDeletedTemplate" on="UPDATE"/>
+    </track>
+    
   </entity>
   
 </domain-models>
