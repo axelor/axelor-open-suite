@@ -48,6 +48,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.report.IReport;
@@ -557,7 +558,10 @@ public class ExpenseController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-
+    if (expenseLine.getKilometricTypeSelect() == 0) {
+      response.setValue("kilometricTypeSelect", ExpenseLineRepository.KILOMETRIC_TYPE_ONE_WAY);
+      response.setValue("kilometricType", ExpenseLineRepository.KILOMETRIC_TYPE_ONE_WAY);
+    }
     response.setValue("totalAmount", amount);
     response.setValue("untaxedAmount", amount);
   }
@@ -686,7 +690,26 @@ public class ExpenseController {
     }
 
     BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
+    if (expenseLine.getKilometricTypeSelect() == 0) {
+      response.setValue("kilometricTypeSelect", ExpenseLineRepository.KILOMETRIC_TYPE_ONE_WAY);
+      response.setValue("kilometricType", ExpenseLineRepository.KILOMETRIC_TYPE_ONE_WAY);
+    }
     response.setValue("totalAmount", amount);
     response.setValue("untaxedAmount", amount);
+  }
+
+  public void computeTotalAmountAndDistance(ActionRequest request, ActionResponse response) {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    BigDecimal total = expenseLine.getTotalAmount();
+    BigDecimal distance = expenseLine.getDistance();
+    if (expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP) {
+      total = total.multiply(new BigDecimal(2));
+      distance = distance.multiply(new BigDecimal(2));
+    } else {
+      total = total.divide(new BigDecimal(2));
+      distance = distance.divide(new BigDecimal(2));
+    }
+    response.setValue("totalAmount", total);
+    response.setValue("distance", distance);
   }
 }
