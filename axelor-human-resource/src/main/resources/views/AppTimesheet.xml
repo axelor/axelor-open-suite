@@ -12,6 +12,7 @@
 			<field name="keepProject" widget="boolean-switch" showIf="enableTimer"/>
 			<field name="defaultEndFormat" />
 			<field name="timesheetEditor" widget="boolean-switch" />
+			<field name="displayTimesheetLineNumber" widget="boolean-switch" />
 		</panel>
 				
 		<panel-mail name="mailPanel">

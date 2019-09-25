@@ -121,6 +121,7 @@
 - EBICSUSER : replace the O2M ebicsRequestLogList per a dashlet
 - TEAMTASK : Addition of field 'project' in grid and kanban view
 - CONFORMITY CERTIFICATE : new field on printing
+- TIMESHEET : new config to display line numbers
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
