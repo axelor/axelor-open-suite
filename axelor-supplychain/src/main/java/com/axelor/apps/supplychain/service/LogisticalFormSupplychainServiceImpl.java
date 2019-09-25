@@ -52,6 +52,7 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
 
     if (stockMove != null
         && stockMove.getOriginId() != null
+        && stockMove.getOriginId() != 0
         && stockMove.getOriginTypeSelect().equals(StockMoveRepository.ORIGIN_SALE_ORDER)) {
       logisticalFormLine.setSaleOrder(
           Beans.get(SaleOrderRepository.class).find(stockMove.getOriginId()));
