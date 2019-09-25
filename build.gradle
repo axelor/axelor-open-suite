@@ -8,7 +8,7 @@ buildscript {
 	}
 	repositories repos
 	dependencies {
-		classpath "com.axelor:axelor-gradle:5.1.+"
+		classpath "com.axelor:axelor-gradle:5.2.+"
 	}
 }
 
