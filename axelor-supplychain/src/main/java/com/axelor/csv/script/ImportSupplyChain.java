@@ -223,7 +223,9 @@ public class ImportSupplyChain {
                       stockMove.getFromStockLocation().getId(),
                       product.getId())
                   .fetchOne();
-          stockMoveLine.setTrackingNumber(stockLocationLine.getTrackingNumber());
+          if (stockLocationLine != null) {
+            stockMoveLine.setTrackingNumber(stockLocationLine.getTrackingNumber());
+          }
         }
       }
 

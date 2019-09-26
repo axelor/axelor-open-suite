@@ -687,11 +687,11 @@ public class LeaveServiceImpl implements LeaveService {
         daysToAdd =
             BigDecimal.valueOf(
                 computeStartDateWithSelect(
-                    fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning));
+                    itDate, leaveRequest.getStartOnSelect(), weeklyPlanning));
       } else if (itDate.equals(leaveTo) && !eveningHalf) {
         daysToAdd =
             BigDecimal.valueOf(
-                computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning));
+                computeEndDateWithSelect(itDate, leaveRequest.getEndOnSelect(), weeklyPlanning));
       } else {
         daysToAdd =
             BigDecimal.valueOf(
@@ -701,7 +701,6 @@ public class LeaveServiceImpl implements LeaveService {
       if (!publicHolidayHrService.checkPublicHolidayDay(itDate, employee)) {
         leaveDays = leaveDays.add(daysToAdd);
       }
-
       itDate = itDate.plusDays(1);
     }
 
