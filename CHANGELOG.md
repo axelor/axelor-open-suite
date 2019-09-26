@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.9]
 ## Improvements
+- PROJECT : Fixing financial report to follow the Axelor report guidelines
+
 ## Bug Fixes
 
 ## [5.1.8] - 2019-09-26
