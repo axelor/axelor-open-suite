@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<action-group name="action-invoice-group-add-invoice-payment" id="action-invoice-group-bank-payment-add-invoice-payment">
+		<action name="save"/>
+		<action name="action-invoice-method-check-bank-order-already-exist"/>
+		<action name="action-invoice-view-register-payment"/>
+	</action-group>
+	
+	<action-method name="action-invoice-method-check-bank-order-already-exist" model="com.axelor.apps.account.db.Invoice">
+		<call class="com.axelor.apps.bankpayment.web.InvoiceController" method="checkBankOrderAlreadyExist"/>
+	</action-method>
+	
+</object-views>

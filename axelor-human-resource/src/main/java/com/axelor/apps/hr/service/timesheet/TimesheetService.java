@@ -50,6 +50,14 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
+  /**
+   * Checks that there is a line for each working day of the timesheet.
+   *
+   * @param timesheet
+   * @throws AxelorException
+   */
+  public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
+
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException;
 

@@ -65,6 +65,7 @@
 		<view type="grid" name="invoice-light-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
+		<context name="_operationTypeSelect" expr="eval:3"/>
 		<context name="_operationSubTypeSelect" expr="eval:6"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
@@ -115,7 +116,7 @@
 		<view type="cards" name="purchase-order-cards"/>
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
-		<domain>self.statusSelect = 3 AND self.purchaseOrderLineList.receiptState != 3 AND self.purchaseOrderLineList.product.productTypeSelect = 'storable' AND self.purchaseOrderLineList.product.stockManaged = true AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
+		<domain>self.statusSelect = 3 AND self IN (select p.purchaseOrder from PurchaseOrderLine as p where p.receiptState != 3 AND p.product.productTypeSelect = 'storable' AND p.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
 	
 	<menuitem name="sale-root-sale-orders-without-stock-move" title="Sale order without stock move"
@@ -128,7 +129,7 @@
 		<view type="grid" name="sale-order-grid"/>
 		<view type="calendar" name="sale-order-calendar"/>
 		<view type="form" name="sale-order-form"/>
-		<domain>self.statusSelect = 3 AND self.saleOrderLineList.deliveryState != 3 AND self.saleOrderLineList.product.productTypeSelect = 'storable' AND self.saleOrderLineList.product.stockManaged = true AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
+		<domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
 	
 	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"

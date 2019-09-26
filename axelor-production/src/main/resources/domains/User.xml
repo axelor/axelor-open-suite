@@ -8,6 +8,11 @@
   <entity name="User" sequential="true" lang="java">
   
 	<many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+
+	<track>
+	   <field name="workshopStockLocation"/>
+  </track>
+
   </entity>
 
 </domain-models>

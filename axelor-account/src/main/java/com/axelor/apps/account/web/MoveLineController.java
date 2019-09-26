@@ -127,7 +127,7 @@ public class MoveLineController {
       }
 
       if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLines(moveLineList);
+        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -176,8 +176,19 @@ public class MoveLineController {
                 .context("_balance", finalBalance)
                 .map());
       } else {
-        response.setAlert(IExceptionMessage.NO_MOVE_LINE_SELECTED);
+        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTaxAmount(ActionRequest request, ActionResponse response) {
+
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine = Beans.get(MoveLineService.class).computeTaxAmount(moveLine);
+      response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

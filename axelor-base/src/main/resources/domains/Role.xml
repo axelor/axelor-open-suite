@@ -3,12 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="Company" lang="java" cachable="true">
+  <entity name="Role">
 
-  	<decimal name="customerPaymentDelay" title="Customers payment delay (Average in days)"/>
-	<decimal name="supplierPaymentDelay" title="Suppliers payment delay (Average in days)"/>
+    <track>
+			<field name="name"/>
+			<field name="description"/>
+	  </track>
+
   </entity>
-  
+
 </domain-models>

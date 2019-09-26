@@ -34,11 +34,13 @@ public class PurchaseRequestManagementRepository extends PurchaseRequestReposito
     try {
       if (entity.getPurchaseRequestSeq() == null) {
         String seq =
-            Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PURCHASE_REQUEST);
+            Beans.get(SequenceService.class)
+                .getSequenceNumber(SequenceRepository.PURCHASE_REQUEST, entity.getCompany());
         if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PURCHASE_REQUEST_1));
+              I18n.get(IExceptionMessage.PURCHASE_REQUEST_1),
+              entity.getCompany().getName());
         }
         entity.setPurchaseRequestSeq(seq);
       }
