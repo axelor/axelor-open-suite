@@ -95,6 +95,7 @@ public class ArchivingToolServiceImpl implements ArchivingToolService {
         try {
           objectToCheck = (Object) findobjectQuery.getSingleResult();
         } catch (NoResultException nRE) {
+          // nothing to do
         }
         if (objectToCheck != null) {
           objectsLinkToMap.put(modelName, relationship);

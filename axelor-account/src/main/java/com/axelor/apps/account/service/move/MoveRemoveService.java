@@ -87,12 +87,10 @@ public class MoveRemoveService {
       String modelName = entry.getKey();
       if (!modelName.equals("MoveLine")) {
         errorMessage +=
-            (new AxelorException(
-                    TraceBackRepository.CATEGORY_INCONSISTENCY,
-                    I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                    move.getReference(),
-                    modelName))
-                .getMessage();
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                move.getReference(),
+                modelName);
       }
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
@@ -102,12 +100,10 @@ public class MoveRemoveService {
         String modelName = entry.getKey();
         if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
           errorMessage +=
-              (new AxelorException(
-                      TraceBackRepository.CATEGORY_INCONSISTENCY,
-                      I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                      moveLine.getName(),
-                      modelName))
-                  .getMessage();
+              String.format(
+                  I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                  moveLine.getName(),
+                  modelName);
         }
       }
     }
