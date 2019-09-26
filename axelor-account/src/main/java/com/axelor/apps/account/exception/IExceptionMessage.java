@@ -41,10 +41,20 @@ public interface IExceptionMessage {
   static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
-  static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/
-      "You can't remove this record, because the move %s has already been validated" /*)*/;
+  static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
+  static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
+  static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
-  static final String NO_MOVE_TO_ARCHIVE = /*$$(*/ "Please select 'Draft' moves" /*)*/;
+  static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
+      "Please select 'Draft' moves or 'Daybook' moves or 'Cancel' moves" /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
+      "Move(s) has been removed or archived successfully" /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
+      "Error in move deleting or archiving, please check the log" /*)*/;
+  static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move %s can not be archive because it is linked to another piece named %s." /*)*/;
+  static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move line %s can not be archive because it is linked to another piece named %s." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/

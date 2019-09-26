@@ -125,28 +125,32 @@ public class MoveController {
     } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
   }
 
-  // change move status to Archived=true
   public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      move = moveRepo.find(move.getId());
 
-    Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
-
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-      moveRepo.remove(move);
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-      response.setView(
-          ActionView.define("Moves")
-              .model(Move.class.getName())
-              .add("grid", "move-grid")
-              .add("form", "move-grid")
-              .map());
-      response.setCanClose(true);
-    } else {
-      try {
+      if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
         moveRepo.remove(move);
-      } catch (Exception e) {
-        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
+      } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+        moveService.getMoveRemoveService().archiveDaybookMove(move);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+      } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
+        moveService.getMoveRemoveService().archiveMove(move);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
       }
+      if (!move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+        response.setView(
+            ActionView.define("Moves")
+                .model(Move.class.getName())
+                .add("grid", "move-grid")
+                .add("form", "move-form")
+                .map());
+        response.setCanClose(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -164,11 +168,15 @@ public class MoveController {
                   MoveRepository.STATUS_NEW)
               .fetch();
       if (!moveList.isEmpty()) {
-        moveService.getMoveRemoveService().deleteMultiple(moveList);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-        response.setReload(true);
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
-    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
+        boolean error = moveService.getMoveRemoveService().deleteMultiple(moveList);
+        if (error) {
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK));
+        } else {
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+          response.setReload(true);
+        }
+      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
   }
 
   public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
