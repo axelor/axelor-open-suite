@@ -1,18 +1,18 @@
-"importId";"prodProcess.importId";"name";"priority";"workCenter.importId";"description";"minCapacityPerCycle";"maxCapacityPerCycle";"duration"
+"importId";"prodProcess.importId";"name";"priority";"workCenter.importId";"description";"minCapacityPerCycle";"maxCapacityPerCycle";"durationPerCycle"
 1;1;"Assembly MB – Proc. – Mem.";10;10;;1;1;900
 2;1;"Mount elements on the rack";10;20;;1;1;600
 4;1;"Cables plugging";30;30;;1;1;1200
-5;1;"Quality control";40;40;;;;
-6;1;"Cleaning";50;50;;;;
-7;1;"Wrapping";60;60;;;;
+5;1;"Quality control";40;40;;;;900
+6;1;"Cleaning";50;50;;;;1200
+7;1;"Wrapping";60;60;;;;600
 10;2;"Assembly MB – Proc. – Mem.";10;10;;1;1;900
 11;2;"Mount elements on the rack";20;20;;1;1;600
 12;2;"Cables plugging";30;30;;1;1;1200
-14;2;"Quality control";40;40;;;;
+14;2;"Quality control";40;40;;;;900
 15;2;"Performances tests";50;70;;2;2;3600
-16;2;"Cleaning";60;50;;;;
-17;2;"Wrapping";70;60;;;;
-20;3;"Pick products within the stock";10;80;;;;
-21;3;"Wrapping";20;60;;;;
-30;4;"Pick products within the stock";10;80;;;;
+16;2;"Cleaning";60;50;;;;1200
+17;2;"Wrapping";70;60;;;;600
+20;3;"Pick products within the stock";10;80;;;;900
+21;3;"Wrapping";20;60;;;;600
+30;4;"Pick products within the stock";10;80;;;;900
 31;4;"Wrapping";20;60;;;;

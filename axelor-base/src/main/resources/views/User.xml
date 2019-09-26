@@ -103,6 +103,11 @@
         <panel name="transientPasswordPanel" hidden="true" colSpan="12">
           <field name="transientPassword"/>
         </panel>
+
+        <panel-mail name="mailsPanel">
+					<mail-messages limit="4"/>
+					<mail-followers/>
+		    </panel-mail>
     </form>
 
     <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User" 

@@ -56,13 +56,18 @@ public class MrpController {
     }
   }
 
-  public void generateAllProposals(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void generateAllProposals(ActionRequest request, ActionResponse response) {
+
     Mrp mrp = request.getContext().asType(Mrp.class);
     MrpService mrpService = mrpServiceProvider.get();
     MrpRepository mrpRepository = mrpRepositoryProvider.get();
-    mrpService.generateProposals(mrpRepository.find(mrp.getId()));
-    response.setReload(true);
+    try {
+      mrpService.generateProposals(mrpRepository.find(mrp.getId()));
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
   }
 
   /**

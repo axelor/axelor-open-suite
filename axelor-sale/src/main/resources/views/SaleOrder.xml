@@ -195,6 +195,13 @@
 	          </h4>
 	        ]]></viewer>
 	      </field>
+	      <field name="$viewerOrderRequiresAdvancePayment" showTitle="false" readonly="true" showIf="(statusSelect == 2 &amp;&amp; advancePaymentNeeded) &amp;&amp; (($number(inTaxTotal) == $number(advancePaymentAmount))|| ($number(advanceTotal) &lt; $number(advancePaymentAmount)))" colSpan="6">
+		      	<viewer><![CDATA[
+		      	<h4>
+		        	<span class="label label-important" x-translate>Advance payment needed</span>
+		      	</h4>
+		    	]]></viewer>
+		   </field>
 	    </panel>
 	    <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
 	    <field name="saleOrderSeq" showTitle="false">
@@ -294,7 +301,8 @@
 	  <panel-tabs name="mainPanelTab" hideIf="clientPartner == null">
 	    <panel name="contentPanel" title="Content">
 	      <panel-related name="detailLinesPanel" canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" 
-                     canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true"/>
+                     canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+                     x-can-copy="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true"/>
 	      <panel name="descriptionPanel" title="Description to display" colSpan="12">
 	        <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	      </panel>
@@ -339,6 +347,10 @@
 	      <panel-related name="timetableListPanel"  if-module="axelor-supplychain" colSpan="12" field="timetableList" form-view="timetable-form" grid-view="timetable-grid" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
 	    </panel>
 	    <panel-related name="advancePaymentListPanel" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" readonly="true" colSpan="12" field="advancePaymentList" form-view="advance-payment-form" grid-view="advance-payment-grid"/>
+	    <panel name="advancePaymentNeededPanel" title="Advance payments" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions">
+                  <field name="advancePaymentNeeded" readonlyIf="statusSelect &gt; 1"/>
+                  <field name="advancePaymentAmount" showIf="advancePaymentNeeded" readonlyIf="statusSelect &gt; 1"/>
+        </panel>
 	    <panel if="__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()" name="printingPanel" title="Printing">
 	      <field name="printingSettings" canEdit="false" onSelect="action-sale-method-filter-printing-settings"/>
 	      <field name="hideDiscount"/>
@@ -357,7 +369,8 @@
 	    <button if="__config__.app.getApp('sale').allowPendingOrderModification" name="editOrderBtn" title="Edit order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-sale-order-method-edit-order"/>
 	    <button name="validateChangesBtn" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-group-sale-order-validate-changes"/>
 	    <button if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto" name="generateCustomerStockMoveBtn" title="Generate customer deliveries" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" readonlyIf="!saleOrderLineList || !saleOrderLineList.length" colSpan="12" onClick="save, action-supplychain-sale-order-create-stock-move"/>
-	    <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed"/>
+	    <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed" readonlyIf="advancePaymentNeeded &amp;&amp; (($number(inTaxTotal) == $number(advancePaymentAmount))||($number(advanceTotal) &lt; $number(advancePaymentAmount)))"/>
+	    <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 2 &amp;&amp; taxTotal != 0" colSpan="12" onClick="save,action-sale-order-view-invoicing-advance-payment-wizard" if-module="axelor-supplychain"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-supplychain-sale-order-group-generate-invoice"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" name="generatePOBtn" title="Generate purchase order" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrderBtn" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
@@ -396,9 +409,9 @@
 	  <panel name="characteristicsPanel" title="Characteristics" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
 	    <panel name="paymentDetailsPanel" colSpan="12" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain">
 	      <field name="paymentMode" readonlyIf="statusSelect > 2" canEdit="false" onChange="action-sale-order-method-fill-company-bank-details" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-		    <field name="paymentCondition" readonlyIf="statusSelect > 2" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+		    <field name="paymentCondition" readonlyIf="statusSelect > 2" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid" onChange="action-sale-order-record-set-advance-payment"/>
 	    </panel>
-	    <field name="companyBankDetails" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	    <field name="companyBankDetails" canEdit="false" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	  </panel>
 	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
@@ -436,7 +449,7 @@
 	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="duration" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="duration" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
 	    </field>
@@ -526,7 +539,7 @@
       </panel>
 	  <panel-tabs name="mainPanelTab">
 	    <panel name="contentPanel" title="Content">
-	    	<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-template-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    	<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" colSpan="12" onChange="action-sale-order-method-compute" form-view="sale-order-line-template-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence" x-can-copy="true"/>
 	    	<panel-related name="saleOrderLineTaxListPanel" field="saleOrderLineTaxList" colSpan="12" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    </panel>
 	    <panel name="otherInformationsPanel" title="Other informations" showTitle="false">
@@ -562,7 +575,7 @@
 	    <field name="orderDate" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="orderNumber" colSpan="6" showIf="statusSelect == 3"/>
 	    <field name="shipmentDate" colSpan="6" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-	    <field name="duration" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
+	    <field name="duration" canEdit="false" widget="SuggestBox" canNew="true" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date" readonlyIf="statusSelect == 3"/>
 	  </panel>
 
         <panel name="inTaxTotalPanel" sidebar="true" readonly="true"  colSpan="4">
@@ -649,7 +662,7 @@
 	        <field name="creationDate"/>
 	        <field name="orderDate"/>
 	        <field name="shipmentDate" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
-	        <field name="duration"/>
+	        <field name="duration" canEdit="false"/>
 	        <field name="endOfValidityDate">
 	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    	</field>
@@ -677,15 +690,26 @@
                 </field>
             </panel>
 	    </panel>
-	    <panel-related name="saleOrderLineListPanel" field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence"/>
+	    <panel-related name="saleOrderLineListPanel" field="saleOrderLineList" showTitle="false" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canMove="true" orderBy="sequence" x-can-copy="true"/>
 	    <panel-related name="saleOrderLineTaxListPanel" field="saleOrderLineTaxList" showTitle="false" form-view="sale-order-line-tax-form" grid-view="sale-order-line-tax-grid"/>
 	    <panel-dashlet name="invoicesFromSOPanel" action="action-view-show-invoices-from-sale-order" title="Invoicing"/>
 	  </panel-tabs>
 	</form>
+	
+	<form name="sale-order-invoicing-advance-payment-wizard-form" title="Advance payments"
+		  model="com.axelor.apps.sale.db.SaleOrder">
+		<panel>
+            <field name="amountToInvoice" title="Adv. payment amount" type="decimal"/>
+            <field name="isPercent" title="Is amount in % ?" type="boolean"/>
+		</panel>
+		<panel>
+			<button name="generateAdvancePaymentInvoiceBtn" title="Generate advance payment invoice"
+					onClick="action-sale-order-method-generate-advance-payment"/>
+		</panel>
+	</form>
 
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<toolbar>
-			<button name="mergeSaleOrdersBtn" title="Merge sale orders" onClick="action-open-sale-order-merge-form"/>
     		<button name="seeSaleOrderLinesBtn" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
 		</toolbar>
 		<field name="saleOrderSeq"/>
@@ -754,6 +778,9 @@
 	</cards>
 
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
+	<toolbar>
+			<button name="mergeQuotationOrderBtn" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
+	</toolbar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
@@ -831,6 +858,7 @@
 	<action-group name="action-group-partner-saleorder-onnew">
 		<action name="action-sale-order-record-from-partner"/>
 		<action name="action-sale-order-record-partner"/>
+		<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
         <action name="action-partner-attrs-hide-contact-partner"/>
         <action name="action-sale-order-method-address-str"/>
 		<action name="action-sale-order-method-fill-price-list"/>
@@ -852,6 +880,7 @@
 
 	<action-group name="action-sale-group-onchange-client-partner">
 		<action name="action-sale-order-record-partner"/>
+		<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
 		<action name="action-partner-attrs-hide-contact-partner"/>
 		<action name="action-sale-order-method-fill-company-bank-details"/>
 		<action name="action-sale-method-printing-settings-default-values"/>
@@ -881,6 +910,7 @@
 		</action-group>
 
 	<action-group name="action-sale-group-confirmed">
+    <action name="action-sale-order-method-check-analytic-distribution-template"/>
     	<action name="action-sale-order-method-generate-project" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
 		<action name="action-sale-order-validate-check-on-confirm"/>
     	<action name="action-sale-order-method-confirm"/>
@@ -892,11 +922,13 @@
     	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
+    	<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     </action-group>
 
 	<action-group name="action-sale-order-group-client-partner-change">
 		<action name="action-sale-order-record-partner"/>
+		<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
         <action name="action-sale-order-method-address-str"/>
 		<action name="action-sale-order-method-fill-price-list"/>
 		<action name="action-sale-order-attrs-interco"
@@ -950,6 +982,11 @@
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="inAti" expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
+    </action-record>
+    
+    <action-record name="action-sale-order-record-set-advance-payment" model="com.axelor.apps.sale.db.SaleOrder" if-module="axelor-supplychain">
+    	<field name="advancePaymentNeeded" expr="eval: paymentCondition?.advancePaymentNeeded > 0 ? true : false" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
+		<field name="advancePaymentAmount" expr="eval: inTaxTotal * ((paymentCondition?.advancePaymentNeeded == null) ? 0 : paymentCondition?.advancePaymentNeeded / 100.0)" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     </action-record>
 
 	<action-method name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain">
@@ -1136,6 +1173,10 @@
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
 		<field name="saleOrderLineList.product.name" title="Product Name"/>
+		<field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+		<field name="cancelReason" hidden="true"/>
+		<field name="deliveryAddress" hidden="true"/>
+		<field name="mainInvoicingAddress" hidden="true"/>
 		<filter title="My Proposals">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUser.id = :_internalUser</domain>
 		</filter>
@@ -1216,6 +1257,15 @@
 		<view type="form" name="purchase-order-form"/>
     <domain>self.generatedSaleOrderId = :id</domain>
 	</action-view>
+	
+	<action-view name="action-sale-order-view-invoicing-advance-payment-wizard" title="" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="form" name="sale-order-invoicing-advance-payment-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<view-param name="forceEdit" value="true" />
+		<context name="_showRecord" expr="eval: id"/></action-view>
 
 	<action-validate name="action-validate-sale-order-check-selection">
 		<error message="You have to choose at least one sale order" if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
@@ -1301,4 +1351,12 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
 	</action-method>
 
+  <action-method name="action-sale-order-method-check-analytic-distribution-template">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkSaleOrderAnalyticDistributionTemplate" if="company?.saleConfig?.isAnalyticDistributionRequired"/>
+  </action-method>
+  
+  <action-method name="action-sale-order-method-generate-advance-payment">
+  	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateAdvancePaymentInvoice"/>
+  </action-method>
+  
 </object-views>

@@ -368,6 +368,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       sendBankOrderFile(bankOrder);
     }
     realizeBankOrder(bankOrder);
+    validatePayment(bankOrder);
   }
 
   protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException {

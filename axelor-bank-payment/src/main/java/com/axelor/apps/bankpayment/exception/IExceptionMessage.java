@@ -215,4 +215,8 @@ public interface IExceptionMessage {
       "Unknown direct debit data type" /*)*/;
   static final String DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR = /*$$(*/
       "Please add an Active UMR to the partner." /*)*/;
+
+  /** Generate bank order from invoices */
+  static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
+      "A bank order %s already exist for the invoice %s." /*)*/;
 }

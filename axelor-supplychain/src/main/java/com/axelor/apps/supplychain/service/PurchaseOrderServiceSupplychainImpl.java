@@ -66,6 +66,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
   protected PurchaseOrderStockService purchaseOrderStockService;
+  protected BudgetSupplychainService budgetSupplychainService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -73,13 +74,15 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       AppBaseService appBaseService,
-      PurchaseOrderStockService purchaseOrderStockService) {
+      PurchaseOrderStockService purchaseOrderStockService,
+      BudgetSupplychainService budgetSupplychainService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
     this.purchaseOrderStockService = purchaseOrderStockService;
+    this.budgetSupplychainService = budgetSupplychainService;
   }
 
   public PurchaseOrder createPurchaseOrder(
@@ -142,7 +145,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         if (purchaseOrderLine.getBudget() != null
-            && purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+            && (purchaseOrderLine.getBudgetDistributionList() == null
+                || purchaseOrderLine.getBudgetDistributionList().isEmpty())) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(purchaseOrderLine.getBudget());
           budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
@@ -350,5 +354,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
+
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+  }
+
+  @Override
+  @Transactional
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
+    super.cancelPurchaseOrder(purchaseOrder);
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
   }
 }

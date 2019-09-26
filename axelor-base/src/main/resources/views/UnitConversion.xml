@@ -7,7 +7,7 @@
       <button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
       </toolbar>  
         <field name="startUnit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="coef"/>
+        <field name="coef" x-scale="2"/>
         <field name="formula"/>
         <field name="endUnit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="typeSelect"/>

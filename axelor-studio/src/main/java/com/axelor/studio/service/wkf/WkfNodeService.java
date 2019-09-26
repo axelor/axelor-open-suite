@@ -97,6 +97,8 @@ class WkfNodeService {
     MetaSelect metaSelect = metaSelectRepo.findByName(selectName);
     if (metaSelect == null) {
       metaSelect = new MetaSelect(selectName);
+      metaSelect.setIsCustom(true);
+      metaSelect.setAppBuilder(wkfService.workflow.getAppBuilder());
       metaSelect = metaSelectRepo.save(metaSelect);
     }
 

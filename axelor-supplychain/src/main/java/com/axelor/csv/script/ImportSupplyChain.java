@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -30,7 +31,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -106,10 +111,10 @@ public class ImportSupplyChain {
       }
 
       if (status == IPurchaseOrder.STATUS_FINISHED) {
-        purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
-        StockMove stockMove =
-            stockMoveRepo.all().filter("self.originId = ?1", purchaseOrder.getId()).fetchOne();
-        if (stockMove != null) {
+        List<Long> idList =
+            purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
+        for (Long id : idList) {
+          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
           stockMove.setRealDate(purchaseOrder.getDeliveryDate());
@@ -120,12 +125,21 @@ public class ImportSupplyChain {
             purchaseOrderServiceSupplychainImpl.validateSupplier(purchaseOrder));
         Invoice invoice =
             Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
-        if (purchaseOrder.getValidationDate() != null) {
-          invoice.setInvoiceDate(purchaseOrder.getValidationDate());
 
+        String prefixSupplierSeq = "INV000";
+        invoice.setSupplierInvoiceNb(prefixSupplierSeq + purchaseOrder.getImportId());
+
+        invoice.setInternalReference(purchaseOrder.getInternalReference());
+
+        LocalDate date;
+        if (purchaseOrder.getValidationDate() != null) {
+          date = purchaseOrder.getValidationDate();
         } else {
-          invoice.setInvoiceDate(LocalDate.now());
+          date = LocalDate.now();
         }
+        invoice.setInvoiceDate(date);
+        invoice.setOriginDate(date.minusDays(15));
+
         invoiceService.validateAndVentilate(invoice);
         purchaseOrderServiceSupplychainImpl.finishPurchaseOrder(purchaseOrder);
       }
@@ -156,7 +170,6 @@ public class ImportSupplyChain {
         // taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation//
         // of tasks in project module
         saleOrderWorkflowService.confirmSaleOrder(saleOrder);
-        saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
         // Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
         //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
         // saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
@@ -169,15 +182,18 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(LocalDate.now());
         }
         invoiceService.validateAndVentilate(invoice);
-        StockMove stockMove =
-            stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
-        if (stockMove != null
-            && stockMove.getStockMoveLineList() != null
-            && !stockMove.getStockMoveLineList().isEmpty()) {
-          stockMoveService.copyQtyToRealQty(stockMove);
-          stockMoveService.validate(stockMove);
-          if (saleOrder.getConfirmationDateTime() != null) {
-            stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+
+        List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
+        for (Long id : idList) {
+          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          if (stockMove.getStockMoveLineList() != null
+              && !stockMove.getStockMoveLineList().isEmpty()) {
+            stockMove = generateManualTrackingNumber(stockMove);
+            stockMoveService.copyQtyToRealQty(stockMove);
+            stockMoveService.validate(stockMove);
+            if (saleOrder.getConfirmationDateTime() != null) {
+              stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+            }
           }
         }
       }
@@ -186,5 +202,36 @@ public class ImportSupplyChain {
       TraceBackService.trace(e);
     }
     return null;
+  }
+
+  @Transactional
+  protected StockMove generateManualTrackingNumber(StockMove stockMove) {
+    try {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+        Product product =
+            Beans.get(ProductRepository.class).find(stockMoveLine.getProduct().getId());
+        TrackingNumberConfiguration trackingNumberConf = product.getTrackingNumberConfiguration();
+
+        if (trackingNumberConf != null && !trackingNumberConf.getHasSaleAutoSelectTrackingNbr()) {
+
+          StockLocationLine stockLocationLine =
+              Beans.get(StockLocationLineRepository.class)
+                  .all()
+                  .filter(
+                      "self.stockLocation = ?1 AND self.product = ?2 AND self.trackingNumber != null",
+                      stockMove.getFromStockLocation().getId(),
+                      product.getId())
+                  .fetchOne();
+          if (stockLocationLine != null) {
+            stockMoveLine.setTrackingNumber(stockLocationLine.getTrackingNumber());
+          }
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return stockMove;
   }
 }

@@ -13,6 +13,16 @@
         <boolean name="isClient" default="false" massUpdate="true" title="Client"/>
         <boolean name="isSupplier" default="false" massUpdate="true" title="Supplier"/>
 
+	    <track>
+				<field name="code"/>
+				<field name="name"/>
+				<field name="navigation"/>
+				<field name="homeAction"/>
+				<field name="technicalStaff"/>
+				<field name="isClient"/>
+				<field name="isSupplier"/>
+		  </track>
+
     </entity>
 
 </domain-models>
