@@ -248,5 +248,6 @@
 - INVOICE : fix issue of invoice copy
 - TEAMTASK: Add fullname in demo data.
 - Timesheet line : Duration label issue when created from mobile app
+- EXPENSE : fix NPE on validate Expense.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
