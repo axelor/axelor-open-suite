@@ -18,7 +18,6 @@
 package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.talent.db.ITalent;
 import com.axelor.apps.talent.db.JobPosition;
 import com.google.inject.Inject;
 
@@ -30,7 +29,8 @@ public class JobPositionTalentRepository extends JobPositionRepository {
   public JobPosition save(JobPosition jobPosition) {
 
     if (jobPosition.getStatusSelect() > 0 && jobPosition.getJobReference() == null) {
-      jobPosition.setJobReference(sequenceService.getSequenceNumber(ITalent.JOB_POSITION));
+      jobPosition.setJobReference(
+          sequenceService.getSequenceNumber(JobPositionRepository.SEQUENCE_CODE_JOB_POSITION));
     }
 
     return super.save(jobPosition);

@@ -40,6 +40,12 @@
 		public static final int STATUS_COMPLETED = 4;
 		public static final int STATUS_VALIDATED = 5;
 		public static final int STATUS_CANCELED = 6;
+		
+		//FORMAT SELECT
+		public static final String FORMAT_PDF = "pdf";
+		public static final String FORMAT_XLSX = "xlsx";
+		public static final String FORMAT_CSV = "csv";
+		public static final String FORMAT_ODS = "ods";
 
 	]]></extra-code>
   	

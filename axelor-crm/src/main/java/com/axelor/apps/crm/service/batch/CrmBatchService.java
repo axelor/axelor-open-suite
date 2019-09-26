@@ -21,7 +21,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.crm.db.CrmBatch;
-import com.axelor.apps.crm.db.ICrmBatch;
+import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,11 +49,11 @@ public class CrmBatchService extends AbstractBatchService {
     CrmBatch crmBatch = (CrmBatch) batchModel;
 
     switch (crmBatch.getActionSelect()) {
-      case ICrmBatch.BATCH_EVENT_REMINDER:
+      case CrmBatchRepository.ACTION_BATCH_EVENT_REMINDER:
         batch = eventReminder(crmBatch);
         break;
 
-      case ICrmBatch.BATCH_TARGET:
+      case CrmBatchRepository.ACTION_BATCH_TARGET:
         batch = target(crmBatch);
         break;
 
