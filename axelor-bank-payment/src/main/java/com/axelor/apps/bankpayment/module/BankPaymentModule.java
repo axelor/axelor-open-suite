@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimburse
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
@@ -124,5 +125,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveService.class).to(BankPaymentMoveServiceImpl.class);
 
     bind(MoveRemoveService.class).to(MoveRemoveServiceBankPaymentImpl.class);
+
+    bind(MoveServiceImpl.class).to(BankPaymentMoveServiceImpl.class);
+
   }
 }

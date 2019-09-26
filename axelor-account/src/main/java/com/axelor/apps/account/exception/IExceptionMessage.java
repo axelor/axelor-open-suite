@@ -181,6 +181,8 @@ public interface IExceptionMessage {
   static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s." /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/

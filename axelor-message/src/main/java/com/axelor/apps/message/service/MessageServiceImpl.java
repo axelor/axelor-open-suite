@@ -316,6 +316,9 @@ public class MessageServiceImpl implements MessageService {
       mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
     }
 
+    // Make sure message can be found in sending thread below.
+    JPA.flush();
+
     // send email using a separate process to avoid thread blocking
     executor.submit(
         new Callable<Boolean>() {

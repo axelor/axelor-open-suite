@@ -95,7 +95,8 @@ public interface IExceptionMessage {
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
       "You now have a negative amount of leave available for the reason %s" /*)*/;
-  static final String LEAVE_SELECT_REASON = /*$$(*/ "Please, select a reason" /*)*/;
+  static final String LEAVE_REASON_NO_UNIT = /*$$(*/
+      "Please, choose unit in leave reason %s." /*)*/;
 
   static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s" /*)*/;
   static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/

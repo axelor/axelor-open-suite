@@ -42,7 +42,7 @@
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
                 </panel>
-                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+                <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
 
             <panel name="otherDetailsPanel" colSpan="3">
@@ -64,7 +64,7 @@
                         <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
                     </editor>
                 </field>
-                <field name="$technicalOriginTags" showTitle="false">
+                <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
                   <viewer depends="technicalOriginSelect">
                     <![CDATA[
                       <h4 class="text-right">
@@ -76,7 +76,7 @@
                     ]]>
                   </viewer>
                 </field>
-                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
+                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3" widget="boolean-switch"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
@@ -142,9 +142,9 @@
             </panel>
 
             <panel name="othersPanel" title="Others">
-                <field name="ignoreInAccountingOk"/>
+                <field name="ignoreInAccountingOk" showIf="ignoreInAccountingOk" readonly="true"/>
                 <field name="ignoreInDebtRecoveryOk"/>
-                <field name="rejectOk"/>
+                <field name="rejectOk" showIf="rejectOk" readonly="true"/>
             </panel>
         </panel-tabs>
         
@@ -268,6 +268,10 @@
 	
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
+	</action-method>
+
+	<action-method name="action-account-move-method-filter-partner">
+		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
