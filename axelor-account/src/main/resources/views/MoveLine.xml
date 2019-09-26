@@ -104,6 +104,7 @@
         <field name="move.statusSelect"/>
        	<field name="reconcileGroup" width="120"/>
         <field name="origin" width="120"/>
+        <field name="dueDate"/>
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>

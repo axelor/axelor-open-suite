@@ -89,6 +89,8 @@
 	<string name="specificPackage" title="Specific package" large="true" multiline="true"/>
 	
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
+	<boolean name="advancePaymentNeeded" title="Advance payment needed"/>
+	<decimal name="advancePaymentAmount" title="Advance payment amount"/>
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	

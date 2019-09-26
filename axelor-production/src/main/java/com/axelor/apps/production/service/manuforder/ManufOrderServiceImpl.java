@@ -464,6 +464,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
     updateRealQty(manufOrder, manufOrder.getQty());
+    LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
+    manufOrderWorkflowService.updatePlannedDates(
+        manufOrder,
+        plannedStartDateT != null
+            ? plannedStartDateT
+            : appProductionService.getTodayDateTime().toLocalDateTime());
 
     manufOrderRepo.save(manufOrder);
   }

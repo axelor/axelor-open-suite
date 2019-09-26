@@ -145,19 +145,24 @@ public class KilometricService {
     BigDecimal previousDistance = log == null ? BigDecimal.ZERO : log.getDistanceTravelled();
 
     KilometricAllowanceRate allowance =
-        Beans.get(KilometricAllowanceRateRepository.class)
-            .all()
-            .filter(
-                "self.kilometricAllowParam.id = :_kilometricAllowParamId "
-                    + "and self.hrConfig.id = :_hrConfigId")
-            .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
-            .bind("_hrConfigId", Beans.get(HRConfigService.class).getHRConfig(company).getId())
-            .fetchOne();
+        expenseLine.getKilometricAllowParam() != null
+            ? Beans.get(KilometricAllowanceRateRepository.class)
+                .all()
+                .filter(
+                    "self.kilometricAllowParam.id = :_kilometricAllowParamId "
+                        + "and self.hrConfig.id = :_hrConfigId")
+                .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
+                .bind("_hrConfigId", Beans.get(HRConfigService.class).getHRConfig(company).getId())
+                .fetchOne()
+            : null;
+
     if (allowance == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
-          expenseLine.getKilometricAllowParam().getName(),
+          expenseLine.getKilometricAllowParam() != null
+              ? expenseLine.getKilometricAllowParam().getName()
+              : "",
           company.getName());
     }
 
