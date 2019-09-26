@@ -241,7 +241,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   protected BigDecimal getComponentCostPrice(
-      Product product, int componentsValuationMethod, Company company) {
+      Product product, int componentsValuationMethod, Company company) throws AxelorException {
 
     BigDecimal price = null;
 
@@ -257,12 +257,12 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
     }
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getPurchasePrice();
+      price = unitConversionService.convert(product.getUnit(),product.getPurchasesUnit(), product.getPurchasePrice(), appProductionService.getNbDecimalDigitForUnitPrice(), product);
     }
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
         if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
-          price = supplierCatalog.getPrice();
+          price = unitConversionService.convert(product.getUnit(), product.getPurchasesUnit(), supplierCatalog.getPrice(), appProductionService.getNbDecimalDigitForUnitPrice(), product);
           break;
         }
       }
