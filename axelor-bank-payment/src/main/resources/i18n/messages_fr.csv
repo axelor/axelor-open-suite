@@ -17,7 +17,7 @@
 "%s : Please, configure an account for the bank order for the external bank to bank transfer for the company %s","%s : Veuillez configurer un compte comptable pour l'ordre bancaire de virement bancaire externe pour la société %s",,
 "%s : Please, configure an account for the bank order for the internal bank to bank transfer for the company %s","%s : Veuillez configurer un compte comptable pour l'ordre bancaire de virement bancaire interne pour la société %s",,
 "%s : You must configure bank payment's information for the company %s","%s : Veuillez configurer les informations de paiement bancaire pour la société %s",,
-"%s bank statements get.","%s les relevés bancaires se font.",,
+"%s bank statements get.","%s relevés bancaires récupérés.",,
 "+33000000000","+33000000000",,
 "000000","OK",,
 "011000","Accusé de réception positif reçu",,
