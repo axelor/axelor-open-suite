@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.9]
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
+- INVOICE LINE MENU GRID : add the possibility to search on invoice date. 
 
 ## Bug Fixes
 
