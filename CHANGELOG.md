@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
+- Move Line: fix error when we reconcile multiple moves.
 
 ## [5.1.8] - 2019-09-26
 ## Features
