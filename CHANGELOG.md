@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.9]
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
+- BANK ORDER : Generate move when validate bank order without depending on enableEbicsModule in AppBankPayment
 
 ## Bug Fixes
 

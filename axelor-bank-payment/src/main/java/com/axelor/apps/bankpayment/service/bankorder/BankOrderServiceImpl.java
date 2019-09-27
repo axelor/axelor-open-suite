@@ -318,9 +318,9 @@ public class BankOrderServiceImpl implements BankOrderService {
       makeEbicsUserFollow(bankOrder);
 
       bankOrderRepo.save(bankOrder);
-    } else {
-      validate(bankOrder);
     }
+
+    validate(bankOrder);
   }
 
   @Override
