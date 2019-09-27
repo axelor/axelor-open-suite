@@ -19,7 +19,7 @@
 	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
-	    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber"/>
+	    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber" width="90"/>
 		<field name="project" width="200" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="teamTask" width="200" form-view="team-task-form" grid-view="team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task" onChange="action-timesheet-line-method-set-default-to-invoice"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
@@ -65,7 +65,7 @@
 
 	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
-	    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber"/>
+	    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber" width="90"/>
 		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="teamTask" width="200" form-view="team-task-form" grid-view="team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task" onChange="action-timesheet-line-method-set-default-to-invoice"/>
 		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
