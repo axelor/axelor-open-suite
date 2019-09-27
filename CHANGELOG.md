@@ -5,6 +5,7 @@
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
 
 ## Bug Fixes
+- Stock Move: fix WAP computation on customer returns.
 
 ## [5.1.8] - 2019-09-26
 ## Features
