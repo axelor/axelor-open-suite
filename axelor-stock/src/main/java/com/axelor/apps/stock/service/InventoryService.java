@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -480,8 +480,9 @@ public class InventoryService {
               Beans.get(StockLocationLineRepository.class)
                   .all()
                   .filter(
-                      "self.product = ?1 AND self.trackingNumber IS NOT null",
-                      stockLocationLine.getProduct())
+                      "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
+                      stockLocationLine.getProduct(),
+                      inventory.getStockLocation())
                   .count();
 
           if (numberOfTrackingNumberOnAProduct != 0) { // there is a tracking number on the product

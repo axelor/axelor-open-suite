@@ -363,10 +363,8 @@
     <action-group name="action-group-purchase-order-on-load-actions">
 		<action name="action-purchase-order-attrs-hide-contact-partner"/>
 		<action name="action-purchase-order-attrs-in-ati"/>
-		<action name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"/>
 		<action name="action-attrs-po-hidden-bank-details"/>
 		<action name="action-purchase-order-attrs-interco"/>
-		<action name="save"/>
 	</action-group>
 
     <action-group name="action-group-purchase-order-company-change-actions">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -123,17 +123,14 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     while (!itDate.isAfter(toDate)) {
       duration =
           duration.add(
-              new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
+              BigDecimal.valueOf(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
       itDate = itDate.plusDays(1);
     }
 
-    if (publicHolidayPlanning != null) {
-      duration =
-          duration.subtract(
-              Beans.get(PublicHolidayHrService.class)
-                  .computePublicHolidayDays(
-                      fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
-    }
+    duration =
+        duration.subtract(
+            Beans.get(PublicHolidayHrService.class)
+                .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
   }

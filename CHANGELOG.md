@@ -1,11 +1,70 @@
 # Changelog
 
-## [Unreleased 5.0.8]
-## Features
+## [5.0.10] - unreleased
 ## Improvements
+- YEAR : disable canEdit on company field in year-form.
+- MRP : add a try catch block in generateAllProposals method.
+- TIMESHEET : Throw an alert on timesheet validation.
+- PAYMENTMODE : form and grid views defined on bankOrderFileFormat
+
+## Bug Fixes
+- STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
+- STOCK MOVE : fixed invoicing of stock moves containing several lines with the same product
+- SALE ORDER : Fix NPE while changing contactPartner
+- EMPLOYEE : Fixed timesheet dashlet domain
+- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
+- Move various fields and actions to convenient modules.
+- Move 'wizard-client-form-open-my-tickets' action to helpdesk module.
+- TaxLine: tax field is now readonly and cannot be edited when selected.
+
+## [5.0.9] - 2019-06-19
+## Improvements
+- HR : Update kilometric Allowance demo data(fr and en).
+- MOVE : Disable canEdit on journal
+- SUBROGATION RELEASE : Remove CanEdit attribute on Company and InvoiceSet
+- CUSTOMER DELIVERY : add deliveryCondition from saleOrder in stockMove and picking order printing
+- VEHICLE : removed isArchived field.
+
+## Bug Fixes
+- LEAVE TO JUSTIFY : Fix leave reason select issue when user is empty.
+- EXPENSE : complete my expense (Error message when no expense is selected)
+- HR : Fix employeeSet domain.
+- Base : Updation of type in demo-data in Birt Template Parameter.
+- RECONCILE : Update missing sequence alert
+- Naming Tool : Missing reserved java litterals
+- Configurator: Fix total computation on sale order when generating sale order line.
+- Stock Move : wrong qty in outgoing move printing
+- MRPLine : Specify views for proposalSelect. 
+- HR : Fix NoSuchField Error.
+- JOURNAL ENTRY EXPORT (FEC) : Add columns header in export file that is mistakenly removed
+- JOURNAL ENTRY EXPORT (FEC) : Use move reference instead of move line reference
+- JOURNAL ENTRY EXPORT (FEC) : Amount format : replace dot per comma
+- JOURNAL ENTRY EXPORT (FEC) : Manage the currency amount sign
+- JOURNAL ENTRY EXPORT (FEC) : Sort per validation date
+- JOURNAL ENTRY EXPORT (FEC) : Fix issue with year shift on the last day of year.
+- DateTimeFormatter : Changed pattern from 'YYYY' to 'yyyy'.
+- Client invoice merging : Fix the constraint violation in stockMove when deleting the base invoices.
+
+## [5.0.8] - 2019-01-17
+## Features
+- Account: add option to automatically create partners' accounts
+- Account: use partner name as default account name when creating from partner's account configuration screen.
+
+## Improvements
+- Disabled 'canEdit' attribute for some fields
+- Invoice : journal & partner account are now set on validation rather than on ventilation.
+- Advanced exports: store dates as dates and numbers as numbers in Excel export.
+- Base : Removal of PartnerList object and its relevant controller because of no use.
+
 ## Bug Fixes
 - Invoice Interco : Assign account and taxLine to Invoice Line according to operationSelect.
-- MANUF. ORDER PRINTING : Hide barcode column when it is empty.
+- MANUF. ORDER PRINTING: hide barcode column when it is empty.
+- Purchase Order: remove save on loading purchase order form.
+- Stock Chart: fix wrong action name.
+- App Sale: fix unresolved action error.
+- Payment voucher: fix confirm button display on credit card supplier payments.
+- General balance report : fix wrong sums when we filter on some accounts of the same branch
+- Remove Inconsistency in selections
 
 ## [5.0.7] - 2018-12-13
 ## Features
@@ -268,7 +327,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Stock location line: add the dotted field 'product.unit'.
 - Stock move: make lines fully editable and removable on planned status.
 - Harmonization of Sale order line, purchase order line and invoice line form views.
-- Account : prefill employee/supplier/customer account creation form with default values from configuration.
+- Account : prefill employee/supplier/customer account creation form with default values from configuration.
 - Timesheet on operation order: Compute operation order total duration so its always up to date.
 - Improve partner form view.
 - Address: rework coordinates updating.
@@ -712,7 +771,6 @@ Also, improve the sale order line grid and form views.
 - Fix custom model form view with latest from adk.
 - Fix resource management from project, removed unwanted menus and views related to it. 
 
-
 ## [4.2.5] - 2018-10-06
 ### Improvements
 - Replace justification binary field in ExpenseLine with justificationMetaFile m2o MetaFile field
@@ -1064,6 +1122,8 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...v5.0.9
+[5.0.8]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.0.8
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
 [5.0.6]: https://github.com/axelor/axelor-business-suite/compare/v5.0.5...v5.0.6
 [5.0.5]: https://github.com/axelor/axelor-business-suite/compare/v5.0.4...v5.0.5

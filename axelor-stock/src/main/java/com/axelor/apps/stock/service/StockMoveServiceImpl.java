@@ -1,19 +1,17 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License, version 3, as published by the Free Software Foundation.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
@@ -552,7 +550,11 @@ public class StockMoveServiceImpl implements StockMoveService {
       while (it.hasNext()) {
         StockMoveLine stockMoveLine = it.next();
         Optional<Product> productOpt = Optional.ofNullable(stockMoveLine.getProduct());
-        if (productOpt.isPresent() && productOpt.get().equals(plannedStockMoveLine.getProduct())) {
+        BigDecimal valuatedUnitPrice = stockMoveLine.getValuatedUnitPrice();
+
+        if (productOpt.isPresent()
+            && productOpt.get().equals(plannedStockMoveLine.getProduct())
+            && valuatedUnitPrice.compareTo(plannedStockMoveLine.getValuatedUnitPrice()) == 0) {
           plannedStockMoveLine.setRealQty(
               plannedStockMoveLine.getRealQty().add(stockMoveLine.getRealQty()));
           it.remove();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,6 +49,23 @@ public interface IExceptionMessage {
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
+
+  /** AccountingSituationService * */
+  static final String ACCOUNTING_SITUATION_1 = /*$$(*/
+      "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s" /*)*/;
+
+  static final String ACCOUNTING_SITUATION_2 = /*$$(*/
+      "You have to select a sequence for automatic customer account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_3 = /*$$(*/
+      "Invalid automatic partner account creation mode, this is a bug that should be reported." /*)*/;
+  static final String ACCOUNTING_SITUATION_4 = /*$$(*/
+      "You have to enter a prefix for automatic supplier account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_5 = /*$$(*/
+      "You have to select a sequence for automatic supplier account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_6 = /*$$(*/
+      "You have to enter a prefix for automatic employee account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_7 = /*$$(*/
+      "You have to select a sequence for automatic employee account creation in accounting application parameters of company %s" /*)*/;
 
   /** Mail service */
   static final String MAIL_1 = /*$$(*/

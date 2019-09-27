@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -203,7 +203,6 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       saleOrderLine =
           generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
-    saleOrder.addSaleOrderLineListItem(saleOrderLine);
     Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
 
     Beans.get(SaleOrderRepository.class).save(saleOrder);

@@ -1,4 +1,4 @@
-"importId";"name";"image_fileName";"vehicleModel.importId";"plateNo";"vehicleTagSetImportId";"vehicleState";"driverPartner.importId";"vehicleOdometer";"location";"acquisitionDate";"chasisNo";"carValue";"isArchived";"company.importId";"seats";"doors";"color";"transmissionSelect";"fuelTypeSelect";"co2emission";"horsePower";"horsePowerTax";"powerKw"
+"importId";"name";"image_fileName";"vehicleModel.importId";"plateNo";"vehicleTagSetImportId";"vehicleState";"driverPartner.importId";"vehicleOdometer";"location";"acquisitionDate";"chasisNo";"carValue";"archived";"company.importId";"seats";"doors";"color";"transmissionSelect";"fuelTypeSelect";"co2emission";"horsePower";"horsePowerTax";"powerKw"
 "1";"Mercedes Classe C";"img/mercedes.png";"1";"EW 231 RG";;;"20";"178000";"77";"TODAY[+5d]";;"40000";"true";"1";"5";"5";"Gris";"0";"0";"2.00";"110";;
 "2";"Fiat 500";"img/fiat.png";"2";"EA 456 TH";;;"88";"90000";"75";"TODAY[+6d]";;"15000";"false";"1";"4";"3";"Noir";"1";"1";"2.01";"110";;
 "3";"Toyota Yaris";"img/toyota.png";"3";"RG 638 KF";;;"205";"134039";"22";"TODAY[-30d]";;"16000";"true";"1";"5";"5";"Bleu";"0";"2";"2.02";"70";;

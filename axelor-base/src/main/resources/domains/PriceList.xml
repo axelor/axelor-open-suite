@@ -14,7 +14,7 @@
 			<decimal name="generalDiscount" title="General discount (%)"/>
 			
 			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true"/>
-			<integer name="basedOnSelect" title="Based on" selection="base.price.list.based.on.select"/>
+			<integer name="basedOnSelect" title="Based on"/>
 			<one-to-many name="historizedPriceList" ref="com.axelor.apps.base.db.PriceList" mappedBy="parentPriceList" title="Historized Price Lists" />
   			<many-to-one name="parentPriceList" ref="com.axelor.apps.base.db.PriceList" title="Parent Price List"/>
 			<date name="applicationBeginDate" title="Application begin date"/>

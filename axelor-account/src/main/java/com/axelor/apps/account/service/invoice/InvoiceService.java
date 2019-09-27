@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -40,6 +42,26 @@ import org.apache.commons.lang3.tuple.Pair;
 public interface InvoiceService {
 
   public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
+
+  /**
+   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
+   * type of invoice.
+   *
+   * @param invoice Invoice to fetch the partner account for
+   * @return null if the invoice does not contains enough information to determine the partner
+   *     account.
+   * @throws AxelorException
+   */
+  Account getPartnerAccount(Invoice invoice) throws AxelorException;
+
+  /**
+   * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
+   *
+   * @param invoice Invoice to fetch the journal for.
+   * @return The suitable journal or null (!) if invoice's company is empty.
+   * @throws AxelorException If operationTypeSelect is empty
+   */
+  Journal getJournal(Invoice invoice) throws AxelorException;
 
   /**
    * Lever l'ensemble des alarmes d'une facture.
@@ -123,6 +145,17 @@ public interface InvoiceService {
   public void setDraftSequence(Invoice invoice) throws AxelorException;
 
   public void generateBudgetDistribution(Invoice invoice);
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException;
 
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,

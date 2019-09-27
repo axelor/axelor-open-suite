@@ -160,8 +160,10 @@
             <field name="invoiceId" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
                 <viewer>
                     <![CDATA[
-                        <span ng-show="(record.operationSubTypeSelect != 2 && record.statusSelect &lt; 3) || (record.operationSubTypeSelect == 2 && record.statusSelect == 0)" x-translate>Proforma</span> <span>{{record.invoiceId}}</span>
-                    ]]>
+						<span ng-show="(record.operationSubTypeSelect != 2 && record.statusSelect &lt; 3) || (record.operationSubTypeSelect == 2 && record.statusSelect == 1)" x-translate>Proforma </span>
+                        <span ng-show="record.statusSelect == 4" x-translate>Cancel invoice n°</span>
+                        <span>{{record.invoiceId}}</span>
+                        ]]>
                 </viewer>
             </field>
 

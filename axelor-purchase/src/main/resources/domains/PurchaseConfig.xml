@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns="http://axelor.com/xml/ns/domain-models"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
 
-  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+    <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseConfig" lang="java" cachable="true">
+    <entity name="PurchaseConfig" lang="java" cachable="true">
 
-    <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
+        <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
-  	<integer name="purchaseOrderInAtiSelect" title="Purchase orders ATI/WT" selection="base.in.ati.select" default="1"/>
-  	
-  	<boolean name="priceDisplay" title="Display price on requested purchase printing" />
-  	
-  	<string name="priceRequest" title="Message for requesting prices" large="true"/>
-  	
-  </entity>
-  
+        <integer name="purchaseOrderInAtiSelect" title="Purchase orders ATI/WT" selection="base.in.ati.select" default="1"/>
+
+        <boolean name="priceDisplay" title="Display price on requested purchase printing"/>
+
+        <boolean name="usePurchasePriceWhenNoCatalog" title="Use default purchase price when product is not in supplier catalog"
+                 help="If checked, when an RFQ is made for a product not in supplier catalog, the value filled in purchase price will be used as purchase price."/>
+
+        <string name="priceRequest" title="Message for requesting prices" large="true"/>
+
+    </entity>
+
 </domain-models>

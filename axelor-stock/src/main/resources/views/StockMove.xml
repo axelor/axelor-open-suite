@@ -181,6 +181,8 @@
             	<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
                 
                 <field name="trackingNumber" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
+                <field name="saleOrder.deliveryCondition" colSpan="6" showIf="typeSelect == 2"/>
+                <spacer name="deliveryConditionSpacer" colSpan="6" showIf="typeSelect == 2"/>
 
                 <field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
                 <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>

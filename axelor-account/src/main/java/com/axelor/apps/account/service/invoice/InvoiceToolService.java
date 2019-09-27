@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,21 +70,13 @@ public class InvoiceToolService {
    */
   public static boolean isPurchase(Invoice invoice) throws AxelorException {
 
-    boolean isPurchase;
-
     switch (invoice.getOperationTypeSelect()) {
-      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
-        isPurchase = true;
-        break;
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE: // fall-through
       case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
-        isPurchase = true;
-        break;
+        return true;
       case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
-        isPurchase = false;
-        break;
-      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
-        isPurchase = false;
-        break;
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND: // fall-through
+        return false;
 
       default:
         throw new AxelorException(
@@ -93,8 +85,6 @@ public class InvoiceToolService {
             I18n.get(IExceptionMessage.MOVE_1),
             invoice.getInvoiceId());
     }
-
-    return isPurchase;
   }
 
   /**

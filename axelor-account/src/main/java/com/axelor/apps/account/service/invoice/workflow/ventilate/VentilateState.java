@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,10 +23,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveService;
@@ -120,13 +119,9 @@ public class VentilateState extends WorkflowInvoice {
   }
 
   protected void setPartnerAccount() throws AxelorException {
-
+    // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
-      Account account =
-          InvoiceToolService.isPurchase(invoice)
-              ? situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany())
-              : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
+      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice);
 
       if (account == null) {
         throw new AxelorException(
@@ -139,8 +134,9 @@ public class VentilateState extends WorkflowInvoice {
   }
 
   protected void setJournal() throws AxelorException {
+    // Journal is actually set upon validation but we keep this for backward compatibility
     if (invoice.getJournal() == null) {
-      invoice.setJournal(Beans.get(JournalService.class).getJournal(invoice));
+      invoice.setJournal(Beans.get(InvoiceService.class).getJournal(invoice));
     }
   }
 
