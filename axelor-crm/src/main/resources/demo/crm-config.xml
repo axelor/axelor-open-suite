@@ -7,7 +7,9 @@
 		
 	<input file="crm_lead.csv" separator=";" type="com.axelor.apps.crm.db.Lead" search="self.importId = :importId" call="com.axelor.csv.script.ImportLead:saveLead">
 			<bind column="description" to="description"/>
-			<bind column="jobTitle" to="jobTitle"/>
+			<bind to="jobTitleFunction" search="self.name = :jobTitle">
+				<bind to="name" column="jobTitle"/>
+			</bind>
 			<bind to="emailAddress" search="self.address = :email">
 				<bind to="address" column="email" />
 			</bind>

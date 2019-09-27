@@ -122,6 +122,7 @@
 - TEAMTASK : Addition of field 'project' in grid and kanban view
 - CONFORMITY CERTIFICATE : new field on printing
 - TIMESHEET : new config to display line numbers
+- FUNCTION : new object function on Sales and CRM and new M2O on partner
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

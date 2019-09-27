@@ -224,7 +224,7 @@ public class ConvertLeadWizardController {
     response.setAttr("fixedPhone", "value", lead.getFixedPhone());
     response.setAttr("user", "value", lead.getUser());
     response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("jobTitle", "value", lead.getJobTitle());
+    response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
   }
 
   public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)

@@ -236,6 +236,15 @@
 
 	<menuitem name="referential-conf" title="Configuration" order="100" parent="referential-root" icon="fa-cog"/>
 	
+	<menuitem name="referential-conf-contact-function" parent="referential-conf"
+		title="Contact function" action="referential.conf.contact.function" />
+		
+	<action-view name="referential.conf.contact.function" title="Contact function"
+		model="com.axelor.apps.base.db.Function" >
+		<view type="grid" name="function-grid"/>
+		<view type="form" name="function-form"/>
+	</action-view>
+	
 	<menuitem name="referential-conf-address" parent="referential-conf"
 		title="Addresses" action="referential.conf.address" order="110"/>
 

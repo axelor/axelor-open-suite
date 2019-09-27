@@ -79,7 +79,7 @@
 					<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
 					<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
 					<label name="contactLabel" title="Contact"/>
-					<field name="jobTitle"/>
+					<field name="jobTitleFunction"/>
 					<field name="reportsTo" domain="self.isContact = true"/>
 					<field name="fixedPhone"/>
 					<field name="mobilePhone"/>

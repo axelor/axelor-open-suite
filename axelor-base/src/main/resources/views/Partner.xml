@@ -84,7 +84,7 @@
 		<field name="emailAddress.address" placeholder="whatever@example.com"
 		  title="Email"/>
 		<field name="mainPartner.simpleFullName" title="Main company"/>
-		<field name="jobTitle"/>
+		<field name="jobTitleFunction"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
@@ -484,7 +484,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactDetailsPanel" title="Contact details">
-				<field name="jobTitle"/>
+				<field name="jobTitleFunction"/>
 				<field name="reportsTo" domain="self.isContact = true"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
@@ -667,7 +667,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactDetailsPanel" title="Contact details">
-				<field name="jobTitle"/>
+				<field name="jobTitleFunction"/>
 				<field name="reportsTo" domain="self.isContact = true"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
