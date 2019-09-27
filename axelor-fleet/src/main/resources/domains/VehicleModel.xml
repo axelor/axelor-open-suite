@@ -9,7 +9,7 @@
 		<string name="model" title="Model" required="true"/>
 		<string name="name" title="Name" required="true" namecolumn="true">
 			<![CDATA[
-				return vehicleMake.getName() + " " + model;
+				return vehicleMake != null ? vehicleMake.getName() + " " + model : model;
 			]]>
 		</string>
 	 	<many-to-many name="vehicleVendorsSet" ref="com.axelor.apps.base.db.Partner" title="Vendors" />
