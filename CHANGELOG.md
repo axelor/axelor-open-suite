@@ -3,10 +3,12 @@
 ## [Unreleased 5.1.9]
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
+- BANK STATEMENT : improved bank statement line grid for 120 file format.
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
 - Move Line: fix error when we reconcile multiple moves.
+
 
 ## [5.1.8] - 2019-09-26
 ## Features
