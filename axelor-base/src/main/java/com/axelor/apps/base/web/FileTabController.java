@@ -18,17 +18,28 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.FileTab;
+import com.axelor.apps.base.db.repo.FileTabRepository;
 import com.axelor.apps.base.service.advanced.imports.FileTabService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class FileTabController {
 
   @Inject private FileTabService fileTabService;
+
+  @Inject private FileTabRepository fileTabRepo;
+
+  @Inject MetaJsonFieldRepository metaJsonFieldRepo;
 
   public void updateFields(ActionRequest request, ActionResponse response) {
     try {
@@ -52,6 +63,42 @@ public class FileTabController {
       FileTab fileTab = request.getContext().asType(FileTab.class);
       fileTab = fileTabService.compute(fileTab);
       response.setValues(fileTab);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showRecord(ActionRequest request, ActionResponse response) {
+    try {
+      FileTab fileTab = request.getContext().asType(FileTab.class);
+      fileTab = fileTabRepo.find(fileTab.getId());
+
+      String btnName = request.getContext().get("_signal").toString();
+      String fieldName = StringUtils.substringBetween(btnName, "show", "Btn");
+
+      MetaJsonField jsonField =
+          metaJsonFieldRepo
+              .all()
+              .filter(
+                  "self.name = ?1 AND self.type = 'many-to-many' AND self.model = ?2 AND self.modelField = 'attrs'",
+                  fieldName,
+                  fileTab.getClass().getName())
+              .fetchOne();
+
+      if (jsonField == null) {
+        return;
+      }
+
+      String ids = fileTabService.getShowRecordIds(fileTab, jsonField.getName());
+
+      response.setView(
+          ActionView.define(I18n.get(jsonField.getTitle()))
+              .model(jsonField.getTargetModel())
+              .add("grid", jsonField.getGridView())
+              .add("form", jsonField.getFormView())
+              .domain("self.id IN (" + ids + ")")
+              .map());
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
