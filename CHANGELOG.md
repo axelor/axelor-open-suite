@@ -5,6 +5,7 @@
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
 
 ## Bug Fixes
+- Accounting Batch: fix error during Reimbursement import
 
 ## [5.1.8] - 2019-09-26
 ## Features
