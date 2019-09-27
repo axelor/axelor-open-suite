@@ -21,8 +21,7 @@
 		<field name="origin" width="70"/>
 		<field name="reference" width="150"/>
 		<field name="description" width="500"/>
-		<field name="bankStatement" width="90"/>
-		<field name="amountRemainToReconcile" width="90"/>
+		<field name="amountRemainToReconcile" width="80"/>
 	</grid>
 
 	<form name="bank-statement-line-afb-120-form" title="Bank Statement line" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" readonlyIf="true">
