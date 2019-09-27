@@ -72,7 +72,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
           task.setToInvoice(true);
           task.setTeamTaskInvoicing(true);
-          task.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+          task.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
         }
         tasks.add(teamTaskRepository.save(task));
 

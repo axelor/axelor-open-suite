@@ -154,8 +154,9 @@
 				</panel-related>
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="teamTaskInvoicing" colSpan="4" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="teamTaskInvoicing" colSpan="3" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="teamTaskInvoicing" onChange="action-team-task-attrs-to-invoice"/>
+				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="3"/>
 				<field name="saleOrderLine" readonly="true" showIf="saleOrderLine" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
 				<field name="invoiceLine" readonly="true" showIf="invoiceLine" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 				<panel name="packagePanel" title="Package" colSpan="12" showIf="invoicingType == 2">
@@ -323,7 +324,6 @@
 		<action name="action-task-record-project-configurations"/>
 		<action name="action-team-task-method-update-discount" if="__config__.app.isApp('business-project')"/>
 		<action name="action-team-task-method-compute" if="__config__.app.isApp('business-project')"/>
-		<action name="action-team-task-record-update-invoicing-type-and-time-invoicing" if="__config__.app.isApp('business-project') &amp;&amp; project != null"/>
 	</action-group>
 	
 	<action-group name="action-team-task-group-product-onchange">
@@ -390,9 +390,7 @@
 		<field name="membersUserSet" expr="eval: null"/>
 		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
         <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
-		<field name="invoicingType" expr="eval: project?.invoicingType"/>
-		<field name="teamTaskInvoicing" expr="eval: project?.teamTaskInvoicing"/>
-		<field name="toInvoice" expr="eval: project?.teamTaskInvoicing &amp;&amp; project?.invoicingType == 2"/>
+        <field name="invoicingType" expr="eval: 2" if="project?.invoicingSequenceSelect == 1"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
@@ -498,7 +496,7 @@
 	</action-group>
 	
 	<action-group name="action-team-task-group-project-category-onchange">
-		<action name="action-team-task-method-onchange-category" if="__config__.app.isApp('business-support')" />
+		<action name="action-team-task-method-onchange-category" if="__config__.app.isApp('business-project')" />
 	</action-group>
 
 	<action-method name="action-team-task-method-start-timer">
@@ -514,7 +512,7 @@
 	</action-method>
 	
 	<action-method name="action-team-task-method-onchange-category">
-		<call class="com.axelor.apps.businesssupport.web.TeamTaskController" method="onChangeCategory"/>
+		<call class="com.axelor.apps.businessproject.web.TeamTaskController" method="onChangeCategory"/>
 	</action-method>
 	
 	<action-attrs name="action-team-task-attrs-to-invoice">

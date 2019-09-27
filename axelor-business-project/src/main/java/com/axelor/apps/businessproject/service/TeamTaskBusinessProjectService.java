@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.TeamTaskProjectService;
@@ -26,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,4 +47,9 @@ public interface TeamTaskBusinessProjectService extends TeamTaskProjectService {
 
   List<InvoiceLine> createInvoiceLine(Invoice invoice, TeamTask teamTask, int priority)
       throws AxelorException;
+
+  TeamTask computeDefaultInformation(TeamTask teamTask);
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject);
 }

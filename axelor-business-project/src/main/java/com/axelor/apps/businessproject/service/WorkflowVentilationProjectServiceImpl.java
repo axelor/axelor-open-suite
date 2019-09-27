@@ -25,6 +25,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -45,6 +46,8 @@ public class WorkflowVentilationProjectServiceImpl
 
   private InvoicingProjectRepository invoicingProjectRepo;
 
+  private TimesheetLineRepository timesheetLineRepo;
+
   @Inject
   public WorkflowVentilationProjectServiceImpl(
       AccountConfigService accountConfigService,
@@ -56,7 +59,8 @@ public class WorkflowVentilationProjectServiceImpl
       PurchaseOrderRepository purchaseOrderRepository,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       AppSupplychainService appSupplychainService,
-      InvoicingProjectRepository invoicingProjectRepo) {
+      InvoicingProjectRepository invoicingProjectRepo,
+      TimesheetLineRepository timesheetLineRepo) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -68,6 +72,7 @@ public class WorkflowVentilationProjectServiceImpl
         accountingSituationSupplychainService,
         appSupplychainService);
     this.invoicingProjectRepo = invoicingProjectRepo;
+    this.timesheetLineRepo = timesheetLineRepo;
   }
 
   @Override
@@ -86,6 +91,14 @@ public class WorkflowVentilationProjectServiceImpl
       }
       for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
         timesheetLine.setInvoiced(true);
+
+        if (timesheetLine.getTeamTask() == null) {
+          continue;
+        }
+
+        timesheetLine
+            .getTeamTask()
+            .setInvoiced(this.checkInvoicedTimesheetLines(timesheetLine.getTeamTask()));
       }
       for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
         expenseLine.setInvoiced(true);
@@ -100,5 +113,16 @@ public class WorkflowVentilationProjectServiceImpl
       invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);
       invoicingProjectRepo.save(invoicingProject);
     }
+  }
+
+  private boolean checkInvoicedTimesheetLines(TeamTask teamTask) {
+
+    long timesheetLineCnt =
+        timesheetLineRepo
+            .all()
+            .filter("self.teamTask.id = ?1 AND self.invoiced = ?2", teamTask.getId(), false)
+            .count();
+
+    return timesheetLineCnt == 0;
   }
 }
