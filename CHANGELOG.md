@@ -248,6 +248,7 @@
 - Manuf Order: updating planned quantities correctly changes planned dates.
 - Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
 - EXPENSE : replace line break caracter per a space for move creation
+- MOVES TEMPLATE: Fixed NPE on move generation
 
 ## [5.1.7] - 2019-06-17
 ## Features
