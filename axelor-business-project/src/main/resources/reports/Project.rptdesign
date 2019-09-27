@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -178,6 +178,12 @@
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">project_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">project_name</text-property>
+                    <text-property name="heading">project_name</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">customer</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">customer</text-property>
@@ -188,6 +194,24 @@
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">header</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">header</text-property>
+                    <text-property name="heading">header</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">footer</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">footer</text-property>
+                    <text-property name="heading">footer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logoPosition</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <text-property name="heading">logoPosition</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -211,13 +235,33 @@
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">customer</property>
+                        <property name="name">project_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
+                        <property name="name">customer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">header</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">footer</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">logoPosition</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -228,54 +272,59 @@
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">customer</property>
-                    <property name="nativeName">customer</property>
+                    <property name="name">project_name</property>
+                    <property name="nativeName">project_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
+                    <property name="name">customer</property>
+                    <property name="nativeName">customer</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">header</property>
+                    <property name="nativeName">header</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">footer</property>
+                    <property name="nativeName">footer</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">logoPosition</property>
+                    <property name="nativeName">logoPosition</property>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT  
-	MetaFile.file_path as logo_path, 
+	MetaFile.file_path as logo_path,
+	Project.name as project_name, 
 	Partner.name  as customer, 
-	Currency.name as currency
+	Currency.name as currency,
+	PrintingSettings.pdf_header as "header", 
+	PrintingSettings.pdf_footer as "footer",
+	PrintingSettings.logo_position_select as "logoPosition"
 FROM project_project Project
 LEFT JOIN base_company Company on (Company.id = Project.company)
 LEFT JOIN meta_file MetaFile on (MetaFile.id = Company.logo)
 LEFT JOIN base_currency Currency on (Currency.id = Company.currency)
 LEFT JOIN base_partner Partner on (Partner.id = Project.client_partner)
+LEFT OUTER JOIN base_printing_settings as PrintingSettings on (PrintingSettings.id = Company.printing_settings)
 WHERE Project.id = ?]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
             <list-property name="columnHints">
@@ -1858,7 +1907,7 @@ group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
 	sum(planned_hours) as total_hours,
 	case
 		when prod.unit = (select unit_hours from base_app_base) then
-			sum((planned_hours / planned_hours) * prod.sale_price)
+			sum((planned_hours / NULLIF(planned_hours, 0)) * prod.sale_price)
 		else	
 			sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
 	end as revenue
@@ -2284,7 +2333,7 @@ union
 select to_char(ppt.date_val, 'YYYY-MM') as month, 0 as costs, 
 case
 	when prod.unit = (select unit_hours from base_app_base) then
-		sum((planned_hours / planned_hours) * prod.sale_price)
+		sum((planned_hours / NULLIF(planned_hours, 0)) * prod.sale_price)
 	else	
 		sum(COALESCE((planned_hours / NULLIF((select coef from base_unit_conversion where start_unit = prod.unit and end_unit = (select unit_hours from base_app_base)), 0)) * prod.sale_price, 0))
 end as turnover
@@ -3292,12 +3341,146 @@ order by task_end_date]]></xml-property>
         </style>
     </styles>
     <page-setup>
-        <simple-master-page name="Simple MasterPage" id="2"/>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="headerHeight">0in</property>
+            <property name="footerHeight">0.4in</property>
+            <page-footer>
+                <grid id="6015">
+                    <column id="6016">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">20%</property>
+                    </column>
+                    <column id="6017">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">50%</property>
+                    </column>
+                    <column id="6018">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">15%</property>
+                    </column>
+                    <column id="4818">
+                        <property name="repeat">1</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <column id="6040">
+                        <property name="repeat">1</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="6041">
+                        <property name="repeat">1</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <row id="6020">
+                        <cell id="6021">
+                            <image id="6025">
+                                <property name="height">44px</property>
+                                <property name="width">107px</property>
+                                <property name="dataSet">Project</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="6022">
+                            <property name="textAlign">center</property>
+                            <property name="verticalAlign">middle</property>
+                            <text id="6026">
+                                <property name="fontSize">8pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'Project.title'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                    <structure>
+                                        <property name="paramName">param_2</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">params["Locale"].value</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">key</property>
+                                        <text-property name="displayName">key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="6023">
+                            <property name="verticalAlign">middle</property>
+                            <text id="6027">
+                                <property name="fontSize">8pt</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="d MMM y kk:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="6039">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3937">
+                                <property name="fontSize">8pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="4819">
+                            <property name="verticalAlign">middle</property>
+                            <text id="3939">
+                                <property name="fontSize">8pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4822">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3941">
+                                <property name="fontSize">8pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
+        </simple-master-page>
     </page-setup>
     <body>
         <grid id="4487">
             <property name="fontSize">100%</property>
             <property name="canShrink">true</property>
+            <property name="width">100%</property>
             <property name="dataSet">Project</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -3318,6 +3501,30 @@ order by task_end_date]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">header</property>
+                    <text-property name="displayName">header</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["header"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">footer</property>
+                    <text-property name="displayName">footer</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logoPosition</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">project_name</property>
+                    <text-property name="displayName">project_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="4488">
                 <property name="width">1.5416666666666667in</property>
@@ -3329,108 +3536,277 @@ order by task_end_date]]></xml-property>
                 <property name="width">2.96875in</property>
             </column>
             <row id="4491">
+                <property name="borderBottomStyle">solid</property>
+                <property name="borderBottomWidth">thin</property>
+                <property name="height">2.3cm</property>
                 <cell id="4492">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
-                    <image id="3419">
-                        <property name="height">0.8645833333333334in</property>
-                        <property name="width">2.78125in</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                            </structure>
-                        </list-property>
+                    <text id="4412">
+                        <property name="fontSize">8pt</property>
                         <structure name="toc"/>
-                        <property name="source">file</property>
-                        <property name="proportionalScale">true</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                    </image>
-                </cell>
-            </row>
-            <row id="4499">
-                <property name="height">0.3229166666666667in</property>
-                <cell id="4500">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4511">
-                        <property name="fontWeight">normal</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Project.customer'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">params["Locale"].value</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["customer"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<TABLE >
+	<TR>
+		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
+		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></td>"
+		} else if(row["logoPosition"] == 1) {
+		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD/><TD>"+row["header"]+"</TD>"
+		} else if(row["logoPosition"] == 2) {
+			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD>"+row["header"]+"</TD>"
+		}else if(row["logoPosition"] == null) {
+			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/>"
+		}else {
+		"<TD/><TD/><TD>"+row["header"]+"</TD>"
+		}
+ 		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4502"/>
             </row>
-            <row id="4506">
-                <property name="height">0.3229166666666667in</property>
-                <cell id="4507">
-                    <property name="colSpan">2</property>
+            <row id="6042">
+                <cell id="6043">
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
-                    <text id="4512">
-                        <property name="fontWeight">normal</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Project.currency'</value>
-                                </simple-property-list>
-                            </structure>
-                            <structure>
-                                <property name="paramName">param_2</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">params["Locale"].value</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <grid id="6070">
+                        <structure name="toc"/>
+                        <column id="6071">
+                            <property name="suppressDuplicates">true</property>
+                            <property name="width">50%</property>
+                        </column>
+                        <column id="6072"/>
+                        <row id="6073">
+                            <cell id="6074">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <text id="6082">
+                                    <property name="fontSize">9pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="marginTop">1pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="marginBottom">1pt</property>
+                                    <property name="marginRight">1pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Project.title'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                        <structure>
+                                            <property name="paramName">param_2</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">params["Locale"].value</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                            <property name="allowExport">true</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="6075">
+                                <property name="colSpan">1</property>
+                                <property name="rowSpan">4</property>
+                                <property name="verticalAlign">middle</property>
+                                <text id="6083">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="marginTop">1pt</property>
+                                    <property name="marginLeft">1pt</property>
+                                    <property name="marginBottom">1pt</property>
+                                    <property name="marginRight">1pt</property>
+                                    <property name="textAlign">center</property>
+                                    <structure name="toc"/>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<H2><VALUE-OF>row["project_name"]</VALUE-OF></H2>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="6087">
+                            <cell id="6088">
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
+                                <text id="6106">
+                                    <property name="fontWeight">normal</property>
+                                    <property name="marginTop">1pt</property>
+                                    <property name="marginLeft">1pt</property>
+                                    <property name="marginBottom">1pt</property>
+                                    <property name="marginRight">1pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Project.date'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                        <structure>
+                                            <property name="paramName">param_2</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">params["Locale"].value</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="6101">
+                            <cell id="6102">
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                                <text id="6105">
+                                    <property name="fontWeight">normal</property>
+                                    <property name="marginTop">1pt</property>
+                                    <property name="marginLeft">1pt</property>
+                                    <property name="marginBottom">1pt</property>
+                                    <property name="marginRight">1pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Project.customer'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                        <structure>
+                                            <property name="paramName">param_2</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">params["Locale"].value</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["customer"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="6079">
+                            <cell id="6080">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="borderLeftStyle">solid</property>
+                                <property name="borderLeftWidth">thin</property>
+                                <property name="borderRightStyle">solid</property>
+                                <property name="borderRightWidth">thin</property>
+                                <text id="6086">
+                                    <property name="fontWeight">normal</property>
+                                    <property name="marginTop">1pt</property>
+                                    <property name="marginLeft">1pt</property>
+                                    <property name="marginBottom">1pt</property>
+                                    <property name="marginRight">1pt</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Project.currency'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                        <structure>
+                                            <property name="paramName">param_2</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">params["Locale"].value</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
                 </cell>
-                <cell id="4509"/>
             </row>
             <row id="4642">
                 <cell id="4643">
@@ -3688,7 +4064,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="4657">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4658">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -3954,7 +4331,8 @@ order by task_end_date]]></xml-property>
                         </header>
                         <detail>
                             <row id="4661">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="4662">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -4131,6 +4509,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="4677">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4678">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -4444,7 +4824,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="5821">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5822">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -4710,7 +5091,8 @@ order by task_end_date]]></xml-property>
                         </header>
                         <detail>
                             <row id="5828">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -4890,6 +5272,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="5835">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5836">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -5249,7 +5633,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="4731">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4732">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -5515,7 +5900,8 @@ order by task_end_date]]></xml-property>
                         </header>
                         <detail>
                             <row id="4738">
-                                <property name="height">0.3125in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="4739">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -5692,6 +6078,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="4749">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4750">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -6023,7 +6411,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="4790">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4791">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -6380,7 +6769,8 @@ order by task_end_date]]></xml-property>
                         </header>
                         <detail>
                             <row id="4795">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="4796">
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -6529,6 +6919,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="4816">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4817">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -6892,7 +7284,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="4760">
-                                <property name="height">0.3125in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4761">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -7161,7 +7554,8 @@ order by task_end_date]]></xml-property>
                         </header>
                         <detail>
                             <row id="4763">
-                                <property name="height">0.3541666666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="4764">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -7329,6 +7723,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="5245">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5246">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -7642,7 +8038,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="5856">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5857">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -7908,7 +8305,8 @@ order by task_end_date]]></xml-property>
                         </header>
                         <detail>
                             <row id="5863">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -8088,6 +8486,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="5870">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5871">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -8415,7 +8815,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="5066">
-                                <property name="height">0.3125in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5067">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -8911,6 +9312,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="5248">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5249">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -11383,7 +11786,8 @@ order by task_end_date]]></xml-property>
                                 </cell>
                             </row>
                             <row id="4563">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4564">
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -11735,7 +12139,8 @@ order by task_end_date]]></xml-property>
                         </header>
                         <detail>
                             <row id="4569">
-                                <property name="height">0.2708333333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -11946,6 +12351,8 @@ order by task_end_date]]></xml-property>
                         </detail>
                         <footer>
                             <row id="4628">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="4629">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -12377,7 +12784,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalSale
                                 </cell>
                             </row>
                             <row id="5962">
-                                <property name="height">0.3125in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5963">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -12731,7 +13139,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalSale
                         </header>
                         <detail>
                             <row id="5969">
-                                <property name="height">0.2916666666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.2in</property>
                                 <cell id="5970">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -12962,6 +13371,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalSale
                         </detail>
                         <footer>
                             <row id="5976">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5977">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
@@ -13268,7 +13679,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                 </cell>
                             </row>
                             <row id="5175">
-                                <property name="height">0.3125in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5176">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -13534,7 +13946,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </header>
                         <detail>
                             <row id="5182">
-                                <property name="height">0.2916666666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="5183">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -13708,6 +14121,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </detail>
                         <footer>
                             <row id="5189">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5190">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -14027,7 +14442,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                 </cell>
                             </row>
                             <row id="5202">
-                                <property name="height">0.2916666666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5203">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -14296,7 +14712,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </header>
                         <detail>
                             <row id="5211">
-                                <property name="height">0.3333333333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="5212">
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -14433,6 +14850,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </detail>
                         <footer>
                             <row id="5220">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5221">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
@@ -14811,7 +15230,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                 </cell>
                             </row>
                             <row id="5704">
-                                <property name="height">0.2916666666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5705">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -15080,7 +15500,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </header>
                         <detail>
                             <row id="5711">
-                                <property name="height">0.3229166666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="5712">
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -15217,6 +15638,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </detail>
                         <footer>
                             <row id="5718">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5719">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
@@ -15579,7 +16002,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                 </cell>
                             </row>
                             <row id="5254">
-                                <property name="height">0.2916666666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5255">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -15760,7 +16184,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </header>
                         <detail>
                             <row id="5259">
-                                <property name="height">0.375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="5260">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -15874,6 +16299,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </detail>
                         <footer>
                             <row id="5264">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5265">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -16186,7 +16613,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                 </cell>
                             </row>
                             <row id="5889">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5890">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -16452,7 +16880,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </header>
                         <detail>
                             <row id="5896">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -16632,6 +17061,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </detail>
                         <footer>
                             <row id="5903">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5904">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -16978,7 +17409,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalManu
                                 </cell>
                             </row>
                             <row id="5372">
-                                <property name="height">0.2916666666666667in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5373">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -17244,7 +17676,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalManu
                         </header>
                         <detail>
                             <row id="5379">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="5380">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -17418,6 +17851,8 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalManu
                         </detail>
                         <footer>
                             <row id="5386">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5387">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
@@ -17735,7 +18170,8 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                                 </cell>
                             </row>
                             <row id="5757">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5758">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -18004,7 +18440,8 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         </header>
                         <detail>
                             <row id="5764">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <cell id="5765">
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -18138,6 +18575,8 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         </detail>
                         <footer>
                             <row id="5771">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5772">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
@@ -18512,7 +18951,8 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                                 </cell>
                             </row>
                             <row id="5920">
-                                <property name="height">0.3020833333333333in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5921">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
@@ -18778,7 +19218,8 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         </header>
                         <detail>
                             <row id="5927">
-                                <property name="height">0.34375in</property>
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.25in</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -18958,6 +19399,8 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         </detail>
                         <footer>
                             <row id="5934">
+                                <property name="verticalAlign">middle</property>
+                                <property name="height">0.3in</property>
                                 <cell id="5935">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
