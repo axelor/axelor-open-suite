@@ -400,6 +400,6 @@
 	</action-attrs>
 
 	<search-filters name="invoice-line-filters" model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
-		<field name="invoice.invoiceDate" title="Invoice date"/>
+		<field name="invoice.invoiceDate" title="Invoice Date"/>
 	</search-filters>
 </object-views>
