@@ -794,4 +794,38 @@ public class SaleOrderController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void generateAdvancePaymentInvoice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    try {
+      SaleOrder saleOrder = context.asType(SaleOrder.class);
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      Boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
+      BigDecimal amountToInvoice =
+          new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+
+      Invoice invoice =
+          Beans.get(SaleOrderInvoiceService.class)
+              .generateInvoice(
+                  saleOrder,
+                  SaleOrderRepository.INVOICE_ADVANCE_PAYMENT,
+                  amountToInvoice,
+                  isPercent,
+                  null);
+
+      if (invoice != null) {
+        response.setCanClose(true);
+        response.setView(
+            ActionView.define(I18n.get("Invoice generated"))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
 }

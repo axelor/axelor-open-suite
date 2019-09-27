@@ -44,7 +44,7 @@
         	<field name="moveTemplateType.typeSelect" hidden="true"/>
         </panel>
     	<panel sidebar="true" name="actionsPanel" title="Actions">
-    		<button name="generateMovesBtn" readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty())" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" colSpan="12" />
+    		<button name="generateMovesBtn" readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty()) || (moveTemplateType == null)" title="Generate Moves" onClick="save,action-move-template-wizard-method-generate-move" colSpan="12" />
     	</panel>
     </form>
     
