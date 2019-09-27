@@ -9,7 +9,7 @@
 		<field name="metaModel"/>
 		<field name="importType"/>
 		<field name="validationLog" hidden="true"/>
-	</grid> 
+	</grid>
     
 	<form name="file-tab-form" title="File tab" model="com.axelor.apps.base.db.FileTab">
 		<panel name="mainPanel">
@@ -19,6 +19,7 @@
 			<field name="searchFieldSet" domain="self.fileTab = :id" widget="TagSelect" form-view="file-field-form" grid-view="file-field-grid" colSpan="12" canNew="false" showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null"/>
 			<panel-related field="fileFieldList" onChange="action-file-tab-method-compute" colSpan="12" grid-view="file-field-grid" form-view="file-field-form" orderBy="sequence"/>
 			<field name="validationLog" widget="binary-link" showIf="validationLog != null"/>
+			<field name="advancedImport.statusSelect" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -34,14 +35,18 @@
 		<field name="importType" expr="3"/>
 	</action-record>
 	
+	<action-method name="action-file-tab-method-compute">
+		<call class="com.axelor.apps.base.web.FileTabController" method="compute"/>
+	</action-method>
+	
+	<action-method name="action-file-tab-method-show-record">
+		<call class="com.axelor.apps.base.web.FileTabController" method="showRecord"/>
+	</action-method>
+	
 	<action-group name="action-file-tab-group-on-meta-model">
 	  <action name="action-file-tab-record-import-type"/>
 	  <action name="action-file-tab-record-set-search-field"/>
 	  <action name="action-file-tab-method-update-fields"/>
 	</action-group>
-	
-	<action-method name="action-file-tab-method-compute">
-		<call class="com.axelor.apps.base.web.FileTabController" method="compute"/>
-	</action-method>
 	
 </object-views>

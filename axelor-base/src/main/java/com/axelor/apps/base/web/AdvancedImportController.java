@@ -92,8 +92,28 @@ public class AdvancedImportController {
       } else {
         response.setValue("errorLog", null);
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
+        response.setSignal("refresh-app", true);
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void resetImport(ActionRequest request, ActionResponse response) {
+    try {
+      AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
+      if (advancedImport.getId() != null) {
+        advancedImport = advancedImportRepo.find(advancedImport.getId());
+      }
+
+      boolean isReset = advancedImportService.resetImport(advancedImport);
+      if (isReset) {
+        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
+        response.setSignal("refresh-app", true);
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

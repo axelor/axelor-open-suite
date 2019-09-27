@@ -122,6 +122,7 @@
 - TEAMTASK : Addition of field 'project' in grid and kanban view
 - CONFORMITY CERTIFICATE : new field on printing
 - TIMESHEET : new config to display line numbers
+- Advanced Import : Add support of remove imported records.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
