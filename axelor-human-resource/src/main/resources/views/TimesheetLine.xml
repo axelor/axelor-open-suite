@@ -9,6 +9,7 @@
 		<field name="date" />
 		<field name="product" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="hoursDuration" width="62%" min="0.01"/>
+		<field name="durationForCustomer" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
 		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
 		<field name="enableEditor" hidden="true" />
 		<field name="invoiced" />
@@ -40,6 +41,7 @@
 		<field name="product"/>
 		<field name="duration"/>
 		<field name="hoursDuration"/>
+		<field name="durationForCustomer"/>
 		<field name="toInvoice"/>
 		<field name="enableEditor"/>
 		<field name="comments" />
@@ -53,6 +55,7 @@
 		<field name="date" onChange="action-timesheet-line-validate-date"/>
 		<field name="product" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="duration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
+		<field name="durationForCustomer" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
@@ -83,7 +86,9 @@
 			<field name="date" />
 			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
-			<label name="durationLabel" colSpan="1"/>
+			<label name="durationLabel" colSpan="3"/>
+			<field name="durationForCustomer" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+    		<label name="durationLabel" colSpan="1" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
 			<field name="hoursDuration" hidden="true" />
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -101,7 +106,9 @@
 			<field name="date" />
 			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
-			<label name="durationLabel" colSpan="1"/>
+			<label name="durationLabel" colSpan="3"/>
+    		<field name="durationForCustomer" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+    		<label name="durationLabel" colSpan="1" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
 			<field name="hoursDuration" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="enableEditor" />
@@ -131,12 +138,14 @@
 			<field name="date" />
 			<field name="product" canEdit="false" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="hoursDuration" width="62%" colSpan="2" min="0.01"/>
-			<label name="durationLabel" colSpan="1"/>
+			<label name="durationLabel" colSpan="4"/>
+			<field name="durationForCustomer" colSpan="3" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+    		<label name="durationLabel" colSpan="1" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
 			<field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
-			<field name="hoursDuration" hidden="true" />
 			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 			<field name="comments" />
 			<field name="enableEditor" />
+			<field name="hoursDuration" hidden="true" />
 			<field name="user"  form-view="user-form" grid-view="user-grid" hidden="true" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 	</form>
@@ -191,10 +200,9 @@
 	    <field name="product" expr="call:com.axelor.apps.hr.service.user.UserHrService:getTimesheetProduct(__repo__(User).find(__parent__.user.id))" if="__parent__.user != null"/>
 	</action-record>
 	
-    <action-record name="action-timesheet-line-record-to-invoice-parent"
-        model="com.axelor.apps.hr.db.TimesheetLine">
-        <field name="toInvoice"
-            expr="eval: (_parent?.project?.teamTaskInvoicing &amp;&amp; _parent?.project?.invoicingType == 1) || (_parent?.parentProject?.parentProject?.teamTaskInvoicing &amp;&amp; _parent?.parentProject?.parentProject?.invoicingType == 1)"
+    <action-record name="action-timesheet-line-record-to-invoice-parent" model="com.axelor.apps.hr.db.TimesheetLine">
+        <field name="toInvoice" 
+        	expr="eval: _parent?.project?.isInvoicingTimesheet || _parent?.parentProject?.parentProject?.isInvoicingTimesheet"
             if="__config__.app.isApp('business-project')"/>
     </action-record>
 	
