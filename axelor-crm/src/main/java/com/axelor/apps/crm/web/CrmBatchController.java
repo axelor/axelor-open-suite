@@ -22,19 +22,15 @@ import com.axelor.apps.crm.db.CrmBatch;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.service.batch.CrmBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
 public class CrmBatchController {
-
-  @Inject private CrmBatchService crmBatchService;
-
-  @Inject private CrmBatchRepository crmBatchRepo;
 
   /**
    * Lancer le batch de relance
@@ -46,7 +42,9 @@ public class CrmBatchController {
 
     CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 
-    Batch batch = crmBatchService.eventReminder(crmBatchRepo.find(crmBatch.getId()));
+    Batch batch =
+        Beans.get(CrmBatchService.class)
+            .eventReminder(Beans.get(CrmBatchRepository.class).find(crmBatch.getId()));
 
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);
@@ -62,7 +60,9 @@ public class CrmBatchController {
 
     CrmBatch crmBatch = request.getContext().asType(CrmBatch.class);
 
-    Batch batch = crmBatchService.target(crmBatchRepo.find(crmBatch.getId()));
+    Batch batch =
+        Beans.get(CrmBatchService.class)
+            .target(Beans.get(CrmBatchRepository.class).find(crmBatch.getId()));
 
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);
@@ -79,7 +79,7 @@ public class CrmBatchController {
    */
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    Batch batch = crmBatchService.run((String) request.getContext().get("code"));
+    Batch batch = Beans.get(CrmBatchService.class).run((String) request.getContext().get("code"));
     Map<String, Object> mapData = new HashMap<String, Object>();
     mapData.put("anomaly", batch.getAnomaly());
     response.setData(mapData);

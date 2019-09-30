@@ -19,17 +19,15 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Map;
 
 @Singleton
 public class GenerateMessageController {
-
-  @Inject private LanguageRepository languageRepo;
 
   public void templateDomain(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
@@ -42,7 +40,9 @@ public class GenerateMessageController {
       language = null;
     } else if (languageObj instanceof Map) {
       Map<String, Object> languageMap = (Map<String, Object>) languageObj;
-      language = languageRepo.find(Long.parseLong(languageMap.get("id").toString()));
+      language =
+          Beans.get(LanguageRepository.class)
+              .find(Long.parseLong(languageMap.get("id").toString()));
     } else if (languageObj instanceof Language) {
       language = (Language) languageObj;
     } else {

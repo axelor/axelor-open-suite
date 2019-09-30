@@ -50,7 +50,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -71,16 +70,12 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 @Singleton
 public class EbicsController {
 
-  @Inject private EbicsUserRepository ebicsUserRepo;
-
-  @Inject private EbicsService ebicsService;
-
-  @Inject private EbicsCertificateService certificateService;
-
   @Transactional
   public void generateCertificate(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     if (ebicsUser.getStatusSelect() != EbicsUserRepository.STATUS_WAITING_CERTIFICATE_CONFIG
         && ebicsUser.getStatusSelect()
@@ -92,7 +87,7 @@ public class EbicsController {
     try {
       cm.create();
       ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
-      ebicsUserRepo.save(ebicsUser);
+      Beans.get(EbicsUserRepository.class).save(ebicsUser);
     } catch (GeneralSecurityException | IOException e) {
       e.printStackTrace();
     }
@@ -101,17 +96,21 @@ public class EbicsController {
 
   public void generateDn(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
-    response.setValue("dn", ebicsService.makeDN(ebicsUser));
+    response.setValue("dn", Beans.get(EbicsService.class).makeDN(ebicsUser));
   }
 
   public void sendINIRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      ebicsService.sendINIRequest(ebicsUser, null);
+      Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
     } catch (Exception e) {
       e.printStackTrace();
       response.setFlash(stripClass(e.getLocalizedMessage()));
@@ -122,10 +121,12 @@ public class EbicsController {
 
   public void sendHIARequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      ebicsService.sendHIARequest(ebicsUser, null);
+      Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
     } catch (Exception e) {
       e.printStackTrace();
       response.setFlash(stripClass(e.getLocalizedMessage()));
@@ -136,10 +137,13 @@ public class EbicsController {
 
   public void sendHPBRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      X509Certificate[] certificates = ebicsService.sendHPBRequest(ebicsUser, null);
+      X509Certificate[] certificates =
+          Beans.get(EbicsService.class).sendHPBRequest(ebicsUser, null);
       confirmCertificates(ebicsUser, certificates, response);
     } catch (Exception e) {
       e.printStackTrace();
@@ -169,8 +173,12 @@ public class EbicsController {
                   "e002Hash", DigestUtils.sha256Hex(certificates[0].getEncoded()).toUpperCase())
               .context(
                   "x002Hash", DigestUtils.sha256Hex(certificates[1].getEncoded()).toUpperCase())
-              .context("certificateE002", certificateService.convertToPEMString(certificates[0]))
-              .context("certificateX002", certificateService.convertToPEMString(certificates[1]))
+              .context(
+                  "certificateE002",
+                  Beans.get(EbicsCertificateService.class).convertToPEMString(certificates[0]))
+              .context(
+                  "certificateX002",
+                  Beans.get(EbicsCertificateService.class).convertToPEMString(certificates[1]))
               .map());
     } catch (Exception e) {
       response.setFlash("Error in certificate confirmation ");
@@ -179,10 +187,12 @@ public class EbicsController {
 
   public void sendSPRRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      ebicsService.sendSPRRequest(ebicsUser, null);
+      Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
     } catch (Exception e) {
       e.printStackTrace();
       response.setFlash(stripClass(e.getLocalizedMessage()));
@@ -193,7 +203,9 @@ public class EbicsController {
 
   public void sendFULRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
 
@@ -211,13 +223,14 @@ public class EbicsController {
           testSignatureFile = MetaFiles.getPath(testSignatureMetaFile).toFile();
         }
 
-        ebicsService.sendFULRequest(
-            ebicsUser,
-            ebicsUser.getTestSignatoryEbicsUser(),
-            null,
-            MetaFiles.getPath(testDataMetaFile).toFile(),
-            bankOrderFileFormat,
-            testSignatureFile);
+        Beans.get(EbicsService.class)
+            .sendFULRequest(
+                ebicsUser,
+                ebicsUser.getTestSignatoryEbicsUser(),
+                null,
+                MetaFiles.getPath(testDataMetaFile).toFile(),
+                bankOrderFileFormat,
+                testSignatureFile);
       } else {
         response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
       }
@@ -231,15 +244,22 @@ public class EbicsController {
 
   public void sendFDLRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
 
       BankStatementFileFormat bankStatementFileFormat = ebicsUser.getTestBankStatementFileFormat();
 
       if (ebicsUser.getEbicsPartner().getTestMode() && bankStatementFileFormat != null) {
-        ebicsService.sendFDLRequest(
-            ebicsUser, null, null, null, bankStatementFileFormat.getStatementFileFormatSelect());
+        Beans.get(EbicsService.class)
+            .sendFDLRequest(
+                ebicsUser,
+                null,
+                null,
+                null,
+                bankStatementFileFormat.getStatementFileFormatSelect());
         downloadFile(response, ebicsUser);
       } else {
         response.setFlash(I18n.get(IExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
@@ -254,10 +274,12 @@ public class EbicsController {
 
   public void sendHTDRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      ebicsService.sendHTDRequest(ebicsUser, null, null, null);
+      Beans.get(EbicsService.class).sendHTDRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
       response.setFlash(stripClass(e.getLocalizedMessage()));
@@ -268,10 +290,12 @@ public class EbicsController {
 
   public void sendPTKRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      ebicsService.sendPTKRequest(ebicsUser, null, null, null);
+      Beans.get(EbicsService.class).sendPTKRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
       response.setFlash(stripClass(e.getLocalizedMessage()));
@@ -282,10 +306,12 @@ public class EbicsController {
 
   public void sendHPDRequest(ActionRequest request, ActionResponse response) {
 
-    EbicsUser ebicsUser = ebicsUserRepo.find(request.getContext().asType(EbicsUser.class).getId());
+    EbicsUser ebicsUser =
+        Beans.get(EbicsUserRepository.class)
+            .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      ebicsService.sendHPDRequest(ebicsUser, null, null, null);
+      Beans.get(EbicsService.class).sendHPDRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
       response.setFlash(stripClass(e.getLocalizedMessage()));
@@ -310,14 +336,17 @@ public class EbicsController {
 
     try {
       X509Certificate certificate =
-          certificateService.convertToCertificate((String) context.get("certificateE002"));
-      certificateService.createCertificate(
-          certificate, ebicsBank, EbicsCertificateRepository.TYPE_ENCRYPTION);
+          Beans.get(EbicsCertificateService.class)
+              .convertToCertificate((String) context.get("certificateE002"));
+      Beans.get(EbicsCertificateService.class)
+          .createCertificate(certificate, ebicsBank, EbicsCertificateRepository.TYPE_ENCRYPTION);
 
       certificate =
-          certificateService.convertToCertificate((String) context.get("certificateX002"));
-      certificateService.createCertificate(
-          certificate, ebicsBank, EbicsCertificateRepository.TYPE_AUTHENTICATION);
+          Beans.get(EbicsCertificateService.class)
+              .convertToCertificate((String) context.get("certificateX002"));
+      Beans.get(EbicsCertificateService.class)
+          .createCertificate(
+              certificate, ebicsBank, EbicsCertificateRepository.TYPE_AUTHENTICATION);
 
     } catch (CertificateException | IOException e) {
       e.printStackTrace();
@@ -342,7 +371,9 @@ public class EbicsController {
     if (certs != null && certs.length > 0) {
       X509Certificate certificate =
           EbicsCertificateService.getCertificate(certs, ebicsCertificate.getTypeSelect());
-      ebicsCertificate = certificateService.updateCertificate(certificate, ebicsCertificate, true);
+      ebicsCertificate =
+          Beans.get(EbicsCertificateService.class)
+              .updateCertificate(certificate, ebicsCertificate, true);
       response.setValue("validFrom", ebicsCertificate.getValidFrom());
       response.setValue("validTo", ebicsCertificate.getValidTo());
       response.setValue("issuer", ebicsCertificate.getIssuer());
@@ -358,8 +389,8 @@ public class EbicsController {
   public void updateEditionDate(ActionRequest request, ActionResponse response) {
 
     EbicsUser ebicsUser = request.getContext().asType(EbicsUser.class);
-    ebicsUser = ebicsUserRepo.find(ebicsUser.getId());
-    certificateService.updateEditionDate(ebicsUser);
+    ebicsUser = Beans.get(EbicsUserRepository.class).find(ebicsUser.getId());
+    Beans.get(EbicsCertificateService.class).updateEditionDate(ebicsUser);
 
     response.setReload(true);
   }

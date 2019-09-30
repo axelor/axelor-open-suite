@@ -39,7 +39,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.Map;
@@ -47,17 +46,12 @@ import java.util.Map;
 @Singleton
 public class MoveController {
 
-  @Inject protected MoveService moveService;
-
-  @Inject protected MoveRepository moveRepo;
-
   public void validate(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
-
+    move = Beans.get(MoveRepository.class).find(move.getId());
     try {
-      moveService.getMoveValidateService().validate(move);
+      Beans.get(MoveService.class).getMoveValidateService().validate(move);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -84,18 +78,17 @@ public class MoveController {
   }
 
   public void generateReverse(ActionRequest request, ActionResponse response) {
-
     try {
       Context context = request.getContext();
 
       Move move = context.asType(Move.class);
-      move = moveRepo.find(move.getId());
+      move = Beans.get(MoveRepository.class).find(move.getId());
 
       Map<String, Object> assistantMap =
           Beans.get(ExtractContextMoveService.class)
               .getMapFromMoveWizardGenerateReverseForm(context);
 
-      Move newMove = moveService.generateReverse(move, assistantMap);
+      Move newMove = Beans.get(MoveService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
             ActionView.define(I18n.get("Account move"))
@@ -116,7 +109,7 @@ public class MoveController {
     if (moveIds != null && !moveIds.isEmpty()) {
 
       List<? extends Move> moveList =
-          moveRepo
+          Beans.get(MoveRepository.class)
               .all()
               .filter(
                   "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
@@ -126,7 +119,8 @@ public class MoveController {
               .order("date")
               .fetch();
       if (!moveList.isEmpty()) {
-        boolean error = moveService.getMoveValidateService().validateMultiple(moveList);
+        boolean error =
+            Beans.get(MoveService.class).getMoveValidateService().validateMultiple(moveList);
         if (error) response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
         else {
           response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
@@ -140,10 +134,11 @@ public class MoveController {
   public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
+    MoveRepository moveRepository = Beans.get(MoveRepository.class);
+    move = moveRepository.find(move.getId());
 
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-      moveRepo.remove(move);
+      moveRepository.remove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
       response.setView(
           ActionView.define("Moves")
@@ -154,7 +149,7 @@ public class MoveController {
       response.setCanClose(true);
     } else {
       try {
-        moveRepo.remove(move);
+        moveRepository.remove(move);
       } catch (Exception e) {
         TraceBackService.trace(response, e, ResponseMessageType.ERROR);
       }
@@ -167,7 +162,7 @@ public class MoveController {
     List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
     if (!moveIds.isEmpty()) {
       List<? extends Move> moveList =
-          moveRepo
+          Beans.get(MoveRepository.class)
               .all()
               .filter(
                   "self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)",
@@ -175,7 +170,7 @@ public class MoveController {
                   MoveRepository.STATUS_NEW)
               .fetch();
       if (!moveList.isEmpty()) {
-        moveService.getMoveRemoveService().deleteMultiple(moveList);
+        Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
         response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
         response.setReload(true);
       } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
@@ -185,7 +180,7 @@ public class MoveController {
   public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
+    move = Beans.get(MoveRepository.class).find(move.getId());
 
     String moveName = move.getReference().toString();
 
@@ -219,11 +214,11 @@ public class MoveController {
   public void updateInDayBookMode(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
+    move = Beans.get(MoveRepository.class).find(move.getId());
 
     try {
       if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-        moveService.getMoveValidateService().updateInDayBookMode(move);
+        Beans.get(MoveService.class).getMoveValidateService().updateInDayBookMode(move);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -233,7 +228,7 @@ public class MoveController {
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
-    Map<String, Object> values = moveService.computeTotals(move);
+    Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
     response.setValues(values);
   }
 
@@ -243,7 +238,7 @@ public class MoveController {
     if (move.getMoveLineList() != null
         && !move.getMoveLineList().isEmpty()
         && move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-      moveService.getMoveLineService().autoTaxLineGenerate(move);
+      Beans.get(MoveService.class).getMoveLineService().autoTaxLineGenerate(move);
       response.setValue("moveLineList", move.getMoveLineList());
     }
   }

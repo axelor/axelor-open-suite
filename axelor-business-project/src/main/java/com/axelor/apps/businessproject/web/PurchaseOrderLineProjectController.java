@@ -24,21 +24,15 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PurchaseOrderLineProjectController {
-
-  @Inject private PurchaseOrderLineProjectService purchaseOrderLineProjectService;
-
-  @Inject private ProjectRepository projectRepository;
-
-  @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
 
   /**
    * Set project from context selected lines
@@ -51,7 +45,7 @@ public class PurchaseOrderLineProjectController {
     try {
 
       Project project = request.getContext().asType(Project.class);
-      project = projectRepository.find(project.getId());
+      project = Beans.get(ProjectRepository.class).find(project.getId());
 
       setProject(request, response, project);
 
@@ -73,7 +67,7 @@ public class PurchaseOrderLineProjectController {
               .stream()
               .map(it -> Long.parseLong(it.get("id").toString()))
               .collect(Collectors.toList());
-      purchaseOrderLineProjectService.setProject(lineIds, project);
+      Beans.get(PurchaseOrderLineProjectService.class).setProject(lineIds, project);
       response.setAttr("$purchaseOrderLineSet", "hidden", true);
       response.setAttr("addSelectedPOLinesBtn", "hidden", true);
       response.setAttr("unlinkSelectedPOLinesBtn", "hidden", true);
@@ -108,11 +102,13 @@ public class PurchaseOrderLineProjectController {
    */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLineRepository purchaseOrderLineRepository =
+        Beans.get(PurchaseOrderLineRepository.class);
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      purchaseOrderLine = purchaseOrderLineRepo.find(purchaseOrderLine.getId());
+      purchaseOrderLine = purchaseOrderLineRepository.find(purchaseOrderLine.getId());
       purchaseOrderLine.setToInvoice(!purchaseOrderLine.getToInvoice());
-      purchaseOrderLineRepo.save(purchaseOrderLine);
+      purchaseOrderLineRepository.save(purchaseOrderLine);
       response.setValue("toInvoice", purchaseOrderLine.getToInvoice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

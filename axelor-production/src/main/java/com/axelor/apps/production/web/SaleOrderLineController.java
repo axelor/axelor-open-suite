@@ -23,22 +23,20 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class SaleOrderLineController {
-
-  @Inject private BillOfMaterialService billOfMaterialService;
 
   public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
       BillOfMaterial copyBillOfMaterial =
-          billOfMaterialService.customizeBillOfMaterial(saleOrderLine);
+          Beans.get(BillOfMaterialService.class).customizeBillOfMaterial(saleOrderLine);
 
       if (copyBillOfMaterial != null) {
 

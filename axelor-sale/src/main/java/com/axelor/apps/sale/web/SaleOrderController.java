@@ -61,7 +61,6 @@ import com.axelor.team.db.Team;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -78,14 +77,6 @@ import org.slf4j.LoggerFactory;
 public class SaleOrderController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject private SaleOrderRepository saleOrderRepo;
-
-  @Inject private CurrencyRepository currencyRepo;
-
-  @Inject private PriceListRepository priceListRepo;
-
-  @Inject private SaleOrderPrintService saleOrderPrintService;
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -157,6 +148,7 @@ public class SaleOrderController {
     Context context = request.getContext();
     String fileLink;
     String title;
+    SaleOrderPrintService saleOrderPrintService = Beans.get(SaleOrderPrintService.class);
 
     try {
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
@@ -197,7 +189,7 @@ public class SaleOrderController {
 
     Beans.get(SaleOrderWorkflowService.class)
         .cancelSaleOrder(
-            saleOrderRepo.find(saleOrder.getId()),
+            Beans.get(SaleOrderRepository.class).find(saleOrder.getId()),
             saleOrder.getCancelReason(),
             saleOrder.getCancelReasonStr());
 
@@ -207,7 +199,7 @@ public class SaleOrderController {
 
   public void finalizeQuotation(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = saleOrderRepo.find(saleOrder.getId());
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     try {
       Beans.get(SaleOrderWorkflowService.class).finalizeQuotation(saleOrder);
@@ -220,7 +212,7 @@ public class SaleOrderController {
 
   public void completeSaleOrder(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = saleOrderRepo.find(saleOrder.getId());
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     try {
       Beans.get(SaleOrderWorkflowServiceImpl.class).completeSaleOrder(saleOrder);
@@ -237,7 +229,7 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
       Beans.get(SaleOrderWorkflowService.class)
-          .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+          .confirmSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
       response.setReload(true);
     } catch (Exception e) {
@@ -250,7 +242,7 @@ public class SaleOrderController {
     LinkedHashMap<String, Object> saleOrderTemplateContext =
         (LinkedHashMap<String, Object>) request.getContext().get("_saleOrderTemplate");
     Integer saleOrderId = (Integer) saleOrderTemplateContext.get("id");
-    SaleOrder context = saleOrderRepo.find(Long.valueOf(saleOrderId));
+    SaleOrder context = Beans.get(SaleOrderRepository.class).find(Long.valueOf(saleOrderId));
 
     response.setView(
         ActionView.define("Sale order")
@@ -296,20 +288,23 @@ public class SaleOrderController {
   public void createSaleOrder(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder origin =
-        saleOrderRepo.find(Long.parseLong(request.getContext().get("_idCopy").toString()));
+        Beans.get(SaleOrderRepository.class)
+            .find(Long.parseLong(request.getContext().get("_idCopy").toString()));
 
     if (origin != null) {
       LinkedHashMap<String, Object> wizardCurrencyContext =
           (LinkedHashMap<String, Object>) request.getContext().get("_wizardCurrency");
       Integer wizardCurrencyId = (Integer) wizardCurrencyContext.get("id");
-      Currency wizardCurrency = currencyRepo.find(Long.valueOf(wizardCurrencyId));
+      Currency wizardCurrency =
+          Beans.get(CurrencyRepository.class).find(Long.valueOf(wizardCurrencyId));
 
       PriceList wizardPriceList = null;
       if (request.getContext().get("_wizardPriceList") != null) {
         LinkedHashMap<String, Object> wizardPriceListContext =
             (LinkedHashMap<String, Object>) request.getContext().get("_wizardPriceList");
         Integer wizardPriceListId = (Integer) wizardPriceListContext.get("id");
-        wizardPriceList = priceListRepo.find(Long.valueOf(wizardPriceListId));
+        wizardPriceList =
+            Beans.get(PriceListRepository.class).find(Long.valueOf(wizardPriceListId));
       }
 
       SaleOrder copy =
@@ -323,7 +318,7 @@ public class SaleOrderController {
     Context context = request.getContext();
     if (context.get("_idCopy") != null) {
       String idCopy = context.get("_idCopy").toString();
-      SaleOrder origin = saleOrderRepo.find(Long.parseLong(idCopy));
+      SaleOrder origin = Beans.get(SaleOrderRepository.class).find(Long.parseLong(idCopy));
       SaleOrder copy = Beans.get(SaleOrderCreateService.class).createTemplate(origin);
       response.setValues(Mapper.toMap(copy));
     }
@@ -594,7 +589,7 @@ public class SaleOrderController {
   public void validateChanges(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
-      SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
+      SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderView.getId());
       Beans.get(SaleOrderService.class).validateChanges(saleOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -658,7 +653,7 @@ public class SaleOrderController {
       LinkedHashMap<String, Object> saleOrderTemplateContext =
           (LinkedHashMap<String, Object>) request.getContext().get("_saleOrderTemplate");
       Integer saleOrderId = (Integer) saleOrderTemplateContext.get("id");
-      saleOrder = saleOrderRepo.find(Long.valueOf(saleOrderId));
+      saleOrder = Beans.get(SaleOrderRepository.class).find(Long.valueOf(saleOrderId));
     } else {
       saleOrder = request.getContext().asType(SaleOrder.class);
     }
@@ -684,7 +679,7 @@ public class SaleOrderController {
       LinkedHashMap<String, Object> saleOrderTemplateContext =
           (LinkedHashMap<String, Object>) request.getContext().get("_saleOrderTemplate");
       Integer saleOrderId = (Integer) saleOrderTemplateContext.get("id");
-      saleOrder = saleOrderRepo.find(Long.valueOf(saleOrderId));
+      saleOrder = Beans.get(SaleOrderRepository.class).find(Long.valueOf(saleOrderId));
     } else {
       saleOrder = request.getContext().asType(SaleOrder.class);
     }

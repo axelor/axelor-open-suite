@@ -37,7 +37,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -49,16 +48,10 @@ public class ProjectController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private ProjectBusinessService projectBusinessService;
-
-  @Inject private InvoicingProjectService invoicingProjectService;
-
-  @Inject private ProjectRepository projectRepo;
-
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
       Project project = request.getContext().asType(Project.class);
-      SaleOrder order = projectBusinessService.generateQuotation(project);
+      SaleOrder order = Beans.get(ProjectBusinessService.class).generateQuotation(project);
       response.setView(
           ActionView.define("Sale Order")
               .model(SaleOrder.class.getName())
@@ -78,7 +71,7 @@ public class ProjectController {
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
-              .context("_project", projectRepo.find(project.getId()))
+              .context("_project", Beans.get(ProjectRepository.class).find(project.getId()))
               .map());
     }
   }
@@ -129,7 +122,7 @@ public class ProjectController {
 
     int toInvoiceCount = 0;
     if (project.getId() != null) {
-      toInvoiceCount = invoicingProjectService.countToInvoice(project);
+      toInvoiceCount = Beans.get(InvoicingProjectService.class).countToInvoice(project);
     }
 
     response.setValue("$toInvoiceCounter", toInvoiceCount);
