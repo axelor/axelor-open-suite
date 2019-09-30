@@ -8,6 +8,7 @@
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
 - BANK STATEMENT : improved bank statement line grid for 120 file format.
+- EbicsBank : Disable canEdit on language field in ebics-bank-form
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
