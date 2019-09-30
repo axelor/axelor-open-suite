@@ -36,7 +36,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -49,10 +48,6 @@ import org.slf4j.LoggerFactory;
 public class InventoryController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject InventoryService inventoryService;
-
-  @Inject InventoryRepository inventoryRepo;
 
   /**
    * Fonction appeler par le bouton imprimer
@@ -91,10 +86,10 @@ public class InventoryController {
   public void exportInventory(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      inventory = inventoryRepo.find(inventory.getId());
+      inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
 
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
-      MetaFile metaFile = inventoryService.exportInventoryAsCSV(inventory);
+      MetaFile metaFile = Beans.get(InventoryService.class).exportInventoryAsCSV(inventory);
 
       response.setView(
           ActionView.define(name)
@@ -113,9 +108,10 @@ public class InventoryController {
   public void importFile(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory =
-          inventoryRepo.find(request.getContext().asType(Inventory.class).getId());
+          Beans.get(InventoryRepository.class)
+              .find(request.getContext().asType(Inventory.class).getId());
 
-      Path filePath = inventoryService.importFile(inventory);
+      Path filePath = Beans.get(InventoryService.class).importFile(inventory);
       response.setFlash(
           String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
 
@@ -129,7 +125,7 @@ public class InventoryController {
     try {
       Long id = request.getContext().asType(Inventory.class).getId();
       Inventory inventory = Beans.get(InventoryRepository.class).find(id);
-      inventoryService.validateInventory(inventory);
+      Beans.get(InventoryService.class).validateInventory(inventory);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -139,8 +135,8 @@ public class InventoryController {
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      inventory = inventoryRepo.find(inventory.getId());
-      inventoryService.cancel(inventory);
+      inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
+      Beans.get(InventoryService.class).cancel(inventory);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -151,8 +147,8 @@ public class InventoryController {
     try {
       Long inventoryId = (Long) request.getContext().get("id");
       if (inventoryId != null) {
-        Inventory inventory = inventoryRepo.find(inventoryId);
-        Boolean succeed = inventoryService.fillInventoryLineList(inventory);
+        Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
+        Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
         if (succeed == null) {
           response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
         } else {
@@ -180,7 +176,8 @@ public class InventoryController {
         StockLocation stockLocation = inventory.getStockLocation();
 
         response.setValue(
-            "inventorySeq", inventoryService.getInventorySequence(stockLocation.getCompany()));
+            "inventorySeq",
+            Beans.get(InventoryService.class).getInventorySequence(stockLocation.getCompany()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -190,7 +187,7 @@ public class InventoryController {
   public void showStockMove(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      StockMove stockMove = inventoryService.findStockMove(inventory);
+      StockMove stockMove = Beans.get(InventoryService.class).findStockMove(inventory);
       if (inventory != null) {
         ActionViewBuilder builder =
             ActionView.define(I18n.get("Stock Move"))

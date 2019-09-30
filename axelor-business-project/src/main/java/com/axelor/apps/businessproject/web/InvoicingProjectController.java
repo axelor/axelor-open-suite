@@ -27,24 +27,20 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 
 @Singleton
 public class InvoicingProjectController {
 
-  @Inject protected InvoicingProjectService invoicingProjectService;
-
-  @Inject protected InvoicingProjectRepository invoicingProjectRepo;
-
   public void generateInvoice(ActionRequest request, ActionResponse response)
       throws AxelorException {
     InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
-    invoicingProject = invoicingProjectRepo.find(invoicingProject.getId());
+    invoicingProject = Beans.get(InvoicingProjectRepository.class).find(invoicingProject.getId());
 
     if (invoicingProject.getSaleOrderLineSet().isEmpty()
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
@@ -77,10 +73,10 @@ public class InvoicingProjectController {
           I18n.get(IExceptionMessage.INVOICING_PROJECT_USER));
     }
 
-    Invoice invoice = invoicingProjectService.generateInvoice(invoicingProject);
+    Invoice invoice = Beans.get(InvoicingProjectService.class).generateInvoice(invoicingProject);
     try {
       if (invoice != null) {
-        invoicingProjectService.generateAnnex(invoicingProject);
+        Beans.get(InvoicingProjectService.class).generateAnnex(invoicingProject);
       }
     } catch (IOException e) {
       TraceBackService.trace(e);
@@ -97,6 +93,7 @@ public class InvoicingProjectController {
 
   public void fillIn(ActionRequest request, ActionResponse response) throws AxelorException {
     InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
+    InvoicingProjectService invoicingProjectService = Beans.get(InvoicingProjectService.class);
     Project project = invoicingProject.getProject();
     if (project == null) {
       throw new AxelorException(

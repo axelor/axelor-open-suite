@@ -21,38 +21,35 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class SupplychainBatchController {
 
-  @Inject protected SupplychainBatchService supplychainBatchService;
-
-  @Inject protected SupplychainBatchRepository supplychainBatchRepo;
-
   public void invoiceOutgoingStockMoves(ActionRequest request, ActionResponse response) {
     SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-    supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
-    Batch batch = supplychainBatchService.invoiceOutgoingStockMoves(supplychainBatch);
+    supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
+    Batch batch =
+        Beans.get(SupplychainBatchService.class).invoiceOutgoingStockMoves(supplychainBatch);
     response.setFlash(batch.getComments());
     response.setReload(true);
   }
 
   public void invoiceOrders(ActionRequest request, ActionResponse response) {
     SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-    supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
-    Batch batch = supplychainBatchService.invoiceOrders(supplychainBatch);
+    supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
+    Batch batch = Beans.get(SupplychainBatchService.class).invoiceOrders(supplychainBatch);
     response.setFlash(batch.getComments());
     response.setReload(true);
   }
 
   public void accountingCutOff(ActionRequest request, ActionResponse response) {
     SupplychainBatch supplychainBatch = request.getContext().asType(SupplychainBatch.class);
-    supplychainBatch = supplychainBatchRepo.find(supplychainBatch.getId());
-    Batch batch = supplychainBatchService.accountingCutOff(supplychainBatch);
+    supplychainBatch = Beans.get(SupplychainBatchRepository.class).find(supplychainBatch.getId());
+    Batch batch = Beans.get(SupplychainBatchService.class).accountingCutOff(supplychainBatch);
     response.setFlash(batch.getComments());
     response.setReload(true);
   }

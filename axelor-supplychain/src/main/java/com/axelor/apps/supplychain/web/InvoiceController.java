@@ -28,18 +28,17 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,14 +47,6 @@ import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class InvoiceController {
-
-  @Inject protected AppSupplychainService appSupplychainService;
-
-  @Inject protected SaleOrderInvoiceService saleOrderInvoiceService;
-
-  @Inject protected SubscriptionInvoiceService subscriptionInvoiceService;
-
-  @Inject protected InvoiceServiceSupplychain invoiceService;
 
   public void fillInLines(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
@@ -263,16 +254,17 @@ public class InvoiceController {
 
     try {
       Invoice invoice =
-          saleOrderInvoiceService.mergeInvoice(
-              invoiceList,
-              commonCompany,
-              commonCurrency,
-              commonPartner,
-              commonContactPartner,
-              commonPriceList,
-              commonPaymentMode,
-              commonPaymentCondition,
-              commonSaleOrder);
+          Beans.get(SaleOrderInvoiceService.class)
+              .mergeInvoice(
+                  invoiceList,
+                  commonCompany,
+                  commonCurrency,
+                  commonPartner,
+                  commonContactPartner,
+                  commonPriceList,
+                  commonPaymentMode,
+                  commonPaymentCondition,
+                  commonSaleOrder);
       if (invoice != null) {
         // Open the generated invoice in a new tab
         response.setView(
@@ -293,7 +285,8 @@ public class InvoiceController {
   public void generateSubscriptionInvoices(ActionRequest request, ActionResponse response) {
 
     try {
-      List<Invoice> invoices = subscriptionInvoiceService.generateSubscriptionInvoices();
+      List<Invoice> invoices =
+          Beans.get(SubscriptionInvoiceService.class).generateSubscriptionInvoices();
       response.setFlash(
           String.format(
               I18n.get(
@@ -319,7 +312,8 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       response.setValue(
-          "invoiceLineList", invoiceService.addSubLines(invoice.getInvoiceLineList()));
+          "invoiceLineList",
+          Beans.get(InvoiceServiceSupplychain.class).addSubLines(invoice.getInvoiceLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -330,7 +324,8 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       response.setValue(
-          "invoiceLineList", invoiceService.removeSubLines(invoice.getInvoiceLineList()));
+          "invoiceLineList",
+          Beans.get(InvoiceServiceSupplychain.class).removeSubLines(invoice.getInvoiceLineList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);

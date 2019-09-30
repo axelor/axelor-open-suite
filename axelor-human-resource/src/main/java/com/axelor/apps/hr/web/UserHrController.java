@@ -28,7 +28,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -36,15 +35,11 @@ import java.util.List;
 @Singleton
 public class UserHrController {
 
-  @Inject UserRepository userRepo;
-  @Inject UserService userService;
-  @Inject UserHrService userHrService;
-
   @Transactional
   public void createEmployee(ActionRequest request, ActionResponse response) {
-    User user = userRepo.find(request.getContext().asType(User.class).getId());
-
-    userHrService.createEmployee(user);
+    User user =
+        Beans.get(UserRepository.class).find(request.getContext().asType(User.class).getId());
+    Beans.get(UserHrService.class).createEmployee(user);
 
     response.setReload(true);
   }
@@ -53,6 +48,7 @@ public class UserHrController {
   public void createUser(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     User user = context.asType(User.class);
+    EmployeeRepository employeeRepository = Beans.get(EmployeeRepository.class);
 
     User employeeUser = new User();
     employeeUser.setActivateOn(user.getActivateOn());
@@ -63,9 +59,8 @@ public class UserHrController {
     if (context.containsKey("_id")) {
       Object employeeId = context.get("_id");
       if (employeeId != null) {
-        Employee employee =
-            Beans.get(EmployeeRepository.class).find(Long.parseLong(employeeId.toString()));
-        employeeUser.setEmployee(Beans.get(EmployeeRepository.class).find(employee.getId()));
+        Employee employee = employeeRepository.find(Long.parseLong(employeeId.toString()));
+        employeeUser.setEmployee(employeeRepository.find(employee.getId()));
 
         if (employee.getContactPartner() != null) {
           String employeeName = employee.getContactPartner().getName();
@@ -88,13 +83,13 @@ public class UserHrController {
             employeeUser.addCompanySetItem(employmentContract.getPayCompany());
           }
         }
-        CharSequence password = userService.generateRandomPassword();
+        CharSequence password = Beans.get(UserService.class).generateRandomPassword();
         employeeUser.setPassword(password.toString());
         employee.setUser(employeeUser);
       }
     }
 
-    userRepo.save(employeeUser);
+    Beans.get(UserRepository.class).save(employeeUser);
     response.setCanClose(true);
   }
 }

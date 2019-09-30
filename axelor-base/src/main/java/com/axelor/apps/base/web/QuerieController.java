@@ -22,20 +22,18 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.querie.QuerieService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class QuerieController {
 
-  @Inject private QuerieService querieService;
-
   public void checkQuerie(ActionRequest request, ActionResponse response) {
 
     try {
-      querieService.checkQuerie(request.getContext().asType(Querie.class));
+      Beans.get(QuerieService.class).checkQuerie(request.getContext().asType(Querie.class));
       response.setFlash(I18n.get(IExceptionMessage.QUERIE_3));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -39,7 +39,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -51,9 +50,6 @@ public class AccountingReportController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject AccountingReportService accountingReportService;
-
-  @Inject AccountingReportRepository accountingReportRepo;
   /**
    * @param request
    * @param response
@@ -61,9 +57,10 @@ public class AccountingReportController {
   public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
     try {
-      accountingReport = accountingReportRepo.find(accountingReport.getId());
+      accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
 
       String query = accountingReportService.getMoveLineList(accountingReport);
       BigDecimal debitBalance = accountingReportService.getDebitBalance();
@@ -140,7 +137,7 @@ public class AccountingReportController {
   public void replayExport(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = accountingReportRepo.find(accountingReport.getId());
+    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
     MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
     try {
@@ -157,7 +154,8 @@ public class AccountingReportController {
   public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = accountingReportRepo.find(accountingReport.getId());
+    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
     try {
 

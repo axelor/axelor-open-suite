@@ -23,10 +23,10 @@ import com.axelor.apps.marketing.db.TargetList;
 import com.axelor.apps.marketing.service.TargetListService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -37,15 +37,13 @@ import com.google.inject.Singleton;
 @Singleton
 public class TargetListController {
 
-  @Inject private TargetListService targetListService;
-
   public void openFilteredLeads(ActionRequest request, ActionResponse response) {
 
     TargetList targetList = request.getContext().asType(TargetList.class);
     String leadFilters = null;
 
     try {
-      leadFilters = targetListService.getLeadQuery(targetList);
+      leadFilters = Beans.get(TargetListService.class).getLeadQuery(targetList);
 
       if (leadFilters != null) {
         response.setView(
@@ -67,7 +65,7 @@ public class TargetListController {
     String partnerFilters = null;
 
     try {
-      partnerFilters = targetListService.getPartnerQuery(targetList);
+      partnerFilters = Beans.get(TargetListService.class).getPartnerQuery(targetList);
 
       if (partnerFilters != null) {
         response.setView(

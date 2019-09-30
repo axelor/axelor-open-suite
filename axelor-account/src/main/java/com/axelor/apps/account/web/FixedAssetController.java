@@ -22,20 +22,16 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Singleton
 public class FixedAssetController {
-
-  @Inject private FixedAssetService fixedAssetService;
-
-  @Inject private FixedAssetRepository fixedAssetRepo;
 
   public void computeDepreciation(ActionRequest request, ActionResponse response) {
 
@@ -46,7 +42,7 @@ public class FixedAssetController {
         if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
           fixedAsset.getFixedAssetLineList().clear();
         }
-        fixedAsset = fixedAssetService.generateAndcomputeLines(fixedAsset);
+        fixedAsset = Beans.get(FixedAssetService.class).generateAndcomputeLines(fixedAsset);
 
       } else {
         fixedAsset.getFixedAssetLineList().clear();
@@ -66,9 +62,9 @@ public class FixedAssetController {
     LocalDate disposalDate = (LocalDate) context.get("disposalDate");
     BigDecimal disposalAmount = new BigDecimal(context.get("disposalAmount").toString());
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
-    FixedAsset fixedAsset = fixedAssetRepo.find(fixedAssetId);
+    FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
-    fixedAssetService.disposal(disposalDate, disposalAmount, fixedAsset);
+    Beans.get(FixedAssetService.class).disposal(disposalDate, disposalAmount, fixedAsset);
 
     response.setCanClose(true);
   }

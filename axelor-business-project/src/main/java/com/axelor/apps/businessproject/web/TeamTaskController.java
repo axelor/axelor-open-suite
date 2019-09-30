@@ -20,18 +20,14 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.apps.project.db.ProjectCategory;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TeamTaskController {
-
-  @Inject private TeamTaskBusinessProjectService teamTaskBusinessProjectService;
-
-  @Inject private TeamTaskRepository teamTaskRepo;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -42,7 +38,7 @@ public class TeamTaskController {
     }
 
     try {
-      teamTask = teamTaskBusinessProjectService.updateDiscount(teamTask);
+      teamTask = Beans.get(TeamTaskBusinessProjectService.class).updateDiscount(teamTask);
 
       response.setValue("discountTypeSelect", teamTask.getDiscountTypeSelect());
       response.setValue("discountAmount", teamTask.getDiscountAmount());
@@ -56,7 +52,7 @@ public class TeamTaskController {
     TeamTask teamTask = request.getContext().asType(TeamTask.class);
 
     try {
-      teamTask = teamTaskBusinessProjectService.compute(teamTask);
+      teamTask = Beans.get(TeamTaskBusinessProjectService.class).compute(teamTask);
       response.setValue("priceDiscounted", teamTask.getPriceDiscounted());
       response.setValue("exTaxTotal", teamTask.getExTaxTotal());
     } catch (Exception e) {
@@ -72,11 +68,12 @@ public class TeamTaskController {
    */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    TeamTaskRepository teamTaskRepository = Beans.get(TeamTaskRepository.class);
     try {
       TeamTask teamTask = request.getContext().asType(TeamTask.class);
-      teamTask = teamTaskRepo.find(teamTask.getId());
+      teamTask = teamTaskRepository.find(teamTask.getId());
       teamTask.setToInvoice(!teamTask.getToInvoice());
-      teamTaskRepo.save(teamTask);
+      teamTaskRepository.save(teamTask);
       response.setValue("toInvoice", teamTask.getToInvoice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -91,7 +88,7 @@ public class TeamTaskController {
     }
 
     task.setTeamTaskInvoicing(projectCategory.getTeamTaskInvoicing());
-    task = teamTaskBusinessProjectService.computeDefaultInformation(task);
+    task = Beans.get(TeamTaskBusinessProjectService.class).computeDefaultInformation(task);
 
     if (task.getTeamTaskInvoicing()
         && task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
