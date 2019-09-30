@@ -459,6 +459,7 @@
 "Please select the StockMove(s) to print.","Merci de sélectionner un Mouvement de stock à imprimer",,
 "Please select the stock move(s) to print",,,
 "Please set an economic are in AppStock.","Veuillez saisir une zone économique dans AppStock.",,
+"Price used for WAP","Prix utilisé pour le PMP",,
 "Print","Imprimer",,
 "Print Incoming Move","Imprimer le BR",,
 "Print Internal Move","Imprimer le transfert",,

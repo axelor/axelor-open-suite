@@ -490,7 +490,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
     BigDecimal oldQty = stockLocationLine.getCurrentQty();
-    BigDecimal newPrice = stockMoveLine.getCompanyUnitPriceUntaxed();
+    // avgPrice in stock move line is a bigdecimal but is nullable.
+    BigDecimal newPrice =
+        stockMoveLine.getWapPrice() != null
+            ? stockMoveLine.getWapPrice()
+            : stockMoveLine.getCompanyUnitPriceUntaxed();
     BigDecimal newQty = stockMoveLine.getRealQty();
     BigDecimal newAvgPrice;
     if (oldAvgPrice == null
@@ -1180,5 +1184,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             + " )";
     trackingNumbers = trackingNumberRepo.all().filter(domain).fetch();
     return trackingNumbers;
+  }
+
+  public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {
+    StockLocation stockLocation = stockMoveLine.getStockMove().getFromStockLocation();
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getStockLocationLine(stockLocation, stockMoveLine.getProduct());
+
+    stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice());
   }
 }
