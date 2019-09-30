@@ -4,6 +4,9 @@
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
 
+## Features
+- ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
+
 ## Bug Fixes
 
 ## [5.1.8] - 2019-09-26
