@@ -1070,8 +1070,15 @@ public class TimesheetServiceImpl implements TimesheetService {
     LocalDate fromDate = timesheet.getFromDate();
     LocalDate toDate = timesheet.getToDate();
     User user = timesheet.getUser();
-    WeeklyPlanning weeklyPlanning = user.getEmployee().getWeeklyPlanning();
-    EventsPlanning holidayPlanning = user.getEmployee().getPublicHolidayEventsPlanning();
+
+    Employee employee = user.getEmployee();
+    HRConfig config = timesheet.getCompany().getHrConfig();
+    WeeklyPlanning weeklyPlanning =
+        employee != null ? employee.getWeeklyPlanning() : config.getWeeklyPlanning();
+    EventsPlanning holidayPlanning =
+        employee != null
+            ? employee.getPublicHolidayEventsPlanning()
+            : config.getPublicHolidayEventsPlanning();
 
     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
       BigDecimal dayValueInHours =
