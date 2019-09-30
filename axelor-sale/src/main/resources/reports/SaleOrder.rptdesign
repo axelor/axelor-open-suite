@@ -52,6 +52,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">13</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -611,6 +614,11 @@
                     <text-property name="displayName">displayProductPictureOnPrinting</text-property>
                     <text-property name="heading">displayProductPictureOnPrinting</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">is_display_sale_order_line_number</property>
+                    <property name="alias">is_display_sale_order_line_number</property>
+                    <property name="analysis">measure</property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -930,6 +938,11 @@
                         <property name="position">61</property>
                         <property name="name">is_display_sale_order_line_number</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">62</property>
+                        <property name="name">ProformaComments</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1301,6 +1314,12 @@
                     <property name="nativeName">is_display_sale_order_line_number</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">62</property>
+                    <property name="name">ProformaComments</property>
+                    <property name="nativeName">ProformaComments</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
@@ -1335,7 +1354,8 @@ SaleOrder.in_ati,
 SaleOrder.is_ispm_required as "isIspmRequired",
 SaleConfig.display_customer_code_on_printing as "displayCustomerCodeOnPrinting",
 SaleConfig.display_product_picture_on_printing as "displayProductPictureOnPrinting",
-AppSale.is_display_sale_order_line_number
+AppSale.is_display_sale_order_line_number,
+SaleOrder.proforma_comments as "ProformaComments"
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
 left outer join base_app_sale as AppSale on true 
@@ -2751,6 +2771,12 @@ from base_app_base]]></xml-property>
                     <text-property name="displayName">is_display_sale_order_line_number</text-property>
                     <expression name="expression" type="javascript">dataSetRow["is_display_sale_order_line_number"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">ProformaComments</property>
+                    <text-property name="displayName">ProformaComments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["ProformaComments"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
@@ -5085,7 +5111,7 @@ row["ClientPartFirstName"]
                                             <column id="5372"/>
                                             <row id="5373">
                                                 <cell id="5374">
-                                                    <text id="5376">
+                                                    <text id="5383">
                                                         <property name="fontSize">8pt</property>
                                                         <property name="textAlign">right</property>
                                                         <property name="contentType">html</property>
@@ -5097,8 +5123,8 @@ row["ClientPartFirstName"]
 ]]></text-property>
                                                     </text>
                                                 </cell>
-                                                <cell id="5375">
-                                                    <text id="5377">
+                                                <cell id="5384">
+                                                    <text id="5385">
                                                         <property name="fontSize">8pt</property>
                                                         <property name="dataSet">TranslateDS</property>
                                                         <list-property name="paramBindings">
@@ -6451,7 +6477,8 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["description"] == null || row._outer["description"] == ""</expression>
+                                <expression name="valueExpr" type="javascript">(row._outer["description"] == null || row._outer["description"] == "") &amp;&amp;
+((row._outer["ProformaComments"] == null || row._outer["ProformaComments"] == "") || !params["ProformaInvoice"].value)</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -6495,7 +6522,12 @@ row["ClientPartFirstName"]
                         <property name="fontSize">9pt</property>
                         <property name="fontStyle">italic</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
+                        <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">
+     if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>"
+   </VALUE-OF>
+   <VALUE-OF format="HTML">
+     if(row["ProformaComments"] != null &amp;&amp; params["ProformaInvoice"].value) row["ProformaComments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")              
+   </VALUE-OF></I>]]></text-property>
                     </text>
                 </cell>
             </row>
