@@ -1087,8 +1087,8 @@ public class TimesheetServiceImpl implements TimesheetService {
 
       if (appTimesheet.getCreateLinesForHolidays()
           && holidayService.checkPublicHolidayDay(date, holidayPlanning)) {
-        prefillLine(
-            timesheet, user, date, dayValueInHours, I18n.get(IExceptionMessage.TIMESHEET_HOLIDAY));
+        timesheetLineService.createTimesheetLine(
+            user, date, timesheet, dayValueInHours, I18n.get(IExceptionMessage.TIMESHEET_HOLIDAY));
 
       } else if (appTimesheet.getCreateLinesForLeaves()) {
         LeaveRequest leave = leaveService.getLeave(user, date);
@@ -1098,15 +1098,10 @@ public class TimesheetServiceImpl implements TimesheetService {
               == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             hours = hours.multiply(dayValueInHours);
           }
-          prefillLine(
-              timesheet, user, date, hours, I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
+          timesheetLineService.createTimesheetLine(
+              user, date, timesheet, hours, I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
         }
       }
     }
-  }
-
-  protected void prefillLine(
-      Timesheet timesheet, User user, LocalDate date, BigDecimal hours, String comments) {
-    timesheetLineService.createTimesheetLine(null, null, user, date, timesheet, hours, comments);
   }
 }
