@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,7 +93,7 @@ public class STTest {
             + contact.getLastName().toUpperCase()
             + "</p>"
             + "<p><strong>DateOfBirth:</strong> "
-            + contact.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"))
+            + contact.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
             + "</p>"
             + "<p>&nbsp;</p>"
             + "<p><em>Contact me:</em>&nbsp;<a href='mailto:"

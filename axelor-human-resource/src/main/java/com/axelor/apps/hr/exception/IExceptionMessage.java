@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -180,4 +180,6 @@ public interface IExceptionMessage {
   /** TsTimer Service */
   String NO_TIMESHEET_CREATED = /*$$(*/
       "No timesheet line has been created because the duration is less than 1 minute" /*)*/;
+
+  static final String EXPENSE_NOT_SELECTED = /*$$(*/ "Please, select an expense" /*)*/;
 }

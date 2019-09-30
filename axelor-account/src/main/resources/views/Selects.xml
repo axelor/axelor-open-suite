@@ -103,7 +103,14 @@
 		<option value="2">Tax</option>
 		<option value="3">Payment</option>
 	</selection>
-	
+
+    <!-- Modes for automatic partner account creation -->
+    <selection name="account.create.mode.select">
+        <option value="0">Accounting.PartnerAccountCreation.None</option>
+        <option value="1">Prefix based</option>
+        <option value="2">Sequence based</option>
+    </selection>
+
 	<selection name='iinvoice.operation.type.select'>
 		<option value='1'>Supplier purchase</option>
 		<option value='2'>Supplier refund</option>
@@ -116,13 +123,6 @@
 		<option value="2">Advance payment invoice</option>
 		<option value="3">Balance invoice</option>
 	</selection>
-
-	<!-- <selection name='ipayment.operation.type.select'>
-		<option value='1'>Supplier purchase</option>
-		<option value='2'>Supplier refund</option>
-		<option value='3'>Customer sale</option>
-		<option value='4'>Customer refund</option>
-	</selection> -->
 	
 	<selection name='iaccount.account.schedule.export.type.select'>
 		<option value='0'>Payment smoothing(DD)</option>
@@ -170,12 +170,7 @@
 		<option value="1">Generate reimbursements</option>
 		<option value="2">Export reimbursements</option>
 	</selection>
-	
-	<selection name="iaccount.account.schedule.type.select">
-		<option value="1">Export direct debits</option>
-		<option value="2">Import direct debit rejects</option>
-	</selection>
-	
+		
 	<selection name="idebt.recovery.batch.type.select">
 		<option value="1">Classic debt recovery</option>
 	</selection>
@@ -331,6 +326,7 @@
 		<option value="reconcile">Reconcile</option>
 		<option value="depositSlip">Deposit slip</option>
 		<option value="subrogationRelease">Subrogation release</option>
+		<option value="partnerAccount">Partner account</option>
 	</selection>
 
 </object-views>

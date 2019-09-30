@@ -42,7 +42,7 @@
 	</selection>
 	
 	<selection name="mrp.line.proposal.ref.select" id="supplychain.mrp.line.proposal.ref.select">
-		<option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
 	</selection>
 	
 	<selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">

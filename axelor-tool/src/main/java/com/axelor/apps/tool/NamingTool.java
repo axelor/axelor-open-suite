@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public final class NammingTool {
+public final class NamingTool {
 
-  private NammingTool() {}
+  private NamingTool() {}
 
   /** Check whether the given name is Java reserved keyword. */
   public static boolean isReserved(String name) {
@@ -63,6 +63,7 @@ public final class NammingTool {
               "else",
               "enum",
               "extends",
+              "false",
               "final",
               "finally",
               "float",
@@ -77,6 +78,7 @@ public final class NammingTool {
               "long",
               "native",
               "new",
+              "null",
               "package",
               "private",
               "protected",
@@ -92,6 +94,7 @@ public final class NammingTool {
               "throw",
               "throws",
               "transient",
+              "true",
               "try",
               "void",
               "volatile",

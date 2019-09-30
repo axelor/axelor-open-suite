@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -2463,31 +2463,37 @@ from base_app_base]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">
-if(row["operation_type_select"] == "1" ){
-	if (row["operation_sub_type_select"] == "2") {
-			'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.purchaseInvoiceBalanceNo'
-	} else {
-			'Invoice.purchaseInvoiceNo'
-	}
-} else if(row["operation_type_select"] == "2" ){
-	'Invoice.purchaseRefundNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
+                                            <value type="javascript">if (row["status_select"] == "1") {
 	'Invoice.draftInvoiceNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
-	if (row["operation_sub_type_select"] == "2") {
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
 		'Invoice.invoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.invoiceBalanceNo'
 	} else {
-		'Invoice.invoiceNo'
+		'Invoice.draftInvoiceNo'
 	}
-} else if(row["operation_type_select"] == "4" ){
-	'Invoice.refundNo'
-}
-                                            </value>
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
+}</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2855,28 +2861,36 @@ if(row["operation_type_select"] == "1" ){
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["operation_type_select"] == "1" ){
-	if (row["operation_sub_type_select"] == "2") {
-			'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.purchaseInvoiceBalanceNo'
-	} else {
-			'Invoice.purchaseInvoiceNo'
-	}
-}else if(row["operation_type_select"] == "2" ){
-'Invoice.purchaseRefundNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
-'Invoice.draftInvoiceNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
-	if (row["operation_sub_type_select"] == "2") {
+                                    <value type="javascript">if (row["status_select"] == "1") {
+	'Invoice.draftInvoiceNo'
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
 		'Invoice.invoiceAdvPaymentNo'
-		} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.invoiceBalanceNo'
 	} else {
-		'Invoice.invoiceNo'
+		'Invoice.draftInvoiceNo'
 	}
-}else if(row["operation_type_select"] == "4" ){
-'Invoice.refundNo'
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
 }</value>
                                 </simple-property-list>
                             </structure>

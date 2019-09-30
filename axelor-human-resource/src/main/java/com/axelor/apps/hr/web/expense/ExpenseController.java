@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -163,7 +163,12 @@ public class ExpenseController {
     Map<String, Object> expenseMap =
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
-    Long expenseId = new Long((Integer) expenseMap.get("id"));
+    if (expenseMap == null) {
+      response.setError(I18n.get(IExceptionMessage.EXPENSE_NOT_SELECTED));
+      return;
+    }
+    Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
+    response.setCanClose(true);
     response.setView(
         ActionView.define(I18n.get("Expense"))
             .model(Expense.class.getName())

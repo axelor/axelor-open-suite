@@ -7,9 +7,6 @@
   
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="10"/>
 	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
-  
-  	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
-  	
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
     <integer name="realOrEstimatedPriceSelect" title="Price method" selection="production.product.price.method.select" default="1"/>
 		<extra-code>

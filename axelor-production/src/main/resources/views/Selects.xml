@@ -70,7 +70,7 @@
 	</selection>
 	
 	<selection name="mrp.line.proposal.ref.select" id="production.mrp.line.proposal.ref.select">
-		<option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
+		<option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid" data-form="manuf-order-form">Manufacturing order</option>
 	</selection>
 
 	<selection name="production.product.price.method.select">

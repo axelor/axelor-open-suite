@@ -26,10 +26,10 @@
 		<panel>
 			<field name="sequenceNumber" />
 			<field name="statusSelect" widget="NavSelect" colSpan="12" />
-			<field name="company" form-view="company-form" />
+			<field name="company" form-view="company-form" canEdit="false"/>
 			<field name="company.accountConfig.factorPartner" readonly="true" form-view="partner-form" />
 			<panel-related field="invoiceSet" grid-view="invoice-release-details-grid"
-				form-view="invoice-form" colSpan="12" canNew="false"
+				form-view="invoice-form" colSpan="12" canNew="false" canEdit="false" readonlyIf="statusSelect &gt; 1"
 				domain="self.company = :company AND self.partner.factorizedCustomer = TRUE
                     AND self.statusSelect = 3 
                     AND self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE" />

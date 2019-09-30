@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -36,11 +37,13 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+@Singleton
 public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl
     implements AccountingSituationSupplychainService {
 
@@ -51,9 +54,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   @Inject
   public AccountingSituationSupplychainServiceImpl(
       AccountConfigService accountConfigService,
+      SequenceService sequenceService,
       AccountingSituationRepository accountingSituationRepo,
       SaleConfigService saleConfigService) {
-    super(accountConfigService, accountingSituationRepo);
+    super(accountConfigService, sequenceService, accountingSituationRepo);
     this.saleConfigService = saleConfigService;
   }
 

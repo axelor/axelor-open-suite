@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.base.db.repo.BlockingRepository;
@@ -38,18 +39,20 @@ public class ValidateState extends WorkflowInvoice {
   protected BlockingService blockingService;
   protected WorkflowValidationService workflowValidationService;
   protected AppBaseService appBaseService;
+  protected InvoiceService invoiceService;
 
   @Inject
   public ValidateState(
       UserService userService,
       BlockingService blockingService,
       WorkflowValidationService workflowValidationService,
-      AppBaseService appBaseService) {
-    super();
+      AppBaseService appBaseService,
+      InvoiceService invoiceService) {
     this.userService = userService;
     this.blockingService = blockingService;
     this.workflowValidationService = workflowValidationService;
     this.appBaseService = appBaseService;
+    this.invoiceService = invoiceService;
   }
 
   public void init(Invoice invoice) {
@@ -78,6 +81,12 @@ public class ValidateState extends WorkflowInvoice {
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate());
+    if (invoice.getPartnerAccount() == null) {
+      invoice.setPartnerAccount(invoiceService.getPartnerAccount(invoice));
+    }
+    if (invoice.getJournal() == null) {
+      invoice.setJournal(invoiceService.getJournal(invoice));
+    }
 
     workflowValidationService.afterValidation(invoice);
   }

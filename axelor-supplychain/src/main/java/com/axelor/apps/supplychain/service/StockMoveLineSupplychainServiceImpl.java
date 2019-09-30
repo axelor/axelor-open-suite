@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,8 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -38,6 +40,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @RequestScoped
 public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImpl {
@@ -164,5 +167,52 @@ public class StockMoveLineSupplychainServiceImpl extends StockMoveLineServiceImp
         lastFutureStockMoveDate,
         trackingNumber,
         realReservedQty);
+  }
+
+  public StockMoveLine getMergedStockMoveLine(List<StockMoveLine> stockMoveLineList)
+      throws AxelorException {
+    if (stockMoveLineList == null || stockMoveLineList.isEmpty()) {
+      return null;
+    }
+
+    if (stockMoveLineList.size() == 1) {
+      return stockMoveLineList.get(0);
+    }
+
+    SaleOrderLine saleOrderLine = stockMoveLineList.get(0).getSaleOrderLine();
+    PurchaseOrderLine purchaseOrderLine = stockMoveLineList.get(0).getPurchaseOrderLine();
+
+    Product product;
+    String productName;
+    String description;
+    BigDecimal quantity = BigDecimal.ZERO;
+    Unit unit;
+
+    if (saleOrderLine != null) {
+      product = saleOrderLine.getProduct();
+      productName = saleOrderLine.getProductName();
+      description = saleOrderLine.getDescription();
+      unit = saleOrderLine.getUnit();
+
+    } else if (purchaseOrderLine != null) {
+      product = purchaseOrderLine.getProduct();
+      productName = purchaseOrderLine.getProductName();
+      description = purchaseOrderLine.getDescription();
+      unit = purchaseOrderLine.getUnit();
+
+    } else {
+      return null; // shouldn't ever happen or you misused this function
+    }
+
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      quantity = quantity.add(stockMoveLine.getRealQty());
+    }
+
+    StockMoveLine generatedStockMoveLine =
+        createStockMoveLine(product, productName, description, quantity, null, unit, null, null);
+
+    generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
+    generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+    return generatedStockMoveLine;
   }
 }

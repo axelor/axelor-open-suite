@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -134,10 +134,10 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
       BigDecimal totalPlanned =
           plannings
               .stream()
-              .map(p -> p.getTotalPlannedHrs())
+              .map(ProjectPlanning::getTotalPlannedHrs)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       task.setTotalPlannedHrs(totalPlanned);
-      task = teamTaskRepo.save(task);
+      teamTaskRepo.save(task);
     }
   }
 
@@ -151,10 +151,10 @@ public class ProjectPlanningServiceImpl implements ProjectPlanningService {
       BigDecimal totalPlanned =
           plannings
               .stream()
-              .map(p -> p.getTotalPlannedHrs())
+              .map(ProjectPlanning::getTotalPlannedHrs)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       project.setTotalPlannedHrs(totalPlanned);
-      project = projectRepo.save(project);
+      projectRepo.save(project);
     }
   }
 

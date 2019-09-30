@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.advancedExport;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.exception.AxelorException;
@@ -26,12 +27,21 @@ import com.axelor.i18n.I18n;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.DateFormatConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelExportGenerator extends AdvancedExportGenerator {
@@ -72,6 +82,32 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
   @SuppressWarnings("rawtypes")
   @Override
   public void generateBody(List<List> dataList) {
+    CellStyle dateCellStyle = workbook.createCellStyle();
+    CellStyle dateTimeCellStyle = workbook.createCellStyle();
+
+    DateFormat fmt = DateFormat.getDateInstance(DateFormat.SHORT, AppFilter.getLocale());
+    if (fmt instanceof SimpleDateFormat) {
+      String pattern = ((SimpleDateFormat) fmt).toPattern();
+      // use full year
+      pattern = pattern.replaceAll("y+", "yyyy");
+      dateCellStyle.setDataFormat(
+          workbook
+              .createDataFormat()
+              .getFormat(DateFormatConverter.convert(AppFilter.getLocale(), pattern)));
+    }
+
+    fmt = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, AppFilter.getLocale());
+
+    if (fmt instanceof SimpleDateFormat) {
+      String pattern = ((SimpleDateFormat) fmt).toPattern();
+      // use full year
+      pattern = pattern.replaceAll("y+", "yyyy");
+      dateTimeCellStyle.setDataFormat(
+          workbook
+              .createDataFormat()
+              .getFormat(DateFormatConverter.convert(AppFilter.getLocale(), pattern)));
+    }
+
     for (List listObj : dataList) {
       Row row = sheet.createRow(sheet.getLastRowNum() + 1);
       for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
@@ -79,10 +115,28 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
         Cell cell = row.createCell(colIndex);
         String columnValue = null;
         if (!(value == null || value.equals(""))) {
-          if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
-          else columnValue = value.toString();
-        } else continue;
-        cell.setCellValue(columnValue);
+          if (value instanceof LocalDate) {
+            cell.setCellStyle(dateCellStyle);
+            cell.setCellValue(
+                Date.from(
+                    ((LocalDate) value).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+          }
+          if (value instanceof LocalDateTime) {
+            cell.setCellStyle(dateTimeCellStyle);
+            cell.setCellValue(
+                Date.from(((LocalDateTime) value).atZone(ZoneId.systemDefault()).toInstant()));
+          } else if (value instanceof ZonedDateTime) {
+            cell.setCellStyle(dateTimeCellStyle);
+            cell.setCellValue(Date.from(((ZonedDateTime) value).toInstant()));
+          } else if (value instanceof Instant) {
+            cell.setCellStyle(dateTimeCellStyle);
+            cell.setCellValue(Date.from((Instant) value));
+          } else if (value instanceof Number) {
+            cell.setCellValue(((Number) value).doubleValue());
+          } else {
+            cell.setCellValue(value.toString());
+          }
+        }
       }
     }
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
-import com.axelor.apps.tool.NammingTool;
+import com.axelor.apps.tool.NamingTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
@@ -172,7 +172,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   }
 
   private String isKeyword(String[] fieldNames, int ind) {
-    if (NammingTool.isKeyword(fieldNames[ind])) {
+    if (NamingTool.isKeyword(fieldNames[ind])) {
       return fieldNames[ind] + "_id";
     }
     return fieldNames[ind];

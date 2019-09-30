@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -83,8 +83,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   protected MoveLineService moveLineService;
   protected PartnerService partnerService;
 
-  protected static final String DATE_FORMAT_YYYYMMDD = "YYYYMMdd";
-  protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "YYYYMMddHHmmss";
+  protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
+  protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
   @Inject
   public MoveLineExportServiceImpl(
@@ -462,10 +462,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "ventes.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
@@ -651,10 +653,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "avoirs.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
@@ -841,10 +845,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "tresorerie.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
@@ -1055,10 +1061,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "achats.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   @Override
@@ -1103,7 +1111,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         String.format(
             "%s %s%s.csv", I18n.get("General balance"), accountingReport.getRef(), dateStr);
     writeMoveLineToCsvFile(
-        accountingReport.getCompany(), fileName, allMoveLineData, accountingReport);
+        accountingReport.getCompany(), fileName, null, allMoveLineData, accountingReport);
   }
 
   /**
@@ -1170,6 +1178,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 "(self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) " + moveLineQueryStr,
                 MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_DAYBOOK)
+            .order("move.validationDate")
             .order("date")
             .order("name")
             .fetch();
@@ -1184,7 +1193,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         Journal journal = move.getJournal();
         items[0] = journal.getCode();
         items[1] = journal.getName();
-        items[2] = moveLine.getName();
+        items[2] = moveLine.getMove().getReference();
         items[3] = moveLine.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         items[4] = moveLine.getAccount().getCode();
         items[5] = moveLine.getAccount().getName();
@@ -1207,8 +1216,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           // d'écriture.
         }
         items[10] = moveLine.getDescription();
-        items[11] = moveLine.getDebit().toString();
-        items[12] = moveLine.getCredit().toString();
+        items[11] = moveLine.getDebit().toString().replace('.', ',');
+        items[12] = moveLine.getCredit().toString().replace('.', ',');
         if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
           List<String> reconcileSeqList = new ArrayList<>();
           List<String> reconcileDateList = new ArrayList<>();
@@ -1241,7 +1250,13 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           items[15] =
               move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
-        items[16] = moveLine.getCurrencyAmount().toString();
+
+        items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
+        if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          items[16] = "-" + items[16];
+        }
+
         if (move.getCurrency() != null) {
           items[17] = move.getCurrency().getCode();
         }
@@ -1257,7 +1272,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
-    writeMoveLineToCsvFile(company, fileName, allMoveLineData, accountingReport);
+    writeMoveLineToCsvFile(
+        company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
     accountingReportRepo.save(accountingReport);
   }
 
@@ -1461,15 +1477,18 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    writeMoveLineToCsvFile(company, fileName, allMoveLineData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',  this.createHeaderForDetailFile(typeSelect),
-    // allMoveLineData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForDetailFile(typeSelect),
+        allMoveLineData,
+        accountingReport);
   }
 
   private void writeMoveLineToCsvFile(
       Company company,
       String fileName,
+      String[] columnHeader,
       List<String[]> allMoveData,
       AccountingReport accountingReport)
       throws AxelorException, IOException {
@@ -1480,7 +1499,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       new File(filePath).mkdirs();
     }
     log.debug("Full path to export : {}{}", filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, '|', null, allMoveData);
+    CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);
     try (InputStream is = new FileInputStream(path.toFile())) {
       Beans.get(MetaFiles.class).attach(is, fileName, accountingReport);
@@ -1510,7 +1529,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     return sortMoveLineList;
   }
 
-  public String[] createHeaderForPayrollJournalEntry() {
+  public String[] createHeaderForJournalEntry() {
     String header =
         "JournalCode;"
             + "JournalLib;"
@@ -1529,7 +1548,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             + "DateLet;"
             + "ValidDate;"
             + "Montantdevise;"
-            + "IDevise;";
+            + "Idevise;";
     return header.split(";");
   }
 

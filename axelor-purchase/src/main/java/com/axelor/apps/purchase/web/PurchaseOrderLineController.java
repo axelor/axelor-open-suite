@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,7 +29,6 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -46,6 +45,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 @Singleton
 public class PurchaseOrderLineController {
@@ -110,14 +110,11 @@ public class PurchaseOrderLineController {
       String productCode =
           purchaseOrderLineService.getProductSupplierInfos(purchaseOrder, purchaseOrderLine)[1];
 
-      response.setValue("productName", productName);
-      response.setValue("productCode", productCode);
-
-      if (price == null || inTaxPrice == null || (productName == null && productCode == null)) {
-        response.setFlash(I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
-        this.resetProductInformation(response);
-        response.setValue("taxLine", taxLine.orElse(null));
-        return;
+      // Do not interrupt process if product is not in catalog. Purchase price will use
+      // its default value if configuration says so (handled in get*TaxUnitPrice).
+      if (StringUtils.isBlank(productName) && StringUtils.isBlank(productCode)) {
+        productName = product.getName();
+        productCode = product.getCode();
       }
 
       response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));

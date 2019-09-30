@@ -246,6 +246,7 @@
 		<attribute for="leaveLine" name="domain"
 				   if="!__user__.employee?.hrManager"
 				   expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id} AND (self.leaveReason IS NULL OR self.leaveReason.selectedByMgtOnly = false) &quot;"/>
+		<attribute name="domain" for="leaveLine" expr="eval: &quot;self.id IN (0)&quot;" if="!user"/>
 	</action-attrs>
 
 	<action-record name="action-leave-request-record-reset-leave-line" model="com.axelor.apps.hr.db.LeaveRequest">

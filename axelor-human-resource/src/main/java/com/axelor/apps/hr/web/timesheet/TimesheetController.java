@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -206,9 +206,9 @@ public class TimesheetController {
   }
 
   public void editTimesheetSelected(ActionRequest request, ActionResponse response) {
-    Map timesheetMap = (Map) request.getContext().get("timesheetSelect");
+    Map<?, ?> timesheetMap = (Map<?, ?>) request.getContext().get("timesheetSelect");
     Timesheet timesheet =
-        Beans.get(TimesheetRepository.class).find(new Long((Integer) timesheetMap.get("id")));
+        Beans.get(TimesheetRepository.class).find(Long.valueOf((String) timesheetMap.get("id")));
     response.setView(
         ActionView.define("Timesheet")
             .model(Timesheet.class.getName())
@@ -405,6 +405,8 @@ public class TimesheetController {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
       timesheet = timesheetRepositoryProvider.get().find(timesheet.getId());
       TimesheetService timesheetService = timesheetServiceProvider.get();
+
+      timesheetService.checkEmptyPeriod(timesheet);
 
       timesheetService.validate(timesheet);
       computeTimeSpent(request, response);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,13 +56,18 @@ public class MrpController {
     }
   }
 
-  public void generateAllProposals(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void generateAllProposals(ActionRequest request, ActionResponse response) {
+
     Mrp mrp = request.getContext().asType(Mrp.class);
     MrpService mrpService = mrpServiceProvider.get();
     MrpRepository mrpRepository = mrpRepositoryProvider.get();
-    mrpService.generateProposals(mrpRepository.find(mrp.getId()));
-    response.setReload(true);
+    try {
+      mrpService.generateProposals(mrpRepository.find(mrp.getId()));
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
   }
 
   /**
