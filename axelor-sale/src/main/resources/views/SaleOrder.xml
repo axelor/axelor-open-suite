@@ -331,6 +331,9 @@
 				<panel name="invoiceCommentsPanel" title="Description to display on invoice" colSpan="12">
           <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
+				<panel name="descriptionToDisplayOnProformaPanel" title="Description to display on proforma" colSpan="12">
+				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
 	    </panel>
 	    <panel if="__config__.app.isApp('production')" if-module="axelor-production" name="productionPanel" title="Production" colSpan="12">
 		  	<field name="productionNote" widget="Html" colSpan="12"/>
@@ -1110,6 +1113,7 @@
 		<field name="deliveryComments" expr="eval: clientPartner?.deliveryComments"/>
 		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
 		<field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
+		<field name="proformaComments" expr="eval: clientPartner?.proformaComments"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

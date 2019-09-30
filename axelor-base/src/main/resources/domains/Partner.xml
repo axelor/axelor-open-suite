@@ -90,6 +90,8 @@
 	<string name="purchaseOrderComments" title="Description to display on purchase order" large="true"/>
 	<string name="deliveryComments" title="Description to display on delivery" large="true"/>
 	<string name="pickingOrderComments" title="Description to display on picking order" large="true"/>
+	
+	<string name="proformaComments" title="Description to display on proforma" large="true"/>
 
 	<finder-method name="findByUser" using="user"/>
 
