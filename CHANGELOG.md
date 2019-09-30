@@ -4,7 +4,8 @@
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
 - BANK STATEMENT : improved bank statement line grid for 120 file format.
-
+- EbicsBank : Disable canEdit on language field in ebics-bank-form
+	
 ## Features
 - ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
 
