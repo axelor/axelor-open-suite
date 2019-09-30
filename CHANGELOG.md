@@ -1,16 +1,17 @@
 # Changelog
 
 ## [Unreleased 5.1.9]
+## Features
+- ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
+
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
 - BANK STATEMENT : improved bank statement line grid for 120 file format.
 
-## Features
-- ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
-
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
 - Move Line: fix error when we reconcile multiple moves.
+- ACCOUNTING REPORT : balance reports are now faster to generate.
 
 
 ## [5.1.8] - 2019-09-26
@@ -256,7 +257,6 @@
 - Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
 - EXPENSE : replace line break caracter per a space for move creation
 - MOVES TEMPLATE: Fixed NPE on move generation
-- ACCOUNTING REPORT : balance report are now faster to generate.
 
 ## [5.1.7] - 2019-06-17
 ## Features
