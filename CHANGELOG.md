@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.9]
 ## Features
 - ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
+- SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
 
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
