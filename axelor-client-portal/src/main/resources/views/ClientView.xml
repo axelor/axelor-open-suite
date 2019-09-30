@@ -23,7 +23,7 @@
 					</panel>
 				<panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12">
 				    <button name="$myQuotation" title="My quotations" width="190px" widget="info-button" onClick="action-method-show-client-view-my-quotation"/>
-					<button name="$orders" title="Orders" width="190px" widget="info-button" onClick="action-method-show-client-view-orders" />
+					<button name="$ordersInProgress" title="Orders in progress" width="190px" widget="info-button" onClick="action-method-show-client-view-orders-in-progress" />
 	                <button name="$lastOrder" title="Last order" width="190px" widget="info-button" onClick="action-method-show-client-view-last-order"/>
 				</panel>
 				<panel name="invoicePanel"  title="Invoicing" if-module="axelor-account" itemSpan="12">
@@ -132,8 +132,8 @@
 	</action-method>
 	
 	<!-- SaleOrder OnClick -->
-	<action-method name="action-method-show-client-view-orders" model="com.axelor.apps.base.db.Wizard">
-		<call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyOrders"/>
+	<action-method name="action-method-show-client-view-orders-in-progress" model="com.axelor.apps.base.db.Wizard">
+		<call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyOrdersInProgress"/>
 	</action-method>
 	
 	<action-method name="action-method-show-client-view-my-quotation" model="com.axelor.apps.base.db.Wizard">
@@ -195,6 +195,9 @@
 		<call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyLateTickets"/>
 	</action-method>
 	
+	<action-view name="wizard-client-view" model="com.axelor.apps.base.db.Wizard" title="My space">
+	  <view name="wizard-client-form" type="form"/>
+	</action-view>
 
 	
 </object-views>
