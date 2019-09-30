@@ -256,6 +256,7 @@
 - Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
 - EXPENSE : replace line break caracter per a space for move creation
 - MOVES TEMPLATE: Fixed NPE on move generation
+- ACCOUNTING REPORT : balance report are now faster to generate.
 
 ## [5.1.7] - 2019-06-17
 ## Features
