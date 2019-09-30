@@ -5,6 +5,9 @@
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
 - BANK STATEMENT : improved bank statement line grid for 120 file format.
 
+## Features
+- ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
+
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
 - Move Line: fix error when we reconcile multiple moves.
