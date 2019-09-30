@@ -31,7 +31,7 @@
 				fullName += "-" + project.getCode();
 			}
 			
-			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+			String dateStr = date.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 			if (!fullName.isEmpty()) {
 				fullName += "-" + dateStr;
 			}

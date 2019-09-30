@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,9 +19,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
@@ -29,9 +26,10 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import java.util.Map;
 
 public interface StockMoveInvoiceService {
+
+  Invoice createInvoice(StockMove stockMove) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Invoice createInvoiceFromSaleOrder(StockMove stockMove, SaleOrder saleOrder)
@@ -42,21 +40,7 @@ public interface StockMoveInvoiceService {
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Invoice createInvoiceFromStockMove(StockMove stockMove) throws AxelorException;
-
-  @Transactional
-  public Map<String, Object> createInvoiceFromMultiOutgoingStockMove(
-      List<StockMove> stockMoveList,
-      PaymentCondition paymentCondition,
-      PaymentMode paymentMode,
-      Partner contactPartner,
-      boolean isFromWizard)
-      throws AxelorException;
-
-  @Transactional
-  public Map<String, Object> createInvoiceFromMultiIncomingStockMove(
-      List<StockMove> stockMoveList, Partner contactPartnerIn, boolean isFromWizard)
-      throws AxelorException;
+  public Invoice createInvoiceFromOrderlessStockMove(StockMove stockMove) throws AxelorException;
 
   public Invoice extendInternalReference(StockMove stockMove, Invoice invoice);
 

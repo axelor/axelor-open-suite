@@ -6,7 +6,7 @@
 		<hilite color="danger" if="statusSelect == 5"/>
 		<hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
 		<hilite color="warning" if="statusSelect == 2"/>
-		<field name="expenseSeq"/>
+		<field name="expenseSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
@@ -27,7 +27,7 @@
 		</toolbar>
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
-		<field name="expenseSeq"/>
+		<field name="expenseSeq" width="120"/>
 		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
@@ -38,7 +38,7 @@
 	<form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
 		  onNew="action-expense-record-default,action-expense-attrs-hide-button-readonly-field,action-expense-attrs-multiple-users"
 		  onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
-		  onSave="action-expense-method-validate-date,action-expense-method-compute-amounts,action-expense-method-compute" canCopy="false">
+		  onSave="action-expense-method-validate-and-compute" canCopy="false">
 		<menubar>
             <menu title="Reports" icon="fa-files-o">
 				<item name="printExpense" title="Print" action="save,action-print-expense"/>
@@ -69,7 +69,8 @@
 				<panel name="generalInfoPanel" colSpan="12">
 					<field name="multipleUsers" colSpan="12" hidden="true" onChange="action-expense-attrs-multiple-users"/>
 					<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" onChange="action-expense-record-company-onchange"/>
-					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+					<field name="user" form-view="user-form" onSelect="action-hr-attrs-set-user-domain" grid-view="user-grid" canNew="false" canEdit="false" canView="false"
+            onChange="action-expense-record-user-onchange"/>
 					<field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management" onSelect="action-accounting-batch-attrs-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" />
 					<field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period" form-view="period-form" grid-view="period-grid" canView="false"/>
 					<field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
@@ -145,6 +146,7 @@
 					<field name="paymentMode" showIf="paymentMode" readonly="true" colSpan="4"/>
 					<field name="paymentDate" showIf="paymentDate" colSpan="4"/>
 					<field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
+					<field name="paymentMove" showIf="paymentMove" readonlyIf="paymentMove" colSpan="4" form-view="move-form" grid-view="move-grid"/>
 				</panel>
 			</panel>
 		</panel-tabs>
@@ -162,8 +164,10 @@
 	</form>
 	
 	<form name="popup-expense-form" title="Select the expense you want to edit" model="com.axelor.apps.base.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
-		<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" />
-		<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected,close"/>
+		<panel name="mainPanel">
+			<field name="$expenseSelect" title="Select Expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
+			<button name="editExpenseSelectedBtn" title="Edit Expense Selected" onClick="com.axelor.apps.hr.web.expense.ExpenseController:editExpenseSelected"/>
+		</panel>
 	</form>
 
 	<form name="popup-expense-add-payment-form" title="Choose payment mode" model="com.axelor.apps.hr.db.Expense">
@@ -194,18 +198,25 @@
 	</action-group>
 	
 	<action-record name="action-expense-record-default" model="com.axelor.apps.hr.db.Expense">
-	    <field name="user" expr="eval:__user__"/>
-	    <field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
-        <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
+		<field name="user" expr="eval:__user__"/>
+		<field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
+		<field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
 		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, _payCompany).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
-    	<field name="taxTotal" expr="eval: 0"/>
-    	<field name="inTaxTotal" expr="eval: 0"/>
-    	<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
+		<field name="taxTotal" expr="eval: 0"/>
+		<field name="inTaxTotal" expr="eval: 0"/>
+		<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
+		<field name="bankDetails"
+		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany.defaultBankDetails"/>
 	</action-record>
 
+  <action-record name="action-expense-record-user-onchange" model="com.axelor.apps.hr.db.Expense">
+    <field name="bankDetails"
+      expr="eval: user?.employee?.mainEmploymentContract?.payCompany ? user.employee.mainEmploymentContract.payCompany.defaultBankDetails : user.activeCompany.defaultBankDetails"/>
+  </action-record>
+
 	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
-		<field name="period" expr="eval: null"/>
+		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, company).fetchOne()"/>
 		<field name="bankDetails" expr="eval: null"/>
 		<field name="user" expr="eval: null"/>
 	</action-record>
@@ -224,10 +235,6 @@
 	
 	<action-method name="action-expense-method-compute">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="compute"/>
-	</action-method>
-	
-	<action-method name="action-expense-method-validate-date">
-		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateDates"/>
 	</action-method>
 	
 	<action-method name="action-expense-method-ventilate">
@@ -300,13 +307,13 @@
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="true" />
-		<view-param name="popup-save" value="true"/>
+		<view-param name="popup-save" value="false"/>
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: id"/>
 	</action-view>
 
-    <action-method name="action-expense-method-compute-amounts">
-    	<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeAmounts"/>
+    <action-method name="action-expense-method-validate-and-compute">
+		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateAndCompute"/>
     </action-method>
     
 

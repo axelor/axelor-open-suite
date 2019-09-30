@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.persistence.PersistenceException;
@@ -48,6 +47,16 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Override
   public Product save(Product product) {
+
+    try {
+      if (appBaseService.getAppBase().getGenerateProductSequence()
+          && Strings.isNullOrEmpty(product.getCode())) {
+        product.setCode(Beans.get(ProductService.class).getSequence());
+      }
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+
     product.setFullName(String.format(FULL_NAME_FORMAT, product.getCode(), product.getName()));
 
     if (product.getId() != null) {
@@ -87,34 +96,14 @@ public class ProductBaseRepository extends ProductRepository {
         throw new ValidationException(e.getMessage());
       }
     }
-
-    try {
-      if (Strings.isNullOrEmpty(product.getSequence())
-          && appBaseService.getAppBase().getGenerateProductSequence()) {
-        product.setSequence(Beans.get(ProductService.class).getSequence());
-      }
-
-      return super.save(product);
-    } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
-    }
+    return super.save(product);
   }
 
   @Override
   public Product copy(Product product, boolean deep) {
-
     Product copy = super.copy(product, deep);
-    copy.setBarCode(null);
-    try {
-      if (product.getPicture() != null) {
-        File file = MetaFiles.getPath(product.getPicture()).toFile();
-        copy.setPicture(metaFiles.upload(file));
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    copy.setStartDate(null);
-    copy.setEndDate(null);
+    Beans.get(ProductService.class).copyProduct(product, copy);
+
     return copy;
   }
 }

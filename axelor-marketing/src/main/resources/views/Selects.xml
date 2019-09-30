@@ -31,4 +31,25 @@
 		<option value="0">Guided</option>
 		<option value="1">Manual</option>
 	</selection>
+	
+	<selection name="message.related.to.select" id="marketing.message.related.to.select">
+	    <option value="com.axelor.apps.marketing.db.Campaign">Campaign</option>
+	</selection>
+	
+	<selection name="marketing.campaign.reminder.type.select">
+		<option value="1">Email</option>
+	</selection>
+
+	<selection name="marketing.campaign.reminder.duration.type.select">
+		<option value="1">Minutes</option>
+		<option value="2">Hours</option>
+		<option value="3">Days</option>
+		<option value="4">Weeks</option>
+	</selection>
+
+	<selection name="marketing.campaign.reminder.assign.to.select">
+		<option value="1">Invited</option>
+		<option value="2">Enrolled</option>
+	</selection>
+
 </object-views>

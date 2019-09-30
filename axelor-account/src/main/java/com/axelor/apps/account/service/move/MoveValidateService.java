@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,11 +29,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -142,6 +144,43 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
     }
 
+    MoveLineService moveLineService = Beans.get(MoveLineService.class);
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      Account account = moveLine.getAccount();
+      if (account.getIsTaxAuthorizedOnMoveLine()
+          && account.getIsTaxRequiredOnMoveLine()
+          && moveLine.getTaxLine() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MOVE_9),
+            account.getName());
+      }
+
+      if (moveLine.getAnalyticDistributionTemplate() == null
+          && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+          && account.getAnalyticDistributionAuthorized()
+          && account.getAnalyticDistributionRequiredOnMoveLines()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.MOVE_10),
+            account.getName());
+      }
+
+      if (account != null
+          && !account.getAnalyticDistributionAuthorized()
+          && (moveLine.getAnalyticDistributionTemplate() != null
+              || (moveLine.getAnalyticMoveLineList() != null
+                  && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+      }
+
+      moveLineService.validateMoveLine(moveLine);
+    }
+
     this.validateWellBalancedMove(move);
   }
 
@@ -168,6 +207,12 @@ public class MoveValidateService {
     log.debug("Validation de l'écriture comptable {}", move.getReference());
 
     this.checkPreconditions(move);
+
+    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_VALIDATION_FISCAL_PERIOD_CLOSED));
+    }
 
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();

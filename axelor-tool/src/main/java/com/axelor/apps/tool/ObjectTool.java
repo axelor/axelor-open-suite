@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.exception.service.TraceBackService;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -42,9 +43,9 @@ public final class ObjectTool {
       field = classGotten.getDeclaredField(fieldName);
 
     } catch (SecurityException e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     } catch (NoSuchFieldException e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
     LOG.debug("Champ récupéré : {}", field);
     return field;

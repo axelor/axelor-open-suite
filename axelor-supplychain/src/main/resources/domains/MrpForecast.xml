@@ -12,6 +12,27 @@
 	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" required="true"/>
 	<string name="note" title="Note" large="true" multiline="true"/>
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+	<integer name="statusSelect" title="Status" selection="supplychain.mrp.forecast.status.select" readonly="true" default="1"/>
+	
+	<extra-code><![CDATA[
+	
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_CONFIRMED = 2;
+		public static final int STATUS_CANCELLED = 3;
+	
+	]]></extra-code>
+
+	<track on="UPDATE">
+		<field name="forecastDate"/>
+		<field name="qty"/>
+		<field name="unit"/>
+		<field name="product"/>
+		<field name="stockLocation"/>
+		<field name="note"/>
+		<field name="partner"/>
+		<field name="statusSelect"/>
+	</track>
       
   </entity>
 

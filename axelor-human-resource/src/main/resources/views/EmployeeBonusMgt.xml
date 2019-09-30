@@ -22,7 +22,7 @@
 			<field name="leavePeriod" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1" grid-view="period-hr-grid" form-view="period-hr-form" required="true" canView="false"/>
 			<field name="baseAmount" />
         </panel>
-        <panel-related name="employeeBonusMgtLineListPanel" field="employeeBonusMgtLineList" title="Employee bonuses" form-view="employee-bonus-mgt-line-form" grid-view="employee-bonus-mgt-line-grid" canNew="false" />
+        <panel-related name="employeeBonusMgtLineListPanel" field="employeeBonusMgtLineList" title="Employee bonuses" form-view="employee-bonus-mgt-line-form" grid-view="employee-bonus-mgt-line-grid" canNew="false" readonly="true" />
         <panel name="statusPanel" sidebar="true">
 	        <field name="statusSelect" />
 	        <button name="computeBtn" title="Compute amounts" onClick="save,action-employee-bonus-mgt-method-compute"/>

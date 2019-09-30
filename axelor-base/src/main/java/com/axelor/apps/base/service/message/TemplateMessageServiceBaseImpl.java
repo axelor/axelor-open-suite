@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -101,6 +101,46 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       List<BirtTemplateParameter> birtTemplateParameterList)
       throws AxelorException {
 
+    File birtTemplate = null;
+
+    ReportSettings reportSettings =
+        generateTemplate(maker, fileName, modelPath, format, birtTemplateParameterList);
+
+    if (reportSettings != null) {
+      birtTemplate = reportSettings.getFile();
+    }
+
+    return birtTemplate;
+  }
+
+  public String generateBirtTemplateLink(
+      TemplateMaker maker,
+      String fileName,
+      String modelPath,
+      String format,
+      List<BirtTemplateParameter> birtTemplateParameterList)
+      throws AxelorException {
+
+    String birtTemplateFileLink = null;
+
+    ReportSettings reportSettings =
+        generateTemplate(maker, fileName, modelPath, format, birtTemplateParameterList);
+
+    if (reportSettings != null) {
+      birtTemplateFileLink = reportSettings.getFileLink();
+    }
+
+    return birtTemplateFileLink;
+  }
+
+  private ReportSettings generateTemplate(
+      TemplateMaker maker,
+      String fileName,
+      String modelPath,
+      String format,
+      List<BirtTemplateParameter> birtTemplateParameterList)
+      throws AxelorException {
+
     if (modelPath == null || modelPath.isEmpty()) {
       return null;
     }
@@ -116,18 +156,15 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
             birtTemplateParameter.getName(),
             convertValue(birtTemplateParameter.getType(), maker.make()));
       } catch (BirtException e) {
-        throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+        throw new AxelorException(
+            e.getCause(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
       }
     }
 
-    try {
-      return reportSettings.generate().getFile();
-    } catch (AxelorException e) {
-      throw new AxelorException(
-          e.getCause(),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
-    }
+    reportSettings.generate();
+    return reportSettings;
   }
 
   private Object convertValue(String type, String value) throws BirtException {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +87,9 @@ public class DebtRecoveryActionService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, IOException {
 
+    DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
+    Partner partner = debtRecovery.getAccountingSituation().getPartner();
+
     if (debtRecovery.getDebtRecoveryMethod() == null) {
       throw new AxelorException(
           debtRecovery,
@@ -95,9 +99,10 @@ public class DebtRecoveryActionService {
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          debtRecovery.getAccountingSituation().getPartner().getName());
+          partner.getName());
     }
-    if (debtRecovery.getDebtRecoveryMethodLine() == null) {
+
+    if (debtRecoveryMethodLine == null) {
       throw new AxelorException(
           debtRecovery,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -106,7 +111,17 @@ public class DebtRecoveryActionService {
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          debtRecovery.getAccountingSituation().getPartner().getName());
+          partner.getName());
+
+    } else if (CollectionUtils.isEmpty(debtRecoveryMethodLine.getMessageTemplateSet())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          partner.getName(),
+          debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
+          debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
+
     } else {
 
       // On enregistre la date de la relance
@@ -133,19 +148,8 @@ public class DebtRecoveryActionService {
     Set<Message> messages = new HashSet<>();
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
-    Partner partner = debtRecovery.getAccountingSituation().getPartner();
 
     Set<Template> templateSet = debtRecoveryMethodLine.getMessageTemplateSet();
-
-    if (templateSet == null || templateSet.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          partner.getName(),
-          debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
-          debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
-    }
 
     DebtRecoveryHistory debtRecoveryHistory = this.getDebtRecoveryHistory(debtRecovery);
 
@@ -183,6 +187,9 @@ public class DebtRecoveryActionService {
           IllegalAccessException, IOException {
 
     log.debug("Begin runManualAction service ...");
+    DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
+    Partner partner = debtRecovery.getAccountingSituation().getPartner();
+
     if (debtRecovery.getDebtRecoveryMethod() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -191,10 +198,10 @@ public class DebtRecoveryActionService {
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_1),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          debtRecovery.getAccountingSituation().getPartner().getName());
+          partner.getName());
     }
 
-    if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
+    if (debtRecoveryMethodLine == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           "%s :\n"
@@ -202,7 +209,17 @@ public class DebtRecoveryActionService {
               + " %s: "
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_2),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          debtRecovery.getAccountingSituation().getPartner().getName());
+          partner.getName());
+
+    } else if (CollectionUtils.isEmpty(debtRecoveryMethodLine.getMessageTemplateSet())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_3),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          partner.getName(),
+          debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
+          debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
+
     } else {
 
       // On enregistre la date de la relance
@@ -210,6 +227,11 @@ public class DebtRecoveryActionService {
       this.debtRecoveryLevelValidate(debtRecovery);
 
       this.saveDebtRecovery(debtRecovery);
+
+      /* Messages are send from this transaction
+      If an exception occurs while sending messages
+      The debtRecovery process is rollbacked */
+      this.runMessage(debtRecovery);
     }
     log.debug("End runManualAction service");
   }
@@ -229,9 +251,17 @@ public class DebtRecoveryActionService {
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
           IllegalAccessException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
+
     for (Message message : messageSet) {
-      Beans.get(MessageRepository.class).save(message);
-      Beans.get(MessageService.class).sendMessage(message);
+      message = Beans.get(MessageRepository.class).save(message);
+      message = Beans.get(MessageService.class).sendMessage(message);
+
+      if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
+          && message.getMailAccount() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_4));
+      }
     }
   }
 

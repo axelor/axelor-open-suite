@@ -18,7 +18,16 @@
 	
 	<integer name="receiptState" title="Receipt state" selection="purchase.order.receipt.state" readonly="true" default="0"/>
 
-	
+	<extra-code>
+  		<![CDATA[
+	  		
+	        // RECEIPT STATE SELECT
+            public static final int RECEIPT_STATE_NOT_RECEIVED = 1;
+            public static final int RECEIPT_STATE_PARTIALLY_RECEIVED = 2;
+            public static final int RECEIPT_STATE_RECEIVED = 3;
+	  	]]>
+  	</extra-code>
+  	
   </entity>
 
 </domain-models>

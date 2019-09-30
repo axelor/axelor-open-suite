@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,16 +44,25 @@ public interface SaleOrderService {
    * @param saleOrder
    * @throws AxelorException
    */
-  void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
+  boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException;
 
   /**
-   * Validate changes.
+   * Check modified confirmed order before saving it.
    *
    * @param saleOrder
    * @param saleOrderView
    * @throws AxelorException
    */
-  void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException;
+  void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
+      throws AxelorException;
+
+  /**
+   * Validate changes.
+   *
+   * @param saleOrder
+   * @throws AxelorException
+   */
+  void validateChanges(SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Sort detail lines by sequence.

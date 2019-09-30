@@ -9,7 +9,7 @@
   
     <one-to-one name="accountingSituation" ref="com.axelor.apps.account.db.AccountingSituation"/> 
   	<many-to-one name="debtRecoveryMethod" ref="com.axelor.apps.account.db.DebtRecoveryMethod" title="Debt recovery method"/>
-	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Debt recovery method line reached by active contract" />
+	<many-to-one name="debtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Active level" />
 	<date name="debtRecoveryDate" title="Last debt recovery date"/>
 	<date name="referenceDate" title="Reference Date"/>
 	<one-to-many name="debtRecoveryHistoryList" ref="com.axelor.apps.account.db.DebtRecoveryHistory" mappedBy="debtRecovery" title="Debt recovery history list"/>
@@ -17,11 +17,14 @@
 	<boolean name="unknownAddressOk" title="Address unknown"/>
 	<decimal name="balanceDue" title="Partner Balance due"/>
 	<decimal name="balanceDueDebtRecovery" title="Balance due recoverable"/>
-	<many-to-one name="waitDebtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Debt recovery method line" />
+	<many-to-one name="waitDebtRecoveryMethodLine" ref="com.axelor.apps.account.db.DebtRecoveryMethodLine" title="Level to apply / awaiting" />
 	<many-to-many name="invoiceDebtRecoverySet" ref="com.axelor.apps.account.db.Invoice" title="Invoice concerned by the debt recovery"/>
 	<many-to-many name="paymentScheduleLineDebtRecoverySet" ref="com.axelor.apps.account.db.PaymentScheduleLine" title="Schedule line concerned by the debt recovery"/>
   	<boolean name="deceasedPartnerOk" title="Owner deceased"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+	<string name="partnerFullName" title="Partner"/>
+	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <string name="name" namecolumn="true" search="referenceDate,id" title="Name">
 	   	<![CDATA[

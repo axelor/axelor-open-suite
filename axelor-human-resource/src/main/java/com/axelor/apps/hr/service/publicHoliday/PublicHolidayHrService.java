@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,7 +36,7 @@ public class PublicHolidayHrService extends PublicHolidayService {
     super(weeklyPlanningService, eventsPlanningLineRepo);
   }
 
-  public boolean checkPublicHolidayDay(LocalDate date, Employee employee) throws AxelorException {
+  public boolean checkPublicHolidayDay(LocalDate date, Employee employee) {
     return super.checkPublicHolidayDay(date, employee.getPublicHolidayEventsPlanning());
   }
 

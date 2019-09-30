@@ -6,12 +6,6 @@ apply {
 	version = absVersion
 }
 
-spotless { 
-	java {  
-		googleJavaFormat()
-	} 
-}
-
 axelor {
 	title "Axelor Project"
 	description "Axelor Project Module"

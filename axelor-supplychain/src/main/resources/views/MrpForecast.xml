@@ -12,24 +12,47 @@
         <field name="unit"/>
        	<field name="stockLocation"/>
        	<field name="partner"/>
+       	<field name="statusSelect"/>
     </grid>
     
-	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast">
-	    <panel name="mainPanel">
-	        <field name="id" title="Ref"/>
-	        <field name="forecastDate"/>
-   	        <field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"/>
-   	        <field name="qty"/>
-   	        <field name="unit"/>
-        	<field name="stockLocation"/>
-        	<field name="partner"/>
-        	<field name="note" colSpan="12"/>
+	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast" width="large">
+		<panel name="mainPanel">
+			<panel name="statusSelectPanel" colSpan="8">
+				<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
+			</panel>
+			<panel name="actionsPanel" colSpan="4" itemSpan="12">
+				<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="save,action-mrp-forecast-attrs-confirm-btn-on-click,save"/>
+				<button name="cancelBtn" title="Cancel" hideIf="statusSelect == 3" onClick="save,action-mrp-forecast-attrs-cancel-btn-on-click,save"/>
+			</panel>
+	    	<panel name="detailsPanel" colSpan="12">
+	        	<field name="id" title="Ref"/>
+	        	<field name="forecastDate"/>
+   	        	<field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"/>
+   	        	<field name="qty"/>
+   	        	<field name="unit"/>
+        		<field name="stockLocation"/>
+        		<field name="partner"/>
+        		<field name="note" colSpan="12"/>
+	    	</panel>
 	    </panel>
+
+	    <panel-mail name="mailPanel">
+			<mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	 </form>
 	 
 	 <action-record name="action-mrp-forecast-record-unit" model="com.axelor.apps.supplychain.db.MrpForecast">
 	 	<field name="unit" expr="eval: product?.salesUnit" if="product?.salesUnit != null"/>
 	 	<field name="unit" expr="eval: product?.unit" if="product?.salesUnit == null"/>
 	 </action-record>
-	 
+
+	 <action-attrs name="action-mrp-forecast-attrs-confirm-btn-on-click">
+	 	<attribute name="value" for="statusSelect" expr="eval: 2"/>
+	 </action-attrs>
+
+	 <action-attrs name="action-mrp-forecast-attrs-cancel-btn-on-click">
+	 	<attribute name="value" for="statusSelect" expr="eval: 3"/>
+	 </action-attrs>
+
 </object-views>

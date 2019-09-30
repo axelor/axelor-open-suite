@@ -18,7 +18,7 @@
         <field name="date" width="90"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
-        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+        <field name="invoice"  form-view="invoice-form" grid-view="invoice-grid" width="140"/>
         <field name="statusSelect" width="90"/>
     </grid>
 
@@ -38,15 +38,15 @@
                 <field name="reference" colSpan="12"/>
                 <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
                     <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
-                    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid"/>
+                    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
                     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
                     <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
                 </panel>
-                <field name="partner" domain="self.isContact = false AND :company MEMBER OF self.companySet" colSpan="12" canNew="false" form-view="partner-form" grid-view="partner-grid"/>
+                <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
 
             <panel name="otherDetailsPanel" colSpan="3">
-                <field name="$viewerTags" colSpan="12" showTitle="false">
+                <field name="$viewerTags" showTitle="false">
                     <viewer>
                         <![CDATA[
                             <h4 class="text-right">
@@ -64,10 +64,23 @@
                         <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
                     </editor>
                 </field>
-                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3"/>
+                <field name="$technicalOriginTags" showTitle="false" showIf="$readonly()">
+                  <viewer depends="technicalOriginSelect">
+                    <![CDATA[
+                      <h4 class="text-right">
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Entry</span>
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Automatic</span>
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 3" x-translate>Template</span>
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 4" x-translate>Import</span>
+                      </h4>
+                    ]]>
+                  </viewer>
+                </field>
+                <field name="getInfoFromFirstMoveLineOk" colSpan="12" hideIf="statusSelect >= 3" widget="boolean-switch"/>
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
-                <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3" prompt="The validation of a move brings irrevocable integration of a move in Moves book"/>
+                <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
+				<button name="autoTaxLineGenerateBtn" title="Generate Taxlines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
             </panel>
 		</panel>
 		
@@ -84,14 +97,14 @@
 	   		<field name="$totalDebit" title="Total debit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalDebit}}</h3>
+						<h3>{{$fmt('$totalDebit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
 	   		<field name="$totalCredit" title="Total credit" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalCredit}}</h3>
+						<h3>{{$fmt('$totalCredit')}}</h3>
 					]]>
 				</viewer>				
 			</field>
@@ -99,8 +112,8 @@
 				<viewer>
 					<![CDATA[
 						<h3>
-							<span ng-show="record.$difference == 0">{{record.$difference}}</span>
-							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{record.$difference}}</span>
+							<span ng-show="record.$difference == 0">{{$fmt('$difference')}}</span>
+							<span style="color:#d9534f;" ng-show="record.$difference != 0">{{$fmt('$difference')}}</span>
 						</h3>
 					]]>
 				</viewer>
@@ -129,9 +142,9 @@
             </panel>
 
             <panel name="othersPanel" title="Others">
-                <field name="ignoreInAccountingOk"/>
+                <field name="ignoreInAccountingOk" showIf="ignoreInAccountingOk" readonly="true"/>
                 <field name="ignoreInDebtRecoveryOk"/>
-                <field name="rejectOk"/>
+                <field name="rejectOk" showIf="rejectOk" readonly="true"/>
             </panel>
         </panel-tabs>
         
@@ -158,11 +171,16 @@
 		<action name="action-move-attrs-validate-button-title"/>
 		<action name="action-account-move-method-compute-totals"/>
 	</action-group>
-	
-	<action-group name="action-group-account-move-validate-click">
-		<action name="save"/>
-		<action name="action-move-method-validate"/>
-	</action-group>
+
+    <action-group name="action-group-account-move-validate-click">
+      <action name="action-account-validate-prompt" if="(!company?.accountConfig?.accountingDaybook &amp;&amp;statusSelect == 1) || (company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect == 2)"/>
+      <action name="save"/>
+      <action name="action-move-method-validate"/>
+    </action-group>
+
+    <action-validate name="action-account-validate-prompt">
+      <alert message="The validation of a move brings irrevocable integration of a move in Moves book"/>
+    </action-validate>
 
    	<!-- ACTION RECORD -->
     <action-record name="default-move-record" model="com.axelor.apps.account.db.Move">
@@ -246,6 +264,14 @@
 	
 	<action-method name="action-account-move-method-compute-totals">
 		<call class="com.axelor.apps.account.web.MoveController" method="computeTotals"/>
+	</action-method>
+	
+	<action-method name="action-account-move-method-automatic-taxline-generation">
+		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
+	</action-method>
+
+	<action-method name="action-account-move-method-filter-partner">
+		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">

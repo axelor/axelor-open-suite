@@ -6,16 +6,17 @@
 
    <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product">
        <panel name="mainPanel" colSpan="12">
+            <field name="costSheetGroup" showIf="productSubTypeSelect == 3" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+            <field name="economicManufOrderQty"/>
            	<field name="defaultBillOfMaterial" canEdit="false" onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
 			<field name="lastProductionPrice" readonly="true"/>
 		   	<field name="realOrEstimatedPriceSelect" onChange="action-product-group-cost-type-select-onchange"/>
-		   	<field name="componentsValuationMethod" showIf="realOrEstimatedPriceSelect == 2"/>
-		  	<field name="costSheetGroup" canEdit="false" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+		   	<field name="manufOrderCompValuMethodSelect" showIf="productSubTypeSelect == 1 || productSubTypeSelect == 2"/>
+		   	<field name="bomCompValuMethodSelect" showIf="productSubTypeSelect == 1 || productSubTypeSelect == 2"/>
 			<button name="createProductionOrderBtn" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
 			<panel-dashlet name="showBOMPanel" action="action-product-view-show-bill-of-material" colSpan="12"/>
        </panel>
 	</form>    
-	
 	
 	<action-view name="action-product-view-production-process" title="Production processes"
 		model="com.axelor.apps.production.db.ProdProcess">

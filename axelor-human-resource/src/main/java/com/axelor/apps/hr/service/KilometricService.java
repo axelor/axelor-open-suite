@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,8 +23,8 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
@@ -34,6 +34,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -51,7 +52,6 @@ import java.net.URLConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.apache.http.client.utils.URIBuilder;
 import wslite.json.JSONException;
@@ -61,7 +61,6 @@ public class KilometricService {
 
   private AppBaseService appBaseService;
   private KilometricLogRepository kilometricLogRepo;
-
   private MapService mapService;
 
   @Inject
@@ -133,49 +132,43 @@ public class KilometricService {
       throws AxelorException {
 
     BigDecimal distance = expenseLine.getDistance();
-    if (employee.getMainEmploymentContract() == null
-        || employee.getMainEmploymentContract().getPayCompany() == null) {
+    EmploymentContract mainEmploymentContract = employee.getMainEmploymentContract();
+    if (mainEmploymentContract == null || mainEmploymentContract.getPayCompany() == null) {
       throw new AxelorException(
-          String.format(
-              I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT), employee.getName()),
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+          employee.getName());
     }
-    Company company = employee.getMainEmploymentContract().getPayCompany();
+    Company company = mainEmploymentContract.getPayCompany();
 
-    HRConfig hrConfig = Beans.get(HRConfigService.class).getHRConfig(company);
-
-    BigDecimal previousDistance;
-    KilometricLog log =
-        Beans.get(KilometricService.class).getKilometricLog(employee, expenseLine.getExpenseDate());
-    if (log == null) {
-      previousDistance = BigDecimal.ZERO;
-    } else {
-      previousDistance = log.getDistanceTravelled();
-    }
+    KilometricLog log = getKilometricLog(employee, expenseLine.getExpenseDate());
+    BigDecimal previousDistance = log == null ? BigDecimal.ZERO : log.getDistanceTravelled();
 
     KilometricAllowanceRate allowance =
-        Beans.get(KilometricAllowanceRateRepository.class)
-            .all()
-            .filter(
-                "self.kilometricAllowParam.id = :_kilometricAllowParamId "
-                    + "and self.hrConfig.id = :_hrConfigId")
-            .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
-            .bind("_hrConfigId", hrConfig.getId())
-            .fetchOne();
+        expenseLine.getKilometricAllowParam() != null
+            ? Beans.get(KilometricAllowanceRateRepository.class)
+                .all()
+                .filter(
+                    "self.kilometricAllowParam.id = :_kilometricAllowParamId "
+                        + "and self.hrConfig.id = :_hrConfigId")
+                .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
+                .bind("_hrConfigId", Beans.get(HRConfigService.class).getHRConfig(company).getId())
+                .fetchOne()
+            : null;
+
     if (allowance == null) {
       throw new AxelorException(
-          String.format(
-              I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
-              expenseLine.getKilometricAllowParam().getName(),
-              company.getName()),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          expenseLine);
+          I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
+          expenseLine.getKilometricAllowParam() != null
+              ? expenseLine.getKilometricAllowParam().getName()
+              : "",
+          company.getName());
     }
 
-    List<KilometricAllowanceRule> ruleList = new ArrayList<KilometricAllowanceRule>();
-
+    List<KilometricAllowanceRule> ruleList = new ArrayList<>();
     List<KilometricAllowanceRule> allowanceRuleList = allowance.getKilometricAllowanceRuleList();
-    if (allowanceRuleList != null) {
+    if (ObjectUtils.notEmpty(allowanceRuleList)) {
       for (KilometricAllowanceRule rule : allowanceRuleList) {
 
         if (rule.getMinimumCondition().compareTo(previousDistance.add(distance)) <= 0
@@ -199,13 +192,8 @@ public class KilometricService {
     } else {
       Collections.sort(
           ruleList,
-          new Comparator<KilometricAllowanceRule>() {
-            @Override
-            public int compare(
-                final KilometricAllowanceRule object1, final KilometricAllowanceRule object2) {
-              return object1.getMinimumCondition().compareTo(object2.getMinimumCondition());
-            }
-          });
+          (object1, object2) ->
+              object1.getMinimumCondition().compareTo(object2.getMinimumCondition()));
       for (KilometricAllowanceRule rule : ruleList) {
         BigDecimal min = rule.getMinimumCondition().max(previousDistance);
         BigDecimal max = rule.getMaximumCondition().min(previousDistance.add(distance));
@@ -251,7 +239,7 @@ public class KilometricService {
             json.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0);
         status = response.getString("status");
         if (status.equals("OK")) {
-          return new BigDecimal(response.getJSONObject("distance").getDouble("value") / 1000.);
+          return BigDecimal.valueOf(response.getJSONObject("distance").getDouble("value") / 1000.);
         }
       }
 

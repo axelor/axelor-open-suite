@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
@@ -49,7 +50,8 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       AccountingSituationService accountingSituationService,
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
-      TemplateMessageService templateMessageService) {
+      TemplateMessageService templateMessageService,
+      PaymentModeService paymentModeService) {
 
     super(
         moveService,
@@ -61,7 +63,8 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         accountingSituationService,
         analyticMoveLineService,
         hrConfigService,
-        templateMessageService);
+        templateMessageService,
+        paymentModeService);
   }
 
   @Override

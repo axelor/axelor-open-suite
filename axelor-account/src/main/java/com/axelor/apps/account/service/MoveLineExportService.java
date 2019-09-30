@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,12 +20,14 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.time.LocalDate;
 
 public interface MoveLineExportService {
 
-  public void exportMoveLine(AccountingReport accountingReport) throws AxelorException, IOException;
+  public MetaFile exportMoveLine(AccountingReport accountingReport)
+      throws AxelorException, IOException;
 
   public void replayExportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException;
@@ -50,6 +52,7 @@ public interface MoveLineExportService {
    * Export general balance to CSV file.
    *
    * @param accountingReport
+   * @return
    * @throws AxelorException
    * @throws IOException
    */

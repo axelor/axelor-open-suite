@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -231,7 +231,10 @@ public class AddressController {
   public void viewDirection(ActionRequest request, ActionResponse response) {
     try {
       MapService mapService = Beans.get(MapService.class);
-      String key = mapService.getGoogleMapsApiKey();
+      String key = null;
+      if (appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE) {
+        key = mapService.getGoogleMapsApiKey();
+      }
 
       Company company = AuthUtils.getUser().getActiveCompany();
       if (company == null) {
@@ -241,10 +244,6 @@ public class AddressController {
       Address departureAddress = company.getAddress();
       if (departureAddress == null) {
         response.setFlash(I18n.get(IExceptionMessage.ADDRESS_7));
-        return;
-      }
-      if (appBaseService.getAppBase().getMapApiSelect() != AppBaseRepository.MAP_API_GOOGLE) {
-        response.setFlash(I18n.get(IExceptionMessage.ADDRESS_6));
         return;
       }
 
@@ -261,7 +260,7 @@ public class AddressController {
       Address arrivalAddress = request.getContext().asType(Address.class);
       arrivalAddress = Beans.get(AddressRepository.class).find(arrivalAddress.getId());
       Optional<Pair<BigDecimal, BigDecimal>> arrivalLatLong =
-          addressService.getOrUpdateLatLong(departureAddress);
+          addressService.getOrUpdateLatLong(arrivalAddress);
 
       if (!arrivalLatLong.isPresent()) {
         response.setFlash(

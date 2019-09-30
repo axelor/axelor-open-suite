@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -148,6 +148,24 @@ public class LunchVoucherMgtController {
       response.setValue("stockQuantityStatus", stockQuantityStatus);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkPayPeriod(ActionRequest request, ActionResponse response) {
+    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+    try {
+      Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getPayPeriod());
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
+    }
+  }
+
+  public void checkLeavePeriod(ActionRequest request, ActionResponse response) {
+    LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
+    try {
+      Beans.get(PeriodService.class).checkPeriod(lunchVoucherMgt.getLeavePeriod());
+    } catch (Exception e) {
+      response.setFlash(e.getMessage());
     }
   }
 }

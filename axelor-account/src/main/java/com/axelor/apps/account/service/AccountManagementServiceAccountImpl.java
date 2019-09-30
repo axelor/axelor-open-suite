@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -175,5 +176,48 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     }
 
     return analyticDistributionTemplate;
+  }
+
+  /**
+   * Get the product fixed asset category
+   *
+   * @param product
+   * @param company
+   * @return
+   * @throws AxelorException
+   */
+  public FixedAssetCategory getProductFixedAssetCategory(Product product, Company company) {
+
+    return getProductFixedAssetCategory(product, company, CONFIG_OBJECT_PRODUCT);
+  }
+
+  /**
+   * Get the product fixed asset category
+   *
+   * @param product
+   * @param company
+   * @param configObject Specify if we want get the fixed asset category from the product or its
+   *     product family
+   *     <li>1 : product
+   *     <li>2 : product family
+   * @return
+   * @throws AxelorException
+   */
+  protected FixedAssetCategory getProductFixedAssetCategory(
+      Product product, Company company, int configObject) {
+
+    AccountManagement accountManagement = this.getAccountManagement(product, company, configObject);
+
+    FixedAssetCategory fixedAssetCategory = null;
+
+    if (accountManagement != null) {
+      fixedAssetCategory = accountManagement.getFixedAssetCategory();
+    }
+
+    if (fixedAssetCategory == null && configObject == CONFIG_OBJECT_PRODUCT) {
+      return getProductFixedAssetCategory(product, company, CONFIG_OBJECT_PRODUCT_FAMILY);
+    }
+
+    return fixedAssetCategory;
   }
 }

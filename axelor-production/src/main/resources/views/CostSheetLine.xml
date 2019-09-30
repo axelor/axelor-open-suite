@@ -36,18 +36,24 @@
         <column name="consumptionQty" type="decimal" x-scale="2"/>
         <column name="unit" type="reference"/>
         <column name="costPrice" type="decimal"/>
+                <column name="unitCostPrice" type="decimal"/>
+                <column name="ratio" type="decimal"/>
+        
         <node model="com.axelor.apps.production.db.CostSheetLine" orderBy="bomLevel,code" domain="self.parentCostSheetLine is null AND self.costSheet.id = :_costSheetId" onClick="action-cost-sheet-line-view-form">
-            <field name="typeSelect"/>
+            <field name="typeSelectIcon" as="typeSelect"/>
             <field name="code"/>
             <field name="name"/>
             <field name="bomLevel"/>
             <field name="costSheetGroup" as="costSheetGroup"/>
             <field name="consumptionQty"/>
             <field name="unit"/>
-            <field name="costPrice"/>
+            <field name="costPrice"/> 
+                        <field name="unitCostPrice"/> 
+                        <field name="ratio"/> 
+            
         </node>
         <node model="com.axelor.apps.production.db.CostSheetLine" orderBy="bomLevel,code" parent="parentCostSheetLine" onClick="action-cost-sheet-line-view-form">
-            <field name="typeSelect"/>
+            <field name="typeSelectIcon" as="typeSelect"/>
             <field name="code"/>
             <field name="name"/>
             <field name="bomLevel"/>
@@ -55,6 +61,8 @@
             <field name="consumptionQty"/>
             <field name="unit"/>
             <field name="costPrice"/>
+                        <field name="unitCostPrice"/> 
+                        <field name="ratio"/> 
         </node>
     </tree>
 	

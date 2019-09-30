@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,8 @@ import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
@@ -64,6 +66,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
   protected PurchaseOrderStockService purchaseOrderStockService;
+  protected BudgetSupplychainService budgetSupplychainService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -71,13 +74,15 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       AppBaseService appBaseService,
-      PurchaseOrderStockService purchaseOrderStockService) {
+      PurchaseOrderStockService purchaseOrderStockService,
+      BudgetSupplychainService budgetSupplychainService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
     this.purchaseOrderStockService = purchaseOrderStockService;
+    this.budgetSupplychainService = budgetSupplychainService;
   }
 
   public PurchaseOrder createPurchaseOrder(
@@ -140,10 +145,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         if (purchaseOrderLine.getBudget() != null
-            && purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
+            && (purchaseOrderLine.getBudgetDistributionList() == null
+                || purchaseOrderLine.getBudgetDistributionList().isEmpty())) {
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(purchaseOrderLine.getBudget());
-          budgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
+          budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
           purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
         }
       }
@@ -221,7 +227,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
-      newBudgetDistribution.setAmount(purchaseOrderLine.getExTaxTotal());
+      newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
       Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
@@ -268,6 +274,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         }
       }
     }
+    super.requestPurchaseOrder(purchaseOrder);
     int intercoPurchaseCreatingStatus =
         Beans.get(AppSupplychainService.class)
             .getAppSupplychain()
@@ -276,7 +283,26 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_REQUESTED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
-    super.requestPurchaseOrder(purchaseOrder);
+    if (purchaseOrder.getCreatedByInterco()) {
+      fillIntercompanySaleOrderCounterpart(purchaseOrder);
+    }
+  }
+
+  /**
+   * Fill interco sale order counterpart is the sale order exist.
+   *
+   * @param purchaseOrder
+   */
+  protected void fillIntercompanySaleOrderCounterpart(PurchaseOrder purchaseOrder) {
+    SaleOrder saleOrder =
+        Beans.get(SaleOrderRepository.class)
+            .all()
+            .filter("self.saleOrderSeq = :saleOrderSeq")
+            .bind("saleOrderSeq", purchaseOrder.getExternalReference())
+            .fetchOne();
+    if (saleOrder != null) {
+      saleOrder.setExternalReference(purchaseOrder.getPurchaseOrderSeq());
+    }
   }
 
   public void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException {
@@ -328,5 +354,14 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
+
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+  }
+
+  @Override
+  @Transactional
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
+    super.cancelPurchaseOrder(purchaseOrder);
+    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
   }
 }

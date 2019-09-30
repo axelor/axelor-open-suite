@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -99,11 +99,13 @@ public class MoveExcessPaymentService {
     if (invoice.getInvoicePaymentList() != null) {
 
       for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
+        if (invoicePayment.getMove() != null
+            && invoicePayment.getMove().getMoveLineList() != null) {
+          for (MoveLine moveLine : invoicePayment.getMove().getMoveLineList()) {
 
-        for (MoveLine moveLine : invoicePayment.getMove().getMoveLineList()) {
-
-          if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
-            moveLineList.add(moveLine);
+            if (moveLine.getCredit().compareTo(BigDecimal.ZERO) != 0) {
+              moveLineList.add(moveLine);
+            }
           }
         }
       }

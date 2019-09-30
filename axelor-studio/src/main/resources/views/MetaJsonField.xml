@@ -3,19 +3,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults">
+	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults" 
+	onLoad="action-studio-meta-json-field-attrs-on-load">
 	    <panel name="overviewPanel" title="Overview">
 	      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	      <spacer name="appBuilderSpacer"/>
 	      <field name="name" x-pattern="[a-z][a-zA-Z0-9_\\$]+"/>
-	      <field name="type" />
 	      <field name="title" />
+          <field name="parentModel" type="string" hidden="true" />
+          <field name="type" showIf="parentModel != 'com.axelor.studio.db.Wkf'" />
+          <field name="type" showIf="parentModel == 'com.axelor.studio.db.Wkf'" selection-in="['string', 'integer']" />
 	      <field name="defaultValue" />
 	      <field name="help" />
 	      <field name="sequence" />
 	      <field name="includedInCost" widget="inline-checkbox" />
 	      <field name="model" hidden="true" />
 	      <field name="modelField" hidden="true" />
+	      <field name="jsonModel" hidden="true"/>
 	    </panel>
 	    <panel-include view="json-field-form-base" />
     </form>
@@ -26,10 +30,40 @@
 	  <field name="type"/>
 	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	</grid>
-	
-	<action-attrs name="action-studio-set-meta-json-field-defaults" >
-    	<attribute name="value"	for="model" expr="eval:_parent.metaModel?.fullName"/>
-    	<attribute name="value" for="modelField" expr="eval:_parent.metaField?.name"/>
+
+    <action-group name="action-studio-set-meta-json-field-defaults">
+      <action name="action-studio-record-set-meta-json-field-defaults" />
+      <action name="action-studio-attrs-set-meta-json-field-defaults" />
+    </action-group>
+  
+    <action-record name="action-studio-record-set-meta-json-field-defaults" model="com.axelor.meta.db.MetaJsonField">
+      <field name="parentModel" expr="eval:__parent__._model" />
+      <field name="appBuilder" expr="eval:__parent__?.appBuilder"/>
+    </action-record>
+
+    <action-attrs name="action-studio-attrs-set-meta-json-field-defaults">
+      <attribute name="value" for="model" expr="eval:_parent.metaModel?.fullName"
+        if="parentModel == 'com.axelor.studio.db.JsonCreator'" />
+      <attribute name="value" for="modelField" expr="eval:_parent.metaField?.name"
+        if="parentModel == 'com.axelor.studio.db.JsonCreator'" />
+  
+      <attribute name="value" for="model" expr="eval:_parent.model"
+        if="parentModel == 'com.axelor.studio.db.Wkf'" />
+      <attribute name="value" for="model" expr="eval:'com.axelor.meta.db.MetaJsonRecord'"
+        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; _parent.isJson" />
+      <attribute name="value" for="jsonModel" expr="eval:__repo__(MetaJsonModel).all().filter('self.name = ?', _parent.model).fetchOne()"
+        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; _parent.isJson" />
+        
+      <attribute name="value" for="modelField" expr="eval:_parent.jsonField"
+        if="parentModel == 'com.axelor.studio.db.Wkf'" />
+      <attribute name="value" for="modelField" expr="eval:'attrs'"
+        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; !_parent.jsonField &amp;&amp; _parent.isJson" />
+        
+      <attribute name="readonly" for="appBuilder" expr="eval: parentModel == 'com.axelor.studio.db.Wkf'"/>
+    </action-attrs>
+    
+    <action-attrs name="action-studio-meta-json-field-attrs-on-load">
+    	<attribute name="readonly" for="appBuilder" expr="eval: _parent?._model == 'com.axelor.studio.db.Wkf'"/>
     </action-attrs>
     
     <form id="studio-json-field-form" name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onLoad="action-studio-attr-json-field-read-only-model">

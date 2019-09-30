@@ -12,11 +12,14 @@
       required="true" initParam="true"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="account.reconcile.group.status.select"/>
+    <date name="dateOfLettering" title="Date of lettering"/>
+    <date name="unletteringDate" title="Date of unlettering"/>
 
     <extra-code><![CDATA[
       // STATUS SELECT
       public static final int STATUS_TEMPORARY = 1;
       public static final int STATUS_FINAL = 2;
+      public static final int STATUS_UNLETTERED = 3;
 	]]></extra-code>
   </entity>
 

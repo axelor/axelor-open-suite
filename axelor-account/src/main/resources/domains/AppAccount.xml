@@ -19,8 +19,6 @@
 
 		<boolean name="manageFactors" />
 
-		<boolean name="printReportOnVentilation" title="Print report on invoice ventilation" default="true" />
-
         <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration" selection="account.partner.bal.config.select" default="1"/>
 
 		<boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice" default="true"/>
@@ -36,6 +34,20 @@
 	
 		]]></extra-code>
 		
+		<track>
+			<field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
+			<field name="chequeInterbankCode" on="UPDATE"/>
+	
+			<field name="manageCustomerCredit" on="UPDATE"/>
+
+			<field name="manageAnalyticAccounting" on="UPDATE"/>
+			<field name="analyticDistributionTypeSelect" on="UPDATE"/>
+
+			<field name="manageFactors" on="UPDATE"/>
+			<field name="partnerBalConfigSelect" on="UPDATE"/>
+			<field name="manageAdvancePaymentInvoice" on="UPDATE"/>
+			<field name="paymentVouchersOnInvoice" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

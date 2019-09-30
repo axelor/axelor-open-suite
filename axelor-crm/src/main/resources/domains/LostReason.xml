@@ -8,7 +8,7 @@
   <entity name="LostReason" lang="java" cachable="true">
 	
   	<string name="name" title="Name" required="true"/>
-    
+    <boolean name="freeText" title="Free text"/>
   </entity>
 
 </domain-models>

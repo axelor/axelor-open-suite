@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <menuitem name="app-builder-root" title="App Builder" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
+    <menuitem name="app-builder-root" title="App builder" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
 
     <menuitem name="app-builder-studio" title="Studio" parent="app-builder-root" action="action.studio.view" order="10" />
 
@@ -80,4 +80,13 @@
         <domain>self.menuAction = false</domain>
     </action-view>
 
+	<menuitem title="Selections" name="app-builder-config-selections" parent="app-builder-config" action="action.studio.meta.select.view" order="46"/>
+	
+	<action-view name="action.studio.meta.select.view" title="Selections" model="com.axelor.meta.db.MetaSelect">
+		<view name="meta-select-grid" type="grid"/>
+  		<view name="meta-select-form" type="form"/>
+  		<domain>self.isCustom = true</domain>
+  		<context name="_fromStudio" expr="eval:true"/>
+	</action-view>
+	
 </object-views>

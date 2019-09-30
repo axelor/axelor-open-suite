@@ -24,7 +24,7 @@
 
 	<action-view name="invoice.root.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-grid"/>
+		<view type="grid" name="invoice-refund-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
@@ -50,7 +50,7 @@
 
 	<action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-supplier-grid"/>
+		<view type="grid" name="invoice-supplier-refund-grid"/>
 		<view type="form" name="invoice-form"/>
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
@@ -188,9 +188,18 @@
 	<menuitem name="account-root-debt-recovery" parent="account-root"
 		title="Debt recovery" order="15" />
 
+	<menuitem name="debt-recovery-root-debt-recovery" parent="account-root-debt-recovery"
+		title="Debt recovery" order="0" action="debt.recovery.root.debt.recovery" />
+
+	<action-view name="debt.recovery.root.debt.recovery"
+		title="Debt recovery" model="com.axelor.apps.account.db.DebtRecovery" >
+		<view type="grid" name="debt-recovery-grid" />
+		<view type="form" name="debt-recovery-form" />
+	</action-view>
+
 	<menuitem name="debt-recovery-root-history"
 		parent="account-root-debt-recovery" title="Debt recovery history"
-		action="debt.recovery.root.history" order="0" />
+		action="debt.recovery.root.history" order="1" />
 
 	<action-view name="debt.recovery.root.history"
 		title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory" >
@@ -219,7 +228,7 @@
 	</action-view>
 
 	<menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
-		title="Configuration" order="3" icon="fa-cog"/>
+		title="Configuration" order="4" icon="fa-cog"/>
 
 	<menuitem name="debt-recovery-root-conf-debt-recovery-method"
 		parent="debt-recovery-root-conf" title="Debt recovery methods"
@@ -240,7 +249,19 @@
 		<view type="grid" name="debt-recovery-level-grid"/>
 		<view type="form" name="debt-recovery-level-form"/>
 	</action-view>
+	
+	<menuitem name="debt-recovery-root-conf-factor"
+		parent="debt-recovery-root-conf" title="Factor"
+		action="debt.recovery.root.conf.factor" />
 
+	<action-view name="debt.recovery.root.conf.factor"
+		title="Factor" model="com.axelor.apps.base.db.Partner">
+		<view type="cards" name="partner-cards"/>
+		<view type="grid" name="partner-grid" />
+		<view type="form" name="partner-form" />
+		<domain>self.isFactor = true</domain>
+	</action-view>
+	
 	
 	<menuitem name="account-root-accounting" parent="account-root"
 		title="Accounting Exports/Reports" order="20" />
@@ -576,7 +597,7 @@
 	
 	<action-view name="top.invoicing.custrefunds" title="Cust. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-grid" />
+		<view type="grid" name="invoice-refund-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
@@ -598,7 +619,7 @@
 	
 	<action-view name="top.invoicing.supplrefunds" title="Suppl. Refunds"
 		model="com.axelor.apps.account.db.Invoice" >
-		<view type="grid" name="invoice-supplier-grid" />
+		<view type="grid" name="invoice-supplier-refund-grid" />
 		<view type="form" name="invoice-form" />
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>

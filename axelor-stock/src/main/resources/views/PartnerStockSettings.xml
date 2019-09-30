@@ -8,7 +8,7 @@
           model="com.axelor.apps.stock.db.PartnerStockSettings">
 
         <field name="company" form-view="company-form"
-               grid-view="company-grid"/>
+               grid-view="company-grid" onChange="action-partner-stock-settings-group-company-onchange"  canEdit="false"/>
         <field name="defaultStockLocation" form-view="stock-location-form"
                grid-view="stock-location-grid"
                onSelect="action-partner-default-stock-location-form-domain"/>
@@ -16,12 +16,14 @@
         <field name="plannedStockMoveMessageTemplate"
           requiredIf="plannedStockMoveAutomaticMail"
           showIf="plannedStockMoveAutomaticMail"
-          form-view="template-form" grid-view="template-grid"/>
+          form-view="template-form" grid-view="template-grid" domain="self.metaModel.name='StockMove'"/>
         <field name="realStockMoveAutomaticMail"/>
         <field name="realStockMoveMessageTemplate"
                requiredIf="realStockMoveAutomaticMail"
                showIf="realStockMoveAutomaticMail"
-               form-view="template-form" grid-view="template-grid"/>
+               form-view="template-form" grid-view="template-grid" domain="self.metaModel.name='StockMove'"/>
+        <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
+        <field name="$stockConfig" type="many-to-one" target="com.axelor.apps.stock.db.StockConfig" hidden="true"/>
     </grid>
 
     <form name="partner-stock-settings-form"
@@ -29,7 +31,8 @@
           model="com.axelor.apps.stock.db.PartnerStockSettings">
         <panel name="mainPanel">
             <field name="company" form-view="company-form"
-                   grid-view="company-grid"/>
+                   grid-view="company-grid" onChange="action-partner-stock-settings-group-company-onchange"/>
+            <field name="$stockConfig" type="many-to-one" target="com.axelor.apps.stock.db.StockConfig" hidden="true"/>
             <field name="defaultStockLocation" form-view="stock-location-form"
                    grid-view="stock-location-grid"
                    onSelect="action-partner-default-stock-location-form-domain"/>
@@ -38,26 +41,42 @@
                 <field name="plannedStockMoveMessageTemplate"
                   requiredIf="plannedStockMoveAutomaticMail"
                   showIf="plannedStockMoveAutomaticMail"
-                  form-view="template-form" grid-view="template-grid"/>
+                  form-view="template-form" grid-view="template-grid" domain="self.metaModel.name='StockMove'"/>
             </panel>
             <panel name="realStockMovePanel" colSpan="12">
                 <field name="realStockMoveAutomaticMail"/>
                 <field name="realStockMoveMessageTemplate"
                   requiredIf="realStockMoveAutomaticMail"
                   showIf="realStockMoveAutomaticMail"
-                  form-view="template-form" grid-view="template-grid"/>
+                  form-view="template-form" grid-view="template-grid" domain="self.metaModel.name='StockMove'"/>
             </panel>
+            <field name="incoterm" canEdit="false" form-view="incoterm-form" grid-view="incoterm-grid"/>
         </panel>
     </form>
 
     <action-attrs name="action-partner-default-stock-location-form-domain"
                   model="com.axelor.apps.stock.db.PartnerStockSettings">
-        <attribute for="defaultStockLocation" name="domain"
-                   expr="eval: 'self.id IN (0)'"/>
-        <attribute for="defaultStockLocation" name="domain" if="__parent__"
-                   expr="eval: 'self.partner = :__parent__ AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
-        <attribute for="defaultStockLocation" name="domain" if="partner"
-                   expr="eval: 'self.partner = :partner AND self.company = :company AND (self.typeSelect = 2 OR self.typeSelect = 3)'"/>
+        <attribute for="defaultStockLocation" name="domain" expr="eval: &quot; self.company = :company AND (self.typeSelect = 1 OR (self.typeSelect = 2 AND self.partner.id = ${__parent__?.id})) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) &quot;"/>
     </action-attrs>
+    
+    <action-group name="action-partner-stock-settings-group-company-onchange">
+    	<action name="action-partner-stock-settings-record-set-stock-config"/>
+    	<action name="action-partner-stock-settings-record-default-value"/>
+    </action-group>
+    
+    <action-record name="action-partner-stock-settings-record-set-stock-config" model="com.axelor.apps.stock.db.PartnerStockSettings">
+    	<field name="$stockConfig" expr="eval: __repo__(StockConfig).all().filter('self.company = ?', company).fetchOne()"/>
+    </action-record>
+    
+    <action-record name="action-partner-stock-settings-record-default-value" model="com.axelor.apps.stock.db.PartnerStockSettings">
+    	<field name="plannedStockMoveAutomaticMail" expr="eval: null" if="$stockConfig==null"/>
+    	<field name="plannedStockMoveAutomaticMail" expr="eval: $stockConfig?.plannedStockMoveAutomaticMail" if="$stockConfig!=null"/>
+    	<field name="plannedStockMoveMessageTemplate" expr="eval: null" if="$stockConfig==null"/>
+    	<field name="plannedStockMoveMessageTemplate" expr="eval: $stockConfig?.plannedStockMoveMessageTemplate" if="$stockConfig!=null"/>
+    	<field name="realStockMoveAutomaticMail" expr="eval: null" if="$stockConfig==null"/>
+    	<field name="realStockMoveAutomaticMail" expr="eval: $stockConfig?.realStockMoveAutomaticMail" if="$stockConfig!=null"/>
+    	<field name="realStockMoveMessageTemplate" expr="eval: null" if="$stockConfig==null"/>
+    	<field name="realStockMoveMessageTemplate" expr="eval: $stockConfig?.realStockMoveMessageTemplate" if="$stockConfig!=null"/>
+    </action-record>
 
 </object-views>

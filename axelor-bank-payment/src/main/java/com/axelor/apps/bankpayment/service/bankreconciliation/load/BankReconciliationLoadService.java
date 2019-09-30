@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,15 +39,23 @@ public class BankReconciliationLoadService {
   }
 
   @Transactional
-  public void loadBankStatement(BankReconciliation bankReconciliation) {
+  public void loadBankStatement(
+      BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
-    this.loadBankStatementLines(bankReconciliation);
+    this.loadBankStatementLines(bankReconciliation, includeBankStatement);
   }
 
   @Transactional
   public void loadBankStatementLines(BankReconciliation bankReconciliation) {
+    loadBankStatementLines(bankReconciliation, true);
+  }
 
-    List<BankStatementLine> bankStatementLineList = getBankStatementLines(bankReconciliation);
+  @Transactional
+  public void loadBankStatementLines(
+      BankReconciliation bankReconciliation, boolean includeBankStatement) {
+
+    List<BankStatementLine> bankStatementLineList =
+        getBankStatementLines(bankReconciliation, includeBankStatement);
 
     if (bankStatementLineList != null) {
       for (BankStatementLine bankStatementLine : bankStatementLineList) {
@@ -58,20 +66,57 @@ public class BankReconciliationLoadService {
     }
   }
 
-  protected List<BankStatementLine> getBankStatementLines(BankReconciliation bankReconciliation) {
+  /**
+   * Write the filter for the bank statement line query, depending on boolean parameters.
+   *
+   * @param includeOtherBankStatements whether we include other bank statement.
+   * @param includeBankStatement whether we include the bank statement given in parameter. this
+   *     parameter cannot be false if includeOtherBankstatements is false.
+   * @return the filter.
+   */
+  protected String getBankStatementLinesFilter(
+      boolean includeOtherBankStatements, boolean includeBankStatement) {
+
+    String filter;
+    if (!includeOtherBankStatements) {
+      filter =
+          "self.bankDetails = :bankDetails"
+              + " and self.currency = :currency"
+              + " and self.amountRemainToReconcile > 0"
+              + " and self.bankStatement.statusSelect = :statusImported"
+              + " and self.bankStatement = :bankStatement";
+    } else if (includeBankStatement) {
+      filter =
+          "self.bankDetails = :bankDetails"
+              + " and self.currency = :currency"
+              + " and self.amountRemainToReconcile > 0"
+              + " and self.bankStatement.statusSelect = :statusImported"
+              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
+    } else {
+      filter =
+          "self.bankDetails = :bankDetails"
+              + " and self.currency = :currency"
+              + " and self.amountRemainToReconcile > 0"
+              + " and self.bankStatement.statusSelect = :statusImported"
+              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
+              + " and self.bankStatement != :bankStatement";
+    }
+    return filter;
+  }
+
+  protected List<BankStatementLine> getBankStatementLines(
+      BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
-
     return JPA.all(BankStatementLine.class)
         .filter(
-            "self.bankDetails = ?1 and self.currency = ?2 and self.amountRemainToReconcile > 0 and self.bankStatement.statusSelect = ?3 "
-                + "and ((self.bankStatement = ?4 and ?5 is false) or (self.bankStatement.bankStatementFileFormat = ?6 and ?5 is true))",
-            bankReconciliation.getBankDetails(),
-            bankReconciliation.getCurrency(),
-            BankStatementRepository.STATUS_IMPORTED,
-            bankStatement,
-            bankReconciliation.getIncludeOtherBankStatements(),
-            bankStatement.getBankStatementFileFormat())
+            getBankStatementLinesFilter(
+                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
+        .bind("bankDetails", bankReconciliation.getBankDetails())
+        .bind("currency", bankReconciliation.getCurrency())
+        .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
+        .bind("bankStatement", bankStatement)
+        .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
         .order("valueDate, sequence")
         .fetch();
   }

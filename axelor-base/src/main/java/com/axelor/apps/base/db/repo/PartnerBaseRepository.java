@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
@@ -70,7 +71,7 @@ public class PartnerBaseRepository extends PartnerRepository {
         }
       }
 
-      if (!partner.getIsContact()) {
+      if (!partner.getIsContact() && !partner.getIsEmployee()) {
         partner.setMainAddress(null);
         if (partner.getPartnerAddressList() != null) {
           for (PartnerAddress partnerAddress : partner.getPartnerAddressList()) {
@@ -81,11 +82,24 @@ public class PartnerBaseRepository extends PartnerRepository {
           }
         }
       }
+
+      if (partner.getPartnerTypeSelect() == PARTNER_TYPE_INDIVIDUAL) {
+        partner.setContactPartnerSet(new HashSet<>());
+      }
+
+      if (!partner.getIsContact() && partner.getContactPartnerSet() != null) {
+        for (Partner contact : partner.getContactPartnerSet()) {
+          if (contact.getMainPartner() == null) {
+            contact.setMainPartner(partner);
+          }
+        }
+      }
+
       partnerService.setPartnerFullName(partner);
       partnerService.setCompanyStr(partner);
       return super.save(partner);
     } catch (Exception e) {
-      throw new PersistenceException(e.getLocalizedMessage());
+      throw new PersistenceException(e);
     }
   }
 

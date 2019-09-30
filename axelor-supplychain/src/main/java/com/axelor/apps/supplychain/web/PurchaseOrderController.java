@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,8 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -34,6 +36,8 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,6 +50,7 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Singleton
 public class PurchaseOrderController {
@@ -70,6 +75,7 @@ public class PurchaseOrderController {
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
                   .param("forceEdit", "true")
+                  .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .map());
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
@@ -139,7 +145,8 @@ public class PurchaseOrderController {
           purchaseOrderIdList.add(new Long((Integer) map.get("id")));
         }
       } else {
-        // After confirmation popup, purchase order's id are in a string separated by ","
+        // After confirmation popup, purchase order's id are in a string separated by
+        // ","
         String purchaseOrderIdListStr = (String) request.getContext().get("purchaseOrderToMerge");
         for (String purchaseOrderId : purchaseOrderIdListStr.split(",")) {
           purchaseOrderIdList.add(new Long(purchaseOrderId));
@@ -148,20 +155,25 @@ public class PurchaseOrderController {
       }
     }
 
-    // Check if currency, supplierPartner and company are the same for all selected purchase orders
+    // Check if currency, supplierPartner and company are the same for all selected
+    // purchase orders
     Currency commonCurrency = null;
     Partner commonSupplierPartner = null;
     Company commonCompany = null;
     Partner commonContactPartner = null;
     TradingName commonTradingName = null;
-    // Useful to determine if a difference exists between contact partners of all purchase orders
+    // Useful to determine if a difference exists between contact partners of all
+    // purchase orders
     boolean existContactPartnerDiff = false;
     PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all purchase orders
+    // Useful to determine if a difference exists between price lists of all
+    // purchase orders
     boolean existPriceListDiff = false;
     StockLocation commonLocation = null;
-    // Useful to determine if a difference exists between stock locations of all purchase orders
+    // Useful to determine if a difference exists between stock locations of all
+    // purchase orders
     boolean existLocationDiff = false;
+    boolean allTradingNamesAreNull = true;
 
     PurchaseOrder purchaseOrderTemp;
     int count = 1;
@@ -176,6 +188,7 @@ public class PurchaseOrderController {
         commonPriceList = purchaseOrderTemp.getPriceList();
         commonLocation = purchaseOrderTemp.getStockLocation();
         commonTradingName = purchaseOrderTemp.getTradingName();
+        allTradingNamesAreNull = commonTradingName == null;
       } else {
         if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -187,9 +200,9 @@ public class PurchaseOrderController {
         if (commonCompany != null && !commonCompany.equals(purchaseOrderTemp.getCompany())) {
           commonCompany = null;
         }
-        if (commonTradingName != null
-            && !commonTradingName.equals(purchaseOrderTemp.getTradingName())) {
+        if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
           commonTradingName = null;
+          allTradingNamesAreNull = false;
         }
         if (commonContactPartner != null
             && !commonContactPartner.equals(purchaseOrderTemp.getContactPartner())) {
@@ -234,7 +247,7 @@ public class PurchaseOrderController {
               com.axelor.apps.purchase.exception.IExceptionMessage
                   .PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
-    if (commonTradingName == null) {
+    if (commonTradingName == null && !allTradingNamesAreNull) {
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.purchase.exception.IExceptionMessage
@@ -246,7 +259,8 @@ public class PurchaseOrderController {
       return;
     }
 
-    // Check if priceList or contactPartner or stock location are content in parameters
+    // Check if priceList or contactPartner or stock location are content in
+    // parameters
     if (request.getContext().get("priceList") != null) {
       commonPriceList =
           JPA.em()
@@ -343,5 +357,50 @@ public class PurchaseOrderController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
     Beans.get(PurchaseOrderServiceSupplychainImpl.class)
         .applyToallBudgetDistribution(purchaseOrder);
+  }
+
+  public void updateEstimatedDelivDate(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        Integer receiptState = purchaseOrderLine.getReceiptState();
+        if (receiptState != null
+            && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
+            && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_PARTIALLY_RECEIVED)) {
+          purchaseOrderLine.setEstimatedDelivDate(purchaseOrder.getDeliveryDate());
+        }
+      }
+    }
+    response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+
+  /**
+   * Called from purchase order form view when validating purchase order and analytic distribution
+   * is required from company's purchase config.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkPurchaseOrderAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      List<String> productList = new ArrayList<String>();
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        if (purchaseOrderLine.getAnalyticDistributionTemplate() == null) {
+          productList.add(purchaseOrderLine.getProduct().getFullName());
+        }
+      }
+      if (productList != null && !productList.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
+            productList);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

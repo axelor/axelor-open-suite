@@ -80,6 +80,11 @@
 		  		<field name="exportCodeForExtraHours" />
 		  	</panel>
 		</panel-tabs>
+				        
+        <panel-mail name="mailPanel">
+		    <mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	</form>
 	
 	<action-record name="action-hr-config-record-default" model="com.axelor.apps.hr.db.HRConfig">

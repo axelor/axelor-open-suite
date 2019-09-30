@@ -14,10 +14,24 @@
 		<panel name="realizeOrderPanel">
 			<field name="stockMoveRealizeOrderSelect"/>
 		</panel>
+		<panel name="automaticEmailPanel">
+			<field name="finishMoAutomaticEmail"/>
+			<field name="finishMoMessageTemplate" requiredIf="finishMoAutomaticEmail" showIf="finishMoAutomaticEmail" 
+				form-view="template-form" grid-view="template-grid" domain="self.metaModel.name = 'ManufOrder'"/>
+			<field name="partFinishMoAutomaticEmail"/>
+			<field name="partFinishMoMessageTemplate" requiredIf="partFinishMoAutomaticEmail" showIf="partFinishMoAutomaticEmail" 
+				form-view="template-form" grid-view="template-grid" domain="self.metaModel.name = 'ManufOrder'"/>
+		</panel>
 		<panel name="manufOrderSeqPanel" title="Manufacturing order sequence">
         	<field name="manufOrderSequence" canEdit="true" canNew="true" domain="self.code = 'manufOrder' and self.company = :company"  form-view="sequence-form" grid-view="sequence-grid"/>
 			<field name="workshopSequenceConfigLineList" form-view="workshop-sequence-config-line-form" colSpan="12" grid-view="workshop-sequence-config-line-grid"/>
 		</panel>
+				
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+		
     </form>
 	
 	<action-record name="action-production-config-record-default" model="com.axelor.apps.production.db.ProductionConfig">

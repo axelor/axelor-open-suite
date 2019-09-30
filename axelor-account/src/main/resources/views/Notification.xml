@@ -7,7 +7,7 @@
 		name="notification-grid" orderBy="-paymentDate,-subrogationRelease">
 		<field name="factorPartner" />
 		<field name="paymentDate" />
-		<field name="subrogationRelease" />
+		<field name="subrogationRelease" width="120"/>
 		<field name="statusSelect" />
 	</grid>
 
@@ -16,10 +16,10 @@
 
 		<panel name="mainPanel" readonlyIf="statusSelect > 1">
 			<field name="statusSelect" widget="NavSelect" colSpan="12" />
-			<field name="company" onChange="action-account-record-notification-company-onchange" required="true"/>
+			<field name="company" onChange="action-account-record-notification-company-onchange" required="true" canEdit="false"/>
 			<field name="factorPartner" readonly="true"/>
 			<field name="paymentDate" />
-			<field name="subrogationRelease"
+			<field name="subrogationRelease" canEdit="false"
 				domain="self.company = :company AND self.statusSelect = 3"
 				onChange="action-notification-subrogation-release-onchange" />
 			<panel-related name="notificationItemListPanel" field="notificationItemList" grid-view="notification-item-grid"

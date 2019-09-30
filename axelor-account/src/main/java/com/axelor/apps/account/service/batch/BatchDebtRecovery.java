@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.DebtRecovery;
-import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryActionService;
@@ -39,15 +38,10 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
 import javax.persistence.Table;
-import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchDebtRecovery extends BatchStrategy {
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected boolean stopping = false;
   protected PartnerRepository partnerRepository;
@@ -95,10 +89,7 @@ public class BatchDebtRecovery extends BatchStrategy {
   protected void process() {
 
     if (!stopping) {
-
       this.debtRecoveryPartner();
-
-      this.generateMail();
     }
   }
 
@@ -134,8 +125,8 @@ public class BatchDebtRecovery extends BatchStrategy {
           if (remindedOk) {
             DebtRecovery debtRecovery = debtRecoveryService.getDebtRecovery(partner, company);
             addBatchToModel(debtRecovery);
+            incrementDone(partner);
           }
-          incrementDone(partner);
         } catch (AxelorException e) {
           TraceBackService.trace(
               new AxelorException(
@@ -166,7 +157,7 @@ public class BatchDebtRecovery extends BatchStrategy {
   protected void incrementAnomaly(Partner partner) {
     findBatch();
     partner = partnerRepository.find(partner.getId());
-    addBatchToModel(partner);
+    // addBatchToModel(partner);
     _incrementAnomaly();
   }
 
@@ -184,53 +175,6 @@ public class BatchDebtRecovery extends BatchStrategy {
   private String getBatchSetTableName(Model model) {
     String modelTableName = EntityHelper.getEntityClass(model).getAnnotation(Table.class).name();
     return modelTableName + "_BATCH_SET";
-  }
-
-  protected void generateMail() {
-    Query<DebtRecovery> query =
-        debtRecoveryRepository
-            .all()
-            .filter(":_batch MEMBER OF self.batchSet")
-            .bind("_batch", batch)
-            .order("id");
-
-    int offset = 0;
-    List<DebtRecovery> debtRecoveries;
-    while (!(debtRecoveries = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      int count = 0;
-      for (DebtRecovery debtRecovery : debtRecoveries) {
-        try {
-          DebtRecoveryHistory debtRecoveryHistory =
-              debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
-          if (debtRecoveryHistory == null) {
-            continue;
-          }
-          if (CollectionUtils.isEmpty(
-              messageRepository
-                  .findByRelatedTo(
-                      Math.toIntExact(debtRecoveryHistory.getId()),
-                      DebtRecoveryHistory.class.getCanonicalName())
-                  .fetch())) {
-            debtRecoveryActionService.runMessage(debtRecovery);
-          }
-        } catch (Exception e) {
-          TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get("Tiers") + " %s",
-                      debtRecovery.getAccountingSituation().getPartner().getName()),
-                  e),
-              IException.REMINDER,
-              batch.getId());
-          incrementAnomaly();
-          break;
-        } finally {
-          ++count;
-        }
-      }
-      offset += count;
-      JPA.clear();
-    }
   }
 
   /**

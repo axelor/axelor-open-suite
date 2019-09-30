@@ -15,7 +15,7 @@
 			<field name="product"/>
 		</panel>
 		<panel name="controlPointModelPanel">
-			<panel-related name="controlPointModelListPanel" field="controlPointModelList" colSpan="12" grid-view="control-point-model-grid" form-view="control-point-model-form" />
+			<panel-related name="controlPointModelListPanel" orderBy="-priority" field="controlPointModelList" colSpan="12" grid-view="control-point-model-grid" form-view="control-point-model-form" />
 		</panel>
 	</form>
 		

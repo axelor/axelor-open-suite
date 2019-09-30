@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,10 +22,11 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
-import com.axelor.apps.production.service.CostSheetService;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,6 +36,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,13 +135,16 @@ public class BillOfMaterialController {
             .map());
   }
 
-  public void validateProdProcess(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateProdProcess(ActionRequest request, ActionResponse response) {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
     if (billOfMaterial != null && billOfMaterial.getProdProcess() != null) {
       if (billOfMaterial.getProdProcess().getIsConsProOnOperation()) {
-        Beans.get(ProdProcessService.class)
-            .validateProdProcess(billOfMaterial.getProdProcess(), billOfMaterial);
+        try {
+          Beans.get(ProdProcessService.class)
+              .validateProdProcess(billOfMaterial.getProdProcess(), billOfMaterial);
+        } catch (AxelorException e) {
+          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        }
       }
     }
   }
@@ -183,6 +189,31 @@ public class BillOfMaterialController {
       billOfMaterialService.setBillOfMaterialAsDefault(billOfMaterial);
 
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void computeName(ActionRequest request, ActionResponse response) {
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+
+    if (billOfMaterial.getName() == null) {
+      response.setValue("name", billOfMaterialService.computeName(billOfMaterial));
+    }
+  }
+
+  public void addRawMaterials(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      @SuppressWarnings("unchecked")
+      ArrayList<LinkedHashMap<String, Object>> rawMaterials =
+          (ArrayList<LinkedHashMap<String, Object>>) request.getContext().get("rawMaterials");
+
+      if (rawMaterials != null && !rawMaterials.isEmpty()) {
+        billOfMaterialService.addRawMaterials(billOfMaterial.getId(), rawMaterials);
+
+        response.setReload(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

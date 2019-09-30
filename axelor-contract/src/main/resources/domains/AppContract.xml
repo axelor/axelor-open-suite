@@ -16,6 +16,15 @@
 
 		<boolean name="isConfigContract" title="Configurable contract" />
 
+		<track>
+			<field name="isUnchangableContract" on="UPDATE"/>
+			<field name="isAmendmentManagement" on="UPDATE"/>
+			<field name="isRenewalManagement" on="UPDATE"/>
+			<field name="isInvoicingManagement" on="UPDATE"/>
+			<field name="isConsumptionManagement" on="UPDATE"/>
+			<field name="isAdditionalBenefitManagement" on="UPDATE"/>
+			<field name="isConfigContract" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

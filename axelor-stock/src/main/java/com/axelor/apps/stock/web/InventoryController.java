@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,12 +25,14 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -40,6 +42,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
+import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,9 +95,18 @@ public class InventoryController {
       Inventory inventory = request.getContext().asType(Inventory.class);
       inventory = inventoryRepo.find(inventory.getId());
 
-      inventoryService.exportInventoryAsCSV(inventory);
+      String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
+      MetaFile metaFile = inventoryService.exportInventoryAsCSV(inventory);
 
-      response.setReload(true);
+      response.setView(
+          ActionView.define(name)
+              .add(
+                  "html",
+                  "ws/rest/com.axelor.meta.db.MetaFile/"
+                      + metaFile.getId()
+                      + "/content/download?v="
+                      + metaFile.getVersion())
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -177,20 +189,25 @@ public class InventoryController {
     }
   }
 
-  public void showStockMove(ActionRequest request, ActionResponse response) {
+  public void showStockMoves(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      StockMove stockMove = inventoryService.findStockMove(inventory);
-      if (inventory != null) {
-        ActionViewBuilder builder =
-            ActionView.define(I18n.get("Stock Move"))
-                .model(StockMove.class.getName())
-                .add("grid", "stock-move-grid")
-                .add("form", "stock-move-form")
-                .context("_showRecord", stockMove.getId());
-        response.setView(builder.map());
+      List<StockMove> stockMoveList = inventoryService.findStockMoves(inventory);
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get("Internal Stock Moves"))
+              .model(StockMove.class.getName())
+              .add("grid", "stock-move-grid")
+              .add("form", "stock-move-form");
+      if (stockMoveList.isEmpty()) {
+        response.setFlash(I18n.get("No stock moves found for this inventory."));
       } else {
-        response.setFlash(I18n.get("No record found"));
+        builder
+            .context("_showSingle", true)
+            .domain(
+                String.format(
+                    "self.originTypeSelect = '%s' AND self.originId = %s",
+                    StockMoveRepository.ORIGIN_INVENTORY, inventory.getId()));
+        response.setView(builder.map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -85,4 +85,15 @@
 		<option value="2">Forecasted customer invoices</option>
 	</selection>
 
+	<selection name="supplychain.mrp.forecast.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+		<option value="3">Cancelled</option>
+	</selection>
+	
+	<selection name="supplychain.estimated.date.select">
+		<option value="0">Current date</option>
+		<option value="1">Left empty</option>
+	</selection>
+
 </object-views>

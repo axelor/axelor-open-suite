@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -167,6 +167,9 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       throws AxelorException {
 
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+    if (accountConfig.getFactorPartner() == null) {
+      return null;
+    }
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
     return bankDetailsList
         .stream()

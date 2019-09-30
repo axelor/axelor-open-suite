@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,17 +22,23 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
+
+  protected ExpenseService expenseService;
 
   @Inject
   public BankOrderServiceHRImpl(
@@ -42,7 +48,9 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       EbicsService ebicsService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      BankOrderLineOriginService bankOrderLineOriginService,
+      ExpenseService expenseService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
@@ -50,22 +58,42 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         ebicsService,
         invoicePaymentCancelService,
         bankPaymentConfigService,
-        sequenceService);
+        sequenceService,
+        bankOrderLineOriginService);
+    this.expenseService = expenseService;
   }
 
   @Override
-  public void realize(BankOrder bankOrder) throws AxelorException {
-    super.realize(bankOrder);
-
-    if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
-      Expense expense =
-          Beans.get(ExpenseRepository.class)
-              .all()
-              .filter("self.bankOrder.id = ?", bankOrder.getId())
-              .fetchOne();
-      if (expense != null) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void validatePayment(BankOrder bankOrder) throws AxelorException {
+    super.validatePayment(bankOrder);
+    List<Expense> expenseList =
+        Beans.get(ExpenseRepository.class)
+            .all()
+            .filter("self.bankOrder.id = ?", bankOrder.getId())
+            .fetch();
+    for (Expense expense : expenseList) {
+      if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
         expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
         expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+        expenseService.createMoveForExpensePayment(expense);
+      }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelPayment(BankOrder bankOrder) throws AxelorException {
+    super.cancelPayment(bankOrder);
+    List<Expense> expenseList =
+        Beans.get(ExpenseRepository.class)
+            .all()
+            .filter("self.bankOrder.id = ?", bankOrder.getId())
+            .fetch();
+    for (Expense expense : expenseList) {
+      if (expense != null
+          && expense.getPaymentStatusSelect() != InvoicePaymentRepository.STATUS_CANCELED) {
+        expenseService.cancelPayment(expense);
       }
     }
   }

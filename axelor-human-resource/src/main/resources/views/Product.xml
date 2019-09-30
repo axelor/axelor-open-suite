@@ -15,13 +15,14 @@
     </grid>
 
    <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
-    <toolbar>
+        <toolbar>
     		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
 			<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
-			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4" required="true" if="!__config__.app.getApp('base').getGenerateProductSequence()"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4" if="__config__.app.getApp('base').getGenerateProductSequence()" readonly="true"/>
 			<panel name="productTypologyPanel" title="Product typology" colSpan="12">
 				<field name="productTypeSelect" readonly="true" />
 				<field name="deductLunchVoucher" hideIf="!expense" />
@@ -107,7 +108,7 @@
               </panel>
               <panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
                 <field name="productFamily" colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
-                <field name="productCategory" domain="self.productFamily = :productFamily" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
+                <field name="productCategory" colSpan="12" form-view="product-category-form" grid-view="product-category-grid"/>
               </panel>
             </panel>
           </panel>
@@ -139,7 +140,38 @@
 			</panel>
 	        <panel-related name="accountManagementListPanel" title="Accounting" field="accountManagementList" colSpan="12" domain="self.typeSelect = 1" showTitle="false" form-view="account-management-form" grid-view="account-management-product-grid"/>
 	  	</panel-tabs>
-	</form>    
+	</form>
+
+	<cards name="product-activity-cards" model="com.axelor.apps.base.db.Product" title="Product Activities" orderBy="code,name" width="25%" css="rect-image">
+		<toolbar>
+			<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+		</toolbar>
+		<field name="picture"/>
+		<field name="fullName"/>
+		<field name="unit"/>
+		<field name="salePrice" x-scale="2"/>
+		<field name="saleCurrency.symbol"/>
+		<field name="productFamily"/>
+		<field name="productCategory"/>
+		<field name="internalDescription"/>
+		<template><![CDATA[
+			<div class="span12"><strong>{{fullName}}</strong></div>
+			<div>
+			  <div class="span4 card-image">
+				<img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+				<img ng-show="!picture" src="img/product-default.png" />
+			  </div>
+			  <div class="span8">
+				<span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
+				{{unit.name}}<br/>
+				{{productFamily.name}}<br/>
+				{{productCategory.name}}</span>
+			  </div>
+			</div>
+			<div class="span12" ng-bind-html="internalDescription"></div>
+		]]>
+		</template>
+	</cards>
     
     <action-group name="action-group-base-product-expense-onnew">
     	<action name="action-product-record-default-new-expense"/>
@@ -169,6 +201,8 @@
 		<field name="sellable" expr="false"/>
     </action-record>
     
-
+    <action-record name="hr-action-product-record-default-new" model="com.axelor.apps.base.db.Product">
+    	<field name="expense" expr="false"/>
+    </action-record>
 	
 </object-views>

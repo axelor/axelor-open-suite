@@ -24,7 +24,7 @@
     </grid>
     
 	<form name="move-template-line-in-amount-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-		<panel name="mainPanel" readonlyIf="isValid">
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="debit" readonlyIf="credit > 0" onChange="action-move-template-line-record-update-need-to-check-validity"/>
@@ -33,12 +33,12 @@
 			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
 	        <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
 	        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
-			<field name="isValid" readonly="true"/>
+			<field name="isValid" readonly="true" hidden="true"/>
 		</panel>
   	</form>
   	
   	<form name="move-template-line-in-percentage-form" title="Move template line" model="com.axelor.apps.account.db.MoveTemplateLine">
-		<panel name="mainPanel" readonlyIf="isValid">
+		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="debitCreditSelect" onChange="action-move-template-line-get-account" required="true"/>
 			<field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent,action-move-template-line-record-update-need-to-check-validity"/>
@@ -48,7 +48,7 @@
 			<field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
 	        <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
 	        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
-			<field name="isValid" readonly="true"/>
+			<field name="isValid" readonly="true" hidden="true"/>
 		</panel>
   	</form>
   	

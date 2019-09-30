@@ -14,7 +14,7 @@
         <field name="bankDetails.code" />
 		<field name="operationInterbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 		<field name="rejectInterbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
-		<field name="origin"/>
+		<field name="origin" width="120"/>
 		<field name="reference"/>
 		<field name="description" colSpan="12"/>
 	</grid>
@@ -30,7 +30,7 @@
         <field name="bankDetails.code" />
 		<field name="operationInterbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
 		<field name="rejectInterbankCodeLine" grid-view="interbank-code-line-grid" form-view="interbank-code-line-form"/>
-		<field name="origin"/>
+		<field name="origin" width="120"/>
 		<field name="reference"/>
 		<field name="description" colSpan="12"/>
 	</grid>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,6 @@
 package com.axelor.apps.tool;
 
 import com.axelor.db.Model;
-import com.google.common.base.Joiner;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -277,7 +276,7 @@ public final class StringTool {
           idList.add(item.getId());
         }
       }
-      idString = Joiner.on(",").join(idList);
+      idString = idList.stream().map(l -> l.toString()).collect(Collectors.joining(","));
     }
     return idString;
   }

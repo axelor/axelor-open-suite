@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,13 +23,13 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -46,6 +46,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -62,7 +63,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Query;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,8 +83,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   protected MoveLineService moveLineService;
   protected PartnerService partnerService;
 
-  protected static final String DATE_FORMAT_YYYYMMDD = "YYYYMMdd";
-  protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "YYYYMMddHHmmss";
+  protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
+  protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
   @Inject
   public MoveLineExportServiceImpl(
@@ -116,7 +116,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       List<Move> moveList,
       AccountingReport accountingReport,
       LocalDate localDate,
-      String exportToAgressoNumber) {
+      String exportNumber) {
 
     int i = 0;
 
@@ -128,7 +128,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           moveRepo.find(move.getId()),
           accountingReportRepo.find(accountingReport.getId()),
           localDate,
-          exportToAgressoNumber);
+          exportNumber);
 
       if (i % 10 == 0) {
         JPA.clear();
@@ -141,12 +141,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Move updateMove(
-      Move move,
-      AccountingReport accountingReport,
-      LocalDate localDate,
-      String exportToAgressoNumber) {
+      Move move, AccountingReport accountingReport, LocalDate localDate, String exportNumber) {
 
-    move.setExportNumber(exportToAgressoNumber);
+    move.setExportNumber(exportNumber);
     move.setExportDate(localDate);
     move.setAccountingOk(true);
     move.setAccountingReport(accountingReport);
@@ -281,7 +278,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type vente
+   * Méthode réalisant l'export SI - pour les journaux de type vente
    *
    * @param mlr
    * @param replay
@@ -304,7 +301,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type vente
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type vente
    *
    * @param mlr
    * @param replay
@@ -462,14 +459,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "ventes.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type avoir
+   * Méthode réalisant l'export SI - pour les journaux de type avoir
    *
    * @param mlr
    * @param replay
@@ -492,7 +491,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type avoir
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type avoir
    *
    * @param mlr
    * @param replay
@@ -651,14 +650,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "avoirs.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type trésorerie
+   * Méthode réalisant l'export SI - pour les journaux de type trésorerie
    *
    * @param mlr
    * @param replay
@@ -681,7 +682,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type trésorerie
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type trésorerie
    *
    * @param mlr
    * @param replay
@@ -841,14 +842,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "tresorerie.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type achat
+   * Méthode réalisant l'export SI - pour les journaux de type achat
    *
    * @param mlr
    * @param replay
@@ -870,7 +873,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type achat
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type achat
    *
    * @param mlr
    * @param replay
@@ -1055,10 +1058,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                 .getTodayDateTime()
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMMSS))
             + "achats.dat";
-    writeMoveLineToCsvFile(company, fileName, allMoveData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',
-    // this.createHeaderForHeaderFile(mlr.getTypeSelect()), allMoveData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        allMoveData,
+        accountingReport);
   }
 
   @Override
@@ -1103,7 +1108,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         String.format(
             "%s %s%s.csv", I18n.get("General balance"), accountingReport.getRef(), dateStr);
     writeMoveLineToCsvFile(
-        accountingReport.getCompany(), fileName, allMoveLineData, accountingReport);
+        accountingReport.getCompany(), fileName, null, allMoveLineData, accountingReport);
   }
 
   /**
@@ -1113,7 +1118,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @throws IOException
    */
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void exportMoveLineTypeSelect1000(
+  public MetaFile exportMoveLineTypeSelect1000(
       AccountingReport accountingReport, boolean administration, boolean replay)
       throws AxelorException, IOException {
 
@@ -1123,7 +1128,14 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     LocalDate interfaceDate = accountingReport.getDate();
 
-    String moveLineQueryStr = "";
+    String moveLineQueryStr =
+        String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_VALIDATED);
+    if (!administration) {
+      moveLineQueryStr +=
+          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
+    }
+    moveLineQueryStr += ")";
+
     moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
     if (accountingReport.getYear() != null) {
       moveLineQueryStr +=
@@ -1143,6 +1155,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
       }
     }
+
     if (accountingReport.getDate() != null) {
       moveLineQueryStr +=
           String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
@@ -1166,13 +1179,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<MoveLine> moveLineList =
         moveLineRepo
             .all()
-            .filter(
-                "(self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) " + moveLineQueryStr,
-                MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK)
+            .filter(moveLineQueryStr)
+            .order("move.validationDate")
             .order("date")
             .order("name")
             .fetch();
+
     if (!moveLineList.isEmpty()) {
       List<Move> moveList = new ArrayList<>();
       for (MoveLine moveLine : moveLineList) {
@@ -1184,7 +1196,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         Journal journal = move.getJournal();
         items[0] = journal.getCode();
         items[1] = journal.getName();
-        items[2] = moveLine.getName();
+        items[2] = moveLine.getMove().getReference();
         items[3] = moveLine.getDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         items[4] = moveLine.getAccount().getCode();
         items[5] = moveLine.getAccount().getName();
@@ -1193,55 +1205,42 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         Partner partner = moveLine.getPartner();
         if (partner != null) {
           items[6] = partner.getPartnerSeq();
-          items[7] = partner.getFullName();
+          items[7] = partner.getName();
         }
         items[8] = moveLine.getOrigin();
-        if (moveLine.getDate() != null) {
+        if (moveLine.getOriginDate() != null) {
           items[9] =
-              moveLine
-                  .getOriginDate()
-                  .format(
-                      DateTimeFormatter.ofPattern(
-                          DATE_FORMAT_YYYYMMDD)); // Pour le moment on va utiliser la date des
-          // lignes
-          // d'écriture.
+              moveLine.getOriginDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
         items[10] = moveLine.getDescription();
-        items[11] = moveLine.getDebit().toString();
-        items[12] = moveLine.getCredit().toString();
-        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-          List<String> reconcileSeqList = new ArrayList<>();
-          List<String> reconcileDateList = new ArrayList<>();
+        items[11] = moveLine.getDebit().toString().replace('.', ',');
+        items[12] = moveLine.getCredit().toString().replace('.', ',');
 
-          for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-            reconcileSeqList.add(reconcile.getReconcileSeq());
-            reconcileDateList.add(
-                reconcile
-                    .getReconciliationDate()
-                    .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
-          }
-          items[13] = StringUtils.join(reconcileSeqList, "; ");
-          items[14] = StringUtils.join(reconcileDateList, "; ");
+        ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
+        if (reconcileGroup != null
+            && reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
+          items[13] = reconcileGroup.getCode();
+          items[14] =
+              reconcileGroup
+                  .getDateOfLettering()
+                  .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD))
+                  .toString();
         } else {
-          List<String> reconcileSeqList = new ArrayList<>();
-          List<String> reconcileDateList = new ArrayList<>();
-          for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-            if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
-              reconcileSeqList.add(reconcile.getReconcileSeq());
-              reconcileDateList.add(
-                  reconcile
-                      .getReconciliationDate()
-                      .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD)));
-            }
-          }
-          items[13] = StringUtils.join(reconcileSeqList, "; ");
-          items[14] = StringUtils.join(reconcileDateList, "; ");
+          items[13] = "";
+          items[14] = "";
         }
+
         if (move.getValidationDate() != null) {
           items[15] =
               move.getValidationDate().format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDD));
         }
-        items[16] = moveLine.getCurrencyAmount().toString();
+
+        items[16] = moveLine.getCurrencyAmount().toString().replace('.', ',');
+        if (moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+          items[16] = "-" + items[16];
+        }
+
         if (move.getCurrency() != null) {
           items[17] = move.getCurrency().getCode();
         }
@@ -1257,12 +1256,13 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
-    writeMoveLineToCsvFile(company, fileName, allMoveLineData, accountingReport);
     accountingReportRepo.save(accountingReport);
+    return writeMoveLineToCsvFile(
+        company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des fichiers détails
+   * Méthode réalisant l'export SI - des fichiers détails
    *
    * @param mlr
    * @param fileName
@@ -1341,7 +1341,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     for (LocalDate localDate : dates) {
 
-      Query queryExportAgressoRef =
+      Query queryExportRef =
           JPA.em()
               .createQuery(
                   "SELECT DISTINCT self.move.exportNumber from MoveLine self where self.account != null "
@@ -1349,11 +1349,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + localDate.toString()
                       + "'"
                       + moveLineQueryStr);
-      List<String> exportAgressoRefs = new ArrayList<String>();
-      exportAgressoRefs = queryExportAgressoRef.getResultList();
-      for (String exportAgressoRef : exportAgressoRefs) {
+      List<String> exportRefs = new ArrayList<String>();
+      exportRefs = queryExportRef.getResultList();
+      for (String exportRef : exportRefs) {
 
-        if (exportAgressoRef != null && !exportAgressoRef.isEmpty()) {
+        if (exportRef != null && !exportRef.isEmpty()) {
 
           int sequence = 1;
 
@@ -1364,7 +1364,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                           + "AND self.date = '"
                           + localDate.toString()
                           + "' AND self.move.exportNumber = '"
-                          + exportAgressoRef
+                          + exportRef
                           + "'"
                           + moveLineQueryStr
                           + " group by self.account.id");
@@ -1384,7 +1384,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                           "self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
                               + localDate.toString()
                               + "' AND self.move.exportNumber = '"
-                              + exportAgressoRef
+                              + exportRef
                               + "'"
                               + moveLineQueryStr,
                           accountId)
@@ -1461,15 +1461,18 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    writeMoveLineToCsvFile(company, fileName, allMoveLineData, accountingReport);
-    // Utilisé pour le debuggage
-    //			CsvTool.csvWriter(filePath, fileName, '|',  this.createHeaderForDetailFile(typeSelect),
-    // allMoveLineData);
+    writeMoveLineToCsvFile(
+        company,
+        fileName,
+        this.createHeaderForDetailFile(typeSelect),
+        allMoveLineData,
+        accountingReport);
   }
 
-  private void writeMoveLineToCsvFile(
+  private MetaFile writeMoveLineToCsvFile(
       Company company,
       String fileName,
+      String[] columnHeader,
       List<String[]> allMoveData,
       AccountingReport accountingReport)
       throws AxelorException, IOException {
@@ -1480,10 +1483,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       new File(filePath).mkdirs();
     }
     log.debug("Full path to export : {}{}", filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, '|', null, allMoveData);
+    CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);
     try (InputStream is = new FileInputStream(path.toFile())) {
-      Beans.get(MetaFiles.class).attach(is, fileName, accountingReport);
+      return Beans.get(MetaFiles.class).attach(is, fileName, accountingReport).getMetaFile();
     }
   }
 
@@ -1510,7 +1513,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     return sortMoveLineList;
   }
 
-  public String[] createHeaderForPayrollJournalEntry() {
+  public String[] createHeaderForJournalEntry() {
     String header =
         "JournalCode;"
             + "JournalLib;"
@@ -1529,7 +1532,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             + "DateLet;"
             + "ValidDate;"
             + "Montantdevise;"
-            + "IDevise;";
+            + "Idevise;";
     return header.split(";");
   }
 
@@ -1626,7 +1629,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     return header.split(";");
   }
 
-  public void exportMoveLine(AccountingReport accountingReport)
+  public MetaFile exportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException {
 
     accountingReportService.setStatus(accountingReport);
@@ -1653,8 +1656,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         break;
 
       case AccountingReportRepository.EXPORT_ADMINISTRATION:
-        this.exportMoveLineTypeSelect1000(accountingReport, true, false);
-        break;
+        return this.exportMoveLineTypeSelect1000(accountingReport, true, false);
 
       case AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY:
         this.exportMoveLineTypeSelect1000(accountingReport, false, false);
@@ -1663,6 +1665,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       default:
         break;
     }
+    return null;
   }
 
   public void replayExportMoveLine(AccountingReport accountingReport)

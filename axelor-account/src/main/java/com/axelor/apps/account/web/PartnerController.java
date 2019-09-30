@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.exception.AxelorException;
@@ -33,6 +34,7 @@ import java.util.List;
 public class PartnerController {
 
   @Inject private AccountingSituationService accountingSituationService;
+  @Inject private PartnerAccountService partnerAccountService;
 
   public void createAccountingSituations(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -46,5 +48,11 @@ public class PartnerController {
     if (accountingSituationList != null) {
       response.setValue("accountingSituationList", accountingSituationList);
     }
+  }
+
+  public void getDefaultSpecificTaxNote(ActionRequest request, ActionResponse response) {
+
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setValue("specificTaxNote", partnerAccountService.getDefaultSpecificTaxNote(partner));
   }
 }

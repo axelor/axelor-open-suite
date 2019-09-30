@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,10 +34,12 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
@@ -45,7 +47,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @RequestScoped
@@ -53,7 +54,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     implements StockMoveLineServiceSupplychain {
 
   protected AccountManagementService accountManagementService;
-
   protected PriceListService priceListService;
 
   @Inject
@@ -62,11 +62,13 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       AppBaseService appBaseService,
       AppStockService appStockService,
       StockMoveToolService stockMoveToolService,
-      AccountManagementService accountManagementService,
-      PriceListService priceListService,
-      UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      StockLocationLineService stockLocationLineService) {
+      StockLocationLineService stockLocationLineService,
+      UnitConversionService unitConversionService,
+      WeightedAveragePriceService weightedAveragePriceService,
+      TrackingNumberRepository trackingNumberRepo,
+      AccountManagementService accountManagementService,
+      PriceListService priceListService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -74,7 +76,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         stockMoveToolService,
         stockMoveLineRepository,
         stockLocationLineService,
-        unitConversionService);
+        unitConversionService,
+        weightedAveragePriceService,
+        trackingNumberRepo);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
   }
@@ -92,7 +96,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       int type,
       boolean taxed,
       BigDecimal taxRate,
-      SaleOrderLine saleOrderLine)
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     if (product != null) {
 
@@ -108,6 +113,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               null);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
+      stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
 
@@ -200,37 +206,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setValuatedUnitPrice(valuatedUnitPrice);
     }
     return stockMoveLine;
-  }
-
-  /**
-   * This method is overridden to fill requested reserved quantity and avoid to override every
-   * method using reserved quantity.
-   */
-  @Override
-  public void updateLocations(
-      StockMoveLine stockMoveLine,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation,
-      Product product,
-      BigDecimal qty,
-      int fromStatus,
-      int toStatus,
-      LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
-      throws AxelorException {
-
-    super.updateLocations(
-        stockMoveLine,
-        fromStockLocation,
-        toStockLocation,
-        product,
-        qty,
-        fromStatus,
-        toStatus,
-        lastFutureStockMoveDate,
-        trackingNumber,
-        stockMoveLine.getRequestedReservedQty());
   }
 
   @Override
@@ -405,5 +380,24 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setDescription(purchaseOrderLine.getDescription());
     }
     stockMoveLine.setQty(purchaseOrderLine.getQty());
+  }
+
+  @Override
+  public boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine) {
+    if (stockMoveLine.getProduct() == null
+        || (stockMoveLine.getProduct() != null && !stockMoveLine.getProduct().getStockManaged())) {
+      return true;
+    }
+    updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+    BigDecimal availableQty = stockMoveLine.getAvailableQty();
+    if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null
+        && stockMoveLine.getTrackingNumber() == null) {
+      availableQty = stockMoveLine.getAvailableQtyForProduct();
+    }
+    BigDecimal realQty = stockMoveLine.getRealQty();
+    if (availableQty.compareTo(realQty) < 0) {
+      return false;
+    }
+    return true;
   }
 }

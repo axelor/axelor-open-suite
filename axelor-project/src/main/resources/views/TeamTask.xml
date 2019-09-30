@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid id="project-team-task-form" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
+	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
@@ -15,7 +15,7 @@
 		<field name="projectCategory"/>
 	</grid>
 	
-	<form title="Task" id="project-team-task-grid" name="team-task-form"
+	<form title="Task" id="project-team-task-form" name="team-task-form"
 		model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew"
 		onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>
@@ -132,7 +132,7 @@
 	<gantt name="task-gantt" title="Tasks" model="com.axelor.team.db.TeamTask" 
 		taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
 		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
-		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet"
+		x-finish-to-finish="finishToFinishSet"
 		taskUser="assignedTo">	
 		<field name="name"/>
 	</gantt> 
@@ -140,7 +140,7 @@
 	<gantt name="project-task-gantt" title="Project Task"
 		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
 		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
-		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		x-finish-to-finish="finishToFinishSet">
 		<field name="name" />
 		<field name="project"/>
 	</gantt>
@@ -148,7 +148,7 @@
 	<gantt name="user-task-gantt" title="User Task"
 		model="com.axelor.team.db.TeamTask" taskStart="taskDate" taskEnd="taskEndDate"  taskDuration="durationHours" taskParent="parentTask" taskSequence="sequence"
 		taskProgress="plannedProgress" x-start-to-start="startToStartSet" x-finish-to-start="finishToStartSet"
-		x-start-to-finish="startToFinishSet" x-finish-to-finish="finishToFinishSet">
+		x-finish-to-finish="finishToFinishSet">
 		<field name="name" />
 		<field name="assignedTo" />
 	</gantt>
@@ -181,7 +181,7 @@
 
 	</tree>
 	
-	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence" onNew="action-task-defaults" model="com.axelor.team.db.TeamTask">
+	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence"  model="com.axelor.team.db.TeamTask">
 		<field name="name"/>
 		<field name="status"/>
 		<field name="assignedTo"/>
@@ -274,8 +274,7 @@
 	
 	<action-record name="action-task-record-project-configurations" model="com.axelor.team.db.TeamTask">
 		<field name="projectCategory" expr="eval: null"/>
-		<field name="assignedTo" expr="eval: project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
-		<field name="parentTask" expr="eval: null"/>
+		<field name="assignedTo" expr="eval:(project?.membersUserSet ? project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) : __repo__(Project).find(project?.id).membersUserSet?.collect{it.id}.contains(assignedTo.id)) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
 		<field name="membersUserSet" expr="eval: null"/>
 		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
         <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>

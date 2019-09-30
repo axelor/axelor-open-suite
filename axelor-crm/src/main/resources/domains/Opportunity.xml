@@ -19,6 +19,7 @@
     <decimal name="probability" title="Probability (%)"/>
     <string name="nextStep" title="Next step"/>
     <string name="description" large="true" title="Description"/>
+    <string name="customerDescription" large="true" title="Customer Description"/>
    	<many-to-one name="source" ref="com.axelor.apps.base.db.Source" title="Source"/>
    	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
    	<integer name="orderByState"/>
@@ -30,8 +31,8 @@
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
   	
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
-
-	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+    <string name="lostReasonStr" title="Lost reason" large="true"/>
+	  <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
 
 	<extra-code>
 		<![CDATA[

@@ -8,6 +8,9 @@
   <entity name="StockLocation" lang="java">
 
     <boolean name="directOrderLocation" title="Direct order stock location"/>
-
+    <boolean name="usableOnPurchaseOrder" title="Usable on purchase order" />
+    <boolean name="usableOnSaleOrder" title="Usable on sale order" />
+    <boolean name="isNotInMrp" title="Don't take in consideration on MRP" />
+ 
   </entity>
 </domain-models>

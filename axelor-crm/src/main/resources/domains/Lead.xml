@@ -52,7 +52,8 @@
   	<one-to-many name="eventList" ref="com.axelor.apps.crm.db.Event" title="Events" mappedBy="lead"/>
   	<one-to-many name="opportunitiesList" ref="com.axelor.apps.crm.db.Opportunity" title="Opportunities" mappedBy="lead"/>
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
-    
+
+    <string name="lostReasonStr" title="Lost reason" large="true"/>
     <string name="fullName" title="Contact name" namecolumn="true" />
 
     <extra-code>

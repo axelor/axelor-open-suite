@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -96,10 +96,10 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     int typeSelect = paymentMode.getTypeSelect();
     int inOutSelect = paymentMode.getInOutSelect();
 
-    if ((typeSelect == PaymentModeRepository.TYPE_DD
-            || typeSelect == PaymentModeRepository.TYPE_TRANSFER)
-        && inOutSelect == PaymentModeRepository.OUT
-        && paymentMode.getGenerateBankOrder()) {
+    if ((typeSelect == PaymentModeRepository.TYPE_DD && inOutSelect == PaymentModeRepository.IN)
+        || (typeSelect == PaymentModeRepository.TYPE_TRANSFER
+                && inOutSelect == PaymentModeRepository.OUT)
+            && paymentMode.getGenerateBankOrder()) {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);

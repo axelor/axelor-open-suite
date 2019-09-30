@@ -7,7 +7,7 @@
   
   <entity name="WkfNode" cachable="true">
       <![CDATA[
-	    WkfNode represents a state of the workflow. A workflow must contains at least two state. 
+	    WkfNode represents a state of the workflow. A workflow must contain at least two states. 
 	    It is also used to generate a menu entry based on state. 
 	  ]]>
       <string name="name" title="Name" required="true"/>
@@ -15,14 +15,21 @@
       <string name="xmlId" title="xmlId" />
       <many-to-one name="wkf" ref="Wkf"  />
       <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field for 'My menu'" />
-      <many-to-many name="incomming" ref="WkfTransition"  title="Incomming" />
+      <many-to-many name="incoming" ref="WkfTransition"  title="Incoming" />
       <many-to-many name="outgoing" ref="WkfTransition"  title="Outgoing" />
-      <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="ReadOnly For"/>
+      <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="ReadOnly for"/>
       <integer name="sequence" title="Sequence" />
-      <boolean name="startNode" title="Start node" />
-      <boolean name="endNode" title="End node" />
+      <integer name="nodeType" title="Node type" selection="studio.node.type.select" default="1" />
       <many-to-many name="metaActionSet" ref="com.axelor.meta.db.MetaAction" title="Actions" orderBy="sequence"/>
       <unique-constraint columns="wkf,sequence"/>
+      
+      <extra-code>
+        <![CDATA[
+            public static final Integer START_NODE = 0;
+            public static final Integer TASK_NODE = 1;
+            public static final Integer END_NODE = 2;
+        ]]>
+    </extra-code>
   </entity>
     
  </domain-models>

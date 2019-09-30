@@ -10,7 +10,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="orderTypeSelect"/>
         <field name="bankOrderDate"/>
 		<field name="confirmationDateTime"/>
@@ -30,7 +30,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
@@ -49,7 +49,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="orderTypeSelect"/>
         <field name="partnerTypeSelect"/>
         <field name="bankOrderDate"/>
@@ -69,7 +69,7 @@
     	</toolbar>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2" color="danger"/>
 		<hilite if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2" color="warning"/>
-        <field name="bankOrderSeq"/>
+        <field name="bankOrderSeq" width="120"/>
         <field name="generatedMetaFile"/>
         <field name="bankOrderDate"/>
         <field name="confirmationDateTime"/>
@@ -87,11 +87,22 @@
 		<toolbar>
 			<button name="printBtn" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
 		</toolbar>
-		<panel title="Status" name="statusPanel">
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
-	    	<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
+		<panel title="Status" name="statusPanel" readonlyIf="technicalOriginSelect == 1">
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10" selection-in="[1,3,4,5,6]" showIf="orderTypeSelect == 2 || orderTypeSelect == 4"/>
+	    	<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10" showIf="orderTypeSelect != 2 &amp;&amp; orderTypeSelect != 4"/>
+			<field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
+                  <viewer depends="technicalOriginSelect">
+                    <![CDATA[
+                      <h4 class="text-right">
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
+                      </h4>
+                    ]]>
+                  </viewer>
+            </field>
 		</panel>
-  		<panel name="mainPanel" colSpan="12">
+  		<panel name="mainPanel" colSpan="12" readonlyIf="technicalOriginSelect == 1">
   			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
 	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
 	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
@@ -101,7 +112,7 @@
 	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-group-partner-type-select-change" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
-	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">  
+	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3 || technicalOriginSelect == 1" >  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1 AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
@@ -129,7 +140,7 @@
 	  		</panel>
         </panel>
 	   
-		<panel name="senderInfoPanel" title="Sender Info." readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect">
+		<panel name="senderInfoPanel" title="Sender Info." readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect" >
 			<field name="senderCompany" canEdit="false" canView="false" grid-view="company-grid" form-view="company-form" required="true" onChange="action-bank-order-group-sender-company-change"/>
 			<field name="senderBankDetails" canEdit="false" grid-view="bank-details-bank-order-company-grid" form-view="bank-details-form" required="true" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 			
@@ -145,7 +156,7 @@
 			<field name="senderReference"/>
 			<field name="senderLabel"/>
 		</panel>
-		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 2" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
+		<panel name="bankOrderLinesPanel" title="Bank Order Lines" readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
     		<field name="bankOrderLineList" showTitle="false" colSpan="12" canNew="bankOrderLineList == null || bankOrderLineList.length &lt; 10">
 				<editor x-layout="table" x-show-on-new="false" x-viewer="true" onNew="action-bank-order-line-onnew">
 					<field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null" colSpan="6"/>
@@ -218,10 +229,10 @@
     		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
     		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
 <!-- 			<button name="reject" title="Reject" showIf="statusSelect == 3 || statusSelect == 4" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		 -->
-    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
-			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
+    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" prompt="This action is irreversible, do you want to continue ?" onClick="save,action-bank-order-method-cancel,save"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
+  		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
   			<field name="fileGenerationDateTime" showIf="fileGenerationDateTime"/>
   			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
@@ -242,10 +253,21 @@
 		<toolbar>
 			<button name="printBtn" title="Print" icon="fa-print" onClick="action-bank-order-method-print"/>
 		</toolbar>
-		<panel name="statusPanel" title="Status">
-			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+		<panel name="statusPanel" title="Status" readonlyIf="technicalOriginSelect == 1">
+			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"/>
+			<field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
+                  <viewer depends="technicalOriginSelect">
+                    <![CDATA[
+                      <h4 class="text-right">
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
+	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
+                      </h4>
+                    ]]>
+                  </viewer>
+            </field>
 		</panel>
-  		<panel name="mainPanel" colSpan="12">
+  		<panel name="mainPanel" colSpan="12" readonlyIf="technicalOriginSelect == 1">
 			<panel name="detailPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
 				<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
 				<field name="generatedMetaFile" required="true" widget="binary-link" title="File to send"/>
@@ -257,7 +279,7 @@
 				<field name="senderBankDetails" canView="false" grid-view="bank-details-bank-order-company-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 				<field name="orderTypeSelect" hidden="true"/>
 			</panel>
-	        <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
+	        <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3 || technicalOriginSelect == 1">  	
 				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 				<field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 				<field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
@@ -286,10 +308,10 @@
     		<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
     		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
     		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
-    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1" onClick="save,action-bank-order-record-cancel,save"/>
-			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3 || statusSelect == 6" onClick="save,action-bank-order-record-correct,save"/>
+    		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" prompt="This action is irreversible, do you want to continue ?" onClick="save,action-bank-order-method-cancel"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-record-correct,save"/>
   		</panel>
-  		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2" itemSpan="12" readonly="true">
+  		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
   			<field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
   			<field name="sendingDateTime" showIf="statusSelect == 4"/>
@@ -446,10 +468,6 @@
 		<field name="statusSelect" expr="5"/>
 		<field name="rejectStatusSelect" expr="2"/>
 	</action-record>
-	
-	<action-record name="action-bank-order-record-cancel" model="com.axelor.apps.bankpayment.db.BankOrder">
-		<field name="statusSelect" expr="6"/>
-	</action-record>
 
 	<action-record name="action-bank-order-record-correct" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="statusSelect" expr="1"/>
@@ -508,6 +526,10 @@
     <action-method name="action-bank-order-method-reset-receivers">
         <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="resetReceivers"/>
     </action-method>
+	
+	<action-method name="action-bank-order-method-cancel" model="com.axelor.apps.bankpayment.db.BankOrder">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="cancel"/>
+	</action-method>
 
 	<!-- BANK ORDER LINES ACTIONS -->
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -38,10 +39,14 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +57,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Inject protected BillOfMaterialRepository billOfMaterialRepo;
 
   @Inject private TempBomTreeRepository tempBomTreeRepo;
+
+  @Inject private ProductRepository productRepo;
 
   private List<Long> processedBom;
 
@@ -299,5 +306,67 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Transactional
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial) {
     billOfMaterial.getProduct().setDefaultBillOfMaterial(billOfMaterial);
+  }
+
+  @Override
+  public String computeName(BillOfMaterial bom) {
+    Integer nbDecimalDigitForBomQty =
+        Beans.get(AppProductionService.class).getAppProduction().getNbDecimalDigitForBomQty();
+    return bom.getProduct().getName()
+        + " - "
+        + bom.getQty().setScale(nbDecimalDigitForBomQty, RoundingMode.HALF_EVEN)
+        + " "
+        + bom.getUnit().getName()
+        + " - "
+        + bom.getId();
+  }
+
+  @Override
+  @Transactional
+  public void addRawMaterials(
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {
+    if (rawMaterials != null && !rawMaterials.isEmpty()) {
+      BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
+      int priority = 0;
+      if (billOfMaterial.getBillOfMaterialSet() != null
+          && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+        priority =
+            Collections.max(
+                billOfMaterial
+                    .getBillOfMaterialSet()
+                    .stream()
+                    .map(it -> it.getPriority())
+                    .collect(Collectors.toSet()));
+      }
+
+      for (LinkedHashMap<String, Object> rawMaterial : rawMaterials) {
+        priority += 10;
+        BillOfMaterial newComponent =
+            createBomFromRawMaterial(Long.valueOf((int) rawMaterial.get("id")), priority);
+        billOfMaterial.getBillOfMaterialSet().add(newComponent);
+      }
+    } else {
+      return;
+    }
+  }
+
+  @Transactional
+  protected BillOfMaterial createBomFromRawMaterial(long productId, int priority) {
+    BillOfMaterial newBom = new BillOfMaterial();
+    Product rawMaterial = productRepo.find(productId);
+    newBom.setDefineSubBillOfMaterial(false);
+    newBom.setPriority(priority);
+    newBom.setProduct(rawMaterial);
+    newBom.setQty(new BigDecimal(1));
+    newBom.setUnit(rawMaterial.getUnit());
+    newBom.setWasteRate(BigDecimal.ZERO);
+    newBom.setHasNoManageStock(false);
+
+    billOfMaterialRepo.save(newBom);
+    String name = this.computeName(newBom); // need to save first cuz computeName uses the id.
+    newBom.setName(name);
+    newBom.setFullName(name);
+
+    return newBom;
   }
 }

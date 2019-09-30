@@ -7,13 +7,13 @@
 
   <entity name="StockMoveLine" lang="java">
   
-  	<many-to-one name="stockMove" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
+  	<many-to-one name="stockMove" readonly="true" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
     <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
 
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	<boolean name="filterOnAvailableProducts" title="Filter on available products" default="true" transient="true"/>
-	<decimal name="qty" title="Expected Qty"/>
-	<decimal name="realQty" title="Real Qty"/>
+	<decimal name="qty" min="0" title="Expected Qty"/>
+	<decimal name="realQty" min="0" title="Real Qty"/>
 	<decimal name="oldQty" hidden="true"/>
 	<decimal name="availableQty" title="Available qty" transient="true"/>
 	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
@@ -38,7 +38,9 @@
     <string name="description" title="Description" large="true"/>
     
     <decimal name="valuatedUnitPrice" precision="20" scale="10" title="Valuated unit price"/>
-    
+
+    <decimal name="wapPrice" precision="20" scale="10" readonly="true" nullable="true" title="Price used for WAP"/>
+
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
 
@@ -70,6 +72,10 @@
 		public static final int STATUS_AVAILABLE_FOR_PRODUCT = 2;
 		public static final int STATUS_MISSING = 3;
     ]]></extra-code>
+    
+    <track>
+    	<field name="realQty"/>
+    </track>
   </entity>
 
   <enum name="Regime" numeric="true">

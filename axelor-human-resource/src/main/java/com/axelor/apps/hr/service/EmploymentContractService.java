@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,20 +31,20 @@ public class EmploymentContractService {
   @Inject private EmploymentContractRepository employmentContractRepo;
 
   @Transactional
-  public int addAmendment(EmploymentContract EmploymentContract) throws AxelorException {
+  public int addAmendment(EmploymentContract employmentContract) throws AxelorException {
     String name =
-        EmploymentContract.getFullName() + "_" + EmploymentContract.getEmploymentContractVersion();
+        employmentContract.getFullName() + "_" + employmentContract.getEmploymentContractVersion();
 
     ReportFactory.createReport(IReport.EMPLYOMENT_CONTRACT, name + "-${date}")
-        .addParam("ContractId", EmploymentContract.getId())
+        .addParam("ContractId", employmentContract.getId())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
-        .toAttach(EmploymentContract)
+        .toAttach(employmentContract)
         .generate()
         .getFileLink();
 
-    int version = EmploymentContract.getEmploymentContractVersion() + 1;
-    EmploymentContract.setEmploymentContractVersion(version);
-    employmentContractRepo.save(EmploymentContract);
+    int version = employmentContract.getEmploymentContractVersion() + 1;
+    employmentContract.setEmploymentContractVersion(version);
+    employmentContractRepo.save(employmentContract);
 
     return version;
   }

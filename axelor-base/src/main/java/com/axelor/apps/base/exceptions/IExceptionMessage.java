@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -230,6 +230,9 @@ public interface IExceptionMessage {
 
   static final String IMPORT_CALENDAR = /*$$(*/ "Import calendar" /*)*/;
 
+  static final String CALENDAR_NO_EVENTS_FOR_SYNC_ERROR = /*$$(*/
+      "Calendars are empty, there is no event to synchronize." /*)*/;
+
   /** Price list */
   String PRICE_LIST_DATE_WRONG_ORDER = /*$$(*/ "The end date is before the begin date." /*)*/;
 
@@ -304,17 +307,17 @@ public interface IExceptionMessage {
   public static final String INVALID_HEADER = /*$$(*/ "Header is not valid." /*)*/;
 
   /** Import demo data from excel */
-  public static final String MODULE = /*$$*/ "Module" /*)*/;
+  public static final String MODULE = /*$$(*/ "Module" /*)*/;
 
-  public static final String MODULE_NOT_EXIST = /*$$*/ "%s module is not exist." /*)*/;
-  public static final String DATA_FILE = /*$$*/ "Data file" /*)*/;
-  public static final String CONFIGURATION_FILE = /*$$*/ "Configuration file" /*)*/;
-  public static final String CONFIGURATION_FILE_NOT_EXIST = /*$$*/
+  public static final String MODULE_NOT_EXIST = /*$$(*/ "%s module does not exist." /*)*/;
+  public static final String DATA_FILE = /*$$(*/ "Data file" /*)*/;
+  public static final String CONFIGURATION_FILE = /*$$(*/ "Configuration file" /*)*/;
+  public static final String CONFIGURATION_FILE_NOT_EXIST = /*$$(*/
       "%s configuration file is not exist." /*)*/;
-  public static final String ROW_NOT_EMPTY = /*$$*/ "%s row must not be Empty." /*)*/;
-  public static final String CELL_NOT_VALID = /*$$*/ "%s  cell is not valid." /*)*/;
-  public static final String IMPORT_COMPLETED_MESSAGE = /*$$*/
-      "Import completed successfully.Please check the log for more details" /*)*/;
-  public static final String INVALID_DATA_FORMAT_ERROR = /*$$*/
+  public static final String ROW_NOT_EMPTY = /*$$(*/ "%s row must not be empty." /*)*/;
+  public static final String CELL_NOT_VALID = /*$$(*/ "%s cell is not valid." /*)*/;
+  public static final String IMPORT_COMPLETED_MESSAGE = /*$$(*/
+      "Import completed successfully. Please check the log for more details." /*)*/;
+  public static final String INVALID_DATA_FORMAT_ERROR = /*$$(*/
       "Invalid data format. Please check log for more details." /*)*/;
 }

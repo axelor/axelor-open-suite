@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,12 +19,14 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
-import com.axelor.apps.tool.NammingTool;
+import com.axelor.apps.tool.NamingTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
+import com.axelor.db.hibernate.type.JsonFunction;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -36,12 +38,19 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.filter.Filter;
+import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import java.io.File;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,7 +181,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   }
 
   private String isKeyword(String[] fieldNames, int ind) {
-    if (NammingTool.isKeyword(fieldNames[ind])) {
+    if (NamingTool.isKeyword(fieldNames[ind])) {
       return fieldNames[ind] + "_id";
     }
     return fieldNames[ind];
@@ -319,8 +328,15 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       criteria = " WHERE self.id IN (" + criteria + ")";
     }
     Filter filter = getJpaSecurityFilter(metaModel);
+    JoinHelper helper = null;
     if (filter != null) {
       String permissionFilter = filter.getQuery();
+      try {
+        helper = new JoinHelper(Class.forName(metaModel.getFullName()));
+        permissionFilter = helper.parse(permissionFilter).toString();
+      } catch (ClassNotFoundException e) {
+        TraceBackService.trace(e, e.getMessage());
+      }
       if (recordIds == null) {
         criteria = " WHERE " + permissionFilter;
       } else {
@@ -328,6 +344,11 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       }
       params = filter.getParams();
     }
+
+    if (helper != null) {
+      criteria = helper.toString() + " " + criteria;
+    }
+
     return criteria;
   }
 
@@ -347,11 +368,16 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   }
 
   private Query createQuery(StringBuilder queryBuilder) {
-    log.trace("query : {}", queryBuilder.toString());
+    int n = 0, i = queryBuilder.indexOf("?");
+    while (i > -1) {
+      queryBuilder.replace(i, i + 1, "?" + (++n));
+      i = queryBuilder.indexOf("?", i + 1);
+    }
+    log.debug("query : {}", queryBuilder.toString());
     Query query = JPA.em().createQuery(queryBuilder.toString(), List.class);
     if (params != null) {
-      for (int i = 0; i < params.size(); i++) {
-        query.setParameter(i, params.get(i));
+      for (i = 0; i < params.size(); i++) {
+        query.setParameter(i + 1, params.get(i));
       }
     }
     return query;
@@ -409,5 +435,163 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   @Override
   public String getExportFileName() {
     return exportFileName;
+  }
+
+  /**
+   * JoinHelper class is used to auto generate <code>LEFT JOIN</code> for association expressions.
+   *
+   * <p>For example:
+   *
+   * <pre>
+   * 	Query<Contact> q = Contact.all().filter("self.title.code = ?1 OR self.age > ?2", "mr", 20);
+   * </pre>
+   *
+   * Results in:
+   *
+   * <pre>
+   * SELECT self FROM Contact self LEFT JOIN self.title _title WHERE _title.code = ?1 OR self.age > ?2
+   * </pre>
+   *
+   * So that all the records are matched even if <code>title</code> field is null.
+   */
+  private static class JoinHelper {
+
+    private Class<?> beanClass;
+
+    private Map<String, String> joins = Maps.newLinkedHashMap();
+
+    private static final Pattern pathPattern =
+        Pattern.compile("self\\." + "((?:[a-zA-Z_]\\w+)(?:(?:\\[\\])?\\.\\w+)*)");
+
+    public JoinHelper(Class<?> beanClass) {
+      this.beanClass = beanClass;
+    }
+
+    /**
+     * Parse the given filter string and return transformed filter expression.
+     *
+     * <p>Automatically calculate <code>LEFT JOIN</code> for association path expressions and the
+     * path expressions are replaced with the join variables.
+     *
+     * @param filter the filter expression
+     * @return the transformed filter expression
+     */
+    private String parse(String filter) {
+
+      String result = "";
+      Matcher matcher = pathPattern.matcher(filter);
+
+      int last = 0;
+      while (matcher.find()) {
+        MatchResult matchResult = matcher.toMatchResult();
+        String alias = joinName(matchResult.group(1));
+        if (alias == null) {
+          alias = "self." + matchResult.group(1);
+        }
+        result += filter.substring(last, matchResult.start()) + alias;
+        last = matchResult.end();
+      }
+      if (last < filter.length()) result += filter.substring(last);
+
+      return result;
+    }
+
+    /**
+     * Automatically generate <code>LEFT JOIN</code> for the given name (association path
+     * expression) and return the join variable.
+     *
+     * @param name the path expression or field name
+     * @return join variable if join is created else returns name
+     */
+    public String joinName(String name) {
+
+      Mapper mapper = Mapper.of(beanClass);
+      String[] path = name.split("\\.");
+      String prefix = null;
+      String variable = name;
+
+      if (path.length > 1) {
+        variable = path[path.length - 1];
+        String joinOn = null;
+        Mapper currentMapper = mapper;
+        for (int i = 0; i < path.length - 1; i++) {
+          String item = path[i].replace("[]", "");
+          Property property = currentMapper.getProperty(item);
+          if (property == null) {
+            throw new org.hibernate.QueryException(
+                "could not resolve property: "
+                    + item
+                    + " of: "
+                    + currentMapper.getBeanClass().getName());
+          }
+
+          if (property.isJson()) {
+            return JsonFunction.fromPath(name).toString();
+          }
+
+          if (prefix == null) {
+            joinOn = "self." + item;
+            prefix = "_" + item;
+          } else {
+            joinOn = prefix + "." + item;
+            prefix = prefix + "_" + item;
+          }
+          if (!joins.containsKey(joinOn)) {
+            joins.put(joinOn, prefix);
+          }
+
+          if (property.getTarget() != null) {
+            currentMapper = Mapper.of(property.getTarget());
+          }
+
+          if (i == path.length - 2) {
+            property = currentMapper.getProperty(variable);
+            if (property == null) {
+              throw new IllegalArgumentException(
+                  String.format(
+                      "No such field '%s' in object '%s'",
+                      variable, currentMapper.getBeanClass().getName()));
+            }
+            if (property.isReference()) {
+              joinOn = prefix + "." + variable;
+              prefix = prefix + "_" + variable;
+              joins.put(joinOn, prefix);
+              return prefix;
+            }
+          }
+        }
+      } else {
+        Property property = mapper.getProperty(name);
+        if (property == null) {
+          throw new IllegalArgumentException(
+              String.format("No such field '%s' in object '%s'", variable, beanClass.getName()));
+        }
+        if (property.isCollection()) {
+          return null;
+        }
+        if (property.getTarget() != null) {
+          prefix = "_" + name;
+          joins.put("self." + name, prefix);
+          return prefix;
+        }
+      }
+
+      if (prefix == null) {
+        prefix = "self";
+      }
+
+      return prefix + "." + variable;
+    }
+
+    @Override
+    public String toString() {
+      if (joins.size() == 0) return "";
+      List<String> joinItems = Lists.newArrayList();
+      for (String key : joins.keySet()) {
+        String val = joins.get(key);
+        joinItems.add("LEFT JOIN " + key + " " + val);
+      }
+      return " " + Joiner.on(" ").join(joinItems);
+    }
   }
 }

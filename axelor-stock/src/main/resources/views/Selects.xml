@@ -39,7 +39,7 @@
 		<option value="2">Outgoing move</option>
 		<option value="3">Incoming move</option>
 	</selection>
-
+	
 	<selection name="stock.stock.rules.use.case.select">
 		<option value="1">Used for MRP</option>
 		<option value="2">Stock control</option>
@@ -89,9 +89,9 @@
 	</selection>
 
     <selection name="logistical.form.status.select">
-        <option value="1">LogisticalForm.Provision</option>
-        <option value="2">LogisticalForm.Carrier validated</option>
-        <option value="3">LogisticalForm.Collected</option>
+        <option value="1">Provision</option>
+        <option value="2">Carrier validated</option>
+        <option value="3">Collected</option>
     </selection>
 
     <selection name="logistical.form.account.to.carrier.select">
@@ -125,6 +125,18 @@
 		<option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid" data-form="purchase-order-form">Purchase order</option>
 		<option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid" data-form="manuf-order-form">Manufacturing order</option>
 		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
+	</selection>
+	
+	<selection name='inventory.export.format.select'>
+		<option value="pdf">PDF</option>
+		<option value="xlsx">XLS</option>
+		<option value="csv">CSV</option>
+	</selection>
+
+	<selection name='stock.stock.location.value.type'>
+		<option value="1">WAP value</option>
+		<option value="2">Accounting value</option>
+		<option value="3">Sale value</option>
 	</selection>
 
 </object-views>

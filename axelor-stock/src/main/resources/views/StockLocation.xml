@@ -13,6 +13,7 @@
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="address" form-view="address-form" grid-view="address-grid"/>
         <field name="typeSelect"/>
+        <field name="stockLocationValue"/>
     </grid>
     
     <tree name="stock-location-tree" title="Stock Locations">
@@ -41,18 +42,18 @@
 		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="typeSelect" colSpan="3"/>
-			<field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+			<field name="parentStockLocation" canEdit="false" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-			<field name="partner" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-			<field name="address" form-view="address-form" grid-view="address-grid"/>
-			<field name="$stockLocationValue" title="Stock location value" readonly="true">
+			<field name="partner" canEdit="false" showIf="typeSelect == 2" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
+			<field name="address" canEdit="false" form-view="address-form" grid-view="address-grid"/>
+			<field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
+			<field name="stockLocationValue" readonly="true" hideIf="typeSelect==3">
 			<viewer>
 					<![CDATA[
-						<h4> {{record.$stockLocationValue}} </h4>
+						<h4> {{record.stockLocationValue}} </h4>
 					]]>
 				</viewer>
 			</field>
-            <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
 		</panel>    
 		<panel-tabs name="mainPanelTab">
 			<panel name="locationContentPanel" title="Location Content">
@@ -64,6 +65,7 @@
 				<field name="usableOnPurchaseOrder" colSpan="3"/>
 				<field name="usableOnProduction" colSpan="3"/>
 				<field name="directOrderLocation" colSpan="3"/>
+				<field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
 				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
 			</panel>
 		</panel-tabs>
@@ -89,6 +91,8 @@
 	    <field name="typeSelect" expr="1"/>
 	    <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    	<field name="usableOnProduction" expr="eval:_productionWorkshop"/>
+    	<field name="isWorkshop" expr="eval:_productionWorkshop"/>
 	</action-record>
     
     <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.stock.db.Inventory">

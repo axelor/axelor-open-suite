@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,12 +23,16 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -53,6 +57,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   @Inject protected StockRulesService stockRulesService;
 
+  @Inject protected StockMoveLineRepository stockMoveLineRepository;
+
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void updateLocation(
@@ -64,8 +70,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException {
 
     this.updateLocation(
@@ -76,8 +81,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         current,
         future,
         isIncrement,
-        lastFutureStockMoveDate,
-        requestedReservedQty);
+        lastFutureStockMoveDate);
 
     if (trackingNumber != null) {
       this.updateDetailLocation(
@@ -89,8 +93,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           future,
           isIncrement,
           lastFutureStockMoveDate,
-          trackingNumber,
-          requestedReservedQty);
+          trackingNumber);
     }
   }
 
@@ -104,8 +107,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty)
+      LocalDate lastFutureStockMoveDate)
       throws AxelorException {
 
     StockLocationLine stockLocationLine = this.getOrCreateStockLocationLine(stockLocation, product);
@@ -148,8 +150,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             current,
             future,
             isIncrement,
-            lastFutureStockMoveDate,
-            requestedReservedQty);
+            lastFutureStockMoveDate);
 
     this.checkStockMin(stockLocationLine, false);
 
@@ -239,8 +240,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException {
 
     StockLocationLine detailLocationLine =
@@ -279,8 +279,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             current,
             future,
             isIncrement,
-            lastFutureStockMoveDate,
-            BigDecimal.ZERO);
+            lastFutureStockMoveDate);
 
     this.checkStockMin(detailLocationLine, true);
 
@@ -354,8 +353,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty)
+      LocalDate lastFutureStockMoveDate)
       throws AxelorException {
 
     if (current) {
@@ -366,11 +364,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       }
     }
     if (future) {
-      if (isIncrement) {
-        stockLocationLine.setFutureQty(stockLocationLine.getFutureQty().add(qty));
-      } else {
-        stockLocationLine.setFutureQty(stockLocationLine.getFutureQty().subtract(qty));
-      }
+      stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine));
       stockLocationLine.setLastFutureStockMoveDate(lastFutureStockMoveDate);
     }
 
@@ -553,14 +547,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
               product);
       stockLocationLine.setCurrentQty(currentQty);
 
-      BigDecimal futureQty =
-          unitConversionService.convert(
-              stockLocationUnit,
-              productUnit,
-              stockLocationLine.getFutureQty(),
-              stockLocationLine.getFutureQty().scale(),
-              product);
-      stockLocationLine.setFutureQty(futureQty);
+      stockLocationLine.setUnit(product.getUnit());
+      stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine));
 
       BigDecimal avgQty = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
@@ -568,9 +556,103 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       }
       BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
       stockLocationLine.setAvgPrice(newAvgPrice.setScale(scale, RoundingMode.HALF_UP));
-
-      stockLocationLine.setUnit(product.getUnit());
     }
     return stockLocationLine;
+  }
+
+  protected static final String STOCK_MOVE_LINE_FILTER =
+      "(self.stockMove.archived IS NULL OR self.archived IS FALSE) "
+          + "AND self.stockMove.statusSelect = :planned "
+          + "AND self.product.id = :productId ";
+
+  @Override
+  public BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException {
+    // future quantity is current quantity minus planned outgoing stock move lines plus planned
+    // incoming stock move lines.
+
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    Product product = stockLocationLine.getProduct();
+
+    BigDecimal futureQty = stockLocationLine.getCurrentQty();
+
+    List<StockMoveLine> incomingStockMoveLineList =
+        findIncomingPlannedStockMoveLines(stockLocationLine);
+    List<StockMoveLine> outgoingStockMoveLineList =
+        findOutgoingPlannedStockMoveLines(stockLocationLine);
+
+    for (StockMoveLine incomingStockMoveLine : incomingStockMoveLineList) {
+      BigDecimal qtyToAdd =
+          unitConversionService.convert(
+              incomingStockMoveLine.getUnit(),
+              stockLocationLine.getUnit(),
+              incomingStockMoveLine.getRealQty(),
+              incomingStockMoveLine.getRealQty().scale(),
+              product);
+      futureQty = futureQty.add(qtyToAdd);
+    }
+
+    for (StockMoveLine outgoingStockMoveLine : outgoingStockMoveLineList) {
+      BigDecimal qtyToSubtract =
+          unitConversionService.convert(
+              outgoingStockMoveLine.getUnit(),
+              stockLocationLine.getUnit(),
+              outgoingStockMoveLine.getRealQty(),
+              outgoingStockMoveLine.getRealQty().scale(),
+              product);
+      futureQty = futureQty.subtract(qtyToSubtract);
+    }
+
+    return futureQty;
+  }
+
+  protected List<StockMoveLine> findIncomingPlannedStockMoveLines(
+      StockLocationLine stockLocationLine) {
+    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
+    String incomingStockMoveLineFilter =
+        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.toStockLocation.id = :stockLocationId";
+    if (isDetailsStockLocationLine) {
+      incomingStockMoveLineFilter =
+          incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
+    }
+    Query<StockMoveLine> stockMoveLineQuery =
+        stockMoveLineRepository
+            .all()
+            .filter(incomingStockMoveLineFilter)
+            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .bind("productId", stockLocationLine.getProduct().getId());
+    if (isDetailsStockLocationLine) {
+      stockMoveLineQuery
+          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
+          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
+    } else {
+      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
+    }
+    return stockMoveLineQuery.fetch();
+  }
+
+  protected List<StockMoveLine> findOutgoingPlannedStockMoveLines(
+      StockLocationLine stockLocationLine) {
+    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
+    String outgoingStockMoveLineFilter =
+        STOCK_MOVE_LINE_FILTER + "AND self.stockMove.fromStockLocation.id = :stockLocationId";
+    if (isDetailsStockLocationLine) {
+      outgoingStockMoveLineFilter =
+          outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
+    }
+    Query<StockMoveLine> stockMoveLineQuery =
+        stockMoveLineRepository
+            .all()
+            .filter(outgoingStockMoveLineFilter)
+            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .bind("productId", stockLocationLine.getProduct().getId());
+
+    if (isDetailsStockLocationLine) {
+      stockMoveLineQuery
+          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
+          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
+    } else {
+      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
+    }
+    return stockMoveLineQuery.fetch();
   }
 }

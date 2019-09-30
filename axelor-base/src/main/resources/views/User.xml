@@ -19,6 +19,7 @@
     	<panel name="mainPanel" sidebar="true">
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 <!-- 	        <field name="timesheetPeriodConfig"/> -->
+			<field name="workshopStockLocation" onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
 	        <field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
 	        <button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
         </panel>
@@ -61,7 +62,10 @@
         </panel>
         <panel-tabs name="PermisionsPanelTab">
           <panel-related name="rolesPanel" field="roles" form-view="role-form" grid-view="role-grid"/>
-          <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form"/>
+          <panel name="parentPermissionsPanel" title="Permissions">
+    		<field name="appPermissions" widget="MultiSelect" if="__config__.app.isApp('mobile')"/>
+	        <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form" colSpan="12"/>
+    	  </panel>
           <panel-related name="metaPermissionsPanel" field="metaPermissions"/>
         </panel-tabs>
         <!-- /from axelor-core -->
@@ -86,7 +90,6 @@
         	 </panel>
         	<panel name="calendarsConfigPanel" title="Calendars Configuration">
         		<panel-related name="followersCalUserSetPanel" field="followersCalUserSet" canEdit="false" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
-        		<panel-related name="calendarManagementListPanel" field="calendarManagementList" colSpan="12"/>
         		<field name="iCalendar" canNew="true" canEdit="true"/>
         	</panel>
 		    <panel name="electronicSignaturePanel" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')">
@@ -100,6 +103,11 @@
         <panel name="transientPasswordPanel" hidden="true" colSpan="12">
           <field name="transientPassword"/>
         </panel>
+
+        <panel-mail name="mailsPanel">
+					<mail-messages limit="4"/>
+					<mail-followers/>
+		    </panel-mail>
     </form>
 
     <form name="user-preferences-form" id="base-user-preferences-form" title="Preferences" model="com.axelor.auth.db.User" 
@@ -128,7 +136,6 @@
 			<field name="iCalendar" canNew="true" canEdit="true"/>
 			<panel-related name="companySetPanel" title="Internal companies" field="companySet" hidden="true"/>
 			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
-			<panel-related name="calendarManagementListPanel" field="calendarManagementList" colSpan="12"/>
 			<field name="receiveEmails"/>
 			<field hideIf="receiveEmails == false" name="followedMetaModelSet" widget="TagSelect" colSpan="12" canNew="false" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>

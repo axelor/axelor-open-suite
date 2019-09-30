@@ -21,6 +21,15 @@
     <view type="form" name="meta-group-menu-assistant-form" />
   </action-view>
   
+  <menuitem name="menu-meta-permission" parent="menu-auth" title="Meta Permissions"
+    action="action-meta-permission" />
+
+  <action-view name="action-meta-permission" title="Meta Permissions"
+    model="com.axelor.meta.db.MetaPermission">
+    <view type="grid" name="meta-permission-grid" />
+    <view type="form" name="meta-permission-form" />
+  </action-view>
+  
   <menuitem name="admin-root" title="Application Config" order="-60"
 		icon="fa-gear" icon-background="#31b4a9"/>
 		

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,11 +38,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
-import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -134,22 +132,15 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
             + message.getSubject()
             + "-"
             + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-    File file =
+
+    String fileLink =
         Beans.get(TemplateMessageServiceBaseImpl.class)
-            .generateBirtTemplate(
+            .generateBirtTemplateLink(
                 maker,
                 fileName,
                 birtTemplate.getTemplateLink(),
                 birtTemplate.getFormat(),
                 birtTemplate.getBirtTemplateParameterList());
-
-    String fileLink = "ws/files/report/" + file.getName();
-
-    try {
-      fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      logger.error(e.getLocalizedMessage());
-    }
 
     return fileLink;
   }
@@ -194,5 +185,20 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
     }
 
     return "";
+  }
+
+  @Override
+  public String getFullEmailAddress(EmailAddress emailAddress) {
+    String partnerName = "";
+    if (emailAddress.getPartner() != null) {
+
+      try {
+        partnerName = new String(emailAddress.getPartner().getName().getBytes(), "ISO-8859-1");
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+    }
+
+    return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";
   }
 }

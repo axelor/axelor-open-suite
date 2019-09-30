@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,11 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import java.util.List;
 import javax.persistence.PersistenceException;
 
@@ -29,7 +33,14 @@ public class MoveLineManagementRepository extends MoveLineRepository {
   @Override
   public void remove(MoveLine entity) {
     if (!entity.getMove().getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK),
+            entity.getMove().getReference());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e);
+      }
     } else {
       entity.setArchived(true);
     }
@@ -43,6 +54,11 @@ public class MoveLineManagementRepository extends MoveLineRepository {
         analyticMoveLine.setAccount(entity.getAccount());
         analyticMoveLine.setAccountType(entity.getAccount().getAccountType());
       }
+    }
+    try {
+      Beans.get(MoveLineService.class).validateMoveLine(entity);
+    } catch (Exception e) {
+      throw new PersistenceException(e);
     }
     return super.save(entity);
   }

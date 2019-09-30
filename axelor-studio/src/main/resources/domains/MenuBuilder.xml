@@ -10,7 +10,7 @@
      <string name="title" title="Title" required="true" />
      <string name="icon" title="Icon" />
      <string name="iconBackground" title="Background" />
-     <integer name="order" column="order_seq" />
+     <integer name="order" title="MenuBuilder.Order" column="order_seq" />
      <string name="tag" title="Tag label"/>
      <string name="tagGet" title="Tag method"/>
      <boolean name="tagCount" title="Tag count"/>

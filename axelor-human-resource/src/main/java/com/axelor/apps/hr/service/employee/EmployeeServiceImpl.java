@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -120,22 +120,19 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
           employee.getName());
     }
 
-    LocalDate itDate = fromDate;
-
-    while (!itDate.isAfter(toDate)) {
+    LocalDate date = fromDate;
+    while (!date.isAfter(toDate)) {
       duration =
           duration.add(
-              new BigDecimal(weeklyPlanningService.workingDayValue(weeklyPlanning, itDate)));
-      itDate = itDate.plusDays(1);
+              BigDecimal.valueOf(
+                  weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date)));
+      date = date.plusDays(1);
     }
 
-    if (publicHolidayPlanning != null) {
-      duration =
-          duration.subtract(
-              Beans.get(PublicHolidayHrService.class)
-                  .computePublicHolidayDays(
-                      fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
-    }
+    duration =
+        duration.subtract(
+            Beans.get(PublicHolidayHrService.class)
+                .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;
   }
@@ -150,7 +147,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         Beans.get(LeaveRequestRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDate BETWEEN ?3 AND ?4 OR self.toDate BETWEEN ?3 AND ?4)",
+                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4)",
                 employee.getUser(),
                 LeaveRequestRepository.STATUS_VALIDATED,
                 fromDate,
@@ -168,7 +165,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
 
-    Map<String, String> urlMap = new HashMap<String, String>();
+    Map<String, String> urlMap = new HashMap<>();
     name =
         firstName != null && name != null
             ? firstName + "+" + name

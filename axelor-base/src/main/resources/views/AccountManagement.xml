@@ -52,8 +52,9 @@
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
-				<field name="product" canEdit="false" colSpan="12" form-view="product-form"
+				<field name="product" canEdit="false" form-view="product-form"
 					grid-view="product-grid" showIf="typeSelect == 1"/>
+				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" showIf="typeSelect == 1"/>
 			</panel>
 
 			<!-- PRODUCT -->
@@ -126,7 +127,7 @@
 					form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="bankDetails" form-view="bank-details-form"
 					grid-view="bank-details-grid" onSelect="action-account-management-attrs-bank-details-domain" />
-				<field name="sequence" domain="self.company = :company"
+				<field name="sequence" domain="self.company = :company  AND self.code='paymentVoucher'" 
 					canNew="true" form-view="sequence-form" grid-view="sequence-grid" />
 			</panel>
 
@@ -180,5 +181,5 @@
 		<attribute name="hidden" for="typeSelect" expr="eval: true"
 			if="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax' || __parent__?._model == 'com.axelor.apps.base.db.Product' || __parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'" />
 	</action-attrs>
-
+	
 </object-views>

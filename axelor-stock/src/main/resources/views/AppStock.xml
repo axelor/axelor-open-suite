@@ -7,15 +7,21 @@
 		<panel name="mainPanel">
 			<field name="isEnabledProductDescriptionCopy" widget="boolean-switch" colSpan="4"/>
 			<field name="requireToFillConformityOnReceipt" widget="boolean-switch" colSpan="4"/>
-			<field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"></field>
-		</panel> 
+			<field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
+			<field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
+		</panel>
+		<panel name="customsPanel" title="Customs">
+          	<field name="economicArea"/>
+        </panel>
 		<panel name="actionPanel">
 			<button name="generateStockConfigurationsBtn" colSpan="4" title="Generate stock configurations" onClick="save,com.axelor.apps.stock.web.AppStockController:generateStockConfigurations" />
 			<panel-dashlet name="stockConfigPanel" action="admin.root.conf.stock.config" colSpan="12"/>
 		</panel> 
-        <panel name="customPanel" title="Custom">
-          <field name="economicArea"/>
-        </panel> 
+        		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-view name="admin.root.conf.stock.config" title="Stock configurations"

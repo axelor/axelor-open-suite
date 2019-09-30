@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.PartnerStockSettings;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 
 public interface PartnerStockSettingsService {
@@ -40,4 +41,12 @@ public interface PartnerStockSettingsService {
    * @param company
    */
   PartnerStockSettings createMailSettings(Partner partner, Company company) throws AxelorException;
+
+  /**
+   * get default stock location for given partner and company
+   *
+   * @param partner
+   * @param company
+   */
+  public StockLocation getDefaultStockLocation(Partner partner, Company company);
 }

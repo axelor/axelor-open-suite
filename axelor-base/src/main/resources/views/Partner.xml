@@ -11,7 +11,7 @@
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
@@ -35,7 +35,7 @@
 	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
-	    <field name="partnerSeq"/>
+	    <field name="partnerSeq" width="120"/>
 	    <field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -60,7 +60,7 @@
 	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
-	    <field name="partnerSeq"/>
+	    <field name="partnerSeq" width="120" />
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -79,19 +79,20 @@
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
 		  title="Email"/>
+		<field name="mainPartner.simpleFullName" title="Main company"/>
 		<field name="jobTitle"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -101,7 +102,8 @@
 
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
-		  onLoad="action-group-partner-onload" width="large">
+		  onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
+		  onSave="action-partner-validate-partner-stock-settings-list" width="large">
 		<panel-include view="partner-form" />
 	</form>
 
@@ -279,8 +281,8 @@
 				</panel>
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false"/>
-					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
-						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
+					<panel name="assignedToPanel" title="Assigned to" colSpan="12" >
+						<field name="user" colSpan="6" form-view="user-form" onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
@@ -565,7 +567,9 @@
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
 		<field name="emailAddress.address" title="Email"/>
+		<field name="mainPartner.simpleFullName"/>
 		<field name="partnerCategory" />
 		<field name="mainAddress" />
 		<field name="titleSelect" />
@@ -582,8 +586,10 @@
 			  </div>
 			  <div class="span8">
 			    <span>{{mainAddress.fullName}}<br/>
-			    {{fixedPhone}}<br/>
+			    <span ng-if="fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/>  {{fixedPhone}}<br/></span>
+			    <span  ng-if="mobilePhone"><i class='fa fa-mobile' style="margin-right:9px;"/>{{mobilePhone}}<br/></span>
 			    {{emailAddress.address}}<br/>
+			    <span  ng-if="mainPartner.simpleFullName"><strong><span x-translate>Companies</span></strong> : {{mainPartner.simpleFullName}}<br/></span>
 			    {{partnerCategory.name}}</span>
 			  </div>
 			</div>
@@ -720,6 +726,7 @@
 
 	<action-attrs name="action-partner-attrs-partner-seq-editable">
 		<attribute name="readonly" for="partnerSeq" expr="__config__.app.getApp('base').getGeneratePartnerSequence()"/>
+        <attribute name="readonly" for="companyPanel" expr="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-attrs>
 
     <action-attrs name="action-partner-attrs-change-name">
@@ -768,6 +775,10 @@
 	<action-attrs name="action-partner-attrs-set-domain">
 		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true) AND self.isEmployee = false &quot;"/>
 	</action-attrs>
+	
+	<action-attrs name="action-partner-attrs-hide-customer-recovery">
+		<attribute name="hidden" for="customerRecovery" expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}"/>
+	</action-attrs>
 
     <action-record name="action-partner-record-set-balance"
         model="com.axelor.apps.base.db.Partner">
@@ -785,7 +796,6 @@
 	</action-record>
 
 	<action-record name="action-partner-record-employee" model="com.axelor.apps.base.db.Partner">
-		<field name="contactPartnerSet" expr="eval: null"/>
 		<field name="isEmployee" expr="eval: false" if="partnerTypeSelect == 1"/>
 	</action-record>
 
@@ -822,7 +832,6 @@
 		<field name="team"  expr="#{_parent.team}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="mainPartner" expr="#{__repo__(Partner).find(_parent.id)}" if="#{_parent != null &amp;&amp; _parent.id != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
 
 	<action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">
@@ -927,6 +936,14 @@
         <field name="isCarrier" expr="eval: false" />
     </action-record>
 
+    <action-validate name="action-partner-validate-partner-stock-settings-list">
+    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
+    </action-validate>
+   	 
+   	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
+		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 1"/>
+	</action-attrs>
+   	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>

@@ -8,6 +8,11 @@
 			<field name="isSla" widget="boolean-switch" colSpan="3"/>
 			<field name="manageTimer" widget="boolean-switch" colSpan="3"/>
 		</panel>
+				        
+        <panel-mail name="mailPanel">
+		    <mail-messages limit="4" />
+			<mail-followers />
+		</panel-mail>
 	</form>
 	
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,11 +23,13 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.message.db.Message;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.mail.MessagingException;
 
 public interface LeaveService {
@@ -38,7 +40,7 @@ public interface LeaveService {
       throws AxelorException;
 
   public BigDecimal computeDuration(
-      LeaveRequest leave, LocalDate from, LocalDate to, int startOn, int endOn)
+      LeaveRequest leave, LocalDateTime from, LocalDateTime to, int startOn, int endOn)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -96,14 +98,19 @@ public interface LeaveService {
   public boolean willHaveEnoughDays(LeaveRequest leaveRequest);
 
   @Transactional
-  public LeaveLine leaveReasonToJustify(Employee employee, LeaveReason leaveReason)
-      throws AxelorException;
-
-  @Transactional
   public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReasonHrConfig)
       throws AxelorException;
 
   @Transactional
   public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
       throws AxelorException;
+
+  /**
+   * Checks if the given day is a leave day.
+   *
+   * @param user
+   * @param date
+   * @return
+   */
+  public boolean isLeaveDay(User user, LocalDate date);
 }

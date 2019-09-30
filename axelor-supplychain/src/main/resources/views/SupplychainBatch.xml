@@ -13,7 +13,7 @@
     </grid>
 
 	<form name="supplychain-batch-form" title="Supplychain Batch"
-		model="com.axelor.apps.supplychain.db.SupplychainBatch" onNew="action-supplychain-batch-record-on-new">
+		model="com.axelor.apps.supplychain.db.SupplychainBatch" onNew="action-supplychain-batch-record-on-new" onLoad="action-group-supplychain-batch-group-onload">
 		<panel name="mainPanel" >
 			<field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 			<field name="actionSelect" selection="supplychain.batch.invoice.stock.moves.action.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
@@ -43,8 +43,13 @@
 			<panel name="accountingCutOffConfigPanel" title="Accounting cut-off configuration" showIf="actionSelect == 1" colSpan="12">
 				<field name="accountingCutOffTypeSelect"/>
 				<field name="moveDescription" requiredIf="actionSelect == 1"/>
-				<field name="moveDate" requiredIf="actionSelect == 1"/>
-				<field name="reverseMoveDate" requiredIf="actionSelect == 1"/>
+				<panel colSpan="6" itemSpan="12">
+					<field name="moveDate" requiredIf="actionSelect == 1" onChange="action-supplychain-batch-attrs-show-label"/>
+					<label name="adviseUser" title="This batch has already been running this month" hidden="true" css="label-danger" />
+				</panel>
+				<panel colSpan="6" itemSpan="12">
+					<field name="reverseMoveDate" requiredIf="actionSelect == 1"/>
+				</panel>
 				<field name="recoveredTax"/>
 				<field name="ati" showIf="!recoveredTax"/>
 				<field name="includeNotStockManagedProduct"/>
@@ -57,12 +62,33 @@
 			</panel>
 		</panel-tabs>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
-		    <button name="accountingCutOffBatchBtn" title="Run accounting cut-off" showIf="actionSelect == 1" onClick="save,action-supplychain-batch-method-accounting-cut-off" colSpan="12"/>
+		    <button name="accountingCutOffBatchBtn" title="Run accounting cut-off" showIf="actionSelect == 1" onClick="save,action-supplychain-batch-group-accounting-cut-off" colSpan="12"/>
 		    <button name="invoiceOutgoingStockMoveBatchBtn" title="Invoice outgoing stock moves" showIf="actionSelect == 2"  onClick="save,action-supplychain-batch-method-invoice-outgoing-stock-moves" colSpan="12" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 		    <button name="invoiceOrdersBatchBtn" title="Invoice orders" showIf="actionSelect == 3" onClick="save,action-supplychain-batch-method-invoice-orders" colSpan="12"/>
 		</panel>
 	</form>
 	
+	<!-- ACTION GROUP -->
+	<action-group name="action-supplychain-batch-group-accounting-cut-off">
+		<action name="action-supplychain-batch-validate-twice-in-a-month"/>
+		<action name="action-supplychain-batch-method-accounting-cut-off"/>
+	</action-group>
+	
+	<action-group name="action-group-supplychain-batch-group-onload">
+		<action name="action-supplychain-batch-attrs-show-label"/>
+	</action-group>
+	
+
+	<!-- ACTION ATTRS -->
+	<action-attrs name="action-supplychain-batch-attrs-show-label">
+		<attribute name="hidden" expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.startDate.month == __date__.month &amp;&amp; it.startDate.year == __date__.year} != null)" for="adviseUser"/>
+	</action-attrs>
+	
+	<!-- ACTION VALIDATE -->
+	<action-validate name="action-supplychain-batch-validate-twice-in-a-month">
+   		<alert message="The batch has already been running this month. Are you sure to continue ?" if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.startDate.month == __date__.month &amp;&amp; it.startDate.year == __date__.year} != null" />
+   	</action-validate>
+   	
     <!-- ACTION RECORD -->
     <action-record name="action-supplychain-batch-record-on-new" model="com.axelor.apps.base.db.MailBatch">
 		<field name="createdOn" expr="eval:__config__.app.getTodayDate()"/>
@@ -95,6 +121,14 @@
 		<view type="form" name="stock-move-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
 		<context name="batch" expr="eval: __self__"/>
+	</action-view>
+
+	<action-view name="action-batch-show-stock-move-lines" title="Stock move lines"
+				 model="com.axelor.apps.stock.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.id IN :stockMovelineIdList</domain>
+		<context name="stockMovelineIdList" expr="call:com.axelor.apps.supplychain.service.AccountingCutOffService:getStockMoveLines(__self__)"/>
 	</action-view>
 	
 	

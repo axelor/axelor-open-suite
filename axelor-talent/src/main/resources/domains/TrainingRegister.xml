@@ -12,6 +12,8 @@
 		<datetime name="toDate" title="To date" required="true"/>
 		<integer name="ratingSelect" title="Rating" selection="training.register.rating.select"/>
 		<integer name="statusSelect" title="Status" selection="training.register.status.select" />
+		<many-to-one name="calendar" ref="com.axelor.apps.base.db.ICalendar" title="Calendar"/>
+		<string name="fullName" namecolumn="true"/>
 	</entity>
 
 </domain-models>

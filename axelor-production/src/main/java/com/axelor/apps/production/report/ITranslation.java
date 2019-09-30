@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -193,5 +193,20 @@ public interface ITranslation {
       "CostSheet.lineTypeIndirectCost"; /*)*/
   public static final String COST_SHEET_COST_SHEET_LINE_TYPE_CONSUME_PRODUCT_WASTE = /*$$(*/
       "CostSheet.lineTypeConsumeProductWaste"; /*)*/
+  public static final String COST_SHEET_COST_SHEET_LINE_TYPE_HUMAN = /*$$(*/
+      "CostSheet.lineTypeHuman"; /*)*/
   public static final String COST_SHEET_CURRENCY = /*$$(*/ "CostSheet.currency"; /*)*/
+  public static final String COST_SHEET_LEGEND = /*$$(*/ "CostSheet.legend"; /*)*/
+  public static final String COST_SHEET_CALCULATION_TYPE = /*$$(*/
+      "CostSheet.calculationType"; /*)*/
+  public static final String COST_SHEET_CALCULATION_TYPE_PARTIAL_END_OF_PRODUCTION = /*$$(*/
+      "CostSheet.calculationTypePartialEndOfProduction"; /*)*/
+  public static final String COST_SHEET_CALCULATION_TYPE_END_OF_PRODUCTION = /*$$(*/
+      "CostSheet.calculationTypeEndOfProduction"; /*)*/
+  public static final String COST_SHEET_CALCULATION_TYPE_WORK_IN_PROGRESS = /*$$(*/
+      "CostSheet.calculationTypeWorkInProgress"; /*)*/
+  public static final String COST_SHEET_CALCULATION_TYPE_BILL_OF_MATERIAL = /*$$(*/
+      "CostSheet.calculationTypeBillOfMaterial"; /*)*/
+  public static final String COST_SHEET_CALCULATION_DATE = /*$$(*/
+      "CostSheet.calculationDate"; /*)*/
 }

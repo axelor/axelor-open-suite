@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -142,7 +142,7 @@ public class PayrollPreparationService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDate <= ?1 AND self.toDate >= ?2",
+                "self.statusSelect = ?4 AND self.user.employee = ?3 AND (self.fromDateT BETWEEN ?2 AND ?1 OR self.toDateT BETWEEN ?2 AND ?1)",
                 toDate,
                 fromDate,
                 employee,
@@ -153,16 +153,16 @@ public class PayrollPreparationService {
 
       PayrollLeave payrollLeave = new PayrollLeave();
 
-      if (leaveRequest.getFromDate().isBefore(fromDate)) {
+      if (leaveRequest.getFromDateT().toLocalDate().isBefore(fromDate)) {
         payrollLeave.setFromDate(fromDate);
       } else {
-        payrollLeave.setFromDate(leaveRequest.getFromDate());
+        payrollLeave.setFromDate(leaveRequest.getFromDateT().toLocalDate());
       }
 
-      if (leaveRequest.getToDate().isAfter(toDate)) {
+      if (leaveRequest.getToDateT().toLocalDate().isAfter(toDate)) {
         payrollLeave.setToDate(toDate);
       } else {
-        payrollLeave.setToDate(leaveRequest.getToDate());
+        payrollLeave.setToDate(leaveRequest.getToDateT().toLocalDate());
       }
 
       payrollLeave.setDuration(
@@ -184,8 +184,8 @@ public class PayrollPreparationService {
     while (!itDate.isAfter(toDate)) {
       workingDays =
           workingDays.add(
-              new BigDecimal(
-                  weeklyPlanningService.workingDayValue(
+              BigDecimal.valueOf(
+                  weeklyPlanningService.getWorkingDayValueInDays(
                       payrollPreparation.getEmployee().getWeeklyPlanning(), itDate)));
       itDate = itDate.plusDays(1);
     }
@@ -290,7 +290,7 @@ public class PayrollPreparationService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String exportSinglePayrollPreparation(PayrollPreparation payrollPreparation)
-      throws IOException, AxelorException {
+      throws IOException {
 
     List<String[]> list = new ArrayList<>();
 
@@ -368,8 +368,8 @@ public class PayrollPreparationService {
           String[] leaveLine = createExportFileLine(payrollPreparation);
           leaveLine[3] = payrollLeave.getLeaveReason().getExportCode();
           leaveLine[4] =
-              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
-          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[5] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
           leaveLine[6] = payrollLeave.getDuration().toString();
           list.add(leaveLine);
         }
@@ -429,7 +429,7 @@ public class PayrollPreparationService {
   public String getPayrollPreparationExportName() {
     return I18n.get("Payroll preparation")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDateTime().toString()
+        + Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime().toString()
         + ".csv";
   }
 

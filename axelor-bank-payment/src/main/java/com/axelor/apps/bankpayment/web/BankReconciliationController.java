@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,8 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
@@ -28,8 +30,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class BankReconciliationController {
@@ -40,12 +46,27 @@ public class BankReconciliationController {
 
   @Inject BankReconciliationRepository bankReconciliationRepo;
 
+  @Inject BankReconciliationLineRepository bankReconciliationLineRepo;
+
   public void loadBankStatement(ActionRequest request, ActionResponse response) {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       bankReconciliationService.loadBankStatement(
           bankReconciliationRepo.find(bankReconciliation.getId()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void loadOtherBankStatement(ActionRequest request, ActionResponse response) {
+
+    try {
+      BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+      bankReconciliation = bankReconciliationRepo.find(bankReconciliation.getId());
+      bankReconciliation.setIncludeOtherBankStatements(true);
+      bankReconciliationService.loadBankStatement(bankReconciliation, false);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -70,6 +91,34 @@ public class BankReconciliationController {
       bankReconciliationValidateService.validate(
           bankReconciliationRepo.find(bankReconciliation.getId()));
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateMultipleReconcile(ActionRequest request, ActionResponse response) {
+
+    try {
+      Context context = request.getContext();
+
+      Map<String, Object> bankReconciliationContext =
+          (Map<String, Object>) context.get("_bankReconciliation");
+
+      BankReconciliation bankReconciliation =
+          bankReconciliationRepo.find(((Integer) bankReconciliationContext.get("id")).longValue());
+
+      List<HashMap<String, Object>> moveLinesToReconcileContext =
+          (List<HashMap<String, Object>>) context.get("toReconcileMoveLineSet");
+
+      Map<String, Object> selectedBankReconciliationLineContext =
+          (Map<String, Object>) context.get("_selectedBankReconciliationLine");
+      BankReconciliationLine bankReconciliationLine =
+          bankReconciliationLineRepo.find(
+              ((Integer) selectedBankReconciliationLineContext.get("id")).longValue());
+
+      bankReconciliationValidateService.validateMultipleBankReconciles(
+          bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

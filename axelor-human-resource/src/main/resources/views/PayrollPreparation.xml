@@ -9,41 +9,42 @@
 		 <field name="exported" />
 	</grid>
 	
-	<form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" 
-		onNew="action-payroll-preparation-group-on-new">
-		<panel name="mainPanel" >
-			<field name="company" onChange="action-payroll-preparation-record-company-onchange" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="4"/>
-			 <field name="employee" colSpan="4" onChange="action-payroll-preparation-record-fill-contract, action-payroll-preparation-group-fill-in" canNew="false" canEdit="false" canView="false"/>
-			 <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in" canEdit="false"/>
-			 <field name="period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1 AND self.year.company = :company" grid-view="period-hr-grid" form-view="period-hr-form" onChange="action-payroll-preparation-group-fill-in" colSpan="4" canView="false"/>
-			 <button name="refreshBtn" title="Refresh" onClick="action-payroll-preparation-group-fill-in,action-payroll-preparation-method-fill-in-leaves,save" colSpan="4" colOffset="4"/>
-			 <field name="$payrollLeavesList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12"/>
-			 <panel-related name="extraHoursLineListPanel" field="extraHoursLineList" readonly="true" colSpan="12"/>
-			 <field name="duration"/>
-			 <field name="leaveDuration" />
-			 <panel-related name="expenseListPanel" field="expenseList" 		     colSpan="12" canEdit="false" canNew="false" grid-view="expense-payroll-preparation-grid"/>
-			 <panel-related name="employeeBonusMgtLineListPanel" field="employeeBonusMgtLineList" colSpan="12" canEdit="false" canNew="false" grid-view="employee-bonus-mgt-line-employee-grid"/>
-			 <panel-related name="lunchVoucherMgtLineListPanel" field="lunchVoucherMgtLineList"  colSpan="12" canEdit="false" canNew="false" grid-view="lunch-voucher-mgt-line-payroll-grid" form-view="lunch-voucher-mgt-line-form"/>
-			 <panel-related name="otherCostsEmployeeSetsPanel" field="otherCostsEmployeeSet"    colSpan="12" canEdit="false"/>
-			 <field name="expenseAmount"/>
-			 <field name="employeeBonusAmount"/>
-			 <field name="lunchVoucherNumber"/>
-			 <field name="extraHoursNumber"/>
-			 <field name="comments" colSpan="12"/>
-		</panel>
-		<panel name="detailsPanel" sidebar="true">
-			<panel name="salaryDetailsPanel"  hidden="true" showIf="employmentContract != null" colSpan="12" readonly="true">
-			 	<field name="annualGrossSalary"/>
-			 	<field name="netSalary" onChange="action-payroll-preparation-record-total"/>
-			 	<field name="socialCharges"/>
-			 	<field name="total"/>
-			</panel>
-			<field name="exportTypeSelect" readonlyIf="exported" />
-			<button name="exportBtn" title="Export payroll preparation" hidden="true" showIf="id != null &amp;&amp; !exported" onClick="save,action-payroll-preparation-method-export" />
-			<field name="exported" />
-			<field name="exportDate" hidden="true" showIf="exported" />
-		</panel>
-	</form>
+    <form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" onNew="action-payroll-preparation-group-on-new">
+        <panel>
+            <panel name="mainPanel" colSpan="12">
+                <field name="company" onChange="action-payroll-preparation-record-company-onchange" canEdit="false" form-view="company-form" grid-view="company-grid" colSpan="4" />
+                <field name="employee" colSpan="4" domain="self.employmentContractList.payCompany = :company" onChange="action-payroll-preparation-record-fill-contract, action-payroll-preparation-group-fill-in" canNew="false" canEdit="false" canView="false" />
+                <field name="employmentContract" colSpan="4" domain="self.employee = :employee" onChange="action-payroll-preparation-group-fill-in" canEdit="false" />
+                <field name="period" canEdit="false" domain="self.year.typeSelect = 2 AND self.statusSelect = 1 AND self.year.company = :company" grid-view="period-hr-grid" form-view="period-hr-form" onChange="action-payroll-preparation-group-fill-in" colSpan="4" canView="false" />
+                <button name="refreshBtn" title="Refresh" onClick="validate,action-payroll-preparation-group-fill-in,action-payroll-preparation-method-fill-in-leaves,save" colSpan="4" colOffset="4" />
+                <field name="$payrollLeavesList" type="many-to-many" target="com.axelor.apps.hr.db.PayrollLeave" title="Leaves" readonly="true" colSpan="12" />
+                <panel-related name="extraHoursLineListPanel" field="extraHoursLineList" readonly="true" colSpan="12" />
+                <field name="duration" />
+                <field name="leaveDuration" />
+                <panel-related name="expenseListPanel" field="expenseList" colSpan="12" canEdit="false" canNew="false" grid-view="expense-payroll-preparation-grid" />
+                <panel-related name="employeeBonusMgtLineListPanel" field="employeeBonusMgtLineList" colSpan="12" canEdit="false" canNew="false" grid-view="employee-bonus-mgt-line-employee-grid" />
+                <panel-related name="lunchVoucherMgtLineListPanel" field="lunchVoucherMgtLineList" colSpan="12" canEdit="false" canNew="false" grid-view="lunch-voucher-mgt-line-payroll-grid" form-view="lunch-voucher-mgt-line-form" />
+                <panel-related name="otherCostsEmployeeSetsPanel" field="otherCostsEmployeeSet" colSpan="12" canEdit="false" />
+                <field name="expenseAmount" />
+                <field name="employeeBonusAmount" />
+                <field name="lunchVoucherNumber" />
+                <field name="extraHoursNumber" />
+            </panel>
+            <field name="comments" colSpan="12" />
+        </panel>
+        <panel name="detailsPanel" sidebar="true">
+            <panel name="salaryDetailsPanel" hidden="true" showIf="employmentContract != null" colSpan="12" readonly="true">
+                <field name="annualGrossSalary" />
+                <field name="netSalary" onChange="action-payroll-preparation-record-total" />
+                <field name="socialCharges" />
+                <field name="total" />
+            </panel>
+            <field name="exportTypeSelect" readonlyIf="exported" />
+            <button name="exportBtn" title="Export payroll preparation" hidden="true" showIf="id != null &amp;&amp; !exported" onClick="action-payroll-preparation-group-export" />
+            <field name="exported" />
+            <field name="exportDate" hidden="true" showIf="exported" />
+        </panel>
+    </form>
 	
 	<action-group name="action-payroll-preparation-group-on-new">
 		<action name="action-payroll-preparation-generate-from-emp-contract" if="_idEmploymentContract != null"/>
@@ -86,8 +87,19 @@
 		<field name="total" expr="netSalary + expenseAmount"/>
 	</action-record>
 	
+	<action-group name="action-payroll-preparation-group-export">
+		<action name="save"/>
+		<action name="action-payroll-preparation-method-export"/>
+		<action name="action-payroll-preparation-attrs-export" if="exported"/>
+	</action-group>
+	
 	<action-method name="action-payroll-preparation-method-export" >
 		<call class="com.axelor.apps.hr.web.PayrollPreparationController" method="exportPayrollPreparation"/>
 	</action-method>
+	
+	<action-attrs name="action-payroll-preparation-attrs-export">
+		<attribute name="readonly" for="mainPanel" expr="true"/>
+		<attribute name="hidden" for="refreshButton" expr="true"/>
+	</action-attrs>
 	
 </object-views>

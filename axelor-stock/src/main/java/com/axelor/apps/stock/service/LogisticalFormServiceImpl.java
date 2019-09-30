@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -45,6 +47,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -68,6 +71,8 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
+
+  @Inject ProductRepository productRepository;
 
   @Override
   public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove)
@@ -386,12 +391,8 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     Preconditions.checkNotNull(logisticalForm);
     Preconditions.checkNotNull(stockMoveLine);
 
-    LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
-    logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
-    logisticalFormLine.setStockMoveLine(stockMoveLine);
-    logisticalFormLine.setQty(qty);
-    logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
-    logisticalFormLine.setUnitNetMass(stockMoveLine.getNetMass());
+    LogisticalFormLine logisticalFormLine =
+        createLogisticalFormLine(logisticalForm, stockMoveLine, qty);
     addLogisticalFormLineListItem(logisticalForm, logisticalFormLine);
   }
 
@@ -652,5 +653,38 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     }
 
     return Optional.empty();
+  }
+
+  protected LogisticalFormLine createLogisticalFormLine(
+      LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
+
+    LogisticalFormLine logisticalFormLine = new LogisticalFormLine();
+    logisticalFormLine.setTypeSelect(LogisticalFormLineRepository.TYPE_DETAIL);
+    logisticalFormLine.setStockMoveLine(stockMoveLine);
+    logisticalFormLine.setQty(qty);
+    logisticalFormLine.setSequence(getNextLineSequence(logisticalForm));
+    logisticalFormLine.setUnitNetMass(stockMoveLine.getNetMass());
+
+    return logisticalFormLine;
+  }
+
+  public void updateProductNetMass(LogisticalForm logisticalForm) {
+    BigDecimal totalNetMass = BigDecimal.ZERO;
+    if (logisticalForm.getLogisticalFormLineList() != null) {
+      for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
+        if (logisticalFormLine.getStockMoveLine() != null
+            && logisticalFormLine.getStockMoveLine().getProduct() != null
+            && logisticalFormLine
+                .getTypeSelect()
+                .equals(LogisticalFormLineRepository.TYPE_DETAIL)) {
+          Product product =
+              productRepository.find(logisticalFormLine.getStockMoveLine().getProduct().getId());
+          logisticalFormLine.setUnitNetMass(product.getNetMass());
+          totalNetMass =
+              totalNetMass.add(logisticalFormLine.getQty().multiply(product.getNetMass()));
+        }
+      }
+      logisticalForm.setTotalNetMass(totalNetMass);
+    }
   }
 }

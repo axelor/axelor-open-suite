@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -88,6 +88,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
+  protected BankOrderLineOriginService bankOrderLineOriginService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -97,7 +98,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       EbicsService ebicsService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
-      SequenceService sequenceService) {
+      SequenceService sequenceService,
+      BankOrderLineOriginService bankOrderLineOriginService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -106,6 +108,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
+    this.bankOrderLineOriginService = bankOrderLineOriginService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -265,8 +268,14 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     for (InvoicePayment invoicePayment : invoicePaymentList) {
       if (invoicePayment != null
-          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED) {
-        invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+          && invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_VALIDATED
+          && invoicePayment.getInvoice() != null) {
+
+        if (bankOrderLineOriginService.existBankOrderLineOrigin(
+            bankOrder, invoicePayment.getInvoice())) {
+
+          invoicePaymentValidateServiceBankPayImpl.validateFromBankOrder(invoicePayment, true);
+        }
       }
     }
   }
@@ -299,8 +308,9 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     setSequenceOnBankOrderLines(bankOrder);
 
+    generateFile(bankOrder);
+
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
-      generateFile(bankOrder);
 
       bankOrder.setConfirmationDateTime(
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
@@ -358,6 +368,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       sendBankOrderFile(bankOrder);
     }
     realizeBankOrder(bankOrder);
+    validatePayment(bankOrder);
   }
 
   protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException {
@@ -447,9 +458,9 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException {
 
-    this.cancelPayment(bankOrder);
-
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
+
+    this.cancelPayment(bankOrder);
 
     bankOrderRepo.save(bankOrder);
   }

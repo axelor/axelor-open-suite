@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
@@ -34,6 +35,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.persistence.Query;
 
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
@@ -127,6 +130,18 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   }
 
   @Override
+  public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+    StockLocationLine stockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
+
+    if (stockLocationLine == null) {
+      return BigDecimal.ZERO;
+    }
+    return stockLocationLine.getReservedQty();
+  }
+
+  @Override
   public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
     Preconditions.checkNotNull(saleOrderLine);
 
@@ -175,5 +190,31 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     } else {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
     }
+  }
+
+  @Override
+  public BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine) {
+    BigDecimal qty = saleOrderLine.getQty();
+    BigDecimal deliveredQty = saleOrderLine.getDeliveredQty();
+    BigDecimal invoicedQty = BigDecimal.ZERO;
+
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT SUM(self.qty) FROM InvoiceLine self WHERE self.invoice.statusSelect = :statusSelect AND self.saleOrderLine.id = :saleOrderLineId");
+    query.setParameter("statusSelect", InvoiceRepository.STATUS_VENTILATED);
+    query.setParameter("saleOrderLineId", saleOrderLine.getId());
+
+    invoicedQty = (BigDecimal) query.getSingleResult();
+
+    if (invoicedQty != null
+        && qty.compareTo(invoicedQty) == -1
+        && invoicedQty.compareTo(deliveredQty) > 0) {
+      return invoicedQty;
+    } else if (deliveredQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(deliveredQty) == -1) {
+      return deliveredQty;
+    }
+
+    return qty;
   }
 }

@@ -10,8 +10,7 @@
 		<string name="name" title="Name" required="true" initParam="true"
 			translatable="true" />
 		<string name="serialNumber" title="Serial Nbr"/>
-		<string name="sequence" title="Product N°" readonly="true" />
-		<string name="code" title="Code" required="true" initParam="true" unique="true"/>
+		<string name="code" title="Code" initParam="true" unique="true"/>
 
 		<string name="description" large="true" title="Description"
 			initParam="true" translatable="true" />
@@ -34,6 +33,7 @@
 		<string name="procurementMethodSelect" title="Procurement method"
 			selection="product.procurement.method.select" initParam="true" />
 		<boolean name="isPrototype" title="Prototype" />
+		<boolean name="isUnrenewed" title="Unrenewed"/>
 		<integer name="productSubTypeSelect" title="Product Subtype"
 			selection="product.sub.type.product.select" />
 		<integer name="inventoryTypeSelect" title="Inventory type"

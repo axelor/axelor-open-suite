@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,10 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
@@ -86,7 +89,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   }
 
   @Override
-  public double workingDayValue(WeeklyPlanning planning, LocalDate date) {
+  public double getWorkingDayValueInDays(WeeklyPlanning planning, LocalDate date) {
     double value = 0;
     DayPlanning dayPlanning = findDayPlanning(planning, date);
     if (dayPlanning == null) {
@@ -102,7 +105,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   }
 
   @Override
-  public double workingDayValueWithSelect(
+  public double getWorkingDayValueInDaysWithSelect(
       WeeklyPlanning planning, LocalDate date, boolean morning, boolean afternoon) {
     double value = 0;
     DayPlanning dayPlanning = findDayPlanning(planning, date);
@@ -118,6 +121,41 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       value += 0.5;
     }
     return value;
+  }
+
+  @Override
+  public BigDecimal getWorkingDayValueInHours(
+      WeeklyPlanning weeklyPlanning, LocalDate date, LocalTime from, LocalTime to) {
+    double value = 0;
+    DayPlanning dayPlanning = this.findDayPlanning(weeklyPlanning, date);
+
+    // Compute morning leave duration
+    LocalTime morningFrom = dayPlanning.getMorningFrom();
+    LocalTime morningTo = dayPlanning.getMorningTo();
+    if (morningFrom != null && morningTo != null) {
+      LocalTime morningBegin = from != null && from.isAfter(morningFrom) ? from : morningFrom;
+      LocalTime morningEnd = to != null && to.isBefore(morningTo) ? to : morningTo;
+      if (to != null && to.isBefore(morningBegin)) {
+        return BigDecimal.ZERO;
+      } else if (from == null || from.isBefore(morningEnd)) {
+        value += ChronoUnit.MINUTES.between(morningBegin, morningEnd);
+      }
+    }
+
+    // Compute afternoon leave duration
+    LocalTime afternoonFrom = dayPlanning.getAfternoonFrom();
+    LocalTime afternoonTo = dayPlanning.getAfternoonTo();
+    if (afternoonFrom != null && afternoonTo != null) {
+      LocalTime afternoonBegin = from != null && from.isAfter(afternoonFrom) ? from : afternoonFrom;
+      LocalTime afternoonEnd = to != null && to.isBefore(afternoonTo) ? to : afternoonTo;
+      if (from != null && from.isAfter(afternoonEnd)) {
+        return BigDecimal.ZERO;
+      } else if (to == null || to.isAfter(afternoonBegin)) {
+        value += ChronoUnit.MINUTES.between(afternoonBegin, afternoonEnd);
+      }
+    }
+
+    return BigDecimal.valueOf(value).divide(BigDecimal.valueOf(60), BigDecimal.ROUND_HALF_UP);
   }
 
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date) {

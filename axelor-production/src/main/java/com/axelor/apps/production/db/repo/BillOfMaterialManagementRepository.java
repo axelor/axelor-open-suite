@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.BillOfMaterial;
+import java.math.BigDecimal;
 
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
 
@@ -32,5 +33,19 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
     }
 
     return super.save(billOfMaterial);
+  }
+
+  @Override
+  public BillOfMaterial copy(BillOfMaterial entity, boolean deep) {
+
+    BillOfMaterial copy = super.copy(entity, deep);
+
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setVersionNumber(1);
+    copy.setOriginalBillOfMaterial(null);
+    copy.setCostPrice(BigDecimal.ZERO);
+    copy.clearCostSheetList();
+
+    return copy;
   }
 }

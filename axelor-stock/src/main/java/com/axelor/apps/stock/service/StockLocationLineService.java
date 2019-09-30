@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,8 +40,7 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -53,8 +52,7 @@ public interface StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty)
+      LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
   public void minStockRules(
@@ -75,8 +73,7 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber,
-      BigDecimal requestedReservedQty)
+      TrackingNumber trackingNumber)
       throws AxelorException;
 
   public void checkStockMin(StockLocationLine stockLocationLine, boolean isDetailLocationLine)
@@ -101,8 +98,7 @@ public interface StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate,
-      BigDecimal requestedReservedQty)
+      LocalDate lastFutureStockMoveDate)
       throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -194,4 +190,13 @@ public interface StockLocationLineService {
    * @return
    */
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
+
+  /**
+   * For a given line, compute the future quantity of a stock location line from its current qty and
+   * planned stock move lines with the same stock location and the same product.
+   *
+   * @param stockLocationLine a stock location line with a product and a stock location.
+   * @return the future quantity of the stock location line.
+   */
+  BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
 }

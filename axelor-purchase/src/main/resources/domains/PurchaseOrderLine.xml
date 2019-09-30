@@ -27,7 +27,7 @@
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
   	<decimal name="qty" title="Qty" default="1"/>
   	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
-  	<string name="productCode" title="Displayed Product code"/>
+	<string name="productCode" title="Supplier code"/>
   	<decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
   	<decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
   	<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
@@ -40,14 +40,14 @@
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	
   	<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
+  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0" />
   	
   	<boolean name="isOrdered" title="Ordered"/>
   	  	
   	<decimal name="saleMinPrice" title="Min sale price" precision="20" scale="10"/>
   	
-	<date name="estimatedDelivDate" title="Estim. delivery date"/>
-	<date name="desiredDelivDate" title="Desired delivery date"/>
+	<date name="estimatedDelivDate" title="Estim. receipt date"/>
+	<date name="desiredDelivDate" title="Desired receipt date"/>
 	<decimal name="receivedQty" title="Received quantity"/>
 	  
 	<string name="supplierComment" title="Supplier Comment"/>

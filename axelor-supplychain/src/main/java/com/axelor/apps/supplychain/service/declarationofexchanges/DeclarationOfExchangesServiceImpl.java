@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,20 +62,15 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
 
     Map<String, Class<? extends DeclarationOfExchangesExporter>> map = null;
     EconomicArea economicArea = Beans.get(AppStockService.class).getAppStock().getEconomicArea();
-    if (economicArea != null) {
-      exportServiceClassMap =
-          ImmutableMap.of(
-              economicArea.getCode(),
-              ImmutableMap.of(
-                  ProductRepository.PRODUCT_TYPE_STORABLE,
-                  DeclarationOfExchangesExporterGoods.class,
-                  ProductRepository.PRODUCT_TYPE_SERVICE,
-                  DeclarationOfExchangesExporterServices.class));
-
-      map =
-          exportServiceClassMap.get(
-              declarationOfExchanges.getCountry().getEconomicArea().getCode());
+    if (economicArea == null) {
+      throw new AxelorException(
+          declarationOfExchanges,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK));
     }
+    exportServiceClassMap = getExportServiceClassMap(economicArea);
+    map =
+        exportServiceClassMap.get(declarationOfExchanges.getCountry().getEconomicArea().getCode());
     if (map == null) {
       throw new AxelorException(
           declarationOfExchanges,
@@ -117,5 +112,17 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
     }
 
     return exporter.export();
+  }
+
+  @Override
+  public Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>
+      getExportServiceClassMap(EconomicArea economicArea) {
+    return ImmutableMap.of(
+        economicArea.getCode(),
+        ImmutableMap.of(
+            ProductRepository.PRODUCT_TYPE_STORABLE,
+            DeclarationOfExchangesExporterGoods.class,
+            ProductRepository.PRODUCT_TYPE_SERVICE,
+            DeclarationOfExchangesExporterServices.class));
   }
 }

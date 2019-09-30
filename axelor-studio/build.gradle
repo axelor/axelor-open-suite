@@ -6,12 +6,6 @@ apply {
 	version = absVersion
 }
 
-spotless { 
-	java {  
-		googleJavaFormat()
-	} 
-}
-
 axelor {
 	title "Axelor Studio"
 	description "Axelor Studio Module"
@@ -24,7 +18,7 @@ dependencies {
 //	compile 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
 	compile 'org.eclipse.birt.runtime.3_7_1:Tidy:1'
 	compile 'org.apache.commons:commons-exec:1.2'
-//	compile "org.bouncycastle:bcprov-jdk14:1.38"
+//	compile "org.bouncycastle:bcprov-jdk15on:1.62"
 }
 
 def updateJsp(jspFile, check, lines) {

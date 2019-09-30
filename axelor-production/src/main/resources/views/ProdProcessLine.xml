@@ -38,7 +38,7 @@
 						<editor x-layout="table" x-show-on-new="false" x-viewer="true">
 							<panel name="mainPanel" colSpan="12">
 								<field name="image" colSpan="3" canNew="true" widget="Image"/>
-								<field name="description" widget="html" colSpan="12"/>
+								<field name="description" widget="html" colSpan="9"/>
 							</panel>
 						</editor>
 					</field>

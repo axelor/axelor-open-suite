@@ -83,6 +83,10 @@
       <field name="stockMove.statusSelect" hidden="true" />
       <field name="realQty" hidden="true"/>
     </panel>
+    <panel-mail name="mailPanel">
+    	<mail-messages limit="4" />
+    	<mail-followers />
+    </panel-mail>
   </form>
 
   <action-method name="action-stock-move-line-compute-price"

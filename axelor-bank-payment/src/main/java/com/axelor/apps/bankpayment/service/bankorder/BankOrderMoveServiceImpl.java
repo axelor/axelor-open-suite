@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,8 +59,6 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected int orderTypeSelect;
   protected int partnerTypeSelect;
   protected Journal journal;
-  protected LocalDate bankOrderDate;
-  protected Currency bankOrderCurrency;
   protected Account senderBankAccount;
   protected BankDetails senderBankDetails;
   protected boolean isMultiDate;
@@ -96,6 +94,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     orderTypeSelect = bankOrder.getOrderTypeSelect();
     senderCompany = bankOrder.getSenderCompany();
     senderBankDetails = bankOrder.getSenderBankDetails();
+    partnerTypeSelect = bankOrder.getPartnerTypeSelect();
 
     journal =
         paymentModeService.getPaymentModeJournal(paymentMode, senderCompany, senderBankDetails);
@@ -164,8 +163,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             .createMoveLine(
                 senderMove,
                 partner,
-                getPartnerAccount(
-                    partner, bankOrderLine.getReceiverCompany(), senderMove.getCompany()),
+                getPartnerAccount(partner, senderCompany, senderCompany),
                 bankOrderLine.getBankOrderAmount(),
                 isDebit,
                 senderMove.getDate(),
@@ -271,18 +269,18 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected LocalDate getDate(BankOrderLine bankOrderLine) {
 
     if (isMultiDate) {
-      return bankOrderDate;
-    } else {
       return bankOrderLine.getBankOrderDate();
+    } else {
+      return bankOrderLine.getBankOrder().getBankOrderDate();
     }
   }
 
   protected Currency getCurrency(BankOrderLine bankOrderLine) {
 
     if (isMultiCurrency) {
-      return bankOrderCurrency;
-    } else {
       return bankOrderLine.getBankOrderCurrency();
+    } else {
+      return bankOrderLine.getBankOrder().getBankOrderCurrency();
     }
   }
 }

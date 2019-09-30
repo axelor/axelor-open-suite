@@ -32,6 +32,7 @@
 		<many-to-one name="incoterm" ref="com.axelor.apps.stock.db.Incoterm" />
 
       <boolean name="isNeedingConformityCertificate" title="Is certificate of conformity required"/>
+      <boolean name="isIspmRequired" title="Is ISPM 15 required"/>
 
         <boolean name="directOrderLocation" title="Direct order"/>
         <extra-code>

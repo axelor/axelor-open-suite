@@ -5,7 +5,7 @@
 
 	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease"
 		orderBy="-sequenceNumber">
-		<field name="sequenceNumber" />
+		<field name="sequenceNumber" width="120"/>
 		<field name="company" />
 		<field name="company.accountConfig.factorPartner" />
 		<field name="transmissionDate"/>
@@ -30,11 +30,12 @@
 			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 			<field name="company.accountConfig.factorPartner" readonly="true" form-view="partner-form" />
 			<panel-related name="invoiceSetPanel" field="invoiceSet" grid-view="invoice-release-details-grid"
-				form-view="invoice-form" colSpan="12" canNew="false" readonlyIf="statusSelect != 1"
+				form-view="invoice-form" colSpan="12" canNew="false" canEdit="false" readonlyIf="statusSelect &gt; 1"
 				domain="self.company = :company AND self.partner.factorizedCustomer = TRUE
                     AND self.statusSelect = 3 
                     AND self.id not in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))
-                    AND ((self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE) or self.originalInvoice.id in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4)))" />
+                    AND ((self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE) or self.originalInvoice.id in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))) 
+                    AND self.operationTypeSelect not in (1,2)" />
 		</panel>
 
 		<panel name="actionsPanel" title="Actions" sidebar="true">
@@ -52,7 +53,7 @@
 		
 		<panel sidebar="true">
 			<field name="transmissionDate"/>
-			<field name="accountingDate"/>
+			<field name="accountingDate" readonlyIf="statusSelect >= 3"/>
 			<field name="comments"/>
 			<field name="cancelReason" showIf="statusSelect == 5"/>
 		</panel>

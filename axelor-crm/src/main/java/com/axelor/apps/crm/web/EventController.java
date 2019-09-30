@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,8 +19,10 @@ package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.RecurrenceConfiguration;
+import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.RecurrenceConfigurationRepository;
@@ -505,6 +507,20 @@ public class EventController {
       if (emailAddress != null) {
         response.setValue("attendees", iCalendarEventService.addEmailGuest(emailAddress, event));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void deleteReminder(ActionRequest request, ActionResponse response) {
+    try {
+      EventReminderRepository eventReminderRepository = Beans.get(EventReminderRepository.class);
+
+      EventReminder eventReminder =
+          eventReminderRepository.find((long) request.getContext().get("id"));
+      eventReminderRepository.remove(eventReminder);
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -11,7 +11,7 @@
 	        <field name="outPaymentMode" canEdit="false" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
 	        <field name="paymentCondition" canEdit="false" grid-view="payment-condition-grid" form-view="payment-condition-form" hideIf="isEmployee"/>
 	        <field name="currency" canEdit="false" requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form" grid-view="currency-grid"/>
-	        <field name="fiscalPosition" canEdit="false" form-view="fiscal-position-form" grid-view="fiscal-position-grid" onChange="action-partner-attrs-show-specific-tax-note"/>
+	        <field name="fiscalPosition" canEdit="false" form-view="fiscal-position-form" grid-view="fiscal-position-grid" onChange="action-partner-attrs-show-specific-tax-note,action-partner-method-get-default-specific-tax-note"/>
             <field name="specificTaxNote" colSpan="12" hidden="true"/>
 	        <field name="analyticDistributionTemplate" canNew="true"/>
 	        <panel name="showInvoicesPanel" colSpan="6" hideIf="isEmployee">
@@ -125,6 +125,10 @@
 	<action-method name="action-partner-method-show-client-situation" >
 		<call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
 	</action-method>
+	
+	<action-method name="action-partner-method-get-default-specific-tax-note">
+		<call class="com.axelor.apps.account.web.PartnerController" method="getDefaultSpecificTaxNote"/>
+	</action-method>
 
 	<action-attrs name="action-partner-account-attrs-hide-supplier-account">
 		<attribute name="hidden" for="accountingSituationList.supplierAccount" expr="eval: !isSupplier"/>
@@ -141,6 +145,15 @@
     <action-attrs name="action-partner-attrs-show-specific-tax-note">
         <attribute for="specificTaxNote" name="hidden" expr="eval: fiscalPosition == null || !fiscalPosition.customerSpecificNote"/>
     </action-attrs>
+    
+    <action-view name="action-partner-view-show-customer-debt-recovery" model="com.axelor.apps.account.db.DebtRecovery" title="Debt recovery">
+    	<view name="debt-recovery-grid" type="grid"/>
+    	<view name="debt-recovery-form" type="form"/>
+    	<domain>self.accountingSituation.partner = :_partner</domain>
+    	<context name="_partner" expr="eval: __self__"/>
+    	<context name="_showSingle" expr="eval:true"/>
+    </action-view>
+    
 
 	
 </object-views>

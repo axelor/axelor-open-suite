@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,13 +42,30 @@ public interface IExceptionMessage {
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/
-      "You can't remove this record, because the move has already been validated" /*)*/;
+      "You can't remove this record, because the move %s has already been validated" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
   static final String NO_MOVE_TO_ARCHIVE = /*$$(*/ "Please select 'Draft' moves" /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
       "Accounting configuration is missing for Product: %s (company: %s)" /*)*/;
+
+  /** AccountingSituationService * */
+  static final String ACCOUNTING_SITUATION_1 = /*$$(*/
+      "You have to enter a prefix for automatic customer account creation in accounting application parameters of company %s" /*)*/;
+
+  static final String ACCOUNTING_SITUATION_2 = /*$$(*/
+      "You have to select a sequence for automatic customer account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_3 = /*$$(*/
+      "Invalid automatic partner account creation mode, this is a bug that should be reported." /*)*/;
+  static final String ACCOUNTING_SITUATION_4 = /*$$(*/
+      "You have to enter a prefix for automatic supplier account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_5 = /*$$(*/
+      "You have to select a sequence for automatic supplier account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_6 = /*$$(*/
+      "You have to enter a prefix for automatic employee account creation in accounting application parameters of company %s" /*)*/;
+  static final String ACCOUNTING_SITUATION_7 = /*$$(*/
+      "You have to select a sequence for automatic employee account creation in accounting application parameters of company %s" /*)*/;
 
   /** Mail service */
   static final String MAIL_1 = /*$$(*/
@@ -136,6 +153,8 @@ public interface IExceptionMessage {
       "Account missing on the tax line : %s (company : %s)" /*)*/;
   static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
+  static final String MOVE_LINE_7 = /*$$(*/
+      "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -149,6 +168,11 @@ public interface IExceptionMessage {
   static final String MOVE_7 = /*$$(*/
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
   static final String MOVE_8 = /*$$(*/ "A move cannot be empty" /*)*/;
+  static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
+  static final String MOVE_10 = /*$$(*/
+      "Analytic distribution template is mandatory for the account %s." /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -507,6 +531,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_ACTION_2 = /*$$(*/ "Debt recovery line missing." /*)*/;
   static final String DEBT_RECOVERY_ACTION_3 = /*$$(*/
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
+      "Email is not sent. Please check email account configuration." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
@@ -515,6 +541,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_3 = /*$$(*/
       "Debt recovery method missing for the configuration." /*)*/;
   static final String DEBT_RECOVERY_4 = /*$$(*/ "Debt recovery level waiting for approval." /*)*/;
+  static final String DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND = /*$$(*/
+      "Debt recovery method line not found" /*)*/;
 
   /** Debt recovery session service */
   static final String DEBT_RECOVERY_SESSION_1 = /*$$(*/ "Debt recovery method line missing." /*)*/;
@@ -604,6 +632,8 @@ public interface IExceptionMessage {
       "The partner account can not be determined. Please set up the partner account on the invoice or configure the partner's accounting situation." /*)*/;
   static final String VENTILATE_STATE_6 = /*$$(*/
       "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s" /*)*/;
+  static final String VENTILATE_STATE_7 = /*$$(*/
+      "An analytic distribution is set in product but the account used do not allow analytic distribution" /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
       "Invoice date can't be in the future." /*)*/;
@@ -747,4 +777,19 @@ public interface IExceptionMessage {
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
+
+  /* Check refunds */
+  String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed client refunds."; /*)*/
+  String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
+      "Note: there are existing not imputed supplier refunds."; /*)*/
+
+  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_1 = /*$$(*/
+      "Disposal date must be after the date of the last depreciation." /*)*/;
+  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
+      "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+
+  /*Check not lettered advance move lines*/
+  public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
+      "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
 }

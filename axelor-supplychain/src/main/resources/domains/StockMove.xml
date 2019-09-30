@@ -11,9 +11,10 @@
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <string name="specificPackage" large="true"/>
 
-    <datetime name="reservationDateTime"/>
+    <datetime name="reservationDateTime" readonly="true"/>
     
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+   	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
    	
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
@@ -23,6 +24,10 @@
 		public static final String ORIGIN_PURCHASE_ORDER = "com.axelor.apps.purchase.db.PurchaseOrder";
     ]]>
     </extra-code>
+
+	<track>
+		<field name="invoice"/>
+	</track>
 
   </entity>
 </domain-models>

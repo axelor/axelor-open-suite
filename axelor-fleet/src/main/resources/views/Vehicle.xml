@@ -22,7 +22,7 @@
        	   		<field name="image" widget="Image" colSpan="12"/>
        	   </panel>
        	   <panel name="vehicleDetailsPanel" colSpan="6" itemSpan="12">
-       	   		<field name="vehicleModel" onChange="action-fleet-set-vehicle-name" />
+       	   		<field name="vehicleModel" onChange="action-fleet-set-vehicle-name" required="true"/>
 	     		<field name="name" readonly="true"/>
 	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
 	    		<field name="vehicleTagSet" widget="TagSelect"  /> 

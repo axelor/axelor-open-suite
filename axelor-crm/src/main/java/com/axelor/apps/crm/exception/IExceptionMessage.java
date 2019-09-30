@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,12 +60,14 @@ public interface IExceptionMessage {
   static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
 
   /** Opportunity */
-  static final String LEAD_PARTNER = /*$$(*/ "Please select a path" /*)*/;
+  static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/
       "Please configure informations for CRM for company %s" /*)*/;
 
+  static final String CRM_CONFIG_USER_EMAIL = /*$$(*/
+      "User %s does not have an email address configured nor is it linked to a partner with an email address configured." /*)*/;
   static final String CRM_CONFIG_USER_COMPANY = /*$$(*/
       "User %s must have an active company to use templates" /*)*/;
   static final String CRM_CONFIG_TEMPLATES = /*$$(*/

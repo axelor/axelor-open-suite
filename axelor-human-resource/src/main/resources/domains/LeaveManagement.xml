@@ -10,8 +10,8 @@
     <decimal name="value" title="Value" scale="4" precision="8"/>
     <decimal name="oldValue" scale="4" precision="8"/>
     <date name="date" column="date_val" title="Date" required="true"/>
-    <date name="fromDate" title="Date from" />
-    <date name="toDate" title="Date to (Included)" />
+    <date name="fromDate" title="From" />
+    <date name="toDate" title="To (included)" />
     <string name="comments" title="Comments" large="true" multiline="true"/>
     <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
     <boolean name="counted"/>

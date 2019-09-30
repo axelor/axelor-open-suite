@@ -2,8 +2,9 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee">
-		 <field name="contactPartner.fullName"/>
+	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
+		 <field name="contactPartner.partnerSeq" width="120"/>
+		 <field name="contactPartner.simpleFullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
 		 <field name="managerUser" form-view="user-form" grid-view="user-grid" />
@@ -41,7 +42,7 @@
 							<field name="titleSelect" css="bold" colSpan="2"/>
 							<field name="name" title="Name"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
 							<field name="firstName"  css="bold" onChange="action-partner-record-simple-and-full-name, action-employee-contact-method-set-social-network-url" colSpan="5"/>
-				            <field name="emailAddress" form-view="email-address-simple-form" canNew="true" />
+              <field name="emailAddress" form-view="email-address-simple-form" canNew="true" canSelect="false"/>
 							<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 							<field name="fixedPhone"  placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 							<field name="mobilePhone" placeholder="+33600000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
@@ -141,9 +142,9 @@
 							<field name="plateNo"/>
 							<field name="vehicleModel"/>
 							<field name="vehicleMake"/>
-							<field name="kilometricAllowParam" widget="SuggestBox"/>
-							<field name="startDate"/>
-							<field name="endDate"/>
+							<field name="kilometricAllowParam" canEdit="false" widget="SuggestBox"/>
+							<field name="startDate" onChange="action-employee-validate-dates"/>
+							<field name="endDate" onChange="action-employee-validate-dates"/>
                             <field name="vehicleRegistrationCertificate" widget="Image"/>
 						</editor>
 					</field>
@@ -170,6 +171,9 @@
 		<field name="contactPartner.fullName" />
 		<field name="contactPartner.fixedPhone" />
 		<field name="contactPartner.mobilePhone" />
+		<field name="mainEmploymentContract.payCompany"/>
+		<field name="mainEmploymentContract.companyDepartment"/>
+		<field name="hrManager"/>
 		<template><![CDATA[
 			<div>
 			  <div class="span4 card-image">
@@ -177,17 +181,21 @@
 			  </div>
 			  <div class="span8">
 			  	<span>
-				<strong>{{contactPartner.fullName}}</strong><br/>
-			    FP : {{contactPartner.fixedPhone}}<br/>
-			    MP : {{contactPartner.mobilePhone}}
+				   <strong>{{contactPartner.fullName}}</strong><br/>
+			       <span ng-if="contactPartner.fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/> {{ contactPartner.fixedPhone}}<br/></span>
+	               <span ng-if="contactPartner.mobilePhone"><i class='fa fa-mobile' style="margin-right:9px;"/>{{contactPartner.mobilePhone}}<br/></span>
+	               <span  ng-if="mainEmploymentContract.payCompany.name"><strong><span x-translate>Company</span></strong> : {{mainEmploymentContract.payCompany.name}}<br/></span>
+                   <span  ng-if="mainEmploymentContract.companyDepartment.name"><strong><span x-translate>Department</span></strong> : {{mainEmploymentContract.companyDepartment.name}}<br/></span>
 			    </span>
+			  </div>
+			  <div class="span12" style="margin-left:30px;">
+			   <span class="label label-important" ng-show="hrManager" x-translate>{{ "HR manager" }}</span>
 			  </div>
 			</div>
 		]]>
 		</template>
 	</cards>
-
-
+	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.app.getApp('base').getDailyWorkHours()"/>
@@ -235,7 +243,7 @@
 				 model="com.axelor.apps.hr.db.Timesheet">
 		<view type="grid" name="my-timesheets-grid"/>
 		<view type="form" name="timesheet-form"/>
-        <domain>self.user = :__user__</domain>
+        <domain>self.user.employee = :id</domain>
 	</action-view>
 
 	<action-method name="action-employee-method-show-annual-report">
@@ -265,7 +273,11 @@
     <action-method name="action-employee-method-normalize-emergencyNumber">
         <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
     </action-method>
-
+    
+	<action-condition name="action-employee-validate-dates">
+		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
+	</action-condition>
+	
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
         <field name="mainEmploymentContract.payCompany"

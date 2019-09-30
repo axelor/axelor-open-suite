@@ -56,10 +56,11 @@
     	<option value="0">AND</option>
     	<option value="1">OR</option>
     </selection>
-    
+
     <selection name="studio.condition.alert.type.select">
-    	<option value="1">Blocking</option>
-    	<option value="2">Alert</option>
+      <option value="0">None</option>
+      <option value="1">Blocking</option>
+      <option value="2">Alert</option>
     </selection>
     
     <selection name="studio.action.builder.type.select">
@@ -80,5 +81,11 @@
 		<option value="0">Send directly</option>
 		<option value="1">Edit before send</option>
 	</selection>
+
+    <selection name="studio.node.type.select">
+      <option value="0">Start node</option>
+      <option value="1">Task node</option>
+      <option value="2">End node</option>
+    </selection>
     
 </object-views>

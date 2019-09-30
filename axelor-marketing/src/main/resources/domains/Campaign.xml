@@ -31,6 +31,19 @@
   	<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads Target List" />
     <integer name="sequence"/>
     <string name="report" />
+    <datetime name="eventStartDateT" title="Event start"/>
+    <datetime name="eventEndDateT" title="Event end"/>
+    <many-to-many name="invitedPartnerSet" title="Partners" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="invitedLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
+    <many-to-many name="notParticipatingPartnerSet" title="Partners" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="notParticipatingLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
+    <many-to-many name="presentPartnerSet" title="Partners" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-many name="presentLeadSet" title="Leads" ref="com.axelor.apps.crm.db.Lead"/>
+    <one-to-many name="campaignReminderList" title="Reminders" ref="com.axelor.apps.marketing.db.CampaignReminder" mappedBy="campaign"/>
+    <many-to-one name="partnerReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Contact/Partner reminder template"/>
+    <many-to-one name="leadReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Lead reminder template"/>
+    <boolean name="isAllowEditingOfTargets" title="Allow the editing of the targets" default="true"/>
+
   </entity>
 
 </domain-models>

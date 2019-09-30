@@ -14,7 +14,7 @@
 			<field name="image" widget="Image" colSpan="2"/>
 			<panel colSpan="6" name="infoPanel">
 				<field name="name" readonly="true" colSpan="12" />
-				<field name="languageSelect" />
+				<field name="languageSelect" selection-in="['en','fr']"/>
 				<field name="demoDataLoaded" readonly="true" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"/>
 			</panel>
 			<field name="description" colSpan="12" readonly="true"/>
@@ -40,8 +40,8 @@
 		<panel name="mainPanel">
 			<button name="selectAllBtn" title="Select all" colSpan="4" onClick="action-app-bulk-install-select-all,action-app-bulk-install-apps-set-change"/>
 			<field type="many-to-many" name="appsSet" target="com.axelor.apps.base.db.App" colSpan="12" title="Apps" canNew="false" domain="self.active = false or self.demoDataLoaded = false" height="200" onChange="action-app-bulk-install-apps-set-change"/>			
-			<field name="languageSelect" type="string" selection="select.language" title="Language" colSpan="4"/>
-			<field type="boolean" name="importDemoData" title="Import demo data" colSpan="3"/>
+			<field name="languageSelect" type="string" selection="select.language" title="Language" colSpan="4" selection-in="['en','fr']"/>
+			<field type="boolean" name="importDemoData" title="Import demo data" colSpan="3" if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"/>
 			<button name="installBtn" title="Install" colSpan="4" onClick="action-app-method-bulk-install" hidden="true"/>
 		</panel>
 	</form>

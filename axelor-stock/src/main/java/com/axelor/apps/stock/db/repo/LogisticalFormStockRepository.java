@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
   @Override
   public LogisticalForm save(LogisticalForm logisticalForm) {
     try {
-      if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumber())
+      if (Strings.isNullOrEmpty(logisticalForm.getDeliveryNumberSeq())
           && logisticalForm.getCompany() != null) {
         String sequenceNumber =
             Beans.get(SequenceService.class)
@@ -46,7 +46,7 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
               I18n.get(IExceptionMessage.LOGISTICAL_FORM_MISSING_SEQUENCE),
               logisticalForm.getCompany().getName());
         }
-        logisticalForm.setDeliveryNumber(sequenceNumber);
+        logisticalForm.setDeliveryNumberSeq(sequenceNumber);
       }
 
       return super.save(logisticalForm);

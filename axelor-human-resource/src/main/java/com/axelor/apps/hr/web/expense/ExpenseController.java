@@ -1,7 +1,24 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+/*
+< * Axelor Business Solutions
+ *
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,6 +66,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -58,7 +76,6 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -68,6 +85,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +172,12 @@ public class ExpenseController {
     Map<String, Object> expenseMap =
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
-    Long expenseId = new Long((Integer) expenseMap.get("id"));
+    if (expenseMap == null) {
+      response.setError(I18n.get(IExceptionMessage.EXPENSE_NOT_SELECTED));
+      return;
+    }
+    Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
+    response.setCanClose(true);
     response.setView(
         ActionView.define(I18n.get("Expense"))
             .model(Expense.class.getName())
@@ -271,26 +294,6 @@ public class ExpenseController {
     }
   }
 
-  public void validateDates(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Expense expense = request.getContext().asType(Expense.class);
-
-    List<Integer> expenseLineId = new ArrayList<>();
-    int compt = 0;
-    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
-      compt++;
-      if (expenseLine.getExpenseDate().isAfter(appBaseServiceProvider.get().getTodayDate())) {
-        expenseLineId.add(compt);
-      }
-    }
-    if (!expenseLineId.isEmpty()) {
-      String ids = Joiner.on(",").join(expenseLineId);
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(I18n.get("Date problem for line(s) : %s"), ids));
-    }
-  }
-
   public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
@@ -305,7 +308,7 @@ public class ExpenseController {
             .generate()
             .getFileLink();
 
-    logger.debug("Printing " + name);
+    logger.debug("Printing {}", name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
@@ -355,8 +358,7 @@ public class ExpenseController {
       expenseServiceProvider.get().addPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setException(e);
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -373,7 +375,7 @@ public class ExpenseController {
       expenseServiceProvider.get().cancelPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -475,11 +477,33 @@ public class ExpenseController {
     }
   }
 
-  public void computeAmounts(ActionRequest request, ActionResponse response) {
+  public void validateAndCompute(ActionRequest request, ActionResponse response) {
 
     Expense expense = request.getContext().asType(Expense.class);
 
-    ExpenseService expenseService = expenseServiceProvider.get();
+    List<Integer> expenseLineListId = new ArrayList<>();
+    int compt = 0;
+    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
+      compt++;
+      if (expenseLine.getExpenseDate().isAfter(appBaseServiceProvider.get().getTodayDate())) {
+        expenseLineListId.add(compt);
+      }
+    }
+    try {
+      if (!expenseLineListId.isEmpty()) {
+
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get("Date can't be in the future for line(s) : %s"),
+            expenseLineListId.stream().map(id -> id.toString()).collect(Collectors.joining(",")));
+      }
+
+    } catch (AxelorException e) {
+
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+
+    expenseService = expenseServiceProvider.get();
 
     response.setValue(
         "personalExpenseAmount", expenseService.computePersonalExpenseAmount(expense));
@@ -489,6 +513,8 @@ public class ExpenseController {
         && !expense.getKilometricExpenseLineList().isEmpty()) {
       response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList());
     }
+
+    compute(request, response);
   }
 
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)

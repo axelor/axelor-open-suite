@@ -10,14 +10,13 @@
     <string name="name" title="Name" required="true"/>
     <many-to-one name="parentStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Parent stock location"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Deported stock location"/>
     <integer name="typeSelect" title="Type" required="true" selection="stock.stock.location.type.select"/>
     <one-to-many name="stockLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="stockLocation" title="Stock location lines"/>
     <one-to-many name="detailsStockLocationLineList" ref="com.axelor.apps.stock.db.StockLocationLine" mappedBy="detailsStockLocation" title="Details stock location lines"/>
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
-    
     <boolean name="includeOutOfStock" title="Include out of stocks products" default="false"/>
-
+	<decimal name="stockLocationValue" title="Stock location value" transient="true"/>
     <finder-method name="findByCompany" using="company"/>
     <finder-method name="findByPartner" using="partner"/>
     

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,13 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     copy.setStockMoveSeq(null);
     copy.setName(null);
     copy.setRealDate(null);
+    copy.setPickingEditDate(null);
+    copy.setPickingIsEdited(false);
     copy.setAvailabilityRequest(false);
+    copy.setSupplierShipmentDate(null);
+    copy.setSupplierShipmentRef(null);
+    copy.setAvailabilityRequest(false);
+    copy.setFullySpreadOverLogisticalFormsFlag(false);
 
     return copy;
   }
@@ -70,10 +76,13 @@ public class StockMoveManagementRepository extends StockMoveRepository {
   @Override
   public void remove(StockMove entity) {
     if (entity.getStatusSelect() == STATUS_PLANNED) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_NOT_DELETED));
+      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_PLANNED_NOT_DELETED));
     } else if (entity.getStatusSelect() == STATUS_REALIZED) {
-      entity.setArchived(true);
+      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
     } else {
+      if (entity.getStockMoveOrigin() != null) {
+        entity.getStockMoveOrigin().setBackorderId(null);
+      }
       super.remove(entity);
     }
   }

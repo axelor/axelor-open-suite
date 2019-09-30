@@ -13,16 +13,16 @@
    	
     <form name="move-template-form" title="Move template" model="com.axelor.apps.account.db.MoveTemplate" width="large" onNew="action-move-template-set-default" >
   		<panel name="mainPanel" >
-		    <field name="name" readonlyIf="isValid"/>
-		    <field name="code" x-bind="{{code|unaccent|uppercase}}" readonlyIf="isValid" required="true" colSpan="3"/>
-		    <field name="company" canEdit="false" readonlyIf="isValid" colSpan="3" canNew="false" form-view="company-form" grid-view="company-grid"/>
-		    <field name="journal" canEdit="false" readonlyIf="isValid" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form"/>
-   		    <field name="moveTemplateType" canEdit="false" readonlyIf="isValid" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
+		    <field name="name"/>
+		    <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
+		    <field name="company" canEdit="false" readonlyIf="journal" colSpan="3" canNew="false" form-view="company-form" grid-view="company-grid"/>
+		    <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form" required="true"/>
+   		    <field name="moveTemplateType" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
    		    <field name="moveTemplateType.typeSelect"/>
    		    <field name="endOfValidityDate"/>
 	 	</panel>
-    	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-amount-form" grid-view="move-template-line-in-amount-grid" action="action-move-template-record-is-not-valid,action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 2" hidden="true"/>
-    	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-percentage-form" grid-view="move-template-line-in-percentage-grid" action="action-move-template-record-is-not-valid,action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 1" hidden="true"/>
+    	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-amount-form" grid-view="move-template-line-in-amount-grid" onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 2" hidden="true"/>
+    	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-percentage-form" grid-view="move-template-line-in-percentage-grid" onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 1" hidden="true"/>
      	<panel sidebar="true" name="actionsPanel" title="Actions">
     		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid" colSpan="12"/>
     		<button name="checkValidityBtn" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="12"/>
@@ -44,7 +44,7 @@
         	<field name="moveTemplateType.typeSelect" hidden="true"/>
         </panel>
     	<panel sidebar="true" name="actionsPanel" title="Actions">
-    		<button name="generateMovesBtn" readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty())" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" colSpan="12" />
+    		<button name="generateMovesBtn" readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty()) || (moveTemplateType == null)" title="Generate Moves" onClick="save,action-move-template-wizard-method-generate-move" colSpan="12" />
     	</panel>
     </form>
     
@@ -83,10 +83,6 @@
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-set-active-company">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    </action-record>
-    
-    <action-record name="action-move-template-record-is-not-valid" model="com.axelor.apps.account.db.MoveTemplate">
-      <field name="isValid" expr="false"/>
     </action-record>
     
     <action-attrs name="action-move-template-wizard-attrs-company-onchange">

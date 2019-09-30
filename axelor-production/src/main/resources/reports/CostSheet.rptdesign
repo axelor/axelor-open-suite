@@ -123,6 +123,17 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="BaseUrl" id="5442">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="46">
@@ -283,6 +294,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">company</property>
+                    <property name="alias">company</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company</text-property>
                     <text-property name="heading">company</text-property>
@@ -296,6 +308,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">bom</property>
+                    <property name="alias">bom</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bom</text-property>
                     <text-property name="heading">bom</text-property>
@@ -309,18 +322,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">created_on</property>
+                    <property name="alias">created_on</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">created_on</text-property>
                     <text-property name="heading">created_on</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">created_by</property>
+                    <property name="alias">created_by</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">created_by</text-property>
                     <text-property name="heading">created_by</text-property>
@@ -372,11 +388,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">calculation_type_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">calculation_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">10</property>
                         <property name="name">created_by</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -389,56 +415,60 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">company</property>
                     <property name="nativeName">company</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">manufacturing_order</property>
                     <property name="nativeName">manufacturing_order</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">bom</property>
                     <property name="nativeName">bom</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">cost_price</property>
                     <property name="nativeName">cost_price</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">created_on</property>
                     <property name="nativeName">created_on</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">currency</property>
-                    <property name="nativeName">currency</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">calculation_type_select</property>
+                    <property name="nativeName">calculation_type_select</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
+                    <property name="name">calculation_date</property>
+                    <property name="nativeName">calculation_date</property>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">created_by</property>
                     <property name="nativeName">created_by</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -448,6 +478,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	BillOfMaterial.name as BOM,
 	CostSheet.cost_price as cost_price,
 	CostSheet.created_on as created_on,
+	CostSheet.calculation_type_select as calculation_type_select,
+	CostSheet.calculation_date as calculation_date,
 	Currency.name as currency,
 	Auth_user.full_name as created_by
 from production_cost_sheet AS CostSheet
@@ -915,7 +947,7 @@ where CostSheet.id = ?]]></xml-property>
 	CostSheetLine.bom_level as "BOMLevel",
 	CostSheetGroup.name as "CostSheetGroup",
 	CostSheetLine.consumption_qty as "ConsumptionQty",
-	CostSheetLine.type_select as "Type",
+	CostSheetLine.type_select_icon as "Type",
 	Unit.name as "Unit",
 	CostSheetLine.cost_price as "CostPrice"
 from production_cost_sheet as CostSheet 
@@ -1742,10 +1774,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="headerHeight">0in</property>
-            <property name="footerHeight">2.4cm</property>
+            <property name="footerHeight">0.89cm</property>
             <page-footer>
                 <grid id="3692">
-                    <property name="height">1.825625cm</property>
+                    <property name="height">0.4cm</property>
                     <property name="width">7.885416666666667in</property>
                     <property name="dataSet">CostSheetDS</property>
                     <list-property name="boundDataColumns">
@@ -1791,32 +1823,50 @@ from BASE_APP_PRODUCTION]]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["created_by"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">Column Binding</property>
+                            <expression name="expression" type="javascript">params["AttachmentPath"].value</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
                     </list-property>
-                    <column id="3693">
-                        <property name="width">5.8125in</property>
+                    <column id="5352">
+                        <property name="width">1.6in</property>
                     </column>
-                    <column id="3816">
-                        <property name="textAlign">right</property>
-                        <property name="width">0.4166666666666667in</property>
+                    <column id="3693">
+                        <property name="width">10cm</property>
+                    </column>
+                    <column id="5362">
+                        <property name="width">4cm</property>
                     </column>
                     <column id="3714">
                         <property name="textAlign">right</property>
-                        <property name="width">4.206875cm</property>
+                        <property name="width">6%</property>
                     </column>
-                    <row id="4291">
-                        <property name="height">0.5cm</property>
-                        <cell id="4292">
-                            <property name="colSpan">3</property>
-                            <property name="rowSpan">1</property>
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                        </cell>
-                    </row>
+                    <column id="5371">
+                        <property name="textAlign">right</property>
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="5368">
+                        <property name="textAlign">right</property>
+                        <property name="width">6%</property>
+                    </column>
                     <row id="3695">
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="height">0.5027083333333333cm</property>
+                        <cell id="5353">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <image id="5382">
+                                <property name="width">107px</property>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
+                        </cell>
                         <cell id="3696">
                             <property name="colSpan">1</property>
                             <property name="rowSpan">2</property>
@@ -1824,8 +1874,9 @@ from BASE_APP_PRODUCTION]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="paddingTop">10pt</property>
                             <text id="3729">
-                                <property name="fontSize">xx-small</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="textAlign">left</property>
                                 <property name="dataSet">TranslateDS</property>
                                 <list-property name="paramBindings">
@@ -1854,91 +1905,65 @@ from BASE_APP_PRODUCTION]]></xml-property>
                                 <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["manufacturing_order"] != null ? row._outer["manufacturing_order"] : row._outer["bom"] </VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="3815">
+                        <cell id="5360">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
-                            <property name="verticalAlign">top</property>
-                            <text id="3817">
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Page]]></text-property>
+                            <property name="paddingTop">10pt</property>
+                            <text id="5364">
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:MM">row["created_on"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="3713">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="paddingTop">10pt</property>
                             <property name="verticalAlign">top</property>
-                            <grid id="3804">
-                                <property name="height">1.7197916666666668cm</property>
-                                <column id="3805"/>
-                                <column id="3806"/>
-                                <column id="3807"/>
-                                <row id="3808">
-                                    <property name="height">0.6085416666666666cm</property>
-                                    <cell id="3809">
-                                        <auto-text id="3810">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="3811">
-                                        <text id="3812">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">plain</property>
-                                            <text-property name="content"><![CDATA[/]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="3813">
-                                        <auto-text id="3814">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="type">total-page</property>
-                                        </auto-text>
-                                    </cell>
-                                </row>
-                                <row id="5229">
-                                    <cell id="5230">
-                                        <property name="colSpan">3</property>
-                                        <property name="rowSpan">1</property>
-                                    </cell>
-                                </row>
-                            </grid>
+                            <auto-text id="3937">
+                                <property name="textAlign">right</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="5369">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="paddingTop">10pt</property>
+                            <property name="verticalAlign">top</property>
+                            <text id="3939">
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="5366">
+                            <property name="colSpan">1</property>
+                            <property name="rowSpan">2</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="paddingTop">10pt</property>
+                            <property name="verticalAlign">top</property>
+                            <auto-text id="3941">
+                                <property name="textAlign">left</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
                         </cell>
                     </row>
                     <row id="5238">
                         <property name="height">0.8466666666666667cm</property>
-                        <cell id="5240">
-                            <property name="colSpan">2</property>
-                            <property name="rowSpan">1</property>
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
-                            <property name="verticalAlign">top</property>
-                        </cell>
                     </row>
                 </grid>
             </page-footer>
@@ -1946,7 +1971,6 @@ from BASE_APP_PRODUCTION]]></xml-property>
     </page-setup>
     <body>
         <grid id="11">
-            <property name="height">2.1041666666666665in</property>
             <property name="width">7.947916666666667in</property>
             <property name="dataSet">CostSheetDS</property>
             <list-property name="boundDataColumns">
@@ -1987,6 +2011,18 @@ from BASE_APP_PRODUCTION]]></xml-property>
                     <property name="dataType">date-time</property>
                 </structure>
                 <structure>
+                    <property name="name">calculation_type_select</property>
+                    <text-property name="displayName">calculation_type_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["calculation_type_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">calculation_date</property>
+                    <text-property name="displayName">calculation_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["calculation_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
                     <property name="name">currency</property>
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
@@ -2000,50 +2036,37 @@ from BASE_APP_PRODUCTION]]></xml-property>
                 </structure>
             </list-property>
             <column id="12">
-                <property name="width">1.3333333333333333in</property>
+                <property name="width">12.5%</property>
             </column>
             <column id="13">
-                <property name="width">1.3229166666666667in</property>
+                <property name="width">12.5%</property>
             </column>
             <column id="14">
-                <property name="width">1.3229166666666667in</property>
+                <property name="width">12.5%</property>
             </column>
             <column id="15">
-                <property name="width">1.3229166666666667in</property>
+                <property name="width">12.5%</property>
             </column>
             <column id="16">
                 <property name="suppressDuplicates">true</property>
-                <property name="width">1.2604166666666667in</property>
+                <property name="width">12.5%</property>
             </column>
             <column id="17">
-                <property name="width">0.6in</property>
+                <property name="width">12.5%</property>
+            </column>
+            <column id="5401">
+                <property name="width">12.5%</property>
+            </column>
+            <column id="5405">
+                <property name="width">12.5%</property>
             </column>
             <row id="18">
-                <property name="height">1.1354166666666667in</property>
                 <cell id="19">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">8</property>
                     <property name="rowSpan">1</property>
-                    <image id="50">
-                        <property name="height">0.8125in</property>
-                        <property name="width">2.2291666666666665in</property>
-                        <property name="dataSet">CostSheetDS</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value + row["logo_path"]</expression>
-                    </image>
-                </cell>
-                <cell id="254">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
+                    <property name="textAlign">center</property>
                     <text id="51">
-                        <property name="fontSize">18pt</property>
+                        <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
@@ -2072,17 +2095,26 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5242">
-                    <property name="colSpan">1</property>
+            </row>
+            <row id="5423">
+                <property name="height">0.4in</property>
+                <cell id="5424">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5425">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5426">
+                    <property name="colSpan">4</property>
                     <property name="rowSpan">1</property>
-                    <text id="5243">
-                        <property name="textAlign">right</property>
+                    <property name="textAlign">center</property>
+                    <text id="5432">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'CostSheet.dateOfEdition'</value>
+                                    <value type="javascript">row["manufacturing_order"] != null ? 'CostSheet.manufOrder' : 'CostSheet.billOfMaterial'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2101,20 +2133,20 @@ from BASE_APP_PRODUCTION]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row._outer["manufacturing_order"] != null ? row._outer["manufacturing_order"] : row._outer["bom"] </VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5244">
-                    <method name="onPrepare"><![CDATA[this.content = Formatter.format(BirtDateTime.today(),"dd/MM/YYYY")]]></method>
-                    <text id="5245">
-                        <method name="onPrepare"><![CDATA[this.content = Formatter.format( BirtDateTime.today(),"dd/MM/YYYY")]]></method>
-                    </text>
+                <cell id="5430">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5431">
+                    <property name="textAlign">center</property>
                 </cell>
             </row>
             <row id="25">
-                <property name="height">0.3229166666666667in</property>
+                <property name="fontSize">8.5pt</property>
                 <cell id="26">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="53">
                         <property name="dataSet">TranslateDS</property>
@@ -2144,7 +2176,132 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["company"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="29">
+                <cell id="5279">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="54">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">row["manufacturing_order"] != null ? 'CostSheet.manufOrder' : 'CostSheet.billOfMaterial'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["manufacturing_order"] != null ? row._outer["manufacturing_order"] : row._outer["bom"] </VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5280">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="55">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.costPrice'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="#,##0.00">row._outer["cost_price"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5399">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5406">
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.calculationType'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
+                    </text>
+                    <text id="5410">
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">['CostSheet.calculationTypePartialEndOfProduction','CostSheet.calculationTypeEndOfProduction','CostSheet.calculationTypeWorkInProgress','CostSheet.calculationTypeBillOfMaterial','CostSheet.calculationDate'][row["calculation_type_select"]-1]</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[&amp;nbsp;<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="32">
+                <property name="fontSize">8.5pt</property>
+                <cell id="33">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="515">
@@ -2175,42 +2332,7 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy HH:MM">row._outer["created_on"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="31"/>
-            </row>
-            <row id="32">
-                <property name="height">0.3229166666666667in</property>
-                <cell id="33">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="54">
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">row["manufacturing_order"] != null ? 'CostSheet.manufOrder' : 'CostSheet.billOfMaterial'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["manufacturing_order"] != null ? row._outer["manufacturing_order"] : row._outer["bom"] </VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="36">
+                <cell id="5282">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="516">
@@ -2241,42 +2363,7 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["created_by"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="38"/>
-            </row>
-            <row id="39">
-                <property name="height">0.3229166666666667in</property>
-                <cell id="40">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
-                    <text id="55">
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'CostSheet.costPrice'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="#,##0.00">row._outer["cost_price"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="43">
+                <cell id="5283">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="5277">
@@ -2307,36 +2394,16 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="45"/>
-            </row>
-        </grid>
-        <grid id="59">
-            <property name="marginTop">0.3in</property>
-            <property name="height">0.65625in</property>
-            <column id="60"/>
-            <column id="61"/>
-            <column id="62"/>
-            <column id="63"/>
-            <column id="64"/>
-            <column id="65"/>
-            <column id="66"/>
-            <row id="67">
-                <property name="height">0.3125in</property>
-                <cell id="68">
-                    <property name="colSpan">7</property>
+                <cell id="5400">
+                    <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <property name="backgroundColor">#606062</property>
-                    <text id="99">
-                        <property name="fontSize">12pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="color">white</property>
-                        <property name="textAlign">center</property>
+                    <text id="5407">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'CostSheet.costSheetLines'</value>
+                                    <value type="javascript">'CostSheet.calculationDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2355,19 +2422,14 @@ from BASE_APP_PRODUCTION]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["calculation_date"]</VALUE-OF>]]></text-property>
                     </text>
-                </cell>
-            </row>
-            <row id="75">
-                <property name="height">0.3229166666666667in</property>
-                <cell id="76">
-                    <property name="colSpan">7</property>
-                    <property name="rowSpan">1</property>
                 </cell>
             </row>
         </grid>
         <table id="363">
+            <property name="fontSize">9pt</property>
+            <property name="marginTop">30pt</property>
             <property name="width">7.947916666666667in</property>
             <property name="dataSet">ParentCostSheetLineDS</property>
             <list-property name="boundDataColumns">
@@ -2421,13 +2483,13 @@ from BASE_APP_PRODUCTION]]></xml-property>
                 </structure>
             </list-property>
             <column id="5258">
-                <property name="width">1.15in</property>
+                <property name="width">0.65in</property>
             </column>
             <column id="402">
-                <property name="width">1.05in</property>
+                <property name="width">1.5in</property>
             </column>
             <column id="403">
-                <property name="width">1.55in</property>
+                <property name="width">1.6in</property>
             </column>
             <column id="404">
                 <property name="width">0.6in</property>
@@ -2446,17 +2508,17 @@ from BASE_APP_PRODUCTION]]></xml-property>
             </column>
             <header>
                 <row id="364">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
                     <property name="height">0.375in</property>
                     <cell id="5255">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="5273">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2486,15 +2548,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="365">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="366">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2524,15 +2581,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="367">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="368">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2562,15 +2614,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="369">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="370">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2600,15 +2647,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="371">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="372">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2638,15 +2680,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="373">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="374">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2676,15 +2713,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="375">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="376">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2714,15 +2746,10 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="377">
-                        <property name="backgroundColor">#E5E5E5</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="378">
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2755,55 +2782,35 @@ from BASE_APP_PRODUCTION]]></xml-property>
             </header>
             <detail>
                 <row id="379">
-                    <property name="height">0.325in</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="height">0.375in</property>
                     <cell id="5256">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="5274">
-                            <property name="fontWeight">bold</property>
-                            <property name="textAlign">left</property>
-                            <property name="dataSet">TranslateDS</property>
-                            <list-property name="paramBindings">
-                                <structure>
-                                    <property name="paramName">param_1</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">['CostSheet.lineTypeProduceProduct','CostSheet.lineTypeConsumeProduct','CostSheet.lineTypeWorkCenter','CostSheet.lineTypeIndirectCost','CostSheet.lineTypeConsumeProductWaste'][row["Type"]-1]</value>
-                                    </simple-property-list>
-                                </structure>
-                            </list-property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">key</property>
-                                    <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">translation</property>
-                                    <text-property name="displayName">translation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                            </list-property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">10pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <image id="5373">
+                            <property name="marginBottom">0pt</property>
+                            <property name="height">0.3333333333333333in</property>
+                            <property name="width">0.3333333333333333in</property>
+                            <property name="source">url</property>
+                            <expression name="uri" type="javascript">var str=params["BaseUrl"].value+'/img/32px/'
+str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.png','consumeProductWaste.png','worker.png'][row["Type"]-1]</expression>
+                        </image>
                     </cell>
                     <cell id="380">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">6pt</property>
+                        <property name="paddingBottom">1pt</property>
                         <text id="381">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>
@@ -2812,14 +2819,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="382">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">6pt</property>
+                        <property name="paddingBottom">1pt</property>
                         <text id="383">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">left</property>
@@ -2828,14 +2833,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="384">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">6pt</property>
+                        <property name="paddingBottom">1pt</property>
                         <text id="385">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
@@ -2844,14 +2847,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="386">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">6pt</property>
+                        <property name="paddingBottom">1pt</property>
                         <text id="387">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
@@ -2860,14 +2861,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="388">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">6pt</property>
+                        <property name="paddingBottom">1pt</property>
                         <text id="389">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
@@ -2885,14 +2884,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="390">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">6pt</property>
+                        <property name="paddingBottom">1pt</property>
                         <text id="391">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
@@ -2901,14 +2898,12 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="392">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">6pt</property>
+                        <property name="paddingBottom">1pt</property>
                         <text id="393">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">right</property>
@@ -2920,6 +2915,8 @@ from BASE_APP_PRODUCTION]]></xml-property>
             </detail>
             <footer>
                 <row id="394">
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
                     <cell id="5257"/>
                     <cell id="395"/>
                     <cell id="396"/>
@@ -2932,6 +2929,7 @@ from BASE_APP_PRODUCTION]]></xml-property>
             </footer>
         </table>
         <table id="461">
+            <property name="fontSize">8pt</property>
             <property name="dataSet">CostSheetLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -2984,13 +2982,13 @@ from BASE_APP_PRODUCTION]]></xml-property>
                 </structure>
             </list-property>
             <column id="5254">
-                <property name="width">1.15in</property>
+                <property name="width">0.65in</property>
             </column>
             <column id="493">
-                <property name="width">1.05in</property>
+                <property name="width">1.5in</property>
             </column>
             <column id="494">
-                <property name="width">1.55in</property>
+                <property name="width">1.6in</property>
             </column>
             <column id="495">
                 <property name="width">0.6in</property>
@@ -3021,69 +3019,41 @@ from BASE_APP_PRODUCTION]]></xml-property>
             </header>
             <detail>
                 <row id="470">
-                    <property name="height">0.375in</property>
+                    <property name="height">0.35in</property>
                     <cell id="5252">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="5276">
-                            <property name="textAlign">left</property>
-                            <property name="dataSet">TranslateDS</property>
-                            <list-property name="paramBindings">
-                                <structure>
-                                    <property name="paramName">param_1</property>
-                                    <simple-property-list name="expression">
-                                        <value type="javascript">['CostSheet.lineTypeProduceProduct','CostSheet.lineTypeConsumeProduct','CostSheet.lineTypeWorkCenter','CostSheet.lineTypeIndirectCost','CostSheet.lineTypeConsumeProductWaste'][row["Type"]-1]</value>
-                                    </simple-property-list>
-                                </structure>
-                            </list-property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">key</property>
-                                    <text-property name="displayName">key</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["key"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">translation</property>
-                                    <text-property name="displayName">translation</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                            </list-property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingLeft">10pt</property>
+                        <image id="5375">
+                            <property name="marginBottom">0pt</property>
+                            <property name="height">0.3333333333333333in</property>
+                            <property name="width">0.3333333333333333in</property>
+                            <property name="source">url</property>
+                            <expression name="uri" type="javascript">var str=params["BaseUrl"].value+'/img/32px/'
+str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.png','consumeProductWaste.png','worker.png'][row["Type"]-1]</expression>
+                        </image>
                     </cell>
                     <cell id="471">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">7pt</property>
                         <text id="472">
                             <property name="textAlign">left</property>
+                            <structure name="toc"/>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>row["code"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="473">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">7pt</property>
                         <text id="474">
                             <property name="textAlign">left</property>
                             <property name="contentType">html</property>
@@ -3091,14 +3061,11 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="475">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">7pt</property>
                         <text id="476">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
@@ -3106,14 +3073,11 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="477">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">7pt</property>
                         <text id="478">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
@@ -3121,14 +3085,11 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="479">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">7pt</property>
                         <text id="480">
                             <property name="textAlign">center</property>
                             <property name="dataSet">AppProduction</property>
@@ -3145,14 +3106,11 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="481">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">7pt</property>
                         <text id="482">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
@@ -3160,14 +3118,11 @@ from BASE_APP_PRODUCTION]]></xml-property>
                         </text>
                     </cell>
                     <cell id="483">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="paddingTop">7pt</property>
                         <text id="484">
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
@@ -3189,5 +3144,982 @@ from BASE_APP_PRODUCTION]]></xml-property>
                 </row>
             </footer>
         </table>
+        <grid id="5315">
+            <property name="fontSize">9pt</property>
+            <property name="marginTop">10pt</property>
+            <property name="pageBreakInside">avoid</property>
+            <column id="5316">
+                <property name="width">5%</property>
+            </column>
+            <column id="5414">
+                <property name="width">28.33%</property>
+            </column>
+            <column id="5317">
+                <property name="width">5%</property>
+            </column>
+            <column id="5418">
+                <property name="width">28.33%</property>
+            </column>
+            <column id="5318">
+                <property name="width">5%</property>
+            </column>
+            <column id="5422">
+                <property name="width">28.33%</property>
+            </column>
+            <row id="5319">
+                <cell id="5320">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5338">
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.legend'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5321"/>
+                <cell id="5415"/>
+                <cell id="5322"/>
+                <cell id="5419"/>
+            </row>
+            <row id="5323">
+                <cell id="5324">
+                    <property name="paddingTop">1pt</property>
+                    <image id="5377">
+                        <property name="marginBottom">0pt</property>
+                        <property name="display">block</property>
+                        <property name="height">0.3333333333333333in</property>
+                        <property name="width">0.3333333333333333in</property>
+                        <property name="source">url</property>
+                        <expression name="uri" type="javascript">params["BaseUrl"].value+'/img/32px/'+'workCenter.png'</expression>
+                    </image>
+                </cell>
+                <cell id="5412">
+                    <property name="paddingTop">7pt</property>
+                    <text id="5334">
+                        <property name="fontWeight">normal</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="display">block</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.lineTypeWorkCenter'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5325">
+                    <image id="5378">
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="height">0.3333333333333333in</property>
+                        <property name="width">0.3333333333333333in</property>
+                        <property name="source">url</property>
+                        <expression name="uri" type="javascript">params["BaseUrl"].value+'/img/32px/'+'indirectCost.png'</expression>
+                    </image>
+                </cell>
+                <cell id="5416">
+                    <property name="backgroundAttachment">scroll</property>
+                    <property name="backgroundImageType">url</property>
+                    <property name="backgroundPositionX">0%</property>
+                    <property name="backgroundPositionY">0%</property>
+                    <property name="backgroundRepeat">repeat</property>
+                    <property name="backgroundSizeHeight">auto</property>
+                    <property name="backgroundSizeWidth">auto</property>
+                    <property name="fontFamily">serif</property>
+                    <property name="fontSize">9pt</property>
+                    <property name="fontWeight">normal</property>
+                    <property name="fontStyle">normal</property>
+                    <property name="fontVariant">normal</property>
+                    <property name="color">black</property>
+                    <property name="textLineThrough">none</property>
+                    <property name="textOverline">none</property>
+                    <property name="textUnderline">none</property>
+                    <property name="borderBottomColor">black</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderBottomWidth">medium</property>
+                    <property name="borderLeftColor">black</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderLeftWidth">medium</property>
+                    <property name="borderRightColor">black</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderRightWidth">medium</property>
+                    <property name="borderTopColor">black</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="borderTopWidth">medium</property>
+                    <property name="marginTop">0pt</property>
+                    <property name="marginLeft">0pt</property>
+                    <property name="marginBottom">0pt</property>
+                    <property name="marginRight">0pt</property>
+                    <property name="paddingTop">7pt</property>
+                    <property name="paddingLeft">1pt</property>
+                    <property name="paddingBottom">1pt</property>
+                    <property name="paddingRight">1pt</property>
+                    <property name="textIndent">0em</property>
+                    <property name="letterSpacing">normal</property>
+                    <property name="lineHeight">normal</property>
+                    <property name="orphans">2</property>
+                    <property name="textTransform">none</property>
+                    <property name="whiteSpace">normal</property>
+                    <property name="widows">2</property>
+                    <property name="wordSpacing">normal</property>
+                    <property name="display">block</property>
+                    <property name="pageBreakAfter">auto</property>
+                    <property name="pageBreakBefore">auto</property>
+                    <property name="pageBreakInside">avoid</property>
+                    <property name="showIfBlank">false</property>
+                    <property name="canShrink">false</property>
+                    <property name="overflow">hidden</property>
+                    <text id="5341">
+                        <property name="backgroundAttachment">scroll</property>
+                        <property name="backgroundPositionX">0%</property>
+                        <property name="backgroundPositionY">0%</property>
+                        <property name="backgroundRepeat">repeat</property>
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="textIndent">0em</property>
+                        <property name="letterSpacing">normal</property>
+                        <property name="lineHeight">normal</property>
+                        <property name="orphans">2</property>
+                        <property name="textTransform">none</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="widows">2</property>
+                        <property name="wordSpacing">normal</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="canShrink">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.lineTypeIndirectCost'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5326">
+                    <image id="5379">
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="height">0.3333333333333333in</property>
+                        <property name="width">0.3333333333333333in</property>
+                        <property name="source">url</property>
+                        <expression name="uri" type="javascript">params["BaseUrl"].value+'/img/32px/'+'consumeProductWaste.png'</expression>
+                    </image>
+                </cell>
+                <cell id="5420">
+                    <property name="backgroundAttachment">scroll</property>
+                    <property name="backgroundImageType">url</property>
+                    <property name="backgroundPositionX">0%</property>
+                    <property name="backgroundPositionY">0%</property>
+                    <property name="backgroundRepeat">repeat</property>
+                    <property name="backgroundSizeHeight">auto</property>
+                    <property name="backgroundSizeWidth">auto</property>
+                    <property name="fontFamily">serif</property>
+                    <property name="fontSize">9pt</property>
+                    <property name="fontWeight">normal</property>
+                    <property name="fontStyle">normal</property>
+                    <property name="fontVariant">normal</property>
+                    <property name="color">black</property>
+                    <property name="textLineThrough">none</property>
+                    <property name="textOverline">none</property>
+                    <property name="textUnderline">none</property>
+                    <property name="borderBottomColor">black</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderBottomWidth">medium</property>
+                    <property name="borderLeftColor">black</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderLeftWidth">medium</property>
+                    <property name="borderRightColor">black</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderRightWidth">medium</property>
+                    <property name="borderTopColor">black</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="borderTopWidth">medium</property>
+                    <property name="marginTop">0pt</property>
+                    <property name="marginLeft">0pt</property>
+                    <property name="marginBottom">0pt</property>
+                    <property name="marginRight">0pt</property>
+                    <property name="paddingTop">7pt</property>
+                    <property name="paddingLeft">1pt</property>
+                    <property name="paddingBottom">1pt</property>
+                    <property name="paddingRight">1pt</property>
+                    <property name="textIndent">0em</property>
+                    <property name="letterSpacing">normal</property>
+                    <property name="lineHeight">normal</property>
+                    <property name="orphans">2</property>
+                    <property name="textTransform">none</property>
+                    <property name="whiteSpace">normal</property>
+                    <property name="widows">2</property>
+                    <property name="wordSpacing">normal</property>
+                    <property name="display">block</property>
+                    <property name="pageBreakAfter">auto</property>
+                    <property name="pageBreakBefore">auto</property>
+                    <property name="pageBreakInside">avoid</property>
+                    <property name="showIfBlank">false</property>
+                    <property name="canShrink">false</property>
+                    <property name="overflow">hidden</property>
+                    <text id="5342">
+                        <property name="backgroundAttachment">scroll</property>
+                        <property name="backgroundPositionX">0%</property>
+                        <property name="backgroundPositionY">0%</property>
+                        <property name="backgroundRepeat">repeat</property>
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="textIndent">0em</property>
+                        <property name="letterSpacing">normal</property>
+                        <property name="lineHeight">normal</property>
+                        <property name="orphans">2</property>
+                        <property name="textTransform">none</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="widows">2</property>
+                        <property name="wordSpacing">normal</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="canShrink">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.lineTypeConsumeProductWaste'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="5327">
+                <cell id="5328">
+                    <image id="5380">
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="height">0.3333333333333333in</property>
+                        <property name="width">0.3333333333333333in</property>
+                        <property name="source">url</property>
+                        <expression name="uri" type="javascript">params["BaseUrl"].value+'/img/32px/'+'consumeProduct.png'</expression>
+                    </image>
+                </cell>
+                <cell id="5413">
+                    <property name="backgroundAttachment">scroll</property>
+                    <property name="backgroundImageType">url</property>
+                    <property name="backgroundPositionX">0%</property>
+                    <property name="backgroundPositionY">0%</property>
+                    <property name="backgroundRepeat">repeat</property>
+                    <property name="backgroundSizeHeight">auto</property>
+                    <property name="backgroundSizeWidth">auto</property>
+                    <property name="fontFamily">serif</property>
+                    <property name="fontSize">9pt</property>
+                    <property name="fontWeight">normal</property>
+                    <property name="fontStyle">normal</property>
+                    <property name="fontVariant">normal</property>
+                    <property name="color">black</property>
+                    <property name="textLineThrough">none</property>
+                    <property name="textOverline">none</property>
+                    <property name="textUnderline">none</property>
+                    <property name="borderBottomColor">black</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderBottomWidth">medium</property>
+                    <property name="borderLeftColor">black</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderLeftWidth">medium</property>
+                    <property name="borderRightColor">black</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderRightWidth">medium</property>
+                    <property name="borderTopColor">black</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="borderTopWidth">medium</property>
+                    <property name="marginTop">0pt</property>
+                    <property name="marginLeft">0pt</property>
+                    <property name="marginBottom">0pt</property>
+                    <property name="marginRight">0pt</property>
+                    <property name="paddingTop">7pt</property>
+                    <property name="paddingLeft">1pt</property>
+                    <property name="paddingBottom">1pt</property>
+                    <property name="paddingRight">1pt</property>
+                    <property name="textIndent">0em</property>
+                    <property name="letterSpacing">normal</property>
+                    <property name="lineHeight">normal</property>
+                    <property name="orphans">2</property>
+                    <property name="textTransform">none</property>
+                    <property name="whiteSpace">normal</property>
+                    <property name="widows">2</property>
+                    <property name="wordSpacing">normal</property>
+                    <property name="display">block</property>
+                    <property name="pageBreakAfter">auto</property>
+                    <property name="pageBreakBefore">auto</property>
+                    <property name="pageBreakInside">avoid</property>
+                    <property name="showIfBlank">false</property>
+                    <property name="canShrink">false</property>
+                    <property name="overflow">hidden</property>
+                    <text id="5343">
+                        <property name="backgroundAttachment">scroll</property>
+                        <property name="backgroundPositionX">0%</property>
+                        <property name="backgroundPositionY">0%</property>
+                        <property name="backgroundRepeat">repeat</property>
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="textIndent">0em</property>
+                        <property name="letterSpacing">normal</property>
+                        <property name="lineHeight">normal</property>
+                        <property name="orphans">2</property>
+                        <property name="textTransform">none</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="widows">2</property>
+                        <property name="wordSpacing">normal</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="canShrink">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.lineTypeConsumeProduct'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5329">
+                    <image id="5381">
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="height">0.3333333333333333in</property>
+                        <property name="width">0.3333333333333333in</property>
+                        <property name="source">url</property>
+                        <expression name="uri" type="javascript">params["BaseUrl"].value+'/img/32px/'+'produceProduct.png'</expression>
+                    </image>
+                </cell>
+                <cell id="5417">
+                    <property name="backgroundAttachment">scroll</property>
+                    <property name="backgroundImageType">url</property>
+                    <property name="backgroundPositionX">0%</property>
+                    <property name="backgroundPositionY">0%</property>
+                    <property name="backgroundRepeat">repeat</property>
+                    <property name="backgroundSizeHeight">auto</property>
+                    <property name="backgroundSizeWidth">auto</property>
+                    <property name="fontFamily">serif</property>
+                    <property name="fontSize">9pt</property>
+                    <property name="fontWeight">normal</property>
+                    <property name="fontStyle">normal</property>
+                    <property name="fontVariant">normal</property>
+                    <property name="color">black</property>
+                    <property name="textLineThrough">none</property>
+                    <property name="textOverline">none</property>
+                    <property name="textUnderline">none</property>
+                    <property name="borderBottomColor">black</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderBottomWidth">medium</property>
+                    <property name="borderLeftColor">black</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderLeftWidth">medium</property>
+                    <property name="borderRightColor">black</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderRightWidth">medium</property>
+                    <property name="borderTopColor">black</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="borderTopWidth">medium</property>
+                    <property name="marginTop">0pt</property>
+                    <property name="marginLeft">0pt</property>
+                    <property name="marginBottom">0pt</property>
+                    <property name="marginRight">0pt</property>
+                    <property name="paddingTop">7pt</property>
+                    <property name="paddingLeft">1pt</property>
+                    <property name="paddingBottom">1pt</property>
+                    <property name="paddingRight">1pt</property>
+                    <property name="textIndent">0em</property>
+                    <property name="letterSpacing">normal</property>
+                    <property name="lineHeight">normal</property>
+                    <property name="orphans">2</property>
+                    <property name="textTransform">none</property>
+                    <property name="whiteSpace">normal</property>
+                    <property name="widows">2</property>
+                    <property name="wordSpacing">normal</property>
+                    <property name="display">block</property>
+                    <property name="pageBreakAfter">auto</property>
+                    <property name="pageBreakBefore">auto</property>
+                    <property name="pageBreakInside">avoid</property>
+                    <property name="showIfBlank">false</property>
+                    <property name="canShrink">false</property>
+                    <property name="overflow">hidden</property>
+                    <text id="5344">
+                        <property name="backgroundAttachment">scroll</property>
+                        <property name="backgroundPositionX">0%</property>
+                        <property name="backgroundPositionY">0%</property>
+                        <property name="backgroundRepeat">repeat</property>
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="textIndent">0em</property>
+                        <property name="letterSpacing">normal</property>
+                        <property name="lineHeight">normal</property>
+                        <property name="orphans">2</property>
+                        <property name="textTransform">none</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="widows">2</property>
+                        <property name="wordSpacing">normal</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="canShrink">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.lineTypeProduceProduct'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5330">
+                    <image id="5383">
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="height">0.3333333333333333in</property>
+                        <property name="width">0.3333333333333333in</property>
+                        <property name="source">url</property>
+                        <expression name="uri" type="javascript">params["BaseUrl"].value+'/img/32px/'+'worker.png'</expression>
+                    </image>
+                </cell>
+                <cell id="5421">
+                    <property name="backgroundAttachment">scroll</property>
+                    <property name="backgroundImageType">url</property>
+                    <property name="backgroundPositionX">0%</property>
+                    <property name="backgroundPositionY">0%</property>
+                    <property name="backgroundRepeat">repeat</property>
+                    <property name="backgroundSizeHeight">auto</property>
+                    <property name="backgroundSizeWidth">auto</property>
+                    <property name="fontFamily">serif</property>
+                    <property name="fontSize">9pt</property>
+                    <property name="fontWeight">normal</property>
+                    <property name="fontStyle">normal</property>
+                    <property name="fontVariant">normal</property>
+                    <property name="color">black</property>
+                    <property name="textLineThrough">none</property>
+                    <property name="textOverline">none</property>
+                    <property name="textUnderline">none</property>
+                    <property name="borderBottomColor">black</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderBottomWidth">medium</property>
+                    <property name="borderLeftColor">black</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderLeftWidth">medium</property>
+                    <property name="borderRightColor">black</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderRightWidth">medium</property>
+                    <property name="borderTopColor">black</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="borderTopWidth">medium</property>
+                    <property name="marginTop">0pt</property>
+                    <property name="marginLeft">0pt</property>
+                    <property name="marginBottom">0pt</property>
+                    <property name="marginRight">0pt</property>
+                    <property name="paddingTop">7pt</property>
+                    <property name="paddingLeft">1pt</property>
+                    <property name="paddingBottom">1pt</property>
+                    <property name="paddingRight">1pt</property>
+                    <property name="textIndent">0em</property>
+                    <property name="letterSpacing">normal</property>
+                    <property name="lineHeight">normal</property>
+                    <property name="orphans">2</property>
+                    <property name="textTransform">none</property>
+                    <property name="whiteSpace">normal</property>
+                    <property name="widows">2</property>
+                    <property name="wordSpacing">normal</property>
+                    <property name="display">block</property>
+                    <property name="pageBreakAfter">auto</property>
+                    <property name="pageBreakBefore">auto</property>
+                    <property name="pageBreakInside">avoid</property>
+                    <property name="showIfBlank">false</property>
+                    <property name="canShrink">false</property>
+                    <property name="overflow">hidden</property>
+                    <text id="5385">
+                        <property name="backgroundAttachment">scroll</property>
+                        <property name="backgroundPositionX">0%</property>
+                        <property name="backgroundPositionY">0%</property>
+                        <property name="backgroundRepeat">repeat</property>
+                        <property name="fontFamily">serif</property>
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="textIndent">0em</property>
+                        <property name="letterSpacing">normal</property>
+                        <property name="lineHeight">normal</property>
+                        <property name="orphans">2</property>
+                        <property name="textTransform">none</property>
+                        <property name="whiteSpace">nowrap</property>
+                        <property name="widows">2</property>
+                        <property name="wordSpacing">normal</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="canShrink">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'CostSheet.lineTypeHuman'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
     </body>
 </report>

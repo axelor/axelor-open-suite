@@ -10,12 +10,16 @@
   		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid"/>
   		<field name="billOfMaterial.qty" aggregate="sum"/>
   		<field name="costPrice" readonly="true"/>
+  		<field name="calculationTypeSelect"/>
+  		<field name="calculationDate"/>
     </grid>
     
     <grid name="cost-sheet-bill-of-material-grid" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" orderBy="-createdOn">
         <field name="createdOn"/>
 		<field name="createdBy"/>
   		<field name="costPrice" readonly="true"/>
+  		<field name="calculationTypeSelect"/>
+  		<field name="calculationDate"/>
     </grid>
     
 	<form name="cost-sheet-form" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" width="large">
@@ -26,6 +30,8 @@
   		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid"/>
   		<field name="billOfMaterial.qty"/>
   		<field name="costPrice"/>
+  		<field name="calculationTypeSelect"/>
+  		<field name="calculationDate"/>
   		<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
   		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12" height="600"/>
 	  </panel>
@@ -36,6 +42,9 @@
 	    <field name="createdOn" readonly="true"/>
   		<field name="createdBy" readonly="true"/>
  		<field name="costPrice" readonly="true"/>
+ 		<field name="calculationTypeSelect"/>
+ 		<field name="calculationDate"/>
+ 		<field name="manufOrderProducedRatio"/>
  		<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
  		<button name="printTheCostSheetLineDetailBtn" title="Print the cost sheet line detail" onClick="action-cost-sheet-method-print-cost-sheet-line-detail"/>
   		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12"  height="600"/>

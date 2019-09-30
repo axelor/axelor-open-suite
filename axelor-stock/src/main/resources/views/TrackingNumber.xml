@@ -7,7 +7,7 @@
 		<hilite if="$moment(perishableExpirationDate).isBefore(__date__) || $moment(warrantyExpirationDate).isBefore(__date__)" color="danger" />
 		<hilite if="$moment(perishableExpirationDate).isBefore($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isBefore($moment(_datePlusTwoMonths))" color="warning" />
 		<hilite if="$moment(perishableExpirationDate).isAfter($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isAfter($moment(_datePlusTwoMonths))" color="success" />
-    	<field name="trackingNumberSeq"/>
+    	<field name="trackingNumberSeq" width="120"/>
     	<field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="warrantyExpirationDate"/>
         <field name="perishableExpirationDate"/>

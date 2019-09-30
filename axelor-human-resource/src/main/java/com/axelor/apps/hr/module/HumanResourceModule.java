@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.hr.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
@@ -39,6 +41,8 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.db.repo.TimesheetTimerHRRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
+import com.axelor.apps.hr.service.bankorder.BankOrderLineOriginServiceHRImpl;
+import com.axelor.apps.hr.service.bankorder.BankOrderMergeHRServiceImpl;
 import com.axelor.apps.hr.service.bankorder.BankOrderServiceHRImpl;
 import com.axelor.apps.hr.service.batch.BatchCreditTransferExpensePaymentHR;
 import com.axelor.apps.hr.service.batch.MailBatchServiceHR;
@@ -97,10 +101,12 @@ public class HumanResourceModule extends AxelorModule {
     bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
     bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
     bind(BankOrderServiceImpl.class).to(BankOrderServiceHRImpl.class);
+    bind(BankOrderLineOriginServiceImpl.class).to(BankOrderLineOriginServiceHRImpl.class);
     bind(HrBatchRepository.class).to(HrBatchHRRepository.class);
     bind(ProjectPlanningTimeRepository.class).to(ProjectPlanningTimeHRRepository.class);
     bind(ProjectPlanningTimeService.class).to(ProjectPlanningTimeServiceImpl.class);
     bind(ProjectManagementRepository.class).to(ProjectHRRepository.class);
     bind(TeamTaskProjectRepository.class).to(TeamTaskHRRepository.class);
+    bind(BankOrderMergeServiceImpl.class).to(BankOrderMergeHRServiceImpl.class);
   }
 }

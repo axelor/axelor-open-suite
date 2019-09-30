@@ -5,7 +5,7 @@
 
 	<grid name="payment-schedule-grid" title="Payment schedule"
 		model="com.axelor.apps.account.db.PaymentSchedule" orderBy="-paymentScheduleSeq">
-		<field name="paymentScheduleSeq" />
+		<field name="paymentScheduleSeq" width="120"/>
 		<field name="creationDate" />
 		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="company" form-view="company-form" grid-view="company-grid"/>

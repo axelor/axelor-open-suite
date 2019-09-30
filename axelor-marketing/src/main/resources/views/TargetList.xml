@@ -27,12 +27,27 @@
 		  	<field name="partnerQuery" colSpan="12" showIf="partnerQueryTypeSelect == 1"/>
 		  	<field name="partnerFilterList" colSpan="12" layout="table" showIf="partnerQueryTypeSelect == 0">
 		  	 	<editor x-show-titles="false">
-	            <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
-	            <field name="targetField" colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-type"/>
-	            <field name="operator"  colSpan="3" required="true"/>
-	            <field name="value" colSpan="3" onChange="action-studio-filter-validate-values"/>
-	            <field name="targetType" hidden="true" />
-	            <field name="metaField.relationship" hidden="true" />
+              <panel name="metaFieldPanel">
+                <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="4" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
+                <field name="targetTitle" colSpan="8" readonly="true"/>
+	              <field name="targetMetaField" requiredIf="targetType == 'ManyToOne' || targetType == 'ManyToMany'"
+                  readonlyIf="(targetMetaField != null &amp;&amp; targetMetaField.relationship == null) || (metaTargetFieldDomain == null &amp;&amp; $contains(targetField,'.'))"
+                  title="Select target field" target="com.axelor.meta.db.MetaField" type="many-to-one" showIf="metaField.relationship != null"
+                  onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain" onChange="action-filter-method-update-target-meta-field"/>
+	              <button name="clearSelection" colSpan="4" title="Clear Selection" icon="fa-arrow-left" showIf="metaField.relationship != null" onClick="action-filter-method-clear-selection"/>
+	              <field name="targetField" hidden="true" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-type"/>
+	              <field name="metaTargetFieldDomain" type="String" hidden="true"/>
+              </panel>
+	            <panel name="opreatorAndValuePanel">
+								<panel name="partnerFilterListOperatorPanel" stacked="true">
+								  <field name="operator" required="true" selection-in="['=','!=','isNull','notNull','like','notLike']" hidden="true" showIf="targetType == 'String'"/>
+								  <field name="operator" required="true" selection-in="['=','!=','&gt;=','&lt;=','&gt;','&lt;','isNull','notNull']" hidden="true" showIf="targetType == 'Integer' || targetType == 'Long' || targetType == 'BigDecimal' || targetType == 'LocalDateTime' || targetType == 'LocalDate'"/>
+								  <field name="operator" required="true" selection-in="['isTrue','isFalse']" hidden="true" showIf="targetType == 'Boolean'"/>
+								</panel>
+								<field name="value" hideIf="operator == 'isNull' || operator == 'notNull' || targetType == 'Boolean'"/>
+								<field name="targetType" hidden="true" />
+								<field name="metaField.relationship" hidden="true" />
+	            </panel>
 	          </editor>
 		  	</field>
 		  	<button name="openFilteredPartnersBtn" title="Open filtered partners" colSpan="3" onClick="save,action-target-list-method-open-filtered-partners"/>
@@ -44,12 +59,27 @@
 		  	<field name="leadQuery" colSpan="12" showIf="leadQueryTypeSelect == 1"/>
       		<field name="leadFilterList" colSpan="12" layout="table" showIf="leadQueryTypeSelect == 0">
 		  	 	<editor x-show-titles="false">
-	            <field name="metaField" onSelect="action-target-list-lead-filters-field-domain" colSpan="3" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
-	            <field name="targetField"  colSpan="3" showIf="metaField.relationship != null" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-type"/>
-	            <field name="operator"  colSpan="3" required="true"/>
-				<field name="value" colSpan="3" onChange="action-studio-filter-validate-values"/>
-	            <field name="targetType" hidden="true" />
-	            <field name="metaField.relationship" hidden="true" />
+              <panel name="metaFieldPanel">
+                <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="4" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
+                <field name="targetTitle" colSpan="8" readonly="true"/>
+                <field name="targetMetaField" requiredIf="targetType == 'ManyToOne' || targetType == 'ManyToMany'"
+                  readonlyIf="(targetMetaField != null &amp;&amp; targetMetaField.relationship == null) || (metaTargetFieldDomain == null &amp;&amp; $contains(targetField,'.'))"
+                  title="Select target field" target="com.axelor.meta.db.MetaField" type="many-to-one" showIf="metaField.relationship != null"
+                  onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain" onChange="action-filter-method-update-target-meta-field"/>
+                <button name="clearSelection" colSpan="4" title="Clear Selection" icon="fa-arrow-left" showIf="metaField.relationship != null" onClick="action-filter-method-clear-selection"/>
+                <field name="targetField" hidden="true" requiredIf="metaField.relationship != null" onChange="action-filter-method-update-target-type"/>
+                <field name="metaTargetFieldDomain" type="String" hidden="true"/>
+              </panel>
+              <panel name="opreatorAndValuePanel">
+                <panel name="leadFilterListOperatorPanel" stacked="true">
+                  <field name="operator" required="true" selection-in="['=','!=','isNull','notNull','like','notLike']" hidden="true" showIf="targetType == 'String'"/>
+                  <field name="operator" required="true" selection-in="['=','!=','&gt;=','&lt;=','&gt;','&lt;','isNull','notNull']" hidden="true" showIf="targetType == 'Integer' || targetType == 'Long' || targetType == 'BigDecimal' || targetType == 'LocalDateTime' || targetType == 'LocalDate'"/>
+                  <field name="operator" required="true" selection-in="['isTrue','isFalse']" hidden="true" showIf="targetType == 'Boolean'"/>
+                </panel>
+                <field name="value" hideIf="operator == 'isNull' || operator == 'notNull' || targetType == 'Boolean'"/>
+                <field name="targetType" hidden="true" />
+                <field name="metaField.relationship" hidden="true" />
+              </panel>
 	          </editor>
 		  	 </field>
 		  	 <button name="openFilteredLeadsBtn" title="Open filtered leads" colSpan="3" onClick="save,action-target-list-method-open-filtered-leads"/>
@@ -59,13 +89,18 @@
 	</form>
 	
 	<action-attrs name="action-target-list-partner-filters-field-domain">
-      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.name = 'Partner' AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;"/>
+      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.name = 'Partner' AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.typeName != 'byte[]'&quot;"/>
   	</action-attrs>
   	
   	<action-attrs name="action-target-list-lead-filters-field-domain">
-      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.name = 'Lead' AND (self.relationship IS NULL OR self.relationship != 'OneToMany')&quot;"/>
+      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.name = 'Lead' AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.typeName != 'byte[]'&quot;"/>
   	</action-attrs>
   	
+		<action-attrs name="action-target-list-attrs-partner-filters-target-meta-field-domain">
+      <attribute for="targetMetaField" name="domain" expr="eval:&quot;self.metaModel.name = '${metaField.typeName}' AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.typeName != 'byte[]'&quot;" if="metaTargetFieldDomain == null"/>
+      <attribute for="targetMetaField" name="domain" expr="eval:&quot;self.metaModel.name = '${metaTargetFieldDomain}' AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.typeName != 'byte[]'&quot;" if="metaTargetFieldDomain != null"/>
+		</action-attrs>
+
   	<action-attrs name="action-target-list-lead-partner-set-domain">
       <attribute for="partnerSet" name="domain" expr="eval:&quot;self.isContact = false &quot;" if="partnerTypeSelect == 0"/>
       <attribute for="partnerSet" name="domain" expr="eval:&quot;self.isContact = true &quot;" if="partnerTypeSelect == 1"/>
@@ -79,6 +114,5 @@
 	<action-method name="action-target-list-method-open-filtered-partners">
 		<call class="com.axelor.apps.marketing.web.TargetListController" method="openFilteredPartners"/>
 	</action-method>
-	
     
 </object-views>

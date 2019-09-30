@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,26 +17,13 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 
-public class BankOrderLineOriginService {
+public interface BankOrderLineOriginService {
 
-  public BankOrderLineOrigin createBankOrderLineOrigin(Model model) {
+  public BankOrderLineOrigin createBankOrderLineOrigin(Model model);
 
-    Class<?> klass = EntityHelper.getEntityClass(model);
-
-    return this.createBankOrderLineOrigin(klass.getCanonicalName(), model.getId());
-  }
-
-  public BankOrderLineOrigin createBankOrderLineOrigin(
-      String relatedToSelect, Long relatedToSelectId) {
-    BankOrderLineOrigin bankOrderLineOrigin = new BankOrderLineOrigin();
-
-    bankOrderLineOrigin.setRelatedToSelect(relatedToSelect);
-    bankOrderLineOrigin.setRelatedToSelectId(relatedToSelectId);
-
-    return bankOrderLineOrigin;
-  }
+  public boolean existBankOrderLineOrigin(BankOrder bankOrder, Model model);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -93,6 +94,26 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
       // Update amount remaining to invoiced on SaleOrder
       this.saleOrderProcess(invoice);
+    }
+    if (invoice.getInterco() || invoice.getCreatedByInterco()) {
+      updateIntercoReference(invoice);
+    }
+  }
+
+  /**
+   * Update external reference in the corresponding interco invoice.
+   *
+   * @param invoice
+   */
+  protected void updateIntercoReference(Invoice invoice) {
+    Invoice intercoInvoice =
+        Beans.get(InvoiceRepository.class)
+            .all()
+            .filter("self.invoiceId = :invoiceId")
+            .bind("invoiceId", invoice.getExternalReference())
+            .fetchOne();
+    if (intercoInvoice != null) {
+      intercoInvoice.setExternalReference(invoice.getInvoiceId());
     }
   }
 

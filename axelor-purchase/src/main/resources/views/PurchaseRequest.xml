@@ -8,10 +8,6 @@
     		<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard"/>
     	</toolbar>
         <field name="company"/>
-        <field name="product" />
-        <field name="newProduct" />
-        <field name="unit" />
-        <field name="quantity" />
         <field name="statusSelect"/>
     </grid>
     
@@ -20,10 +16,6 @@
     		<button name="acceptRequestBtn" title="Accept and generate PO" onClick="action-purchase-request-method-accept-request"/>
     	</toolbar>
         <field name="company"/>
-        <field name="product" />
-        <field name="newProduct" />
-        <field name="unit" />
-        <field name="quantity" />
         <field name="statusSelect"/>
     </grid>
     
@@ -32,45 +24,44 @@
     		<button name="confirmMyCartBtn" title="Confirm my cart" onClick="action-purchase-request-method-confirm-cart"/>
     	</toolbar>
         <field name="company"/>
-        <field name="product" />
-        <field name="newProduct" />
-        <field name="unit" />
-        <field name="quantity" />
         <field name="statusSelect"/>
     </grid>
     
     <grid name="purchase-request-grid" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    	<toolbar>
+    		<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard" readonlyIf="!_ids"/>
+    	</toolbar>
     	<hilite if="statusSelect == 2" color="info"/>
     	<hilite if="statusSelect == 3" color="primary"/>
     	<hilite if="statusSelect == 4 || statusSelect == 5 || statusSelect == 6" color="success"/>
     	<hilite if="statusSelect == 7" color="warning"  />
     	<hilite if="statusSelect == 8" color="danger"/>
-        <field name="product" />
-        <field name="newProduct" />
-        <field name="unit" />
-        <field name="quantity" />
+    	<field name="purchaseRequestSeq"/>
+        <field name="supplierUser"/>
+        <field name="stockLocation"/>
         <field name="statusSelect"/>
     </grid>
 
 	<form name="purchase-request-form" title="Purchase request"
-		model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-record-default"
+		model="com.axelor.apps.purchase.db.PurchaseRequest" onNew="action-purchase-request-group-onnew"
 		width="large">
 		<panel name="statusSelectPanel" colSpan="12">
 			<field name="statusSelect" readonly="true" colSpan="12" widget="nav-select"
 				showTitle="false" />
+			<field name="purchaseRequestSeq" showTitle="false" readonly="true">
+				<viewer depends="purchaseRequestSeq"><![CDATA[
+					<h3>
+						<span ng-show="record.purchaseRequestSeq" x-translate>Purchase request</span>
+						{{record.purchaseRequestSeq}}
+					</h3>
+				]]></viewer>
+			</field>
 		</panel>
-		<panel name="mainPanel" readonlyIf="![1,2].includes(statusSelect)">
-			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false"/>
-			<field name="newProduct" widget="boolean-switch" colSpan="2"
-				colOffset="4" hideIf="statusSelect &gt; 2 &amp;&amp; !newProduct" />
-			<field name="product" colSpan="3" form-view="product-form"
-				grid-view="product-grid" hideIf="newProduct" requiredIf="!newProduct"
-				onChange="action-purchase-request-product-on-change" canEdit="false"/>
-			<field name="unit" colSpan="3" canEdit="false"/>
-			<field name="quantity" colSpan="3" />
-			<field name="price" colSpan="3" />
+		<panel name="mainPanel" readonlyIf="!$contains([1,2],statusSelect)">
+			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" onChange="action-purchase-request-group-company-onchange"/>
 			<field name="$product" hidden="true" />
 		</panel>
+		<panel-related field="purchaseRequestLineList" form-view="purchase-request-line-form" grid-view="purchase-request-line-grid"/>
 		<panel-tabs name="descriptionPanelTab">
 			<panel name="descriptionPanel" title="Description">
 				<field name="description" colSpan="12" widget="html"
@@ -84,7 +75,7 @@
 			<button name="acceptBtn" title="Accept" icon="fa-check" showIf="statusSelect == 2"
 				onClick="save,action-purchase-request-set-status-accepted,save" />
 			<button name="purchaseBtn" title="Purchase" icon="fa-shopping-cart"
-				showIf="statusSelect == 3" onClick="save,action-purchase-request-set-status-purchased,save" />
+				showIf="statusSelect == 3" onClick="action-purchase-request-group-update-status" />
 			<button name="deliverPartiallyBtn" title="Deliver Partially"
 				icon="fa-truck" showIf="statusSelect == 4"
 				onClick="save,action-purchase-request-set-status-delivered-partially,save" />
@@ -101,9 +92,9 @@
 		</panel>
 		<panel sidebar="true" name="characteristicsPanel" title="Characteristics"
 			canCollapse="true">
-			<field name="deliveryAddress"
-				onSelect="action-purchase-request-set-delivery-address-domain" canEdit="false"/>
-			<field name="supplier" search="self.isSupplier = true" colSpan="6" canEdit="false"/>
+			<field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" 
+				if-module="axelor-supplychain" colSpan="12" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
+			<field name="supplierUser" domain="self.isSupplier = true" colSpan="12" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
 		</panel>
 		<panel sidebar="true" name="follow-upPanel" title="Follow-up"
 			canCollapse="true">
@@ -120,37 +111,24 @@
     
     <form name="purchase-request-wizard-generate-po-form"  title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest" >
     	<panel name="mainPanel">
-    		<field name="$groupBySupplier" title="Group by supplier" type="boolean" />
+    		<field name="$groupBySupplier" title="Group by supplier" type="boolean"/>
     		<spacer name="supplierSpacer"/>
-    		<field name="$groupByProduct" title="Group by product" type="boolean" />
+    		<field name="$groupByProduct" title="Group by product" type="boolean" onChange="action-purchase-request-set-group-by-supplier"/>
     		<spacer name="productSpacer"/>
-    		<field name="$groupByDeliveryAddress" title="Group by delivery address" type="boolean" />
-    		<spacer name="deliverySpacer"/>
-    		<button name="generatePOBtn" title="Generate PO" />
+    		<button name="generatePOBtn" title="Generate PO" onClick="action-purchase-request-method-generate-po"/>
     	</panel>
     </form>
-	
-	<action-attrs name="action-purchase-request-set-delivery-address-domain">
-		<attribute if="company?.partner != null" name="domain" expr="eval:&quot; self.id  in ( &quot; + ([0] + company.partner.partnerAddressList.findAll{it->it.isDeliveryAddr}.collect{it->it.address.id}).join(',') + &quot;)&quot;" for="deliveryAddress"/>
-	</action-attrs>
+
+    <action-attrs name="action-purchase-request-set-group-by-supplier">
+    	<attribute name="value" for="$groupBySupplier" expr="eval: groupByProduct"/>
+    	<attribute name="readonly" for="$groupBySupplier" expr="eval: groupByProduct"/>
+    </action-attrs>
 	
 	<action-record name="action-purchase-request-record-default" model="com.axelor.apps.purchase.db.PurchaseRequest">
-		<field name="company"  expr="eval:__user__.activeCompany"/>
-		<field name="quantity" expr="eval:1" />
-		<field name="product" expr="eval:_product" />
-		<field name="supplier" expr="eval:_product.defaultSupplierPartner" if="_product != null"/>		
-		<field name="unit" expr="eval:_product.purchasesUnit" if="_product != null &amp;&amp; _product.purchasesUnit != null"/>		
-		<field name="unit" expr="eval:_product.unit" if="_product != null &amp;&amp; _product.purchasesUnit == null"/>		
-		<field name="price" expr="eval:_product.purchasePrice" if="_product != null"/>		
+		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="supplierUser" expr="eval:__repo__(Product).find(_product?.id)?.getDefaultSupplierPartner()" if="_product"/>
 	</action-record>
-	
-	<action-record name="action-purchase-request-product-on-change" model="com.axelor.apps.purchase.db.PurchaseRequest">
-		<field name="supplier" expr="eval:product.defaultSupplierPartner" if="product != null"/>		
-		<field name="unit" expr="eval:product.purchasesUnit" if="product != null &amp;&amp; product.purchasesUnit != null"/>		
-		<field name="unit" expr="eval:product.unit" if="product != null &amp;&amp; product.purchasesUnit == null"/>	
-		<field name="price" expr="eval:product.purchasePrice" if="product != null"/>		
-	</action-record>
-	
+
 	<!-- update status -->
 	<action-record name="action-purchase-request-set-status-requested" model="com.axelor.apps.purchase.db.PurchaseRequest">
     	<field name="statusSelect" expr="eval:2"/>
@@ -193,13 +171,37 @@
 		<call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="acceptRequest"/>
 	</action-method>
 	
+	<action-method name="action-purchase-request-method-generate-po">
+		<call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="generatePo"/>
+	</action-method>
+	
 	<action-view name="action-purchase-request-open-generate-po-wizard" title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest">
 		<view type="form" name="purchase-request-wizard-generate-po-form"/>
 		<view-param name="popup" value="true"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="show-confirm" value="false" />
 		<view-param name="popup-save" value="false" />
+		<context name="_ids" expr="eval: _ids"/>
 	</action-view>
 	
+	<action-group name="action-purchase-request-group-update-status">
+		<action name="save"/>
+		<action name="action-purchase-request-validate-check-supplier-user" if="!supplierUser"/>
+		<action name="action-purchase-request-set-status-purchased" if="supplierUser"/>
+		<action name="save"/>
+	</action-group>
+
+	<action-group name="action-purchase-request-group-onnew">
+		<action name="action-purchase-request-record-default"/>
+		<action name="action-purchase-request-method-get-stock-location" if="__config__.app.isApp('supplychain')"/>
+	</action-group>
+
+	<action-group name="action-purchase-request-group-company-onchange">
+		<action name="action-purchase-request-method-get-stock-location" if="__config__.app.isApp('supplychain')"/>
+	</action-group>
+
+	<action-validate name="action-purchase-request-validate-check-supplier-user">
+		<error message="Supplier is required to generate a purchase order." />
+	</action-validate>
 	
 </object-views>

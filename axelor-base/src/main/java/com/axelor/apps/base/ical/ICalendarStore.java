@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -119,7 +119,7 @@ public class ICalendarStore {
       cal.toString();
       for (Object item : ((List<CalendarComponent>) cal.getComponents(Component.VEVENT))) {
         VEvent event = (VEvent) item;
-        if (event.getLastModified().getDate().toInstant().isAfter(instant) || instant == null) {
+        if (instant == null || event.getLastModified().getDate().toInstant().isAfter(instant)) {
           events.add(event);
         }
         remoteUids.add(event.getUid().getValue());

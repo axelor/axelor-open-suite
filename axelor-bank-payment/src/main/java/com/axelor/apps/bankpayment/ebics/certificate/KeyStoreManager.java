@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,9 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.openssl.PEMParser;
 
 /**
  * Key store loader. This class loads a key store from a given path and allow to get private keys
@@ -129,9 +131,10 @@ public class KeyStoreManager {
             CertificateFactory.getInstance("X.509", provider).generateCertificate(input);
 
     if (certificate == null) {
-      PEMReader reader = new PEMReader(new InputStreamReader(input));
-      certificate = (X509Certificate) (reader).readObject();
-      reader.close();
+      try (final PEMParser reader = new PEMParser(new InputStreamReader(input))) {
+        final X509CertificateHolder certificateHolder = (X509CertificateHolder) reader.readObject();
+        certificate = new JcaX509CertificateConverter().getCertificate(certificateHolder);
+      }
     }
 
     return certificate;

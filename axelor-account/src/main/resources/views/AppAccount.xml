@@ -18,15 +18,19 @@
             <field name="partnerBalConfigSelect"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel name="payerQualityPanel" title="Payer quality" colSpan="12">
-				<button name="payerQualityProcessBtn" title="Compute payers quality" colSpan="2" onClick="action-app-account-method-payer-quality-process"/>
-				<field name="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
-			</panel>
 			<panel name="accountConfigurationsPanel" title="Account configurations">
 				<button name="generateAccountConfigurationsBtn" title="Generate account configurations" colSpan="4" onClick="save,com.axelor.apps.account.web.AppAccountController:generateAccountConfigurations"/>
 				<panel-dashlet name="accountConfigPanel" action="admin.root.conf.account.config" colSpan="12" title="Account configurations" />
 			</panel>
+			<panel name="payerQualityPanel" title="Payer quality" colSpan="12">
+				<button name="payerQualityProcessBtn" title="Compute payers quality" colSpan="2" onClick="action-app-account-method-payer-quality-process"/>
+				<field name="payerQualityConfigLineList" colSpan="12" grid-view="payer-quality-config-line-grid" form-view="payer-quality-config-line-form"/>
+			</panel>
 		</panel-tabs>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 
 	<action-method name="action-app-account-method-payer-quality-process">

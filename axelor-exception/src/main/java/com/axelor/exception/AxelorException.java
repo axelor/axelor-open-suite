@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,10 +52,7 @@ public class AxelorException extends Exception {
    */
   @Deprecated
   public AxelorException(String message, int category, Object... messageArgs) {
-    super(String.format(message, messageArgs));
-    this.refClass = null;
-    this.refId = 0L;
-    this.category = category;
+    this(category, String.format(message, messageArgs));
   }
 
   /**
@@ -66,7 +63,11 @@ public class AxelorException extends Exception {
    * @param messageArgs
    */
   public AxelorException(int category, String message, Object... messageArgs) {
-    super(String.format(message, messageArgs));
+    this(category, String.format(message, messageArgs));
+  }
+
+  public AxelorException(int category, String message) {
+    super(message);
     this.refClass = null;
     this.refId = 0L;
     this.category = category;
@@ -112,10 +113,7 @@ public class AxelorException extends Exception {
    */
   @Deprecated
   public AxelorException(String message, Throwable cause, int category, Object... messageArgs) {
-    super(String.format(message, messageArgs), cause);
-    this.refClass = null;
-    this.refId = 0L;
-    this.category = category;
+    this(cause, category, String.format(message, messageArgs));
   }
 
   /**
@@ -127,7 +125,11 @@ public class AxelorException extends Exception {
    * @param messageArgs
    */
   public AxelorException(Throwable cause, int category, String message, Object... messageArgs) {
-    super(String.format(message, messageArgs), cause);
+    this(cause, category, String.format(message, messageArgs));
+  }
+
+  public AxelorException(Throwable cause, int category, String message) {
+    super(message, cause);
     this.refClass = null;
     this.refId = 0L;
     this.category = category;
@@ -143,7 +145,11 @@ public class AxelorException extends Exception {
    */
   public AxelorException(
       Class<? extends Model> refClass, int category, String message, Object... messageArgs) {
-    super(String.format(message, messageArgs));
+    this(refClass, category, String.format(message, messageArgs));
+  }
+
+  public AxelorException(Class<? extends Model> refClass, int category, String message) {
+    super(message);
     this.refClass = refClass;
     this.refId = 0L;
     this.category = category;
@@ -178,7 +184,12 @@ public class AxelorException extends Exception {
       int category,
       String message,
       Object... messageArgs) {
-    super(String.format(message, messageArgs), cause);
+    this(cause, refClass, category, String.format(message, messageArgs));
+  }
+
+  public AxelorException(
+      Throwable cause, Class<? extends Model> refClass, int category, String message) {
+    super(message, cause);
     this.refClass = refClass;
     this.refId = 0L;
     this.category = category;
@@ -193,7 +204,11 @@ public class AxelorException extends Exception {
    * @param messageArgs
    */
   public AxelorException(Model ref, int category, String message, Object... messageArgs) {
-    super(String.format(message, messageArgs));
+    this(ref, category, String.format(message, messageArgs));
+  }
+
+  public AxelorException(Model ref, int category, String message) {
+    super(message);
     this.refClass = EntityHelper.getEntityClass(ref);
     this.refId = ref.getId();
     this.category = category;
@@ -224,7 +239,11 @@ public class AxelorException extends Exception {
    */
   public AxelorException(
       Throwable cause, Model ref, int category, String message, Object... messageArgs) {
-    super(String.format(message, messageArgs), cause);
+    this(cause, ref, category, String.format(message, messageArgs));
+  }
+
+  public AxelorException(Throwable cause, Model ref, int category, String message) {
+    super(message, cause);
     this.refClass = EntityHelper.getEntityClass(ref);
     this.refId = ref.getId();
     this.category = category;

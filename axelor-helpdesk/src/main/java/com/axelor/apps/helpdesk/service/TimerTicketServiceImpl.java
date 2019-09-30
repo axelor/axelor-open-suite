@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,11 +28,11 @@ import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TimerTicketServiceImpl extends AbstractTimerService implements TimerTicketService {
 
@@ -52,19 +52,11 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   public Timer find(Model model) throws AxelorException {
     User user = userService.getUser();
     Ticket ticket = (Ticket) model;
-
-    try {
-      return ticket
-          .getTimerList()
-          .stream()
-          .filter(t -> t.getAssignedToUser() == user)
-          .findFirst()
-          .orElse(null);
-    } catch (NullPointerException e) {
-      throw new AxelorException(
-          TraceBackRepository.TYPE_TECHNICAL,
-          "Veuillez recharger la page pour effectuer cette action");
+    List<Timer> timerList = ticket.getTimerList();
+    if (timerList != null && !timerList.isEmpty()) {
+      return timerList.stream().filter(t -> t.getAssignedToUser() == user).findFirst().orElse(null);
     }
+    return null;
   }
 
   @Override
@@ -116,8 +108,13 @@ public class TimerTicketServiceImpl extends AbstractTimerService implements Time
   @Override
   public Duration compute(Ticket task) {
     Duration total = Duration.ZERO;
-    for (Timer timer : task.getTimerList()) {
-      total = total.plus(compute(timer));
+    if (task != null) {
+      task = repository.find(task.getId());
+      if (task.getTimerList() != null && !task.getTimerList().isEmpty()) {
+        for (Timer timer : task.getTimerList()) {
+          total = total.plus(compute(timer));
+        }
+      }
     }
     return total;
   }

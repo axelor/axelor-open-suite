@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -405,13 +406,15 @@ public class DoubtfulCustomerService {
     log.debug("Date de créance prise en compte : {} ", date);
 
     String request =
-        "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND ml.company.id = "
+        "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND m.company.id = "
             + company.getId()
             + " AND ml.account.useForPartnerBalance = 'true' "
-            + "AND ml.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"
+            + "AND m.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"
             + date.toString()
             + "' AND ml.account.id != "
-            + doubtfulCustomerAccount.getId();
+            + doubtfulCustomerAccount.getId()
+            + " AND m.invoice.operationTypeSelect = "
+            + InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 
     log.debug("Requete : {} ", request);
 
@@ -455,12 +458,14 @@ public class DoubtfulCustomerService {
             moveLineRepo
                 .all()
                 .filter(
-                    "self.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                         + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3",
+                        + "AND self.account != ?3 "
+                        + "AND self.invoiceReject.operationTypeSelect = ?4",
                     company,
                     date,
-                    doubtfulCustomerAccount)
+                    doubtfulCustomerAccount,
+                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .fetch();
         break;
 
@@ -474,12 +479,14 @@ public class DoubtfulCustomerService {
             moveLineRepo
                 .all()
                 .filter(
-                    "self.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                         + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3",
+                        + "AND self.account != ?3 "
+                        + "AND self.invoiceReject.operationTypeSelect = ?4",
                     company,
                     date,
-                    doubtfulCustomerAccount)
+                    doubtfulCustomerAccount,
+                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .fetch();
         break;
 

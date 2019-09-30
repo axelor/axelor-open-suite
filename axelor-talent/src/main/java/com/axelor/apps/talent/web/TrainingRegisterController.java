@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,7 +40,6 @@ public class TrainingRegisterController {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
     trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
-
     Event event = trainingRegisterService.plan(trainingRegister);
 
     response.setReload(true);
@@ -53,6 +52,13 @@ public class TrainingRegisterController {
             .context("_showRecord", event.getId())
             .context("_user", trainingRegister.getEmployee().getUser())
             .map());
+  }
+
+  public void updateEventCalendar(ActionRequest request, ActionResponse response) {
+
+    TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
+
+    trainingRegisterService.updateEventCalendar(trainingRegister);
   }
 
   public void complete(ActionRequest request, ActionResponse response) {
