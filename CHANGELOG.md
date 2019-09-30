@@ -6,6 +6,7 @@
 - MRP : add a try catch block in generateAllProposals method.
 - TIMESHEET : Throw an alert on timesheet validation.
 - PAYMENTMODE : form and grid views defined on bankOrderFileFormat
+- EbicsBank : Disable canEdit on language field in ebics-bank-form
 
 ## Bug Fixes
 - STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
