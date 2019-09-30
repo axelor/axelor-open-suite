@@ -7,6 +7,7 @@
 
 ## Features
 - ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
+- SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
