@@ -236,6 +236,26 @@
 		<view type="form" name="product-approval-form"/>
 	</action-view>
 	
+	<menuitem name="manufacturing-conf-cancelreason" parent="manufacturing-conf"
+		title="Cancel Reasons" action="manufacturing.conf.cancelreason" />
+
+	<action-view name="manufacturing.conf.cancelreason"
+		title="Cancel Reason" model="com.axelor.apps.base.db.CancelReason" >
+		<view type="grid" name="cancel-reason-grid" />
+		<view type="form" name="cancel-reason-form" />
+		<domain>self.applicationType = :_xApplicationType</domain>
+		<context name="_xApplicationType" expr="eval: com.axelor.apps.production.db.ManufOrder"/>
+	</action-view>
+	 
+	<menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf" action="manufacturing.conf.workshop" if="__config__.app.getApp('production').manageWorkshop" />
+	
+	<action-view name="manufacturing.conf.workshop" title="Workshop" model="com.axelor.apps.stock.db.StockLocation">
+		<view type="grid" name="stock-location-grid"/>
+		<view type="form" name="stock-location-form"/>
+		<domain>self.usableOnProduction = true AND self.isWorkshop = true</domain>
+		<context name="_productionWorkshop" expr="eval:true"/>
+	</action-view>
+	
 	<!-- ADMINISTRATION -->
 
 	<menuitem name="admin-root-batch-production" parent="admin-root-batch" if="__config__.app.isApp('production')" if-module="axelor-production" 

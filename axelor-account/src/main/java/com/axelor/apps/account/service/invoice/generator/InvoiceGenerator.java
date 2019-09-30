@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -63,8 +62,6 @@ import org.slf4j.LoggerFactory;
 public abstract class InvoiceGenerator {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected JournalService journalService;
 
   protected int operationType;
   protected Company company;
@@ -115,7 +112,6 @@ public abstract class InvoiceGenerator {
     this.companyBankDetails = companyBankDetails;
     this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   /**
@@ -149,12 +145,10 @@ public abstract class InvoiceGenerator {
     this.inAti = inAti;
     this.tradingName = tradingName;
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   protected InvoiceGenerator() {
     this.today = Beans.get(AppAccountService.class).getTodayDate();
-    this.journalService = new JournalService();
   }
 
   protected int inverseOperationType(int operationType) throws AxelorException {
@@ -283,10 +277,12 @@ public abstract class InvoiceGenerator {
               .findFirst()
               .orElse(null);
     } else if (accountingSituation != null) {
-      if (paymentMode.equals(partner.getOutPaymentMode())) {
-        companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-      } else if (paymentMode.equals(partner.getInPaymentMode())) {
-        companyBankDetails = accountingSituation.getCompanyInBankDetails();
+      if (paymentMode != null) {
+        if (paymentMode.equals(partner.getOutPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+        } else if (paymentMode.equals(partner.getInPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyInBankDetails();
+        }
       }
       if (companyBankDetails == null) {
         companyBankDetails = company.getDefaultBankDetails();

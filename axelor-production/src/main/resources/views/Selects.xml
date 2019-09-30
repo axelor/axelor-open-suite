@@ -71,6 +71,7 @@
 	    <option value="3" icon="img/32px/workCenter.png">Work center</option>
 	    <option value="4" icon="img/32px/indirectCost.png">Indirect cost</option>
   	    <option value="5" icon="img/32px/consumeProductWaste.png">Consumed product waste</option>
+  	    <option value="6" icon="img/32px/worker.png">Human</option>
 	</selection>
 	
 	<selection name="production.cost.sheet.group.cost.type.select">
@@ -106,5 +107,12 @@
 	
 	<selection name="production.batch.action.select">
 		<option value="1">Compute work in progress valuation</option>
+	</selection>
+	
+	<selection name="production.cost.sheet.calculation.type.select">
+		<option value="1">Partial end of production</option>
+		<option value="2">End of production</option>
+		<option value="3">Work in progress</option>
+		<option value="4">Bill of material</option>
 	</selection>
 </object-views>

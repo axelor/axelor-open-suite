@@ -33,9 +33,9 @@
 		<extra-code>
 			<![CDATA[
 				public static final int STATUS_NEW = 0;
-				public static final int STATUS_IN_PROGRESS = 0;
-				public static final int STATUS_RESOLVED = 0;
-				public static final int STATUS_CLOSED = 0;
+				public static final int STATUS_IN_PROGRESS = 1;
+				public static final int STATUS_RESOLVED = 2;
+				public static final int STATUS_CLOSED = 3;
 			]]>
 		</extra-code>
 

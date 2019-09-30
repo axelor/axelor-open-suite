@@ -54,18 +54,18 @@
                 </editor>
             </field>
 		</panel>
-		<panel name="instructionsPanel">
+		<panel name="instructionsPanel" title="Control Instructions">
 			<field name="instructions" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="notesPanel">
+		<panel name="notesPanel" title="Control comment">
 			<field name="notes" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="messageIfFailurePanel">
+		<panel name="messageIfFailurePanel" title="Failure reasons">
 			<field name="messageIfFailure" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
 		<panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">
-			<button name="passBtn" title="Pass" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-pass,save"/>
-			<button name="failBtn" title="Fail" showIf="statusSelect == 1" onClick="action-quality-control-point-record-status-fail,save"/>
+			<button name="passBtn" title="Pass" showIf="statusSelect == 1" onClick="save,action-quality-control-point-record-status-pass,save"/>
+			<button name="failBtn" title="Fail" showIf="statusSelect == 1" onClick="save,action-quality-control-point-record-status-fail,save"/>
 		</panel>
 		<panel name="qualityAlertPanel" sidebar="true">
 			<button name="createAQualityAlertBtn" title="Create a quality alert" onClick="action-quality-control-point-create-quality-alert"/>

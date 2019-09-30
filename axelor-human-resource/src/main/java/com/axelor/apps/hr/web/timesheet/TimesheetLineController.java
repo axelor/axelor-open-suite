@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,9 +32,9 @@ import java.math.BigDecimal;
 
 public class TimesheetLineController {
 
-  private final String HOURS_DURATION_FIELD = "hoursDuration";
+  private static final String HOURS_DURATION_FIELD = "hoursDuration";
 
-  private final String DURATION_FIELD = "duration";
+  private static final String DURATION_FIELD = "duration";
 
   @Inject private TimesheetLineRepository timesheetLineRepo;
 

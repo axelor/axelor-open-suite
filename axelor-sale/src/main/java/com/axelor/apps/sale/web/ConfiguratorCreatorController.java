@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,30 +19,18 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorCreatorRepository;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.data.Listener;
-import com.axelor.data.xml.XMLImporter;
-import com.axelor.db.Model;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.meta.MetaFiles;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Map;
-import org.apache.commons.io.FileUtils;
-import org.apache.xmlbeans.impl.common.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,55 +84,21 @@ public class ConfiguratorCreatorController {
     response.setReload(true);
   }
 
-  @Transactional
+  /**
+   * Called from configurator creator grid view, on clicking import button. Call {@link
+   * ConfiguratorCreatorService#importConfiguratorCreators(String)}.
+   *
+   * @param request
+   * @param response
+   */
   public void importConfiguratorCreators(ActionRequest request, ActionResponse response) {
-
-    String config = "/data-import/import-configurator-creator-config.xml";
-
     try {
-      InputStream inputStream = this.getClass().getResourceAsStream(config);
-      File configFile = File.createTempFile("config", ".xml");
-      FileOutputStream fout = new FileOutputStream(configFile);
-      IOUtil.copyCompletely(inputStream, fout);
-
-      Path path =
-          MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
-      File tempDir = Files.createTempDir();
-      File importFile = new File(tempDir, "configurator-creator.xml");
-      Files.copy(path.toFile(), importFile);
-
-      XMLImporter importer =
-          new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
-      final StringBuilder importLog = new StringBuilder();
-      Listener listener =
-          new Listener() {
-
-            @Override
-            public void imported(Integer imported, Integer total) {
-              importLog.append("Total records: " + total + ", Total imported: " + total);
-            }
-
-            @Override
-            public void imported(Model arg0) {}
-
-            @Override
-            public void handle(Model arg0, Exception err) {
-              importLog.append("Error in import: " + Arrays.toString(err.getStackTrace()));
-            }
-          };
-
-      importer.addListener(listener);
-
-      importer.run();
-
-      FileUtils.forceDelete(configFile);
-
-      FileUtils.forceDelete(tempDir);
-
-      response.setValue("importLog", importLog.toString());
-
-    } catch (IOException e) {
-      log.error(e.getMessage());
+      String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
+      String importLog =
+          Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
+      response.setValue("importLog", importLog);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 }

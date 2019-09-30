@@ -13,9 +13,9 @@
         <string name="description" title="Description" large="true"/>
         <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
         <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType" title="Machine Type"/>
-        <long name="startingDuration" title="Starting duration (hh:mm)"/>
-        <long name="setupDuration" title="Duration between two cycles (hh:mm)"/>
-        <long name="endingDuration" title="Ending duration (hh:mm)"/>
+        <long name="startingDuration" title="Starting duration (hh:mm:ss)"/>
+        <long name="setupDuration" title="Duration between two cycles (hh:mm:ss)"/>
+        <long name="endingDuration" title="Ending duration (hh:mm:ss)"/>
         <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Machine's planning"/>
         <long name="operatingDuration" title="Operating duration" default="0"/>
 

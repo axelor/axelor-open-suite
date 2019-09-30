@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,7 +67,7 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       ShipmentMode shipmentMode,
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
@@ -105,7 +105,7 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       int typeSelect)
       throws AxelorException;
 
@@ -203,4 +203,30 @@ public interface StockMoveService {
   void setAvailableStatus(StockMove stockMove);
 
   void checkExpirationDates(StockMove stockMove) throws AxelorException;
+
+  /**
+   * Update editDate of one Outgoing Stock Move
+   *
+   * @param stockMove
+   * @param userType
+   */
+  void setPickingStockMoveEditDate(StockMove stockMove, String userType);
+
+  /**
+   * Update editDate of a list of Outgoing Stock Move
+   *
+   * @param ids
+   * @param userType
+   */
+  void setPickingStockMovesEditDate(List<Long> ids, String userType);
+
+  /**
+   * Update stocks using saved stock move line list and current stock move line list. Then we save
+   * current stock move line list, replacing the saved list.
+   *
+   * @param stockMove
+   */
+  void updateStocks(StockMove stockMove) throws AxelorException;
+
+  void updateProductNetMass(StockMove stockMove) throws AxelorException;
 }

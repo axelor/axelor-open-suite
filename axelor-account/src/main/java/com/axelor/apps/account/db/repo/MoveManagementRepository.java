@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,13 +22,16 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveSequenceService;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.PersistenceException;
 
@@ -39,17 +42,18 @@ public class MoveManagementRepository extends MoveRepository {
 
     Move copy = super.copy(entity, deep);
 
+    copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
+
     Period period = null;
     try {
       period =
           Beans.get(PeriodService.class)
-              .rightPeriod(entity.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
+              .rightPeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
     } catch (AxelorException e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
     copy.setStatusSelect(STATUS_NEW);
     copy.setReference(null);
-    copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
     copy.setExportNumber(null);
     copy.setExportDate(null);
     copy.setAccountingReport(null);
@@ -59,13 +63,36 @@ public class MoveManagementRepository extends MoveRepository {
     copy.setIgnoreInDebtRecoveryOk(false);
     copy.setPaymentVoucher(null);
     copy.setRejectOk(false);
+    copy.setInvoice(null);
+
+    List<MoveLine> moveLineList = copy.getMoveLineList();
+
+    if (moveLineList != null) {
+      moveLineList.forEach(moveLine -> resetMoveLine(moveLine, copy.getDate()));
+    }
 
     return copy;
+  }
+
+  public void resetMoveLine(MoveLine moveLine, LocalDate date) {
+    moveLine.setInvoiceReject(null);
+    moveLine.setDate(date);
+    moveLine.setExportedDirectDebitOk(false);
+    moveLine.setReimbursementStatusSelect(MoveLineRepository.REIMBURSEMENT_STATUS_NULL);
+
+    List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+
+    if (analyticMoveLineList != null) {
+      moveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveLine.getDate()));
+    }
   }
 
   @Override
   public Move save(Move move) {
     try {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+        Beans.get(MoveValidateService.class).checkPreconditions(move);
+      }
 
       Beans.get(MoveSequenceService.class).setDraftSequence(move);
       List<MoveLine> moveLineList = move.getMoveLineList();
@@ -91,7 +118,14 @@ public class MoveManagementRepository extends MoveRepository {
 
     if (!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)
         && !entity.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK));
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK),
+            entity.getReference());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e);
+      }
     } else {
       super.remove(entity);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,6 +45,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,18 +95,28 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
   @Override
   @Transactional(rollbackOn = {Exception.class, AxelorException.class})
-  public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
-    super.enableEditOrder(saleOrder);
+  public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+    boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
 
-    List<StockMove> stockMoves =
+    List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(
                 StockMoveRepository.ORIGIN_SALE_ORDER,
                 saleOrder.getId(),
                 StockMoveRepository.STATUS_PLANNED)
             .fetch();
+    List<StockMove> stockMoves =
+        !allStockMoves.isEmpty()
+            ? allStockMoves
+                .stream()
+                .filter(stockMove -> !stockMove.getAvailabilityRequest())
+                .collect(Collectors.toList())
+            : allStockMoves;
+    checkAvailabiltyRequest =
+        stockMoves.size() != allStockMoves.size() ? true : checkAvailabiltyRequest;
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+      StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
       CancelReason cancelReason = appSupplychain.getCancelReasonOnChangingSaleOrder();
       if (cancelReason == null) {
         throw new AxelorException(
@@ -115,13 +126,22 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
       }
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
+        stockMoveRepository.remove(stockMove);
       }
     }
+    return checkAvailabiltyRequest;
   }
 
+  /**
+   * In the supplychain implementation, we check if the user has deleted already delivered qty.
+   *
+   * @param saleOrder
+   * @param saleOrderView
+   * @throws AxelorException if the user tried to remove already delivered qty.
+   */
   @Override
-  public void validateChanges(SaleOrder saleOrder, SaleOrder saleOrderView) throws AxelorException {
-    super.validateChanges(saleOrder, saleOrderView);
+  public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
+      throws AxelorException {
 
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
@@ -155,8 +175,18 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
             saleOrderLine.getFullName());
       }
     }
+  }
 
-    saleOrderStockService.fullyUpdateDeliveryState(saleOrderView);
-    saleOrderView.setOrderBeingEdited(false);
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void validateChanges(SaleOrder saleOrder) throws AxelorException {
+    super.validateChanges(saleOrder);
+
+    saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
+    saleOrder.setOrderBeingEdited(false);
+
+    if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
+      saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
+    }
   }
 }

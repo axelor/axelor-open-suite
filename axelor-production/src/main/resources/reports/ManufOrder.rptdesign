@@ -1160,25 +1160,34 @@ INNER JOIN
                 <grid id="4631">
                     <property name="width">27.887083333333333cm</property>
                     <column id="4732">
-                        <property name="width">6cm</property>
+                        <property name="width">1.6in</property>
                     </column>
                     <column id="4632">
-                        <property name="width">17cm</property>
+                        <property name="width">15.531041666666667cm</property>
                     </column>
                     <column id="4633">
                         <property name="verticalAlign">middle</property>
-                        <property name="width">2.169583333333333cm</property>
+                        <property name="width">4.101041666666666cm</property>
                     </column>
-                    <column id="4634">
+                    <column id="4818">
                         <property name="verticalAlign">middle</property>
-                        <property name="width">3.4660416666666665cm</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <column id="4820">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="4823">
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
                     </column>
                     <row id="4635">
                         <property name="fontSize">9pt</property>
                         <cell id="4731">
+                            <property name="verticalAlign">middle</property>
                             <image id="4733">
-                                <property name="height">70px</property>
-                                <property name="width">200px</property>
+                                <property name="height">44px</property>
+                                <property name="width">107px</property>
                                 <property name="dataSet">ManufOrderDS</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -1200,6 +1209,7 @@ INNER JOIN
                             </image>
                         </cell>
                         <cell id="4636">
+                            <property name="textAlign">center</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4645">
                                 <property name="dataSet">ManufOrderDS</property>
@@ -1217,35 +1227,33 @@ INNER JOIN
                             </text>
                         </cell>
                         <cell id="4637">
-                            <text id="4644">
-                                <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Page]]></text-property>
+                            <property name="verticalAlign">middle</property>
+                            <text id="4826">
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="d MMM y kk:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="4638">
-                            <grid id="4397">
-                                <column id="4639"/>
-                                <column id="4399"/>
-                                <column id="4640"/>
-                                <row id="4641">
-                                    <cell id="4642">
-                                        <auto-text id="4643">
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="4404">
-                                        <text id="4405">
-                                            <property name="contentType">plain</property>
-                                            <text-property name="content"><![CDATA[/]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="4406">
-                                        <auto-text id="4407">
-                                            <property name="type">total-page</property>
-                                        </auto-text>
-                                    </cell>
-                                </row>
-                            </grid>
+                        <cell id="4817">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3937">
+                                <property name="textAlign">right</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="4819">
+                            <property name="verticalAlign">middle</property>
+                            <text id="3939">
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4822">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3941">
+                                <property name="textAlign">left</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
                         </cell>
                     </row>
                 </grid>
@@ -2420,7 +2428,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4157">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">bold</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -2441,7 +2449,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4158">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -2462,7 +2470,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4159">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -2483,7 +2491,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4160">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -2504,7 +2512,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4161">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <structure name="toc"/>
@@ -2526,7 +2534,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4162">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -2547,7 +2555,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4163">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -2568,7 +2576,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4164">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["status_select"]</VALUE-OF>]]></text-property>
@@ -2711,12 +2719,25 @@ INNER JOIN
                                     <expression name="expression" type="javascript">dataSetRow["rack"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">is_barcode_present</property>
+                                    <property name="dataType">integer</property>
+                                    <property name="aggregateFunction">COUNT</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                            <expression name="value" type="javascript">row["bar_code"]</expression>
+                                        </structure>
+                                    </list-property>
+                                    <expression name="filterExpr" type="javascript">row["bar_code"]!=null</expression>
+                                    <property name="allowExport">true</property>
+                                </structure>
                             </list-property>
                             <column id="4576">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!params["activateBarCodeGeneration"].value</expression>
+                                        <expression name="valueExpr" type="javascript">!params["activateBarCodeGeneration"].value || row["is_barcode_present"]==0</expression>
                                     </structure>
                                 </list-property>
                                 <property name="width">15%</property>
@@ -2747,6 +2768,10 @@ INNER JOIN
                                     <property name="height">0.3in</property>
                                     <cell id="4572">
                                         <property name="backgroundColor">#FFFFFF</property>
+                                        <data id="4790">
+                                            <property name="display">none</property>
+                                            <property name="resultSetColumn">is_barcode_present</property>
+                                        </data>
                                     </cell>
                                     <cell id="4201">
                                         <property name="backgroundColor">#FFFFFF</property>
@@ -3137,7 +3162,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4191">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
@@ -3158,7 +3183,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4568">
-                                            <property name="fontSize">9pt</property>
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="display">inline</property>
                                             <property name="dataSet">TranslateDS</property>
                                             <list-property name="paramBindings">
@@ -3198,6 +3223,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4193">
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
@@ -3215,6 +3241,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4199">
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
@@ -3234,6 +3261,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4194">
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -3254,6 +3282,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4601">
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -3274,6 +3303,7 @@ INNER JOIN
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4602">
+                                            <property name="fontSize">8.5pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
@@ -3456,10 +3486,10 @@ else dataSetRow["planned_end_datet"]</expression>
                             </list-property>
                             <property name="repeatHeader">false</property>
                             <column id="4391">
-                                <property name="width">2.71875in</property>
+                                <property name="width">40%</property>
                             </column>
                             <column id="4567">
-                                <property name="width">3.1041666666666665in</property>
+                                <property name="width">40%</property>
                             </column>
                             <column id="4392">
                                 <list-property name="visibility">
@@ -3468,7 +3498,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                         <expression name="valueExpr" type="javascript">!row["bar_code_path"]</expression>
                                     </structure>
                                 </list-property>
-                                <property name="width">1.78125in</property>
+                                <property name="width">20%</property>
                             </column>
                             <header>
                                 <row id="4394">
@@ -3544,7 +3574,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="rowSpan">4</property>
                                             <property name="backgroundColor">#E5E5E5</property>
                                             <text id="4485">
-                                                <property name="fontSize">14pt</property>
+                                                <property name="fontSize">9.5pt</property>
                                                 <property name="fontWeight">normal</property>
                                                 <property name="marginTop">1pt</property>
                                                 <property name="marginLeft">2pt</property>
@@ -3558,6 +3588,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                 <row id="4773">
                                                     <cell id="4774">
                                                         <text id="4779">
+                                                            <property name="fontSize">8.5pt</property>
                                                             <property name="fontWeight">normal</property>
                                                             <property name="marginTop">1pt</property>
                                                             <property name="marginLeft">2pt</property>
@@ -3591,6 +3622,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                     </cell>
                                                     <cell id="4775">
                                                         <text id="4781">
+                                                            <property name="fontSize">8.5pt</property>
                                                             <property name="fontWeight">normal</property>
                                                             <property name="marginTop">1pt</property>
                                                             <property name="marginLeft">2pt</property>
@@ -3626,6 +3658,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                 <row id="4776">
                                                     <cell id="4777">
                                                         <text id="4780">
+                                                            <property name="fontSize">8.5pt</property>
                                                             <property name="fontWeight">normal</property>
                                                             <property name="marginTop">1pt</property>
                                                             <property name="marginLeft">2pt</property>
@@ -3659,6 +3692,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                     </cell>
                                                     <cell id="4778">
                                                         <text id="4782">
+                                                            <property name="fontSize">8.5pt</property>
                                                             <property name="fontWeight">normal</property>
                                                             <property name="marginTop">1pt</property>
                                                             <property name="marginLeft">2pt</property>
@@ -4132,7 +4166,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopStyle">solid</property>
                                                             <property name="borderTopWidth">thin</property>
                                                             <text id="4510">
-                                                                <property name="fontSize">9pt</property>
+                                                                <property name="fontSize">8.5pt</property>
                                                                 <property name="fontWeight">normal</property>
                                                                 <property name="textAlign">left</property>
                                                                 <property name="contentType">html</property>
@@ -4153,7 +4187,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopStyle">solid</property>
                                                             <property name="borderTopWidth">thin</property>
                                                             <text id="4569">
-                                                                <property name="fontSize">9pt</property>
+                                                                <property name="fontSize">8.5pt</property>
                                                                 <property name="display">inline</property>
                                                                 <property name="dataSet">TranslateDS</property>
                                                                 <list-property name="paramBindings">
@@ -4193,6 +4227,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopStyle">solid</property>
                                                             <property name="borderTopWidth">thin</property>
                                                             <text id="4514">
+                                                                <property name="fontSize">8.5pt</property>
                                                                 <property name="fontWeight">normal</property>
                                                                 <property name="textAlign">right</property>
                                                                 <property name="contentType">html</property>
@@ -4210,6 +4245,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopStyle">solid</property>
                                                             <property name="borderTopWidth">thin</property>
                                                             <text id="4516">
+                                                                <property name="fontSize">8.5pt</property>
                                                                 <property name="fontWeight">normal</property>
                                                                 <property name="contentType">html</property>
                                                                 <text-property name="content"><![CDATA[<VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>

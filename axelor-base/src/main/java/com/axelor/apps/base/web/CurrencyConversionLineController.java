@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -139,18 +139,22 @@ public class CurrencyConversionLineController {
       LOG.debug("Previous currency conversion line: {}", prevLine);
       fromCurrency = currencyRepo.find(fromCurrency.getId());
       toCurrency = currencyRepo.find(toCurrency.getId());
-      BigDecimal rate = ccs.convert(fromCurrency, toCurrency);
-
-      if (rate.compareTo(new BigDecimal(-1)) == 0)
-        response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
-      else {
-        response.setValue("variations", "0");
-        if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
-          response.setValue("newExchangeRate", rate);
-        else response.setValue("exchangeRate", rate);
-        response.setValue("fromDate", appBaseService.getTodayDateTime());
-        if (prevLine != null)
-          response.setValue("variations", ccs.getVariations(rate, prevLine.getExchangeRate()));
+      try {
+        BigDecimal rate = ccs.convert(fromCurrency, toCurrency);
+        if (rate.compareTo(new BigDecimal(-1)) == 0)
+          response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
+        else {
+          response.setValue("variations", "0");
+          if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
+            response.setValue("newExchangeRate", rate);
+          else response.setValue("exchangeRate", rate);
+          response.setValue("fromDate", appBaseService.getTodayDateTime());
+          if (prevLine != null)
+            response.setValue("variations", ccs.getVariations(rate, prevLine.getExchangeRate()));
+        }
+      } catch (AxelorException axelorException) {
+        response.setFlash(axelorException.getMessage());
+        response.setCanClose(true);
       }
     }
   }

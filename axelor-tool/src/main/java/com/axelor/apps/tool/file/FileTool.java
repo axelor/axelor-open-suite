@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +145,7 @@ public final class FileTool {
    */
   public static File create(String fileName) throws IOException {
 
-    String[] filePath = fileName.split(System.getProperty("file.separator"));
+    String[] filePath = fileName.split(Pattern.quote(File.separator));
     String name = filePath[filePath.length - 1];
     return create(fileName.replace(name, ""), name);
   }
@@ -211,9 +212,9 @@ public final class FileTool {
         // Read the files list.
         for (int i = 0; i < list.length; i++) {
           // Create current source File
-          File tf = new File(sourceFolder + "/" + list[i].getName());
+          File tf = new File(sourceFolder + File.separator + list[i].getName());
           // Create current destination File
-          File pf = new File(destinationFolder + "/" + list[i].getName());
+          File pf = new File(destinationFolder + File.separator + list[i].getName());
           if (tf.isDirectory() && !pf.exists()) {
             // If the file is a directory and does not exit in the
             // destination Folder.
@@ -227,8 +228,8 @@ public final class FileTool {
           } else if (tf.isFile()) {
             // If it is a file.
             copy(
-                sourceFolder + "/" + list[i].getName(),
-                destinationFolder + "/" + list[i].getName());
+                sourceFolder + File.separator + list[i].getName(),
+                destinationFolder + File.separator + list[i].getName());
           } else {
             // Other cases.
             LOG.error("Error : Copy folder");

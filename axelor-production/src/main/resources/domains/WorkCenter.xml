@@ -13,7 +13,7 @@
     <integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
+    <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
     <boolean name="isRevaluationAtActualPrices" title="Revaluation at actual prices"/>
 	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>

@@ -6,11 +6,11 @@
   <grid name="reconcile-group-grid" title="Reconcile group"
     model="com.axelor.apps.account.db.ReconcileGroup"
     canNew="false">
-    <field name="code"/>
+    <field name="code" width="120"/>
     <field name="company"/>
   </grid>
 
-  <form name="reconcile-group-form" title="Reconcile group" readonlyIf="true"
+  <form name="reconcile-group-form" title="Reconcile group"
     model="com.axelor.apps.account.db.ReconcileGroup">
     <panel itemSpan="12" name="infoPanel">
       <field name="statusSelect" widget="NavSelect" showTitle="false"/>
@@ -24,12 +24,17 @@
         </viewer>
       </field>
     </panel>
-    <panel name="companyPanel" showTitle="false">
+    <panel name="companyPanel" showTitle="false" readonly="true">
       <field name="company"/>
+      <field name="dateOfLettering" showIf="statusSelect==2" readonly="true"/>
+      <field name="unletteringDate"/>
     </panel>
     <panel name="mainPanel" showIf="company">
       <panel-dashlet name="viewReconcilePanel" action="action-reconcile-group-view-reconcile" colSpan="12"/>
       <panel-dashlet name="viewMoveLinePanel" action="action-reconcile-group-view-move-line" colSpan="12"/>
+    </panel>
+    <panel name="actionsPanel" sidebar="true" hideIf="unletteringDate">
+      <button  name="unletterBtn" title="Unletter" onClick="action-reconcile-group-method-unletter" colSpan="12"/>
     </panel>
   </form>
 
@@ -46,5 +51,9 @@
     <view type="form" name="move-line-form"/>
     <domain>self.reconcileGroup.id = :id</domain>
   </action-view>
+
+  <action-method name="action-reconcile-group-method-unletter">
+    <call class="com.axelor.apps.account.web.ReconcileGroupController" method="unletter"/>
+  </action-method>
 
 </object-views>

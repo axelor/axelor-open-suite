@@ -10,9 +10,9 @@
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
       <integer name="statusSelect" title="Status" selection="hrs.leave.request.status.select" default="1" readonly="true"/>
       <date name="requestDate" title="Request date" readonly="true" />
-      <date name="fromDate" title="Date from" required="true"/>
+      <datetime name="fromDateT" title="From" required="true"/>
       <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
-      <date name="toDate" title="Date to (Included)" />
+      <datetime name="toDateT" title="To (included)" />
       <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
       <decimal name="duration" title="Duration" scale="1" precision="5"/>
       <string name="comments" title="Comments" large="true"/>
@@ -25,6 +25,7 @@
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent" title="Event" />
       <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
+      <decimal name="quantityBeforeValidation" title="Available quantity (before validation)" scale="4" precision="8" />
       <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
 	
       <string name="fullName" namecolumn="true" readonly="true">
@@ -39,17 +40,17 @@
 	  
 	  <extra-code>
    		<![CDATA[
-   			public static final Integer SELECT_CONSUME = 1;
-   			public static final Integer SELECT_INJECT = 2;
+   			public static final int SELECT_CONSUME = 1;
+   			public static final int SELECT_INJECT = 2;
    			
-   			public static final Integer STATUS_DRAFT = 1;
-   			public static final Integer STATUS_AWAITING_VALIDATION = 2;
-   			public static final Integer STATUS_VALIDATED = 3;
-   			public static final Integer STATUS_REFUSED = 4;
-   			public static final Integer STATUS_CANCELED = 5;
+   			public static final int STATUS_DRAFT = 1;
+   			public static final int STATUS_AWAITING_VALIDATION = 2;
+   			public static final int STATUS_VALIDATED = 3;
+   			public static final int STATUS_REFUSED = 4;
+   			public static final int STATUS_CANCELED = 5;
 			
-			public static final Integer SELECT_MORNING = 1;
-   			public static final Integer SELECT_AFTERNOON = 2;
+			public static final int SELECT_MORNING = 1;
+   			public static final int SELECT_AFTERNOON = 2;
    		]]>
    	</extra-code>
   </entity>

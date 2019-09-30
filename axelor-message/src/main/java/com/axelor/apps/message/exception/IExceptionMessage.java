@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,4 +52,8 @@ public interface IExceptionMessage {
       "Email sending is in progress for %d messages." /*)*/;
   static final String MESSAGES_REGENERATED = /*$$(*/
       "%d messages has been regenerated successfully and %d errors append." /*)*/;
+  static final String SET_EMAIL_TEMPLATE_MESSAGE = /*$$(*/
+      "Please set the email template to send" /*)*/;
+  static final String INVALID_MODEL_TEMPLATE_EMAIL = /*$$(*/
+      "The email template model (%s) is different than the entity generating the email (%s)" /*)*/;
 }

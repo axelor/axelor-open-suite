@@ -13,6 +13,7 @@
 			initParam="true" />
 		<decimal name="amountPaid" initParam="true" />
 		<integer name="typeSelect" selection="account.notification.item.type.select" default="1"/>
+		<many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Payment move"/>
 
 	</entity>
 

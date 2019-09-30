@@ -9,7 +9,7 @@
     
 	    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
 	    <decimal name="amount" title="Amount" />
-	    <decimal name="coef" title="Coefficient" />
+	    <decimal name="coef" title="Bonus coefficient" />
 	    <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Presence" />
 	    <date name="seniorityDate" title="Seniority date" />
 	    <many-to-one name="employeeBonusMgt" ref="com.axelor.apps.hr.db.EmployeeBonusMgt" title="Employee bonus mgt" />

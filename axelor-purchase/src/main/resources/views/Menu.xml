@@ -53,11 +53,11 @@
 
 	<!-- Purchase request menus -->
 	<menuitem name="sc-root-purchase-request" parent="sc-root-purchase" if="__config__.app.isApp('purchase-request')"
-		title="Purchase requests" order="16" icon="fa-bullhorn" icon-background="#b6473f"
+		title="Internal purchase requests" order="16" icon="fa-bullhorn" icon-background="#b6473f"
 		action="sc.root.purchase.request.all" />
 
 	<action-view name="sc.root.purchase.request.all" model="com.axelor.apps.purchase.db.PurchaseRequest"
-		title="All purchase requests">
+		title="Internal purchase requests">
 		<view type="grid" name="purchase-request-grid"/>
 		<view type="form" name="purchase-request-form"/>
 	</action-view>
@@ -92,13 +92,6 @@
 		<context name="_status" expr="eval: 3"/>
 	</action-view>
 	
-	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
-		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
-	
-	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
-	</action-view>
 	
 	<menuitem name="sc-root-purchase-historical" title="Historical" order="30" parent="sc-root-purchase"/>
 	

@@ -1,0 +1,12 @@
+"key","message","comment","context"
+"An error occurs while opening the connection. Please verify the following URL : %s.","Er treedt een fout op bij het openen van de verbinding. Controleer de volgende URL : %s.",,
+"Can not opening the connection to a empty URL.","Kan de verbinding met een lege URL niet openen.",,
+"Cannot find record #%s","Kan geen record #%s vinden",,
+"No such template","Geen sjabloon",,
+"Templating can not be empty","Templateren kan niet leeg zijn",,
+"The collection of IDs cannot be null.","De verzameling van ID's kan niet ongeldig zijn.",,
+"The consumer cannot be null.","De consument kan niet ongeldig zijn.",,
+"The parameter copyNumber should be superior to 0.","De parameter copyNumber moet superieur zijn aan 0.",,
+"This field needs to be unique.","Dit veld moet uniek zijn.",,
+"Url %s is malformed.","Url %s is misvormd.",,
+"Years in 360 days","Jaren in 360 dagen",,

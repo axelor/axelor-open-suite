@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,7 +60,10 @@ public class TraceBackService {
     TraceBack traceBack = new TraceBack();
     traceBack.setException(e.toString());
     traceBack.setDate(ZonedDateTime.now());
-    traceBack.setError(e.getStackTrace()[0].toString());
+    traceBack.setError(
+        e.getStackTrace() != null && e.getStackTrace().length > 0
+            ? e.getStackTrace()[0].toString()
+            : e.getMessage());
 
     traceBack.setOrigin(origin);
     traceBack.setTypeSelect(typeSelect);

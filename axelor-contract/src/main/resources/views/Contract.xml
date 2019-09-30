@@ -6,7 +6,7 @@
 
     <grid name="contract-grid" title="Contracts"
           model="com.axelor.apps.contract.db.Contract">
-        <field name="contractId"/>
+        <field name="contractId" width="120"/>
         <field name="name"/>
         <field name="targetTypeSelect"/>
         <field name="company"/>
@@ -83,8 +83,8 @@
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="newVersionBtn" title="New version" showIf="id &amp;&amp; nextVersion == null &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-view-contract-add-version,close"/>
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="showNextVersionBtn" title="Show next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-view-contract-show-version,close"/>
                     <button if="__config__.app.getApp('contract').isAmendmentManagement" name="deleteNextVersionBtn" title="Delete next version" showIf="id &amp;&amp; nextVersion != null &amp;&amp; statusSelect != 3" onClick="save,action-contract-method-delete-next-version"/>
-                    <button name="waitingBtn" title="Waiting" showIf="id &amp;&amp; currentContractVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
-                    <button name="ongoingBtn" title="Ongoing" showIf="id &amp;&amp; currentContractVersion.statusSelect == 2" onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
+                    <button name="waitingBtn" title="Put on hold" showIf="id &amp;&amp; currentContractVersion.statusSelect == 1" onClick="save,action-contract-method-waiting"/>
+                    <button name="ongoingBtn" title="Activate" showIf="id &amp;&amp; currentContractVersion.statusSelect == 2" onClick="save,action-contract-validate-on-going,action-contract-method-ongoing"/>
                     <button if="__config__.app.getApp('contract').isRenewalManagement" name="renewBtn" title="Renew" hidden="true" showIf="id &amp;&amp; currentContractVersion.statusSelect == 3" onClick="save,action-contract-method-renew"/>
                 </panel>
                 <panel title="Notes" stacked="true" name="notesPanel">
@@ -313,7 +313,7 @@
     </action-view>
 
     <grid name="contract-version-next-grid" title="Versions" model="com.axelor.apps.contract.db.ContractVersion">
-        <field name="contract.contractId"/>
+        <field name="contract.contractId" width="120"/>
         <field name="contract.name"/>
         <field name="contract.partner"/>
         <field name="activationDate"/>

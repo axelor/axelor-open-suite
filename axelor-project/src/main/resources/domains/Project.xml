@@ -37,7 +37,7 @@
 		<decimal name="sequence" title="Sequence" />
 		<integer name="orderByState"/>
 	  
-		<boolean name="imputable" default="1"/>
+		<boolean name="imputable" default="true" massUpdate="true"/>
 	  
 		<many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to start"/>
 		<many-to-many name="startToStartTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to start"/>
@@ -78,6 +78,7 @@
 		<item name="BUSINESS_PROJECT" title="Business project"/>
 		<item name="PHASE_BY_LINE" title="Phase by line"/>
         <item name="TASK_BY_LINE" title="Task by line"/>
+        <item name="PROJECT_ALONE" title="Project alone"/>
 	</enum>
   
 </domain-models>

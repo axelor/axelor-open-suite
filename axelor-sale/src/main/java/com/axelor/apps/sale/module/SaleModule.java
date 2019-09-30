@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,6 +37,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorFormulaService;
@@ -84,6 +86,7 @@ public class SaleModule extends AxelorModule {
     bind(ConfiguratorCreatorService.class).to(ConfiguratorCreatorServiceImpl.class);
     bind(ConfiguratorService.class).to(ConfiguratorServiceImpl.class);
     bind(ConfiguratorFormulaService.class).to(ConfiguratorFormulaServiceImpl.class);
+    bind(ConfiguratorCreatorImportService.class).to(ConfiguratorCreatorImportServiceImpl.class);
     bind(SaleOrderPrintService.class).to(SaleOrderPrintServiceImpl.class);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -213,4 +213,10 @@ public interface IExceptionMessage {
       "No processed payment schedule lines" /*)*/;
   static final String BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE = /*$$(*/
       "Unknown direct debit data type" /*)*/;
+  static final String DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR = /*$$(*/
+      "Please add an Active UMR to the partner." /*)*/;
+
+  /** Generate bank order from invoices */
+  static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
+      "A bank order %s already exist for the invoice %s." /*)*/;
 }

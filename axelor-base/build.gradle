@@ -6,12 +6,6 @@ apply {
 	version = absVersion
 }
 
-spotless { 
-	java {  
-		googleJavaFormat()
-	} 
-}
-
 axelor {
 	title "Axelor Base"
 	description "Axelor Base Module"
@@ -28,5 +22,5 @@ dependencies {
 	compile "org.mnode.ical4j:ical4j-connector:1.0.1"
 	compile "com.google.zxing:core:3.3.2"
 	compile 'org.iban4j:iban4j:3.2.1'
-	compile 'com.itextpdf:itextpdf:5.0.6'
+	compile 'com.itextpdf:itextpdf:5.5.13.1'
 }

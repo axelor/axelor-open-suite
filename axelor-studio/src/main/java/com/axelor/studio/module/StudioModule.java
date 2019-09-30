@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.studio.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.repo.ActionBuilderRepo;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
 import com.axelor.studio.db.repo.AppBuilderRepo;
@@ -32,6 +33,7 @@ import com.axelor.studio.db.repo.JsonCreatorRepository;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.MetaJsonFieldRepo;
+import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.StudioWkfRepository;
 import com.axelor.studio.db.repo.WkfRepository;
 
@@ -47,5 +49,6 @@ public class StudioModule extends AxelorModule {
     bind(AppBuilderRepository.class).to(AppBuilderRepo.class);
     bind(MetaJsonFieldRepository.class).to(MetaJsonFieldRepo.class);
     bind(JsonCreatorRepository.class).to(JsonCreatorRepo.class);
+    bind(MetaJsonModelRepository.class).to(MetaJsonModelRepo.class);
   }
 }

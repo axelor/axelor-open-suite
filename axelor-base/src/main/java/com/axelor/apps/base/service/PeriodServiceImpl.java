@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -50,7 +50,7 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   /**
-   * Recupère la bonne période pour la date passée en paramètre
+   * Fetches the right period with the date in parameter
    *
    * @param date
    * @param company
@@ -62,11 +62,12 @@ public class PeriodServiceImpl implements PeriodService {
 
     Period period = this.getPeriod(date, company, typeSelect);
     if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+      String dateStr = date != null ? date.toString() : "";
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.PERIOD_1),
           company.getName(),
-          date.toString());
+          dateStr);
     }
     LOG.debug("Period : {}", period);
     return period;
@@ -188,9 +189,9 @@ public class PeriodServiceImpl implements PeriodService {
   public void checkPeriod(Period period) throws AxelorException {
     if (period != null && period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
-          String.format(I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED), period.getName()),
-          TraceBackRepository.TYPE_FUNCTIONNAL,
-          period);
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.PAY_PERIOD_CLOSED),
+          period.getName());
     }
   }
 }

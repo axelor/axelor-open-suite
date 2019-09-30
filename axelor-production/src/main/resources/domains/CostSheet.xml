@@ -12,6 +12,17 @@
   	<one-to-many name="costSheetLineList" ref="com.axelor.apps.production.db.CostSheetLine" mappedBy="costSheet" title="Cost sheet lines"/>
     <decimal name="costPrice" title="Cost price"/>
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+   	<integer name="calculationTypeSelect" title="Calculation type" selection="production.cost.sheet.calculation.type.select"/>
+   	<date name="calculationDate" title="Date of calculation"/>
+   	<decimal name="manufOrderProducedRatio" title="Produced ratio" precision="20" scale="5"/>
+  	
+  	<extra-code><![CDATA[
+		// CALCULATION TYPE SELECT
+		public static final int CALCULATION_PARTIAL_END_OF_PRODUCTION = 1;
+		public static final int CALCULATION_END_OF_PRODUCTION = 2;
+		public static final int CALCULATION_WORK_IN_PROGRESS = 3;
+		public static final int CALCULATION_BILL_OF_MATERIAL = 4;
+	]]></extra-code>
   	
   </entity>
 </domain-models>

@@ -295,6 +295,14 @@
 		<view type="form" name="product-category-form"/>
 	</action-view>
 
+	<menuitem name="referential-conf-product-category-tree" title="Categories tree" 
+        parent="referential-conf" action="referential.conf.product.category.tree" order="171"/>
+    
+    <action-view name="referential.conf.product.category.tree" title="Product category" model="com.axelor.apps.base.db.ProductCategory">
+      <view type="tree" name="product-category-tree"/>
+      <view-param name="forceTitle" value="true"/>
+    </action-view>
+
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
 		title="Product families" action="referential.conf.product.family" order="180"/>
 
@@ -615,6 +623,13 @@
 	<action-view name="menu.advanced.export" title="Advanced export" model="com.axelor.apps.base.db.AdvancedExport">
 		<view type="grid" name="advanced-export-grid"/>
 		<view type="form" name="advanced-export-form"/>
+	</action-view>
+	
+	<menuitem title="Printing Setting" name="menu-printing-setting" parent="admin-root-maintenance" action="menu-printing-setting" />
+
+	<action-view name="menu-printing-setting" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
+		<view type="grid" name="printing-setting-grid"/>
+		<view type="form" name="printing-setting-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"

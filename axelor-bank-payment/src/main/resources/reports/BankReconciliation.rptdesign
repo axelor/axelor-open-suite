@@ -420,7 +420,7 @@ company.name AS company ,
 bankReconciliation.created_on AS report_date ,
 currency.code AS currency ,  
 journal.name AS journal , 
-account.name AS cash_account , 
+concat( account.code  ,' - ' , account.name) AS cash_account , 
 metaFile.file_path AS logo_path ,
 bankDetails.full_name AS account 
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
@@ -703,58 +703,67 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="name">code</property>
                     <property name="nativeName">code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">to_date</property>
                     <property name="nativeName">to_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">reference</property>
                     <property name="nativeName">reference</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">type</property>
                     <property name="nativeName">type</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">account_balance</property>
                     <property name="nativeName">account_balance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-bankReconciliation.name AS code , 
+bankStatement.name AS code , 
 bankReconciliation.to_date AS to_date , 
 bankReconciliationLine.reference AS reference , 
 bankReconciliationLine.name AS name , 
@@ -766,8 +775,9 @@ bankReconciliationLine.credit AS credit ,
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.bankpayment_bank_statement_line AS bankStatementLine ON bankStatementLine.bank_statement = bankReconciliation.bank_statement
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
+LEFT JOIN public.bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
 WHERE bankReconciliation.id = ?
-GROUP BY bankReconciliation.name , 
+GROUP BY bankStatement.name , 
 bankReconciliation.to_date , 
 bankReconciliationLine.reference , 
 bankReconciliationLine.name , 
@@ -900,59 +910,68 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <property name="name">account_balance</property>
                     <property name="nativeName">account_balance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">code</property>
                     <property name="nativeName">code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">to_date</property>
                     <property name="nativeName">to_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">reference</property>
                     <property name="nativeName">reference</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">type</property>
                     <property name="nativeName">type</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 bankReconciliation.account_balance AS account_balance , 
-bankReconciliation.name AS code , 
+moveLine.name AS code , 
 bankReconciliation.to_date AS to_date , 
 bankReconciliationLine.reference AS reference , 
 bankReconciliationLine.name AS name , 
@@ -960,10 +979,12 @@ bankReconciliationLine.type_select  AS type ,
 moveLine.debit AS debit , 
 moveLine.credit AS credit ,
 (moveLine.credit - moveLine.debit) AS amount
-FROM public.bankpayment_bank_reconciliation AS bankReconciliation
-LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
-LEFT JOIN public.account_move_line AS moveLine ON moveLine.id = bankReconciliationLine.move_line
-WHERE bankReconciliation.id = ?]]></xml-property>
+FROM public.account_move_line AS moveLine
+LEFT JOIN public.account_move AS move ON moveLine.move=move.id
+LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON move.journal=bankReconciliation.journal AND moveLine.account=bankReconciliation.cash_account
+LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
+WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit))
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1149,112 +1170,42 @@ WHERE bankReconciliation.id = ?]]></xml-property>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
-            <property name="headerHeight">0.3in</property>
+            <property name="headerHeight">0in</property>
             <page-header>
-                <grid id="3117">
-                    <property name="height">2.513541666666667cm</property>
-                    <property name="width">11.020833333333334in</property>
-                    <property name="dataSet">BankReconciliationDS</property>
-                    <list-property name="boundDataColumns">
-                        <structure>
-                            <property name="name">company</property>
-                            <text-property name="displayName">company</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">report_date</property>
-                            <text-property name="displayName">report_date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                            <property name="dataType">date-time</property>
-                        </structure>
-                        <structure>
-                            <property name="name">currency</property>
-                            <text-property name="displayName">currency</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">journal</property>
-                            <text-property name="displayName">journal</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">account</property>
-                            <text-property name="displayName">account</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["account"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                    </list-property>
-                    <column id="4158">
-                        <property name="width">3.8854166666666665in</property>
+                <grid id="3809">
+                    <column id="3810">
+                        <property name="width">45%</property>
                     </column>
-                    <column id="3118">
-                        <property name="width">5.729166666666667in</property>
+                    <column id="3811"/>
+                    <column id="3812">
+                        <property name="width">45%</property>
                     </column>
-                    <column id="3119">
-                        <property name="width">1.40625in</property>
-                    </column>
-                    <row id="3120">
-                        <cell id="4157"/>
-                        <cell id="3121">
-                            <property name="verticalAlign">top</property>
-                            <text id="5973">
-                                <property name="fontFamily">sans-serif</property>
-                                <property name="fontSize">9pt</property>
-                                <property name="fontWeight">normal</property>
-                                <property name="marginTop">1pt</property>
-                                <property name="marginLeft">2pt</property>
+                    <row id="3813">
+                        <cell id="3814">
+                            <auto-text id="3815">
                                 <property name="textAlign">right</property>
-                                <property name="dataSet">TranslateDS</property>
-                                <list-property name="paramBindings">
-                                    <structure>
-                                        <property name="paramName">param_1</property>
-                                        <simple-property-list name="expression">
-                                            <value type="javascript">'BankReconciliation.report_edition_date'</value>
-                                        </simple-property-list>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">key</property>
-                                        <text-property name="displayName">key</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">translation</property>
-                                        <text-property name="displayName">translation</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="3816">
+                            <text id="3817">
+                                <property name="textAlign">right</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
                             </text>
                         </cell>
-                        <cell id="3122">
-                            <property name="verticalAlign">top</property>
-                            <text id="5963">
-                                <property name="fontFamily">sans-serif</property>
-                                <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
-                            </text>
+                        <cell id="3818">
+                            <auto-text id="3819">
+                                <property name="textAlign">right</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
                         </cell>
                     </row>
                 </grid>
             </page-header>
             <page-footer>
-                <grid id="4314">
-                    <property name="height">1.905cm</property>
+                <grid id="6198">
+                    <property name="height">0.625in</property>
                     <property name="width">27.99291666666667cm</property>
                     <property name="dataSet">BankReconciliationDS</property>
                     <list-property name="boundDataColumns">
@@ -1301,41 +1252,61 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                     </list-property>
-                    <column id="4315">
-                        <property name="width">23.468541666666667cm</property>
+                    <column id="6199">
+                        <property name="suppressDuplicates">true</property>
+                        <property name="textAlign">center</property>
+                        <property name="width">18.469cm</property>
                     </column>
-                    <column id="4410">
+                    <column id="6200">
+                        <property name="suppressDuplicates">true</property>
                         <property name="textAlign">right</property>
-                        <property name="width">0.4166666666666667in</property>
+                        <property name="width">1.5in</property>
                     </column>
-                    <column id="4394">
+                    <column id="6201">
                         <property name="textAlign">right</property>
-                        <property name="width">3.4660416666666665cm</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
                     </column>
-                    <row id="5936">
-                        <property name="height">0.1cm</property>
-                        <cell id="5937">
+                    <column id="6202">
+                        <property name="textAlign">right</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="6203">
+                        <property name="textAlign">right</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <row id="6204">
+                        <property name="height">0.026458333333333334cm</property>
+                        <cell id="6205">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="textAlign">center</property>
                         </cell>
-                        <cell id="5938"/>
-                        <cell id="5939"/>
+                        <cell id="6206"/>
+                        <cell id="6207"/>
+                        <cell id="6208"/>
+                        <cell id="6209"/>
                     </row>
-                    <row id="4387">
+                    <row id="6210">
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="height">1.2964583333333333cm</property>
-                        <cell id="4388">
+                        <cell id="6211">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
-                            <image id="3419">
+                            <property name="textAlign">left</property>
+                            <property name="verticalAlign">middle</property>
+                            <image id="6212">
                                 <property name="overflow">hidden</property>
                                 <property name="height">35px</property>
                                 <property name="width">154px</property>
+                                <expression name="altText">""</expression>
                                 <property name="dataSet">BankReconciliationDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
@@ -1387,40 +1358,36 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
                             </image>
                         </cell>
-                        <cell id="4409">
-                            <text id="4411">
+                        <cell id="6213">
+                            <property name="verticalAlign">middle</property>
+                            <text id="6214">
                                 <property name="fontFamily">sans-serif</property>
-                                <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Page]]></text-property>
+                                <property name="fontSize">9pt</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="dd MMM yyyy hh:mm">row["report_date"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="4390">
-                            <grid id="4397">
-                                <column id="4398"/>
-                                <column id="4399"/>
-                                <column id="4400"/>
-                                <row id="4401">
-                                    <cell id="4402">
-                                        <auto-text id="4403">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="4404">
-                                        <text id="4405">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="contentType">plain</property>
-                                            <text-property name="content"><![CDATA[/]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="4406">
-                                        <auto-text id="4407">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="type">total-page</property>
-                                        </auto-text>
-                                    </cell>
-                                </row>
-                            </grid>
+                        <cell id="6216">
+                            <auto-text id="6217">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="textAlign">right</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="6218">
+                            <text id="6219">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="6220">
+                            <auto-text id="6221">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="textAlign">left</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
                         </cell>
                     </row>
                 </grid>
@@ -1429,112 +1396,10 @@ WHERE bankReconciliation.id = ?]]></xml-property>
         <simple-master-page name="NewSimpleMasterPage" id="4968">
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
-            <property name="headerHeight">0.3in</property>
-            <page-header>
-                <grid id="5998">
-                    <property name="height">2.513541666666667cm</property>
-                    <property name="width">11.020833333333334in</property>
-                    <property name="dataSet">BankReconciliationDS</property>
-                    <list-property name="boundDataColumns">
-                        <structure>
-                            <property name="name">company</property>
-                            <text-property name="displayName">company</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">report_date</property>
-                            <text-property name="displayName">report_date</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                            <property name="dataType">date-time</property>
-                        </structure>
-                        <structure>
-                            <property name="name">currency</property>
-                            <text-property name="displayName">currency</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">journal</property>
-                            <text-property name="displayName">journal</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">account</property>
-                            <text-property name="displayName">account</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["account"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                    </list-property>
-                    <column id="5999">
-                        <property name="width">3.8854166666666665in</property>
-                    </column>
-                    <column id="6000">
-                        <property name="width">5.729166666666667in</property>
-                    </column>
-                    <column id="6001">
-                        <property name="width">1.40625in</property>
-                    </column>
-                    <row id="6002">
-                        <cell id="6003"/>
-                        <cell id="6005">
-                            <property name="verticalAlign">top</property>
-                            <text id="6006">
-                                <property name="fontFamily">sans-serif</property>
-                                <property name="fontSize">9pt</property>
-                                <property name="fontWeight">normal</property>
-                                <property name="marginTop">1pt</property>
-                                <property name="marginLeft">2pt</property>
-                                <property name="textAlign">right</property>
-                                <property name="dataSet">TranslateDS</property>
-                                <list-property name="paramBindings">
-                                    <structure>
-                                        <property name="paramName">param_1</property>
-                                        <simple-property-list name="expression">
-                                            <value type="javascript">'BankReconciliation.report_edition_date'</value>
-                                        </simple-property-list>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">key</property>
-                                        <text-property name="displayName">key</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">translation</property>
-                                        <text-property name="displayName">translation</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
-                            </text>
-                        </cell>
-                        <cell id="6007">
-                            <property name="verticalAlign">top</property>
-                            <text id="6008">
-                                <property name="fontFamily">sans-serif</property>
-                                <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
-                            </text>
-                        </cell>
-                    </row>
-                </grid>
-            </page-header>
+            <property name="headerHeight">0in</property>
             <page-footer>
-                <grid id="5974">
-                    <property name="height">1.905cm</property>
+                <grid id="6047">
+                    <property name="height">0.625in</property>
                     <property name="width">27.99291666666667cm</property>
                     <property name="dataSet">BankReconciliationDS</property>
                     <list-property name="boundDataColumns">
@@ -1581,41 +1446,62 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                     </list-property>
-                    <column id="5975">
-                        <property name="width">23.468541666666667cm</property>
+                    <column id="6048">
+                        <property name="suppressDuplicates">true</property>
+                        <property name="textAlign">center</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">18.469cm</property>
                     </column>
-                    <column id="5976">
+                    <column id="6049">
+                        <property name="suppressDuplicates">true</property>
                         <property name="textAlign">right</property>
-                        <property name="width">0.4166666666666667in</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">1.5in</property>
                     </column>
-                    <column id="5977">
+                    <column id="6050">
                         <property name="textAlign">right</property>
-                        <property name="width">3.4660416666666665cm</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
                     </column>
-                    <row id="5978">
-                        <property name="height">0.1cm</property>
-                        <cell id="5979">
+                    <column id="6143">
+                        <property name="textAlign">right</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="6146">
+                        <property name="textAlign">right</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">6%</property>
+                    </column>
+                    <row id="6051">
+                        <property name="height">0.026458333333333334cm</property>
+                        <cell id="6052">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="textAlign">center</property>
                         </cell>
-                        <cell id="5980"/>
-                        <cell id="5981"/>
+                        <cell id="6053"/>
+                        <cell id="6054"/>
+                        <cell id="6141"/>
+                        <cell id="6144"/>
                     </row>
-                    <row id="5982">
+                    <row id="6055">
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="height">1.2964583333333333cm</property>
-                        <cell id="5983">
+                        <cell id="6056">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
-                            <image id="6022">
+                            <property name="textAlign">left</property>
+                            <image id="6057">
                                 <property name="overflow">hidden</property>
                                 <property name="height">35px</property>
                                 <property name="width">154px</property>
+                                <expression name="altText">""</expression>
                                 <property name="dataSet">BankReconciliationDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
@@ -1667,40 +1553,35 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
                             </image>
                         </cell>
-                        <cell id="5984">
-                            <text id="5985">
+                        <cell id="6058">
+                            <text id="6059">
                                 <property name="fontFamily">sans-serif</property>
-                                <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Page]]></text-property>
+                                <property name="fontSize">9pt</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="dd MMM yyyy hh:mm">row["report_date"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="5986">
-                            <grid id="5987">
-                                <column id="5988"/>
-                                <column id="5989"/>
-                                <column id="5990"/>
-                                <row id="5991">
-                                    <cell id="5992">
-                                        <auto-text id="5993">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="5994">
-                                        <text id="5995">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="contentType">plain</property>
-                                            <text-property name="content"><![CDATA[/]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="5996">
-                                        <auto-text id="5997">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="type">total-page</property>
-                                        </auto-text>
-                                    </cell>
-                                </row>
-                            </grid>
+                        <cell id="6061">
+                            <auto-text id="6147">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="textAlign">right</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="6142">
+                            <text id="6148">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="6145">
+                            <auto-text id="6149">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="textAlign">left</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
                         </cell>
                     </row>
                 </grid>
@@ -1709,6 +1590,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
     </page-setup>
     <body>
         <grid id="491">
+            <property name="fontSize">8pt</property>
             <property name="width">11.052083333333334in</property>
             <property name="dataSet">BankReconciliationDS</property>
             <list-property name="visibility"/>
@@ -1760,23 +1642,25 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <property name="width">0.19791666666666666in</property>
             </column>
             <column id="493">
-                <property name="width">1.6in</property>
+                <property name="width">0.3in</property>
             </column>
             <column id="4126">
-                <property name="width">1.6in</property>
+                <property name="width">1.8in</property>
             </column>
             <column id="4137">
-                <property name="width">1.6in</property>
+                <property name="width">1.8in</property>
             </column>
             <column id="494">
-                <property name="width">1.6in</property>
+                <property name="suppressDuplicates">true</property>
+                <property name="width">0.2in</property>
             </column>
             <column id="495">
-                <property name="width">1.6in</property>
+                <property name="suppressDuplicates">true</property>
+                <property name="width">0.5in</property>
             </column>
             <column id="4696">
                 <property name="repeat">1</property>
-                <property name="width">0.5416666666666666in</property>
+                <property name="width">0.25in</property>
             </column>
             <row id="1246">
                 <property name="height">0.3020833333333333in</property>
@@ -1830,22 +1714,12 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <cell id="553"/>
                 <cell id="4698"/>
             </row>
-            <row id="496">
-                <property name="height">0.2604166666666667in</property>
-                <cell id="4680"/>
-                <cell id="498"/>
-                <cell id="4118"/>
-                <cell id="4129"/>
-                <cell id="499"/>
-                <cell id="500"/>
-                <cell id="4699"/>
-            </row>
             <row id="501">
                 <cell id="4681"/>
                 <cell id="503">
                     <text id="4195">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -1891,7 +1765,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <cell id="504">
                     <text id="4192">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -1967,18 +1841,19 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     </text>
                 </cell>
                 <cell id="4215">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="559">
                         <property name="fontFamily">sans-serif</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["journal"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4216"/>
                 <cell id="4217">
                     <property name="textAlign">left</property>
                     <text id="4210">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -2029,7 +1904,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="textAlign">left</property>
                     <text id="6018">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -2064,17 +1939,18 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     </text>
                 </cell>
                 <cell id="4120">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="6019">
                         <property name="fontFamily">sans-serif</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["cash_account"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4131"/>
                 <cell id="509">
                     <text id="4193">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -2197,9 +2073,6 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">sum_move_debit</property>
                                 <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>TableGroup</value>
-                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2212,9 +2085,6 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">sum_move_credit</property>
                                 <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>TableGroup</value>
-                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2239,9 +2109,6 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">sum_amount</property>
                                 <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>TableGroup</value>
-                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2253,7 +2120,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <column id="4751">
-                            <property name="width">1.5104166666666667in</property>
+                            <property name="width">2in</property>
                         </column>
                         <column id="4752">
                             <property name="width">1.1979166666666667in</property>
@@ -2262,16 +2129,17 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <property name="width">1.375in</property>
                         </column>
                         <column id="4754">
-                            <property name="width">1.5833333333333333in</property>
+                            <property name="suppressDuplicates">true</property>
+                            <property name="width">3.5in</property>
                         </column>
                         <column id="4755">
-                            <property name="width">1.21875in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="4756">
-                            <property name="width">1.1770833333333333in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="4757">
-                            <property name="width">1.2291666666666667in</property>
+                            <property name="width">1in</property>
                         </column>
                         <header>
                             <row id="4707">
@@ -2284,7 +2152,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="4779">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2327,7 +2195,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="4780">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2370,7 +2238,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="4781">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2413,7 +2281,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="4782">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2456,7 +2324,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="4783">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2499,7 +2367,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="4784">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2542,7 +2410,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="4785">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -2579,192 +2447,59 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     </text>
                                 </cell>
                             </row>
-                        </header>
-                        <group id="4758">
-                            <property name="groupName">TableGroup</property>
-                            <expression name="keyExpr" type="javascript">row["code"]</expression>
-                            <structure name="toc">
-                                <expression name="expressionValue" type="javascript">row["code"]</expression>
-                            </structure>
-                            <property name="hideDetail">false</property>
-                            <header>
-                                <row id="4759">
+                            <row id="6376">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <cell id="6377">
                                     <property name="borderBottomStyle">none</property>
                                     <property name="borderLeftStyle">none</property>
                                     <property name="borderRightStyle">none</property>
                                     <property name="borderTopStyle">none</property>
-                                    <cell id="4760">
-                                        <property name="colSpan">7</property>
-                                        <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">solid</property>
-                                        <property name="borderBottomWidth">thin</property>
-                                        <data id="4726">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="fontWeight">normal</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">account_balance</property>
-                                        </data>
-                                    </cell>
-                                </row>
-                            </header>
-                            <footer>
-                                <row id="4768">
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <cell id="4769">
-                                        <property name="colSpan">4</property>
-                                        <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <text id="4817">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="fontSize">10pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <property name="fontStyle">normal</property>
-                                            <property name="borderBottomStyle">none</property>
-                                            <property name="borderLeftStyle">none</property>
-                                            <property name="borderRightStyle">none</property>
-                                            <property name="borderTopStyle">none</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="dataSet">TranslateDS</property>
-                                            <list-property name="paramBindings">
-                                                <structure>
-                                                    <property name="paramName">param_1</property>
-                                                    <simple-property-list name="expression">
-                                                        <value type="javascript">'BankReconciliation.unreconciled_move_lines'</value>
-                                                    </simple-property-list>
-                                                </structure>
-                                            </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">message_key</property>
-                                                    <text-property name="displayName">message_key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                                <structure>
-                                                    <property name="name">translation</property>
-                                                    <text-property name="displayName">translation</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="4774">
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <data id="5287">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_move_debit</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="4775">
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <data id="5288">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_move_credit</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="4776">
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <data id="5293">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="display">none</property>
-                                            <property name="resultSetColumn">sum_amount</property>
-                                        </data>
-                                    </cell>
-                                </row>
-                                <row id="4807">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <cell id="4808">
-                                        <property name="colSpan">4</property>
-                                        <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <text id="4818">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="fontSize">10pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <property name="borderBottomStyle">none</property>
-                                            <property name="borderLeftStyle">none</property>
-                                            <property name="borderRightStyle">none</property>
-                                            <property name="borderTopStyle">none</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="dataSet">TranslateDS</property>
-                                            <list-property name="paramBindings">
-                                                <structure>
-                                                    <property name="paramName">param_1</property>
-                                                    <simple-property-list name="expression">
-                                                        <value type="javascript">'BankReconciliation.amount'</value>
-                                                    </simple-property-list>
-                                                </structure>
-                                            </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">message_key</property>
-                                                    <text-property name="displayName">message_key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                                <structure>
-                                                    <property name="name">translation</property>
-                                                    <text-property name="displayName">translation</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="4813">
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                    </cell>
-                                    <cell id="4814">
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                    </cell>
-                                    <cell id="4815">
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <text-data id="5295">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <expression name="valueExpr">row["account_balance"] + row["sum_amount"]</expression>
-                                            <property name="contentType">html</property>
-                                        </text-data>
-                                    </cell>
-                                </row>
-                            </footer>
-                        </group>
+                                </cell>
+                                <cell id="6378">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderTopStyle">none</property>
+                                </cell>
+                                <cell id="6379">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderTopStyle">none</property>
+                                </cell>
+                                <cell id="6380">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderTopStyle">none</property>
+                                </cell>
+                                <cell id="6381">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderTopStyle">none</property>
+                                </cell>
+                                <cell id="6382">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderTopStyle">none</property>
+                                </cell>
+                                <cell id="6383">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <text id="6384">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["account_balance"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </header>
                         <detail>
                             <row id="4724">
                                 <cell id="4727">
@@ -2782,10 +2517,11 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderLeftStyle">none</property>
                                     <property name="borderRightStyle">none</property>
                                     <property name="borderTopStyle">none</property>
-                                    <data id="4730">
+                                    <text id="6023">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="resultSetColumn">to_date</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["to_date"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4731">
                                     <property name="borderBottomStyle">none</property>
@@ -2814,6 +2550,10 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <data id="4738">
                                         <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">debit</property>
                                     </data>
@@ -2825,6 +2565,10 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <data id="4740">
                                         <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">credit</property>
                                     </data>
@@ -2834,23 +2578,148 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderLeftStyle">none</property>
                                     <property name="borderRightStyle">none</property>
                                     <property name="borderTopStyle">none</property>
-                                    <data id="5291">
+                                    <text id="6024">
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">move_amount</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </detail>
                         <footer>
                             <row id="4741">
-                                <cell id="4743"/>
-                                <cell id="4744"/>
-                                <cell id="4745"/>
-                                <cell id="4746"/>
-                                <cell id="4747"/>
-                                <cell id="4748"/>
-                                <cell id="4749"/>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <cell id="4743">
+                                    <property name="colSpan">4</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="6362">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'BankReconciliation.unreconciled_move_lines'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4747">
+                                    <data id="6372">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">sum_move_debit</property>
+                                    </data>
+                                </cell>
+                                <cell id="4748">
+                                    <data id="6373">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">sum_move_credit</property>
+                                    </data>
+                                </cell>
+                                <cell id="4749">
+                                    <data id="6374">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="display">none</property>
+                                        <property name="resultSetColumn">sum_amount</property>
+                                    </data>
+                                </cell>
+                            </row>
+                            <row id="6363">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <cell id="6364">
+                                    <property name="colSpan">4</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="6371">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'BankReconciliation.amount'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="6368"/>
+                                <cell id="6369"/>
+                                <cell id="6370">
+                                    <text id="6375">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["account_balance"] + row["sum_amount"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                             </row>
                         </footer>
                     </table>
@@ -2858,6 +2727,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
             </row>
         </grid>
         <grid id="5140">
+            <property name="fontSize">8pt</property>
             <property name="masterPage">NewSimpleMasterPage</property>
             <property name="pageBreakBefore">always</property>
             <property name="width">11.09375in</property>
@@ -2911,7 +2781,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <property name="width">0.19791666666666666in</property>
             </column>
             <column id="5142">
-                <property name="width">1.6in</property>
+                <property name="width">0.5in</property>
             </column>
             <column id="5143">
                 <property name="width">1.6in</property>
@@ -2920,10 +2790,10 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <property name="width">1.6in</property>
             </column>
             <column id="5145">
-                <property name="width">1.6in</property>
+                <property name="width">0.3in</property>
             </column>
             <column id="5146">
-                <property name="width">1.6in</property>
+                <property name="width">0.5in</property>
             </column>
             <column id="5147">
                 <property name="repeat">1</property>
@@ -2981,22 +2851,12 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <cell id="5157"/>
                 <cell id="5158"/>
             </row>
-            <row id="5159">
-                <property name="height">0.2604166666666667in</property>
-                <cell id="5160"/>
-                <cell id="5161"/>
-                <cell id="5162"/>
-                <cell id="5163"/>
-                <cell id="5164"/>
-                <cell id="5165"/>
-                <cell id="5166"/>
-            </row>
             <row id="5167">
                 <cell id="5168"/>
                 <cell id="5169">
                     <text id="5170">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -3042,7 +2902,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                 <cell id="5174">
                     <text id="5175">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -3118,18 +2978,19 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     </text>
                 </cell>
                 <cell id="5183">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="5184">
                         <property name="fontFamily">sans-serif</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["journal"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5185"/>
                 <cell id="5186">
                     <property name="textAlign">left</property>
                     <text id="5194">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -3180,7 +3041,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="textAlign">left</property>
                     <text id="6021">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -3215,17 +3076,18 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     </text>
                 </cell>
                 <cell id="5195">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="6020">
                         <property name="fontFamily">sans-serif</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["cash_account"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5197"/>
                 <cell id="5198">
                     <text id="5187">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
+                        <property name="fontSize">8pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -3348,9 +3210,6 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">sum_debit</property>
                                 <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>TableGroup</value>
-                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -3363,9 +3222,6 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">sum_credit</property>
                                 <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>TableGroup</value>
-                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -3378,9 +3234,6 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <structure>
                                 <property name="name">sum_amount</property>
                                 <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>TableGroup</value>
-                                </simple-property-list>
                                 <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -3398,7 +3251,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <column id="5275">
-                            <property name="width">1.5833333333333333in</property>
+                            <property name="width">2in</property>
                         </column>
                         <column id="5276">
                             <property name="width">1.1979166666666667in</property>
@@ -3407,16 +3260,16 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                             <property name="width">1.375in</property>
                         </column>
                         <column id="5278">
-                            <property name="width">1.5833333333333333in</property>
+                            <property name="width">3.5in</property>
                         </column>
                         <column id="5279">
-                            <property name="width">1.21875in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="5280">
-                            <property name="width">1.1770833333333333in</property>
+                            <property name="width">0.8in</property>
                         </column>
                         <column id="5281">
-                            <property name="width">1.28125in</property>
+                            <property name="width">1in</property>
                         </column>
                         <header>
                             <row id="5212">
@@ -3429,7 +3282,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="5216">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -3472,7 +3325,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="5218">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -3515,7 +3368,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="5220">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -3558,7 +3411,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="5222">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -3601,7 +3454,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="5224">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -3644,7 +3497,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="5226">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -3687,7 +3540,7 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <text id="5228">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -3724,159 +3577,28 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     </text>
                                 </cell>
                             </row>
-                        </header>
-                        <group id="5229">
-                            <property name="groupName">TableGroup</property>
-                            <expression name="keyExpr" type="javascript">row["code"]</expression>
-                            <structure name="toc">
-                                <expression name="expressionValue" type="javascript">row["code"]</expression>
-                            </structure>
-                            <property name="hideDetail">false</property>
-                            <header>
-                                <row id="5230">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
+                            <row id="6386">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <cell id="6387">
+                                    <property name="colSpan">7</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="borderBottomStyle">none</property>
                                     <property name="borderLeftStyle">none</property>
                                     <property name="borderRightStyle">none</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <cell id="5231">
-                                        <property name="colSpan">7</property>
-                                        <property name="rowSpan">1</property>
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <data id="6017">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">accountBalance</property>
-                                        </data>
-                                    </cell>
-                                </row>
-                            </header>
-                            <footer>
-                                <row id="5233">
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <cell id="5234">
-                                        <property name="colSpan">4</property>
-                                        <property name="rowSpan">1</property>
-                                        <text id="5093">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="fontSize">10pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <property name="fontStyle">normal</property>
-                                            <property name="borderBottomStyle">none</property>
-                                            <property name="borderLeftStyle">none</property>
-                                            <property name="borderRightStyle">none</property>
-                                            <property name="borderTopStyle">none</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="dataSet">TranslateDS</property>
-                                            <list-property name="paramBindings">
-                                                <structure>
-                                                    <property name="paramName">param_1</property>
-                                                    <simple-property-list name="expression">
-                                                        <value type="javascript">'BankReconciliation.moves_unaccounted'</value>
-                                                    </simple-property-list>
-                                                </structure>
-                                            </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">message_key</property>
-                                                    <text-property name="displayName">message_key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                                <structure>
-                                                    <property name="name">translation</property>
-                                                    <text-property name="displayName">translation</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="5236">
-                                        <data id="6009">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_debit</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="5238">
-                                        <data id="6010">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_credit</property>
-                                        </data>
-                                    </cell>
-                                    <cell id="5240">
-                                        <data id="6016">
-                                            <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">sum_amount</property>
-                                        </data>
-                                    </cell>
-                                </row>
-                                <row id="5241">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderTopStyle">solid</property>
-                                    <property name="borderTopWidth">thin</property>
-                                    <cell id="5242">
-                                        <property name="colSpan">4</property>
-                                        <property name="rowSpan">1</property>
-                                        <text id="5243">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="fontSize">10pt</property>
-                                            <property name="fontWeight">bold</property>
-                                            <property name="borderBottomStyle">none</property>
-                                            <property name="borderLeftStyle">none</property>
-                                            <property name="borderRightStyle">none</property>
-                                            <property name="borderTopStyle">none</property>
-                                            <property name="textAlign">right</property>
-                                            <property name="dataSet">TranslateDS</property>
-                                            <list-property name="paramBindings">
-                                                <structure>
-                                                    <property name="paramName">param_1</property>
-                                                    <simple-property-list name="expression">
-                                                        <value type="javascript">'BankReconciliation.amount'</value>
-                                                    </simple-property-list>
-                                                </structure>
-                                            </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">message_key</property>
-                                                    <text-property name="displayName">message_key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                                <structure>
-                                                    <property name="name">translation</property>
-                                                    <text-property name="displayName">translation</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="5244"/>
-                                    <cell id="5245"/>
-                                    <cell id="5246">
-                                        <text-data id="5298">
-                                            <property name="fontFamily">sans-serif</property>
-                                            <property name="textAlign">right</property>
-                                            <expression name="valueExpr">row["account_balance"] + row["sum_amount"]</expression>
-                                            <property name="contentType">html</property>
-                                        </text-data>
-                                    </cell>
-                                </row>
-                            </footer>
-                        </group>
+                                    <property name="borderTopStyle">none</property>
+                                    <data id="6394">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">accountBalance</property>
+                                    </data>
+                                </cell>
+                            </row>
+                        </header>
                         <detail>
                             <row id="5248">
                                 <cell id="5251">
@@ -3894,10 +3616,11 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderLeftStyle">none</property>
                                     <property name="borderRightStyle">none</property>
                                     <property name="borderTopStyle">none</property>
-                                    <data id="5254">
+                                    <text id="6026">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="resultSetColumn">to_date</property>
-                                    </data>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["to_date"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="5255">
                                     <property name="borderBottomStyle">none</property>
@@ -3926,6 +3649,11 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <data id="5260">
                                         <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                            <property name="locale">af_ZA</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">debit</property>
                                     </data>
@@ -3937,28 +3665,157 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                                     <property name="borderTopStyle">none</property>
                                     <data id="5262">
                                         <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">credit</property>
                                     </data>
                                 </cell>
                                 <cell id="5263">
-                                    <text-data id="6015">
+                                    <text id="6044">
+                                        <property name="fontFamily">sans-serif</property>
                                         <property name="textAlign">right</property>
-                                        <expression name="valueExpr">row["credit"] - row["debit"]</expression>
                                         <property name="contentType">html</property>
-                                    </text-data>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["credit"] - row["debit"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </detail>
                         <footer>
                             <row id="5265">
-                                <cell id="5267"/>
-                                <cell id="5268"/>
-                                <cell id="5269"/>
-                                <cell id="5270"/>
-                                <cell id="5271"/>
-                                <cell id="5272"/>
-                                <cell id="5273"/>
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
+                                <cell id="5267">
+                                    <property name="colSpan">4</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="6403">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="fontStyle">normal</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'BankReconciliation.moves_unaccounted'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5271">
+                                    <data id="6405">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">sum_debit</property>
+                                    </data>
+                                </cell>
+                                <cell id="5272">
+                                    <data id="6406">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">sum_credit</property>
+                                    </data>
+                                </cell>
+                                <cell id="5273">
+                                    <data id="6407">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="display">none</property>
+                                        <property name="resultSetColumn">sum_amount</property>
+                                    </data>
+                                </cell>
+                            </row>
+                            <row id="6395">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">thin</property>
+                                <cell id="6396">
+                                    <property name="colSpan">4</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="6404">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'BankReconciliation.amount'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="6400"/>
+                                <cell id="6401"/>
+                                <cell id="6402">
+                                    <text id="6408">
+                                        <property name="fontFamily">sans-serif</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["account_balance"] + row["sum_amount"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                             </row>
                         </footer>
                     </table>

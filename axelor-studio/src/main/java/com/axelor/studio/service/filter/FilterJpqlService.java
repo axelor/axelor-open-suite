@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -49,12 +49,26 @@ public class FilterJpqlService {
 
       MetaField field = filter.getMetaField();
 
+      if (filter.getValue() != null) {
+        String value = filter.getValue();
+        value = value.replaceAll("\"", "");
+        value = value.replaceAll("'", "");
+
+        if (filter.getOperator().contains("like") && !value.contains("%")) {
+          value = "%" + value + "%";
+        }
+        filter.setValue("'" + value + "'");
+      }
       String relationship = field.getRelationship();
       String fieldName =
           relationship != null ? filter.getTargetField() : filter.getMetaField().getName();
+      fieldName = "self." + fieldName;
+      if (filter.getTargetType().equals("String")) {
+        fieldName = "LOWER(" + fieldName + ")";
+        filter.setValue("LOWER(" + filter.getValue() + ")");
+      }
       String condition =
-          filterCommonService.getCondition(
-              "self." + fieldName, filter.getOperator(), filter.getValue());
+          filterCommonService.getCondition(fieldName, filter.getOperator(), filter.getValue());
 
       if (filters == null) {
         filters = condition;

@@ -5,17 +5,19 @@
 
 	<grid model="com.axelor.apps.account.db.NotificationItem" title="Notification items"
 		name="notification-item-grid">
-		<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange"/>
+		<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange" required="true" canEdit="false"/>
 		<field name="amountPaid" />
 		<field name="typeSelect"/>
+		<field name="move" readonly="true"/>
 	</grid>
 
 	<form model="com.axelor.apps.account.db.NotificationItem" title="Notification item"
 		name="notification-item-form" onNew="action-account-record-notification-item-type-select">
 		<panel name="mainPanel">
-			<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange"/>
+			<field name="invoice" onSelect="action-account-attrs-notification-item-invoice-domain" onChange="action-account-record-notification-item-invoice-onchange" required="true" canEdit="false"/>
 			<field name="amountPaid" />
 			<field name="typeSelect"/>
+			<field name="move" readonly="true"/>
 		</panel>
 	</form>
 

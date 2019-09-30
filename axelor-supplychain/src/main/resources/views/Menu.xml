@@ -65,6 +65,7 @@
 		<view type="grid" name="invoice-light-grid"/>
 		<view type="form" name="invoice-form"/>
 		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
+		<context name="_operationTypeSelect" expr="eval:3"/>
 		<context name="_operationSubTypeSelect" expr="eval:6"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
@@ -106,6 +107,61 @@
 		<context name="_typeSelect" expr="2"/>
 	</action-view>
 	
+	<menuitem name="purchase-root-purchase-orders-without-stock.move" title="Purchase order without stock move"
+		parent="sc-root-purchase" action="purchase.root.purchase.orders.without.stock.move" order="25"
+		if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isPurchaseOrderWithoutIncomingStockMove"/>
+
+	<action-view name="purchase.root.purchase.orders.without.stock.move" title="Purchase order without stock move"
+		model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="cards" name="purchase-order-cards"/>
+		<view type="grid" name="purchase-order-grid" />
+		<view type="form" name="purchase-order-form" />
+		<domain>self.statusSelect = 3 AND self IN (select p.purchaseOrder from PurchaseOrderLine as p where p.receiptState != 3 AND p.product.productTypeSelect = 'storable' AND p.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
+	</action-view>
+	
+	<menuitem name="sale-root-sale-orders-without-stock-move" title="Sale order without stock move"
+		parent="sc-root-sale" action="sale.root.sale.orders.without.stock.move" order="25"
+		if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isSaleOrderWithoutOutgoingStockMove"/>
+
+	<action-view name="sale.root.sale.orders.without.stock.move" title="Sale order without stock move"
+		model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="cards" name="sale-order-cards"/>
+		<view type="grid" name="sale-order-grid"/>
+		<view type="calendar" name="sale-order-calendar"/>
+		<view type="form" name="sale-order-form"/>
+		<domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
+	</action-view>
+	
+	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
+		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
+	
+	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
+	</action-view>
+	
+	<menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="26" if="__config__.app.isApp('supplychain')"
+		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"/>
+		
+	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
+	</action-view>
+	
+	<menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="27"
+		title="Availability requests" action="stock.root.availabilityreq" 
+		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
+		
+	<action-view name="stock.root.availabilityreq" title="Availability requests"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-out-availability-req-grid"/>
+        <view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
+	</action-view>
 	
 </object-views>
 

@@ -15,6 +15,9 @@
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realDate" title="Move date" readonly="true"/>
 
+	<date name="supplierShipmentDate" title="Supplier Shipment Date"/>
+	<string name="supplierShipmentRef" title="Supplier Shipment Ref"/>
+
     <integer name="statusSelect" title="Status" selection="stock.move.status.select" required="true" readonly="true" default="1"/>
     <integer name="typeSelect" title="Type Status" required="true" selection="stock.move.type.select"/>
     <integer name="availableStatusSelect" title="Available status" transient="true" selection="stock.stock.move.available.status.select"/>
@@ -32,7 +35,7 @@
     <one-to-many name="plannedStockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="plannedStockMove" orderBy="sequence"/>
 
     <boolean name="isWithReturnSurplus" title="Return surplus"/>
-    <boolean name="isWithBackorder" title="Manage BackOrder" default="true"/>
+    <boolean name="isWithBackorder" title="Manage backorder" default="false"/>
     
     <string name="trackingNumber" title="Tracking Number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>
@@ -40,8 +43,6 @@
     <decimal name="grossMass" title="Gross Mass"/>
     
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2"/>
-    
-    <string name="description" title="Description" large="true"/>
     
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
@@ -70,17 +71,23 @@
     <boolean name="isConformityCertifSigned" title="Is certificate of conformity signed"/>
     <many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" title="Electronic signature"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory user"/>
+    <long name="backorderId" title="Backorder Id"/>
+    <many-to-one name="stockMoveOrigin" ref="com.axelor.apps.stock.db.StockMove" title="Stock Move Origin"/>
 
     <string name="originTypeSelect" title="Origin Type" selection="stockmove.origin.select"/>
     <long name="originId" title="Origin Id" />
     <string name="origin" readonly="true" title="Origin"/>
 	<boolean name="availabilityRequest" title="Availability request"/>
+	<boolean name="pickingIsEdited" title="Picking order is edited"/>
+	<date name="pickingEditDate" title="Picking order edit date"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
     <string name="note" title="Notes" large="true"/>
   
     <boolean name="filterOnAvailableProducts" title="Filter on available products" default="true" transient="true"/>
 
+    <many-to-one name="reversionOriginStockMove" title="Origin stock move" ref="com.axelor.apps.stock.db.StockMove"/>
+    
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[
@@ -96,6 +103,10 @@
 		public static final int STATUS_PARTIALLY_AVAILABLE = 2;
 		public static final int STATUS_UNAVAILABLE = 3;
 
+		// USER TYPE
+		public static final String USER_TYPE_SENDER = "Sender";
+		public static final String USER_TYPE_SALESPERSON = "Salesperson";
+		
 		// TYPE SELECT
 		public static final int TYPE_INTERNAL = 1;
 		public static final int TYPE_OUTGOING = 2;
@@ -119,6 +130,8 @@
       <field name="estimatedDate" />
       <field name="cancelReason" />
       <field name="realDate" if="statusSelect == 3" />
+      <field name="pickingIsEdited" />
+      <field name="availabilityRequest" />
       <message if="true" on="CREATE">Move created</message>
       <message if="statusSelect == 1" tag="important">Draft move</message>
       <message if="statusSelect == 2" tag="info">Planned move</message>

@@ -13,12 +13,36 @@
     
     <form name="budget-line-form" title="Budget Line" model="com.axelor.apps.account.db.BudgetLine" width="large">
        <panel name="mainPanel" >
-	       <field name="fromDate"/>
-	       <field name="toDate"/>
+	       <field name="fromDate" onChange="action-period-year-on-change-from-date-validate"/>
+	       <field name="toDate" onChange="action-period-year-on-change-to-date-validate"/>
 	       <field name="amountExpected"/>
 	       <field name="amountCommitted" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	       <field name="amountRealized" readonly="true"/>
        </panel>
     </form>
+    
+    <action-validate name="action-budget-line-on-change-from-date-validate">
+		<error message="The from date is incorrect"
+			   if="fromDate != null &amp;&amp; fromDate &lt; __parent__.fromDate ||
+			   	   fromDate != null &amp;&amp; fromDate &gt; __parent__.toDate ||
+			   	   fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate &gt; toDate"
+			   action="action-budget-line-on-change-from-date"/>
+	</action-validate>
+
+	<action-attrs name="action-budget-line-on-change-from-date">
+		<attribute for="fromDate" name="value" expr="eval: null"/>
+	</action-attrs>
+
+	<action-validate name="action-budget-line-on-change-to-date-validate">
+		<error message="The to date is incorrect"
+			   if="toDate != null &amp;&amp; toDate &gt; __parent__.toDate ||
+			       toDate != null &amp;&amp; toDate &lt; __parent__.fromDate ||
+			       toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate"
+			   action="action-budget-line-on-change-to-date"/>
+	</action-validate>
+	
+	<action-attrs name="action-budget-line-on-change-to-date">
+		<attribute for="toDate" name="value" expr="eval: null"/>
+	</action-attrs>
     
 </object-views>

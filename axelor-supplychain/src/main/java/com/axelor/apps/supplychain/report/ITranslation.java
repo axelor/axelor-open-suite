@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -72,23 +72,34 @@ public class ITranslation {
   /*
    * Packing list
    */
-  public static final String PACKING_LIST_PACKAGING_NUMBER = /*$$(*/ "Packaging number:" /*)*/;
-  public static final String PACKING_LIST_DATE = /*$$(*/ "Date:" /*)*/;
-  public static final String PACKING_LIST_CUSTOMER_CODE = /*$$(*/ "Customer code:" /*)*/;
-  public static final String PACKING_LIST_CUSTOMER_NAME = /*$$(*/ "Customer name:" /*)*/;
-  public static final String PACKING_LIST_ITEM = /*$$(*/ "Item" /*)*/;
-  public static final String PACKING_LIST_ITEM_DESCRIPTION = /*$$(*/ "Item description" /*)*/;
+  public static final String PACKING_LIST = /*$$(*/ "LogisticalForm.packingList"; /*)*/
+  public static final String PACKING_LIST_PACKAGING_NUMBER = /*$$(*/
+      "LogisticalForm.packagingNumber"; /*)*/
+  public static final String PACKING_LIST_DATE = /*$$(*/ "LogisticalForm.date"; /*)*/
+  public static final String PACKING_LIST_CUSTOMER_CODE = /*$$(*/
+      "LogisticalForm.customerCode"; /*)*/
+  public static final String PACKING_LIST_CUSTOMER_NAME = /*$$(*/
+      "LogisticalForm.customerName"; /*)*/
+  public static final String PACKING_LIST_ITEM = /*$$(*/ "LogisticalForm.item"; /*)*/
+  public static final String PACKING_LIST_ITEM_DESCRIPTION = /*$$(*/
+      "LogisticalForm.itemDescription"; /*)*/
   public static final String PACKING_LIST_PARCEL_LINE_FORMAT = /*$$(*/
-      "Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>" /*)*/;
+      "LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>" /*)*/;
   public static final String PACKING_LIST_PALLET_LINE_FORMAT = /*$$(*/
-      "Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>" /*)*/;
+      "LogisticalFormLine.palletNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>" /*)*/;
   public static final String PACKING_LIST_DETAIL_LINE_FORMAT = /*$$(*/
-      "Stock move No. {0} / Ref. No. {1}" /*)*/;
-  public static final String PACKING_LIST_TOTAL_NET_MASS = /*$$(*/ "Total net mass" /*)*/;
+      "LogisticalFormLine.stockMoveNo {0} / LogisticalFormLine.refNo {1}" /*)*/;
+  public static final String PACKING_LIST_TOTAL_NET_MASS = /*$$(*/
+      "LogisticalForm.totalNetMass" /*)*/;
   public static final String PACKING_LIST_TOTAL_FORMAT = /*$$(*/
-      "Number of parcels/pallets: {0} - Total gross mass ({1}): {2}" /*)*/;
-  public static final String PACKING_LIST_SHIPPING_COMMENTS = /*$$(*/ "Shipping comments" /*)*/;
+      "LogisticalFormLine.numberOfParcels/Pallets: {0} - LogisticalForm.totalGrossMass ({1}): {2}" /*)*/;
+  public static final String PACKING_LIST_SHIPPING_COMMENTS = /*$$(*/
+      "LogisticalForm.shippingComments"; /*)*/
+  public static final String PACKING_LIST_QTY = /*$$(*/ "LogisticalFormLine.qty"; /*)*/
 
+  /*
+   * Declaration of Exchanges
+   */
   public static final String DECLARATION_OF_EXCHANGES_INTRODUCTION = /*$$(*/ "Introduction"; /*)*/
   public static final String DECLARATION_OF_EXCHANGES_EXPEDITION = /*$$(*/ "Expedition"; /*)*/
   public static final String

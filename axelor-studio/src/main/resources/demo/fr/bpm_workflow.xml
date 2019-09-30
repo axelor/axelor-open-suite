@@ -102,11 +102,11 @@
   	</xml>
   </wkf>
   
-  <wkfNode wkf="Commande produit" name="Brouillon" title="Brouillon" startNode="1" sequence="1" xmlId="StartEvent_07npy19"/>
-  <wkfNode wkf="Commande produit" name="Confirmé" title="Confirmé" sequence="2" xmlId="Task_07my1i6" />
-  <wkfNode wkf="Commande produit" name="Validé" title="Validé" sequence="3" xmlId="Task_0k79fbo" />
-  <wkfNode wkf="Commande produit" name="Annulé" title="Annulé" sequence="4" xmlId="Task_069h0a2"/>
-  <wkfNode wkf="Commande produit" name="Terminé" title="Terminé" sequence="5"  endNode="1" xmlId="EndEvent_062urgf"/>
+  <wkfNode wkf="Commande produit" name="Brouillon" title="Brouillon" nodeType="0" sequence="1" xmlId="StartEvent_07npy19"/>
+  <wkfNode wkf="Commande produit" name="Confirmé" title="Confirmé" nodeType="1" sequence="2" xmlId="Task_07my1i6" />
+  <wkfNode wkf="Commande produit" name="Validé" title="Validé" nodeType="1" sequence="3" xmlId="Task_0k79fbo" />
+  <wkfNode wkf="Commande produit" name="Annulé" title="Annulé" nodeType="1" sequence="4" xmlId="Task_069h0a2"/>
+  <wkfNode wkf="Commande produit" name="Terminé" title="Terminé" nodeType="2" sequence="5" xmlId="EndEvent_062urgf"/>
   
   <transition wkf="Commande produit" name="Confirmer" source="Brouillon" target="Confirmé" isButton="true" buttonTitle="Confirmer" xmlId="SequenceFlow_0qljt6y"/>
   <transition wkf="Commande produit" name="Valider" source="Confirmé" target="Validé" isButton="true" buttonTitle="Valider" xmlId="SequenceFlow_10bvr21" alertTypeSelect="1" alertMsg="Êtes-vous sûr de vouloir valider cette commande?" successMsg="Commande validée" />
@@ -115,42 +115,42 @@
   <transition wkf="Commande produit" name="Réinitialiser" source="Annulé" target="Brouillon" isButton="true" buttonTitle="Réinitialiser" xmlId="SequenceFlow_1yn5orr" />
   
   <node wkf="Commande produit" name="Brouillon">
-  		<incommings>
-  			<incomming name="Réinitialiser" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Réinitialiser" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Confirmer" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Confirmé">
-  		<incommings>
-  			<incomming name="Confirmer" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Confirmer" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Valider" />
   			<outgoing name="Annuler" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Validé">
-  		<incommings>
-  			<incomming name="Valider" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Valider" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Terminer" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Annulé">
-  		<incommings>
-  			<incomming name="Annuler" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Annuler" />
+  		</incomings>
   		<outgoings>
   			<outgoing name="Réinitialiser" />
   		</outgoings>
   </node>
   <node wkf="Commande produit" name="Terminé">
-  		<incommings>
-  			<incomming name="Terminer" />
-  		</incommings>
+  		<incomings>
+  			<incoming name="Terminer" />
+  		</incomings>
   </node>
   
   <workflow name="Commande produit" />

@@ -25,6 +25,8 @@
 		<panel name="creationDetailsPanel">
 		  <field name="createdOn" title="Created on"/>
 		  <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+		  <field name="valuationDate"/>
+		  <spacer name="valuationDateSpacer" colSpan="6"/>
 		  <button name="computeValutionBatchBtn" title="Compute work in progress valuation" onClick="save,action-production-batch-method-compute-valuation"/>
 		</panel>
 		<panel-tabs>    

@@ -19,7 +19,7 @@
 			ref="com.axelor.apps.account.db.Invoice" />
 			
 		<date name="transmissionDate" title="Transmission Date" readonly="true"/>
-		<date name="accountingDate" title="Accounting Date" readonly="true"/>
+		<date name="accountingDate" title="Accounting Date"/>
 
 		<string name="comments" title="Comments" large="true"/>
 		<string name="cancelReason" title="Reasons of cancelation" large="true"/>

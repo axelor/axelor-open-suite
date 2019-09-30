@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -140,6 +140,7 @@ public class WkfService {
     trackFlow.setOnClick(WkfTrackingService.ACTION_OPEN_TRACK);
     trackFlow.setIsWkf(true);
     trackFlow.setVisibleInGrid(false);
+    trackFlow.setHidden(!workflow.getIsTrackFlow());
     saveJsonField(trackFlow);
 
     MetaJsonField wkfEnd = getJsonField("wkfSeparator", "separator");
@@ -460,7 +461,8 @@ public class WkfService {
     metaService.removeMetaActions(Joiner.on(",").join(actions));
   }
 
-  private void setTrackOnSave(Wkf wkf, boolean remove) {
+  @Transactional
+  public void setTrackOnSave(Wkf wkf, boolean remove) {
     if (wkf.getIsJson()) {
       MetaJsonModel jsonModel = jsonModelRepo.findByName(wkf.getModel());
       if (jsonModel != null) {

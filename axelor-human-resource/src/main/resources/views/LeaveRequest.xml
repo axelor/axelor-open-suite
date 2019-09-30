@@ -2,32 +2,34 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
+	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
 		 <hilite color="danger" if="statusSelect == 4"/>
 		 <hilite color="success" if="statusSelect == 3"/>
 		 <hilite color="warning" if="statusSelect == 2"/>
 		 <field name="company" form-view="company-form" grid-view="company-grid"/>
 		 <field name="user" form-view="user-form" grid-view="user-grid"/>
+		 <field name="leaveLine" />
 		 <field name="requestDate" />
-		 <field name="fromDate" />
+		 <field name="fromDateT" />
 		 <field name="startOnSelect" />
-		 <field name="toDate" />
+		 <field name="toDateT" />
 		 <field name="endOnSelect" />
 		 <field name="statusSelect" />
 	</grid>
 	
-	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="fromDate,startOnSelect">
+	<grid name="leave-request-validate-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
 		 <toolbar>
 			<button name="showSubordinateLeaveToValidateBtn" title="Show leaves to be validated by my subordinates" onClick="com.axelor.apps.hr.web.leave.LeaveController:showSubordinateLeaves"/>
 		 </toolbar>
-		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
+		<hilite background="danger" if="$moment(fromDateT).diff(todayDate,'days') &lt;= 0"/>
   		<hilite background="warning" if="$moment(todayDate).diff(requestDate,'days') &gt;= 7 || $moment(todayDate).diff(requestDate,'days') &gt;= 15"/> 
 		 <field name="company" form-view="company-form" grid-view="company-grid"/>
 		 <field name="user" form-view="user-form" grid-view="user-grid" onChange="action-leave-request-validate-dates"/>
+		 <field name="leaveLine" />
 		 <field name="requestDate" />
-		 <field name="fromDate" onChange="action-leave-request-validate-dates"/>
+		 <field name="fromDateT" onChange="action-leave-request-validate-dates"/>
 		 <field name="startOnSelect" />
-		 <field name="toDate" onChange="action-leave-request-validate-dates"/>
+		 <field name="toDateT" onChange="action-leave-request-validate-dates"/>
 		 <field name="endOnSelect" />
 		 <field name="statusSelect" />
 	</grid>
@@ -51,25 +53,45 @@
 	    	<field name="leaveLine.leaveReason.instruction" widget="html" colSpan="12" showTitle="false"  />
 	    </panel>
 		<panel name="informationPanel">
-			<spacer name="companySpacer"/>
-			<field name="company" canEdit="false" onChange="action-hr-record-empty-user,action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid"/>
-			<field name="user" form-view="user-form" grid-view="user-grid"
-				   onSelect="action-hr-attrs-set-user-domain"
-				onChange="action-leave-request-record-reset-leave-line,action-leave-request-validate-dates,action-leave-request-methode-compute-duration,action-leave-request-method-leave-reason-to-justify"
-				canNew="false" canEdit="false" canView="false"/>
-			<field name="requestDate" colSpan="12" width="50%"/>
-			<field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true" onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change" form-view="leave-line-form" grid-view="leave-line-grid"/>
-			<field name="leaveLine.quantity" title="Available quantity (acquired)" />
-			<field name="injectConsumeSelect" hidden="true" onChange="action-leave-request-attrs-inject-change"/>
-			<spacer name="injectConsumeSelectSpacer"/>
-			<field name="fromDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
-			<field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
-			<field name="toDate" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
-			<field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration"/>
-			<field name="duration" readonly="true" onChange="action-leave-request-methode-duration"/>
-			
-			<field name="comments" colSpan="12" />
-		</panel>
+            <spacer name="companySpacer" />
+            <field name="company" canEdit="false" onChange="action-hr-record-empty-user,action-leave-request-method-leave-reason-to-justify" form-view="company-form" grid-view="company-grid" />
+            <field name="user" form-view="user-form" grid-view="user-grid" onSelect="action-hr-attrs-set-user-domain"
+                onChange="action-leave-request-record-reset-leave-line,action-leave-request-validate-dates,action-leave-request-methode-compute-duration,action-leave-request-method-leave-reason-to-justify"
+                canNew="false" canEdit="false" canView="false" />
+            <field name="requestDate" colSpan="12" width="50%" />
+            <field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
+                onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-methode-compute-duration" form-view="leave-line-form" grid-view="leave-line-grid" />
+            <panel>
+                <field name="leaveLine.quantity" title="Available quantity (acquired)" showIf="statusSelect != 3" colSpan="12" />
+                <field name="quantityBeforeValidation" showIf="statusSelect == 3" colSpan="12" />
+            </panel>
+            <field name="injectConsumeSelect" hidden="true" onChange="action-leave-request-attrs-inject-change" />
+            <spacer name="injectConsumeSelectSpacer" />
+
+            <panel colSpan="12">
+                <panel hideIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+                    <field name="fromDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="date" />
+                    <field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" />
+                </panel>
+                <panel showIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+                    <field name="fromDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="datetime" />
+                </panel>
+            </panel>
+            <panel colSpan="12">
+                <panel hideIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+                    <field name="toDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="date" />
+                    <field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" />
+                </panel>
+                <panel showIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+                    <field name="toDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="datetime" />
+                </panel>
+            </panel>
+            <field name="duration" readonly="true" onChange="action-leave-request-methode-duration" />
+            <field name="leaveLine.leaveReason.unitSelect" readonly="true" />
+            <field name="leaveLine.leaveReason" readonly="true" hidden="true" />
+        
+            <field name="comments" colSpan="12" />
+        </panel>
 		<panel name="validationDetailsPanel">
 			<field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 			<field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"/>
@@ -147,7 +169,7 @@
 
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<field name="toJustifyLeaveReason" expr="eval: to_justify_leave_reason"/>
-		<field name="fromDate" expr="eval:__date__" if="to_justify_leave_reason"/>
+		<field name="fromDateT" expr="eval:__date__" if="to_justify_leave_reason"/>
 	</action-record>
 	
 	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">
@@ -168,9 +190,9 @@
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-select">
-		<attribute name="hidden" for="injectConsumeSelect" expr="!leaveLine.leaveReason.manageAccumulation"/>
-		<attribute name="readonly" for="injectConsumeSelect" expr="!leaveLine.leaveReason.allowInjection"/>
-		<attribute name="value" for="injectConsumeSelect" if="!leaveLine.leaveReason.allowInjection" expr="eval: 1"/>
+		<attribute name="hidden" for="injectConsumeSelect" expr="!leaveLine.leaveReason.manageAccumulation" if="leaveLine != null" />
+		<attribute name="readonly" for="injectConsumeSelect" expr="!leaveLine.leaveReason.allowInjection" if="leaveLine != null" />
+		<attribute name="value" for="injectConsumeSelect" if="!leaveLine?.leaveReason?.allowInjection" expr="eval: 1"/>
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-send">
@@ -186,12 +208,12 @@
 	</action-attrs>
 	
 	<action-validate name="action-leave-request-validate-dates">
-  		<error if="( toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDate != null &amp;&amp; toDate != null" message="Invalid dates"/>
+  		<error if="( toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; fromDateT != null &amp;&amp; toDateT != null" message="Invalid dates"/>
 	</action-validate>
 	
 	<action-validate name="action-leave-request-validate-dates-on-save">
-		<error message="You don't have the permission to create a leave request in the past, please contact your manager." if="((!(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager) &amp;&amp; fromDate.isBefore(__date__)))"/>
-		<error message="Invalid dates" if="toDate &lt; fromDate || (toDate == fromDate &amp;&amp; startOnSelect &gt; endOnSelect)"/>
+		<error message="You don't have the permission to create a leave request in the past, please contact your manager." if="((!(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager) &amp;&amp; fromDateT.isBefore(__date__)))"/>
+		<error message="Invalid dates" if="toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect)"/>
 		<error message="Duration equals 0" if="duration == 0"/>
 	</action-validate>
 
@@ -234,9 +256,9 @@
     </action-view>
     
     <action-attrs name="action-leave-request-attrs-inject-change">
-    	<attribute name="hidden" for="fromDate" expr="eval: injectConsumeSelect == 2"/>
+    	<attribute name="hidden" for="fromDateT" expr="eval: injectConsumeSelect == 2"/>
     	<attribute name="hidden" for="startOnSelect" expr="eval: injectConsumeSelect == 2"/>
-    	<attribute name="hidden" for="toDate" expr="eval: injectConsumeSelect == 2"/>
+    	<attribute name="hidden" for="toDateT" expr="eval: injectConsumeSelect == 2"/>
     	<attribute name="hidden" for="endOnSelect" expr="eval: injectConsumeSelect == 2"/>
     	<attribute name="readonly" for="duration" expr="eval: injectConsumeSelect != 2"/>
     </action-attrs>
@@ -246,6 +268,7 @@
 		<attribute for="leaveLine" name="domain"
 				   if="!__user__.employee?.hrManager"
 				   expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id} AND (self.leaveReason IS NULL OR self.leaveReason.selectedByMgtOnly = false) &quot;"/>
+		<attribute name="domain" for="leaveLine" expr="eval: &quot;self.id IN (0)&quot;" if="!user"/>
 	</action-attrs>
 
 	<action-record name="action-leave-request-record-reset-leave-line" model="com.axelor.apps.hr.db.LeaveRequest">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.exception.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,8 +46,7 @@ public class PublicHolidayService {
       LocalDate fromDate,
       LocalDate toDate,
       WeeklyPlanning weeklyPlanning,
-      EventsPlanning publicHolidayPlanning)
-      throws AxelorException {
+      EventsPlanning publicHolidayPlanning) {
     BigDecimal publicHolidayDays = BigDecimal.ZERO;
 
     List<EventsPlanningLine> publicHolidayDayList =
@@ -62,25 +61,32 @@ public class PublicHolidayService {
     for (EventsPlanningLine publicHolidayDay : publicHolidayDayList) {
       publicHolidayDays =
           publicHolidayDays.add(
-              new BigDecimal(
-                  weeklyPlanningService.workingDayValue(
+              BigDecimal.valueOf(
+                  weeklyPlanningService.getWorkingDayValueInDays(
                       weeklyPlanning, publicHolidayDay.getDate())));
     }
     return publicHolidayDays;
   }
 
-  public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning)
-      throws AxelorException {
+  /**
+   * Returns true if the given date is a public holiday in the given public holiday events planning.
+   *
+   * @param date
+   * @param publicHolidayEventsPlanning
+   * @return
+   */
+  public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning) {
 
     if (publicHolidayEventsPlanning == null) {
       return false;
     }
+
     List<EventsPlanningLine> publicHolidayDayList =
         eventsPlanningLineRepo
             .all()
             .filter(
                 "self.eventsPlanning = ?1 AND self.date = ?2", publicHolidayEventsPlanning, date)
             .fetch();
-    return publicHolidayDayList != null && !publicHolidayDayList.isEmpty();
+    return ObjectUtils.notEmpty(publicHolidayDayList);
   }
 }

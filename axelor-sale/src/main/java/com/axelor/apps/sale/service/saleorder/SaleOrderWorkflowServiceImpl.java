@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -107,10 +107,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     Query q =
         JPA.em()
             .createQuery(
-                "select count(*) FROM SaleOrder as self WHERE self.statusSelect = ?1 AND self.clientPartner = ?2 ");
+                "select count(*) FROM SaleOrder as self WHERE self.statusSelect in (?1 , ?2) AND self.clientPartner = ?3 ");
     q.setParameter(1, SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    q.setParameter(2, saleOrder.getClientPartner());
-    if ((long) q.getSingleResult() == 1) {
+    q.setParameter(2, SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    q.setParameter(3, saleOrder.getClientPartner());
+    if ((long) q.getSingleResult() == 0) {
       saleOrder.getClientPartner().setIsCustomer(false);
       saleOrder.getClientPartner().setIsProspect(true);
     }
@@ -147,13 +148,14 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       }
     }
 
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
-      this.saveSaleOrderPDFAsAttachment(saleOrder);
-    }
     if (saleOrder.getVersionNumber() == 1
         && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
       saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+    }
+
+    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
+    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
+      this.saveSaleOrderPDFAsAttachment(saleOrder);
     }
     saleOrderRepo.save(saleOrder);
   }
@@ -181,6 +183,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
+    saleOrder.setOrderBeingEdited(false);
 
     saleOrderRepo.save(saleOrder);
   }
@@ -201,8 +204,15 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
+    String fileNamePrefix;
+    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      fileNamePrefix = "Sale quotation";
+    } else {
+      fileNamePrefix = "Sale order";
+    }
 
-    return I18n.get("Sale order")
+    return I18n.get(fileNamePrefix)
         + " "
         + saleOrder.getSaleOrderSeq()
         + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");

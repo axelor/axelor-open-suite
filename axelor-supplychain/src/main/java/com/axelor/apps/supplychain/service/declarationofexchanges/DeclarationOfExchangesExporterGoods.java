@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,13 +22,11 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.ModeOfTransport;
 import com.axelor.apps.stock.db.NatureOfTransaction;
 import com.axelor.apps.stock.db.Regime;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.CustomsCodeNomenclatureRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -48,50 +46,56 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesExporter {
   protected static final String NAME_GOODS = /*$$(*/ "Declaration of exchanges of goods" /*)*/;
 
-  protected enum Column implements DeclarationOfExchangesColumnHeader {
-    LINE_NUM(/*$$(*/ "Line number" /*$$(*/),
-    NOMENCLATURE(/*$$(*/ "Nomenclature" /*$$(*/),
-    SRC_DST_COUNTRY(/*$$(*/ "Source or destination country" /*$$(*/),
-    FISC_VAL(/*$$(*/ "Fiscal value" /*$$(*/),
-    REGIME(/*$$(*/ "Regime" /*$$(*/),
-    MASS(/*$$(*/ "Net mass" /*$$(*/),
-    UNITS(/*$$(*/ "Supplementary unit" /*$$(*/),
-    NAT_TRANS(/*$$(*/ "Nature of transaction" /*$$(*/),
-    TRANSP(/*$$(*/ "Mode of transport" /*$$(*/),
-    DEPT(/*$$(*/ "Department" /*$$(*/),
-    COUNTRY_ORIG(/*$$(*/ "Country of origin" /*$$(*/),
-    ACQUIRER(/*$$(*/ "Acquirer" /*$$(*/),
-    PRODUCT_CODE(/*$$(*/ "Product code" /*$$(*/),
-    PRODUCT_NAME(/*$$(*/ "Product name" /*$$(*/),
-    PARTNER_SEQ(/*$$(*/ "Partner" /*$$(*/),
-    INVOICE(/*$$(*/ "Invoice" /*$$(*/);
+  protected static final String LINE_NUM = /*$$(*/ "Line number" /*$$(*/;
+  protected static final String NOMENCLATURE = /*$$(*/ "Nomenclature" /*$$(*/;
+  protected static final String SRC_DST_COUNTRY = /*$$(*/ "Source or destination country" /*$$(*/;
+  protected static final String FISC_VAL = /*$$(*/ "Fiscal value" /*$$(*/;
+  protected static final String REGIME = /*$$(*/ "Regime" /*$$(*/;
+  protected static final String MASS = /*$$(*/ "Net mass" /*$$(*/;
+  protected static final String UNITS = /*$$(*/ "Supplementary unit" /*$$(*/;
+  protected static final String NAT_TRANS = /*$$(*/ "Nature of transaction" /*$$(*/;
+  protected static final String TRANSP = /*$$(*/ "Mode of transport" /*$$(*/;
+  protected static final String DEPT = /*$$(*/ "Department" /*$$(*/;
+  protected static final String COUNTRY_ORIG = /*$$(*/ "Country of origin" /*$$(*/;
+  protected static final String ACQUIRER = /*$$(*/ "Acquirer" /*$$(*/;
+  protected static final String PRODUCT_CODE = /*$$(*/ "Product code" /*$$(*/;
+  protected static final String PRODUCT_NAME = /*$$(*/ "Product name" /*$$(*/;
+  protected static final String PARTNER_SEQ = /*$$(*/ "Partner" /*$$(*/;
+  protected static final String INVOICE = /*$$(*/ "Invoice" /*$$(*/;
 
-    private final String title;
-
-    private Column(String title) {
-      this.title = title;
-    }
-
-    @Override
-    public String getTitle() {
-      return title;
-    }
-  }
-
-  protected CustomsCodeNomenclatureRepository customsCodeNomenclatureRepo;
   protected StockMoveToolService stockMoveToolService;
 
   public DeclarationOfExchangesExporterGoods(
       DeclarationOfExchanges declarationOfExchanges, ResourceBundle bundle) {
-
-    super(declarationOfExchanges, bundle, NAME_GOODS, Column.values());
-    this.customsCodeNomenclatureRepo = Beans.get(CustomsCodeNomenclatureRepository.class);
+    super(
+        declarationOfExchanges,
+        bundle,
+        NAME_GOODS,
+        new ArrayList<>(
+            Arrays.asList(
+                LINE_NUM,
+                NOMENCLATURE,
+                SRC_DST_COUNTRY,
+                FISC_VAL,
+                REGIME,
+                MASS,
+                UNITS,
+                NAT_TRANS,
+                TRANSP,
+                DEPT,
+                COUNTRY_ORIG,
+                ACQUIRER,
+                PRODUCT_CODE,
+                PRODUCT_NAME,
+                PARTNER_SEQ,
+                INVOICE)));
     this.stockMoveToolService = Beans.get(StockMoveToolService.class);
   }
 
@@ -117,7 +121,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
       String[] data = exportLineToCsv(stockMoveLine, lineNum);
-      if (data != null) {
+      if (data != null && data.length != 0) {
         dataList.add(data);
         lineNum++;
       }
@@ -142,7 +146,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
   protected String[] exportLineToCsv(StockMoveLine stockMoveLine, int lineNum)
       throws AxelorException {
 
-    String[] data = new String[Column.values().length];
+    String[] data = new String[columnHeadersList.size()];
 
     StockMove stockMove = stockMoveLine.getStockMove();
 
@@ -155,7 +159,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
         customsCode = I18n.get("Product is missing.");
       }
 
-      if (product.getCustomsCodeNomenclature() != null) {
+      if (product != null && product.getCustomsCodeNomenclature() != null) {
         customsCode = product.getCustomsCodeNomenclature().getCode();
       }
 
@@ -173,8 +177,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
             .setScale(0, RoundingMode.HALF_UP);
 
     // Only positive fiscal value should be take into account
-    if (fiscalValue.compareTo(BigDecimal.ZERO) != 1) {
-      return null;
+    if (fiscalValue.compareTo(BigDecimal.ZERO) <= 0) {
+      return new String[0];
     }
 
     Regime regime = stockMoveLine.getRegime();
@@ -188,9 +192,6 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     }
 
     BigDecimal totalNetMass = stockMoveLine.getTotalNetMass().setScale(0, RoundingMode.HALF_UP);
-
-    CustomsCodeNomenclature customsCodeNomenclature =
-        customsCodeNomenclatureRepo.findByCode(customsCode);
 
     BigInteger supplementaryUnit =
         stockMoveLine.getRealQty().setScale(0, RoundingMode.CEILING).toBigInteger();
@@ -210,8 +211,8 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       modeOfTransport = ModeOfTransport.CONSIGNMENTS_BY_POST;
     }
 
-    String srcDstCountry = "";
-    String dept = "";
+    String srcDstCountry;
+    String dept;
     try {
       Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMoveLine.getStockMove());
       srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
@@ -272,22 +273,22 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       invoiceId = stockMove.getInvoice().getInvoiceId();
     }
 
-    data[Column.LINE_NUM.ordinal()] = String.valueOf(lineNum);
-    data[Column.NOMENCLATURE.ordinal()] = customsCode;
-    data[Column.SRC_DST_COUNTRY.ordinal()] = srcDstCountry;
-    data[Column.FISC_VAL.ordinal()] = String.valueOf(fiscalValue);
-    data[Column.REGIME.ordinal()] = String.valueOf(regime.getValue());
-    data[Column.MASS.ordinal()] = String.valueOf(totalNetMass);
-    data[Column.UNITS.ordinal()] = String.valueOf(supplementaryUnit);
-    data[Column.NAT_TRANS.ordinal()] = String.valueOf(natTrans.getValue());
-    data[Column.TRANSP.ordinal()] = String.valueOf(modeOfTransport.getValue());
-    data[Column.DEPT.ordinal()] = dept;
-    data[Column.COUNTRY_ORIG.ordinal()] = countryOrigCode;
-    data[Column.ACQUIRER.ordinal()] = taxNbr;
-    data[Column.PRODUCT_CODE.ordinal()] = productCode;
-    data[Column.PRODUCT_NAME.ordinal()] = productName;
-    data[Column.PARTNER_SEQ.ordinal()] = partnerSeq;
-    data[Column.INVOICE.ordinal()] = invoiceId;
+    data[columnHeadersList.indexOf(LINE_NUM)] = String.valueOf(lineNum);
+    data[columnHeadersList.indexOf(NOMENCLATURE)] = customsCode;
+    data[columnHeadersList.indexOf(SRC_DST_COUNTRY)] = srcDstCountry;
+    data[columnHeadersList.indexOf(FISC_VAL)] = String.valueOf(fiscalValue);
+    data[columnHeadersList.indexOf(REGIME)] = String.valueOf(regime.getValue());
+    data[columnHeadersList.indexOf(MASS)] = String.valueOf(totalNetMass);
+    data[columnHeadersList.indexOf(UNITS)] = String.valueOf(supplementaryUnit);
+    data[columnHeadersList.indexOf(NAT_TRANS)] = String.valueOf(natTrans.getValue());
+    data[columnHeadersList.indexOf(TRANSP)] = String.valueOf(modeOfTransport.getValue());
+    data[columnHeadersList.indexOf(DEPT)] = dept;
+    data[columnHeadersList.indexOf(COUNTRY_ORIG)] = countryOrigCode;
+    data[columnHeadersList.indexOf(ACQUIRER)] = taxNbr;
+    data[columnHeadersList.indexOf(PRODUCT_CODE)] = productCode;
+    data[columnHeadersList.indexOf(PRODUCT_NAME)] = productName;
+    data[columnHeadersList.indexOf(PARTNER_SEQ)] = partnerSeq;
+    data[columnHeadersList.indexOf(INVOICE)] = invoiceId;
 
     return data;
   }

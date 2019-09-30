@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
+
+import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
@@ -38,6 +40,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -52,9 +55,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.config.AccountConfigSupplychainService;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -62,15 +67,13 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected StockMoveRepository stockMoverepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
   protected MoveCreateService moveCreateService;
   protected MoveLineService moveLineService;
   protected AccountConfigSupplychainService accountConfigSupplychainService;
@@ -91,6 +94,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   @Inject
   public AccountingCutOffServiceImpl(
       StockMoveRepository stockMoverepository,
+      StockMoveLineRepository stockMoveLineRepository,
       MoveCreateService moveCreateService,
       MoveLineService moveLineService,
       AccountConfigSupplychainService accountConfigSupplychainService,
@@ -108,6 +112,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       ReconcileService reconcileService) {
 
     this.stockMoverepository = stockMoverepository;
+    this.stockMoveLineRepository = stockMoveLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveLineService = moveLineService;
     this.accountConfigSupplychainService = accountConfigSupplychainService;
@@ -335,9 +340,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
         Product product = stockMoveLine.getProduct();
 
-        if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
-            || product == null
-            || (!includeNotStockManagedProduct && !product.getStockManaged())) {
+        if (checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
           continue;
         }
 
@@ -355,6 +358,17 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     return move.getMoveLineList();
+  }
+
+  protected boolean checkStockMoveLine(
+      StockMoveLine stockMoveLine, Product product, boolean includeNotStockManagedProduct) {
+    if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
+        || product == null
+        || (!includeNotStockManagedProduct && !product.getStockManaged())) {
+      return true;
+    }
+
+    return false;
   }
 
   protected MoveLine generateProductMoveLine(
@@ -414,7 +428,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         amountInCurrency = saleOrderLine.getExTaxTotal();
       }
     }
-    if (BigDecimal.ZERO.compareTo(totalQty) == 0) {
+    if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
       return null;
     }
 
@@ -456,19 +470,21 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     getAndComputeAnalyticDistribution(product, move, moveLine);
 
-    TaxLine taxLine =
-        accountManagementAccountService.getTaxLine(
-            originDate, product, company, partner.getFiscalPosition(), isPurchase);
-    if (taxLine != null) {
-      moveLine.setTaxLine(taxLine);
-      moveLine.setTaxRate(taxLine.getValue());
-      moveLine.setTaxCode(taxLine.getTax().getCode());
-    }
-
     move.addMoveLineListItem(moveLine);
 
-    if (recoveredTax && taxLine.getValue().compareTo(BigDecimal.ZERO) != 0) {
-      generateTaxMoveLine(move, moveLine, origin, isPurchase, isFixedAssets, moveDescription);
+    if (recoveredTax) {
+      TaxLine taxLine =
+          accountManagementAccountService.getTaxLine(
+              originDate, product, company, partner.getFiscalPosition(), isPurchase);
+      if (taxLine != null) {
+        moveLine.setTaxLine(taxLine);
+        moveLine.setTaxRate(taxLine.getValue());
+        moveLine.setTaxCode(taxLine.getTax().getCode());
+
+        if (taxLine.getValue().compareTo(BigDecimal.ZERO) != 0) {
+          generateTaxMoveLine(move, moveLine, origin, isPurchase, isFixedAssets, moveDescription);
+        }
+      }
     }
 
     return moveLine;
@@ -581,5 +597,49 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
       reconcileService.reconcile(moveLine, reverseMoveLine, false, false);
     }
+  }
+
+  public List<Long> getStockMoveLines(Batch batch) {
+    int offset = 0;
+    Boolean includeNotStockManagedProduct =
+        batch.getSupplychainBatch().getIncludeNotStockManagedProduct();
+
+    List<StockMoveLine> stockMoveLineList;
+    List<Long> stockMoveLineIdList = new ArrayList<>();
+
+    Query<StockMove> stockMoveQuery =
+        stockMoverepository.all().filter(":batch MEMBER OF self.batchSet").bind("batch", batch);
+    List<Long> stockMoveIdList =
+        stockMoveQuery
+            .select("id")
+            .fetch(0, 0)
+            .stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
+
+    if (stockMoveIdList.isEmpty()) {
+      stockMoveLineIdList.add(0L);
+    } else {
+      Query<StockMoveLine> stockMoveLineQuery =
+          stockMoveLineRepository
+              .all()
+              .filter("self.stockMove.id IN :stockMoveIdList")
+              .bind("stockMoveIdList", stockMoveIdList)
+              .order("id");
+
+      while (!(stockMoveLineList = stockMoveLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+        offset += stockMoveLineList.size();
+
+        for (StockMoveLine stockMoveLine : stockMoveLineList) {
+          Product product = stockMoveLine.getProduct();
+          if (!checkStockMoveLine(stockMoveLine, product, includeNotStockManagedProduct)) {
+            stockMoveLineIdList.add(stockMoveLine.getId());
+          }
+        }
+
+        JPA.clear();
+      }
+    }
+    return stockMoveLineIdList;
   }
 }

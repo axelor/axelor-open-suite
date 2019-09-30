@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_PAYMENT_MODE = /*$$(*/ "SaleOrder.paymentMode"; /*)*/
   public static final String SALES_ORDER_SUPPLY_REF = /*$$(*/ "SaleOrder.supplyRef"; /*)*/
   public static final String SALES_ORDER_CUSTOMER_REF = /*$$(*/ "SaleOrder.customerRef"; /*)*/
+  public static final String SALES_ORDER_CUSTOMER_CODE = /*$$(*/ "SaleOrder.customerCode"; /*)*/
   public static final String SALES_ORDER_SUPPLIER = /*$$(*/ "SaleOrder.supplier"; /*)*/
   public static final String SALES_ORDER_CUSTOMER = /*$$(*/ "SaleOrder.customer"; /*)*/
   public static final String SALES_ORDER_INVOICING_ADDRS = /*$$(*/ "SaleOrder.invoicingAddrs"; /*)*/
@@ -73,4 +74,9 @@ public interface ITranslation {
   public static final String SALES_ORDER_VALIDITY_DATE = /*$$(*/ "SaleOrder.validityDate"; /*)*/;
   public static final String SALES_ORDER_ESTIMATED_DELIVERY_DATE = /*$$(*/
       "SaleOrder.estimatedDeliveryDate"; /*)*/;
+  public static final String SALES_ORDER_IS_ISPM_REQUIRED = /*$$(*/
+      "SaleOrder.isIspmRequired"; /*)*/;
+
+  public static final String SALES_ORDER_PRODUCT_SEQUENCE = /*$$(*/
+      "SaleOrder.productSequence"; /*)*/
 }

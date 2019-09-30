@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,6 +59,11 @@ public interface ITranslation {
   public static final String INVENTORY_PRODUCT_CATEGORY = /*$$(*/ "Inventory.productCategory"; /*)*/
   public static final String INVENTORY_LAST_INVENTORY_DATE = /*$$(*/
       "Inventory.lastInventoryDate"; /*)*/
+  public static final String INVENTORY_PRODUCT = /*$$(*/ "Inventory.product"; /*)*/
+  public static final String INVENTORY_PRODUCT_FAMILY = /*$$(*/ "Inventory.productFamily"; /*)*/
+  public static final String INVENTORY_FROM_RACK = /*$$(*/ "Inventory.fromRack"; /*)*/
+  public static final String INVENTORY_TO_RACK = /*$$(*/ "Inventory.toRack"; /*)*/
+  public static final String INVENTORY_CATEGORY = /*$$(*/ "Inventory.category"; /*)*/
 
   public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
   public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/
@@ -89,6 +94,7 @@ public interface ITranslation {
       "StockMove.customerPartnerSeq"; /*)*/
   public static final String STOCK_MOVE_SUPPLIER_PARTNER_SEQ = /*$$(*/
       "StockMove.supplierPartnerSeq"; /*)*/
+  public static final String STOCK_MOVE_NET_MASS = /*$$(*/ "StockMove.netMass"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/
@@ -110,6 +116,12 @@ public interface ITranslation {
   public static final String PICKING_STOCK_MOVE_QTY = /*$$(*/ "PickingStockMove.qty"; /*)*/
   public static final String PICKING_STOCK_MOVE_WITH_WITHOUT = /*$$(*/
       "PickingStockMove.withWithout"; /*)*/
+  public static final String PICKING_STOCK_MOVE_CUSTOMER_CODE = /*$$(*/
+      "PickingStockMove.customerCode"; /*)*/
+  public static final String PICKING_STOCK_MOVE_EXTERNAL_REFERENCE = /*$$(*/
+      "PickingStockMove.externalReference"; /*)*/
+  public static final String PICKING_STOCK_MOVE_DELIVERY_CONDITION = /*$$(*/
+      "PickingStockMove.deliveryCondition"; /*)*/
 
   // Certificate of conformity
   public static final String CONFORMITY_CERTIFICATE_NUMBER = /*$$(*/
@@ -134,7 +146,13 @@ public interface ITranslation {
       "ConformityCertificate.name"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_FUNCTION = /*$$(*/
       "ConformityCertificate.function"; /*)*/
-  public static final String CONFORMITY_CERTIFICATE_QTY = /*$$(*/ "ConformityCertificate.qty"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_QTY_UNIT = /*$$(*/
+      "ConformityCertificate.qtyUnit"; /*)*/
   public static final String CONFORMITY_CERTIFICATE_SEQUENCE = /*$$(*/
       "ConformityCertificate.sequence"; /*)*/
+  public static final String CONFORMITY_CERTIFICATE_STOCK_MOVE_LINE_ROW_NUM = /*$$(*/
+      "ConformityCertificate.stockMoveLineRowNum"; /*)*/
+  public static final String CONFORMITY_LOT_NO_REF = /*$$(*/ "ConformityCertificate.lotNoRef"; /*)*/
+  public static final String CONFORMITY_EXTERNAL_REFERENCE = /*$$(*/
+      "ConformityCertificate.externalReference"; /*)*/
 }

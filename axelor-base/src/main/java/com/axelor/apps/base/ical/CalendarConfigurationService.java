@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -129,7 +129,7 @@ public class CalendarConfigurationService {
         ActionView.define(title)
             .name(name)
             .model("com.axelor.apps.base.db.ICalendarEvent")
-            .add("calendar", "calendar-all")
+            .add("calendar", "calendar-event-all")
             .add("grid", "calendar-event-grid")
             .add("form", "calandar-event-form")
             .domain("self.calendar.id in (:_calendarIdList)")

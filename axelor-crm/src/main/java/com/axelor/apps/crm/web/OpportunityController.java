@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,7 +23,6 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -72,10 +71,15 @@ public class OpportunityController {
     }
   }
 
-  public void createClient(ActionRequest request, ActionResponse response) throws AxelorException {
-    Opportunity opportunity = request.getContext().asType(Opportunity.class);
-    opportunity = opportunityRepo.find(opportunity.getId());
-    opportunityService.createClientFromLead(opportunity);
-    response.setReload(true);
+  public void createClient(ActionRequest request, ActionResponse response) {
+    try {
+      Opportunity opportunity = request.getContext().asType(Opportunity.class);
+      opportunity = opportunityRepo.find(opportunity.getId());
+      opportunityService.createClientFromLead(opportunity);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
+    }
   }
 }

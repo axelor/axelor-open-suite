@@ -141,6 +141,7 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">moveline_id</property>
+                    <property name="alias">moveline_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">moveline_id</text-property>
                     <property name="onColumnLayout">false</property>
@@ -148,6 +149,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">move_line_name</property>
+                    <property name="alias">move_line_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">move_line_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -155,6 +157,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">move_line_description</property>
+                    <property name="alias">move_line_description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">move_line_description</text-property>
                     <property name="onColumnLayout">false</property>
@@ -162,6 +165,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">date_val</property>
+                    <property name="alias">date_val</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_val</text-property>
                     <property name="onColumnLayout">false</property>
@@ -169,6 +173,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">partner</property>
+                    <property name="alias">partner</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner</text-property>
                     <property name="onColumnLayout">false</property>
@@ -176,6 +181,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">account</property>
+                    <property name="alias">account</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">account</text-property>
                     <property name="onColumnLayout">false</property>
@@ -183,6 +189,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
+                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <property name="onColumnLayout">false</property>
@@ -190,10 +197,49 @@
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
+                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">credit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">reconcile_group_code</property>
+                    <property name="alias">reconcile_group_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">reconcile_group_code</text-property>
+                    <text-property name="heading">reconcile_group_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">due_date</property>
+                    <property name="alias">due_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">due_date</text-property>
+                    <text-property name="heading">due_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">journal_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">journal_code</text-property>
+                    <text-property name="heading">journal_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">account_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">account_code</text-property>
+                    <text-property name="heading">account_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">account_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">account_name</text-property>
+                    <text-property name="heading">account_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">move_sequence</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">move_sequence</text-property>
+                    <text-property name="heading">move_sequence</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -250,6 +296,36 @@
                         <property name="position">8</property>
                         <property name="name">credit</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">reconcile_group_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">due_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">journal_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">account_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">account_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">move_sequence</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -312,15 +388,59 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">reconcile_group_code</property>
+                    <property name="nativeName">reconcile_group_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">due_date</property>
+                    <property name="nativeName">due_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">journal_code</property>
+                    <property name="nativeName">journal_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">account_code</property>
+                    <property name="nativeName">account_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">account_name</property>
+                    <property name="nativeName">account_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">move_sequence</property>
+                    <property name="nativeName">move_sequence</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, MoveLine.name as move_line_name, MoveLine.description as move_line_description,
 MoveLine.date_val, MoveLine.partner_full_name as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
-MoveLine.debit, MoveLine.credit 
+MoveLine.debit, MoveLine.credit, ReconcileGroup.code as reconcile_group_code, MoveLine.due_date, Journal.code as journal_code,
+Account.code as account_code , Account.name as account_name , Move.reference as move_sequence
 
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
+left outer join public.account_reconcile_group as ReconcileGroup on (ReconcileGroup.id = MoveLine.reconcile_group)
 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
 left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
@@ -351,6 +471,7 @@ Move.company = AccountingReport.company AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
 Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
+AND (AccountingReport.type_select = 1 OR (AccountingReport.type_select != 1 AND Account.use_for_partner_balance is true))
 
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
@@ -440,6 +561,30 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">report_type</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">report_type</text-property>
+                    <text-property name="heading">report_type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_code_account</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_code_account</text-property>
+                    <text-property name="heading">display_code_account</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_move_sequence</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_move_sequence</text-property>
+                    <text-property name="heading">display_move_sequence</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_name_account</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_name_account</text-property>
+                    <text-property name="heading">display_name_account</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -515,6 +660,26 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                         <property name="position">12</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">report_type</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">display_code_account</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">display_move_sequence</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">display_name_account</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -604,11 +769,52 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">report_type</property>
+                    <property name="nativeName">report_type</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">display_code_account</property>
+                    <property name="nativeName">display_code_account</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">display_move_sequence</property>
+                    <property name="nativeName">display_move_sequence</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">display_name_account</property>
+                    <property name="nativeName">display_name_account</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Company.name as company_name, AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
-AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path,
-Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
-PaymentMode.name as payment_mode, Currency.code as currency
+            <xml-property name="queryText"><![CDATA[select 
+Company.name as company_name, 
+AccountingReport.date_from, 
+AccountingReport.date_to, 
+AccountingReport.date_val as report_date,
+AccountingReport.publication_date_time as report_date_edition, 
+MetaFile.file_path as logo_path,
+Period.name as period_name, 
+Journal.name as journal_name, 
+AccountingReport.global, 
+AccountingReport.global_by_date,
+PaymentMode.name as payment_mode, 
+Currency.code as currency,
+AccountingReport.type_select as report_type,
+AccountingReport.display_code_account_on_printing as display_code_account,
+AccountingReport.display_move_sequence_on_printing as display_move_sequence,
+AccountingReport.display_name_account_on_printing as display_name_account
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -889,13 +1095,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="width">1.011111111111111in</property>
                     </column>
                     <row id="3101">
-                        <cell id="3102">
-                            <label id="3115">
-                                <property name="fontSize">9pt</property>
-                                <property name="textAlign">right</property>
-                                <text-property name="text">Page</text-property>
-                            </label>
-                        </cell>
+                        <cell id="3102"/>
                         <cell id="3103">
                             <grid id="3104">
                                 <property name="textAlign">right</property>
@@ -922,6 +1122,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="paddingRight">0pt</property>
                                         <text id="3112">
                                             <property name="fontSize">9pt</property>
+                                            <property name="textAlign">center</property>
                                             <property name="contentType">plain</property>
                                             <text-property name="content"><![CDATA[/]]></text-property>
                                         </text>
@@ -933,6 +1134,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="paddingRight">0pt</property>
                                         <auto-text id="3114">
                                             <property name="fontSize">9pt</property>
+                                            <property name="textAlign">left</property>
                                             <property name="type">total-page</property>
                                         </auto-text>
                                     </cell>
@@ -1022,6 +1224,33 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">report_type</property>
+                    <text-property name="displayName">report_type</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["report_type"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_code_account</property>
+                    <text-property name="displayName">display_code_account</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_code_account"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_name_account</property>
+                    <text-property name="displayName">display_name_account</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_name_account"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_move_sequence</property>
+                    <text-property name="displayName">display_move_sequence</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_move_sequence"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="492">
                 <property name="width">1.6in</property>
@@ -1062,7 +1291,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'AccountingReportType1.title'</value>
+                                    <value type="javascript">'AccountingReportType'+row["report_type"]+'.title'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1227,7 +1456,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </row>
             <row id="501">
                 <cell id="502">
-                    <text id="4191">
+                    <text id="4210">
                         <property name="fontSize">10pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
@@ -1236,17 +1465,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopStyle">none</property>
                         <property name="textAlign">right</property>
                         <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["journal_name"]</expression>
-                            </structure>
-                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'AccountingReportType1.journal'</value>
+                                    <value type="javascript">'Currency'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1269,9 +1492,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="3064">
-                    <text id="559">
+                    <text id="4219">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["journal_name"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="503"/>
@@ -1362,7 +1585,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </row>
             <row id="4211">
                 <cell id="4212">
-                    <text id="4210">
+                    <text id="4191">
                         <property name="fontSize">10pt</property>
                         <property name="fontWeight">normal</property>
                         <property name="borderBottomStyle">none</property>
@@ -1371,11 +1594,17 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopStyle">none</property>
                         <property name="textAlign">right</property>
                         <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row._outer["journal_name"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'Currency'</value>
+                                    <value type="javascript">'AccountingReportType1.journal'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1398,9 +1627,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="4213">
-                    <text id="4219">
+                    <text id="559">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["journal_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4214"/>
@@ -1413,92 +1642,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="507">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <text id="4199">
-                        <property name="fontSize">10pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["payment_mode"]</expression>
-                            </structure>
-                        </list-property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'AccountingReportType1.paymentMode'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                    </text>
                 </cell>
-                <cell id="508">
-                    <text id="560">
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'value:'+row["payment_mode"]</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["payment_mode"]}</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
+                <cell id="508"/>
                 <cell id="4120"/>
                 <cell id="4131"/>
                 <cell id="509"/>
                 <cell id="510"/>
-            </row>
-            <row id="536">
-                <property name="height">0.28125in</property>
-                <cell id="537">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                </cell>
-                <cell id="538"/>
-                <cell id="4124"/>
-                <cell id="4135"/>
-                <cell id="539"/>
-                <cell id="540"/>
             </row>
             <row id="544">
                 <property name="pageBreakAfter">auto</property>
@@ -1611,39 +1760,195 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">due_date</property>
+                                <text-property name="displayName">due_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                            <structure>
+                                <property name="name">reconcile_group_code</property>
+                                <text-property name="displayName">reconcile_group_code</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["reconcile_group_code"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">journal_code</property>
+                                <text-property name="displayName">journal_code</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["journal_code"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">journal_code1</property>
+                                <text-property name="displayName">journal_code</text-property>
+                                <expression name="expression" type="javascript">row["journal_code"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">account_code</property>
+                                <text-property name="displayName">account_code</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["account_code"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">account_name</property>
+                                <text-property name="displayName">account_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["account_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">move_sequence</property>
+                                <text-property name="displayName">move_sequence</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["move_sequence"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="4147">
-                            <property name="width">0.5in</property>
+                            <property name="width">2%</property>
                         </column>
                         <column id="4090">
-                            <property name="width">1.5in</property>
+                            <property name="width">15%</property>
+                        </column>
+                        <column id="4257">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_code_account"]</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">8%</property>
+                        </column>
+                        <column id="4263">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_name_account"]</expression>
+                                </structure>
+                            </list-property>
+                            <property name="fontSize">10pt</property>
+                            <property name="width">15%</property>
                         </column>
                         <column id="4091">
-                            <property name="width">1in</property>
+                            <property name="width">8%</property>
+                        </column>
+                        <column id="4237">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["report_type"] == 1</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">8%</property>
+                        </column>
+                        <column id="4249">
+                            <property name="width">10%</property>
                         </column>
                         <column id="4092">
-                            <property name="width">3in</property>
+                            <property name="width">29%</property>
                         </column>
                         <column id="4093">
-                            <property name="width">2in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4095">
-                            <property name="width">1in</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4096">
-                            <property name="width">1in</property>
+                            <property name="width">9%</property>
                         </column>
                         <column id="4153">
-                            <property name="width">1in</property>
+                            <property name="width">9%</property>
+                        </column>
+                        <column id="4225">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["report_type"] == 1</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">7%</property>
                         </column>
                         <header>
                             <row id="4052">
                                 <cell id="4142"/>
                                 <cell id="4053"/>
+                                <cell id="4252">
+                                    <text id="4265">
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType1.code'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4258">
+                                    <text id="4264">
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType1.name'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="4055">
                                     <text id="4207">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1677,15 +1982,87 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="4057">
-                                    <text id="4208">
-                                        <property name="fontSize">10pt</property>
+                                <cell id="4232">
+                                    <text id="4240">
+                                        <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType7.dueDate'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4244">
+                                    <text id="4250">
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType7.journalCode'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4057">
+                                    <text id="4208">
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">left</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -1715,13 +2092,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </cell>
                                 <cell id="4059">
                                     <text id="4209">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
-                                        <property name="textAlign">center</property>
+                                        <property name="textAlign">left</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -1751,13 +2128,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </cell>
                                 <cell id="4063">
                                     <text id="4205">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
-                                        <property name="textAlign">center</property>
+                                        <property name="textAlign">right</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -1787,13 +2164,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </cell>
                                 <cell id="4065">
                                     <text id="4206">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
-                                        <property name="textAlign">center</property>
+                                        <property name="textAlign">right</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -1823,7 +2200,43 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </cell>
                                 <cell id="4148">
                                     <text id="4204">
-                                        <property name="fontSize">10pt</property>
+                                        <property name="fontSize">9.5pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'AccountingReportType1.balance'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4220">
+                                    <text id="4243">
+                                        <property name="fontSize">9.5pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">none</property>
                                         <property name="borderLeftStyle">none</property>
@@ -1835,7 +2248,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'AccountingReportType1.balance'</value>
+                                                    <value type="javascript">'AccountingReportType7.reconcileGroup'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -1873,7 +2286,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <cell id="4143">
-                                        <property name="colSpan">8</property>
+                                        <property name="colSpan">13</property>
                                         <property name="rowSpan">1</property>
                                         <data id="4115">
                                             <property name="resultSetColumn">account</property>
@@ -1885,9 +2298,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <row id="4106">
                                     <cell id="4145"/>
                                     <cell id="4107">
-                                        <property name="colSpan">3</property>
+                                        <property name="colSpan">7</property>
                                         <property name="rowSpan">1</property>
                                         <text-data id="4141">
+                                            <property name="fontSize">9.5pt</property>
                                             <property name="fontWeight">bold</property>
                                             <expression name="valueExpr">"Total" + " "+ row["account"]</expression>
                                             <property name="contentType">html</property>
@@ -1896,6 +2310,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <cell id="4110"/>
                                     <cell id="4112">
                                         <data id="4139">
+                                            <property name="fontSize">9.5pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -1907,6 +2322,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </cell>
                                     <cell id="4113">
                                         <data id="4138">
+                                            <property name="fontSize">9.5pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -1918,6 +2334,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </cell>
                                     <cell id="4151">
                                         <data id="4156">
+                                            <property name="fontSize">9.5pt</property>
                                             <property name="fontWeight">bold</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
@@ -1933,6 +2350,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             <property name="resultSetColumn">sum_balance</property>
                                         </data>
                                     </cell>
+                                    <cell id="4223"/>
                                 </row>
                             </footer>
                         </group>
@@ -1940,14 +2358,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <row id="4067">
                                 <cell id="4144"/>
                                 <cell id="4068">
+                                    <data id="4269">
+                                        <property name="fontSize">8.5pt</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row._outer["display_move_sequence"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">move_sequence</property>
+                                    </data>
                                     <data id="4069">
-                                        <property name="fontSize">9pt</property>
+                                        <property name="fontSize">8.5pt</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["display_move_sequence"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="resultSetColumn">move_line_name</property>
+                                    </data>
+                                </cell>
+                                <cell id="4254">
+                                    <data id="4266">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">account_code</property>
+                                    </data>
+                                </cell>
+                                <cell id="4260">
+                                    <data id="4267">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">account_name</property>
                                     </data>
                                 </cell>
                                 <cell id="4070">
                                     <data id="4073">
-                                        <property name="fontSize">9pt</property>
+                                        <property name="fontSize">8.5pt</property>
                                         <structure name="dateTimeFormat">
                                             <property name="category">Short Date</property>
                                             <property name="pattern">Short Date</property>
@@ -1956,21 +2404,39 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="resultSetColumn">date_val</property>
                                     </data>
                                 </cell>
+                                <cell id="4234">
+                                    <data id="4239">
+                                        <property name="fontSize">8.5pt</property>
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">due_date</property>
+                                    </data>
+                                </cell>
+                                <cell id="4246">
+                                    <data id="4251">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="resultSetColumn">journal_code1</property>
+                                    </data>
+                                </cell>
                                 <cell id="4072">
                                     <data id="4071">
-                                        <property name="fontSize">9pt</property>
+                                        <property name="fontSize">8.5pt</property>
                                         <property name="resultSetColumn">move_line_description</property>
                                     </data>
                                 </cell>
                                 <cell id="4074">
                                     <data id="4075">
-                                        <property name="fontSize">9pt</property>
+                                        <property name="fontSize">8.5pt</property>
                                         <property name="resultSetColumn">partner</property>
                                     </data>
                                 </cell>
                                 <cell id="4078">
                                     <data id="4079">
-                                        <property name="fontSize">9pt</property>
+                                        <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -1981,7 +2447,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </cell>
                                 <cell id="4080">
                                     <data id="4081">
-                                        <property name="fontSize">9pt</property>
+                                        <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -1992,7 +2458,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 </cell>
                                 <cell id="4150">
                                     <data id="4155">
-                                        <property name="fontSize">9pt</property>
+                                        <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">###,##0.00</property>
@@ -2007,18 +2473,31 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="resultSetColumn">balance</property>
                                     </data>
                                 </cell>
+                                <cell id="4222">
+                                    <data id="4242">
+                                        <property name="fontSize">8.5pt</property>
+                                        <property name="marginLeft">1pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">reconcile_group_code</property>
+                                    </data>
+                                </cell>
                             </row>
                         </detail>
                         <footer>
                             <row id="4082">
                                 <cell id="4146"/>
                                 <cell id="4083"/>
+                                <cell id="4256"/>
+                                <cell id="4262"/>
                                 <cell id="4084"/>
+                                <cell id="4236"/>
+                                <cell id="4248"/>
                                 <cell id="4085"/>
                                 <cell id="4086"/>
                                 <cell id="4088"/>
                                 <cell id="4089"/>
                                 <cell id="4152"/>
+                                <cell id="4224"/>
                             </row>
                         </footer>
                     </table>

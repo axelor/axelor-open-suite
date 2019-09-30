@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.report;
 
 public interface ITranslation {
 
+  public static final String PROJECT_TITLE = /*$$(*/ "Project.title"; /*)*/
   public static final String PROJECT_CUSTOMER = /*$$(*/ "Project.customer"; /*)*/
   public static final String PROJECT_CURRENCY = /*$$(*/ "Project.currency"; /*)*/
   public static final String PROJECT_INITIAL = /*$$(*/ "Project.initial"; /*)*/

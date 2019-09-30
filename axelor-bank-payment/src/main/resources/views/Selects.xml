@@ -75,6 +75,8 @@
 		<option value="pain.001.001.03.xct">pain.001.001.03.xct</option>
 		<option value="pain.008.001.01.sbb">pain.008.001.01.sbb</option>
 		<option value="pain.008.001.01.sdd">pain.008.001.01.sdd</option>
+		<option value="pain.008.001.02.sbb">pain.008.001.02.sbb</option>
+		<option value="pain.008.001.02.sdd">pain.008.001.02.sdd</option>
 		<option value="pain.fin.mt101.dct">pain.fin.mt101.dct</option>
 		<option value="pain.fin.mt101.mct">pain.fin.mt101.mct</option>
 		<option value="pain.fin.mt101.xct">pain.fin.mt101.xct</option>
@@ -228,6 +230,12 @@
 	
 	<selection name="meta.schedule.batch.service.select" id="bank.payment.meta.schedule.batch.service.select">
 		<option value="com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService">com.axelor.apps.bankpayment.service.batch.BankPaymentBatchService</option>
+	</selection>
+		
+	<selection name="bankpayment.bank.order.technical.origin.select">
+		<option value="0">Entry</option>
+		<option value="1">Automatic</option>
+		<option value="2">Import</option>
 	</selection>
 
 </object-views>

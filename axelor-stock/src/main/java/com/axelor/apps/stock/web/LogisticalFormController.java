@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -122,6 +122,18 @@ public class LogisticalFormController {
           Beans.get(LogisticalFormService.class).getCustomerAccountNumberToCarrier(logisticalForm);
       response.setValue(
           "customerAccountNumberToCarrier", customerAccountNumberToCarrier.orElse(null));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void refreshProductNetMass(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+      logisticalFormService.updateProductNetMass(logisticalForm);
+      response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
+      response.setValue("totalNetMass", logisticalForm.getTotalNetMass());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -3,6 +3,18 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">22</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">22</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">22</property>
+        </structure>
+        <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">4</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
@@ -285,12 +297,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="LogisticalFormDS" id="22">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">delivery_number</property>
+                    <property name="columnName">delivery_number_seq</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">delivery_number</text-property>
-                    <text-property name="heading">delivery_number</text-property>
+                    <text-property name="displayName">delivery_number_seq</text-property>
+                    <text-property name="heading">delivery_number_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">collection_date</property>
@@ -417,7 +430,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">delivery_number</property>
+                        <property name="name">delivery_number_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -516,8 +529,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">delivery_number</property>
-                    <property name="nativeName">delivery_number</property>
+                    <property name="name">delivery_number_seq</property>
+                    <property name="nativeName">delivery_number_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -649,7 +662,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
-	delivery_number,
+	delivery_number_seq,
 	collection_date,
 	status_select,
 	total_net_mass,
@@ -1157,6 +1170,7 @@ where LogisticalForm.id = ?
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="LogisticalFormLineDS" id="142">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="computedColumns">
                 <structure>
                     <property name="name">pc_number</property>
@@ -1219,6 +1233,12 @@ pcNumber;</expression>
                     <text-property name="heading">dimensions</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">unit_net_mass</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">unit_net_mass</text-property>
+                    <text-property name="heading">unit_net_mass</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">stock_move_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">stock_move_seq</text-property>
@@ -1229,12 +1249,6 @@ pcNumber;</expression>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_code</text-property>
                     <text-property name="heading">product_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_description</text-property>
-                    <text-property name="heading">product_description</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sale_order_seq</property>
@@ -1259,6 +1273,12 @@ pcNumber;</expression>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">net_mass</text-property>
                     <text-property name="heading">net_mass</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">line_format</property>
@@ -1323,17 +1343,17 @@ pcNumber;</expression>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">unit_net_mass</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">stock_move_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
-                        <property name="name">product_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
                         <property name="position">9</property>
-                        <property name="name">product_description</property>
+                        <property name="name">product_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -1358,16 +1378,21 @@ pcNumber;</expression>
                     </structure>
                     <structure>
                         <property name="position">14</property>
-                        <property name="name">line_format</property>
+                        <property name="name">product_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">pc_number</property>
+                        <property name="name">line_format</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
+                        <property name="name">pc_number</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
                         <property name="name">order_ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -1419,22 +1444,22 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="position">7</property>
+                    <property name="name">unit_net_mass</property>
+                    <property name="nativeName">unit_net_mass</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
                     <property name="name">stock_move_seq</property>
                     <property name="nativeName">stock_move_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">product_code</property>
                     <property name="nativeName">product_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">product_description</property>
-                    <property name="nativeName">product_description</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
@@ -1468,6 +1493,13 @@ pcNumber;</expression>
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">product_name</property>
+                    <property name="nativeName">product_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">line_format</property>
                     <property name="nativeName">line_format</property>
                     <property name="dataType">string</property>
@@ -1481,13 +1513,14 @@ pcNumber;</expression>
 	LogisticalFormLine.parcel_pallet_number,
 	LogisticalFormLine.gross_mass,
 	LogisticalFormLine.dimensions,
+	LogisticalFormLine.unit_net_mass,
 	StockMove.stock_move_seq,
 	Product.code as product_code,
-	Product.name as product_description,
 	SaleOrder.sale_order_seq,
 	SaleOrder.order_number,
 	SaleOrder.external_reference,
 	StockMoveLine.net_mass,
+	StockMoveLine.product_name,
 	coalesce(nullif(translat.message_value, ''), translat.message_key) as line_format
 
 from stock_logistical_form_line as LogisticalFormLine
@@ -1497,9 +1530,9 @@ left join base_product as Product on StockMoveLine.product = Product.id
 left join sale_sale_order as SaleOrder on StockMove.origin_id = SaleOrder.id
 left join meta_translation as translat on translat.language = ?
 and translat.message_key = case LogisticalFormLine.type_select
-when 1 then 'Parcel No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>'
-when 2 then 'Pallet No. <strong>{0}</strong> - Dimensions (cm): <strong>{1}</strong> - Gross mass ({2}): <strong>{3}</strong>'
-else 'Stock move No. {0} / Ref. No. {1}'
+when 1 then 'LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>'
+when 2 then 'LogisticalFormLine.palletNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>'
+else 'LogisticalFormLine.stockMoveNo {0} / LogisticalFormLine.refNo {1}'
 end
 where LogisticalFormLine.logistical_form = ?
 order by LogisticalFormLine.sequence]]></xml-property>
@@ -1867,7 +1900,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                         <structure>
                             <property name="name">delivery_number</property>
                             <text-property name="displayName">delivery_number</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                            <expression name="expression" type="javascript">dataSetRow["delivery_number_seq"]</expression>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
@@ -2022,23 +2055,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                 </row>
                                 <row id="27">
                                     <property name="height">0.59375in</property>
-                                    <cell id="28">
-                                        <text id="29">
-                                            <property name="fontSize">10pt</property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="html">
-[
-	row["company_addressl2"],
-	row["company_addressl3"],
-	row["company_addressl4"],
-	row["company_addressl5"],
-	row["company_addressl6"],
-	row["company_country"]
-].filter(function(x) { return x; }).join("<br />");
-</VALUE-OF>
-]]></text-property>
-                                        </text>
-                                    </cell>
+                                    <cell id="28"/>
                                 </row>
                             </grid>
                         </cell>
@@ -2052,7 +2069,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">"Packing list"</value>
+                                            <value type="javascript">"LogisticalForm.packingList"</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -2074,7 +2091,24 @@ order by LogisticalFormLine.sequence]]></xml-property>
                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="19"/>
+                        <cell id="19">
+                            <text id="29">
+                                <property name="fontSize">10pt</property>
+                                <property name="marginLeft">35%</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="html">
+[
+	row["company_addressl2"],
+	row["company_addressl3"],
+	row["company_addressl4"],
+	row["company_addressl5"],
+	row["company_addressl6"],
+	row["company_country"]
+].filter(function(x) { return x; }).join("<br />");
+</VALUE-OF>
+]]></text-property>
+                            </text>
+                        </cell>
                     </row>
                     <row id="31">
                         <property name="height">0.5729166666666666in</property>
@@ -2177,7 +2211,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Packing number:"</value>
+                                    <value type="javascript">"LogisticalForm.packagingNumber"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2200,18 +2234,18 @@ order by LogisticalFormLine.sequence]]></xml-property>
                     </text>
                 </cell>
                 <cell id="80">
-                    <data id="4527">
+                    <data id="4531">
                         <property name="dataSet">LogisticalFormDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">delivery_number</property>
-                                <text-property name="displayName">Delivery_Number</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                                <property name="name">delivery_number_seq</property>
+                                <text-property name="displayName">Delivery_Number_Seq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["delivery_number_seq"]</expression>
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
-                        <property name="resultSetColumn">delivery_number</property>
+                        <property name="resultSetColumn">delivery_number_seq</property>
                     </data>
                 </cell>
                 <cell id="81"/>
@@ -2233,7 +2267,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Date:"</value>
+                                    <value type="javascript">"LogisticalForm.date"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2282,7 +2316,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Customer code:"</value>
+                                    <value type="javascript">"LogisticalForm.customerCode"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2328,7 +2362,7 @@ order by LogisticalFormLine.sequence]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Customer name:"</value>
+                                    <value type="javascript">"LogisticalForm.customerName"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2377,8 +2411,9 @@ order by LogisticalFormLine.sequence]]></xml-property>
                 <structure>
                     <property name="name">delivery_number</property>
                     <text-property name="displayName">delivery_number</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_number_seq"]</expression>
                     <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">collection_date</property>
@@ -2579,19 +2614,6 @@ if (String.myFormat === undefined) {
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">product_description</property>
-                                <text-property name="displayName">product_description</text-property>
-                                <expression name="expression" type="javascript">var maxLen = 100;
-var ellipse = "...";
-if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description"].length > maxLen) {
-  dataSetRow["product_description"].substring(0, maxLen - ellipse.length) + ellipse;
-} else {
-  dataSetRow["product_description"];
-}</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">sale_order_seq</property>
                                 <text-property name="displayName">sale_order_seq</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["sale_order_seq"]</expression>
@@ -2631,8 +2653,9 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                             <structure>
                                 <property name="name">product_description_1</property>
                                 <text-property name="displayName">product_description</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["product_description"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
                                 <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">net_mass_1</property>
@@ -2650,7 +2673,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["net_mass"] * row["qty"]</expression>
+                                        <expression name="value" type="javascript">row["unit_net_mass"] * row["qty"]</expression>
                                     </structure>
                                 </list-property>
                                 <expression name="filterExpr" type="javascript">row["type_select"] == 3</expression>
@@ -2699,6 +2722,25 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                 <expression name="expression" type="javascript">dataSetRow["order_ref"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">product_name</property>
+                                <text-property name="displayName">product_name</text-property>
+                                <expression name="expression" type="javascript">var maxLen = 100;
+var ellipse = "...";
+if (dataSetRow["product_name"] &amp;&amp; dataSetRow["product_name"].length > maxLen) {
+  dataSetRow["product_name"].substring(0, maxLen - ellipse.length) + ellipse;
+} else {
+  dataSetRow["product_name"];
+}</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">unit_net_mass</property>
+                                <text-property name="displayName">unit_net_mass</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["unit_net_mass"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
                         <method name="onCreate"><![CDATA[
 ]]></method>
@@ -2739,7 +2781,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Item"</value>
+                                                    <value type="javascript">"LogisticalForm.item"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2776,7 +2818,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Item description"</value>
+                                                    <value type="javascript">"LogisticalForm.itemDescription"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2813,7 +2855,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Net mass"</value>
+                                                    <value type="javascript">"StockMove.netMass"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2846,7 +2888,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Qty"</value>
+                                                    <value type="javascript">"LogisticalFormLine.qty"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -2961,7 +3003,7 @@ if (dataSetRow["product_description"] &amp;&amp; dataSetRow["product_description
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">"Total net mass"</value>
+                                                        <value type="javascript">"LogisticalForm.totalNetMass"</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
@@ -3055,7 +3097,7 @@ default:
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'value:'+row["product_description"]</value>
+                                                    <value type="javascript">'value:'+row["product_name"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3074,7 +3116,7 @@ default:
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_description"]}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_name"]}</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="194">
@@ -3084,13 +3126,13 @@ default:
                                     <property name="borderRightWidth">thin</property>
                                     <property name="paddingLeft">4pt</property>
                                     <property name="paddingRight">4pt</property>
-                                    <data id="195">
+                                    <data id="4535">
                                         <structure name="numberFormat">
                                             <property name="category">Fixed</property>
                                             <property name="pattern">#,##0.000{RoundingMode=HALF_UP}</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">net_mass</property>
+                                        <property name="resultSetColumn">unit_net_mass</property>
                                     </data>
                                 </cell>
                                 <cell id="255">
@@ -3127,7 +3169,7 @@ default:
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Number of parcels/pallets: {0} - Total gross mass ({1}): {2}"</value>
+                                                    <value type="javascript">"LogisticalFormLine.numberOfParcels/Pallets: {0} - LogisticalForm.totalGrossMass ({1}): {2}"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3139,6 +3181,7 @@ default:
                                                 <property name="dataType">string</property>
                                             </structure>
                                         </list-property>
+                                        <structure name="toc"/>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>
 var total_gross_mass = row._outer._outer["total_gross_mass"] ? Formatter.format(row._outer._outer["total_gross_mass"],  "#,##0.00") : "N/A";
@@ -3173,7 +3216,7 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">"Total net mass"</value>
+                                                    <value type="javascript">"LogisticalForm.totalNetMass"</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
@@ -3248,8 +3291,9 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                 <structure>
                     <property name="name">delivery_number</property>
                     <text-property name="displayName">delivery_number</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["delivery_number"]</expression>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_number_seq"]</expression>
                     <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">collection_date</property>
@@ -3367,7 +3411,7 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">"Shipping comments"</value>
+                                    <value type="javascript">"LogisticalForm.shippingComments"</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -3397,7 +3441,6 @@ String.myFormat(row["translation"], row._outer["ParcelPalletCount"], row._outer.
                         <property name="paddingLeft">1pt</property>
                         <property name="paddingBottom">2pt</property>
                         <property name="paddingRight">1pt</property>
-                        <property name="textAlign">center</property>
                         <property name="resultSetColumn">external_delivery_comment</property>
                     </data>
                 </cell>

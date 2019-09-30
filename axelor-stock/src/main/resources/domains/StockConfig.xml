@@ -33,13 +33,63 @@
     
     <boolean name="displayTrackNbrOnPickingPrinting" title="Display tracking number details on Picking printing"/>
 	<boolean name="displayBarcodeOnPickingPrinting" title="Display barcode on Picking printing"/>
-	
+    <boolean name="displayCustomerCodeOnPickingPrinting" title="Display customer code on picking printing"/>
+
 	<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
 	
 	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"/>
 	<boolean name="isWithReturnSurplus" title="Return Surplus"/>
-	<boolean name="isWithBackorder" title="Manage Backorder"/>
+	<boolean name="isWithBackorder" title="Manage backorder"/>
+	
+	<boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"/>
+	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing"/>
+	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing"/>
+	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"/>
+	<integer name="stockLocationValue" title="Stock location value on form view" selection="stock.stock.location.value.type" />
 
+	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
+	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
+	
+	<track>
+		<field name="company" on="UPDATE"/>
+		
+		<field name="receiptDefaultStockLocation" on="UPDATE"/>
+		<field name="pickupDefaultStockLocation" on="UPDATE"/>
+		<field name="qualityControlDefaultStockLocation" on="UPDATE"/>
+		
+		<field name="customerVirtualStockLocation" on="UPDATE"/>
+		<field name="supplierVirtualStockLocation" on="UPDATE"/>
+		<field name="inventoryVirtualStockLocation" on="UPDATE"/>
+		
+		<field name="customsMassUnit" on="UPDATE"/>
+		
+		<field name="realizeStockMovesUponParcelPalletCollection" on="UPDATE"/>
+		
+		<field name="plannedStockMoveAutomaticMail" on="UPDATE"/>
+		<field name="realStockMoveAutomaticMail" on="UPDATE"/>
+		<field name="plannedStockMoveMessageTemplate" on="UPDATE"/>
+		<field name="realStockMoveMessageTemplate" on="UPDATE"/>
+		
+		<field name="conformityCertificateTitle" on="UPDATE"/>
+		<field name="conformityCertificateDescription" on="UPDATE"/>
+		<field name="signatoryUser" on="UPDATE"/>
+		
+		<field name="displayTrackNbrOnPickingPrinting" on="UPDATE"/>
+		<field name="displayBarcodeOnPickingPrinting" on="UPDATE"/>
+		<field name="displayCustomerCodeOnPickingPrinting" on="UPDATE"/>
+		
+		<field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
+		
+		<field name="displayLineDetailsOnPrinting" on="UPDATE"/>
+		<field name="isWithReturnSurplus" on="UPDATE"/>
+		<field name="isWithBackorder" on="UPDATE"/>
+		
+		<field name="pickingOrderPrintingDetailed" on="UPDATE"/>
+		<field name="isDisplaySaleValueInPrinting" on="UPDATE"/>
+		<field name="isDisplayAccountingValueInPrinting" on="UPDATE"/>
+		
+		<field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
+	</track>
   </entity>
   
 </domain-models>

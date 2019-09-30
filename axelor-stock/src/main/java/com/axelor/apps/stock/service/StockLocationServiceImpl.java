@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,9 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -36,13 +34,13 @@ import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Query;
 
 @RequestScoped
 public class StockLocationServiceImpl implements StockLocationService {
@@ -164,43 +162,6 @@ public class StockLocationServiceImpl implements StockLocationService {
     return getQty(productId, locationId, "future");
   }
 
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void computeAvgPriceForProduct(Product product) {
-    Long productId = product.getId();
-    String query =
-        "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
-            + "WHERE self.product.id = "
-            + productId
-            + " AND self.stockLocation.typeSelect != "
-            + StockLocationRepository.TYPE_VIRTUAL;
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
-    BigDecimal productAvgPrice = BigDecimal.ZERO;
-    BigDecimal qtyTot = BigDecimal.ZERO;
-    List<List<Object>> results = JPA.em().createQuery(query).getResultList();
-    if (results.isEmpty()) {
-      return;
-    }
-    for (List<Object> result : results) {
-      BigDecimal avgPrice = (BigDecimal) result.get(1);
-      BigDecimal qty = (BigDecimal) result.get(2);
-      productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
-      qtyTot = qtyTot.add(qty);
-    }
-    if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
-      return;
-    }
-    productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
-    product.setAvgPrice(productAvgPrice);
-    if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
-      product.setCostPrice(productAvgPrice);
-      if (product.getAutoUpdateSalePrice()) {
-        Beans.get(ProductService.class).updateSalePrice(product);
-      }
-    }
-    productRepo.save(product);
-  }
-
   public List<Long> getBadStockLocationLineId() {
 
     List<StockLocationLine> stockLocationLineList =
@@ -281,5 +242,28 @@ public class StockLocationServiceImpl implements StockLocationService {
     resultList.add(stockLocation);
 
     return resultList;
+  }
+
+  @Override
+  public BigDecimal getStockLocationValue(StockLocation stockLocation) {
+
+    Query query =
+        JPA.em()
+            .createQuery(
+                "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockLocationValue = 1) THEN "
+                    + "(self.avgPrice)  WHEN (location.company.stockConfig.stockLocationValue = 2) THEN "
+                    + "CASE WHEN (self.product.costTypeSelect = 3) THEN (self.avgPrice) ELSE (self.product.costPrice) END "
+                    + "WHEN (location.company.stockConfig.stockLocationValue = 3) THEN "
+                    + "(self.product.salePrice) ELSE (self.avgPrice) END ) AS value "
+                    + "FROM StockLocationLine AS self "
+                    + "LEFT JOIN StockLocation AS location "
+                    + "ON location.id= self.stockLocation "
+                    + "WHERE self.stockLocation.id =:id");
+    query.setParameter("id", stockLocation.getId());
+
+    List<?> result = query.getResultList();
+    return result.get(0) == null
+        ? BigDecimal.ZERO
+        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
   }
 }

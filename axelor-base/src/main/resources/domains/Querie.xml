@@ -8,7 +8,7 @@
   <entity name="Querie" lang="java">
   
   	<string name="name" title="Name" required="true" namecolumn="true"/>
-	<integer name="type" title="Type" required="true" default="0" selection="imarketing.querie.type.select" />
+	<integer name="type" title="Type" required="true" default="0"/>
 	<string name="query" title="Query" required="true" large="true" multiline="true"/>
 	
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>

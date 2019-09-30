@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -118,7 +118,9 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
             AuthUtils.getUser(),
             saleOrder.getCompany(),
-            null,
+            supplierPartner.getContactPartnerSet().size() == 1
+                ? supplierPartner.getContactPartnerSet().iterator().next()
+                : null,
             supplierPartner.getCurrency(),
             null,
             saleOrder.getSaleOrderSeq(),
@@ -130,6 +132,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
             supplierPartner,
             saleOrder.getTradingName());
+
+    purchaseOrder.setGeneratedSaleOrderId(saleOrder.getId());
 
     Integer atiChoice =
         Beans.get(PurchaseConfigService.class)

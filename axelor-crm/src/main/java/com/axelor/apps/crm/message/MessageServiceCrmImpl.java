@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,7 @@ package com.axelor.apps.crm.message;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.IEvent;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -49,25 +49,32 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
     Template template = null;
 
     switch (event.getTypeSelect()) {
-      case IEvent.TASK:
+      case EventRepository.TYPE_EVENT:
         template =
             Beans.get(CrmConfigService.class)
                 .getCrmConfig(event.getUser().getActiveCompany())
-                .getTaskTemplate();
+                .getEventTemplate();
         break;
 
-      case IEvent.CALL:
+      case EventRepository.TYPE_CALL:
         template =
             Beans.get(CrmConfigService.class)
                 .getCrmConfig(event.getUser().getActiveCompany())
                 .getCallTemplate();
         break;
 
-      case IEvent.MEETING:
+      case EventRepository.TYPE_MEETING:
         template =
             Beans.get(CrmConfigService.class)
                 .getCrmConfig(event.getUser().getActiveCompany())
                 .getMeetingTemplate();
+        break;
+
+      case EventRepository.TYPE_TASK:
+        template =
+            Beans.get(CrmConfigService.class)
+                .getCrmConfig(event.getUser().getActiveCompany())
+                .getTaskTemplate();
         break;
 
       default:

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,7 +25,6 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -38,11 +37,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.Query;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,21 +142,9 @@ public class StockLocationController {
 
     StockLocation stockLocation = request.getContext().asType(StockLocation.class);
 
-    Query query =
-        JPA.em()
-            .createQuery(
-                "SELECT SUM( self.currentQty * CASE WHEN (product.costTypeSelect = 3) THEN "
-                    + "(self.avgPrice) ELSE (self.product.costPrice) END ) AS value "
-                    + "FROM StockLocationLine AS self "
-                    + "WHERE self.stockLocation.id =:id");
-    query.setParameter("id", stockLocation.getId());
-
-    List<?> result = query.getResultList();
-
     response.setValue(
-        "$stockLocationValue",
-        (result.get(0) == null ? BigDecimal.ZERO : (BigDecimal) result.get(0))
-            .setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        "stockLocationValue",
+        Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
   }
 
   public void openPrintWizard(ActionRequest request, ActionResponse response) {

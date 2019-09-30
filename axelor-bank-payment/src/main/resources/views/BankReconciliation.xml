@@ -23,7 +23,9 @@
         </toolbar>
 		<panel name="mainPanel" colSpan="12">
 			<panel name="detailsPanel" readonlyIf="statusSelect == 2" colSpan="12">
-				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
+				<field name="validatedByUser" colSpan="2"/>
+				<field name="validatedDate" colSpan="2"/>
 				<field name="name"/>
 				<field name="bankStatement" domain="self.statusSelect = 2"/>
 				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true"/>
@@ -37,6 +39,7 @@
 			</panel>
 			<panel colSpan="12" name="actionsPanel">
 				<button name="loadBankStatementBtn" title="Load bank statements" onClick="save,action-bank-reconciliation-method-load-bank-statement" showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3"/>
+				<button name="loadOtherBankStatementBtn" title="Load other bank statements" onClick="save,action-bank-reconciliation-method-load-other-bank-statement" readonlyIf="statusSelect == 2" showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0 &amp;&amp; !includeOtherBankStatements" colSpan="3"/>
 				<button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="save,action-group-bankreconciliation-validate-click" colSpan="3"/>
 				<button name="showReconciledMoveLineBtn" title="Show reconciled move lines" showIf="statusSelect == 2" onClick="action-bank-reconciliation-view-show-reconciled-move-lines" colSpan="3"/>
 			</panel>
@@ -53,11 +56,34 @@
 				<field name="computedBalance" colSpan="3"/>
 				<label name="balanceEqualLabel" colSpan="12" css="label-danger" title="Computed balance and Ending Balance should be equal" showIf="computedBalance = endingBalance"/>
 				<button name="computeBtn" title="Compute" hideIf="statusSelect == 2" onClick="action-group-bankreconciliation-compute-click" colSpan="3"/>
+				<button name="multipleReconcileBtn" title="Multiple reconciles" onClick="save,action-bank-reconciliation-view-multiple-reconcile-wizard" colSpan="3"/>
 			</panel>
-			<panel-related name="bankReconciliationLineListPanel" field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid" form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click"/>
+			<panel-related name="bankReconciliationLineListPanel" editable="true" field="bankReconciliationLineList" colSpan="12" grid-view="bank-reconciliation-line-grid" form-view="bank-reconciliation-line-form" x-can-copy="true" onChange="action-group-bankreconciliation-compute-click"/>
 			<panel-dashlet name="showUnreconciledMoveLinesPanel" action="action-bank-reconciliation-view-show-unreconciled-move-lines" colSpan="12"/>
 		</panel>
-		
+	</form>
+	
+	<form name="bank-reconciliation-multiple-reconcile-wizard-form" title="Multiple reconcile" model="com.axelor.apps.bankpayment.db.BankReconciliation" 
+	onNew="action-bank-reconciliation-group-multiple-reconcile-wizard-new" >
+		<panel name="mainPanel" colSpan="12">
+			<panel name="bankStatementDetailPanel" title="Bank statement details" colSpan="12">
+				<field name="$bankStatementDate" title="Date" type="date" readonly="true"/>
+				<panel>
+					<field name="$bankStatementDebit" title="Debit" type="decimal" readonly="true" showIf="$bankStatementDebit &gt; 0"/>
+					<field name="$bankStatementCredit" title="Credit" type="decimal" readonly="true" showIf="$bankStatementCredit &gt; 0"/>
+				</panel>
+				<field name="$bankStatementName" title="Name" type="String" readonly="true"/>
+				<field name="$bankStatementReference" title="Reference" type="String" readonly="true"/>
+				<field name="$bankStatementAmountRemainToReconcile" title="Amount remaining to reconcile" type="decimal" readonly="true"/>
+				
+				<field name="_selectedBankReconciliationLine" hidden="true"/>
+			</panel>
+			<panel-related name="$toReconcileMoveLineSetPanel" field="$toReconcileMoveLineSet" title="Select move lines to reconciles" colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.MoveLine" 
+			onSelect="action-bank-reconciliation-attrs-move-line-domain-on-wizard" canNew="false" canEdit="false" form-view="move-line-form" grid-view="move-line-grid"
+			onChange="action-bank-reconciliation-attrs-multiple-reconcile-wizard-compute-total-of-selected-move-lines"/>
+			<field name="$selectedMoveLineTotal" title="Total of selected move lines" type="decimal" readonly="true"/>
+			<button name="validateBtn" title="Validate" hideIf="statusSelect == 2" onClick="action-bank-reconciliation-method-validate-multiple-reconciles" showIf="$selectedMoveLineTotal &gt; 0"/>
+		</panel>
 	</form>
 
  
@@ -70,6 +96,7 @@
    <action-group name="action-group-bankreconciliation-validate-click">
    		<action name="save"/>
    		<action name="action-bank-reconciliation-method-compute"/>
+   		<action name="action-bank-reconciliation-check-incomplete-bankreconciliation-line"/>
    		<action name="action-bank-reconciliation-method-validate"/>
    </action-group>	
    
@@ -85,7 +112,7 @@
    
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-months">
        <field name="fromDate" expr="eval: LocalDate.parse(todayDate).withDayOfMonth(1)"/>
-       <field name="toDate" expr="eval: LocalDate.parse(todayDate).toDateTimeAtCurrentTime().dayOfMonth().withMaximumValue().toLocalDate()"/>
+       <field name="toDate" expr="eval: LocalDate.parse(todayDate).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"/>
    </action-record>
      
    <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation" name="action-bank-reconciliation-set-currency">
@@ -98,6 +125,10 @@
    
    <action-method name="action-bank-reconciliation-method-load-bank-statement">
      <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="loadBankStatement"/>
+   </action-method>
+   
+   <action-method name="action-bank-reconciliation-method-load-other-bank-statement">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="loadOtherBankStatement"/>
    </action-method>
 	
    <action-method name="action-bank-reconciliation-method-compute">
@@ -125,5 +156,53 @@
      <context name="bankReconciliationId" expr="eval: id"/>
    </action-view>	
    
+   <action-view name="action-bank-reconciliation-view-multiple-reconcile-wizard" title="Multiple reconciles"  model="com.axelor.apps.bankpayment.db.BankReconciliation">
+   		<view type="form" name="bank-reconciliation-multiple-reconcile-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+  		<view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false"/>
+  		<view-param name="popup-save" value="false"/>
+  		<view-param name="forceEdit" value="true"/>
+	  	<context name="_bankReconciliation" expr="eval: __this__" />
+  		<context name="_selectedBankReconciliationLineId" expr="eval: __this__.bankReconciliationLineList.find{it.isSelected()}?.id"/>
+   </action-view>
+   
+   <action-attrs name="action-bank-reconciliation-attrs-move-line-domain-on-wizard">
+		<attribute name="domain" for="$toReconcileMoveLineSet" 
+		expr="eval: &quot;(self.bankReconciledAmount &lt; self.debit or self.bankReconciledAmount &lt; self.credit) 
+		and ((self.debit &gt; 0 and ${bankStatementCredit} &gt; 0) or (self.credit &gt; 0 and ${bankStatementDebit} &gt; 0)) 
+		and self.move.company.id = ${_bankReconciliation?.company?.id} AND self.account.id = ${_bankReconciliation?.cashAccount?.id} 
+		AND self.move.journal.id = ${_bankReconciliation?.journal?.id}&quot;" />
+	</action-attrs>
+	
+	<action-group name="action-bank-reconciliation-group-multiple-reconcile-wizard-new">
+		<action name="action-bank-reconciliation-attrs-multiple-reconcile-wizard-selected-bank-reconciliation-line" if="_selectedBankReconciliationLineId"/>
+		<action name="action-bank-reconciliation-attrs-multiple-reconcile-wizard-new" if="_selectedBankReconciliationLineId"/>
+	</action-group>
+	
+	<action-attrs name="action-bank-reconciliation-attrs-multiple-reconcile-wizard-selected-bank-reconciliation-line" >
+		<attribute name="value" for="_selectedBankReconciliationLine" expr="eval: __repo__(BankReconciliationLine).find(_selectedBankReconciliationLineId)"/>
+	</action-attrs>
+	
+	<action-attrs name="action-bank-reconciliation-attrs-multiple-reconcile-wizard-new" >
+		<attribute name="value" for="$bankStatementDate" expr="eval: _selectedBankReconciliationLine.effectDate"/>
+		<attribute name="value" for="$bankStatementDebit" expr="eval: _selectedBankReconciliationLine.debit"/>
+		<attribute name="value" for="$bankStatementCredit" expr="eval: _selectedBankReconciliationLine.credit"/>
+		<attribute name="value" for="$bankStatementName" expr="eval: _selectedBankReconciliationLine.name"/>
+		<attribute name="value" for="$bankStatementReference" expr="eval: _selectedBankReconciliationLine.reference"/>
+		<attribute name="value" for="$bankStatementAmountRemainToReconcile" expr="eval: _selectedBankReconciliationLine.bankStatementLine.amountRemainToReconcile"/>
+	</action-attrs>
+	
+	<action-attrs name="action-bank-reconciliation-attrs-multiple-reconcile-wizard-compute-total-of-selected-move-lines" >
+		<attribute name="value" for="$selectedMoveLineTotal" expr="eval: toReconcileMoveLineSet.collect{new BigDecimal(it.debit).add(new BigDecimal(it.credit))}.sum()"/>
+	</action-attrs>
+	
+	<action-method name="action-bank-reconciliation-method-validate-multiple-reconciles">
+		<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="validateMultipleReconcile"/>
+	</action-method>
+	
+	<action-validate name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">
+   		<alert message="There is at least one incomplete bank reconciliation. Are you sure you want to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
+   	</action-validate>
     
 </object-views>

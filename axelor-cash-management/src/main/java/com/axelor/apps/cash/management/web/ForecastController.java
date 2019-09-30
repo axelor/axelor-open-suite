@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,9 @@
 package com.axelor.apps.cash.management.web;
 
 import com.axelor.apps.cash.management.db.ForecastGenerator;
+import com.axelor.apps.cash.management.db.repo.ForecastGeneratorRepository;
 import com.axelor.apps.cash.management.service.ForecastService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -29,7 +31,9 @@ public class ForecastController {
 
   public void generate(ActionRequest request, ActionResponse response) {
     ForecastGenerator forecastGenerator = request.getContext().asType(ForecastGenerator.class);
+    forecastGenerator =
+        Beans.get(ForecastGeneratorRepository.class).find(forecastGenerator.getId());
     forecastService.generate(forecastGenerator);
-    response.setValues(forecastGenerator);
+    response.setReload(true);
   }
 }

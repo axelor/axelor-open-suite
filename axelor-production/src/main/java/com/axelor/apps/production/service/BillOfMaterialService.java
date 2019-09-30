@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,8 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface BillOfMaterialService {
@@ -59,4 +61,9 @@ public interface BillOfMaterialService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
+
+  String computeName(BillOfMaterial bom);
+
+  void addRawMaterials(
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials);
 }

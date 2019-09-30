@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.OperationOrderService;
+import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -50,23 +50,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
     entity.setToProduceProdProductList(null);
     entity.setProducedStockMoveLineList(null);
     entity.setWasteProdProductList(null);
-    if (entity.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : entity.getOperationOrderList()) {
-        operationOrder.setStatusSelect(OperationOrderRepository.STATUS_DRAFT);
-        operationOrder.setPlannedStartDateT(null);
-        operationOrder.setPlannedEndDateT(null);
-        operationOrder.setPlannedDuration(0L);
-        operationOrder.setRealStartDateT(null);
-        operationOrder.setRealEndDateT(null);
-        operationOrder.setRealDuration(0L);
-        operationOrder.setOperationOrderDurationList(null);
-        operationOrder.setInStockMoveList(null);
-        operationOrder.setToConsumeProdProductList(null);
-        operationOrder.setConsumedStockMoveLineList(null);
-        operationOrder.setDiffConsumeProdProductList(null);
-        operationOrder.setBarCode(null);
-      }
-    }
+    entity.setOperationOrderList(null);
     return super.copy(entity, deep);
   }
 

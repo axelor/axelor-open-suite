@@ -8,27 +8,29 @@
         <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
 
         <string name="name" title="Label"/>
-        <string name="nameFormula" title="Label"/>
+        <string name="nameFormula" title="Label" large="true"/>
         <boolean name="defNameAsFormula" title="Define with a script" default="false"/>
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-        <string name="productFormula" title="Product"/>
+        <string name="productFormula" title="Product" large="true"/>
         <boolean name="defProductAsFormula" title="Define with a script" default="false"/>
         <boolean name="defProductFromConfigurator" title="Use generated product" default="true"/>
         <decimal name="qty" title="Qty"/>
-        <string name="qtyFormula" title="Qty"/>
+        <string name="qtyFormula" title="Qty" large="true"/>
         <boolean name="defQtyAsFormula" title="Define with a script" default="false"/>
         <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-        <string name="unitFormula" title="Unit"/>
+        <string name="unitFormula" title="Unit" large="true"/>
         <boolean name="defUnitAsFormula" title="Define with a script" default="false"/>
         <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
         <many-to-one name="configuratorProdProcess" ref="com.axelor.apps.production.db.ConfiguratorProdProcess" title="Production process configurator"/>
-        <string name="prodProcessFormula" title="Production process"/>
+        <string name="prodProcessFormula" title="Production process" large="true"/>
         <boolean name="defProdProcessAsFormula" title="Define with a script" default="false"/>
         <boolean name="defProdProcessAsConfigurator" title="Define with a configurator" default="false"/>
         <one-to-many name="configuratorBomList" ref="com.axelor.apps.production.db.ConfiguratorBOM" mappedBy="parentConfiguratorBOM" title="Configurators BOMs"/>
         <many-to-one name="parentConfiguratorBOM" ref="com.axelor.apps.production.db.ConfiguratorBOM" title="Parent Configurator BOM"/>
 
-        <string name="useCondition" title="Condition"/>
+        <integer name="statusSelect" title="Status" selection="production.bill.of.material.status.select" default="2"/>
+
+        <string name="useCondition" title="Condition" large="true"/>
 
         <!--we don't want a real database relation between configurator and
         bill of material, so we just save the id-->

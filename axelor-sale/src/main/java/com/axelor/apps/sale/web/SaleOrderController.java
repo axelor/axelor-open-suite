@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -224,14 +224,18 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  public void confirmSaleOrder(ActionRequest request, ActionResponse response) throws Exception {
+  public void confirmSaleOrder(ActionRequest request, ActionResponse response) {
 
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-    Beans.get(SaleOrderWorkflowService.class)
-        .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
+      Beans.get(SaleOrderWorkflowService.class)
+          .confirmSaleOrder(saleOrderRepo.find(saleOrder.getId()));
 
-    response.setReload(true);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void generateViewSaleOrder(ActionRequest request, ActionResponse response) {
@@ -518,22 +522,32 @@ public class SaleOrderController {
             .find(request.getContext().asType(SaleOrder.class).getId());
 
     try {
-      Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
+      boolean checkAvailabiltyRequest =
+          Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
+      if (checkAvailabiltyRequest) {
+        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
+  /**
+   * Called from sale order form view, on clicking validate change button. Call {@link
+   * SaleOrderService#validateChanges(SaleOrder)}.
+   *
+   * @param request
+   * @param response
+   */
   public void validateChanges(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
       SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-      Beans.get(SaleOrderService.class).validateChanges(saleOrder, saleOrderView);
-      response.setValues(saleOrderView);
+      Beans.get(SaleOrderService.class).validateChanges(saleOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      response.setReload(true);
     }
   }
 

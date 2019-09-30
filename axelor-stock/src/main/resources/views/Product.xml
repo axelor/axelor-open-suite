@@ -8,7 +8,11 @@
         <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
         <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null)" if="__config__.app.isApp('supplychain')" />
     </action-record>
-
+    
+    <action-record name="action-product-record-service-stock-managed" model="com.axelor.apps.base.db.Product">
+      <field name="stockManaged" expr="eval: productTypeSelect != 'service'"/>
+    </action-record>
+    
     <action-attrs name="action-product-attrs-scale-and-precision-stock" if-module="axelor-stock">
         <attribute name="scale" for="avgPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()" />
     </action-attrs>
@@ -58,13 +62,12 @@
 	   		<panel colSpan="2" name="imagePanel">
 	     		<field name="picture" showTitle="false" colSpan="12" widget="Image"/>
 				<field name="barCode" showTitle="false" colSpan="12" widget="Image" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true" x-height="50"/>
-				<field name="sequence" showIf="sequence.length &gt; 0" colSpan="12"/>
 			</panel>
 			<panel name="namePanel" colSpan="10">
 	   			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
 	       			<editor x-show-titles="false">
-	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
-	         				<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
+	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" readonly="true"/>
+	         				<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name" readonly="true"/>
 	       			</editor>
 	     			</field>
 	   		</panel>

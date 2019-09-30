@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,20 +25,42 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class BankReconciliationLineService {
 
-  public BankReconciliationLine createBankReconciliationLine(BankStatementLine bankStatementLine) {
+  public BankReconciliationLine createBankReconciliationLine(
+      LocalDate effectDate,
+      BigDecimal debit,
+      BigDecimal credit,
+      String name,
+      String reference,
+      BankStatementLine bankStatementLine,
+      MoveLine moveLine) {
 
     BankReconciliationLine bankReconciliationLine = new BankReconciliationLine();
-    bankReconciliationLine.setEffectDate(bankStatementLine.getValueDate());
-    bankReconciliationLine.setDebit(bankStatementLine.getDebit());
-    bankReconciliationLine.setCredit(bankStatementLine.getCredit());
-    bankReconciliationLine.setName(bankStatementLine.getDescription());
-    bankReconciliationLine.setReference(bankStatementLine.getReference());
+    bankReconciliationLine.setEffectDate(effectDate);
+    bankReconciliationLine.setDebit(debit);
+    bankReconciliationLine.setCredit(credit);
+    bankReconciliationLine.setName(name);
+    bankReconciliationLine.setReference(reference);
     bankReconciliationLine.setBankStatementLine(bankStatementLine);
+    bankReconciliationLine.setMoveLine(moveLine);
+    bankReconciliationLine.setIsPosted(false);
 
     return bankReconciliationLine;
+  }
+
+  public BankReconciliationLine createBankReconciliationLine(BankStatementLine bankStatementLine) {
+
+    return this.createBankReconciliationLine(
+        bankStatementLine.getValueDate(),
+        bankStatementLine.getDebit(),
+        bankStatementLine.getCredit(),
+        bankStatementLine.getDescription(),
+        bankStatementLine.getReference(),
+        bankStatementLine,
+        null);
   }
 
   public void checkAmount(BankReconciliationLine bankReconciliationLine) throws AxelorException {

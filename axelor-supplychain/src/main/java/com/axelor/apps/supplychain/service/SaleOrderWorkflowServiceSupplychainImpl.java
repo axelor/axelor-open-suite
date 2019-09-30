@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,8 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
@@ -114,6 +116,26 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     if (saleOrder.getInterco()
         && intercoSaleCreatingStatus == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
       Beans.get(IntercoService.class).generateIntercoPurchaseFromSale(saleOrder);
+    }
+    if (saleOrder.getCreatedByInterco()) {
+      fillIntercompanyPurchaseOrderCounterpart(saleOrder);
+    }
+  }
+
+  /**
+   * Fill interco purchase order counterpart is the sale order exist.
+   *
+   * @param saleOrder
+   */
+  protected void fillIntercompanyPurchaseOrderCounterpart(SaleOrder saleOrder) {
+    PurchaseOrder purchaseOrder =
+        Beans.get(PurchaseOrderRepository.class)
+            .all()
+            .filter("self.purchaseOrderSeq = :purchaseOrderSeq")
+            .bind("purchaseOrderSeq", saleOrder.getExternalReference())
+            .fetchOne();
+    if (purchaseOrder != null) {
+      purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
     }
   }
 }

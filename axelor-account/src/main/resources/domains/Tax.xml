@@ -8,7 +8,14 @@
   <entity name="Tax" lang="java" cachable="true">
   
 	<one-to-many name="accountManagementList" ref="com.axelor.apps.account.db.AccountManagement" mappedBy="tax"/>
-  
+  	<integer name="typeSelect" title="Tax type" selection="account.tax.type.select" default="2"/>
+  	
+  	 <extra-code><![CDATA[
+	 	//TAX TYPE
+		public static final int TAX_TYPE_COLLECTION = 1;
+		public static final int TAX_TYPE_DEBIT = 2;
+      ]]></extra-code>
+  	
   </entity>
 
 </domain-models>

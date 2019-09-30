@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,13 +26,15 @@ public class LogisticalFormError extends AxelorException {
 
   private static final long serialVersionUID = 354779411257144849L;
 
-  public LogisticalFormError(LogisticalForm logisticalForm, String message, Object... messageArgs) {
-    super(logisticalForm, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message, messageArgs);
+  public LogisticalFormError(LogisticalForm logisticalForm, String message) {
+    super(logisticalForm, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message);
   }
 
   public LogisticalFormError(
       LogisticalFormLine logisticalFormLine, String message, Object... messageArgs) {
     super(
-        logisticalFormLine, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, message, messageArgs);
+        logisticalFormLine,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        String.format(message, messageArgs));
   }
 }

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
     <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
-        <field name="inventorySeq"/>
+        <field name="inventorySeq" width="120"/>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="dateT"/>
         <field name="statusSelect"/>
@@ -14,7 +14,7 @@
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onNew="action-inventory-record-new">
         <menubar>
 	        <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-	        	<item action="action-inventory-method-show-stockmove" title="Show stock move" readonlyIf="statusSelect != 5"/>
+	        	<item action="action-inventory-method-show-stockmoves" title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
 	        </menu>
         </menubar>
         <panel name="mainPanel">
@@ -32,20 +32,51 @@
                 <button name="draftBtn" title="Draft" showIf="statusSelect == 6" onClick="action-group-stock-inventory-draft-click"/>
             </panel>
         </panel>
+        
+        <panel-tabs name="mainPanelTab">
+        	<panel title="Details">
+	        	<panel name="detailPanel"  colSpan="12">
+	           		<field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" />
+	            	<field name="dateT" readonlyIf="statusSelect >= 2"/>
+	            	<field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
+	            	<field name="completedBy" readonly="true" showIf="completedBy"/>
+	            	<field name="validatedBy" readonly="true" showIf="validatedBy"/>
+	            	<field name="validatedOn" readonly="true" showIf="validatedOn"/>
+	            	<field name="description" colSpan="12" height="3"/>
+	        	</panel>
+	        	
+	        	<panel name="exportPanel" title="Export" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6" colSpan="12">
+	                <field name="formatSelect"/>
+	                <panel name="showinventoryPanel" colSpan="3" stacked="true">
+	                    <button name="showInventoryBtn" title="Export" readonlyIf="formatSelect == null" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
+	                    <button name="showInventoryBtn" title="Export" readonlyIf="formatSelect == null" onClick="save,action-inventory-method-export-inventory" showIf="formatSelect == 'csv'"/>
+	                </panel>
+	            </panel>
+	
+	            <panel name="importPanel" title="Import" showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
+	                <field name="importFile" widget="binary-link"/>
+	                <button name="importFileBtn" title="Import" readonlyIf="importFile == null" onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
+	            </panel>
+            </panel>
+        	
+        	<panel-related name="inventoryLineListPanel" field="inventoryLineList" readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12" height="20" grid-view="inventory-line-grid" form-view="inventory-line-form"/>
+        	
+        	<panel name="filterPanel" title="Filters" hideIf="statusSelect &lt; 2" readonly="true">
+        		<field name="productFamily" grid-view="product-family-grid" form-view="product-family-form"/>
+        		<field name="productCategory" grid-view="product-category-grid" form-view="product-category-form"/>
+        		<field name="product" grid-view="product-grid" form-view="product-form"/>
+        		<field name="excludeOutOfStock" colSpan="3"/>
+        		<field name="includeObsolete" colSpan="3"/>
+        		<panel name="racksRangePanel" title="Racks range">
+        			<field name="fromRack"/>
+        			<field name="toRack"/>
+        		</panel>
+        	</panel>
+        </panel-tabs>
 
-        <panel name="detailPanel">
-            <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" />
-            <field name="dateT" readonlyIf="statusSelect >= 2"/>
-            <field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
-            <field name="completedBy" readonly="true" showIf="completedBy"/>
-            <field name="validatedBy" readonly="true" showIf="validatedBy"/>
-            <field name="validatedOn" readonly="true" showIf="validatedOn"/>
-            <field name="description" colSpan="12" height="3"/>
-        </panel>
-
-        <panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
-            <field name="productFamily" canEdit="false" onChange="action-inventory-on-change-product-family" grid-view="product-family-grid" form-view="product-family-form"/>
-            <field name="productCategory" canEdit="false" onSelect="action-inventory-on-select-product-category" onChange="action-inventory-on-change-product-category" grid-view="product-category-grid" form-view="product-category-form"/>
+		<panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
+            <field name="productFamily" canEdit="false" grid-view="product-family-grid" form-view="product-family-form"/>
+            <field name="productCategory" canEdit="false" grid-view="product-category-grid" form-view="product-category-form"/>
 			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
             <field name="excludeOutOfStock" colSpan="3"/>
             <field name="includeObsolete" colSpan="3"/>
@@ -55,36 +86,17 @@
             </panel>
             <button name="fillInventoryBtn" title="Fill inventory" showIf="stockLocation != null" onClick="action-group-stock-inventory-fillinventoryBtn-click" colSpan="3"/>
         </panel>
-
-        <panel-related name="inventoryLineListPanel" field="inventoryLineList" readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12" height="20" grid-view="inventory-line-grid" form-view="inventory-line-form"/>
-
-        <panel-tabs name="mainPanelTab" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6">
-            <panel name="exportPanel" title="Export" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6">
-                <field name="formatSelect"/>
-                <panel name="showinventoryPanel" colSpan="3" stacked="true">
-                    <button name="showInventoryBtn" title="Export" readonlyIf="formatSelect == null" onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
-                    <button name="showInventoryBtn" title="Export" readonlyIf="formatSelect == null" onClick="save,action-inventory-method-export-inventory" showIf="formatSelect == 'csv'"/>
-                </panel>
-            </panel>
-
-            <panel name="importPanel" title="Import" showIf="statusSelect == 3 || statusSelect == 4">
-                <field name="importFile" widget="binary-link"/>
-                <button name="importFileBtn" title="Import" readonlyIf="importFile == null" onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
-            </panel>
-        </panel-tabs>
     </form>
     
     <action-group name="action-group-stock-inventory-importfile-click">
     	<action name="save"/>
     	<action name="action-set-inventory-seq"/>
     	<action name="action-inventory-method-import-file"/>
-    	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-stock-inventory-fillinventoryBtn-click">
     	<action name="save"/>
     	<action name="action-inventory-method-fill-inventory"/>
-    	<action name="save"/>
     </action-group>
     
     <action-group name="action-group-stock-inventory-plan-click">
@@ -110,13 +122,11 @@
     <action-group name="action-group-stock-inventory-validate-click">
     	<action name="save"/>
     	<action name="action-inventory-method-realize-stock-move"/>
-    	<action name="save"/>
     </action-group>
 
     <action-group name="action-group-stock-inventory-cancel-click">
     	<action name="save"/>
     	<action name="action-inventory-method-cancel"/>
-    	<action name="save"/>
     </action-group>
 
     <action-group name="action-group-stock-inventory-draft-click">
@@ -130,6 +140,7 @@
 	    <field name="dateT" expr="eval:__config__.app.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="pdf"/>
 	    <field name="stockLocation" expr="eval:_location"/>
+	    <field name="company" expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>
 	</action-record>
 	
 	<action-record name="action-inventory-record-draft" model="com.axelor.apps.stock.db.Inventory">
@@ -182,23 +193,10 @@
 	<action-attrs  name="action-inventory-attrs-set-location-domain">
   		<attribute name="domain" for="stockLocation" expr="eval:&quot;(self.typeSelect = 1 OR self.typeSelect = 2) AND self.company.id = $company.id &quot;" />
 	</action-attrs>
-	
-	<action-attrs name="action-inventory-on-change-product-family">
-		<attribute name="value" for="productCategory" expr="eval:null" />    
-	</action-attrs>
-	
-	<action-attrs name="action-inventory-on-change-product-category">
-		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(productCategory.productFamily.id)" if="productFamily == null &amp;&amp; productCategory.productFamily != null"/>    
-	</action-attrs>
 
 	<action-attrs name="action-inventory-on-change-product">
 		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product.productFamily != null"/>    		
 		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product.productCategory != null"/>    
-	</action-attrs>
-		
-	<action-attrs name="action-inventory-on-select-product-category">
-		<attribute name="domain" for="productCategory" expr="eval:&quot;self.productFamily.id = ${productFamily.id}&quot;" if="productFamily != null"/>
-		<attribute name="domain" for="productCategory" expr="eval:null" if="productFamily == null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-inventory-on-select-product">
@@ -207,8 +205,8 @@
 		<attribute name="domain" for="product" expr="eval:null" if="productCategory == null &amp;&amp; productFamily == null"/>
 	</action-attrs>
 	
-	<action-method name="action-inventory-method-show-stockmove">
-		<call class="com.axelor.apps.stock.web.InventoryController" method="showStockMove"/>
+	<action-method name="action-inventory-method-show-stockmoves">
+		<call class="com.axelor.apps.stock.web.InventoryController" method="showStockMoves"/>
 	</action-method>
 
     <search-filters name="inventories-filters" model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">

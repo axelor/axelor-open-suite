@@ -108,6 +108,11 @@
 		<attribute name="value" for="task" expr="eval:_task"/>
 		<attribute name="value" for="project" expr="eval:_project"/>
 		<attribute name="value" for="userSet" expr="eval:_project.membersUserSet" if="_project != null"/>
+
+		<attribute name="value" for="project" expr="eval:_parent?.project" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="value" for="task" expr="eval:_parent" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="readonly" for="task" expr="eval:true" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-remove">

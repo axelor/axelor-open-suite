@@ -19,13 +19,19 @@
  		</bind>
  		<bind node="models/model" type="com.axelor.meta.db.MetaJsonModel" search="self.name = :name" update="true">
  			<bind node="name" to="name" />
- 			<bind node="title" to="title" />
- 			<bind node="onSave" to="onSave" />
- 			<bind node="onNew" to="onNew" />
+            <bind node="title" to="title" />
+            <bind node="onNew" to="onNew" />
+            <bind node="onSave" to="onSave" />
+            <bind node="menuTitle" to="menuTitle" />
+            <bind node="menuIcon" to="menuIcon" />
+            <bind node="menuBackground" to="menuBackground" />
+            <bind node="menuOrder" to="menuOrder" />
+            <bind node="menuTop" to="menuTop" />
+            <bind node="menuParent" to="menuParent" search="self.id = :menuParent" create="false"  />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"  />
  		</bind>
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel != null &amp;&amp; !jsonModel.empty"
- 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel.name = :jsonModel and (self.appBuilder.code = :appBuilder OR self.jsonModel.appBuilder.code = :modelAppBuilder)"
+ 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel.name = :jsonModel"
  			call="com.axelor.studio.service.ImportService:importJsonModelField" update="true">
  			<bind node="name" to="name" />
  			<bind node="title" to="title" />
@@ -66,7 +72,7 @@
  		</bind>
  		
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel == null"
- 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.appBuilder.code = :appBuilder"
+ 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel is null"
  			call="com.axelor.studio.service.ImportService:importJsonField" update="true">
  			<bind node="name" to="name" />
  			<bind node="title" to="title" />
@@ -117,6 +123,23 @@
  	</input>
  	
  	<input file="bpm.xml" root="bpm" >
+ 			
+ 		<bind node="selections/selection" type="com.axelor.meta.db.MetaSelect" search="self.name = :name" update="true">
+ 			<bind node="name" to="name"/>
+ 			<bind node="module" to="module"/>
+ 			<bind node="priority" to="priority"/>
+ 			<bind node="items/option" to="items">
+ 				<bind node="title" to="title"/>
+ 				<bind node="value" to="value"/>
+ 				<bind node="icon" to="icon"/>
+ 				<bind node="data" to="data"/>
+ 				<bind node="order" to="order"/>
+ 				<bind node="hidden" to="hidden"/>
+ 				<bind node="select" to="select" search="self.name = :select" create="false"/>
+ 			</bind>
+ 			<bind node="isCustom" to="isCustom"/>
+ 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
+ 		</bind>
  		
 		<bind node="chartBuilders/chartBuilder" type="com.axelor.studio.db.ChartBuilder" search="self.name = :name" call="com.axelor.studio.service.ImportService:importChartBuilder" update="true">
 			<bind node="name" to="name" />
@@ -291,8 +314,9 @@
 			<bind node="model" to="model" />
 			<bind node="isJson" to="isJson" alias="_isJson"/>
 			<bind node="jsonField" to="jsonField" />
+			<bind node="isTrackFlow" to="isTrackFlow"/>
 			<bind node="statusField" to="statusField" search="self.jsonModel.name = :model and self.name = :statusField" if="_isJson == 'true'" create="false" />
-			<bind node="statusField" to="statusField" search="self.model = :model and self.modelField = :jsonField and self.name = :statusField" if="_isJson == 'false'" create="false" />
+			<bind node="statusField" to="statusField" search="self.model = :model and self.modelField = :jsonField and self.name = :statusField and self.jsonModel is null" if="_isJson == 'false'" create="false" />
 			<bind node="displayTypeSelect" to="displayTypeSelect" />
 			<bind node="bpmnXml" to="bpmnXml" />
 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
@@ -304,8 +328,7 @@
 			<bind node="title" to="title" />
 			<bind node="xmlId" to="xmlId" />
 			<bind node="sequence" to="sequence" />
-			<bind node="startNode" to="startNode" />
-			<bind node="endNode" to="endNode" />
+			<bind node="nodeType" to="nodeType" />
 			<bind node="metaFieldModel" alias="metaFieldModel" />
 			<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :metaFieldModel" create="false"/>
 			<bind node="roleSet/role" to="roleSet" search="self.name = :roleName" update="false" create="false">
@@ -322,8 +345,7 @@
 			<bind node="title" to="title" />
 			<bind node="xmlId" to="xmlId" />
 			<bind node="sequence" to="sequence" />
-			<bind node="startNode" to="startNode" />
-			<bind node="endNode" to="endNode" />
+			<bind node="nodeType" to="nodeType" />
 			<bind node="metaFieldModel" alias="metaFieldModel" />
 			<bind node="metaField" to="metaField" search="self.name = :metaField and self.metaModel.name = :metaFieldModel" />
 			<bind node="roleSet/role" to="roleSet" search="self.name = :roleName" update="false" create="false">
@@ -367,7 +389,7 @@
 		<bind node="nodes/node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.name = :wkf" update="true" create="false">
 			<bind node="wkf" to="wkf" search="self.name = :wkf" update="true" create="false" />
 			<bind node="name" to="name" alias="nodeName" />
-			<bind node="incommings/incomming" to="incomming" search="self.name = :inNode and self.wkf.name = :wkf" update="false" create="false">
+			<bind node="incomings/incoming" to="incoming" search="self.name = :inNode and self.wkf.name = :wkf" update="false" create="false">
 				<bind node="text()" to="name" alias="inNode" />
 			</bind>
 			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :outNode and self.wkf.name = :wkf" update="false" create="false">

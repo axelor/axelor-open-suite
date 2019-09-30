@@ -10,7 +10,6 @@
 	  <one-to-many name="timesheetLineList" orphanRemoval="false" ref="com.axelor.apps.hr.db.TimesheetLine" title="Logged Time" mappedBy="project"/>
 	  <decimal name="totalPlannedHrs" title="Total planned hours" />
 	  <decimal name="totalRealHrs" title="Total real hours" />
-      <boolean name="imputable"/>
       <!-- Readonly in timesheet line editor -->
 	  <boolean name="excludeTimesheetEditor" title="Exclude timesheet editor" />
 	  <one-to-many name="projectPlanningTimeList" ref="com.axelor.apps.project.db.ProjectPlanningTime" title="Planned time" mappedBy="project"/>

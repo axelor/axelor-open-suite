@@ -6,7 +6,6 @@
     <grid name="product-category-grid" title="Product categories" model="com.axelor.apps.base.db.ProductCategory" orderBy="name">
         <field name="name"/>
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
         <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
     </grid>
     
@@ -17,11 +16,32 @@
 		<panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-	        <field name="productFamily"  form-view="product-family-form" grid-view="product-family-grid"/>
 	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
 		</panel>
    		<panel-dashlet name="salesTurnoverPanel"  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
     </form>  
+    
+    <tree name="product-category-tree" title="Product category">
+      <column name="name" type="string"/>
+      <column name="code" type="string"/>
+      
+      <node model="com.axelor.apps.base.db.ProductCategory" domain="self.parentProductCategory is null" onClick="action-view-product-category-from-tree">
+        <field as="name" name="name"/>
+        <field as="code" name="code"/>
+      </node>
+      
+      <node model="com.axelor.apps.base.db.ProductCategory" parent="parentProductCategory" draggable="true" onClick="action-view-product-category-from-tree">
+        <field as="name" name="name"/>
+        <field as="code" name="code"/>
+      </node>
+    </tree>
+    
+    <action-view name="action-view-product-category-from-tree" title="Product category"
+      model="com.axelor.apps.base.db.ProductCategory" >
+      <view type="form" name="product-category-form"/>
+      <view type="grid" name="product-category-grid"/>
+      <context name="_showRecord" expr="eval: id"/>
+    </action-view>
     
     <action-view name="action-view-product-by-category" title="Products (${ name })"
 		model="com.axelor.apps.base.db.Product">

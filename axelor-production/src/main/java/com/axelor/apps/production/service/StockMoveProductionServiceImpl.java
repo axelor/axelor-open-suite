@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -47,7 +48,8 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
       PurchaseOrderRepository purchaseOrderRepo,
       SaleOrderRepository saleOrderRepo,
       UnitConversionService unitConversionService,
-      ReservedQtyService reservedQtyService) {
+      ReservedQtyService reservedQtyService,
+      ProductRepository productRepository) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -59,7 +61,8 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
         purchaseOrderRepo,
         saleOrderRepo,
         unitConversionService,
-        reservedQtyService);
+        reservedQtyService,
+        productRepository);
   }
 
   @Override

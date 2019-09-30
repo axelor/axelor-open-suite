@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -158,7 +159,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       if (purchaseOrderLine.getIsTitleLine()) {
         this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
       }
-      this.purchaseOrderLine = purchaseOrderLine;
       this.discountAmount = purchaseOrderLine.getDiscountAmount();
       this.price = purchaseOrderLine.getPrice();
       this.inTaxPrice = purchaseOrderLine.getInTaxPrice();
@@ -270,16 +270,16 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setAccount(account);
       }
 
+      if (product != null && purchaseOrderLine.getFixedAssets()) {
+        FixedAssetCategory fixedAssetCategory =
+            accountManagementService.getProductFixedAssetCategory(product, invoice.getCompany());
+        invoiceLine.setFixedAssetCategory(fixedAssetCategory);
+      }
+
     } else if (stockMoveLine != null) {
 
-      UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-
-      this.price =
-          invoiceLineService.getExTaxUnitPrice(
-              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
-      this.inTaxPrice =
-          invoiceLineService.getInTaxUnitPrice(
-              invoice, invoiceLine, taxLine, InvoiceToolService.isPurchase(invoice));
+      this.price = stockMoveLine.getValuatedUnitPrice();
+      this.inTaxPrice = stockMoveLine.getValuatedUnitPrice();
 
       this.price =
           unitConversionService.convert(

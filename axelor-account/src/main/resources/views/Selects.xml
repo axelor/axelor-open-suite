@@ -51,6 +51,7 @@
 	<selection name='account.reconcile.group.status.select'>
 		<option value='1'>Temporary</option>
 		<option value='2'>Final</option>
+		<option value="3">Unlettered</option>
 	</selection>
 
 	<selection name='account.journal.status.select'>
@@ -71,19 +72,22 @@
 		<option order="3" value="3">Detailed customers balance</option>
 		<option order="4" value="4">Aged Balance</option>
 		<option order="5" value="5">Cheque deposit slip</option>
-		<option order="6" value="6">Partner balance</option>
+		<option order="6" value="7">Partner general ledger</option>
+		<option order="7" value="6">Partner balance</option>
 		<option order="10" value="10">Cash payments summary</option>
 		<option order="11" value="11">Journal</option>
 		<option order="12" value="12">VAT Statement on invoices</option>
+		<option order="13" value="15">VAT Statement on amount received</option>
 		<option order="14" value="13">Payment differences</option>
 		<option order="15" value="14">General ledger 2</option>
-		<option order="13" value="15">VAT Statement on amount received</option>
+		<option value="16" order="16">Acquisitions</option>
+		<option value="17" order="17">Summary of gross values and depreciation</option>
 		<option order="2000" value="2000">Analytic balance</option>
 	</selection>
 	
 	<selection name='accounting.report.type.select.export'>
-		<option value="1000">Export payroll journal entry -> Administration</option>
-		<option value="1001">Export payroll journal entry -> Acc. Soft.</option>
+		<option value="1000">Export journal entry -> Administration</option>
+		<option value="1001">Export journal entry -> Acc. Soft.</option>
 		<option value="1006">Export sale -> Acc. Soft.</option>
 		<option value="1007">Export refunds -> Acc. Soft.</option>
 		<option value="1008">Export treasury -> Acc. Soft.</option>
@@ -116,6 +120,13 @@
 		<option value="3">Payment</option>
 	</selection>
 	
+    <!-- Modes for automatic partner account creation -->
+    <selection name="account.create.mode.select">
+        <option value="0">Accounting.PartnerAccountCreation.None</option>
+        <option value="1">Prefix based</option>
+        <option value="2">Sequence based</option>
+    </selection>
+
 	<selection name='iinvoice.operation.type.select'>
 		<option value='1'>Supplier purchase</option>
 		<option value='2'>Supplier refund</option>
@@ -128,13 +139,6 @@
 		<option value="2">Advance payment invoice</option>
 		<option value="3">Balance invoice</option>
 	</selection>
-
-	<!-- <selection name='ipayment.operation.type.select'>
-		<option value='1'>Supplier purchase</option>
-		<option value='2'>Supplier refund</option>
-		<option value='3'>Customer sale</option>
-		<option value='4'>Customer refund</option>
-	</selection> -->
 	
 	<selection name='iaccount.account.schedule.export.type.select'>
 		<option value='0'>Payment smoothing(DD)</option>
@@ -183,12 +187,7 @@
 		<option value="1">Generate reimbursements</option>
 		<option value="2">Export reimbursements</option>
 	</selection>
-	
-	<selection name="iaccount.account.schedule.type.select">
-		<option value="1">Export direct debits</option>
-		<option value="2">Import direct debit rejects</option>
-	</selection>
-	
+		
 	<selection name="idebt.recovery.batch.type.select">
 		<option value="1">Classic debt recovery</option>
 	</selection>
@@ -351,6 +350,7 @@
 		<option value="reconcileGroupFinal">Reconcile Group (Final)</option>
 		<option value="depositSlip">Deposit slip</option>
 		<option value="subrogationRelease">Subrogation release</option>
+		<option value="partnerAccount">Partner account</option>
 	</selection>
 
 	<selection name="account.notification.item.type.select">
@@ -379,4 +379,29 @@
 		<option value="1">%</option>
 		<option value="2">Amount</option>
 	</selection>
+
+	<selection name="account.tax.type.select">
+		<option value="1">Collection</option>
+		<option value="2">Debit</option>
+	</selection>
+
+	<selection name="account.budget.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Validated</option>
+	</selection>
+	
+	<selection name='move.line.reimbursement.status.select'>
+		<option value='0'></option>
+		<option value='1'>Reimbursement ongoing</option>
+		<option value='2'>Reimbursed</option>
+	</selection>
+
+	<selection name="account.journal.compatible.partner.type.select">
+		<option value="isProspect">Prospect</option>
+		<option value="isCustomer">Customer</option>
+		<option value="isSupplier">Supplier</option>
+		<option value="isCarrier">Carrier</option>
+		<option value="isFactor">Factor</option>
+	</selection>
+
 </object-views>

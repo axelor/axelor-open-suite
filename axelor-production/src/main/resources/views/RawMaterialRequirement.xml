@@ -6,7 +6,7 @@
 
   <grid name="raw-material-requirement-report-grid" title="Raw material requirement"
     model="com.axelor.apps.production.db.RawMaterialRequirement">
-    <field name="code"/>
+    <field name="code" width="120"/>
     <field name="name"/>
     <field name="company"/>
     <field name="duration"/>
@@ -21,6 +21,7 @@
       <field name="company" required="true" canEdit="false"/>
       <field name="duration"/>
       <field name="showAllRequirements"/>
+      <field name="showRequirementsByMO"/>
       <field name="stockLocationSet" colSpan="12"
         domain="self.company = :company AND self.typeSelect = 1"/>
     </panel>

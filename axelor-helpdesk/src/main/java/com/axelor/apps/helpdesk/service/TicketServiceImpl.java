@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -190,7 +190,8 @@ public class TicketServiceImpl implements TicketService {
   private void calculateWorkingDays(LocalDateTime fromDate, Company company, int days)
       throws AxelorException {
 
-    if (weeklyPlanningService.workingDayValue(company.getWeeklyPlanning(), fromDate.toLocalDate())
+    if (weeklyPlanningService.getWorkingDayValueInDays(
+                company.getWeeklyPlanning(), fromDate.toLocalDate())
             == 0
         || publicHolidayService.checkPublicHolidayDay(
             fromDate.toLocalDate(), company.getPublicHolidayEventsPlanning())) {
@@ -213,17 +214,12 @@ public class TicketServiceImpl implements TicketService {
   public void checkSLAcompleted(Ticket ticket) {
 
     if (ticket.getSlaPolicy() != null) {
-
       LocalDateTime currentDate = LocalDateTime.now();
+      LocalDateTime deadlineDateT = ticket.getDeadlineDateT();
 
-      if (ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
-          && (currentDate.isBefore(ticket.getDeadlineDateT())
-              || currentDate.isEqual(ticket.getDeadlineDateT()))) {
-
-        ticket.setIsSlaCompleted(true);
-      } else {
-        ticket.setIsSlaCompleted(false);
-      }
+      ticket.setIsSlaCompleted(
+          ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
+              && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
     }
   }
 

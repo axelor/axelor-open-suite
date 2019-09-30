@@ -20,7 +20,7 @@
     	<toolbar>
     		<button name="printBtn" title="Print" icon="fa-print" onClick="action-operation-order-method-print"/>
     	</toolbar>
-    	<field name="manufOrder" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
+    	<field name="manufOrder" width="120" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="prodProcessLine.outsourcing"/>
@@ -75,7 +75,7 @@
 		<panel name="mainPanel">
 			<field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
 			<field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
-			<field name="manufOrder" colSpan="3" hideIf="$popup()" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
+			<field name="manufOrder"  colSpan="3" hideIf="$popup()" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
 			<field name="prodProcessLine" colSpan="3" onSelect="action-operation-order-attrs-domain-prod-process-line" required="true" readonlyIf="statusSelect == 6" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			<field name="prodProcessLine.outsourcing" colSpan="3"/>
 			<field name="isToInvoice" colSpan="3"/>
@@ -113,7 +113,7 @@
 			<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid" colSpan="12"/>
 			<panel hidden="true" name="consumedProductPanel" title="Consumed products" colSpan="12" readonlyIf="statusSelect == 6">
 				<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
-				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="save,action-operation-order-method-update-consumed-stock-move" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid" colSpan="12"/>
+				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="action-operation-order-method-check-consumed-stock-move,save,action-operation-order-method-update-consumed-stock-move" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid" colSpan="12"/>
 				<panel-related name="diffConsumeProdProductListPanel" field="diffConsumeProdProductList" colSpan="12" form-view="prod-product-form" grid-view="prod-product-grid"/>
 			</panel>
 		</panel>
@@ -216,6 +216,10 @@
 
     <action-method name="action-operation-order-method-machine-change">
     	<call class="com.axelor.apps.production.web.OperationOrderController" method="machineChange"/>
+    </action-method>
+
+    <action-method name="action-operation-order-method-check-consumed-stock-move">
+      <call class="com.axelor.apps.production.web.OperationOrderController" method="checkConsumedStockMoveLineList"/>
     </action-method>
 
 	<action-method name="action-operation-order-method-update-consumed-stock-move">

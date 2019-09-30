@@ -56,6 +56,9 @@
             public static final int DRAFT_CONTRACT = 1;
             public static final int ACTIVE_CONTRACT = 2;
             public static final int CLOSED_CONTRACT = 3;
+            
+            public static final int CUSTOMER_CONTRACT = 1;
+            public static final int SUPPLIER_CONTRACT = 2;
         ]]></extra-code>
 		
 	</entity>

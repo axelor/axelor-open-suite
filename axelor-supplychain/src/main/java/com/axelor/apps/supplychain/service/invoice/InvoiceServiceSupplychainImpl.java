@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,7 +60,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
-      InvoiceLineService invoiceLineService) {
+      InvoiceLineService invoiceLineService,
+      AccountConfigService accountConfigService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -69,7 +70,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceRepo,
         appAccountService,
         partnerService,
-        invoiceLineService);
+        invoiceLineService,
+        accountConfigService);
   }
 
   @Override

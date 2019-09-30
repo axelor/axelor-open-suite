@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,11 +27,15 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -103,6 +107,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             paymentMove.getCompanyCurrency(), paymentMove.getCurrency(), amount, paymentDate);
     int typePaymentMove = this.determineType(paymentMove);
     Currency currency = paymentMove.getCurrency();
+    if (currency == null) {
+      currency = paymentMove.getCompanyCurrency();
+    }
     PaymentMode paymentMode;
     InvoicePayment invoicePayment;
     if (typePaymentMove == InvoicePaymentRepository.TYPE_REFUND_INVOICE
@@ -273,6 +280,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public List<InvoicePayment> createMassInvoicePayment(
       List<Long> invoiceList,
       PaymentMode paymentMode,
@@ -299,5 +307,53 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     return invoicePaymentList;
+  }
+
+  @Override
+  public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException {
+    Company company = null;
+    Currency currency = null;
+    List<Long> invoiceToPay = new ArrayList<>();
+    for (Long invoiceId : invoiceIdList) {
+      Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+
+      if ((invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
+              && invoice.getOperationSubTypeSelect()
+                  != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+          || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+              && invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED)) {
+
+        continue;
+      }
+
+      if (invoice.getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
+
+        continue;
+      }
+
+      if (company == null) {
+        company = invoice.getCompany();
+      }
+      if (currency == null) {
+        currency = invoice.getCurrency();
+      }
+
+      if (invoice.getCompany() == null
+          || company == null
+          || !invoice.getCompany().equals(company)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
+      }
+      if (invoice.getCurrency() == null
+          || currency == null
+          || !invoice.getCurrency().equals(currency)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
+      }
+      invoiceToPay.add(invoiceId);
+    }
+    return invoiceToPay;
   }
 }

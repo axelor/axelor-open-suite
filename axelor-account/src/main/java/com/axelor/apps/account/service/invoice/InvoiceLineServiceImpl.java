@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -220,7 +220,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             invoice.getCompany().getCurrency(),
             exTaxTotal,
             invoice.getInvoiceDate())
-        .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -342,7 +342,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("productName", null);
     productInformation.put("unit", null);
     productInformation.put("discountAmount", null);
-    productInformation.put("discountTypeSelect", null);
+    productInformation.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
     productInformation.put("price", null);
     productInformation.put("inTaxPrice", null);
     productInformation.put("exTaxTotal", null);

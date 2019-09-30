@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,11 +28,13 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.base.db.App;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -158,6 +160,9 @@ public class AccountingReportController {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     try {
+
+      int typeSelect = accountingReport.getTypeSelect();
+
       if (accountingReport.getExportTypeSelect() == null
           || accountingReport.getExportTypeSelect().isEmpty()
           || accountingReport.getTypeSelect() == 0) {
@@ -166,16 +171,27 @@ public class AccountingReportController {
         return;
       }
 
-      logger.debug("Type selected : {}", accountingReport.getTypeSelect());
+      logger.debug("Type selected : {}", typeSelect);
 
-      if ((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_ADMINISTRATION
-          && accountingReport.getTypeSelect()
-              < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
-
+      if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
+          && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
         MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
-        moveLineExportService.exportMoveLine(accountingReport);
+        MetaFile accesssFile = moveLineExportService.exportMoveLine(accountingReport);
+        if (typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION && accesssFile != null) {
 
+          response.setView(
+              ActionView.define(I18n.get("Export file"))
+                  .model(App.class.getName())
+                  .add(
+                      "html",
+                      "ws/rest/com.axelor.meta.db.MetaFile/"
+                          + accesssFile.getId()
+                          + "/content/download?v="
+                          + accesssFile.getVersion())
+                  .param("download", "true")
+                  .map());
+        }
       } else {
 
         accountingReportService.setPublicationDateTime(accountingReport);
@@ -191,8 +207,7 @@ public class AccountingReportController {
 
         String fileLink =
             ReportFactory.createReport(
-                    String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()),
-                    name + "-${date}")
+                    String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelect), name + "-${date}")
                 .addParam("AccountingReportId", accountingReport.getId())
                 .addParam("Locale", ReportSettings.getPrintingLocale(null))
                 .addFormat(accountingReport.getExportTypeSelect())

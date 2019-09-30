@@ -12,6 +12,7 @@
 		<panel name="mainPanel">
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="name"/>
+			<field name="typeSelect" if-module="axelor-account" if="__config__.app.isApp('account')"/>
 		</panel>
 	    <panel-tabs>
 			<panel name="taxRateListPanel" title="Tax rate list">

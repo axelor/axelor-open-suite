@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,9 +39,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -194,13 +194,18 @@ class WkfTransitionService {
 
     MetaJsonField button = wkfService.getJsonField(name, "button");
     button.setTitle(title);
-    ;
     button.setShowIf(condition);
     button.setSequence(sequence);
     button.setVisibleInGrid(false);
     button.setIsWkf(true);
-    button.setWidgetAttrs("{\"colSpan\": \"3\"}");
+    button.setWidgetAttrs("{\"colSpan\": \"" + transition.getColSpan() + "\"}");
     button.setOnClick(addButtonActions(transition, name));
+
+    if (transition.getRoleSet() != null) {
+      Set<Role> buttonRoles = new HashSet<>();
+      buttonRoles.addAll(transition.getRoleSet());
+      button.setRoles(buttonRoles);
+    }
 
     log.debug("Adding button : {}", button.getName());
     wkfService.saveJsonField(button);
@@ -245,17 +250,6 @@ class WkfTransitionService {
     attr.setName("value");
     attr.setFieldName(wkfField.getName());
     attr.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
-    if (transition.getRoleSet() != null && !transition.getRoleSet().isEmpty()) {
-      String roles =
-          Joiner.on(",")
-              .join(
-                  (transition
-                      .getRoleSet()
-                      .stream()
-                      .map(it -> "\"" + it.getName() + "\"")
-                      .collect(Collectors.toList())));
-      attr.setCondition("!com.axelor.auth.AuthUtils.hasRole(__user__, " + roles + ")");
-    }
     attrs.add(attr);
     actions.add(actionName);
     xml = getActionXML(actionName, attrs);

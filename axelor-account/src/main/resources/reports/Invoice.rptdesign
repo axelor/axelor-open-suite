@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2678,18 +2678,13 @@ $func$ LANGUAGE plpgsql;
                         </structure>
                     </list-property>
                     <column id="3693"/>
-                    <column id="3816">
-                        <property name="textAlign">right</property>
-                        <property name="width">0.4166666666666667in</property>
-                    </column>
                     <column id="3714">
                         <property name="textAlign">right</property>
-                        <property name="width">3.4395833333333337cm</property>
+                        <property name="width">3.88cm</property>
                     </column>
                     <row id="4291">
-                        <property name="height">0.5cm</property>
                         <cell id="4292">
-                            <property name="colSpan">3</property>
+                            <property name="colSpan">2</property>
                             <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -2707,7 +2702,6 @@ $func$ LANGUAGE plpgsql;
                     <row id="3695">
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <property name="height">0.5027083333333333cm</property>
                         <cell id="3696">
                             <property name="colSpan">1</property>
                             <property name="rowSpan">2</property>
@@ -2722,84 +2716,50 @@ $func$ LANGUAGE plpgsql;
                                 <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["footer"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="3815">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
-                            <property name="verticalAlign">top</property>
-                            <text id="3817">
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Page]]></text-property>
-                            </text>
-                        </cell>
                         <cell id="3713">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
+                            <property name="paddingTop">1pt</property>
                             <property name="verticalAlign">top</property>
-                            <grid id="3804">
-                                <property name="height">1.7197916666666668cm</property>
-                                <column id="3805"/>
-                                <column id="3806"/>
-                                <column id="3807"/>
-                                <row id="3808">
-                                    <property name="height">0.6085416666666666cm</property>
-                                    <cell id="3809">
-                                        <auto-text id="3810">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
+                            <grid id="5359">
+                                <property name="width">3.5189583333333334cm</property>
+                                <column id="5360">
+                                    <property name="width">6%</property>
+                                </column>
+                                <column id="5361">
+                                    <property name="width">3%</property>
+                                </column>
+                                <column id="5362">
+                                    <property name="width">6%</property>
+                                </column>
+                                <row id="5363">
+                                    <cell id="5364">
+                                        <auto-text id="5365">
                                             <property name="type">page-number</property>
                                         </auto-text>
                                     </cell>
-                                    <cell id="3811">
-                                        <text id="3812">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
+                                    <cell id="5366">
+                                        <text id="5367">
+                                            <property name="textAlign">center</property>
                                             <property name="contentType">plain</property>
                                             <text-property name="content"><![CDATA[/]]></text-property>
                                         </text>
                                     </cell>
-                                    <cell id="3813">
-                                        <auto-text id="3814">
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">params["InvoiceId"].value.split(",").length > 1</expression>
-                                                </structure>
-                                            </list-property>
+                                    <cell id="5368">
+                                        <auto-text id="5369">
+                                            <property name="textAlign">left</property>
                                             <property name="type">total-page</property>
                                         </auto-text>
-                                    </cell>
-                                </row>
-                                <row id="5229">
-                                    <cell id="5230">
-                                        <property name="colSpan">3</property>
-                                        <property name="rowSpan">1</property>
                                     </cell>
                                 </row>
                             </grid>
                         </cell>
                     </row>
                     <row id="5238">
-                        <property name="height">0.8466666666666667cm</property>
                         <cell id="5240">
-                            <property name="colSpan">2</property>
+                            <property name="colSpan">1</property>
                             <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -2814,31 +2774,37 @@ $func$ LANGUAGE plpgsql;
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">
-if(row["operation_type_select"] == "1" ){
-	if (row["operation_sub_type_select"] == "2") {
-			'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.purchaseInvoiceBalanceNo'
-	} else {
-			'Invoice.purchaseInvoiceNo'
-	}
-} else if(row["operation_type_select"] == "2" ){
-	'Invoice.purchaseRefundNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
+                                            <value type="javascript">if (row["status_select"] == "1") {
 	'Invoice.draftInvoiceNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
-	if (row["operation_sub_type_select"] == "2") {
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
 		'Invoice.invoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.invoiceBalanceNo'
 	} else {
-		'Invoice.invoiceNo'
+		'Invoice.draftInvoiceNo'
 	}
-} else if(row["operation_type_select"] == "4" ){
-	'Invoice.refundNo'
-}
-                                            </value>
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
+}</value>
                                         </simple-property-list>
                                     </structure>
                                 </list-property>
@@ -3246,28 +3212,36 @@ if(row["operation_type_select"] == "1" ){
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["operation_type_select"] == "1" ){
-	if (row["operation_sub_type_select"] == "2") {
-			'Invoice.purchaseInvoiceAdvPaymentNo'
-	} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.purchaseInvoiceBalanceNo'
-	} else {
-			'Invoice.purchaseInvoiceNo'
-	}
-}else if(row["operation_type_select"] == "2" ){
-'Invoice.purchaseRefundNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
-'Invoice.draftInvoiceNo'
-}else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
-	if (row["operation_sub_type_select"] == "2") {
+                                    <value type="javascript">if (row["status_select"] == "1") {
+	'Invoice.draftInvoiceNo'
+} else if(row["status_select"] == "2") {
+	if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+		'Invoice.purchaseInvoiceAdvPaymentNo'
+	} else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
 		'Invoice.invoiceAdvPaymentNo'
-		} else if (row["operation_sub_type_select"] == "3") {
-		'Invoice.invoiceBalanceNo'
 	} else {
-		'Invoice.invoiceNo'
+		'Invoice.draftInvoiceNo'
 	}
-}else if(row["operation_type_select"] == "4" ){
-'Invoice.refundNo'
+} else if(row["status_select"] == "3") {
+	if (row["operation_type_select"] == "1") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.purchaseInvoiceBalanceNo'
+		} else {
+			'Invoice.purchaseInvoiceNo'
+		}
+	} else if (row["operation_type_select"] == "2") {
+		'Invoice.purchaseRefundNo'
+	} else if (row["operation_type_select"] == "3") {
+		if (row["operation_sub_type_select"] == "3") {
+			'Invoice.invoiceBalanceNo'
+		} else {
+			'Invoice.invoiceNo'
+		}
+	} else if (row["operation_type_select"] == "4") {
+		'Invoice.refundNo'
+	}
+} else if(row["status_select"] == "4") {
+	'Invoice.cancelInvoiceNo'
 }</value>
                                 </simple-property-list>
                             </structure>
@@ -3326,12 +3300,6 @@ if(row["operation_type_select"] == "1" ){
                                 <text id="3425">
                                     <property name="marginLeft">2pt</property>
                                     <property name="dataSet">TranslateDS</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["invoice_date"] == null</expression>
-                                        </structure>
-                                    </list-property>
                                     <list-property name="paramBindings">
                                         <structure>
                                             <property name="paramName">param_1</property>
@@ -3355,7 +3323,7 @@ if(row["operation_type_select"] == "1" ){
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy">row._outer["invoice_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy"> if(row._outer["invoice_date"] != null){ row._outer["invoice_date"] } else { BirtDateTime.now() } </VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -4455,7 +4423,7 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["customerproductcode"]</expression>
+                                                <expression name="valueExpr" type="javascript">!row["customerproductcode"] || row["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">customerproductcode</property>
@@ -4484,13 +4452,14 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["customerproductname"] &amp;&amp; row["is_title_line"]</expression>
+                                                <expression name="valueExpr" type="javascript">!row["customerproductname"] || row["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">customerproductname</property>
                                     </data>
                                     <text id="5327">
                                         <property name="fontSize">8pt</property>
+                                        <property name="marginBottom">4pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -4512,22 +4481,10 @@ row["partnerFirstName"]
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {row["product_name"]}</VALUE-OF><I><FONT size="9pt"><VALUE-OF>if(row["is_sub_line"]) {row["product_name"]}</VALUE-OF></FONT></I><B><VALUE-OF>if(row["is_pack_line"]) {row["product_name"]}</VALUE-OF></B>]]></text-property>
                                     </text>
-                                    <data id="5329">
-                                        <property name="fontSize">8pt</property>
-                                        <property name="fontWeight">bold</property>
-                                        <property name="fontStyle">italic</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["customerproductname"] &amp;&amp; !row["is_title_line"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <property name="resultSetColumn">customerproductname</property>
-                                    </data>
                                     <text id="5328">
                                         <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
+                                        <property name="marginBottom">4pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -4826,10 +4783,34 @@ row["partnerFirstName"]
                                 <cell id="4459">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
-                                    <label id="4420">
+                                    <text id="5370">
                                         <property name="textAlign">left</property>
-                                        <text-property name="text">Acompte(s) lié(s)</text-property>
-                                    </label>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'Invoice.advancePayments'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4462"/>
                             </row>
@@ -6468,7 +6449,7 @@ row["partnerFirstName"]
                                         <property name="fontStyle">normal</property>
                                         <property name="pageBreakAfter">avoid</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["note"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["note"] != null ) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF><br>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5115"/>

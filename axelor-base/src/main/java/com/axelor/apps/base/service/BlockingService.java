@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,12 +38,16 @@ public class BlockingService {
   public Blocking getBlocking(Partner partner, Company company, int blockingType) {
     List<Blocking> blockings = partner.getBlockingList();
 
-    for (Blocking blocking : blockings) {
-      if (blocking.getCompanySet().contains(company)
-          && blocking.getBlockingSelect().equals(blockingType)
-          && blocking.getBlockingToDate().compareTo(Beans.get(AppBaseService.class).getTodayDate())
-              >= 0) {
-        return blocking;
+    if (blockings != null && !blockings.isEmpty()) {
+      for (Blocking blocking : blockings) {
+        if (blocking.getCompanySet().contains(company)
+            && blocking.getBlockingSelect().equals(blockingType)
+            && blocking
+                    .getBlockingToDate()
+                    .compareTo(Beans.get(AppBaseService.class).getTodayDate())
+                >= 0) {
+          return blocking;
+        }
       }
     }
 
@@ -66,7 +70,7 @@ public class BlockingService {
         blockingType,
         Beans.get(AppBaseService.class)
             .getTodayDate()
-            .format(DateTimeFormatter.ofPattern("YYYY-MM-dd")),
+            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
         company.getId());
   }
 }

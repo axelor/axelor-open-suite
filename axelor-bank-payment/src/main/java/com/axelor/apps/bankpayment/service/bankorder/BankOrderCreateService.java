@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -78,7 +78,8 @@ public class BankOrderCreateService {
       BankDetails senderBankDetails,
       Currency currency,
       String senderReference,
-      String senderLabel)
+      String senderLabel,
+      int technicalOriginSelect)
       throws AxelorException {
 
     BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
@@ -117,7 +118,7 @@ public class BankOrderCreateService {
     bankOrder.setSenderLabel(senderLabel);
     bankOrder.setBankOrderLineList(new ArrayList<BankOrderLine>());
     bankOrder.setBankOrderFileFormat(bankOrderFileFormat);
-
+    bankOrder.setTechnicalOriginSelect(technicalOriginSelect);
     return bankOrder;
   }
 
@@ -154,7 +155,8 @@ public class BankOrderCreateService {
             companyBankDetails,
             currency,
             reference,
-            null);
+            null,
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
     BankDetails receiverBankDetails = invoiceService.getBankDetails(invoice);
     BankOrderLine bankOrderLine =

@@ -18,6 +18,7 @@
 			<field name="instruction" colSpan="12" widget="html"/>
 			<field name="defaultDayNumberGain" />
 			<field name="selectedByMgtOnly"/>
+            <field name="unitSelect" />
 		</panel>
 		<panel name="exportsPanel">
 			<field name="payrollPreprationExport"  />

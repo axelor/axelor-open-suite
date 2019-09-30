@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class WkfController {
@@ -182,7 +183,7 @@ public class WkfController {
     //
     List<Option> select = getSelect(statusField);
 
-    if (!select.isEmpty()) {
+    if (!CollectionUtils.isEmpty(select)) {
       StringBuilder elements = new StringBuilder();
       StringBuilder designs = new StringBuilder();
       int count = 1;

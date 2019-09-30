@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,7 +71,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -96,7 +95,7 @@ public class HumanResourceMobileController {
    *     350.00, "locationFrom": "Paris", "locationTo": "Marseille", "allowanceTypeSelect": 1,
    *     "comments": "no", "date": "2018-02-22", "expenseProduct": 43 } }
    */
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void insertKMExpenses(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -156,6 +155,7 @@ public class HumanResourceMobileController {
    *     <p>payload: { "data": { "action":
    *     "com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines" } }
    */
+  @Transactional
   public void removeLines(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
@@ -324,6 +324,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities"
    * } }
    */
+  @Transactional
   public void getActivities(ActionRequest request, ActionResponse response) {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
@@ -460,7 +461,7 @@ public class HumanResourceMobileController {
    * 		"comment": "no"
    * } }
    */
-  @Transactional
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException {
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
     User user = AuthUtils.getUser();
@@ -468,43 +469,45 @@ public class HumanResourceMobileController {
     LeaveReason leaveReason =
         Beans.get(LeaveReasonRepository.class)
             .find(Long.valueOf(requestData.get("leaveReason").toString()));
-    if (user.getEmployee() == null) {
+    Employee employee = user.getEmployee();
+    if (employee == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
           user.getName());
     }
-    if (user != null && leaveReason != null) {
+    if (leaveReason != null) {
       LeaveRequest leave = new LeaveRequest();
       leave.setUser(user);
       Company company = null;
-      if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
-        company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+      if (employee.getMainEmploymentContract() != null) {
+        company = employee.getMainEmploymentContract().getPayCompany();
       }
       leave.setCompany(company);
       LeaveLine leaveLine =
           Beans.get(LeaveLineRepository.class)
               .all()
-              .filter(
-                  "self.employee = ?1 AND self.leaveReason = ?2", user.getEmployee(), leaveReason)
+              .filter("self.employee = ?1 AND self.leaveReason = ?2", employee, leaveReason)
               .fetchOne();
       if (leaveLine == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.LEAVE_LINE),
-            user.getEmployee().getName(),
+            employee.getName(),
             leaveReason.getLeaveReason());
       }
       leave.setLeaveLine(leaveLine);
       leave.setRequestDate(appBaseService.getTodayDate());
       if (requestData.get("fromDate") != null) {
-        leave.setFromDate(
-            LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE));
+        leave.setFromDateT(
+            LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE)
+                .atStartOfDay());
       }
       leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
       if (requestData.get("toDate") != null) {
-        leave.setToDate(
-            LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE));
+        leave.setToDateT(
+            LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE)
+                .atStartOfDay());
       }
       leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
       leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
@@ -514,7 +517,7 @@ public class HumanResourceMobileController {
       }
       leave = Beans.get(LeaveRequestRepository.class).save(leave);
       response.setTotal(1);
-      HashMap<String, Object> data = new HashMap<String, Object>();
+      HashMap<String, Object> data = new HashMap<>();
       data.put("id", leave.getId());
       response.setData(data);
       Beans.get(LeaveRequestRepository.class).save(leave);
@@ -540,6 +543,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason"
    * } }
    */
+  @Transactional
   public void getLeaveReason(ActionRequest request, ActionResponse response) {
     try {
       User user = AuthUtils.getUser();
@@ -547,14 +551,17 @@ public class HumanResourceMobileController {
       List<Map<String, String>> dataList = new ArrayList<>();
 
       if (user == null || user.getEmployee() == null) {
-        List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
 
+        List<LeaveReason> leaveReasonList = Beans.get(LeaveReasonRepository.class).all().fetch();
         for (LeaveReason leaveReason : leaveReasonList) {
-          Map<String, String> map = new HashMap<>();
-          map.put("name", leaveReason.getLeaveReason());
-          map.put("id", leaveReason.getId().toString());
-          dataList.add(map);
+          if (leaveReason.getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+            Map<String, String> map = new HashMap<>();
+            map.put("name", leaveReason.getLeaveReason());
+            map.put("id", leaveReason.getId().toString());
+            dataList.add(map);
+          }
         }
+
       } else if (user.getEmployee() != null) {
         List<LeaveLine> leaveLineList =
             Beans.get(LeaveLineRepository.class)
@@ -601,6 +608,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes"
    * } }
    */
+  @Transactional
   public void getExpensesTypes(ActionRequest request, ActionResponse response) {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
@@ -640,6 +648,7 @@ public class HumanResourceMobileController {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam"
    * } }
    */
+  @Transactional
   public void getKilometricAllowParam(ActionRequest request, ActionResponse response) {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
@@ -650,16 +659,13 @@ public class HumanResourceMobileController {
               .filter("self.employee = ?1", user.getEmployee())
               .fetch();
 
+      // Not sorted by default ?
       employeeVehicleList.sort(
-          new Comparator<EmployeeVehicle>() { // Not sorted by default ?
-            @Override
-            public int compare(EmployeeVehicle employeeVehicle1, EmployeeVehicle employeeVehicle2) {
-              return employeeVehicle1
+          (employeeVehicle1, employeeVehicle2) ->
+              employeeVehicle1
                   .getKilometricAllowParam()
                   .getCode()
-                  .compareTo(employeeVehicle2.getKilometricAllowParam().getCode());
-            }
-          });
+                  .compareTo(employeeVehicle2.getKilometricAllowParam().getCode()));
 
       for (EmployeeVehicle employeeVehicle : employeeVehicleList) {
         Map<String, String> map = new HashMap<>();

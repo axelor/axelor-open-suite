@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="ShippingCoef" lang="java">
-      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+      <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
       <decimal name="shippingCoef" title="Shipping Coef."/>
   </entity>
 

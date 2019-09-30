@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
-        model="com.axelor.apps.sale.db.SaleOrderLine" onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
-        onNew="action-group-sale-saleorderline-onnew"
+        model="com.axelor.apps.sale.db.SaleOrderLine" onNew="action-group-sale-saleorderline-onnew,action-record-sale-order-line-fill-request-qty"
+		onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
         width="large">
         <panel-include view="sale-order-line-form" from="axelor-sale" />
     </form>
@@ -32,28 +32,45 @@
 	</form>
 
 
-	<action-record id="supplychain-action-sale-order-line-record-is-form-readonly" name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || invoiced) || saleOrder?.statusSelect == 4 || isSubLine"/>
-	</action-record>
-
-	<action-method name="action-method-sale-order-line-available-stock"
-				   model="com.axelor.apps.sale.db.SaleOrderLine">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="fillAvailableStock"/>
+	<action-method name="action-method-sale-order-line-available-and-allocated-stock" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="fillAvailableAndAllocatedStock"/>
 	</action-method>
 
 	<action-method name="action-method-sale-order-line-change-reserved-qty">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeReservedQty"/>
 	</action-method>
 
+  <action-method name="action-supplychain-sale-order-line-allocate-all">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-line-deallocate-all">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="deallocateAll"/>
+  </action-method>
+
 	<action-method name="action-method-sale-order-line-change-requested-reserved-qty">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeRequestedReservedQty"/>
 	</action-method>
+	
+	<action-method name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkInvoicedOrDeliveredOrderQty"/>
+	</action-method>
+
+	<action-method name="action-method-sale-order-line-request-qty">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="requestQty"/>
+	</action-method>
+
+	<action-method name="action-method-sale-order-line-cancel-reservation">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="cancelReservation"/>
+	</action-method>
+
+	<action-record name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="requestedReservedQty" expr="eval: BigDecimal.ZERO.max(qty)" if="requestedReservedQty &gt; qty || isQtyRequested"/>
+	</action-record>
 
 	<action-attrs name="action-supplychain-sale-order-line-attrs-hide-button">
-		<attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
-    <attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: saleOrder.statusSelect != 3" if="saleOrder"/>
-		<attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
-    <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: saleOrder.statusSelect != 3" if="saleOrder"/>
+		<attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3" if="__parent__"/>
+    <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3" if="saleOrder"/>
 	</action-attrs>
 
 	<action-attrs name="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty">
@@ -67,6 +84,11 @@
   <action-attrs name="action-sale-order-line-attrs-reserved-qty-visibility">
 		<attribute for="reservedQty" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
 		<attribute for="reservedQty" name="hidden" expr="eval: saleOrder.statusSelect != 3" if="saleOrder"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-is-requested-qty-readonly">
+    <attribute for="requestedReservedQty" name="readonly" expr="eval: isSubLine || __parent__.statusSelect &gt; 2" if="__parent__"/>
+    <attribute for="requestedReservedQty" name="readonly" expr="eval: isSubLine || saleOrder.statusSelect &gt; 2" if="saleOrder"/>
   </action-attrs>
 
 	<action-view name="action-view-sale-order-line-allocated-qty-wizard" title="Change allocated qty"
@@ -90,4 +112,23 @@
 		<view-param name="forceEdit" value="true"/>
 		<context name="_showRecord" expr="eval: id"/>
 	</action-view>
+
+	<action-view name="action-view-sale-order-line-view-planned-stock-move-lines" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid-planned"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<view-param name="popup" value="true"/>
+		<domain>self.stockMove.statusSelect = 2 AND self.product.id = :productId AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId)</domain>
+		<context name="productId" expr="eval: product?.id"/>
+		<context name="locationId" expr="eval: __parent__.stockLocation?.id"/>
+	</action-view>
+
+	<action-record name="action-record-sale-order-line-future-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, __parent__.stockLocation.id)"/>
+	</action-record>
+
+  <action-record name="action-record-sale-order-line-fill-request-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="isQtyRequested" expr="eval: __parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
+    <field name="requestedReservedQty" expr="eval: qty" if="__parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
+  </action-record>
+
 </object-views>	

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.report.IReport;
@@ -37,11 +38,11 @@ public class CostSheetController {
       CostSheet costSheet = request.getContext().asType(CostSheet.class);
       Long costSheetId = costSheet.getId();
       String name = I18n.get("Cost sheet");
-
       String fileLink =
           ReportFactory.createReport(IReport.COST_SHEET, name + "-${date}")
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam("CostSheetId", costSheetId)
+              .addParam("BaseUrl", AppSettings.get().getBaseURL())
               .generate()
               .getFileLink();
 

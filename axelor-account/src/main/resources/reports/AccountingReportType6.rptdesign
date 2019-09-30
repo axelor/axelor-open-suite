@@ -890,6 +890,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="verticalAlign">top</property>
                             <text id="3128">
                                 <property name="fontSize">9pt</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">report_date_edition</property>
+                                        <text-property name="displayName">report_date_edition</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["report_date_edition"]</expression>
+                                        <property name="dataType">date-time</property>
+                                    </structure>
+                                </list-property>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF>row["report_date_edition"]</VALUE-OF>]]></text-property>
                             </text>

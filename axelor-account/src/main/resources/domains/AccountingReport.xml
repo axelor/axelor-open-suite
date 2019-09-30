@@ -33,6 +33,17 @@
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
+
+    
+    <!--Report 7 : Partner genereal ledger  --> 
+    <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>
+    
+    
+	<!--Report 1 : genereal ledger  --> 
+    <boolean name="displayCodeAccountOnPrinting" title="Display code account on printing"/>
+    <boolean name="displayNameAccountOnPrinting" title="Display name account on printing"/>
+    <boolean name="displayMoveSequenceOnPrinting" title="Display move sequence on printing"/>
+
 	<unique-constraint columns="ref,company"/>
     
     <extra-code><![CDATA[
@@ -44,6 +55,7 @@
 		public static final int REPORT_AGED_BALANCE = 4;
 		public static final int REPORT_CHEQUE_DEPOSIT = 5;
 		public static final int REPORT_PARNER_BALANCE = 6;
+		public static final int REPORT_PARNER_GENERAL_LEDGER = 7;
 		public static final int REPORT_CASH_PAYMENTS = 10;
 		public static final int REPORT_JOURNAL = 11;
 		public static final int REPORT_VAT_STATEMENT_INVOICE = 12;
@@ -51,6 +63,8 @@
 		public static final int REPORT_GENERAL_LEDGER2 = 14;
 		public static final int REPORT_VAT_STATEMENT_RECEIVED = 15;
 		public static final int REPORT_ANALYTIC_BALANCE = 2000;
+		public static final int REPORT_ACQUISITIONS = 16;
+		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
 		
 		// EXPORT TYPE SELECT
         public static final int EXPORT_ADMINISTRATION = 1000;

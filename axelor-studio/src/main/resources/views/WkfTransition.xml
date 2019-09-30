@@ -17,24 +17,27 @@
         <field name="target" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
         <field name="isButton"/>
         <field name="buttonTitle" showIf="isButton" requiredIf="isButton"/>
-        <field name="alertTypeSelect" showIf="isButton"/>
+        <field name="alertTypeSelect" widget="RadioSelect" showIf="isButton"/>
+        <field name="colSpan" showIf="isButton"/>
         <field name="alertMsg" showIf="isButton"/>
         <field name="successMsg" showIf="isButton"/>
         <field name="wkf" hidden="true"/>
         <field name="wkf.model" hidden="true"/>
       </panel>
       <panel-related name="conditionsPanel" field="conditions" colSpan="12" editable="true" onNew="action-wkf-transition-filter-set-defaults">
-      	  <field name="metaJsonField" required="true" widget="SuggestBox" onSelect="action-wkf-transition-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
-	      <field name="targetField" readonlyIf="metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null"  />
-	      <field name="operator"/>
-	      <field name="value" onChange="action-studio-filter-validate-values" />
-	      <field name="logicOp" />
-	      <field name="metaJsonField.targetModel" hidden="true" />
-	      <field name="metaJsonField.targetJsonModel" hidden="true" />
-	      <field name="isJson" hidden="true" />
-	      <field name="targetType" hidden="true" />
+        <field name="logicOp" />
+        <field name="metaJsonField" required="true" widget="SuggestBox" onSelect="action-wkf-transition-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
+        <field name="targetField" readonlyIf="metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null"  />
+        <field name="operator"/>
+        <field name="value" onChange="action-studio-filter-validate-values" />
+        <field name="metaJsonField.targetModel" hidden="true" />
+        <field name="metaJsonField.targetJsonModel" hidden="true" />
+        <field name="isJson" hidden="true" />
+        <field name="targetType" hidden="true" /> 
       </panel-related>
-      <panel-related name="roleSetPanel" field="roleSet" colSpan="12" showIf="isButton"/>
+      <panel name="roleSetPanel">
+        <field name="roleSet" widget="TagSelect" showIf="isButton" colSpan="12" />
+      </panel>
   </form>
   
   <action-attrs name="action-wkf-transition-filter-meta-json-field-domain">

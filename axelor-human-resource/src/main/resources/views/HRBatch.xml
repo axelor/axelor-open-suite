@@ -88,7 +88,7 @@
 
     <action-attrs name="action-hr-batch-attrs-employee-set-domain">
         <attribute for="employeeSet" name="domain" expr="eval: null"/>
-        <attribute for="employeeSet" name="domain" expr="eval: &quot;self.payCompany.id = ${company.id}&quot;" if="eval: company != null"/>
+        <attribute for="employeeSet" name="domain" expr="eval: &quot;self.mainEmploymentContract.payCompany.id = ${company.id}&quot;" if="eval: company != null"/>
     </action-attrs>
 	
 

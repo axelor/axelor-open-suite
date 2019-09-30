@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -21,6 +21,26 @@
             <property name="name">odaPassword</property>
             <property name="id">7</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -157,16 +177,62 @@
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">product</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product</text-property>
+                    <text-property name="heading">product</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">stockLocation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">stockLocation</text-property>
+                    <text-property name="heading">stockLocation</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">manuf_order_seq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">manuf_order_seq</text-property>
+                    <text-property name="heading">manuf_order_seq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">neededQty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">neededQty</text-property>
+                    <text-property name="heading">neededQty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">missingNegativeQty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">missingNegativeQty</text-property>
+                    <text-property name="heading">missingNegativeQty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">availableStockLocation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">availableStockLocation</text-property>
+                    <text-property name="heading">availableStockLocation</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">availableQty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">availableQty</text-property>
+                    <text-property name="heading">availableQty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">label_to_printing</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">label_to_printing</text-property>
+                    <text-property name="heading">label_to_printing</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">RawMaterialRequirementId</property>
-                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
-                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -227,56 +293,78 @@
                     <property name="name">product</property>
                     <property name="nativeName">product</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">stockLocation</property>
                     <property name="nativeName">stockLocation</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">manuf_order_seq</property>
                     <property name="nativeName">manuf_order_seq</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">neededQty</property>
                     <property name="nativeName">neededQty</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">missingNegativeQty</property>
                     <property name="nativeName">missingNegativeQty</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">availableStockLocation</property>
                     <property name="nativeName">availableStockLocation</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">availableQty</property>
                     <property name="nativeName">availableQty</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">label_to_printing</property>
                     <property name="nativeName">label_to_printing</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
     Product.full_name as "product",
     ProductionStockLocation.name as "stockLocation",
     ManufOrder.manuf_order_seq,
-    sum(StockMoveLine.qty) as "neededQty",
-    sum(StockMoveLine.qty) - ProductionStockLocationLine.current_qty as "missingNegativeQty",
+    CASE ManufOrder.is_cons_pro_on_operation
+      WHEN true THEN sum(StockMoveLine.qty)
+      ELSE
+        (CASE count(OperationOrder.id)
+            WHEN 0 THEN sum(StockMoveLine.qty)
+            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+        END)
+    END as "neededQty",
+    (CASE ManufOrder.is_cons_pro_on_operation
+      WHEN true THEN sum(StockMoveLine.qty)
+      ELSE
+        (CASE count(OperationOrder.id)
+            WHEN 0 THEN sum(StockMoveLine.qty)
+            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+        END)
+    END) - ProductionStockLocationLine.current_qty as "missingNegativeQty",
     StockLocation.name as "availableStockLocation",
     sum(StockLocationLine.current_qty)/count(StockMoveLine.qty) as "availableQty",
     Unit.label_to_printing
@@ -331,32 +419,14 @@ GROUP BY
     Product.full_name,
     ProductionStockLocation.name,
     ManufOrder.manuf_order_seq,
+    ManufOrder.is_cons_pro_on_operation,
     ProductionStockLocationLine.current_qty,
     label_to_printing,
-    StockLocation.name;]]></xml-property>
+    StockLocation.name;
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -524,6 +594,11 @@ GROUP BY
                         <property name="name">show_all_requirements</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">show_requirements_bymo</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -570,6 +645,12 @@ GROUP BY
                     <property name="nativeName">show_all_requirements</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">show_requirements_bymo</property>
+                    <property name="nativeName">show_requirements_bymo</property>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
     RawMaterialRequirement.code,
@@ -578,7 +659,8 @@ GROUP BY
     Metafile.file_path AS "logo_path",
     string_agg(StockLocation.name, ', ') AS "stockLocationNames",
     RawMaterialRequirement.duration,
-    RawMaterialRequirement.show_all_requirements
+    RawMaterialRequirement.show_all_requirements,
+    RawMaterialRequirement.show_requirements_bymo
 FROM
 	production_raw_material_requirement RawMaterialRequirement
 LEFT JOIN
@@ -596,7 +678,7 @@ LEFT JOIN
 WHERE
     RawMaterialRequirement.id = ?
 GROUP BY RawMaterialRequirement.code,RawMaterialRequirement.name, Metafile.file_path, RawMaterialRequirement.duration, Company.name,
-         RawMaterialRequirement.show_all_requirements
+         RawMaterialRequirement.show_all_requirements, RawMaterialRequirement.show_requirements_bymo
 ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3805">
@@ -764,9 +846,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </structure>
                     </list-property>
                     <column id="4250">
-                        <property name="width">10%</property>
+                        <property name="width">15%</property>
                     </column>
                     <column id="4247"/>
+                    <column id="4828">
+                        <property name="width">15%</property>
+                    </column>
                     <column id="4236">
                         <property name="width">5%</property>
                     </column>
@@ -777,13 +862,30 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="width">5%</property>
                     </column>
                     <row id="4239">
-                        <property name="verticalAlign">bottom</property>
+                        <property name="verticalAlign">middle</property>
                         <cell id="4249">
-                            <text id="4251">
-                                <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
-                            </text>
+                            <image id="4733">
+                                <property name="height">44px</property>
+                                <property name="width">107px</property>
+                                <property name="dataSet">RawMaterialDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="4246">
                             <text id="4248">
@@ -814,7 +916,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>(row["translation"] || row["en_translation"]) + " " + row._outer["code"] + " - " + row._outer["name"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[
+<VALUE-OF>(row["translation"] || row["en_translation"]) + " " + row._outer["code"] + (row._outer["name"] ? " - " + row._outer["name"] : "")</VALUE-OF>
+]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="4827">
+                            <text id="4826">
+                                <property name="fontSize">9pt</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="d MMM y kk:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="4240">
@@ -898,6 +1009,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">show_requirements_bymo</property>
+                    <text-property name="displayName">show_requirements_bymo</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["show_requirements_bymo"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4091">
                 <property name="width">1.8020833333333333in</property>
@@ -916,25 +1034,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </column>
             <row id="20">
                 <cell id="4085">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">5</property>
                     <property name="rowSpan">1</property>
-                    <image id="3419">
-                        <property name="height">91px</property>
-                        <property name="width">350px</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                            </structure>
-                        </list-property>
-                        <property name="source">file</property>
-                        <property name="proportionalScale">true</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                    </image>
-                </cell>
-                <cell id="22">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
+                    <property name="textAlign">center</property>
                     <text id="3804">
                         <property name="fontSize">18pt</property>
                         <property name="fontWeight">bold</property>
@@ -1165,6 +1267,12 @@ addDays(new Date(), row["duration"])</VALUE-OF>]]></text-property>
                     <table id="4108">
                         <property name="width">11.0625in</property>
                         <property name="dataSet">RawMaterialLineDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row._outer["show_requirements_bymo"]</expression>
+                            </structure>
+                        </list-property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">product</property>
@@ -1620,6 +1728,393 @@ addDays(new Date(), row["duration"])</VALUE-OF>]]></text-property>
                                     <cell id="4185"/>
                                 </row>
                             </header>
+                        </group>
+                    </table>
+                    <table id="4829">
+                        <property name="width">11.0625in</property>
+                        <property name="dataSet">RawMaterialLineDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["show_requirements_bymo"]</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">product</property>
+                                <text-property name="displayName">product</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["product"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">stockLocation</property>
+                                <text-property name="displayName">stockLocation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["stockLocation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">manuf_order_seq</property>
+                                <text-property name="displayName">manuf_order_seq</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["manuf_order_seq"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">neededQty</property>
+                                <text-property name="displayName">neededQty</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["neededQty"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">availableQty</property>
+                                <text-property name="displayName">availableQty</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["availableQty"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">missingQty</property>
+                                <text-property name="displayName">missingQty</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["missingQty"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">missingNegativeQty</property>
+                                <text-property name="displayName">missingNegativeQty</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["missingNegativeQty"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">StockAvailable</property>
+                                <text-property name="displayName">StockAvailable</text-property>
+                                <property name="dataType">string</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>NewTableGroup1</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">CONCATENATE</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["availableStockLocation"]+': '+row["availableQty"]+' '+row["unit"]</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Separat&amp;or</property>
+                                        <expression name="value" type="javascript">'\n'</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Ma&amp;x length</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Sho&amp;w all values</property>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">availableStockLocation</property>
+                                <text-property name="displayName">availableStockLocation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["availableStockLocation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">neededQtySumByProduct</property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>NewTableGroup1</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["neededQty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">missingQtySumByProduct</property>
+                                <property name="dataType">float</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>NewTableGroup1</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["missingQty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">countAvailableStockLocation</property>
+                                <text-property name="displayName">countAvailableStockLocation</text-property>
+                                <property name="dataType">integer</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>NewTableGroup2</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">COUNT</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["availableStockLocation"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">neededQtySum</property>
+                                <expression name="expression" type="javascript">row["neededQtySumByProduct"]/row["countAvailableStockLocation"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">missingQtySum</property>
+                                <expression name="expression" type="javascript">Math.max(row["neededQtySum"] - row["neededQty"] + row["missingNegativeQty"],0)</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">unit</property>
+                                <text-property name="displayName">unit</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["label_to_printing"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                        </list-property>
+                        <list-property name="filter">
+                            <structure>
+                                <property name="operator">is-true</property>
+                                <expression name="expr" type="javascript">row._outer["show_all_requirements"] || row["missingQtySumByProduct"] > 0</expression>
+                                <property name="updateAggregation">true</property>
+                            </structure>
+                        </list-property>
+                        <column id="4878">
+                            <property name="width">35%</property>
+                        </column>
+                        <column id="4880">
+                            <property name="width">9%</property>
+                        </column>
+                        <column id="4881">
+                            <property name="width">11%</property>
+                        </column>
+                        <column id="4882">
+                            <property name="width">9%</property>
+                        </column>
+                        <column id="4883">
+                            <property name="width">11%</property>
+                        </column>
+                        <column id="4884">
+                            <property name="suppressDuplicates">true</property>
+                            <property name="width">25%</property>
+                        </column>
+                        <header>
+                            <row id="4830">
+                                <property name="borderBottomStyle">solid</property>
+                                <property name="borderBottomWidth">medium</property>
+                                <cell id="4831">
+                                    <text id="4832">
+                                        <property name="marginTop">1pt</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">"RawMaterialRequirement.stockLocation"</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] || row["en_translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4835">
+                                    <property name="colSpan">2</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="4836">
+                                        <property name="marginTop">1pt</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">"RawMaterialRequirement.neededQuantity"</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] || row["en_translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4837">
+                                    <property name="colSpan">2</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="4838">
+                                        <property name="marginTop">1pt</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">"RawMaterialRequirement.missingQuantity"</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] || row["en_translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="4839">
+                                    <text id="4840">
+                                        <property name="marginTop">1pt</property>
+                                        <property name="marginLeft">2pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">"RawMaterialRequirement.available"</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"] || row["en_translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </header>
+                        <group id="4841">
+                            <property name="groupName">NewTableGroup1</property>
+                            <expression name="keyExpr" type="javascript">row["product"]</expression>
+                            <structure name="toc">
+                                <expression name="expressionValue" type="javascript">row["product"]</expression>
+                            </structure>
+                            <property name="repeatHeader">false</property>
+                            <property name="hideDetail">false</property>
+                            <header>
+                                <row id="4842">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <cell id="4843">
+                                        <property name="colSpan">1</property>
+                                        <property name="rowSpan">1</property>
+                                        <data id="4844">
+                                            <property name="fontWeight">bold</property>
+                                            <property name="resultSetColumn">product</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4845">
+                                        <data id="4846">
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="resultSetColumn">neededQtySum</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4847">
+                                        <data id="4848">
+                                            <property name="fontWeight">bold</property>
+                                            <property name="resultSetColumn">unit</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4849">
+                                        <data id="4850">
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="resultSetColumn">missingQtySum</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4851">
+                                        <data id="4852">
+                                            <property name="fontWeight">bold</property>
+                                            <property name="resultSetColumn">unit</property>
+                                        </data>
+                                    </cell>
+                                    <cell id="4853">
+                                        <data id="4854">
+                                            <property name="textAlign">right</property>
+                                            <property name="resultSetColumn">StockAvailable</property>
+                                        </data>
+                                    </cell>
+                                </row>
+                            </header>
+                            <footer>
+                                <row id="4855">
+                                    <property name="height">2mm</property>
+                                    <cell id="4856"/>
+                                    <cell id="4858"/>
+                                    <cell id="4859"/>
+                                    <cell id="4860"/>
+                                    <cell id="4861"/>
+                                    <cell id="4862"/>
+                                </row>
+                            </footer>
+                        </group>
+                        <group id="4863">
+                            <property name="groupName">NewTableGroup2</property>
+                            <expression name="keyExpr" type="javascript">row["stockLocation"]+row["manuf_order_seq"]+row["neededQty"]+row["missingQty"]</expression>
+                            <property name="hideDetail">false</property>
                         </group>
                     </table>
                 </cell>

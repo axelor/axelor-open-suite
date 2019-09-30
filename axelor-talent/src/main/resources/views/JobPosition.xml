@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="job-position-grid" title="Job positions" model="com.axelor.apps.talent.db.JobPosition">
-		<field name="jobReference" />
+		<field name="jobReference" width="120"/>
 		<field name="jobTitle" />
 		<field name="companyDepartment" />
 		<field name="employee" />
@@ -17,12 +17,10 @@
 			<button name="createJobApplicationBtn" title="Create a job application" colSpan="3" onClick="save,action-job-position-create-application"/>
 		</toolbar>
 		
-		<panel name="statusPanel" title="Status">
+		<panel name="mainPanel" readonlyIf="statusSelect == 4">
 			<field name="statusSelect" widget="NavSelect" readonly="true" colSpan="12" showTitle="false"/>
 			<field name="jobReference" colSpan="4" showTitle="false"/>
-		</panel>		
-		<panel name="detailPanel" readonlyIf="statusSelect == 4">
-			<field name="jobTitle" colSpan="6" />
+			<field name="jobTitle" colSpan="12" showTitle="false" css="label-bold bold large" placeholder="Job title"/>
 			<spacer name="jobTitleSpacer"/>
 			<field name="company" />
 			<field name="location" />
@@ -41,7 +39,7 @@
 			<button name="statusDraftBtn" title="Draft" onClick="save,action-job-position-record-status-draft,save" showIf="statusSelect == 4" colSpan="12"/>
 			<button name="statusOpenBtn" title="Open" onClick="save,action-job-position-record-status-open,save" showIf="statusSelect == 0 || statusSelect == 2" colSpan="12"/>
 			<button name="statusOnHoldBtn" title="On hold" onClick="save,action-job-position-record-status-onhold,save" showIf="statusSelect == 1" colSpan="12"/>
-			<button name="statusClosedBtn" title="Closed" onClick="save,action-job-position-record-status-closed,save" showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
+			<button name="statusClosedBtn" title="Close" onClick="save,action-job-position-record-status-closed,save" showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
 			<button name="cancelBtn" title="Cancel" onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4" colSpan="12" icon="fa-times-circle" css="btn-danger"/>
 		</panel>
 		<panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">

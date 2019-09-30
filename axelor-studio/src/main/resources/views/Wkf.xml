@@ -13,14 +13,17 @@
   	onSave="action-wkf-group-on-save" onNew="action-wkf-set-default">
      <panel name="mainPanel">
         <field name="name"/>
-        <field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
+        <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" onChange="action-wkf-reset-model" />
         <field name="isJson" colSpan="1" onChange="action-wkf-reset-model"/>
-        <panel name="modelPanel" colSpan="6">
-	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name"/>
-	        <field name="model" colSpan="12" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" />
+        <panel name="modelPanel" colSpan="5">
+	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" onSelect="action-wkf-attrs-set-model-domain" />
+	        <field name="model" colSpan="12" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaModel" x-target-name="fullName" onSelect="action-wkf-attrs-set-model-domain" />
 	    </panel>
-	    <field name="jsonField" colSpan="5" requiredIf="model != null &amp;&amp; !isJson" readonlyIf="model == null &amp;&amp; !isJson" hideIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaField" x-target-name="name" x-domain="self.metaModel.fullName = :model and self.json = true"/>
-        <field name="statusField" onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-method-set-default-nodes" colSpan="4" />
+	    <field name="jsonField" colSpan="4" requiredIf="model != null &amp;&amp; !isJson" readonlyIf="model == null &amp;&amp; !isJson" hideIf="isJson" widget="ref-text" 
+	    	x-target="com.axelor.meta.db.MetaField" x-target-name="name" x-domain="self.metaModel.fullName = :model and self.json = true" onChange="action-wkf-attrs-reset-status-field"/>
+	    <field name="isTrackFlow" colSpan="2"/>
+        <field name="statusField" form-view="studio-meta-json-field-form" grid-view="studio-meta-json-field-grid" canNew="true" colSpan="4"
+          onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-validate-status-field,action-wkf-method-set-default-nodes" />
       	<field name="displayTypeSelect" colSpan="4" />
       	<button name="openDashboardBtn" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
@@ -53,9 +56,18 @@
     <error message="Please correct the workflow diagram." if="bpmnXml == null"/>
   </action-validate>
   
+  <action-validate name="action-wkf-validate-status-field">
+  	<alert message="Do you want to reset workflow ?" if="bpmnXml != null"/>
+  </action-validate>
+  
   <action-method name="action-wkf-method-set-default-nodes">
   	<call class="com.axelor.studio.web.WkfController" method="setDefaultNodes"/>
   </action-method>
+
+  <action-attrs name="action-wkf-attrs-set-model-domain">
+    <attribute name="domain" for="model" expr="eval:&quot;self.appBuilder.id = ${appBuilder.id} &quot;" if="isJson &amp;&amp; appBuilder != null" />
+    <attribute name="domain" for="model" expr="eval: null" if="!isJson" />
+  </action-attrs>
   
   <action-attrs name="action-wkf-attrs-set-status-field-domain">
   	<attribute name="domain" for="statusField" expr="eval:&quot;self.model = '${model}' and self.modelField = '${jsonField}' and (self.type = 'string' or self.type = 'integer') and self.appBuilder.id = ${appBuilder?.id} &quot;" if="!isJson" />
@@ -63,7 +75,13 @@
   </action-attrs>
   
   <action-attrs name="action-wkf-reset-model">
-  	<attribute name="value" for="model" expr="eval:null"/>
+    <attribute name="value" for="jsonField" expr="eval: null" />
+    <attribute name="value" for="model" expr="eval: null" />
+    <attribute name="domain" for="model" expr="eval: null" />
+  </action-attrs>
+  
+  <action-attrs name="action-wkf-attrs-reset-status-field">
+  	<attribute name="value" for="statusField" expr="eval:null"/>
   </action-attrs>
   
   <action-view name="open.wkf.dashboard" title="Workflow dashboard">

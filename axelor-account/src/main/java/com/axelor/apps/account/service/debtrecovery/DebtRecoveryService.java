@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,8 @@ package com.axelor.apps.account.service.debtrecovery;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.DebtRecovery;
+import com.axelor.apps.account.db.DebtRecoveryHistory;
+import com.axelor.apps.account.db.DebtRecoveryMethod;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -27,6 +29,7 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -34,6 +37,8 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,6 +54,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +71,7 @@ public class DebtRecoveryService {
   protected DebtRecoveryRepository debtRecoveryRepo;
 
   protected AppAccountService appAccountService;
+  protected MessageRepository messageRepo;
 
   @Inject
   public DebtRecoveryService(
@@ -75,7 +82,8 @@ public class DebtRecoveryService {
       PaymentScheduleLineRepository paymentScheduleLineRepo,
       AccountConfigService accountConfigService,
       DebtRecoveryRepository debtRecoveryRepo,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      MessageRepository messageRepo) {
 
     this.debtRecoverySessionService = debtRecoverySessionService;
     this.debtRecoveryActionService = debtRecoveryActionService;
@@ -85,6 +93,7 @@ public class DebtRecoveryService {
     this.accountConfigService = accountConfigService;
     this.debtRecoveryRepo = debtRecoveryRepo;
     this.appAccountService = appAccountService;
+    this.messageRepo = messageRepo;
   }
 
   public void testCompanyField(Company company) throws AxelorException {
@@ -228,7 +237,8 @@ public class DebtRecoveryService {
         Move move = moveLine.getMove();
         // facture exigibles non bloquée en relance et dont la date de facture + délai
         // d'acheminement < date du jour
-        if (move.getInvoice() != null
+        if (move.getStatusSelect() != MoveRepository.STATUS_CANCELED
+            && move.getInvoice() != null
             && !move.getInvoice().getDebtRecoveryBlockingOk()
             && !move.getInvoice().getSchedulePaymentOk()
             && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
@@ -342,13 +352,7 @@ public class DebtRecoveryService {
             .filter("self.partner = ?1 and self.company = ?2", partner, company)
             .fetchOne();
 
-    if (accountingSituation != null) {
-      if (accountingSituation.getDebtRecovery() != null) {
-        return accountingSituation.getDebtRecovery();
-      } else {
-        return this.createDebtRecovery(accountingSituation);
-      }
-    } else {
+    if (accountingSituation == null) {
       throw new AxelorException(
           accountingSituation,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -362,6 +366,8 @@ public class DebtRecoveryService {
           partner.getName(),
           company.getName());
     }
+
+    return accountingSituation.getDebtRecovery();
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -390,14 +396,12 @@ public class DebtRecoveryService {
           IllegalAccessException, IOException {
     boolean remindedOk = false;
 
-    DebtRecovery debtRecovery =
-        this.getDebtRecovery(partner, company); // ou getDebtRecovery si existe
+    DebtRecovery debtRecovery = this.getDebtRecovery(partner, company); // getDebtRecovery si existe
 
     BigDecimal balanceDue = accountCustomerService.getBalanceDue(partner, company);
 
     if (balanceDue.compareTo(BigDecimal.ZERO) > 0) {
 
-      debtRecovery.setBalanceDue(balanceDue);
       log.debug("balanceDue : {} ", balanceDue);
 
       BigDecimal balanceDueDebtRecovery =
@@ -407,6 +411,22 @@ public class DebtRecoveryService {
         log.debug("balanceDueDebtRecovery : {} ", balanceDueDebtRecovery);
 
         remindedOk = true;
+
+        if (debtRecovery == null) {
+          AccountingSituationRepository accSituationRepo =
+              Beans.get(AccountingSituationRepository.class);
+          AccountingSituation accountingSituation =
+              accSituationRepo
+                  .all()
+                  .filter("self.partner = ?1 and self.company = ?2", partner, company)
+                  .fetchOne();
+          debtRecovery = this.createDebtRecovery(accountingSituation);
+        }
+
+        debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
+        debtRecovery.setPartnerFullName(partner.getFullName());
+        debtRecovery.setCurrency(partner.getCurrency());
+        debtRecovery.setBalanceDue(balanceDue);
 
         List<MoveLine> moveLineList = this.getMoveLineDebtRecovery(partner, company);
 
@@ -442,9 +462,10 @@ public class DebtRecoveryService {
               company.getName());
         }
         if (debtRecovery.getDebtRecoveryMethod() == null) {
-          if (debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery) != null) {
-            debtRecovery.setDebtRecoveryMethod(
-                debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery));
+          DebtRecoveryMethod debtRecoveryMethod =
+              debtRecoverySessionService.getDebtRecoveryMethod(debtRecovery);
+          if (debtRecoveryMethod != null) {
+            debtRecovery.setDebtRecoveryMethod(debtRecoveryMethod);
             debtRecoverySessionService.debtRecoverySession(debtRecovery);
           } else {
             throw new AxelorException(
@@ -470,6 +491,18 @@ public class DebtRecoveryService {
               && debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevel().getName()
                   > levelDebtRecovery) {
             debtRecoveryActionService.runAction(debtRecovery);
+
+            DebtRecoveryHistory debtRecoveryHistory =
+                debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
+
+            if (CollectionUtils.isEmpty(
+                messageRepo
+                    .findByRelatedTo(
+                        Math.toIntExact(debtRecoveryHistory.getId()),
+                        DebtRecoveryHistory.class.getCanonicalName())
+                    .fetch())) {
+              debtRecoveryActionService.runMessage(debtRecovery);
+            }
           }
         } else {
           log.debug(

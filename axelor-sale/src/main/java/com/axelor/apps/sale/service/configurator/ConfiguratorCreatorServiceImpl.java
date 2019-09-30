@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,10 +53,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
@@ -89,7 +91,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
   @Transactional
   public void updateIndicators(ConfiguratorCreator creator) {
-    List<MetaJsonField> indicators = creator.getIndicators();
+    List<MetaJsonField> indicators =
+        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
 
     // add missing formulas
     List<? extends ConfiguratorFormula> formulas;
@@ -215,7 +218,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    */
   protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
     MetaField formulaMetaField = formula.getMetaField();
-    List<MetaJsonField> fields = creator.getIndicators();
+    List<MetaJsonField> fields =
+        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
     for (MetaJsonField field : fields) {
       if (field.getName().equals(formulaMetaField.getName() + "_" + creator.getId())) {
         return;

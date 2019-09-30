@@ -1,19 +1,19 @@
-"importId";"code";"name";"productFamily.importId"
-1;"HEB";"Hébergement";1
-2;"MAIN";"Maintenance";1
-3;"SER";"Serveur";2
-4;"IMP";"Imprimante";2
-5;"DD";"Disque dur";3
-6;"PROC";"Processeur";3
-7;"BOIT";"Boitier";3
-8;"MEM";"Mémoire";3
-9;"CARTM";"Carte mère";3
-10;"NPER";"Non-Périssable";4
-11;"PER";"Périssable";4
-12;"REG";"Régie";5
-13;"FORF";"Forfait";5
-14;"TRAN";"Transport";6
-15;"REP";"Repas";6
-16;"HEB2";"Hébergement2";6
-17;"ECR";"Ecran";2
-18;"PACK";"Package";2
+"importId";"code";"name"
+1;"HEB";"Hébergement"
+2;"MAIN";"Maintenance"
+3;"SER";"Serveur"
+4;"IMP";"Imprimante"
+5;"DD";"Disque dur"
+6;"PROC";"Processeur"
+7;"BOIT";"Boitier"
+8;"MEM";"Mémoire"
+9;"CARTM";"Carte mère"
+10;"NPER";"Non-Périssable"
+11;"PER";"Périssable"
+12;"REG";"Régie"
+13;"FORF";"Forfait"
+14;"TRAN";"Transport"
+15;"REP";"Repas"
+16;"HEB2";"Hébergement2"
+17;"ECR";"Ecran"
+18;"PACK";"Package"

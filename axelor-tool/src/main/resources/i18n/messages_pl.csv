@@ -1,0 +1,12 @@
+"key","message","comment","context"
+"An error occurs while opening the connection. Please verify the following URL : %s.","Podczas otwierania połączenia pojawia się błąd. Proszę sprawdzić następujący adres URL: %s.",,
+"Can not opening the connection to a empty URL.","Nie można otworzyć połączenia do pustego adresu URL.",,
+"Cannot find record #%s","Nie można znaleźć rekordu #%s",,
+"No such template","Brak takiego szablonu",,
+"Templating can not be empty","Szablonowanie nie może być puste",,
+"The collection of IDs cannot be null.","Zbiór identyfikatorów nie może być nieważny.",,
+"The consumer cannot be null.","Konsument nie może być nieważny.",,
+"The parameter copyNumber should be superior to 0.","Parametr copyNumber powinien być większy od 0.",,
+"This field needs to be unique.","Ta dziedzina musi być unikalna.",,
+"Url %s is malformed.","Url %s jest zdeformowany.",,
+"Years in 360 days","Lata w 360 dni",,

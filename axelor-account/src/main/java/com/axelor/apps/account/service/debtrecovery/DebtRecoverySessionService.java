@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -182,18 +182,20 @@ public class DebtRecoverySessionService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void debtRecoveryInitialization(DebtRecovery debtRecovery) throws AxelorException {
 
-    log.debug("Begin debtRecoveryInitialization service...");
+    if (debtRecovery != null) {
+      log.debug("Begin debtRecoveryInitialization service...");
 
-    debtRecovery.setDebtRecoveryMethodLine(null);
-    debtRecovery.setWaitDebtRecoveryMethodLine(null);
-    debtRecovery.setBalanceDue(BigDecimal.ZERO);
-    debtRecovery.setBalanceDueDebtRecovery(BigDecimal.ZERO);
-    debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
-    debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
+      debtRecovery.setDebtRecoveryMethodLine(null);
+      debtRecovery.setWaitDebtRecoveryMethodLine(null);
+      debtRecovery.setBalanceDue(BigDecimal.ZERO);
+      debtRecovery.setBalanceDueDebtRecovery(BigDecimal.ZERO);
+      debtRecovery.setInvoiceDebtRecoverySet(new HashSet<Invoice>());
+      debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
 
-    log.debug("End debtRecoveryInitialization service");
+      log.debug("End debtRecoveryInitialization service");
 
-    debtRecoveryRepo.save(debtRecovery);
+      debtRecoveryRepo.save(debtRecovery);
+    }
   }
 
   /**
@@ -236,6 +238,12 @@ public class DebtRecoverySessionService {
         return debtRecoveryMethodLine;
       }
     }
-    return null;
+
+    throw new AxelorException(
+        debtRecovery,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(
+            com.axelor.apps.account.exception.IExceptionMessage
+                .DEBT_RECOVERY_DEBT_RECOVERY_LEVEL_NOT_FOUND));
   }
 }

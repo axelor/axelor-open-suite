@@ -14,8 +14,41 @@
         <field name="credit" aggregate="sum"/>
 		<field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
         <field name="move.statusSelect"/>
-        <field name="description"/>
     </grid>
     
+    
+    <action-group name="action-group-account-moveline-debitcredit-onchange" id="banck-payment-action-group-account-moveline-debitcredit-onchange">
+		<action name="action-move-line-debit-credit-validate"/>
+		<action name="action-move-line-debit-credit-clean"/>
+		<action name="action-move-line-method-compute-analytic-distribution"/>
+		<action name="action-move-line-record-set-currencyAmount"/>
+		<action name="action-account-group-move-line-check-bank-reconcile-amount-debitcredit-on-change"/>
+	</action-group>
+	
+	<action-group name="action-account-group-move-line-check-bank-reconcile-amount-on-change">
+    	<action name="action-account-validate-move-line-check-bank-reconcile-amount"/>
+    	<action name="action-account-record-move-line-annul-change-bank-reconcile-amount"/>
+    </action-group>
+    
+    <action-group name="action-account-group-move-line-check-bank-reconcile-amount-debitcredit-on-change">
+    	<action name="action-account-validate-move-line-check-bank-reconcile-amount"/>
+    	<action name="action-account-record-move-line-annul-change-debitcredit-amount"/>
+    </action-group>
+    
+    <action-validate name="action-account-validate-move-line-check-bank-reconcile-amount">
+    	<alert message="Bank reconcile amount must be inferior or equal to credit or debit." if="eval: bankReconciledAmount &gt; (credit + debit)"/>
+    </action-validate>
+    
+    <action-record name="action-account-record-move-line-annul-change-bank-reconcile-amount" model="com.axelor.apps.account.db.MoveLine">
+    	<field name="bankReconciledAmount" expr="eval:__self__.bankReconciledAmount" if="eval: id != null &amp;&amp; bankReconciledAmount &gt; (credit + debit)"/>
+    	<field name="bankReconciledAmount" expr="0" if="eval: id == null &amp;&amp; bankReconciledAmount &gt; (credit + debit)"/>
+    </action-record>
+    
+     <action-record name="action-account-record-move-line-annul-change-debitcredit-amount" model="com.axelor.apps.account.db.MoveLine">
+     	<field name="credit" expr="eval:__self__.credit" if="eval: id != null &amp;&amp; bankReconciledAmount &gt; (credit + debit)"/>
+    	<field name="credit" expr="0" if="eval: id == null &amp;&amp; bankReconciledAmount &gt; (credit + debit)"/>
+    	<field name="debit" expr="eval:__self__.debit" if="eval: id != null &amp;&amp; bankReconciledAmount &gt; (credit + debit)"/>
+    	<field name="debit" expr="0" if="eval: id == null &amp;&amp; bankReconciledAmount &gt; (credit + debit)"/>
+    </action-record>
 	
 </object-views>

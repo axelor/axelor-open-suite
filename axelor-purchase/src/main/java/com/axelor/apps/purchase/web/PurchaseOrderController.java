@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,13 +58,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nullable;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,14 +78,17 @@ public class PurchaseOrderController {
 
   @Inject private PurchaseOrderPrintService purchaseOrderPrintService;
 
-  public void setSequence(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void setSequence(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
 
-    if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
-
-      response.setValue(
-          "purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
+        response.setValue(
+            "purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -117,12 +119,9 @@ public class PurchaseOrderController {
    * @param request
    * @param response
    * @return
-   * @throws BirtException
-   * @throws IOException
    */
   @SuppressWarnings("unchecked")
-  public void showPurchaseOrder(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void showPurchaseOrder(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
     String fileLink;
@@ -171,10 +170,13 @@ public class PurchaseOrderController {
     }
   }
 
-  public void updateCostPrice(ActionRequest request, ActionResponse response) throws Exception {
-
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrderService.updateCostPrice(purchaseOrderRepo.find(purchaseOrder.getId()));
+  public void updateCostPrice(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrderService.updateCostPrice(purchaseOrderRepo.find(purchaseOrder.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   // Generate single purchase order from several
@@ -215,6 +217,7 @@ public class PurchaseOrderController {
     // Useful to determine if a difference exists between price lists of all purchase orders
     boolean existPriceListDiff = false;
     PurchaseOrder purchaseOrderTemp;
+    boolean allTradingNamesAreNull = true;
     int count = 1;
     for (Long purchaseOrderId : purchaseOrderIdList) {
       purchaseOrderTemp = JPA.em().find(PurchaseOrder.class, purchaseOrderId);
@@ -226,6 +229,8 @@ public class PurchaseOrderController {
         commonContactPartner = purchaseOrderTemp.getContactPartner();
         commonPriceList = purchaseOrderTemp.getPriceList();
         commonTradingName = purchaseOrderTemp.getTradingName();
+        allTradingNamesAreNull = commonTradingName == null;
+
       } else {
         if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -246,9 +251,9 @@ public class PurchaseOrderController {
           commonPriceList = null;
           existPriceListDiff = true;
         }
-        if (commonTradingName != null
-            && !commonTradingName.equals(purchaseOrderTemp.getTradingName())) {
+        if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
           commonTradingName = null;
+          allTradingNamesAreNull = false;
         }
       }
       count++;
@@ -270,7 +275,7 @@ public class PurchaseOrderController {
       }
       fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
-    if (commonTradingName == null) {
+    if (commonTradingName == null && !allTradingNamesAreNull) {
       fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
     }
 
@@ -354,32 +359,48 @@ public class PurchaseOrderController {
    *
    * @param request
    * @param response
-   * @throws AxelorException
    */
-  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
-    Company company = purchaseOrder.getCompany();
-    Partner partner = purchaseOrder.getSupplierPartner();
-    if (company == null) {
-      return;
+  public void fillCompanyBankDetails(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      PaymentMode paymentMode = (PaymentMode) request.getContext().get("paymentMode");
+      Company company = purchaseOrder.getCompany();
+      Partner partner = purchaseOrder.getSupplierPartner();
+      if (company == null) {
+        return;
+      }
+      if (partner != null) {
+        partner = Beans.get(PartnerRepository.class).find(partner.getId());
+      }
+      BankDetails defaultBankDetails =
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
+      response.setValue("companyBankDetails", defaultBankDetails);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    if (partner != null) {
-      partner = Beans.get(PartnerRepository.class).find(partner.getId());
-    }
-    BankDetails defaultBankDetails =
-        Beans.get(BankDetailsService.class)
-            .getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    response.setValue("companyBankDetails", defaultBankDetails);
   }
 
-  public void validate(ActionRequest request, ActionResponse response) throws Exception {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
-    purchaseOrderService.validatePurchaseOrder(purchaseOrder);
-    response.setReload(true);
+  public void validate(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+      purchaseOrderService.validatePurchaseOrder(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
+      purchaseOrderService.cancelPurchaseOrder(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -389,19 +410,23 @@ public class PurchaseOrderController {
    * @param response
    */
   public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-    List<PrintingSettings> printingSettingsList =
-        Beans.get(TradingNameService.class)
-            .getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
-    String domain =
-        String.format(
-            "self.id IN (%s)",
-            !printingSettingsList.isEmpty()
-                ? StringTool.getIdListString(printingSettingsList)
-                : "0");
+      List<PrintingSettings> printingSettingsList =
+          Beans.get(TradingNameService.class)
+              .getPrintingSettingsList(purchaseOrder.getTradingName(), purchaseOrder.getCompany());
+      String domain =
+          String.format(
+              "self.id IN (%s)",
+              !printingSettingsList.isEmpty()
+                  ? StringTool.getIdListString(printingSettingsList)
+                  : "0");
 
-    response.setAttr("printingSettings", "domain", domain);
+      response.setAttr("printingSettings", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -431,29 +456,41 @@ public class PurchaseOrderController {
    * @param response
    */
   public void fillPriceList(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    response.setValue(
-        "priceList",
-        Beans.get(PartnerPriceListService.class)
-            .getDefaultPriceList(
-                purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE));
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      response.setValue(
+          "priceList",
+          Beans.get(PartnerPriceListService.class)
+              .getDefaultPriceList(
+                  purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void changePriceListDomain(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    String domain =
-        Beans.get(PartnerPriceListService.class)
-            .getPriceListDomain(
-                purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE);
-    response.setAttr("priceList", "domain", domain);
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      String domain =
+          Beans.get(PartnerPriceListService.class)
+              .getPriceListDomain(
+                  purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE);
+      response.setAttr("priceList", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void finishPurchaseOrder(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
-    purchaseOrderService.finishPurchaseOrder(purchaseOrder);
-    response.setReload(true);
+      purchaseOrderService.finishPurchaseOrder(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
@@ -463,21 +500,25 @@ public class PurchaseOrderController {
    * @param response
    */
   public void supplierPartnerDomain(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    Company company = purchaseOrder.getCompany();
-    long companyId = company.getPartner() == null ? 0L : company.getPartner().getId();
-    String domain =
-        String.format(
-            "self.id != %d AND self.isContact = false AND self.isSupplier = true", companyId);
-    String blockedPartnerQuery =
-        Beans.get(BlockingService.class)
-            .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      Company company = purchaseOrder.getCompany();
+      long companyId = company.getPartner() == null ? 0L : company.getPartner().getId();
+      String domain =
+          String.format(
+              "self.id != %d AND self.isContact = false AND self.isSupplier = true", companyId);
+      String blockedPartnerQuery =
+          Beans.get(BlockingService.class)
+              .listOfBlockedPartner(company, BlockingRepository.PURCHASE_BLOCKING);
 
-    if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
-      domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+      if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
+        domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+      }
+
+      domain += " AND :company member of self.companySet";
+      response.setAttr("supplierPartner", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    domain += " AND :company member of self.companySet";
-    response.setAttr("supplierPartner", "domain", domain);
   }
 }

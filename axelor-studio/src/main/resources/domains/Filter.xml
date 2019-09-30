@@ -21,6 +21,7 @@
   	<string name="targetType" title="Target type"/>
   	<string name="value" title="Value" />
   	<string name="defaultValue" title="Default Value" />
+  	<string name="targetTitle" title="Target title"/>
   	<boolean name="isParameter" title="Is parameter" />
   	<boolean name="isJson" title="Is json" />
   	<boolean name="isTargetJson" title="Target json" />

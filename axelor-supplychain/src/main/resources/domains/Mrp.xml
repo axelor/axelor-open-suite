@@ -12,8 +12,10 @@
       <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale orders"/>
       <many-to-many name="mrpForecastSet" ref="com.axelor.apps.supplychain.db.MrpForecast" title="Forecasts"/>
       <date name="endDate" title="End date"/>
-      <integer name="statusSelect" title="Status" selection="supplychain.mrp.status.select" default="0"/>
       
+      <integer name="statusSelect" title="Status" selection="supplychain.mrp.status.select" default="0"/>
+      <datetime name="startDateTime" title="Calculation Start Date"/>
+      <datetime name="endDateTime" title="Calculation End Date"/>
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT

@@ -6,6 +6,7 @@
 			
 	<configurator-bom>
 		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
 		<name>Ordinateur personnalisé</name>
 		<importId>1</importId>
 		<nameFormula></nameFormula>
@@ -16,13 +17,26 @@
 		<qty>1.00</qty>
 		<qtyFormula></qtyFormula>
 		<defQtyAsFormula>false</defQtyAsFormula>
+		<unitId>1</unitId>
 		<unitFormula></unitFormula>
 		<defUnitAsFormula>false</defUnitAsFormula>
 		<configuratorProdProcess>
 			<importId>1</importId>
-			<name>Conception de l'ordinateur</name>
+			<statusSelect>2</statusSelect>
+			<name>Conception de l&apos;ordinateur</name>
+			<code></code>
+			<codeFormula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos;&quot;).count() + 1)</codeFormula>
+			<defCodeAsFormula>true</defCodeAsFormula>
 			<companyCode>AXE</companyCode>
 			<stockLocation>1</stockLocation>
+			<stockLocationFormula></stockLocationFormula>
+			<defStockLocationAsFormula>false</defStockLocationAsFormula>
+			<producedProductStockLocation>1</producedProductStockLocation>
+			<producedProductStockLocationFormula></producedProductStockLocationFormula>
+			<defProducedProductStockLocationAsFormula>false</defProducedProductStockLocationAsFormula>
+			<workshopStockLocation>1</workshopStockLocation>
+			<workshopStockLocationFormula></workshopStockLocationFormula>
+			<defWorkshopStockLocationAsFormula>false</defWorkshopStockLocationAsFormula>
 			<configuratorProdProcessLineList>
 				<configuratorProdProcessLine>
 					<name>Emballage</name>
@@ -85,9 +99,148 @@
 		<useCondition></useCondition>
 		<billOfMaterialId>0</billOfMaterialId>
 	</configurator-bom>
-
+			
 	<configurator-bom>
 		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
+		<name></name>
+		<importId>4</importId>
+		<nameFormula>boitier_1.name</nameFormula>
+		<defNameAsFormula>true</defNameAsFormula>
+		<productFormula>boitier_1</productFormula>
+		<defProductAsFormula>true</defProductAsFormula>
+		<defProductFromConfigurator>false</defProductFromConfigurator>
+		<qty>1.00</qty>
+		<qtyFormula></qtyFormula>
+		<defQtyAsFormula>false</defQtyAsFormula>
+		<unitId>1</unitId>
+		<unitFormula></unitFormula>
+		<defUnitAsFormula>false</defUnitAsFormula>
+		<prodProcessFormula></prodProcessFormula>
+		<defProdProcessAsFormula>false</defProdProcessAsFormula>
+		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
+		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
+		<billOfMaterialId>0</billOfMaterialId>
+	</configurator-bom>
+			
+	<configurator-bom>
+		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
+		<name></name>
+		<importId>5</importId>
+		<nameFormula>carteMere_1.name</nameFormula>
+		<defNameAsFormula>true</defNameAsFormula>
+		<productFormula>carteMere_1</productFormula>
+		<defProductAsFormula>true</defProductAsFormula>
+		<defProductFromConfigurator>false</defProductFromConfigurator>
+		<qty>1.00</qty>
+		<qtyFormula></qtyFormula>
+		<defQtyAsFormula>false</defQtyAsFormula>
+		<unitId>1</unitId>
+		<unitFormula></unitFormula>
+		<defUnitAsFormula>false</defUnitAsFormula>
+		<prodProcessFormula></prodProcessFormula>
+		<defProdProcessAsFormula>false</defProdProcessAsFormula>
+		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
+		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
+		<billOfMaterialId>0</billOfMaterialId>
+	</configurator-bom>
+			
+	<configurator-bom>
+		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
+		<name></name>
+		<importId>6</importId>
+		<nameFormula>disqueDur_1.name</nameFormula>
+		<defNameAsFormula>true</defNameAsFormula>
+		<productFormula>disqueDur_1</productFormula>
+		<defProductAsFormula>true</defProductAsFormula>
+		<defProductFromConfigurator>false</defProductFromConfigurator>
+		<qty>1.00</qty>
+		<qtyFormula></qtyFormula>
+		<defQtyAsFormula>false</defQtyAsFormula>
+		<unitId>1</unitId>
+		<unitFormula></unitFormula>
+		<defUnitAsFormula>false</defUnitAsFormula>
+		<prodProcessFormula></prodProcessFormula>
+		<defProdProcessAsFormula>false</defProdProcessAsFormula>
+		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
+		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
+		<billOfMaterialId>0</billOfMaterialId>
+	</configurator-bom>
+			
+	<configurator-bom>
+		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
+		<name></name>
+		<importId>7</importId>
+		<nameFormula>ecran_1.name</nameFormula>
+		<defNameAsFormula>true</defNameAsFormula>
+		<productFormula>ecran_1</productFormula>
+		<defProductAsFormula>true</defProductAsFormula>
+		<defProductFromConfigurator>false</defProductFromConfigurator>
+		<qty>1.00</qty>
+		<qtyFormula></qtyFormula>
+		<defQtyAsFormula>false</defQtyAsFormula>
+		<unitId>1</unitId>
+		<unitFormula></unitFormula>
+		<defUnitAsFormula>false</defUnitAsFormula>
+		<prodProcessFormula></prodProcessFormula>
+		<defProdProcessAsFormula>false</defProdProcessAsFormula>
+		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
+		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
+		<billOfMaterialId>0</billOfMaterialId>
+	</configurator-bom>
+			
+	<configurator-bom>
+		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
+		<name></name>
+		<importId>8</importId>
+		<nameFormula>processeur_1.name</nameFormula>
+		<defNameAsFormula>true</defNameAsFormula>
+		<productFormula>processeur_1</productFormula>
+		<defProductAsFormula>true</defProductAsFormula>
+		<defProductFromConfigurator>false</defProductFromConfigurator>
+		<qty>1.00</qty>
+		<qtyFormula></qtyFormula>
+		<defQtyAsFormula>false</defQtyAsFormula>
+		<unitId>1</unitId>
+		<unitFormula></unitFormula>
+		<defUnitAsFormula>false</defUnitAsFormula>
+		<prodProcessFormula></prodProcessFormula>
+		<defProdProcessAsFormula>false</defProdProcessAsFormula>
+		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
+		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
+		<billOfMaterialId>0</billOfMaterialId>
+	</configurator-bom>
+			
+	<configurator-bom>
+		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
+		<name></name>
+		<importId>9</importId>
+		<nameFormula>memoire_1.name</nameFormula>
+		<defNameAsFormula>true</defNameAsFormula>
+		<productFormula>memoire_1</productFormula>
+		<defProductAsFormula>true</defProductAsFormula>
+		<defProductFromConfigurator>false</defProductFromConfigurator>
+		<qty>1.00</qty>
+		<qtyFormula></qtyFormula>
+		<defQtyAsFormula>false</defQtyAsFormula>
+		<unitId>1</unitId>
+		<unitFormula></unitFormula>
+		<defUnitAsFormula>false</defUnitAsFormula>
+		<prodProcessFormula></prodProcessFormula>
+		<defProdProcessAsFormula>false</defProdProcessAsFormula>
+		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
+		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
+		<billOfMaterialId>0</billOfMaterialId>
+	</configurator-bom>
+			
+	<configurator-bom>
+		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
 		<name></name>
 		<importId>2</importId>
 		<nameFormula></nameFormula>
@@ -109,6 +262,7 @@
 			
 	<configurator-bom>
 		<companyCode>AXE</companyCode>
+		<statusSelect>2</statusSelect>
 		<name>Flyers</name>
 		<importId>3</importId>
 		<nameFormula></nameFormula>
@@ -127,131 +281,6 @@
 		<parentConfiguratorBOMId>2</parentConfiguratorBOMId><useCondition></useCondition>
 		<billOfMaterialId>48</billOfMaterialId>
 	</configurator-bom>
-
-	<configurator-bom>
-		<companyCode>AXE</companyCode>
-		<name></name>
-		<importId>4</importId>
-		<nameFormula>boitier_1.name</nameFormula>
-		<defNameAsFormula>true</defNameAsFormula>
-		<productFormula>boitier_1</productFormula>
-		<defProductAsFormula>true</defProductAsFormula>
-		<defProductFromConfigurator>false</defProductFromConfigurator>
-		<qty>1.00</qty>
-		<qtyFormula></qtyFormula>
-		<defQtyAsFormula>false</defQtyAsFormula>
-		<unitFormula></unitFormula>
-		<defUnitAsFormula>false</defUnitAsFormula>
-		<prodProcessFormula></prodProcessFormula>
-		<defProdProcessAsFormula>false</defProdProcessAsFormula>
-		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
-		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
-		<billOfMaterialId>0</billOfMaterialId>
-	</configurator-bom>
-
-	<configurator-bom>
-		<companyCode>AXE</companyCode>
-		<name></name>
-		<importId>5</importId>
-		<nameFormula>carteMere_1.name</nameFormula>
-		<defNameAsFormula>true</defNameAsFormula>
-		<productFormula>carteMere_1</productFormula>
-		<defProductAsFormula>true</defProductAsFormula>
-		<defProductFromConfigurator>false</defProductFromConfigurator>
-		<qty>1.00</qty>
-		<qtyFormula></qtyFormula>
-		<defQtyAsFormula>false</defQtyAsFormula>
-		<unitFormula></unitFormula>
-		<defUnitAsFormula>false</defUnitAsFormula>
-		<prodProcessFormula></prodProcessFormula>
-		<defProdProcessAsFormula>false</defProdProcessAsFormula>
-		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
-		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
-		<billOfMaterialId>0</billOfMaterialId>
-	</configurator-bom>
-
-	<configurator-bom>
-		<companyCode>AXE</companyCode>
-		<name></name>
-		<importId>6</importId>
-		<nameFormula>disqueDur_1.name</nameFormula>
-		<defNameAsFormula>true</defNameAsFormula>
-		<productFormula>disqueDur_1</productFormula>
-		<defProductAsFormula>true</defProductAsFormula>
-		<defProductFromConfigurator>false</defProductFromConfigurator>
-		<qty>1.00</qty>
-		<qtyFormula></qtyFormula>
-		<defQtyAsFormula>false</defQtyAsFormula>
-		<unitFormula></unitFormula>
-		<defUnitAsFormula>false</defUnitAsFormula>
-		<prodProcessFormula></prodProcessFormula>
-		<defProdProcessAsFormula>false</defProdProcessAsFormula>
-		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
-		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
-		<billOfMaterialId>0</billOfMaterialId>
-	</configurator-bom>
-
-	<configurator-bom>
-		<companyCode>AXE</companyCode>
-		<name></name>
-		<importId>7</importId>
-		<nameFormula>ecran_1.name</nameFormula>
-		<defNameAsFormula>true</defNameAsFormula>
-		<productFormula>ecran_1</productFormula>
-		<defProductAsFormula>true</defProductAsFormula>
-		<defProductFromConfigurator>false</defProductFromConfigurator>
-		<qty>1.00</qty>
-		<qtyFormula></qtyFormula>
-		<defQtyAsFormula>false</defQtyAsFormula>
-		<unitFormula></unitFormula>
-		<defUnitAsFormula>false</defUnitAsFormula>
-		<prodProcessFormula></prodProcessFormula>
-		<defProdProcessAsFormula>false</defProdProcessAsFormula>
-		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
-		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
-		<billOfMaterialId>0</billOfMaterialId>
-	</configurator-bom>
-
-	<configurator-bom>
-		<name></name>
-		<importId>8</importId>
-		<nameFormula>processeur_1.name</nameFormula>
-		<defNameAsFormula>true</defNameAsFormula>
-		<productFormula>processeur_1</productFormula>
-		<defProductAsFormula>true</defProductAsFormula>
-		<defProductFromConfigurator>false</defProductFromConfigurator>
-		<qty>1.00</qty>
-		<qtyFormula></qtyFormula>
-		<defQtyAsFormula>false</defQtyAsFormula>
-		<unitFormula></unitFormula>
-		<defUnitAsFormula>false</defUnitAsFormula>
-		<prodProcessFormula></prodProcessFormula>
-		<defProdProcessAsFormula>false</defProdProcessAsFormula>
-		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
-		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
-		<billOfMaterialId>0</billOfMaterialId>
-	</configurator-bom>
-			
-	<configurator-bom>
-		<name></name>
-		<importId>9</importId>
-		<nameFormula>memoire_1.name</nameFormula>
-		<defNameAsFormula>true</defNameAsFormula>
-		<productFormula>memoire_1</productFormula>
-		<defProductAsFormula>true</defProductAsFormula>
-		<defProductFromConfigurator>false</defProductFromConfigurator>
-		<qty>1.00</qty>
-		<qtyFormula></qtyFormula>
-		<defQtyAsFormula>false</defQtyAsFormula>
-		<unitFormula></unitFormula>
-		<defUnitAsFormula>false</defUnitAsFormula>
-		<prodProcessFormula></prodProcessFormula>
-		<defProdProcessAsFormula>false</defProdProcessAsFormula>
-		<defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
-		<parentConfiguratorBOMId>1</parentConfiguratorBOMId><useCondition></useCondition>
-		<billOfMaterialId>0</billOfMaterialId>
-	</configurator-bom>
-
 </configurator-boms>
 
 <configurator-creators>
@@ -286,12 +315,16 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = 'CARTM'</domain>
+				<domain>self.productCategory.code = &apos;CARTM&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>6</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -320,12 +353,16 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = 'DD'</domain>
+				<domain>self.productCategory.code = &apos;DD&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>7</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -354,12 +391,16 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = 'MEM'</domain>
+				<domain>self.productCategory.code = &apos;MEM&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>10</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -388,12 +429,16 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = 'BOIT'</domain>
+				<domain>self.productCategory.code = &apos;BOIT&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>5</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -422,17 +467,21 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = 'ECR'</domain>
+				<domain>self.productCategory.code = &apos;ECR&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>8</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
 				<name>nbOrdi_1</name>
-				<title>Nombre d'ordinateur</title>
+				<title>Nombre d&apos;ordinateur</title>
 				<type>decimal</type>
 				<defaultValue>1</defaultValue>
 				<model>com.axelor.apps.sale.db.Configurator</model>
@@ -462,6 +511,10 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -496,11 +549,15 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
 				<name>heureAssistance_1</name>
-				<title>Nombre d'heure d'assistance</title>
+				<title>Nombre d&apos;heure d&apos;assistance</title>
 				<type>decimal</type>
 				<defaultValue>0</defaultValue>
 				<model>com.axelor.apps.sale.db.Configurator</model>
@@ -530,6 +587,10 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -564,6 +625,10 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -598,11 +663,15 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
 				<name>montageOrdinateur_1</name>
-				<title>Montage de l'ordinateur</title>
+				<title>Montage de l&apos;ordinateur</title>
 				<type>boolean</type>
 				<defaultValue></defaultValue>
 				<model>com.axelor.apps.sale.db.Configurator</model>
@@ -632,6 +701,10 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -666,6 +739,10 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -700,6 +777,10 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -728,12 +809,16 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = 'PROC'</domain>
+				<domain>self.productCategory.code = &apos;PROC&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>9</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -768,27 +853,31 @@
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>1</contextFieldValue>
 			</attribute>
 		</attributes>
 		
 		<configuratorProductFormulaList>
 			<configuratorProductFormula>
-				<metaField>1441</metaField>
-				<formula>description = ""
+				<metaField>description</metaField>
+				<formula>description = &quot;&quot;
 if (carteMere_1?.description){
-  description += "Carte mère : " + carteMere_1.description + "\n"
+  description += &quot;Carte mère : &quot; + carteMere_1.description + &quot;\n&quot;
 }
 if (disqueDur_1?.description){
-  description += "Disque dur : " + disqueDur_1.description + "\n"
+  description += &quot;Disque dur : &quot; + disqueDur_1.description + &quot;\n&quot;
 }
 if (ecran_1?.description){
-   description += "Ecran :" + ecran_1.description + "\n"
+   description += &quot;Ecran :&quot; + ecran_1.description + &quot;\n&quot;
 }
 if (processeur_1?.description){
-  description += "Processeur :" + processeur_1.description + "\n"
+  description += &quot;Processeur :&quot; + processeur_1.description + &quot;\n&quot;
 }
 if (memoire_1?.description){
-  description += "Mémoire :" + memoire_1.description + "\n"
+  description += &quot;Mémoire :&quot; + memoire_1.description + &quot;\n&quot;
 }
 return description;</formula>
 				<showOnConfigurator>true</showOnConfigurator>
@@ -796,7 +885,7 @@ return description;</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1400</metaField>
+				<metaField>salePrice</metaField>
 				<formula>cp=0
 cp+=(boitier_1?.salePrice?:0) 
 cp+=(carteMere_1?.salePrice?:0) 
@@ -813,7 +902,7 @@ return cp*nbOrdi_1*1.5</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1401</metaField>
+				<metaField>costPrice</metaField>
 				<formula>cp=0
 cp+=(boitier_1?.salePrice?:0) 
 cp+=(carteMere_1?.salePrice?:0) 
@@ -830,41 +919,43 @@ return cp*nbOrdi_1</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1438</metaField>
-				<formula>"ORD"+"-"+ (__repo__(Product).all().filter("self.name = 'Ordinateur personnalisé'").count() + 1)</formula>
+				<metaField>code</metaField>
+				<formula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos;&quot;).count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1434</metaField>
-				<formula>"Ordinateur personnalisé"</formula>
+				<metaField>name</metaField>
+				<formula>&quot;Ordinateur personnalisé&quot;</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1445</metaField>
-				<formula>__repo__(ProductCategory).all().filter("self.code = 'SER'").fetchOne()</formula>
+				<metaField>productCategory</metaField>
+				<formula>__repo__(ProductCategory).all().filter(&quot;self.code = &apos;SER&apos;&quot;).fetchOne()</formula>
 				<showOnConfigurator>false</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1397</metaField>
-				<formula>'storable'</formula>
+				<metaField>productTypeSelect</metaField>
+				<formula>&apos;storable&apos;</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1436</metaField>
-				<formula>__repo__(ProductFamily).all().filter("self.code = 'EQPT'").fetchOne()</formula>
+				<metaField>productFamily</metaField>
+				<formula>__repo__(ProductFamily).all().filter(&quot;self.code = &apos;EQPT&apos;&quot;).fetchOne()</formula>
 				<showOnConfigurator>false</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		</configuratorProductFormulaList>
-		
+
+		<configuratorSOLineFormulaList></configuratorSOLineFormulaList>
+
 		<authorizedUserSet>
 			<authorizedUser>admin</authorizedUser>
 		</authorizedUserSet>
@@ -877,8 +968,8 @@ return cp*nbOrdi_1</formula>
 		
 		<configuratorBomImportId>1</configuratorBomImportId>
 		
+	
 	</configurator-creator>
-
 
 	<configurator-creator>
 		<importId>2</importId>
@@ -916,6 +1007,10 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -950,11 +1045,15 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
 				<name>typeImpression_2</name>
-				<title>Type d'impression</title>
+				<title>Type d&apos;impression</title>
 				<type>many-to-one</type>
 				<defaultValue></defaultValue>
 				<model>com.axelor.apps.sale.db.Configurator</model>
@@ -978,12 +1077,16 @@ return cp*nbOrdi_1</formula>
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code='IMP'</domain>
+				<domain>self.productCategory.code=&apos;IMP&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>4</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -1018,6 +1121,10 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -1052,6 +1159,10 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -1086,6 +1197,10 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -1120,6 +1235,10 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -1154,11 +1273,15 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
 				<name>quantiteAffiches_2</name>
-				<title>Quantité d'affiches</title>
+				<title>Quantité d&apos;affiches</title>
 				<type>decimal</type>
 				<defaultValue>0</defaultValue>
 				<model>com.axelor.apps.sale.db.Configurator</model>
@@ -1188,6 +1311,10 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -1222,6 +1349,10 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		
 			<attribute>
@@ -1256,12 +1387,16 @@ return cp*nbOrdi_1</formula>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
 				<onClick></onClick>
 				<widgetAttrs></widgetAttrs>
+				<contextField>configuratorCreator</contextField>
+				<contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+				<contextFieldTargetName>name</contextFieldTargetName>
+				<contextFieldValue>2</contextFieldValue>
 			</attribute>
 		</attributes>
 		
 		<configuratorProductFormulaList>
 			<configuratorProductFormula>
-				<metaField>1401</metaField>
+				<metaField>costPrice</metaField>
 				<formula>((longueurA_2?:0)*(largeurA_2?:0)*(quantiteAffiches_2?:0))/6+0.30*(quantiteFlyers_2?:0)
 </formula>
 				<showOnConfigurator>true</showOnConfigurator>
@@ -1269,34 +1404,36 @@ return cp*nbOrdi_1</formula>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1397</metaField>
-				<formula>'storable'</formula>
+				<metaField>productTypeSelect</metaField>
+				<formula>&apos;storable&apos;</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1434</metaField>
-				<formula>'Campagne publicitaire'</formula>
+				<metaField>name</metaField>
+				<formula>&apos;Campagne publicitaire&apos;</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1438</metaField>
-				<formula>"PUB"+"-"+ (__repo__(Product).all().filter("self.name = 'Campagne publicitaire'").count() + 1)</formula>
+				<metaField>code</metaField>
+				<formula>&quot;PUB&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Campagne publicitaire&apos;&quot;).count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		
 			<configuratorProductFormula>
-				<metaField>1445</metaField>
-				<formula>'forfait'</formula>
+				<metaField>productCategory</metaField>
+				<formula>__repo__(ProductCategory).all().filter(&quot;self.code = &apos;FORF&apos;&quot;).fetchOne()</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
 		</configuratorProductFormulaList>
-		
+
+		<configuratorSOLineFormulaList></configuratorSOLineFormulaList>
+
 		<authorizedUserSet>
 			<authorizedUser>admin</authorizedUser>
 		</authorizedUserSet>
@@ -1308,6 +1445,7 @@ return cp*nbOrdi_1</formula>
 		<isActive>true</isActive>
 		
 		<configuratorBomImportId>2</configuratorBomImportId>
+		
 	
 	</configurator-creator>
 

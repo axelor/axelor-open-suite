@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,8 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -97,7 +99,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   }
 
   @Override
-  protected String computeReleatedName(Model model) {
+  protected String computeRelatedName(Model model) {
 
     if (model instanceof ManufOrder) {
 
@@ -109,7 +111,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
     } else {
 
-      return super.computeReleatedName(model);
+      return super.computeRelatedName(model);
     }
   }
 

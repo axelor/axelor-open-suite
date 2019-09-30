@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -57,14 +57,13 @@ public class BatchInvoicing extends BatchStrategy {
         } catch (AxelorException e) {
           TraceBackService.trace(
               new AxelorException(
-                  e, e.getCategory(), I18n.get("Order") + " %s", saleOrder.getSaleOrderSeq()),
+                  e, e.getCategory(), I18n.get("Order %s"), saleOrder.getSaleOrderSeq()),
               IException.INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
         } catch (Exception e) {
           TraceBackService.trace(
-              new Exception(
-                  String.format(I18n.get("Order") + " %s", saleOrder.getSaleOrderSeq()), e),
+              new Exception(String.format(I18n.get("Order %s"), saleOrder.getSaleOrderSeq()), e),
               IException.INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
@@ -79,7 +78,7 @@ public class BatchInvoicing extends BatchStrategy {
 
   /**
    * As {@code batch} entity can be detached from the session, call {@code Batch.find()} get the
-   * entity in the persistant context. Warning : {@code batch} entity have to be saved before.
+   * entity in the persistent context. Warning : {@code batch} entity have to be saved before.
    */
   @Override
   protected void stop() {

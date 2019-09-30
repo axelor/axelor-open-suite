@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.ebics.client.EbicsUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.ByteArrayOutputStream;
@@ -285,16 +286,44 @@ public class EbicsUserService {
     return orderId;
   }
 
-  private String getNextOrderNumber(String orderId) throws AxelorException {
+  public String getNextOrderNumber(String orderId) throws AxelorException {
 
-    Integer orderNo = Integer.parseInt(orderId.substring(1)) + 1;
+    if (Strings.isNullOrEmpty(orderId) || orderId.matches("[^a-z0-9 ]") || orderId.length() != 4) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("Invalid order id \"%s\""), orderId);
+    }
 
-    if (orderNo > 999) {
+    if (orderId.substring(1).equals("ZZZ")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get("Maximum order limit reach"));
     }
 
-    return orderId.substring(0, 1) + String.format("%03d", orderNo);
+    char[] orderIds = orderId.toCharArray();
+
+    if (orderIds[3] != 'Z') {
+      orderIds[3] = getNextChar(orderIds[3]);
+    } else {
+      orderIds[3] = '0';
+      if (orderIds[2] != 'Z') {
+        orderIds[2] = getNextChar(orderIds[2]);
+      } else {
+        orderIds[2] = '0';
+        if (orderIds[1] != 'Z') {
+          orderIds[1] = getNextChar(orderIds[1]);
+        }
+      }
+    }
+
+    return new String(orderIds);
+  }
+
+  private char getNextChar(char c) {
+
+    if (c == '9') {
+      return 'A';
+    }
+
+    return (char) ((int) c + 1);
   }
 
   private void trace(EbicsRequestLog requestLog, EbicsRootElement[] rootElements)

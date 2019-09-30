@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	
-	<menuitem name="sc-root-purchase-order-supplier-lines-requests" title="Supplier requests" order="30" if="__config__.app.getApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getSupplierRequestMgt()"
+	<menuitem name="sc-root-purchase-order-supplier-lines-requests" title="Supplier consultations" order="30" if="__config__.app.getApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getSupplierRequestMgt()"
 		 action="sc.root.purchase.orders.supplier.lines.requests" parent="sc-root-purchase"/>
 
-	<action-view name="sc.root.purchase.orders.supplier.lines.requests" title="Supplier requests"
+	<action-view name="sc.root.purchase.orders.supplier.lines.requests" title="Supplier consultations"
 		model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine" >
 		<view type="grid" name="purchase-order-supplier-line-grid" />
 		<view type="form" name="purchase-order-supplier-line-form" />

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,10 @@ import org.slf4j.LoggerFactory;
 
 public class DateTool {
 
+  private DateTool() {
+    throw new IllegalStateException("Utility class");
+  }
+
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static long daysBetween(LocalDate date1, LocalDate date2, boolean days360) {
@@ -37,20 +41,13 @@ public class DateTool {
     long days = 0;
 
     if (days360) {
-
-      if (date1.isBefore(date2)) {
-        days = days360Between(date1, date2);
-      } else {
-        days = -days360Between(date2, date1);
-      }
+      days = date1.isBefore(date2) ? days360Between(date1, date2) : -days360Between(date2, date1);
     } else {
       days = daysBetween(date1, date2);
     }
 
     LOG.debug(
-        "Nombre de jour entre {} - {} (mois de 30 jours ? {}) : {}",
-        new Object[] {date1, date2, days360, days});
-
+        "Number of days between {} - {} (month of 30 days ? {}) : {}", date1, date2, days360, days);
     return days;
   }
 
@@ -125,128 +122,119 @@ public class DateTool {
       return false;
     }
 
-    if (((date1.isAfter(dateFrame1) || date1.isEqual(dateFrame1))
+    return ((date1.isAfter(dateFrame1) || date1.isEqual(dateFrame1))
             && (date1.isBefore(dateFrame2) || date1.isEqual(dateFrame2)))
         || ((date2.isAfter(dateFrame1) || date2.isEqual(dateFrame1))
             && (date2.isBefore(dateFrame2) || date2.isEqual(dateFrame2)))
-        || (date1.isBefore(dateFrame1) && date2.isAfter(dateFrame2))) {
-
-      return true;
-    }
-
-    return false;
+        || (date1.isBefore(dateFrame1) && date2.isAfter(dateFrame2));
   }
 
   public static boolean isBetween(LocalDate dateFrame1, LocalDate dateFrame2, LocalDate date) {
 
-    if (dateFrame2 == null && (date.isAfter(dateFrame1) || date.isEqual(dateFrame1))) {
-      return true;
-    } else if (dateFrame2 != null
-        && (date.isAfter(dateFrame1) || date.isEqual(dateFrame1))
-        && (date.isBefore(dateFrame2) || date.isEqual(dateFrame2))) {
-      return true;
-    } else {
-      return false;
-    }
+    return (dateFrame2 == null && (date.isAfter(dateFrame1) || date.isEqual(dateFrame1)))
+        || (dateFrame2 != null
+            && (date.isAfter(dateFrame1) || date.isEqual(dateFrame1))
+            && (date.isBefore(dateFrame2) || date.isEqual(dateFrame2)));
   }
 
   /**
-   * Calculer la date de la prochaine occurence d'un évènement suivant le calcul suivant : Supprimer
-   * autant de fois que possible la fréquence en mois à la date visée tout en étant supérieure à la
-   * date de début
+   * Computes the date of the next occurrence of an event according to the following calculation:
+   * deletes as many times as possible the frequency in month to the targeted date while being
+   * greater than the start date.
    *
-   * @param startDate La date de début
-   * @param goalDate La date visée
-   * @param frequencyInMonth Nombre de mois représentant la fréquence de l'évènement
+   * @param startDate The start date
+   * @param goalDate The targeted date
+   * @param frequencyInMonth Number of months depicting the frequency of the event
    */
   public static LocalDate nextOccurency(
       LocalDate startDate, LocalDate goalDate, int frequencyInMonth) {
 
-    if (frequencyInMonth == 0) {
-
-      LOG.debug("La fréquence ne doit pas etre égale à 0.");
-
+    if (!checkValidInputs(startDate, goalDate, frequencyInMonth)) {
       return null;
 
-    } else {
-
-      if (startDate == null && goalDate == null) {
-        return null;
-      } else {
-        if (startDate.isAfter(goalDate)) {
-          return goalDate;
-        }
-        return minusMonths(
-            goalDate,
-            days360MonthsBetween(startDate.plusDays(1), goalDate.minusDays(1))
-                / frequencyInMonth
-                * frequencyInMonth);
-      }
+    } else if (startDate.isAfter(goalDate)) {
+      return goalDate;
     }
+
+    return minusMonths(
+        goalDate,
+        days360MonthsBetween(startDate.plusDays(1), goalDate.minusDays(1))
+            / frequencyInMonth
+            * frequencyInMonth);
   }
 
   /**
-   * Calculer la date de la prochaine occurence d'un évènement suivant le calcul suivant : Supprimer
-   * autant de fois que possible la fréquence en mois à la date visée tout en étant supérieure ou
-   * égale à la date de début
+   * Computes the date of the next occurrence of an event according to the following calculation:
+   * deletes as many times as possible the frequency in month to the targeted date while being
+   * greater than or equal to the start date.
    *
-   * @param startDate La date de début
-   * @param goalDate La date visée
-   * @param frequencyInMonth Nombre de mois représentant la fréquence de l'évènement
+   * @param startDate The start date
+   * @param goalDate The targeted date
+   * @param frequencyInMonth Number of months depicting the frequency of the event
    */
   public LocalDate nextOccurencyStartDateIncluded(
       LocalDate startDate, LocalDate goalDate, int frequencyInMonth) {
 
-    if (frequencyInMonth == 0) {
-
-      LOG.debug("La fréquence ne doit pas etre égale à 0.");
-
+    if (!checkValidInputs(startDate, goalDate, frequencyInMonth)) {
       return null;
 
-    } else {
-
-      if (startDate == null && goalDate == null) {
-        return null;
-      } else {
-        if (startDate.isAfter(goalDate)) {
-          return goalDate;
-        }
-        return minusMonths(
-            goalDate,
-            days360MonthsBetween(startDate, goalDate.minusDays(1))
-                / frequencyInMonth
-                * frequencyInMonth);
-      }
+    } else if (startDate.isAfter(goalDate)) {
+      return goalDate;
     }
+
+    return minusMonths(
+        goalDate,
+        days360MonthsBetween(startDate, goalDate.minusDays(1))
+            / frequencyInMonth
+            * frequencyInMonth);
   }
 
   /**
-   * Calculer la date de la dernière occurence d'un évènement suivant le calcul suivant : Ajouter
-   * autant de fois que possible la fréquence en mois à la date de début tout en étant inférieure ou
-   * égale à la date de fin
+   * Computes the date of the last occurrence of an event according to the following calculation:
+   * adds as many times as possible the frequency in month to the start date while being less than
+   * or equal to the end date.
    *
-   * @param startDate La date de début
-   * @param endDate La date de fin
-   * @param frequencyInMonth Nombre de mois représentant la fréquence de l'évènement
+   * @param startDate
+   * @param endDate
+   * @param frequencyInMonth Number of months depicting the frequency of the event
    */
   public static LocalDate lastOccurency(
       LocalDate startDate, LocalDate endDate, int frequencyInMonth) {
 
-    if (frequencyInMonth == 0) {
+    if (!checkValidInputs(startDate, endDate, frequencyInMonth)) {
+      return null;
 
-      LOG.debug("La fréquence ne doit pas etre égale à 0.");
+    } else if (startDate.isAfter(endDate)) {
       return null;
 
     } else {
-
-      if ((startDate == null && endDate == null) || startDate.isAfter(endDate)) {
-        return null;
-      } else {
-        return plusMonths(
-            startDate,
-            days360MonthsBetween(startDate, endDate) / frequencyInMonth * frequencyInMonth);
-      }
+      return plusMonths(
+          startDate,
+          days360MonthsBetween(startDate, endDate) / frequencyInMonth * frequencyInMonth);
     }
+  }
+
+  /**
+   * Checks that the frequency is not equal to zero and that the start and end dates are not null.
+   *
+   * @param startDate
+   * @param endDate
+   * @param frequencyInMonth
+   * @return
+   */
+  private static boolean checkValidInputs(
+      LocalDate startDate, LocalDate endDate, int frequencyInMonth) {
+    if (frequencyInMonth == 0) {
+      LOG.debug("The frequency should not be zero.");
+      return false;
+    } else if (startDate == null) {
+      LOG.debug("The start date should not be null.");
+      return false;
+    } else if (endDate == null) {
+      LOG.debug("The end date should not be null.");
+      return false;
+    }
+    return true;
   }
 
   public static LocalDate minusMonths(LocalDate date, int nbMonths) {
@@ -270,46 +258,33 @@ public class DateTool {
   }
 
   /**
-   * Procédure permettant de tester si aujourd'hui nous sommes dans une période particulière
+   * Checks if a date is in a specific period.
    *
-   * @param date La date à tester
-   * @param dayBegin Le jour du début de la période
-   * @param monthBegin Le mois de début de la période
-   * @param dayEnd Le jour de fin de la période
-   * @param monthEnd Le mois de fin de la période
-   * @return Sommes-nous dans la période?
+   * @param date The date to check
+   * @param dayBegin The start day of the period
+   * @param monthBegin The start month of the period
+   * @param dayEnd The end day of the period
+   * @param monthEnd The start month of the period
+   * @return
    */
   public static boolean dateInPeriod(
       LocalDate date, int dayBegin, int monthBegin, int dayEnd, int monthEnd) {
 
     if (monthBegin > monthEnd) {
-
-      if ((date.getMonthValue() == monthBegin && date.getDayOfMonth() >= dayBegin)
+      return (date.getMonthValue() == monthBegin && date.getDayOfMonth() >= dayBegin)
           || (date.getMonthValue() > monthBegin)
           || (date.getMonthValue() < monthEnd)
-          || (date.getMonthValue() == monthEnd && date.getDayOfMonth() <= dayEnd)) {
-        return true;
-      } else {
-        return false;
-      }
+          || (date.getMonthValue() == monthEnd && date.getDayOfMonth() <= dayEnd);
+
     } else if (monthBegin == monthEnd) {
-
-      if ((date.getMonthValue() == monthBegin
+      return (date.getMonthValue() == monthBegin
           && date.getDayOfMonth() >= dayBegin
-          && date.getDayOfMonth() <= dayEnd)) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
+          && date.getDayOfMonth() <= dayEnd);
 
-      if ((date.getMonthValue() == monthBegin && date.getDayOfMonth() >= dayBegin)
+    } else {
+      return (date.getMonthValue() == monthBegin && date.getDayOfMonth() >= dayBegin)
           || (date.getMonthValue() > monthBegin && date.getMonthValue() < monthEnd)
-          || (date.getMonthValue() == monthEnd && date.getDayOfMonth() <= dayEnd)) {
-        return true;
-      } else {
-        return false;
-      }
+          || (date.getMonthValue() == monthEnd && date.getDayOfMonth() <= dayEnd);
     }
   }
 

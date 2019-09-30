@@ -64,6 +64,11 @@
 		<option value="1">Email</option>
 	</selection>
 	
+	<selection name="crm.event.reminder.mode.select">
+		<option value="1">Before start date</option>
+		<option value="2">At specific date</option>
+	</selection>
+	
 	<selection name="crm.eventReminder.duration.type.select">
 		<option value="1">Minutes</option>
 		<option value="2">Hours</option>
@@ -73,7 +78,6 @@
 	
 	<selection name="crm.eventReminder.assign.to.select">
 		<option value="1">For me</option>
-		<option value="2">For me and internal guests</option>
 		<option value="3">For all</option>
 	</selection>
 	
@@ -132,6 +136,11 @@
 
 	<selection name="icalendar.synchronization.select" id="crm.icalendar.synchronization.select">
 		<option value="Event">CRM events</option>
+	</selection>
+	
+	<selection name="crm.app.crm.assignable.user.select">
+		<option value="0">All users</option>
+		<option value="1">Some user groups</option>
 	</selection>
 
 </object-views>

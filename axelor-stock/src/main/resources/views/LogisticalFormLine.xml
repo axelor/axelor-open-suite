@@ -11,9 +11,9 @@
             canEdit="false" />
         <field name="stockMoveLine.stockMove" width="170" form-view="stock-move-form" />
         <field name="stockMoveLine.product.code" width="120" title="Product code" />
-        <field name="stockMoveLine.product.name" width="170" title="Product description" />
-        <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" width="100" title="Internal number" if="__config__.app.isApp('supplychain')" />
-        <field name="stockMoveLine.stockMove.saleOrder.orderNumber" width="120" title="Order number" if="__config__.app.isApp('supplychain')" />
+        <field name="stockMoveLine.productName" width="170" title="Product description" />
+        <field name="saleOrder.saleOrderSeq" width="120" title="Internal number" if="__config__.app.isApp('supplychain')" />
+        <field name="saleOrder.externalReference" width="170" title="Customer order ref." if="__config__.app.isApp('supplychain')" />
         <!-- <field name="stockMoveLine.netMass" title="Unit net mass" /> --> <!-- Should be null when stockMoveLine is null -->
         <field name="unitNetMass" width="75" x-scale="3"/>
         <field name="qty" width="55" readonlyIf="typeSelect != 3" onChange="sync" />
@@ -33,10 +33,10 @@
                 canEdit="false" />
             <field name="stockMoveLine.stockMove" hideIf="typeSelect != 3" form-view="stock-move-form" />
             <field name="stockMoveLine.product.code" title="Product code" hideIf="typeSelect != 3" />
-            <field name="stockMoveLine.product.name" title="Product description" hideIf="typeSelect != 3" />
-            <field name="stockMoveLine.stockMove.saleOrder.saleOrderSeq" title="Internal number" hideIf="typeSelect != 3"
+            <field name="stockMoveLine.productName" title="Product description" hideIf="typeSelect != 3" />
+            <field name="saleOrder.saleOrderSeq" title="Internal number" hideIf="typeSelect != 3"
                 if="__config__.app.isApp('supplychain')" />
-            <field name="stockMoveLine.stockMove.saleOrder.orderNumber" title="Order number" hideIf="typeSelect != 3"
+            <field name="saleOrder.externalReference" title="Customer order ref." hideIf="typeSelect != 3"
                 if="__config__.app.isApp('supplychain')" />
             <field name="stockMoveLine.netMass" title="Unit net mass" hideIf="typeSelect != 3" />
             <field name="qty" hideIf="typeSelect != 3" />

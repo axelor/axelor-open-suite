@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,6 +35,9 @@ public interface IExceptionMessage {
   /** Manuf order service */
   static final String MANUF_ORDER_SEQ = /*$$(*/
       "There's no configured sequence for fabrication's orders" /*)*/;
+
+  static final String CANNOT_DELETE_REALIZED_STOCK_MOVE_LINES = /*$$(*/
+      "You cannot delete realized stock move lines." /*)*/;
 
   /** Batch Compute work in progress valuation */
   static final String BATCH_COMPUTE_VALUATION = /*$$(*/ "Computed work in progress valuation" /*)*/;
@@ -104,12 +107,18 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/
       "Too many recursive calls to create the bill of material." /*)*/;
 
+  String CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS = /*$$(*/
+      "Too many recursive calls to import the bill of material configurator." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
   /** Production Order Controller */
   static final String MANUF_ORDER_NO_GENERATION = /*$$(*/
       "Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process." /*)*/;
+
+  static final String MANUF_ORDER_MISSING_TEMPLATE = /*$$(*/
+      "The template to send message for manufacturing order is missing." /*)*/;
 
   /** Operation Order Workflow Service */
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
@@ -119,4 +128,12 @@ public interface IExceptionMessage {
       "Error : You must configure a raw material requirement reporting sequence for the company %s" /*)*/;
 
   static final String ORDER_REMOVE_NOT_OK = /*$$(*/ "You can't remove this record" /*)*/;
+
+  static final String MANUF_ORDER_CANCEL = /*$$(*/ "The manufacturing order was canceled." /*)*/;
+
+  static final String MANUF_ORDER_CANCEL_REASON_ERROR = /*$$(*/
+      "A cancel reason must be selected" /*)*/;
+
+  static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
+      "Automatic email was not sent because no default email account and/or no valid email account was found : please create one." /*)*/;
 }

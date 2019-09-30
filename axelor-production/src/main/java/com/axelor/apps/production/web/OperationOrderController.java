@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,10 +23,10 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
-import com.axelor.apps.production.service.ManufOrderWorkflowService;
-import com.axelor.apps.production.service.OperationOrderService;
-import com.axelor.apps.production.service.OperationOrderStockMoveService;
-import com.axelor.apps.production.service.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
+import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
+import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -291,6 +291,25 @@ public class OperationOrderController {
     }
   }
 
+  /**
+   * Called from operation order form, on consumed stock move line change. Call {@link
+   * OperationOrderService#checkConsumedStockMoveLineList(OperationOrder, OperationOrder)}
+   *
+   * @param request
+   * @param response
+   */
+  public void checkConsumedStockMoveLineList(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      OperationOrder oldOperationOrder =
+          Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+      Beans.get(OperationOrderService.class)
+          .checkConsumedStockMoveLineList(operationOrder, oldOperationOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+      response.setReload(true);
+    }
+  }
   /**
    * Called from operation order form, on consumed stock move line change.
    *

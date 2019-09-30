@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -78,6 +78,12 @@ public class BankReconciliationService {
 
   @Transactional
   public void loadBankStatement(BankReconciliation bankReconciliation) {
+    loadBankStatement(bankReconciliation, true);
+  }
+
+  @Transactional
+  public void loadBankStatement(
+      BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
 
@@ -86,11 +92,13 @@ public class BankReconciliationService {
     switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-        Beans.get(BankReconciliationLoadAFB120Service.class).loadBankStatement(bankReconciliation);
+        Beans.get(BankReconciliationLoadAFB120Service.class)
+            .loadBankStatement(bankReconciliation, includeBankStatement);
         break;
 
       default:
-        Beans.get(BankReconciliationLoadService.class).loadBankStatement(bankReconciliation);
+        Beans.get(BankReconciliationLoadService.class)
+            .loadBankStatement(bankReconciliation, includeBankStatement);
     }
 
     compute(bankReconciliation);

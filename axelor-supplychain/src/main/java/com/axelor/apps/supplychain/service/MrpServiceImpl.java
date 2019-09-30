@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,6 +71,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +146,7 @@ public class MrpServiceImpl implements MrpService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   protected void startMrp(Mrp mrp) {
 
+    mrp.setStartDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     log.debug("Start MRP");
 
     mrp.setStatusSelect(MrpRepository.STATUS_CALCULATION_STARTED);
@@ -174,10 +176,21 @@ public class MrpServiceImpl implements MrpService {
 
     // Initialize
     this.mrp = mrp;
-    this.stockLocationList =
-        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false);
-    this.assignProductAndLevel(this.getProductList());
+    List<StockLocation> slList =
+        stockLocationService
+            .getAllLocationAndSubLocation(mrp.getStockLocation(), false)
+            .stream()
+            .filter(x -> !x.getIsNotInMrp())
+            .collect(Collectors.toList());
+    this.stockLocationList = slList;
 
+    this.assignProductAndLevel(this.getProductList());
+    if (stockLocationList.isEmpty()) {
+      throw new AxelorException(
+          Mrp.class,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.MRP_MISSING_STOCK_LOCATION_VALID));
+    }
     // Get the stock for each product on each stock location
     this.createAvailableStockMrpLines();
 
@@ -206,6 +219,7 @@ public class MrpServiceImpl implements MrpService {
     log.debug("Finish MRP");
 
     mrp.setStatusSelect(MrpRepository.STATUS_CALCULATION_ENDED);
+    mrp.setEndDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     mrpRepository.save(mrp);
   }
 
@@ -533,15 +547,7 @@ public class MrpServiceImpl implements MrpService {
 
     for (MrpLine mrpLine : mrpLineList) {
 
-      if (mrpLine.getMrpLineType().getElementSelect()
-          == MrpLineTypeRepository.ELEMENT_AVAILABLE_STOCK) {
-
-        mrpLine.setCumulativeQty(mrpLine.getQty());
-      } else {
-
-        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
-      }
-
+      mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
       previousCumulativeQty = mrpLine.getCumulativeQty();
 
       log.debug(
@@ -744,11 +750,11 @@ public class MrpServiceImpl implements MrpService {
           mrpForecastRepository
               .all()
               .filter(
-                  "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3",
+                  "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3 AND self.statusSelect = ?4",
                   this.productMap.keySet(),
                   this.stockLocationList,
                   today,
-                  today)
+                  MrpForecastRepository.STATUS_CONFIRMED)
               .fetch());
 
     } else {
@@ -825,15 +831,13 @@ public class MrpServiceImpl implements MrpService {
     for (Long productId : this.productMap.keySet()) {
 
       for (StockLocation stockLocation : this.stockLocationList) {
-
         this.createAvailableStockMrpLine(
             mrpRepository.find(mrp.getId()),
             productRepository.find(productId),
             stockLocationRepository.find(stockLocation.getId()),
             mrpLineTypeRepository.find(availableStockMrpLineType.getId()));
-
-        JPA.clear();
       }
+      JPA.clear();
     }
   }
 

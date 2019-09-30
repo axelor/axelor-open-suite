@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,6 +46,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -170,19 +171,25 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
+    String productName = "";
+    String productCode = "";
+
+    if (product == null) {
+      return new String[] {productName, productCode};
+    }
+
     SupplierCatalog supplierCatalog =
         supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner());
 
     if (supplierCatalog != null) {
-      String productName = supplierCatalog.getProductSupplierName();
-      String productCode = supplierCatalog.getProductSupplierCode();
-      return new String[] {productName, productCode};
-    } else {
-      if (product != null) {
-        return new String[] {product.getName(), product.getCode()};
-      }
+      productName = supplierCatalog.getProductSupplierName();
+      productCode = supplierCatalog.getProductSupplierCode();
     }
-    return new String[] {"", ""};
+
+    return new String[] {
+      Strings.isNullOrEmpty(productName) ? product.getName() : productName,
+      Strings.isNullOrEmpty(productCode) ? product.getCode() : productCode
+    };
   }
 
   /**
@@ -259,10 +266,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Partner supplierPartner = purchaseOrder.getSupplierPartner();
     Product product = line.getProduct();
 
-    String productName = getProductSupplierInfos(purchaseOrder, line)[0];
-    String productCode = getProductSupplierInfos(purchaseOrder, line)[1];
-    line.setProductName(productName);
-    line.setProductCode(productCode);
+    String[] productSupplierInfos = getProductSupplierInfos(purchaseOrder, line);
+    line.setProductName(productSupplierInfos[0]);
+    line.setProductCode(productSupplierInfos[1]);
     line.setUnit(getPurchaseUnit(line));
     line.setQty(getQty(purchaseOrder, line));
 
@@ -276,7 +282,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal price = getExTaxUnitPrice(purchaseOrder, line, taxLine);
     BigDecimal inTaxPrice = getInTaxUnitPrice(purchaseOrder, line, taxLine);
 
-    if (price == null || inTaxPrice == null || (productName == null && productCode == null)) {
+    if (price == null || inTaxPrice == null) {
       throw new AxelorException(
           TraceBackRepository.TYPE_FUNCTIONNAL,
           I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
@@ -337,7 +343,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setProductName(null);
     line.setUnit(null);
     line.setDiscountAmount(null);
-    line.setDiscountTypeSelect(null);
+    line.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     line.setPrice(null);
     line.setInTaxPrice(null);
     line.setSaleMinPrice(null);

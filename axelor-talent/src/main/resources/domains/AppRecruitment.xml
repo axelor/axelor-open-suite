@@ -6,6 +6,10 @@
 
 	<entity name="AppRecruitment" lang="java" extends="App">
 		<string name="lastEmailId" title="Last email sync id"/>
+		
+		<track>
+			<field name="lastEmailId" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,9 +32,12 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
 import com.beust.jcommander.internal.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -59,6 +62,8 @@ public class ProductServiceImpl implements ProductService {
     this.appBaseService = appBaseService;
     this.productRepo = productRepo;
   }
+
+  @Inject private MetaFiles metaFiles;
 
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
@@ -404,5 +409,21 @@ public class ProductServiceImpl implements ProductService {
         productVariantValue3,
         productVariantValue4,
         false);
+  }
+
+  public void copyProduct(Product product, Product copy) {
+    copy.setBarCode(null);
+    try {
+      if (product.getPicture() != null) {
+        File file = MetaFiles.getPath(product.getPicture()).toFile();
+        copy.setPicture(metaFiles.upload(file));
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    copy.setStartDate(null);
+    copy.setEndDate(null);
+    copy.setCostPrice(BigDecimal.ZERO);
+    copy.setPurchasePrice(BigDecimal.ZERO);
   }
 }

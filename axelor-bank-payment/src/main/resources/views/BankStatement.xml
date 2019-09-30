@@ -39,7 +39,7 @@
                 <panel colSpan="4" name="actionsPanel">
                     <field name="createdBy"/>
                     <field name="statusSelect" title="Status"/>
-                    <button name="runImportBtn" title="BankStatement.Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile" />
+                    <button name="runImportBtn" title="BankStatement.Import" onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile"  hideIf="statusSelect == 2"/>
                 </panel>
             </panel>
             <panel-dashlet name="bankStatementLinesPanel" action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>

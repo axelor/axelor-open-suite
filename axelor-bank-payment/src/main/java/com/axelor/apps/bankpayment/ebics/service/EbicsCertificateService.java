@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,7 +54,9 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bouncycastle.openssl.PEMReader;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.PEMWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -300,18 +302,20 @@ public class EbicsCertificateService {
     return sw.toString();
   }
 
-  public X509Certificate convertToCertificate(String pemString) throws IOException {
+  public X509Certificate convertToCertificate(String pemString)
+      throws IOException, CertificateException {
 
-    X509Certificate cert = null;
+    X509Certificate certificate;
     StringReader reader = new StringReader(pemString);
-    PEMReader pr = new PEMReader(reader);
-    cert = (X509Certificate) pr.readObject();
-    pr.close();
+    try (final PEMParser pr = new PEMParser(reader)) {
+      final X509CertificateHolder certificateHolder = (X509CertificateHolder) pr.readObject();
+      certificate = new JcaX509CertificateConverter().getCertificate(certificateHolder);
+    }
 
-    return cert;
+    return certificate;
   }
 
-  public byte[] convertToDER(String pemString) throws IOException, CertificateEncodingException {
+  public byte[] convertToDER(String pemString) throws IOException, CertificateException {
 
     X509Certificate cert = convertToCertificate(pemString);
 

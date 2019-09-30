@@ -6,12 +6,6 @@ apply {
 	version = absVersion
 }
 
-spotless { 
-	java {  
-		googleJavaFormat()
-	} 
-}
-
 axelor {
 	title "Axelor Cash Management"
 	description "Axelor Cash Management Module"

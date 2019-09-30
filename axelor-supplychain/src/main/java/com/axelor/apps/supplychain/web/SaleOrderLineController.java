@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,11 +29,14 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -97,16 +100,21 @@ public class SaleOrderLineController {
     }
   }
 
-  public void fillAvailableStock(ActionRequest request, ActionResponse response) {
+  public void fillAvailableAndAllocatedStock(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(context);
 
     if (saleOrder != null) {
       if (saleOrderLine.getProduct() != null && saleOrder.getStockLocation() != null) {
-        response.setValue(
-            "$availableStock",
-            saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrder, saleOrderLine));
+        BigDecimal availableStock =
+            saleOrderLineServiceSupplyChainImpl.getAvailableStock(saleOrder, saleOrderLine);
+        BigDecimal allocatedStock =
+            saleOrderLineServiceSupplyChainImpl.getAllocatedStock(saleOrder, saleOrderLine);
+
+        response.setValue("$availableStock", availableStock);
+        response.setValue("$allocatedStock", allocatedStock);
+        response.setValue("$totalStock", availableStock.add(allocatedStock));
       }
     }
   }
@@ -116,6 +124,12 @@ public class SaleOrderLineController {
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();
     try {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
       Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -128,6 +142,54 @@ public class SaleOrderLineController {
     try {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
       Beans.get(ReservedQtyService.class).updateRequestedReservedQty(saleOrderLine, newReservedQty);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order line form view, on request qty click. Call {@link
+   * ReservedQtyService#requestQty(SaleOrderLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void requestQty(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).requestQty(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order line form view, on request qty click. Call {@link
+   * ReservedQtyService#cancelReservation(SaleOrderLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void cancelReservation(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).cancelReservation(saleOrderLine);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -227,5 +289,57 @@ public class SaleOrderLineController {
     }
 
     response.setValue("supplierPartner", supplierPartner);
+  }
+
+  /**
+   * Called from sale order form view, on clicking allocateAll button on one sale order line. Call
+   * {@link ReservedQtyService#allocateAll(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void allocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).allocateAll(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view, on clicking deallocate button on one sale order line. Call
+   * {@link ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal.ZERO)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void deallocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, BigDecimal.ZERO);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkInvoicedOrDeliveredOrderQty(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    BigDecimal qty =
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+
+    response.setValue("qty", qty);
   }
 }

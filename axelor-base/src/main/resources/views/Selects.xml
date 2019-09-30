@@ -89,14 +89,13 @@
 		<option value='12'>December</option>
 	</selection>
 
-	<selection name='title.type.select'>
-		<option value='1'>Civility</option>
-		<option value='2'>Legal form</option>
-	</selection>
-
 	<selection name='iadministration.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>
+	</selection>
+
+	<selection name='iadministration.declaration.of.exchanges.export.type.select'>
+		<option value="pdf">PDF</option>
 		<option value="csv">CSV</option>
 	</selection>
 	
@@ -158,9 +157,9 @@
 	</selection>
 
 	<selection name="base.price.list.line.amount.type.select">
+        <option value="0">No Discount</option>
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
-		<option value="3">No Discount</option>
 	</selection>
 
 	<selection name="day.month.select">
@@ -390,7 +389,7 @@
     <selection name="base.blocking.select">
         <option value="1">Reminder blocking</option>
         <option value="2">Invoicing blocking</option>
-        <option value="3">Reimbursement blocking</option>
+        <option value="3">Refund blocking</option>
     </selection>
 
 	<selection name="meta.schedule.job.select">
@@ -437,4 +436,14 @@
 		    <option value="com.axelor.apps.base.db.Partner">Partner</option>
 	  </selection>
 
+	<selection name="select.language" id="base.language.select">
+		<option value="de">German Beta</option>
+		<option value="es">Spanish Beta</option>
+		<option value="pt">Portuguese Beta</option>
+		<option value="it">Italian Beta</option>
+		<option value="nl">Dutch Beta</option>
+		<option value="pl">Polish Beta</option>
+		<option value="ru">Russian Beta</option>
+	</selection>
+	
 </object-views>

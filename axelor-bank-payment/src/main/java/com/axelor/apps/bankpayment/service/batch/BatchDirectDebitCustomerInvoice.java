@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
@@ -104,7 +105,9 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 
     if (!invoicePaymentList.isEmpty()) {
       try {
-        Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
+        final BankOrder bankOrder =
+            Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
+        findBatch().setBankOrder(bankOrder);
       } catch (AxelorException e) {
         TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
         LOG.error(e.getMessage());

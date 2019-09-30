@@ -7,26 +7,39 @@
 
   <entity name="ProdProcess" lang="java">
 
-  	<one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases" orderBy="priority"/>
-  	<string name="name" title="Label" required="true"/>
-  	<string name="code" title="Code"/>
-  	<boolean name="outsourcing" title="Outsourcing"/>
-	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-	<string name="fullName" namecolumn="true" title="Label"/>
+    <one-to-many name="prodProcessLineList" ref="com.axelor.apps.production.db.ProdProcessLine" mappedBy="prodProcess" title="Phases" orderBy="priority"/>
+    <string name="name" title="Label" required="true" massUpdate="true"/>
+    <string name="code" title="Code"/>
+    <boolean name="outsourcing" title="Outsourcing"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+    <string name="fullName" namecolumn="true" title="Label"/>
     <integer name="statusSelect" title="Status" readonly="true" selection="production.prod.process.status.select" default="1"/>
-  	
-  	<boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
-  	
-  	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location" massUpdate="true"/>
-  	<many-to-one name="producedProductStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product" massUpdate="true"/>
-  	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-	<many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop" massUpdate="true"/>
 
-  	<integer name="versionNumber" title="Version number" default="1"/>
+    <boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
+
+    <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location" massUpdate="true"/>
+    <many-to-one name="producedProductStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product" massUpdate="true"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop" massUpdate="true"/>
+
+    <integer name="versionNumber" title="Version number" default="1"/>
     <many-to-one name="originalProdProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Original production process" />
-   	
-   	<boolean name="isEnabledForAllProducts" title="Enable the process for other products"/>
 
-		<decimal name="launchQty" title="Launch quantity"/>
+    <boolean name="isEnabledForAllProducts" title="Enable the process for other products"/>
+
+    <decimal name="launchQty" title="Launch quantity"/>
+    <integer name="stockMoveRealizeOrderSelect" default="1" massUpdate="true"
+            selection="production.manuf.order.stock.move.realize.order.select"/>
+
+    <extra-code><![CDATA[
+
+    	// STATUS SELECT
+    	public static final int STATUS_DRAFT = 1;
+    	public static final int STATUS_VALIDATED = 2;
+    	public static final int STATUS_APPLICABLE = 3;
+    	public static final int STATUS_OBSOLETE = 4;
+
+    ]]></extra-code>
+
   </entity>
 </domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,4 +70,7 @@ public interface IExceptionMessage {
 
   String CONFIGURATOR_ON_GENERATING_TYPE_ERROR = /*$$(*/
       "The field %s is of type %s, but the configured script returned value is of type %s." /*)*/;
+
+  static final String SALE_ORDER_EDIT_ORDER_NOTIFY = /*$$(*/
+      "At least one sale order line has a stock move with availability request." /*)*/;
 }

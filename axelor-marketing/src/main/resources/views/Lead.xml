@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="lead-campaign-grid" title="Leads" model="com.axelor.apps.crm.db.Lead">
+		<field name="name"/>
+        <field name="firstName"/>
+		<field name="enterpriseName"/>
+        <field name="fixedPhone"/>
+		<field name="emailAddress.address"/>
+		<field name="contactDate"/>
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+        <field name="statusSelect"/>
+		<button name="leadPresentAtEventBtn" title="Present at the event" icon="fa-check" onClick="action-campaign-method-mark-lead-present" hidden="true"/>
+	</grid>
+
+</object-views>

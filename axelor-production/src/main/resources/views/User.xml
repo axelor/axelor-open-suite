@@ -13,12 +13,16 @@
         </panel>
         <panel-dashlet name="durationOnMOsPanel" title="Duration on MOs" showIf="$user &amp;&amp; $dateFrom &amp;&amp; $dateTo" action="action-production-view-duration-on-mos"/>
     </form>
-
+	
     <action-view name="action-production-view-duration-on-mos" title="">
         <view name="chart.duration.on.mos" type="chart"/>
         <context name="userId" expr="eval: user.id"/>
         <context name="dateFrom" expr="eval: dateFrom"/>
         <context name="dateTo" expr="eval: dateTo"/>
     </action-view>
-
+	
+	<action-attrs name="action-user-attrs-domain-workshop-stock-location">
+		<attribute name="domain" for="workshopStockLocation" expr="eval: activeCompany != null ? &quot; self.company = :activeCompany and self.isWorkshop = true &quot; : null"/>
+	</action-attrs>
+	
 </object-views>

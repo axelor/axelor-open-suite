@@ -11,5 +11,6 @@
     	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
     </input>
 
+	<input file="contract_contractTemplate.csv" separator=";" type="com.axelor.apps.contract.db.ContractTemplate" search="self.importId = :importId"/>
+
 </csv-inputs>
-	

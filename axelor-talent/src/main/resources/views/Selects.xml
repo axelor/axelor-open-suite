@@ -54,6 +54,7 @@
 	
 	<selection name="crm.event.related.to.select" id="talent.crm.event.related.to.select">
 		<option value="com.axelor.apps.talent.db.JobApplication">Job Application</option>
+		<option value="com.axelor.apps.talent.db.TrainingRegister">Training Register</option>
 	</selection>
 	
 	<selection name="appraisal.status.selected">

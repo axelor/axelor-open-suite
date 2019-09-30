@@ -11,7 +11,7 @@
 	    Wkf stores the bpmn xml of the worklfow diagram. The nodes and transitions of a wkf will be created by using the bpmn xml. 
 	  ]]>
       <string name="name" title="Name" required="true" />
-      <string name="model" title="Object" />
+      <string name="model" title="Object" required="true" />
       <string name="jsonField" title="Json Field"/>
       <boolean name="isJson" title="Custom" default="true" />
       <many-to-one name="statusField" ref="com.axelor.meta.db.MetaJsonField" title="Wkf field" required="true"/>
@@ -20,8 +20,9 @@
       <one-to-many name="wkfTrackings" ref="WkfTracking" mappedBy="wkf"/>
       <integer name="displayTypeSelect" title="Process display type" selection="studio.business.wkf.display.type.select"/>
       <string name="bpmnXml" title="Bpmn xml" large="true" />
-      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
+      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" required="true" />
       <string name="description" title="Description" large="true"/>
+      <boolean name="isTrackFlow" title="Track flow"/>
   </entity>
     
  </domain-models>

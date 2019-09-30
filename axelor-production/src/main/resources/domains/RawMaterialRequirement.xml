@@ -12,5 +12,6 @@
     <integer name="duration" min="0" title="Duration (days)"/>
     <many-to-many name="stockLocationSet" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock locations"/>
     <boolean name="showAllRequirements" default="false" title="Show all requirements ?"/>
+    <boolean name="showRequirementsByMO" default="false" title="Show requirements by MO"/>
   </entity>
 </domain-models>

@@ -59,6 +59,13 @@
 		<view name="talent-source-grid" type="grid" />
 		<view name="talent-source-form" type="form" />
 	</action-view>
+
+  <menuitem name="recruitment-config-skill" parent="recruitment-config" title="Skills" action="recruitment.config.skill"/>
+
+  <action-view name="recruitment.config.skill" title="Skills" model="com.axelor.apps.talent.db.Skill">
+    <view type="grid" name="tag-skill-grid"/>
+    <view type="form" name="tag-skill-form"/>
+  </action-view>
 	
 	<!-- Training menus -->
 	<menuitem name="training-root" parent="hr-root" if="__config__.app.isApp('training')" title="Training" icon="fa-graduation-cap" icon-background="#84429f"/>

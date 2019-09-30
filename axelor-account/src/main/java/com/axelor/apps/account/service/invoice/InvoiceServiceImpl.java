@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2018 Axelor (<http://axelor.com>).
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,18 +17,23 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.BudgetDistribution;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -36,6 +41,7 @@ import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -51,6 +57,7 @@ import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -85,6 +92,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -95,7 +103,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
-      InvoiceLineService invoiceLineService) {
+      InvoiceLineService invoiceLineService,
+      AccountConfigService accountConfigService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -105,6 +114,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
+    this.accountConfigService = accountConfigService;
   }
 
   // WKF
@@ -128,6 +138,52 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (alarm != null) {
 
       alarm.setInvoice(invoice);
+    }
+  }
+
+  @Override
+  public Account getPartnerAccount(Invoice invoice) throws AxelorException {
+    if (invoice.getCompany() == null
+        || invoice.getOperationTypeSelect() == null
+        || invoice.getOperationTypeSelect() == 0
+        || invoice.getPartner() == null) return null;
+    AccountingSituationService situationService = Beans.get(AccountingSituationService.class);
+    return InvoiceToolService.isPurchase(invoice)
+        ? situationService.getSupplierAccount(invoice.getPartner(), invoice.getCompany())
+        : situationService.getCustomerAccount(invoice.getPartner(), invoice.getCompany());
+  }
+
+  public Journal getJournal(Invoice invoice) throws AxelorException {
+
+    Company company = invoice.getCompany();
+    if (company == null) return null;
+
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    // Taken from legacy JournalService but negative cases seem rather strange
+    switch (invoice.getOperationTypeSelect()) {
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getSupplierCreditNoteJournal(accountConfig)
+            : accountConfigService.getSupplierPurchaseJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getSupplierPurchaseJournal(accountConfig)
+            : accountConfigService.getSupplierCreditNoteJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_SALE:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getCustomerCreditNoteJournal(accountConfig)
+            : accountConfigService.getCustomerSalesJournal(accountConfig);
+      case InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND:
+        return invoice.getInTaxTotal().signum() < 0
+            ? accountConfigService.getCustomerSalesJournal(accountConfig)
+            : accountConfigService.getCustomerCreditNoteJournal(accountConfig);
+      default:
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.JOURNAL_1),
+            invoice.getInvoiceId());
     }
   }
 
@@ -192,28 +248,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     compute(invoice);
 
     validateFactory.getValidator(invoice).process();
-    if (appAccountService.isApp("budget")
-        && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      this.generateBudgetDistribution(invoice);
-    }
+
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
     if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       ventilate(invoice);
-    }
-  }
-
-  @Override
-  public void generateBudgetDistribution(Invoice invoice) {
-    if (invoice.getInvoiceLineList() != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        if (invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()) {
-          BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(invoiceLine.getBudget());
-          budgetDistribution.setAmount(invoiceLine.getExTaxTotal());
-          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-        }
-      }
     }
   }
 
@@ -240,7 +279,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      if (invoiceLine.getAccount() == null
+      Account account = invoiceLine.getAccount();
+
+      if (account == null
           && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
           && invoiceLineService.isAccountRequired(invoiceLine)) {
         throw new AxelorException(
@@ -249,6 +290,17 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             I18n.get(IExceptionMessage.VENTILATE_STATE_6),
             invoiceLine.getProductName());
       }
+
+      if (account != null
+          && !account.getAnalyticDistributionAuthorized()
+          && (invoiceLine.getAnalyticDistributionTemplate() != null
+              || (invoiceLine.getAnalyticMoveLineList() != null
+                  && !invoiceLine.getAnalyticMoveLineList().isEmpty()))) {
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+      }
     }
 
     log.debug("Ventilation de la facture {}", invoice.getInvoiceId());
@@ -256,10 +308,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
-    // FIXME: Disabled temporary due to RM#14505
-    //    if (appAccountService.getAppAccount().getPrintReportOnVentilation()) {
-    //      Beans.get(InvoicePrintService.class).printAndSave(invoice);
-    //    }
+    if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
+      Beans.get(InvoicePrintService.class).printAndSave(invoice);
+    }
   }
 
   /**
@@ -305,6 +356,48 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  @Override
+  public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
+    if (!accountConfig.getAutoReconcileOnInvoice()) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
+        long clientRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+
+        if (clientRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_CLIENT_REFUNDS);
+        }
+      }
+
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        long supplierRefundsAmount =
+            getRefundsAmount(
+                invoice.getPartner().getId(), InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+
+        if (supplierRefundsAmount > 0) {
+          return I18n.get(IExceptionMessage.INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private long getRefundsAmount(Long partnerId, int refundType) {
+    return invoiceRepo
+        .all()
+        .filter(
+            "self.partner.id = ?"
+                + " AND self.operationTypeSelect = ?"
+                + " AND self.statusSelect = ?"
+                + " AND self.amountRemaining > 0",
+            partnerId,
+            refundType,
+            InvoiceRepository.STATUS_VENTILATED)
+        .count();
+  }
+
   /**
    * Créer un avoir.
    *
@@ -332,6 +425,30 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (invoice.getId() != null && Strings.isNullOrEmpty(invoice.getInvoiceId())) {
       invoice.setInvoiceId(Beans.get(SequenceService.class).getDraftSequenceNumber(invoice));
     }
+  }
+
+  public Invoice mergeInvoiceProcess(
+      List<Invoice> invoiceList,
+      Company company,
+      Currency currency,
+      Partner partner,
+      Partner contactPartner,
+      PriceList priceList,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException {
+    Invoice invoiceMerged =
+        mergeInvoice(
+            invoiceList,
+            company,
+            currency,
+            partner,
+            contactPartner,
+            priceList,
+            paymentMode,
+            paymentCondition);
+    deleteOldInvoices(invoiceList);
+    return invoiceMerged;
   }
 
   @Override
@@ -391,12 +508,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-    Beans.get(InvoiceRepository.class).save(invoiceMerged);
-    deleteOldInvoices(invoiceList);
+    invoiceRepo.save(invoiceMerged);
     return invoiceMerged;
   }
 
   @Override
+  @Transactional
   public void deleteOldInvoices(List<Invoice> invoiceList) {
     for (Invoice invoicetemp : invoiceList) {
       invoiceRepo.remove(invoicetemp);
@@ -465,7 +582,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     advancePaymentInvoices =
         new HashSet<>(
-            Beans.get(InvoiceRepository.class)
+            invoiceRepo
                 .all()
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
@@ -493,7 +610,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   protected boolean removeBecauseOfTotalAmount(Invoice invoice, Invoice candidateAdvancePayment)
       throws AxelorException {
-    if (Beans.get(AccountConfigService.class)
+    if (accountConfigService
         .getAccountConfig(invoice.getCompany())
         .getGenerateMoveForInvoicePayment()) {
       return false;
@@ -522,7 +639,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if there is no move generated, we simply check if the payment was
     // imputed
-    if (!Beans.get(AccountConfigService.class)
+    if (!accountConfigService
         .getAccountConfig(invoice.getCompany())
         .getGenerateMoveForInvoicePayment()) {
       for (InvoicePayment invoicePayment : invoicePayments) {
@@ -555,7 +672,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+    if (appAccountService.getAppAccount().getManageAdvancePaymentInvoice()) {
       return getMoveLinesFromInvoiceAdvancePayments(invoice);
     } else {
       return getMoveLinesFromSOAdvancePayments(invoice);
@@ -699,5 +816,79 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     public double doubleValue() {
       return Double.valueOf(count);
     }
+  }
+
+  @Override
+  public Boolean checkPartnerBankDetailsList(Invoice invoice) {
+    PaymentMode paymentMode = invoice.getPaymentMode();
+    Partner partner = invoice.getPartner();
+
+    if (partner == null || paymentMode == null) {
+      return true;
+    }
+
+    int paymentModeInOutSelect = paymentMode.getInOutSelect();
+    int paymentModeTypeSelect = paymentMode.getTypeSelect();
+
+    if ((paymentModeInOutSelect == PaymentModeRepository.IN
+            && (paymentModeTypeSelect == PaymentModeRepository.TYPE_IPO
+                || paymentModeTypeSelect == PaymentModeRepository.TYPE_IPO_CHEQUE
+                || paymentModeTypeSelect == PaymentModeRepository.TYPE_DD))
+        || (paymentModeInOutSelect == PaymentModeRepository.OUT
+            && paymentModeTypeSelect == PaymentModeRepository.TYPE_TRANSFER)) {
+      return partner.getBankDetailsList().stream().anyMatch(bankDetails -> bankDetails.getActive());
+    }
+
+    return true;
+  }
+
+  protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) throws AxelorException {
+    // isPurchase() = isSupplier()
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnSaleInvoice()
+        && !InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    if (appAccountService.getAppInvoice().getAutoGenerateInvoicePrintingFileOnPurchaseInvoice()
+        && InvoiceToolService.isPurchase(invoice)) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+      long supplierNotLetteredAdvancePaymentMoveLinesAmount =
+          getNotLetteredAdvancePaymentMoveLinesAmount(invoice.getPartner());
+
+      if (supplierNotLetteredAdvancePaymentMoveLinesAmount > 0) {
+        return I18n.get(IExceptionMessage.INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES);
+      }
+    }
+    return null;
+  }
+
+  protected long getNotLetteredAdvancePaymentMoveLinesAmount(Partner partner) {
+    return JPA.em()
+        .createQuery(
+            "Select moveLine.id "
+                + "FROM  MoveLine moveLine "
+                + "LEFT JOIN Move move on moveLine.move = move.id "
+                + "LEFT JOIN Invoice invoice on move.id = invoice.move "
+                + "LEFT JOIN Account account on moveLine.account = account.id "
+                + "LEFT JOIN AccountType accountType on account.accountType = accountType.id "
+                + "LEFT JOIN Partner partner on moveLine.partner = partner.id "
+                + "WHERE invoice.move = null "
+                + "AND moveLine.debit > 0 "
+                + "AND moveLine.amountRemaining > 0 "
+                + "AND accountType.technicalTypeSelect = ?1 "
+                + "AND move.statusSelect in (?2,?3) "
+                + "AND partner.id = ?4")
+        .setParameter(1, AccountTypeRepository.TYPE_PAYABLE)
+        .setParameter(2, MoveRepository.STATUS_DAYBOOK)
+        .setParameter(3, MoveRepository.STATUS_VALIDATED)
+        .setParameter(4, partner.getId())
+        .getResultList()
+        .size();
   }
 }

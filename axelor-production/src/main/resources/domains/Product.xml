@@ -7,12 +7,11 @@
   
 	<decimal name="lastProductionPrice" title="Last production price" precision="20" scale="10"/>
 	<many-to-one name="defaultBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Default BOM"/>
-  
-  	<integer name="versionSelect" title="Version" selection="base.product.version.select"/>
-  	
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
     <integer name="realOrEstimatedPriceSelect" title="MO's valuation method" selection="production.product.price.method.select" default="1"/>
-    <integer name="componentsValuationMethod" title="Components valuation method" selection="production.product.components.valuation.select"/>
+    <integer name="manufOrderCompValuMethodSelect" title="Components valuation method for manuf. order" selection="production.product.components.valuation.select" default="1"/>
+    <integer name="bomCompValuMethodSelect" title="Components valuation method for BOM" selection="production.product.components.valuation.select" default="2"/>
+    
     <string name="productStandard" title="Production.productStandard"/>
     <many-to-one name="productApproval" ref="com.axelor.apps.production.db.ProductApproval" title="Approval"/>
 		<extra-code>
@@ -21,7 +20,7 @@
 				public static final int PRICE_METHOD_FORECAST = 1;
 				public static final int PRICE_METHOD_REAL = 2;
 				
-				// COMPONENTS VALUATION
+				// COMPONENTS VALUATION METHOD SELECt
 				public static final int COMPONENTS_VALUATION_METHOD_AVERAGE = 1; 
 				public static final int COMPONENTS_VALUATION_METHOD_COST = 2;
 	   		]]>

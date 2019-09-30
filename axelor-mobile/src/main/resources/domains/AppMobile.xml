@@ -19,6 +19,15 @@
 		<many-to-many name="leadSet" ref="com.axelor.apps.crm.db.Lead" title="Leads"/>
 		
 		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+		
+		<track>
+			<field name="isSaleAppEnable" on="UPDATE"/>
+			<field name="isCrmAppEnable" on="UPDATE"/>
+			<field name="isTimesheetAppEnable" on="UPDATE"/>
+			<field name="isLeaveAppEnable" on="UPDATE"/>
+			<field name="isExpenseAppEnable" on="UPDATE"/>
+			<field name="offlineRecordLimit" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>
