@@ -12,6 +12,7 @@
 - Studio : Tab display for panel tab
 - JSON-FIELD-FORM : add tracking in form fields
 - Studio : group by application on json model grid view.
+- Export studio app: email action - email template
 
 ## Improvements
 - Remove Pack Feature from Product.
