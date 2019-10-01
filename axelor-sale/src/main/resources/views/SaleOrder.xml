@@ -195,7 +195,7 @@
 	          </h4>
 	        ]]></viewer>
 	      </field>
-	      <field name="$viewerOrderRequiresAdvancePayment" showTitle="false" readonly="true" showIf="(statusSelect == 2 &amp;&amp; advancePaymentNeeded) &amp;&amp; (($number(inTaxTotal) == $number(advancePaymentAmount))|| ($number(advanceTotal) &lt; $number(advancePaymentAmount)))" colSpan="6">
+	      <field name="$viewerOrderRequiresAdvancePayment" showTitle="false" readonly="true" showIf="(statusSelect == 2 &amp;&amp; advancePaymentNeeded) &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmount)" colSpan="6">
 		      	<viewer><![CDATA[
 		      	<h4>
 		        	<span class="label label-important" x-translate>Advance payment needed</span>
