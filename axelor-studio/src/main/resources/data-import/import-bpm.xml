@@ -223,6 +223,29 @@
 			<bind node="transactional" to="transactional" />
 			<bind node="scriptType" to="scriptType" />
 			<bind node="scriptText" to="scriptText" />
+			<bind node="emailTemplate" to="emailTemplate" search="self.name = :name AND (self.metaModel.name = :metaModel OR self.metaJsonModel.name = :metaJsonModel)" update="true">
+				<bind node="name" to="name"/>
+				<bind node="mediaTypeSelect" to="mediaTypeSelect"/>
+				<bind node="language" to="language" search="self.code = :language" create="false"/>
+				<bind node="metaModel" to="metaModel" search="self.name = :metaModel" create="false"/>
+				<bind node="fromAdress" to="fromAdress"/>
+				<bind node="replyToRecipients" to="replyToRecipients"/>
+				<bind node="toRecipients" to="toRecipients"/>
+				<bind node="ccRecipients" to="ccRecipients"/>
+				<bind node="bccRecipients" to="bccRecipients"/>
+				<bind node="subject" to="subject"/>
+				<bind node="content" to="content"/>
+				<bind node="templateContextList/templateContextLine" to="templateContextList">
+					<bind node="name" to="name"/>
+					<bind node="value" to="value"/>
+				</bind>
+				<bind node="target" to="target"/>
+				<bind node="isDefault" to="isDefault"/>
+				<bind node="isSystem" to="isSystem"/>
+				<bind node="isJson" to="isJson"/>
+				<bind node="metaJsonModel" to="metaJsonModel" search="self.name = :metaJsonModel" create="false"/>
+				<bind node="birtTemplate" to="birtTemplate" search="self.name = :birtTemplate" create="false"/>
+			</bind>
 			<bind node="actionBuilderViews/view" to="actionBuilderViews">
 				<bind node="viewType" to="viewType" />
 				<bind node="viewName" to="viewName" />
