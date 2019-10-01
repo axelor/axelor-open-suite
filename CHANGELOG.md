@@ -254,5 +254,6 @@
 - Timesheet line : Duration label issue when created from mobile app
 - EXPENSE : fix NPE on validate Expense.
 - Controller: Use Beans.get instead of Inject
+- PROJECT : Kanban view doesn't change status
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

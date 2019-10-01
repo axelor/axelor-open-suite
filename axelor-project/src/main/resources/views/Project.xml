@@ -436,7 +436,7 @@
 		</panel>
 	</form>
 	
-	<kanban columnBy="statusSelect" sequenceBy="statusSelect" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="orderByState" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
 		<field name="description"/>
