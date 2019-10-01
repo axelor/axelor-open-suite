@@ -1233,6 +1233,7 @@
 "Old Schedules",,,
 "Old qty",,,
 "One id is null",,,
+"One or several move lines are out of the accounting period.",,,
 "Ongoing Schedules",,,
 "Only 'Draft' moves can be deleted",,,
 "Operation code",,,

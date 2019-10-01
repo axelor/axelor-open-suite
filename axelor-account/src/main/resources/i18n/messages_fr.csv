@@ -1233,6 +1233,7 @@
 "Old Schedules","Anciens Échéanciers",,
 "Old qty",,,
 "One id is null","Un id est null",,
+"One or several move lines are out of the accounting period.","Une ou plusieurs lignes d'écriture ne font pas partie de la période comptable de l'écriture.",,
 "Ongoing Schedules","Échéanciers en cours",,
 "Only 'Draft' moves can be deleted","Seules les écritures en Brouillon peuvent être supprimées",,
 "Operation code",,,
