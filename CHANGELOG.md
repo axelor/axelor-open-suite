@@ -10,6 +10,7 @@
 - BANK STATEMENT : improved bank statement line grid for 120 file format.
 - EbicsBank : Disable canEdit on language field in ebics-bank-form
 - SALE/PURCHASE ORDER : autofill same stocklocation in purchase order.
+- TIMESHEET : Generate TS lines for leaves and holidays automatically.
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.

@@ -11,6 +11,8 @@
 			<field name="editModeTSTimer" widget="boolean-switch" showIf="enableTimer"/>
 			<field name="keepProject" widget="boolean-switch" showIf="enableTimer"/>
 			<field name="defaultEndFormat" />
+			<field name="createLinesForLeaves" widget="boolean-switch" />
+			<field name="createLinesForHolidays" widget="boolean-switch" />
 			<field name="timesheetEditor" widget="boolean-switch" />
 		</panel>
 				
