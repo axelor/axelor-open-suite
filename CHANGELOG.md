@@ -125,6 +125,7 @@
 - Advanced Import : Add support of remove imported records.
 - Business Project : Add 'Project invoicing assistant' batch to update tasks and generate invoicing projects.
 - PARTNER : new HTML field on partner for proforma
+- COMPANY : autocomplete companySet when enableMultiCompany = false
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
