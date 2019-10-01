@@ -334,13 +334,18 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
 
     try {
+      boolean isAMoveLineOutOfPeriod = false;
       for (MoveLine moveLine : move.getMoveLineList()) {
         if (moveLine.getDate().isBefore(move.getPeriod().getFromDate())
             || moveLine.getDate().isAfter(move.getPeriod().getToDate())) {
           moveLine.setDate(move.getDate());
+          isAMoveLineOutOfPeriod = true;
         }
       }
       response.setValue("moveLineList", move.getMoveLineList());
+      if (isAMoveLineOutOfPeriod) {
+        response.setFlash(I18n.get("One or several move lines are out of the accounting period."));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
