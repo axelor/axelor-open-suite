@@ -22,16 +22,13 @@ import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.service.batch.HrBatchService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class HrBatchController {
-
-  @Inject HrBatchService hrBatchService;
-  @Inject HrBatchRepository hrBatchRepo;
 
   /**
    * Launch any type of HR batch
@@ -44,7 +41,9 @@ public class HrBatchController {
 
     HrBatch hrBatch = request.getContext().asType(HrBatch.class);
 
-    Batch batch = hrBatchService.run(hrBatchRepo.find(hrBatch.getId()));
+    Batch batch =
+        Beans.get(HrBatchService.class)
+            .run(Beans.get(HrBatchRepository.class).find(hrBatch.getId()));
 
     if (batch != null) {
       response.setFlash(batch.getComments());

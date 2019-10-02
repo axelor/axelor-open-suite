@@ -54,4 +54,15 @@ public interface IExceptionMessage {
       "Products must be Service type and Method of Supply Produce." /*)*/;
   static final String SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2 = /*$$(*/
       "Please complete the order lines with at least one product type 'Service' and the supply mode 'Produce'" /*)*/;
+
+  static final String INVALID_EXCLUDE_TASK_FILTER = /*$$(*/
+      "Invalid exclude task for invoicing filter" /*)*/;
+
+  static final String BATCH_TASK_UPDATION_1 = /*$$(*/ "Task %s" /*)*/;
+
+  static final String BATCH_TASK_UPDATION_2 = /*$$(*/ "Tasks updation completed : " /*)*/;
+
+  static final String BATCH_INVOICING_PROJECT_1 = /*$$(*/ "Project %s" /*)*/;
+
+  static final String BATCH_INVOICING_PROJECT_2 = /*$$(*/ "Generated invoicing project" /*)*/;
 }

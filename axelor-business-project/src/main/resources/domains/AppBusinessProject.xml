@@ -30,6 +30,10 @@
 
 		<boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
 		
+		<string name="preTaskStatusSet" title="Status for invoice pre task tasks" selection="team.task.status"/>
+		<string name="postTaskStatusSet" title="Status for invoice post task tasks" selection="team.task.status"/>
+		<string name="exculdeTaskInvoicing" title="Exculde tasks for invoicing"/>
+		
 		<track>
 			<field name="productInvoicingProject" on="UPDATE"/>
 			

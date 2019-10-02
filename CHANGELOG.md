@@ -122,6 +122,10 @@
 - TEAMTASK : Addition of field 'project' in grid and kanban view
 - CONFORMITY CERTIFICATE : new field on printing
 - TIMESHEET : new config to display line numbers
+- Advanced Import : Add support of remove imported records.
+- Business Project : Add 'Project invoicing assistant' batch to update tasks and generate invoicing projects.
+- PARTNER : new HTML field on partner for proforma
+- COMPANY : autocomplete companySet when enableMultiCompany = false
 - FUNCTION : new object function on Sales and CRM and new M2O on partner
 
 ## Improvements
@@ -250,5 +254,6 @@
 - TEAMTASK: Add fullname in demo data.
 - Timesheet line : Duration label issue when created from mobile app
 - EXPENSE : fix NPE on validate Expense.
+- Controller: Use Beans.get instead of Inject
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

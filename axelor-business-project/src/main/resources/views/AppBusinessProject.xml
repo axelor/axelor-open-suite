@@ -21,6 +21,9 @@
 			<field name="enableToInvoiceTimesheet" widget="boolean-switch" />
 			<field name="enableToInvoiceExpense" widget="boolean-switch" />
 			<field name="enableTaskTemplatesByProduct" widget="boolean-switch"/>
+			<field name="preTaskStatusSet" widget="MultiSelect"/>
+    		<field name="postTaskStatusSet" widget="MultiSelect"/>
+    		<field name="exculdeTaskInvoicing"/>
 		</panel>
 		        
 		<panel-mail name="mailPanel">

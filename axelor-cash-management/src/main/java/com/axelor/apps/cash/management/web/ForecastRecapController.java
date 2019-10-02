@@ -31,7 +31,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -47,8 +46,6 @@ public class ForecastRecapController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private ForecastRecapService forecastRecapService;
-
   public void populate(ActionRequest request, ActionResponse response) throws AxelorException {
     ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
     if (forecastRecap.getCompany() == null) {
@@ -56,13 +53,14 @@ public class ForecastRecapController {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.FORECAST_COMPANY));
     }
-    forecastRecapService.populate(
-        Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
+    Beans.get(ForecastRecapService.class)
+        .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
     response.setReload(true);
   }
 
   public void sales(ActionRequest request, ActionResponse response) throws AxelorException {
     Long id = new Long(request.getContext().get("_id").toString());
+    ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
     forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
     Map<LocalDate, BigDecimal> mapExpected = new HashMap<LocalDate, BigDecimal>();
@@ -97,6 +95,7 @@ public class ForecastRecapController {
 
   public void spending(ActionRequest request, ActionResponse response) throws AxelorException {
     Long id = new Long(request.getContext().get("_id").toString());
+    ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
     forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
 
@@ -129,6 +128,7 @@ public class ForecastRecapController {
 
   public void marges(ActionRequest request, ActionResponse response) throws AxelorException {
     Long id = new Long(request.getContext().get("_id").toString());
+    ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
     forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
 
@@ -180,7 +180,8 @@ public class ForecastRecapController {
     Context context = request.getContext();
     Long forecastRecapId = new Long(context.get("_forecastRecapId").toString());
     String reportType = (String) context.get("reportTypeSelect");
-    String fileLink = forecastRecapService.getForecastRecapFileLink(forecastRecapId, reportType);
+    String fileLink =
+        Beans.get(ForecastRecapService.class).getForecastRecapFileLink(forecastRecapId, reportType);
     String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
     title += forecastRecapId;
     logger.debug("Printing " + title);

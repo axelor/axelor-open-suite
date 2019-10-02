@@ -23,17 +23,13 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorGroupingService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class IndicatorGeneratorGroupingController {
-
-  @Inject private IndicatorGeneratorGroupingService indicatorGeneratorGroupingService;
-
-  @Inject private IndicatorGeneratorGroupingRepository indicatorGeneratorGroupingRepo;
 
   public void run(ActionRequest request, ActionResponse response) {
 
@@ -41,8 +37,10 @@ public class IndicatorGeneratorGroupingController {
         request.getContext().asType(IndicatorGeneratorGrouping.class);
 
     try {
-      indicatorGeneratorGroupingService.run(
-          indicatorGeneratorGroupingRepo.find(indicatorGeneratorGrouping.getId()));
+      Beans.get(IndicatorGeneratorGroupingService.class)
+          .run(
+              Beans.get(IndicatorGeneratorGroupingRepository.class)
+                  .find(indicatorGeneratorGrouping.getId()));
       response.setReload(true);
       response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
     } catch (Exception e) {
@@ -56,8 +54,10 @@ public class IndicatorGeneratorGroupingController {
         request.getContext().asType(IndicatorGeneratorGrouping.class);
 
     try {
-      indicatorGeneratorGroupingService.export(
-          indicatorGeneratorGroupingRepo.find(indicatorGeneratorGrouping.getId()));
+      Beans.get(IndicatorGeneratorGroupingService.class)
+          .export(
+              Beans.get(IndicatorGeneratorGroupingRepository.class)
+                  .find(indicatorGeneratorGrouping.getId()));
       response.setReload(true);
       response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_GROUPING_4));
     } catch (Exception e) {

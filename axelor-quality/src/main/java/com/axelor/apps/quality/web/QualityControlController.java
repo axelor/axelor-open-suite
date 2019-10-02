@@ -37,7 +37,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,10 +49,6 @@ import javax.annotation.Nullable;
 
 @Singleton
 public class QualityControlController {
-
-  @Inject private QualityControlRepository qualityControlRepo;
-
-  @Inject private QualityControlService qualityControlService;
 
   /**
    * Open control point in new tab from quality control.
@@ -93,9 +88,10 @@ public class QualityControlController {
         Beans.get(QualityProcessRepository.class)
             .find(((Integer) qualityProcessMap.get("id")).longValue());
     QualityControl qualityControl =
-        qualityControlRepo.find(((Integer) qualityControlMap.get("id")).longValue());
+        Beans.get(QualityControlRepository.class)
+            .find(((Integer) qualityControlMap.get("id")).longValue());
 
-    qualityControlService.preFillOperations(qualityControl, qualityProcess);
+    Beans.get(QualityControlService.class).preFillOperations(qualityControl, qualityProcess);
 
     response.setCanClose(true);
   }
@@ -123,9 +119,11 @@ public class QualityControlController {
     LinkedHashMap<String, Object> qualityControlMap =
         (LinkedHashMap<String, Object>) request.getContext().get("_qualityControl");
     QualityControl qualityControl =
-        qualityControlRepo.find(((Integer) qualityControlMap.get("id")).longValue());
+        Beans.get(QualityControlRepository.class)
+            .find(((Integer) qualityControlMap.get("id")).longValue());
 
-    qualityControlService.preFillOperationsFromOptionals(qualityControl, optionalControlPointList);
+    Beans.get(QualityControlService.class)
+        .preFillOperationsFromOptionals(qualityControl, optionalControlPointList);
 
     response.setCanClose(true);
   }
