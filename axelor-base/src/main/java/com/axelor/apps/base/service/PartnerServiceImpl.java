@@ -40,7 +40,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -247,7 +246,6 @@ public class PartnerServiceImpl implements PartnerService {
     partner.setFullName(this.computeFullName(partner));
   }
 
-  @CallMethod
   @Override
   public String computeFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
@@ -256,7 +254,6 @@ public class PartnerServiceImpl implements PartnerService {
     return computeSimpleFullName(partner);
   }
 
-  @CallMethod
   @Override
   public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
@@ -453,7 +450,6 @@ public class PartnerServiceImpl implements PartnerService {
     return null;
   }
 
-  @CallMethod
   @Override
   public Address getInvoicingAddress(Partner partner) {
 
@@ -463,7 +459,6 @@ public class PartnerServiceImpl implements PartnerService {
         "self.partner.id = ?1 AND self.isInvoicingAddr = true");
   }
 
-  @CallMethod
   @Override
   public Address getDeliveryAddress(Partner partner) {
 
