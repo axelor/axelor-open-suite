@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
@@ -40,6 +41,7 @@ import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
+import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,20 +186,25 @@ public class InventoryController {
     }
   }
 
-  public void showStockMove(ActionRequest request, ActionResponse response) {
+  public void showStockMoves(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      StockMove stockMove = Beans.get(InventoryService.class).findStockMove(inventory);
-      if (inventory != null) {
-        ActionViewBuilder builder =
-            ActionView.define(I18n.get("Stock Move"))
-                .model(StockMove.class.getName())
-                .add("grid", "stock-move-grid")
-                .add("form", "stock-move-form")
-                .context("_showRecord", stockMove.getId());
-        response.setView(builder.map());
+      List<StockMove> stockMoveList = Beans.get(InventoryService.class).findStockMoves(inventory);
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get("Internal Stock Moves"))
+              .model(StockMove.class.getName())
+              .add("grid", "stock-move-grid")
+              .add("form", "stock-move-form");
+      if (stockMoveList.isEmpty()) {
+        response.setFlash(I18n.get("No stock moves found for this inventory."));
       } else {
-        response.setFlash(I18n.get("No record found"));
+        builder
+            .context("_showSingle", true)
+            .domain(
+                String.format(
+                    "self.originTypeSelect = '%s' AND self.originId = %s",
+                    StockMoveRepository.ORIGIN_INVENTORY, inventory.getId()));
+        response.setView(builder.map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -166,6 +166,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   @Override
+  public TimesheetLine createTimesheetLine(
+      User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
+    return createTimesheetLine(null, null, user, date, timesheet, hours, comments);
+  }
+
+  @Override
   public TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,
       Project project,

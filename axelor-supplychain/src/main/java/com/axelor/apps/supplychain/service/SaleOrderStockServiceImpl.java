@@ -192,6 +192,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
+    } else if (supplychainConfig.getDefaultEstimatedDate()
+            == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(
+          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     stockMoveService.plan(stockMove);

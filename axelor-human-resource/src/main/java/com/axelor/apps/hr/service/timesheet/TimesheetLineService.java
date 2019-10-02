@@ -57,7 +57,7 @@ public interface TimesheetLineService {
       throws AxelorException;
 
   /**
-   * Create a timesheet line.
+   * Creates a timesheet line.
    *
    * @param project
    * @param product
@@ -76,6 +76,20 @@ public interface TimesheetLineService {
       Timesheet timesheet,
       BigDecimal hours,
       String comments);
+
+  /**
+   * Creates a timesheet line without project and product. Used to generate timesheet lines for
+   * holidays or day leaves.
+   *
+   * @param user
+   * @param date
+   * @param timesheet
+   * @param hours
+   * @param comments
+   * @return the created timesheet line.
+   */
+  TimesheetLine createTimesheetLine(
+      User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
 
   TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,

@@ -23,7 +23,8 @@
 		</panel>
 	  	
 	  	<panel name="datePanel">
-		    <field name="defaultEstimatedDate" colSpan="12"/>
+		    <field name="defaultEstimatedDate" colSpan="8" />
+		    <field name="numberOfDays" colSpan="4" showIf="defaultEstimatedDate == 2" />
 		</panel>
 	
         	<panel-mail name="mailPanel">

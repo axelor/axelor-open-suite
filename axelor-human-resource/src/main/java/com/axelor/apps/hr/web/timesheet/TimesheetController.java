@@ -68,6 +68,16 @@ public class TimesheetController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  public void prefillLines(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      Beans.get(TimesheetService.class).prefillLines(timesheet);
+      response.setValues(timesheet);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {

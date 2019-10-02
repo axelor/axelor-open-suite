@@ -72,7 +72,8 @@ public class BudgetSupplychainService extends BudgetService {
           for (BudgetLine budgetLine : budget.getBudgetLineList()) {
             LocalDate fromDate = budgetLine.getFromDate();
             LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
+            if ((fromDate != null && toDate != null)
+                && (fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
                 && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
               budgetLine.setAmountCommitted(
                   budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));

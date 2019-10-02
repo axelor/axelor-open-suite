@@ -19,7 +19,6 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -36,8 +35,7 @@ public class ImportInventory {
     assert bean instanceof InventoryLine;
 
     Inventory inventory = (Inventory) bean;
-    StockMove stockMove = inventoryService.validateInventory(inventory);
-    stockMove.setRealDate(inventory.getDateT().toLocalDate());
+    inventoryService.validateInventory(inventory);
 
     return inventory;
   }
