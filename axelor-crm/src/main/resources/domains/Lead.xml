@@ -12,7 +12,7 @@
     <string name="firstName" title="First name"/>
     <string name="enterpriseName" title="Enterprise"/>
     <string name="officeName" title="Office name"/>
-  	<string name="jobTitle" title="Job Title"/>
+    <many-to-one name="jobTitleFunction" title="Job Title" ref="com.axelor.apps.base.db.Function"/>
     <string name="mobilePhone" title="Mobile N°"/>
     <string name="fixedPhone" title="Fixed Phone"/>
   	<string name="department" title="Dep./Div."/>

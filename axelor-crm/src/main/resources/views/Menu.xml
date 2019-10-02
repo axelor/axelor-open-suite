@@ -135,6 +135,15 @@
 		<view type="grid" name="lost-reason-grid"/>
 		<view type="form" name="lost-reason-form"/>
 	</action-view>
+	
+	<menuitem name="crm-conf-contact-function" parent="crm-conf"
+		title="Contact function" action="crm.conf.contact.function" />
+		
+	<action-view name="crm.conf.contact.function" title="Contact function"
+		model="com.axelor.apps.base.db.Function" >
+		<view type="grid" name="function-grid"/>
+		<view type="form" name="function-form"/>
+	</action-view>
 		
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" if="__config__.app.isApp('crm')" />

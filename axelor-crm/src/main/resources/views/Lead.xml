@@ -97,7 +97,7 @@
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5">
 					<editor x-show-titles="false">
 						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
-						<field name="jobTitle" colSpan="6" placeholder="Function"/>
+						<field name="jobTitleFunction" colSpan="6" placeholder="Function"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
