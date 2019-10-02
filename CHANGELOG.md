@@ -16,6 +16,7 @@
 - Stock Move: fix WAP computation on customer returns.
 - Move Line: fix error when we reconcile multiple moves.
 - ACCOUNTING REPORT : balance reports are now faster to generate.
+- DEBT RECOVERY  : Replace partnerFullName with accountingSituation.partner.fullName
 
 
 ## [5.1.8] - 2019-09-26
