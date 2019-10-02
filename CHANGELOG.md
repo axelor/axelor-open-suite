@@ -18,6 +18,7 @@
 - ACCOUNTING REPORT : balance reports are now faster to generate.
 - DEBT RECOVERY  : Replace partnerFullName with accountingSituation.partner.fullName
 - Accounting Batch: fix error during Reimbursement import
+- MANUF. ORDER : clear costsheetlist when create duplicate manufacture order
 
 ## [5.1.8] - 2019-09-26
 ## Features
