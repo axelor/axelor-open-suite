@@ -11,6 +11,7 @@
 - EbicsBank : Disable canEdit on language field in ebics-bank-form
 - SALE/PURCHASE ORDER : autofill same stocklocation in purchase order.
 - TIMESHEET : Generate TS lines for leaves and holidays automatically.
+- SALE/PURCHASE ORDER : autofill supplier in purchase order when 'directOrderLocation' is true.
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
