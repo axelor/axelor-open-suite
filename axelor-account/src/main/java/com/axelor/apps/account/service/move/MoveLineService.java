@@ -69,6 +69,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -972,13 +973,19 @@ public class MoveLineService {
 
   protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
-    for (MoveLine moveLine : moveLineLists.getLeft()) {
-      moveLine = moveLineRepository.find(moveLine.getId());
-    }
-    for (MoveLine moveLine : moveLineLists.getRight()) {
-      moveLine = moveLineRepository.find(moveLine.getId());
-    }
-    return moveLineLists;
+    List<MoveLine> fetchedDebitMoveLineList =
+        moveLineLists
+            .getLeft()
+            .stream()
+            .map(moveLine -> moveLineRepository.find(moveLine.getId()))
+            .collect(Collectors.toList());
+    List<MoveLine> fetchedCreditMoveLineList =
+        moveLineLists
+            .getRight()
+            .stream()
+            .map(moveLine -> moveLineRepository.find(moveLine.getId()))
+            .collect(Collectors.toList());
+    return Pair.of(fetchedDebitMoveLineList, fetchedCreditMoveLineList);
   }
 
   @Transactional

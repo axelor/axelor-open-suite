@@ -161,4 +161,6 @@ public interface TimesheetService {
   @Transactional
   public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
       throws AxelorException;
+
+  public void prefillLines(Timesheet timesheet) throws AxelorException;
 }

@@ -1,10 +1,22 @@
 # Changelog
 
 ## [Unreleased 5.1.9]
+## Features
+- ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
+- SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
+
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
+- BANK STATEMENT : improved bank statement line grid for 120 file format.
+- EbicsBank : Disable canEdit on language field in ebics-bank-form
+- SALE/PURCHASE ORDER : autofill same stocklocation in purchase order.
+- TIMESHEET : Generate TS lines for leaves and holidays automatically.
 
 ## Bug Fixes
+- Stock Move: fix WAP computation on customer returns.
+- Move Line: fix error when we reconcile multiple moves.
+- ACCOUNTING REPORT : balance reports are now faster to generate.
+- DEBT RECOVERY  : Replace partnerFullName with accountingSituation.partner.fullName
 - Accounting Batch: fix error during Reimbursement import
 
 ## [5.1.8] - 2019-09-26
@@ -249,6 +261,7 @@
 - Manuf Order: updating planned quantities correctly changes planned dates.
 - Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
 - EXPENSE : replace line break caracter per a space for move creation
+- MOVES TEMPLATE: Fixed NPE on move generation
 
 ## [5.1.7] - 2019-06-17
 ## Features
