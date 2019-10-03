@@ -14,6 +14,7 @@
 - SALE/PURCHASE ORDER : autofill supplier in purchase order when 'directOrderLocation' is true.
 - LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'
 - Message : Add status "In progress" when sending a message
+- INVOICE LINE MENU GRID : add the possibility to search on invoice date. 
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
