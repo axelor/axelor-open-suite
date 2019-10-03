@@ -13,6 +13,7 @@
 - TIMESHEET : Generate TS lines for leaves and holidays automatically.
 - SALE/PURCHASE ORDER : autofill supplier in purchase order when 'directOrderLocation' is true.
 - LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'
+- MOVE LINE EXPORT : special caracter removed
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
