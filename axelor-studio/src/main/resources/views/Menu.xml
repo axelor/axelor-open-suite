@@ -82,4 +82,13 @@
   		<context name="_fromStudio" expr="eval:true"/>
 	</action-view>
 	
+	<menuitem title="Actions" name="app-builder-config-actions" parent="app-builder-config" action="action.studio.meta.action.view" order="47"/>
+
+	<action-view name="action.studio.meta.action.view" title="Actions" model="com.axelor.meta.db.MetaAction">
+		<view type="grid" name="meta-action-grid"/>
+		<view type="form" name="meta-action-form"/>
+		<domain>self.isCustom = true</domain>
+		<context name="_fromStudio" expr="eval:true"/>
+	</action-view>
+
 </object-views>

@@ -223,7 +223,7 @@
 			<bind node="transactional" to="transactional" />
 			<bind node="scriptType" to="scriptType" />
 			<bind node="scriptText" to="scriptText" />
-			<bind node="emailTemplate" to="emailTemplate" search="self.name = :name AND (self.metaModel.name = :metaModel OR self.metaJsonModel.name = :metaJsonModel)" update="true">
+			<bind node="emailTemplate" to="emailTemplate" search="self.name = :name AND (self.metaModel.name = :metaModel OR self.metaJsonModel.name = :metaJsonModel)" update="true" if="_type == '4'">
 				<bind node="name" to="name"/>
 				<bind node="mediaTypeSelect" to="mediaTypeSelect"/>
 				<bind node="language" to="language" search="self.code = :language" create="false"/>
@@ -306,6 +306,19 @@
 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false" />
 		</bind>
 		
+		<bind node="studioMetaActions/studioMetaAction" type="com.axelor.meta.db.MetaAction" search="self.name = :name" update="true">
+			<bind node="name" to="name"/>
+			<bind node="priority" to="priority"/>
+			<bind node="sequence" to="sequence"/>
+			<bind node="type" to="type"/>
+			<bind node="xml" to="xml"/>
+			<bind node="model" to="model"/>
+			<bind node="module" to="module"/>
+			<bind node="home" to="home"/>
+			<bind node="isCustom" to="isCustom"/>
+			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>
+		</bind>
+
 		<bind node="menuBuilders/menuBuilder" type="com.axelor.studio.db.MenuBuilder" search="self.name = :name" call="com.axelor.studio.service.ImportService:importMenuBuilder"  update="true">
 			<bind node="name" to="name" />
 			<bind node="title" to="title" />
