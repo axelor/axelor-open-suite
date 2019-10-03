@@ -11,6 +11,9 @@
 - EbicsBank : Disable canEdit on language field in ebics-bank-form
 - SALE/PURCHASE ORDER : autofill same stocklocation in purchase order.
 - TIMESHEET : Generate TS lines for leaves and holidays automatically.
+- SALE/PURCHASE ORDER : autofill supplier in purchase order when 'directOrderLocation' is true.
+- LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'
+- Message : Add status "In progress" when sending a message
 - DEMO DATA : update demo data for account config and hr config
 
 ## Bug Fixes
@@ -20,6 +23,9 @@
 - DEBT RECOVERY  : Replace partnerFullName with accountingSituation.partner.fullName
 - Accounting Batch: fix error during Reimbursement import
 - MANUF. ORDER : clear costsheetlist when create duplicate manufacture order
+- SALEORDER/PURCHASE ORDER/INVOICE : removed the possibility to copy a line
+- Fix translations.
+- DEMO DATA : change tracking number config of the product classic server in order to avoid a bug when it's sale. 
 
 ## [5.1.8] - 2019-09-26
 ## Features
