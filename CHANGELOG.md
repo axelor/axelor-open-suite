@@ -11,7 +11,8 @@
 - EbicsBank : Disable canEdit on language field in ebics-bank-form
 - SALE/PURCHASE ORDER : autofill same stocklocation in purchase order.
 - TIMESHEET : Generate TS lines for leaves and holidays automatically.
-- LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'.
+- SALE/PURCHASE ORDER : autofill supplier in purchase order when 'directOrderLocation' is true.
+- LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
