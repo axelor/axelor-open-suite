@@ -16,6 +16,8 @@
 	
 	allActions = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.ActionBuilderRepository' as Class).all()
 	
+	allStudioMetaActions = com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaActionRepository' as Class).all()
+
 	allMenus = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.MenuBuilderRepository' as Class).all()
 	
 	allMenusParentMenu = com.axelor.inject.Beans.get('com.axelor.studio.db.repo.MenuBuilderRepository' as Class).all()
@@ -43,6 +45,8 @@
 		
 		allMenusParentMenu = allMenusParentMenu.filter('self.appBuilder.id in ?1 and self.parentMenu is not null',__ids__)
 		
+		allStudioMetaActions = allStudioMetaActions.filter('(self.appBuilder.id in ?1 OR self.appBuilder is null) AND self.isCustom = true',__ids__)
+
 		allWkfs = allWkfs.filter('self.appBuilder.id in ?1)',__ids__)
 	} else {
 		allSelections = allSelections.filter('self.isCustom = true')
@@ -50,6 +54,9 @@
 		allMenus = allMenus.filter('self.parentMenu is null')
 		
 		allMenusParentMenu = allMenusParentMenu.filter('self.parentMenu is not null')
+
+		allStudioMetaActions = allStudioMetaActions.filter('self.isCustom = true')
+
 	}
 	
 	apps = ""
@@ -247,6 +254,8 @@
 					\n\t\t\t\t\t<sequence>${view.sequence}</sequence>
 					\n\t\t\t\t</view>"""
 				}
+				emailTemplate = ""
+				if(action.emailTemplate != null){
 				
 				templateContextList = ""
 				action.emailTemplate?.templateContextList.each{
@@ -276,7 +285,7 @@
 					\n\t\t\t\t<isJson>${action.emailTemplate?.isJson}</isJson>
 					\n\t\t\t\t<metaJsonModel>${action.emailTemplate?.metaJsonModel?.name}</metaJsonModel>
 					\n\t\t\t\t<birtTemplate>${action.emailTemplate?.birtTemplate?.name}</birtTemplate>"""
-
+				}
 				actions += """\n\t\t<actionBuilder>
 				\n\t\t\t<name>${action.name}</name>
 				\n\t\t\t<typeSelect>${action.typeSelect}</typeSelect>
@@ -302,6 +311,24 @@
 				
 	})
 	
+	studioMetaActions = ""
+	allStudioMetaActions.fetch().each({
+		studioMetaAction ->
+					studioMetaActions += """\n\t\t<studioMetaAction>
+					\n\t\t\t<name>${studioMetaAction.name}</name>
+					\n\t\t\t<priority>${studioMetaAction.priority}</priority>
+					\n\t\t\t<sequence>${studioMetaAction.sequence}</sequence>
+					\n\t\t\t<type>${studioMetaAction.type}</type>
+					\n\t\t\t<xml>${studioMetaAction.xml}</xml>
+					\n\t\t\t<model>${studioMetaAction.model}</model>
+					\n\t\t\t<module>${studioMetaAction.module}</module>
+					\n\t\t\t<home>${studioMetaAction.home}</home>
+					\n\t\t\t<isCustom>${studioMetaAction.isCustom}</isCustom>
+					\n\t\t\t<appBuilder>${studioMetaAction.appBuilder?.code}</appBuilder>
+					\n\t\t</studioMetaAction>"""
+
+	})
+
 	menus = ""
 	allMenus.fetch().each({
 		menu ->	
@@ -516,6 +543,10 @@
 		$actions
 	</actionBuilders>
 	
+	<studioMetaActions>
+		$studioMetaActions
+	</studioMetaActions>
+
 	<dashboardBuilders>
 		$dashboards
 	</dashboardBuilders>

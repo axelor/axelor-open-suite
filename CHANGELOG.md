@@ -13,6 +13,7 @@
 - JSON-FIELD-FORM : add tracking in form fields
 - Studio : group by application on json model grid view.
 - Export studio app: email action - email template
+- Export Studio app: export actions created with meta-action-from
 
 ## Improvements
 - Remove Pack Feature from Product.
