@@ -23,6 +23,7 @@
 - Accounting Batch: fix error during Reimbursement import
 - MANUF. ORDER : clear costsheetlist when create duplicate manufacture order
 - SALEORDER/PURCHASE ORDER/INVOICE : removed the possibility to copy a line
+- Fix translations.
 
 ## [5.1.8] - 2019-09-26
 ## Features
