@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -69,7 +69,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           .testReportedDateField(batch.getAccountingBatch().getYear().getReportedBalanceDate());
     } catch (AxelorException e) {
       TraceBackService.trace(
-          new AxelorException(e, e.getCategory(), ""), IException.REPORTED_BALANCE, batch.getId());
+          new AxelorException(e, e.getCategory(), ""),
+          ExceptionOriginRepository.REPORTED_BALANCE,
+          batch.getId());
       incrementAnomaly();
       stop = true;
     }
