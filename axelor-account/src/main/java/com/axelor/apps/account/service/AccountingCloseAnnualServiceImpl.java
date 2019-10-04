@@ -170,8 +170,13 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
       return null;
     }
 
+    Integer functionalOriginSelect = null;
+
     if (isReverse) {
       balance = balance.negate();
+      functionalOriginSelect = MoveRepository.FUNCTIONAL_ORIGIN_OPENING;
+    } else {
+      functionalOriginSelect = MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE;
     }
 
     Move move =
@@ -186,7 +191,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             false,
             false,
             true);
-
+    move.setFunctionalOriginSelect(functionalOriginSelect);
     counter = 0;
 
     this.generateCloseAnnualMoveLine(
