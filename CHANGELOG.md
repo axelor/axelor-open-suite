@@ -183,6 +183,7 @@
 - BIRT TEMPLATE PARAMETER: new paratmeter "ReportType" is added.
 - ACCOUNTING REPORT : add ODS file formate in report export type
 - FORECAST RECAP : reset fields while creating duplicate record
+- EMPLOYEE : add emergency contact relationship
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
