@@ -27,6 +27,7 @@
       <date name="birthDate" title="Birth date" />
       <string name="maritalStatus" title="Marital status" selection="hr.employee.marital.status"/>
     <many-to-one name="cityOfBirth" title="City of birth" ref="com.axelor.apps.base.db.City"/>
+    <many-to-one name="citizenship" title="Citizenship" ref="com.axelor.apps.base.db.Citizenship"/>
     <many-to-one name="departmentOfBirth" title="Department of birth" ref="com.axelor.apps.base.db.Department" help="For foreign-born employees, please enter the code 99"/>
     <many-to-one name="countryOfBirth" title="Country of birth" ref="com.axelor.apps.base.db.Country"/>
     <string name="sexSelect" title="Sex" selection="employee.hr.sex.select"/>

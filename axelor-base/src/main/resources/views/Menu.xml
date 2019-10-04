@@ -475,6 +475,16 @@
       <view type="grid" name="economic-area-grid"/>
       <view type="form" name="economic-area-form"/>
     </action-view>
+    
+    <menuitem name="admin-root-organisation-territory-citizenship"
+      parent="admin-root-organisation-territory" title="Citizenship"
+      action="admin.root.organisation.territory.citizenship" />
+  
+    <action-view name="admin.root.organisation.territory.citizenship"
+      title="Citizenship" model="com.axelor.apps.base.db.Citizenship">
+      <view type="grid" name="citizenship-grid"/>
+      <view type="form" name="citizenship-form"/>
+    </action-view>
 
 	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Users/Companies" order="25" />
