@@ -181,6 +181,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
       invoice.setNote(saleOrder.getInvoiceComments());
+      invoice.setProformaComments(saleOrder.getProformaComments());
 
       if (invoice != null) {
         Set<StockMove> stockMoveSet = invoice.getStockMoveSet();

@@ -1105,7 +1105,7 @@
 	Invoice.subscription_to_date,
 	Invoice.amount_remaining,
 	Partner.invoice_comments,
-	Partner.proforma_comments
+	Invoice.proforma_comments
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
@@ -7404,8 +7404,8 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">(row._outer["note"] == null || row._outer["note"] == "") &amp;&amp;
-(row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "") &amp;&amp;
-(row._outer["proforma_comments"] == null || row._outer["proforma_comments"] == "")</expression>
+(row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "" || (row._outer["invoice_comments"] != null &amp;&amp; params["ReportType"].value == 1)) &amp;&amp;
+(row._outer["proforma_comments"] == null || row._outer["proforma_comments"] == "" || (row._outer["proforma_comments"] != null &amp;&amp; params["ReportType"].value != 1))</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -7453,7 +7453,7 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["note"] != null ) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>";</VALUE-OF>
 <VALUE-OF format="HTML">
-     if(row["status_select"] == 1 ) row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+     if(params["ReportType"].value == 1) row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
      else row["invoice_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
 </VALUE-OF>]]></text-property>
                                     </text>
@@ -8050,62 +8050,6 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["termsAndConditions"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-            </row>
-            <row id="5609">
-                <cell id="5610"/>
-                <cell id="5611"/>
-            </row>
-            <row id="5612">
-                <cell id="5613"/>
-                <cell id="5614"/>
-            </row>
-            <row id="5615">
-                <cell id="5616">
-                    <text id="5625">
-                        <property name="fontSize">13pt</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="color">#606062</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Invoice.note'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="5617"/>
-            </row>
-            <row id="5618">
-                <cell id="5619">
-                    <text id="5627">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["status_select"] == 1) {
-   row["proforma_comments"]
-} else {
-   row["invoice_comments"]
-}</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="5620"/>
             </row>
         </grid>
     </body>
