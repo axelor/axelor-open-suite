@@ -25,7 +25,7 @@ import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.team.db.TeamTask;
@@ -106,7 +106,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
             new Exception(
                 String.format(I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), teamTask.getId()),
                 e),
-            IException.INVOICE_ORIGIN,
+            ExceptionOriginRepository.INVOICE_ORIGIN,
             batch.getId());
       }
     }
@@ -139,7 +139,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
         }
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
       }
     }
     ProjectInvoicingAssistantBatchService.updateJsonObject(
