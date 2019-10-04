@@ -214,6 +214,8 @@
 
     <input file="meta_metaTranslation.csv" separator=";" type="com.axelor.meta.db.MetaTranslation"
       search="self.key = :key AND self.language = :language"/>
+      
+    <input file="base_citizenship.csv" separator=";" type="com.axelor.apps.base.db.Citizenship"/>
 
 </csv-inputs>
 
