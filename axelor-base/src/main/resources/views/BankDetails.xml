@@ -113,7 +113,7 @@
     </action-attrs>
     
      <action-attrs name="action-bank-details-attrs-specific-notes">
-        <attribute name="hidden" for="specificNotesPanel" expr="eval: !partner?.isFactor &amp;&amp; !__parent__.getContextClass().equals('Company')"/>
+        <attribute name="hidden" for="specificNotesPanel" expr="eval: !partner?.isFactor &amp;&amp; !__parent__?.getContextClass().equals('Company')"/>
     </action-attrs>
     
 
