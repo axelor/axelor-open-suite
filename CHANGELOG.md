@@ -261,5 +261,6 @@
 - Controller: Use Beans.get instead of Inject
 - PROJECT : Kanban view doesn't change status
 - Partner : Remove NPE and persistence exception on contact form  . 
+- BankDetails : Fix error when bank details form opens
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
