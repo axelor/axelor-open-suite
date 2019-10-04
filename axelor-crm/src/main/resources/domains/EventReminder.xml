@@ -29,10 +29,10 @@
 	  		public static final Integer MODE_AT_DATE = 2;
 	  		
 	  		// DURATION TYPE SELECT
-	  		public static final Integer DURATION_TYPE_MINUTES = 1;
-	  		public static final Integer DURATION_TYPE_HOURS = 2;
-	  		public static final Integer DURATION_TYPE_DAYS = 3;
-	  		public static final Integer DURATION_TYPE_WEEKS = 4;
+	  		public static final int DURATION_TYPE_MINUTES = 1;
+	  		public static final int DURATION_TYPE_HOURS = 2;
+	  		public static final int DURATION_TYPE_DAYS = 3;
+	  		public static final int DURATION_TYPE_WEEKS = 4;
 	   ]]>
 	 </extra-code>
     

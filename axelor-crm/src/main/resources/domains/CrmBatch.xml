@@ -22,7 +22,9 @@
   	
   	<extra-code><![CDATA[
 	
-	   	// ACTION TYPE
+	   	//ACTION SELECT
+	   	public static final int ACTION_BATCH_EVENT_REMINDER = 21;
+        public static final int ACTION_BATCH_TARGET = 22;
 		
 		public static final String CODE_BATCH_EVENT_REMINDER = "AX_EVENT_REMINDER";
 	]]></extra-code>

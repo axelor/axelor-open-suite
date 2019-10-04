@@ -198,6 +198,7 @@
 - PROJECT : remove unused action and method
 - QUALITY CONTROL : Add send email option when status is finished.
 - Timesheet : replace private method to protected in TimesheetServiceImpl.
+- Deleting deprecated interfaces
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

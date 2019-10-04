@@ -12,6 +12,15 @@
 	<string name="query" title="Query" required="true" large="true" multiline="true"/>
 	
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
+	
+	<extra-code><![CDATA[
+	
+	   	// TYPE	
+		public static final int TYPE_SQL = 1;
+        public static final int TYPE_JPQL = 2;
+        public static final int TYPE_FILTER = 3;
+
+	]]></extra-code>
   
   </entity>
 
