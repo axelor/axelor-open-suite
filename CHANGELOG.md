@@ -200,6 +200,7 @@
 - Timesheet : replace private method to protected in TimesheetServiceImpl.
 - Deleting deprecated interfaces
 - EMPLOYEE : add emergency contact relationship
+- INVOICE PAYMENT : additionnal informations
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -264,3 +265,4 @@
 - BankDetails : Fix error when bank details form opens
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
+
