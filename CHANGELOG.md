@@ -26,6 +26,8 @@
 - SALEORDER/PURCHASE ORDER/INVOICE : removed the possibility to copy a line
 - Fix translations.
 - DEMO DATA : change tracking number config of the product classic server in order to avoid a bug when it's sale. 
+- INVOICE : Fix NPE on mass payment on supplier Invoice
+
 
 ## [5.1.8] - 2019-09-26
 ## Features
