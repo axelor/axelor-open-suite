@@ -36,6 +36,7 @@
       <string name="phoneAtCustomer" title="Phone at the customer"/>
       <string name="emergencyContact" title="Emergency contact"/>
       <string name="emergencyNumber" title="Phone"/>
+      <string name="emergencyContactRelationship" title="Emergency contact relationship"/>
       <date name="dateOfHire" title="Date of hire" />
       <date name="seniorityDate" title="Seniority date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
