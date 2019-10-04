@@ -1,0 +1,2 @@
+"active";"name";"job";"cron";"batchServiceSelect";"batchCode"
+"true";"Update Customer Account on every day at 1 am ";"com.axelor.apps.base.job.BatchJob";"0 0 1 ? * * *";"com.axelor.apps.account.service.batch.AccountingBatchService";"AX_UPDATE"

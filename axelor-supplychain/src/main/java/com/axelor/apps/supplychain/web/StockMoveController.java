@@ -27,7 +27,6 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -74,8 +73,8 @@ public class StockMoveController {
       }
       Beans.get(StockMoveServiceSupplychain.class).verifyProductStock(stockMove);
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-      response.setReload(true);
+      TraceBackService.trace(response, e);
+      response.setValue("availabilityRequest", false);
     }
   }
 

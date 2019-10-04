@@ -524,6 +524,7 @@
         <action name="action-stock-move-attrs-typeselect-change"/>
         <action name="action-stock-move-generate-invoice-button"/>
         <action name="action-stock-move-hide-reserved-qty"/>
+        <action name="action-stock-move-attrs-hide-avg-price"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
     </action-group>
@@ -624,6 +625,10 @@
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
+
+    <action-attrs name="action-stock-move-attrs-hide-avg-price">
+        <attribute name="hidden" for="stockMoveLineList.wapPrice" expr="eval: typeSelect != 3 || !isReversion || !reversionOriginStockMove"/>
+    </action-attrs>
 	
     <action-method name="action-stock-move-method-draft" model="com.axelor.apps.stock.db.StockMove">
     	<call class="com.axelor.apps.stock.web.StockMoveController" method="draft"/>
