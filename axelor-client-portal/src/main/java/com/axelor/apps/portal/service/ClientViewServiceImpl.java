@@ -120,7 +120,10 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   protected String getLastOrderIndicator(User user) {
     SaleOrder saleOrder = saleOrderRepo.all().filter(getLastOrderOfUser(user)).fetchOne();
-    return saleOrder != null
+    if (saleOrder == null) {
+      return I18n.get(CLIENT_PORTAL_NO_DATE);
+    }
+    return saleOrder.getConfirmationDateTime() != null
         ? saleOrder.getConfirmationDateTime().format(DATE_FORMATTER)
         : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
@@ -128,14 +131,20 @@ public class ClientViewServiceImpl implements ClientViewService {
   /* StockMove Indicators */
   protected String getLastDeliveryIndicator(User user) {
     StockMove stockMove = stockMoveRepo.all().filter(getLastDeliveryOfUser(user)).fetchOne();
-    return stockMove != null
+    if (stockMove == null) {
+      return I18n.get(CLIENT_PORTAL_NO_DATE);
+    }
+    return stockMove.getRealDate() != null
         ? stockMove.getRealDate().format(DATE_FORMATTER)
         : I18n.get(CLIENT_PORTAL_NO_DATE);
   }
 
   protected String getNextDeliveryIndicator(User user) {
     StockMove stockMove = stockMoveRepo.all().filter(getNextDeliveryOfUser(user)).fetchOne();
-    return stockMove != null
+    if (stockMove == null) {
+      return I18n.get(CLIENT_PORTAL_NO_DATE);
+    }
+    return stockMove.getEstimatedDate() != null
         ? stockMove.getEstimatedDate().format(DATE_FORMATTER)
         : I18n.get(CLIENT_PORTAL_NO_DATE);
   }

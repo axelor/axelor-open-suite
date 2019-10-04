@@ -134,19 +134,30 @@
 	    <![CDATA[
           
           SELECT
-             COUNT(*) as customers
+             COUNT(*) as customers,
+             ' ' as title
           FROM
              Partner self                          
           WHERE
-             self.isCustomer = true
-             AND DATE(self.createdOn) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+             self.isCustomer = true             
              AND EXISTS (
                  FROM
                    SaleOrder so
                  WHERE
                    so.clientPartner = self
-                   AND (so.statusSelect = 3 OR so.statusSelect = 4 ))         
-                       		
+                   AND so.confirmationDateTime IS NOT NULL
+                   AND DATE(so.confirmationDateTime) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+                   AND (so.statusSelect = 3 OR so.statusSelect = 4)
+                   AND NOT EXISTS(
+                       FROM
+                          SaleOrder so2
+                       WHERE
+                          so2.clientPartner = self
+                          AND so2.confirmationDateTime IS NOT NULL
+                          AND so2 != so
+                          AND so2.confirmationDateTime < so.confirmationDateTime
+                          AND (so2.statusSelect = 3 OR so2.statusSelect = 4)))
+                             		
 		]]>
 	   </dataset>
 	   <category key="title" type="text" />

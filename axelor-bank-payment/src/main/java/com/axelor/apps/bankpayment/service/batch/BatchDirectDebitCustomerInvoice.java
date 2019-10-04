@@ -31,7 +31,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Function;
@@ -109,7 +109,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
             Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
         findBatch().setBankOrder(bankOrder);
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.DIRECT_DEBIT, batch.getId());
         LOG.error(e.getMessage());
       }
     }
@@ -169,7 +169,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
           incrementAnomaly();
           anomalyList.add(invoice.getId());
           query.bind("anomalyList", anomalyList);
-          TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.DIRECT_DEBIT, batch.getId());
           LOG.error(e.getMessage());
           break;
         }

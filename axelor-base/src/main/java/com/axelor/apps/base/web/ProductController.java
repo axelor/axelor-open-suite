@@ -36,7 +36,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -48,17 +47,13 @@ public class ProductController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private ProductService productService;
-
-  @Inject private ProductRepository productRepo;
-
   public void generateProductVariants(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Product product = request.getContext().asType(Product.class);
-    product = productRepo.find(product.getId());
+    product = Beans.get(ProductRepository.class).find(product.getId());
 
     if (product.getProductVariantConfig() != null) {
-      productService.generateProductVariants(product);
+      Beans.get(ProductService.class).generateProductVariants(product);
 
       response.setFlash(I18n.get(IExceptionMessage.PRODUCT_1));
       response.setReload(true);
@@ -69,9 +64,9 @@ public class ProductController {
       throws AxelorException {
     Product product = request.getContext().asType(Product.class);
 
-    product = productRepo.find(product.getId());
+    product = Beans.get(ProductRepository.class).find(product.getId());
 
-    productService.updateProductPrice(product);
+    Beans.get(ProductService.class).updateProductPrice(product);
 
     response.setFlash(I18n.get(IExceptionMessage.PRODUCT_2));
     response.setReload(true);

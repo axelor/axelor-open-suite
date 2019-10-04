@@ -28,15 +28,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class MailBatchController {
-
-  @Inject MailBatchService mailBatchService;
-
-  @Inject MailBatchRepository mailBatchRepo;
 
   public void remindTimesheet(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -45,7 +40,9 @@ public class MailBatchController {
 
     Batch batch = null;
 
-    batch = mailBatchService.remindMail(mailBatchRepo.find(mailBatch.getId()));
+    batch =
+        Beans.get(MailBatchService.class)
+            .remindMail(Beans.get(MailBatchRepository.class).find(mailBatch.getId()));
 
     if (batch != null) response.setFlash(batch.getComments());
     response.setReload(true);
@@ -59,7 +56,7 @@ public class MailBatchController {
             .findByCode(MailBatchRepository.CODE_BATCH_EMAIL_TIME_SHEET);
     if (mailBatch != null) {
       Batch batch = null;
-      batch = mailBatchService.remindMail(mailBatch);
+      batch = Beans.get(MailBatchService.class).remindMail(mailBatch);
 
       if (batch != null) response.setFlash(batch.getComments());
       response.setReload(true);

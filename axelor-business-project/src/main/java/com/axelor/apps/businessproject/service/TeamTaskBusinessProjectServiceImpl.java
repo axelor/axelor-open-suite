@@ -20,12 +20,16 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectCategory;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.TeamTaskProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -34,6 +38,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -215,6 +220,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
             invoiceLine.setProject(teamTask.getProject());
+            invoiceLine.setSaleOrderLine(teamTask.getSaleOrderLine());
             teamTask.setInvoiceLine(invoiceLine);
 
             List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
@@ -248,5 +254,78 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     nextTeamTask.setInvoicingType(teamTask.getInvoicingType());
     nextTeamTask.setTeamTaskInvoicing(teamTask.getTeamTaskInvoicing());
     nextTeamTask.setCustomerReferral(teamTask.getCustomerReferral());
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Override
+  public TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject) {
+
+    switch (teamTask.getProject().getInvoicingSequenceSelect()) {
+      case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
+        teamTask.setToInvoice(
+            appBusinessProject.getPreTaskStatusSet() != null
+                && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
+        if (teamTask.getToInvoice()) {
+          teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+        }
+        break;
+
+      case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
+        teamTask.setToInvoice(
+            appBusinessProject.getPostTaskStatusSet() != null
+                && appBusinessProject.getPostTaskStatusSet().contains(teamTask.getStatus()));
+        break;
+    }
+
+    if (teamTask.getToInvoice()) {
+      teamTask = computeDefaultInformation(teamTask);
+      teamTask = teamTaskRepo.save(teamTask);
+    }
+    return teamTask;
+  }
+
+  @Override
+  public TeamTask computeDefaultInformation(TeamTask teamTask) {
+
+    ProjectCategory projectCategory = teamTask.getProjectCategory();
+    if (projectCategory == null) {
+      return teamTask;
+    }
+
+    teamTask.setInvoicingType(
+        teamTask.getInvoicingType() == 0
+            ? projectCategory.getDefaultInvoicingType()
+            : teamTask.getInvoicingType());
+
+    if (teamTask.getProduct() == null) {
+      teamTask.setProduct(projectCategory.getDefaultProduct());
+    }
+
+    Product product = teamTask.getProduct();
+    if (product == null) {
+      return teamTask;
+    }
+
+    if (teamTask.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
+      teamTask.setQuantity(BigDecimal.ONE);
+    }
+    if (teamTask.getUnit() == null) {
+      teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
+    }
+    if (teamTask.getUnitPrice().compareTo(BigDecimal.ZERO) == 0) {
+      teamTask.setUnitPrice(product.getSalePrice());
+    }
+
+    Project project = teamTask.getProject();
+    if (teamTask.getCurrency() == null) {
+      teamTask.setCurrency(
+          project.getCurrency() == null
+              ? project.getClientPartner().getCurrency() == null
+                  ? project.getCompany().getCurrency()
+                  : project.getClientPartner().getCurrency()
+              : project.getCurrency());
+    }
+    teamTask = this.compute(teamTask);
+    return teamTask;
   }
 }

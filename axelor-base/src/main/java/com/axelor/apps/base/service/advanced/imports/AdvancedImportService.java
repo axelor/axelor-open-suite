@@ -30,4 +30,6 @@ public interface AdvancedImportService {
 
   public int getTabConfigRowCount(
       String sheet, DataReaderService reader, int totalLines, String[] objectRow);
+
+  public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException;
 }

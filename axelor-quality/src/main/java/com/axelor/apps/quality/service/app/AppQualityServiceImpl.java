@@ -15,17 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.db;
+package com.axelor.apps.quality.service.app;
 
-/** Interface of Imports package. Enum all static variable of packages. */
-@Deprecated
-public interface IImports {
+import com.axelor.apps.base.db.AppQuality;
+import com.axelor.apps.base.db.repo.AppQualityRepository;
+import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.google.inject.Inject;
 
-  /** Static select in Import */
+public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
 
-  // IMPORT TYPE
-  static final String CSV = "csv";
+  private AppQualityRepository appQualityRepo;
 
-  static final String XML = "xml";
-  static final String BDD = "bdd";
+  @Inject
+  public AppQualityServiceImpl(AppQualityRepository appQualityRepo) {
+    this.appQualityRepo = appQualityRepo;
+  }
+
+  @Override
+  public AppQuality getAppQuality() {
+    return appQualityRepo.all().fetchOne();
+  }
 }

@@ -113,4 +113,13 @@ public interface LeaveService {
    * @return
    */
   public boolean isLeaveDay(User user, LocalDate date);
+
+  /**
+   * Gets the leave for the given user for the given date.
+   *
+   * @param user
+   * @param date
+   * @return
+   */
+  public LeaveRequest getLeave(User user, LocalDate date);
 }

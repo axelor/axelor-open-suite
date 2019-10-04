@@ -26,31 +26,23 @@ import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
 public class MrpController {
 
-  @Inject protected Provider<MrpService> mrpServiceProvider;
-
-  @Inject protected Provider<MrpRepository> mrpRepositoryProvider;
-
   public void runCalculation(ActionRequest request, ActionResponse response) {
 
     Mrp mrp = request.getContext().asType(Mrp.class);
-    MrpService mrpService = mrpServiceProvider.get();
-    MrpRepository mrpRepository = mrpRepositoryProvider.get();
     try {
-
-      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+      Beans.get(MrpService.class).runCalculation(Beans.get(MrpRepository.class).find(mrp.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      mrpService.reset(mrpRepository.find(mrp.getId()));
+      Beans.get(MrpService.class).reset(Beans.get(MrpRepository.class).find(mrp.getId()));
     } finally {
       response.setReload(true);
     }
@@ -61,13 +53,12 @@ public class MrpController {
     try {
 
       int id = (int) request.getContext().get("_id");
-      MrpService mrpService = mrpServiceProvider.get();
-      MrpRepository mrpRepository = mrpRepositoryProvider.get();
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
-      mrpService.generateProposals(
-          mrpRepository.find(Long.valueOf(id)),
-          isProposalsPerSupplier == null ? false : isProposalsPerSupplier);
+      Beans.get(MrpService.class)
+          .generateProposals(
+              Beans.get(MrpRepository.class).find(Long.valueOf(id)),
+              isProposalsPerSupplier == null ? false : isProposalsPerSupplier);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     } finally {
@@ -83,9 +74,7 @@ public class MrpController {
    */
   public void printWeeks(ActionRequest request, ActionResponse response) {
     Mrp mrp = request.getContext().asType(Mrp.class);
-    MrpService mrpService = mrpServiceProvider.get();
-    MrpRepository mrpRepository = mrpRepositoryProvider.get();
-    mrp = mrpRepository.find(mrp.getId());
+    mrp = Beans.get(MrpRepository.class).find(mrp.getId());
     String name = I18n.get("MRP") + "-" + mrp.getId();
 
     try {
@@ -93,7 +82,9 @@ public class MrpController {
           ReportFactory.createReport(IReport.MRP_WEEKS, name)
               .addParam("mrpId", mrp.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam("endDate", mrpService.findMrpEndDate(mrp).atStartOfDay().toString())
+              .addParam(
+                  "endDate",
+                  Beans.get(MrpService.class).findMrpEndDate(mrp).atStartOfDay().toString())
               .addFormat(ReportSettings.FORMAT_PDF)
               .generate()
               .getFileLink();

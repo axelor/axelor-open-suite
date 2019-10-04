@@ -27,24 +27,20 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TimetableController {
 
-  @Inject protected TimetableService timetableService;
-
-  @Inject protected TimetableRepository timeTableRepo;
-
   public void generateInvoice(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Timetable timetable = request.getContext().asType(Timetable.class);
-    timetable = timeTableRepo.find(timetable.getId());
+    timetable = Beans.get(TimetableRepository.class).find(timetable.getId());
 
     Context parentContext = request.getContext().getParent();
     if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
@@ -60,7 +56,7 @@ public class TimetableController {
       return;
     }
 
-    Invoice invoice = timetableService.generateInvoice(timetable);
+    Invoice invoice = Beans.get(TimetableService.class).generateInvoice(timetable);
     response.setReload(true);
     response.setView(
         ActionView.define(I18n.get("Invoice generated"))
@@ -89,7 +85,7 @@ public class TimetableController {
 
     if (product != null) {
       try {
-        timetableService.computeProductInformation(timetable);
+        Beans.get(TimetableService.class).computeProductInformation(timetable);
 
         response.setValue("productName", timetable.getProductName());
         response.setValue("unit", timetable.getUnit());

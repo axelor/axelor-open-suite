@@ -34,7 +34,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -91,7 +91,9 @@ public class BatchReimbursementExport extends BatchStrategy {
           reimbursementExportService.testCompanyField(company);
         } catch (AxelorException e) {
           TraceBackService.trace(
-              new AxelorException(e, e.getCategory(), ""), IException.REIMBURSEMENT, batch.getId());
+              new AxelorException(e, e.getCategory(), ""),
+              ExceptionOriginRepository.REIMBURSEMENT,
+              batch.getId());
           incrementAnomaly();
           stop = true;
         }
@@ -104,7 +106,9 @@ public class BatchReimbursementExport extends BatchStrategy {
           cfonbExportService.testCompanyExportCFONBField(company);
         } catch (AxelorException e) {
           TraceBackService.trace(
-              new AxelorException(e, e.getCategory(), ""), IException.REIMBURSEMENT, batch.getId());
+              new AxelorException(e, e.getCategory(), ""),
+              ExceptionOriginRepository.REIMBURSEMENT,
+              batch.getId());
           incrementAnomaly();
           stop = true;
         }
@@ -116,7 +120,7 @@ public class BatchReimbursementExport extends BatchStrategy {
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
                 I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1),
                 batch.getAccountingBatch().getActionSelect()),
-            IException.REIMBURSEMENT,
+            ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
         incrementAnomaly();
         stop = true;
@@ -224,7 +228,7 @@ public class BatchReimbursementExport extends BatchStrategy {
                 e.getCategory(),
                 I18n.get("Partner") + "%s",
                 partnerRepository.find(partner.getId()).getName()),
-            IException.REIMBURSEMENT,
+            ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
 
         incrementAnomaly();
@@ -236,7 +240,7 @@ public class BatchReimbursementExport extends BatchStrategy {
                 String.format(
                     I18n.get("Partner") + "%s", partnerRepository.find(partner.getId()).getName()),
                 e),
-            IException.REIMBURSEMENT,
+            ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
 
         incrementAnomaly();
@@ -309,7 +313,7 @@ public class BatchReimbursementExport extends BatchStrategy {
                 e.getCategory(),
                 I18n.get("Reimbursement") + " %s",
                 reimbursementRepo.find(reimbursement.getId()).getRef()),
-            IException.REIMBURSEMENT,
+            ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
 
         incrementAnomaly();
@@ -322,7 +326,7 @@ public class BatchReimbursementExport extends BatchStrategy {
                     I18n.get("Reimbursement") + " %s",
                     reimbursementRepo.find(reimbursement.getId()).getRef()),
                 e),
-            IException.REIMBURSEMENT,
+            ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
 
         incrementAnomaly();
@@ -369,7 +373,7 @@ public class BatchReimbursementExport extends BatchStrategy {
         TraceBackService.trace(
             new Exception(
                 String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e),
-            IException.REIMBURSEMENT,
+            ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
 
         incrementAnomaly();

@@ -90,6 +90,8 @@
 	<string name="specificPackage" title="Specific package" large="true" multiline="true"/>
 	
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
+	<boolean name="advancePaymentNeeded" title="Advance payment needed"/>
+	<decimal name="advancePaymentAmount" title="Advance payment amount"/>
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
@@ -120,6 +122,10 @@
 
 	<string name="invoiceComments" title="Description to display on invoice" large="true"/>
 	<string name="deliveryComments" title="Description to display on delivery" large="true"/>
+	<string name="pickingOrderComments" title="Description to display on picking order" large="true"/>
+	
+	<string name="proformaComments" title="Description to display on proforma" large="true"/>
+	
  	<unique-constraint columns="saleOrderSeq,company"/>
 
     <extra-code>

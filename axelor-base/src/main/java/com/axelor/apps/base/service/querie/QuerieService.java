@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.service.querie;
 
-import com.axelor.apps.base.db.IQuerie;
 import com.axelor.apps.base.db.Querie;
+import com.axelor.apps.base.db.repo.QuerieRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -62,9 +62,9 @@ public class QuerieService {
 
     Class<?> klass = this.getClass(querie.getMetaModel());
     try {
-      if (requestType == IQuerie.QUERY_SELECT_SQL) {
+      if (requestType == QuerieRepository.TYPE_SQL) {
         result = this.runSqlRequest(filter);
-      } else if (requestType == IQuerie.QUERY_SELECT_JPQL) {
+      } else if (requestType == QuerieRepository.TYPE_JPQL) {
         result = this.runJpqlRequest(filter, klass);
       }
     } catch (Exception e) {

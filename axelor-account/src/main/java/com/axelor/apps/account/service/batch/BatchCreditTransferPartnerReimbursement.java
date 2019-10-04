@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -80,7 +80,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
         }
       } catch (Exception ex) {
         incrementAnomaly();
-        TraceBackService.trace(ex, IException.CREDIT_TRANSFER, batch.getId());
+        TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
         ex.printStackTrace();
         log.error(
             String.format(

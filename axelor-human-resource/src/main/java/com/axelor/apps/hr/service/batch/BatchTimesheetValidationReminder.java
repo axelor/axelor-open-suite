@@ -32,7 +32,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -108,7 +108,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.REMINDER, batch.getId());
+        TraceBackService.trace(new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
       }
     }
   }
@@ -150,7 +150,8 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.INVOICE_ORIGIN, batch.getId());
+        TraceBackService.trace(
+            new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
       }
     }
   }
@@ -171,7 +172,7 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.REMINDER, batch.getId());
+        TraceBackService.trace(new Exception(e), ExceptionOriginRepository.REMINDER, batch.getId());
       }
     }
   }
@@ -202,7 +203,8 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
-        TraceBackService.trace(new Exception(e), IException.INVOICE_ORIGIN, batch.getId());
+        TraceBackService.trace(
+            new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
       }
     }
   }

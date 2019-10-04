@@ -26,13 +26,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
 public class UserController {
-
-  @Inject UserServiceAccountImpl userServiceAccountImpl;
 
   @SuppressWarnings("unchecked")
   public void changePfpValidator(ActionRequest request, ActionResponse response) {
@@ -50,7 +47,8 @@ public class UserController {
     User pfpValidatorUser = userRepository.find(pfpValidatorUserId.longValue());
 
     int updateCount =
-        userServiceAccountImpl.changePfpValidator(pfpValidatorUser, newPfpValidatorUser);
+        Beans.get(UserServiceAccountImpl.class)
+            .changePfpValidator(pfpValidatorUser, newPfpValidatorUser);
     if (updateCount >= 1) {
       response.setFlash(I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_UPDATED));
       response.setCanClose(true);

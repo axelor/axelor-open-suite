@@ -40,7 +40,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -175,8 +174,9 @@ public class PartnerServiceImpl implements PartnerService {
     Address address = partner.getMainAddress();
 
     if (!partner.getIsContact() && !partner.getIsEmployee()) {
-      partner.setMainAddress(checkDefaultAddress(partner));
-
+      if (partner.getPartnerAddressList() != null) {
+        partner.setMainAddress(checkDefaultAddress(partner));
+      }
     } else if (address == null) {
       partner.removePartnerAddressListItem(
           JPA.all(PartnerAddress.class)
@@ -184,11 +184,12 @@ public class PartnerServiceImpl implements PartnerService {
               .bind("partnerId", partner.getId())
               .fetchOne());
 
-    } else if (partner
-        .getPartnerAddressList()
-        .stream()
-        .map(PartnerAddress::getAddress)
-        .noneMatch(address::equals)) {
+    } else if (partner.getPartnerAddressList() != null
+        && partner
+            .getPartnerAddressList()
+            .stream()
+            .map(PartnerAddress::getAddress)
+            .noneMatch(address::equals)) {
       PartnerAddress mainAddress = new PartnerAddress();
       mainAddress.setAddress(address);
       mainAddress.setIsDefaultAddr(true);
@@ -247,7 +248,6 @@ public class PartnerServiceImpl implements PartnerService {
     partner.setFullName(this.computeFullName(partner));
   }
 
-  @CallMethod
   @Override
   public String computeFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
@@ -256,7 +256,6 @@ public class PartnerServiceImpl implements PartnerService {
     return computeSimpleFullName(partner);
   }
 
-  @CallMethod
   @Override
   public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
@@ -453,7 +452,6 @@ public class PartnerServiceImpl implements PartnerService {
     return null;
   }
 
-  @CallMethod
   @Override
   public Address getInvoicingAddress(Partner partner) {
 
@@ -463,7 +461,6 @@ public class PartnerServiceImpl implements PartnerService {
         "self.partner.id = ?1 AND self.isInvoicingAddr = true");
   }
 
-  @CallMethod
   @Override
   public Address getDeliveryAddress(Partner partner) {
 

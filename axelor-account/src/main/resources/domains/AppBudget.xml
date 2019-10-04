@@ -12,7 +12,6 @@
 		<track>
 			<field name="checkAvailableBudget" on="UPDATE"/>
 			<field name="manageMultiBudget" on="UPDATE"/>
-			<field name="budgetStatusSelect" on="UPDATE"/>
 		</track>
 	</entity>
 </domain-models>

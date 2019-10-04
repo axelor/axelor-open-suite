@@ -84,7 +84,7 @@
 		<field name="emailAddress.address" placeholder="whatever@example.com"
 		  title="Email"/>
 		<field name="mainPartner.simpleFullName" title="Main company"/>
-		<field name="jobTitle"/>
+		<field name="jobTitleFunction"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm"  if="__config__.app.isApp('crm')"/>
 	</grid>
@@ -303,6 +303,9 @@
 				<panel name="invoiceCommentsPanel" title="Description to display on invoice" colSpan="12">
 				  <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
+				<panel name="descriptionToDisplayOnProformaPanel" title="Description to display on proforma" colSpan="12">
+				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
 			</panel>
 			<panel-related name="accountingSituationListPanel" if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
@@ -358,6 +361,9 @@
                 <panel name="deliveryCommentsPanel" title="Description to display on delivery" colSpan="12">
                   <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
                 </panel>
+                <panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+                  <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+	            </panel>
             </panel>
         </panel-tabs>
         <panel name="partnerAttrsPanel">
@@ -481,7 +487,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactDetailsPanel" title="Contact details">
-				<field name="jobTitle"/>
+				<field name="jobTitleFunction"/>
 				<field name="reportsTo" domain="self.isContact = true"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
@@ -664,7 +670,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactDetailsPanel" title="Contact details">
-				<field name="jobTitle"/>
+				<field name="jobTitleFunction"/>
 				<field name="reportsTo" domain="self.isContact = true"/>
 				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
@@ -863,6 +869,7 @@
 		<field name="team"  expr="#{_parent.team}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="companySet" expr="eval: __repo__(Company).all().fetchOne()" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 	</action-record>
 
 	<action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">
@@ -931,11 +938,6 @@
     <action-method name="action-partner-method-show-on-map">
         <call class="com.axelor.apps.base.web.PartnerController" method="showPartnerOnMap"/>
     </action-method>
-
-	<action-view name="action-partner-view-search-profile" title="Search Profile" model="com.axelor.apps.network.db.SnSearch">
-		<view type="form" name="sn-search-form"/>
-		<context name="_idPartner" expr="eval: id"/>
-	</action-view>
 
 	<action-view name="action-contact-partner-dashlet" title="Partners"  model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>

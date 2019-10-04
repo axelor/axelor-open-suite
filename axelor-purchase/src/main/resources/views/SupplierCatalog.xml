@@ -38,7 +38,7 @@
 		<panel name="descriptionPanel" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
-		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
+		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping-coef-grid"/>
     </form>
 
 	<form name="supplier-catalog-partner-form" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog"
@@ -55,7 +55,7 @@
 		<panel name="descriptionPanel" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
-		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
+		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping-coef-grid"/>
 	</form>
 
     <action-attrs name="action-supplier-catalog-attrs-init">

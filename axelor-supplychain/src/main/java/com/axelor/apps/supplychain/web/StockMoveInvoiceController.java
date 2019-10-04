@@ -40,7 +40,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,8 +50,6 @@ import java.util.Optional;
 
 @Singleton
 public class StockMoveInvoiceController {
-
-  @Inject private StockMoveInvoiceService stockMoveInvoiceService;
 
   @SuppressWarnings("unchecked")
   public void generateInvoice(ActionRequest request, ActionResponse response) {
@@ -497,7 +494,7 @@ public class StockMoveInvoiceController {
         response.setValue("operationSelect", StockMoveRepository.INVOICE_PARTILLY);
       }
       List<Map<String, Object>> stockMoveLines =
-          stockMoveInvoiceService.getStockMoveLinesToInvoice(stockMove);
+          Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
       response.setValue("$stockMoveLines", stockMoveLines);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -509,7 +506,7 @@ public class StockMoveInvoiceController {
       response.setReload(true);
       StockMove stockMove = request.getContext().asType(StockMove.class);
       List<Map<String, Object>> stockMoveLines =
-          stockMoveInvoiceService.getStockMoveLinesToInvoice(stockMove);
+          Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
 
       if (stockMoveLines.size() > 0) {
         response.setView(

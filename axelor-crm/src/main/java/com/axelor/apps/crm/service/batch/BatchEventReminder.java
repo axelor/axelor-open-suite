@@ -20,7 +20,6 @@ package com.axelor.apps.crm.service.batch;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.EventReminder;
-import com.axelor.apps.crm.db.IEventReminder;
 import com.axelor.apps.crm.db.repo.EventReminderRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
@@ -33,7 +32,7 @@ import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -104,7 +103,7 @@ public class BatchEventReminder extends BatchStrategy {
                       I18n.get(IExceptionMessage.BATCH_EVENT_REMINDER_1),
                       eventReminderRepo.find(eventReminder.getId()).getEvent().getSubject()),
                   e),
-              IException.CRM,
+              ExceptionOriginRepository.CRM,
               batch.getId());
 
           incrementAnomaly();
@@ -134,28 +133,28 @@ public class BatchEventReminder extends BatchStrategy {
     } else { // defaults to EventReminderRepository.MODE_BEFORE_DATE
       int durationTypeSelect = eventReminder.getDurationTypeSelect();
       switch (durationTypeSelect) {
-        case IEventReminder.DURATION_MINUTES:
+        case EventReminderRepository.DURATION_TYPE_MINUTES:
           if ((startDateTime.minusMinutes(eventReminder.getDuration()))
               .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
             return true;
           }
           break;
 
-        case IEventReminder.DURATION_HOURS:
+        case EventReminderRepository.DURATION_TYPE_HOURS:
           if ((startDateTime.minusHours(eventReminder.getDuration()))
               .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
             return true;
           }
           break;
 
-        case IEventReminder.DURATION_DAYS:
+        case EventReminderRepository.DURATION_TYPE_DAYS:
           if ((startDateTime.minusDays(eventReminder.getDuration()))
               .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
             return true;
           }
           break;
 
-        case IEventReminder.DURATION_WEEKS:
+        case EventReminderRepository.DURATION_TYPE_WEEKS:
           if ((startDateTime.minusWeeks(eventReminder.getDuration()))
               .isBefore(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime())) {
             return true;
@@ -229,7 +228,7 @@ public class BatchEventReminder extends BatchStrategy {
                       I18n.get("Event") + " %s",
                       eventRepo.find(eventReminder.getEvent().getId()).getSubject()),
                   e),
-              IException.CRM,
+              ExceptionOriginRepository.CRM,
               batch.getId());
 
           incrementAnomaly();

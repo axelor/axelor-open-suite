@@ -18,19 +18,17 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AppSupplychainController {
 
-  @Inject private AppSupplychainService appSupplychainService;
-
   public void generateSupplychainConfigurations(ActionRequest request, ActionResponse response) {
 
-    appSupplychainService.generateSupplychainConfigurations();
+    Beans.get(AppSupplychainService.class).generateSupplychainConfigurations();
 
     response.setReload(true);
   }

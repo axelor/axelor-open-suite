@@ -24,13 +24,10 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class CalendarConfigurationController {
-
-  @Inject private CalendarConfigurationService calendarConfigurationService;
 
   public void createAction(ActionRequest request, ActionResponse response) {
     try {
@@ -39,7 +36,7 @@ public class CalendarConfigurationController {
       calendarConfiguration =
           Beans.get(CalendarConfigurationRepository.class).find(calendarConfiguration.getId());
 
-      calendarConfigurationService.createEntryMenu(calendarConfiguration);
+      Beans.get(CalendarConfigurationService.class).createEntryMenu(calendarConfiguration);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -53,7 +50,7 @@ public class CalendarConfigurationController {
       calendarConfiguration =
           Beans.get(CalendarConfigurationRepository.class).find(calendarConfiguration.getId());
 
-      calendarConfigurationService.deleteEntryMenu(calendarConfiguration);
+      Beans.get(CalendarConfigurationService.class).deleteEntryMenu(calendarConfiguration);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -14,7 +14,7 @@
     <integer name="titleSelect" title="Civility" selection="partner.title.type.select" massUpdate="true"/>
     <string name="name" title="Name/Company Name" required="true" index="false"/>
     <string name="firstName" title="First Name"/>
-    <string name="jobTitle" title="Function"/>
+    <many-to-one name="jobTitleFunction" title="Function" ref="com.axelor.apps.base.db.Function"/>
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" index="false"/>
     <boolean name="isCustomer" title="Customer"/>
     <boolean name="isProspect" title="Prospect"/>
@@ -89,6 +89,9 @@
 	<string name="saleOrderComments" title="Description to display on sale order" large="true"/>
 	<string name="purchaseOrderComments" title="Description to display on purchase order" large="true"/>
 	<string name="deliveryComments" title="Description to display on delivery" large="true"/>
+	<string name="pickingOrderComments" title="Description to display on picking order" large="true"/>
+	
+	<string name="proformaComments" title="Description to display on proforma" large="true"/>
 
 	<finder-method name="findByUser" using="user"/>
 

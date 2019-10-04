@@ -30,7 +30,7 @@ import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -99,7 +99,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
           batch.setMetaFile(standardExport(payrollPreparationList));
         } catch (IOException e) {
           incrementAnomaly();
-          TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         }
         break;
       case HrBatchRepository.EXPORT_TYPE_NIBELIS:
@@ -107,7 +107,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
           batch.setMetaFile(nibelisExport(payrollPreparationList));
         } catch (Exception e) {
           incrementAnomaly();
-          TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         }
         break;
       default:

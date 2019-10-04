@@ -382,6 +382,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     String newStockSeq = null;
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
+    if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
+    }
     checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);

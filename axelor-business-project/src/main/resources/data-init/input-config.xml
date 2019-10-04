@@ -29,5 +29,22 @@
     
     <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true" />
   	
+  	<input file="meta_metaJsonField.csv" separator=";" type="com.axelor.meta.db.MetaJsonField" 
+    	search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel is null"
+    	call="com.axelor.studio.service.ImportService:importJsonField">
+    	<bind to="name" column="name"/>
+    	<bind to="title" column="title"/>
+    	<bind to="type" column="type"/>
+    	<bind to="model" column="model"/>
+    	<bind to="modelField" column="modelField"/>
+    	<bind to="targetModel" column="targetModel"/>
+    	<bind to="sequence" column="sequence"/>
+    	<bind to="onClick" column="onClick"/>
+		<bind to="gridView" column="gridView"/>
+		<bind to="formView" column="formView"/>
+		<bind to="widgetAttrs" column="widgetAttrs"/>
+		<bind to="showIf" column="showIf"/>
+   	</input>
+   	
 </csv-inputs>
 	

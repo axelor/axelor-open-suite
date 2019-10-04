@@ -27,12 +27,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.Filter;
 import com.axelor.studio.service.filter.FilterSqlService;
-import com.google.inject.Inject;
 import java.util.Map;
 
 public class FilterController {
-
-  @Inject private FilterSqlService filterSqlService;
 
   public void updateTargetField(ActionRequest request, ActionResponse response) {
 
@@ -70,6 +67,7 @@ public class FilterController {
       throws AxelorException {
 
     Filter filter = request.getContext().asType(Filter.class);
+    FilterSqlService filterSqlService = Beans.get(FilterSqlService.class);
 
     if (filter.getTargetField() == null) return;
 

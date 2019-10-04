@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -290,9 +291,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDate(appAccountService.getTodayDate());
 
-    PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
-    expense.setPaymentMode(paymentMode);
-
+    if (expense.getUser().getPartner() != null) {
+      PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+      expense.setPaymentMode(paymentMode);
+    }
     expenseRepository.save(expense);
   }
 
@@ -436,7 +438,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               moveDate,
               moveLineId++,
               expense.getExpenseSeq(),
-              expenseLine.getComments());
+              expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " "));
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
@@ -631,6 +633,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     moveService.getMoveValidateService().validate(move);
     expense.setPaymentMove(move);
+
+    Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);
 
     expenseRepository.save(expense);
 

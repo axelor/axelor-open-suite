@@ -30,7 +30,7 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -128,7 +128,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
       try {
         createPayrollPreparation(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
         if (e.getCategory() == TraceBackRepository.CATEGORY_NO_UNIQUE_KEY) {
           duplicateAnomaly++;

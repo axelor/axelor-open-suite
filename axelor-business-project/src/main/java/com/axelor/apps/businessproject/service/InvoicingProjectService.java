@@ -43,7 +43,6 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
@@ -330,11 +329,9 @@ public class InvoicingProjectService {
     polQueryMap.put("project", project);
 
     StringBuilder logTimesQueryBuilder = new StringBuilder(commonQuery);
-    logTimesQueryBuilder.append(" AND self.timesheet.statusSelect = :timesheetStatus");
 
     Map<String, Object> logTimesQueryMap = new HashMap<>();
     logTimesQueryMap.put("project", project);
-    logTimesQueryMap.put("timesheetStatus", TimesheetRepository.STATUS_VALIDATED);
 
     StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
     expenseLineQueryBuilder.append(
@@ -346,10 +343,11 @@ public class InvoicingProjectService {
     expenseLineQueryMap.put("statusReimbursed", ExpenseRepository.STATUS_REIMBURSED);
 
     StringBuilder taskQueryBuilder = new StringBuilder(commonQuery);
-    taskQueryBuilder.append(" AND self.status = 'closed'");
+    taskQueryBuilder.append(" AND self.invoicingType = :invoicingTypePackage");
 
     Map<String, Object> taskQueryMap = new HashMap<>();
     taskQueryMap.put("project", project);
+    taskQueryMap.put("invoicingTypePackage", TeamTaskRepository.INVOICING_TYPE_PACKAGE);
 
     if (invoicingProject.getDeadlineDate() != null) {
       solQueryBuilder.append(" AND self.saleOrder.creationDate < :deadlineDate");
@@ -477,7 +475,7 @@ public class InvoicingProjectService {
 
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)
-              .print(invoicingProject.getInvoice(), null, ReportSettings.FORMAT_PDF));
+              .print(invoicingProject.getInvoice(), null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));
@@ -486,5 +484,27 @@ public class InvoicingProjectService {
       return;
     }
     reportSettings.toAttach(invoicingProject).generate();
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public InvoicingProject generateInvoicingProject(Project project) {
+    if (project == null) {
+      return null;
+    }
+    InvoicingProject invoicingProject = new InvoicingProject();
+    invoicingProject.setProject(project);
+    clearLines(invoicingProject);
+    setLines(invoicingProject, project, 0);
+
+    if (invoicingProject.getSaleOrderLineSet().isEmpty()
+        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
+        && invoicingProject.getLogTimesSet().isEmpty()
+        && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectSet().isEmpty()
+        && invoicingProject.getTeamTaskSet().isEmpty()) {
+
+      return invoicingProject;
+    }
+    return invoicingProjectRepo.save(invoicingProject);
   }
 }
