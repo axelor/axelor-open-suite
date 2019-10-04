@@ -174,8 +174,9 @@ public class PartnerServiceImpl implements PartnerService {
     Address address = partner.getMainAddress();
 
     if (!partner.getIsContact() && !partner.getIsEmployee()) {
-      partner.setMainAddress(checkDefaultAddress(partner));
-
+      if (partner.getPartnerAddressList() != null) {
+        partner.setMainAddress(checkDefaultAddress(partner));
+      }
     } else if (address == null) {
       partner.removePartnerAddressListItem(
           JPA.all(PartnerAddress.class)
@@ -183,11 +184,12 @@ public class PartnerServiceImpl implements PartnerService {
               .bind("partnerId", partner.getId())
               .fetchOne());
 
-    } else if (partner
-        .getPartnerAddressList()
-        .stream()
-        .map(PartnerAddress::getAddress)
-        .noneMatch(address::equals)) {
+    } else if (partner.getPartnerAddressList() != null
+        && partner
+            .getPartnerAddressList()
+            .stream()
+            .map(PartnerAddress::getAddress)
+            .noneMatch(address::equals)) {
       PartnerAddress mainAddress = new PartnerAddress();
       mainAddress.setAddress(address);
       mainAddress.setIsDefaultAddr(true);

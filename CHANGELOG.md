@@ -260,5 +260,6 @@
 - EXPENSE : fix NPE on validate Expense.
 - Controller: Use Beans.get instead of Inject
 - PROJECT : Kanban view doesn't change status
+- Partner : Remove NPE and persistence exception on contact form  . 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
