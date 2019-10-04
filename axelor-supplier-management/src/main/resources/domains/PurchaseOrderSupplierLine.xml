@@ -21,6 +21,17 @@
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier" initParam="true" index="idx_suppmanage_po_supp_line_supp_partner"/>
   	
+  	<extra-code><![CDATA[
+	
+	   	//STATE SELECT
+	   	public static final int STATE_REQUESTED = 1;
+        public static final int STATE_SUBMITTED = 2;
+        public static final int STATE_ACCEPTED = 3;
+        public static final int STATE_NOT_ACCEPTED = 4;
+        public static final int STATE_CANCELED = 5;
+	  ]]>
+	</extra-code>
+  	
   	
   </entity>
 

@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
@@ -142,7 +141,7 @@ public class InventoryService {
 
     inventory.setDescription(description);
 
-    inventory.setFormatSelect(IAdministration.PDF);
+    inventory.setFormatSelect(InventoryRepository.FORMAT_PDF);
 
     inventory.setStockLocation(stockLocation);
 

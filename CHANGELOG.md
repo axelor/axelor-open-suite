@@ -198,6 +198,8 @@
 - PROJECT : remove unused action and method
 - QUALITY CONTROL : Add send email option when status is finished.
 - Timesheet : replace private method to protected in TimesheetServiceImpl.
+- Deleting deprecated interfaces
+- EMPLOYEE : add emergency contact relationship
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -258,6 +260,7 @@
 - EXPENSE : fix NPE on validate Expense.
 - Controller: Use Beans.get instead of Inject
 - PROJECT : Kanban view doesn't change status
-- BankDetails : Fix error when bank details form opens.
+- Partner : Remove NPE and persistence exception on contact form  . 
+- BankDetails : Fix error when bank details form opens
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

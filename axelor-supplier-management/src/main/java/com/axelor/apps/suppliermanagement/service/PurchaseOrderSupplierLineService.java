@@ -24,7 +24,6 @@ import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
-import com.axelor.apps.suppliermanagement.db.IPurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.exception.AxelorException;
@@ -63,7 +62,7 @@ public class PurchaseOrderSupplierLineService {
         PurchaseOrderLineServiceImpl.computeAmount(
             purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
 
-    purchaseOrderSupplierLine.setStateSelect(IPurchaseOrderSupplierLine.ACCEPTED);
+    purchaseOrderSupplierLine.setStateSelect(PurchaseOrderSupplierLineRepository.STATE_ACCEPTED);
 
     poSupplierLineRepo.save(purchaseOrderSupplierLine);
   }
@@ -71,6 +70,6 @@ public class PurchaseOrderSupplierLineService {
   public PurchaseOrderSupplierLine create(Partner supplierPartner, BigDecimal price) {
 
     return new PurchaseOrderSupplierLine(
-        price, IPurchaseOrderSupplierLine.REQUESTED, supplierPartner);
+        price, PurchaseOrderSupplierLineRepository.STATE_REQUESTED, supplierPartner);
   }
 }

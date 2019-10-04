@@ -82,6 +82,7 @@
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency" showIf="stepByStepSelect == 1">
       <field name="emergencyContact" colSpan="4"/>
       <field name="emergencyNumber" onChange="action-employee-method-normalize-emergencyNumber" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+      <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
     </panel>
 
     <panel name="rhInfoSBSPanel" title="HR information" showIf="stepByStepSelect == 1">
@@ -208,6 +209,7 @@
         <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
           <field name="emergencyContact" colSpan="4"/>
           <field name="emergencyNumber" onChange="action-employee-method-normalize-emergencyNumber" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+          <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
         </panel>
 
         <panel name="rhInfoPanel" title="HR information" colSpan="12">
