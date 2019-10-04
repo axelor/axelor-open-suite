@@ -132,9 +132,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs-wip-fix</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1336,43 +1334,14 @@ FROM public.account_fixed_asset AS Asset
 LEFT JOIN public.account_fixed_asset_line AS AssetLine ON AssetLine.fixed_asset = Asset.id 
 LEFT JOIN public.account_accounting_report as AccountingReport ON (AccountingReport.id = ?)
 WHERE AssetLine.fixed_Asset = ?
+AND AssetLine.status_select = 2 
+AND AssetLine.depreciation_date >= AccountingReport.date_from
+AND AssetLine.depreciation_date <= AccountingReport.date_to
 ORDER BY AssetLine.depreciation_date DESC
 LIMIT 1;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -2362,6 +2331,78 @@ row["disposal_value"];
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <expression name="expression" type="javascript">vars["total_year_end_value"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">final_sum_original_value</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">if(row['acquisition_date'] &lt;=  row['date_from']){
+	row["gross_value"];
+}</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">final_sum_acquisition</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">if(row['acquisition_date'] >=  row['date_from'] &amp;&amp; row['acquisition_date'] &lt;=  row['date_to']){
+	row["gross_value"]
+}</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">final_sum_asset_disposal</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">if(row['disposal_date'] >=  row['date_from'] &amp;&amp; row['disposal_date'] &lt;=  row['date_to']){
+row["disposal_value"];
+}</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">final_sum_year_end_value</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["gross_value"] - row["disposal_value"];</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">final_sum_residual_value</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["residual_value"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="5409">
                 <property name="width">0.28125in</property>
@@ -3131,6 +3172,18 @@ row["disposal_value"];
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["total_depreciation_charges"]</VALUE-OF>]]></text-property>
                             </text>
+                            <label id="5497">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">true</expression>
+                                    </structure>
+                                </list-property>
+                                <method name="onRender"><![CDATA[vars["total_year_start_value"] = 0 ;
+vars["total_year_end_value"] = 0 ;
+vars["total_depreciation_charges"] = 0 ;]]></method>
+                                <text-property name="text">ResetVariableHidden</text-property>
+                            </label>
                         </cell>
                     </row>
                     <row id="5480">
@@ -3301,6 +3354,7 @@ row["disposal_value"];
                                     <property name="name">year_start_value</property>
                                     <expression name="expression" type="javascript">if(dataSetRow["year_start_total"]){
 	vars["total_year_start_value"] += parseFloat(dataSetRow["year_start_total"]);
+	vars["final_total_year_start_value"] += parseFloat(dataSetRow["year_start_total"]);
 	dataSetRow["year_start_total"];
 }else{ 
  	0
@@ -3344,6 +3398,7 @@ row["disposal_value"];
                                     <property name="name">year_end_value</property>
                                     <expression name="expression" type="javascript">if(dataSetRow["residual_value"]){
 	vars["total_year_end_value"] += parseFloat(dataSetRow["residual_value"]);
+	vars["final_total_year_end_value"] += parseFloat(dataSetRow["residual_value"]);
 	dataSetRow["residual_value"];
 }else{ 
  	0
@@ -3388,6 +3443,7 @@ row["disposal_value"];
                                     <property name="name">depreciation_charges</property>
                                     <expression name="expression" type="javascript">if(dataSetRow["depreciation_total"]){
 	vars["total_depreciation_charges"] += parseFloat(dataSetRow["depreciation_total"]);
+	vars["final_total_depreciation_charges"] += parseFloat(dataSetRow["depreciation_total"]);
 	dataSetRow["depreciation_total"];
 }else{ 
  	0
@@ -3468,23 +3524,139 @@ row["disposal_value"];
             </detail>
             <footer>
                 <row id="5394">
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
+                    <cell id="5395"/>
+                    <cell id="5396">
+                        <property name="colSpan">5</property>
+                        <property name="rowSpan">1</property>
+                        <label id="5527">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="textAlign">right</property>
+                            <text-property name="text">Final Total : </text-property>
+                        </label>
+                    </cell>
+                    <cell id="5401">
+                        <data id="5507">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">final_sum_original_value</property>
+                        </data>
+                    </cell>
+                    <cell id="5402">
+                        <data id="5509">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">final_sum_acquisition</property>
+                        </data>
+                    </cell>
+                    <cell id="5403">
+                        <data id="5510">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">final_sum_asset_disposal</property>
+                        </data>
+                    </cell>
+                    <cell id="5404">
+                        <data id="5511">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">final_sum_year_end_value</property>
+                        </data>
+                    </cell>
+                    <cell id="5405">
+                        <text id="5529">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["final_total_year_start_value"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="5406">
+                        <text id="5530">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["final_total_year_end_value"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="5407">
+                        <text id="5531">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="textAlign">right</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["final_total_depreciation_charges"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                </row>
+                <row id="5512">
                     <property name="borderBottomStyle">none</property>
                     <property name="borderLeftStyle">none</property>
                     <property name="borderRightStyle">none</property>
                     <property name="borderTopStyle">none</property>
-                    <cell id="5395"/>
-                    <cell id="5396"/>
-                    <cell id="5397"/>
-                    <cell id="5398"/>
-                    <cell id="5399"/>
-                    <cell id="5400"/>
-                    <cell id="5401"/>
-                    <cell id="5402"/>
-                    <cell id="5403"/>
-                    <cell id="5404"/>
-                    <cell id="5405"/>
-                    <cell id="5406"/>
-                    <cell id="5407"/>
+                    <cell id="5513"/>
+                    <cell id="5514"/>
+                    <cell id="5515"/>
+                    <cell id="5516"/>
+                    <cell id="5517"/>
+                    <cell id="5518"/>
+                    <cell id="5519"/>
+                    <cell id="5520"/>
+                    <cell id="5521"/>
+                    <cell id="5522"/>
+                    <cell id="5523"/>
+                    <cell id="5524">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <data id="5526">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontWeight">bold</property>
+                            <structure name="numberFormat">
+                                <property name="category">Custom</property>
+                                <property name="pattern">0.00</property>
+                            </structure>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">final_sum_residual_value</property>
+                        </data>
+                    </cell>
                 </row>
             </footer>
         </table>
@@ -3499,6 +3671,18 @@ row["disposal_value"];
             <property name="type">report</property>
         </variable-element>
         <variable-element name="total_depreciation_charges">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="final_total_year_start_value">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="final_total_year_end_value">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="final_total_depreciation_charges">
             <expression name="value" type="javascript">0</expression>
             <property name="type">report</property>
         </variable-element>
