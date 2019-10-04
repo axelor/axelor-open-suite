@@ -48,7 +48,7 @@ import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -100,7 +100,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)),
-          IException.LEAVE_MANAGEMENT,
+          ExceptionOriginRepository.LEAVE_MANAGEMENT,
           batch.getId());
     total = 0;
     noValueAnomaly = 0;
@@ -142,7 +142,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
         if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
           noValueAnomaly++;

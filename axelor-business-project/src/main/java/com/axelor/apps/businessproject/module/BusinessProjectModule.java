@@ -19,6 +19,9 @@ package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
+import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
+import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -30,6 +33,7 @@ import com.axelor.apps.businessproject.service.ExpenseLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.InvoicePaymentValidateProjectServiceImpl;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateServiceImpl;
@@ -113,5 +117,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoiceLineSupplychainService.class).to(InvoiceLineProjectServiceImpl.class);
     bind(ContractServiceImpl.class).to(ProjectContractServiceImpl.class);
     bind(ContractLineServiceImpl.class).to(ContractLineServiceProjectImpl.class);
+    bind(AppBusinessProjectRepository.class).to(AppBusinessProjectManagementRepository.class);
+    bind(InvoicePaymentValidateServiceBankPayImpl.class)
+        .to(InvoicePaymentValidateProjectServiceImpl.class);
   }
 }

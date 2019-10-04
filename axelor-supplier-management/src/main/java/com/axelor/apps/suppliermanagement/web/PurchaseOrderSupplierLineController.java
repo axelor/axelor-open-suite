@@ -32,22 +32,17 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseOrderSupplierLineController {
 
-  @Inject private PurchaseOrderSupplierLineRepository purchaseOrderSupplierLineRepo;
-
-  @Inject private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
-
   public void accept(ActionRequest request, ActionResponse response) {
 
     PurchaseOrderSupplierLine purchaseOrderSupplierLine =
-        purchaseOrderSupplierLineRepo.find(
-            request.getContext().asType(PurchaseOrderSupplierLine.class).getId());
+        Beans.get(PurchaseOrderSupplierLineRepository.class)
+            .find(request.getContext().asType(PurchaseOrderSupplierLine.class).getId());
 
     if (purchaseOrderSupplierLine.getPurchaseOrderLine() == null
         && request.getContext().getParent() != null) {
@@ -57,7 +52,7 @@ public class PurchaseOrderSupplierLineController {
     }
 
     try {
-      purchaseOrderSupplierLineService.accept(purchaseOrderSupplierLine);
+      Beans.get(PurchaseOrderSupplierLineService.class).accept(purchaseOrderSupplierLine);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -424,7 +424,6 @@ public class DebtRecoveryService {
         }
 
         debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
-        debtRecovery.setPartnerFullName(partner.getFullName());
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 

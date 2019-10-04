@@ -136,5 +136,7 @@
 		<bind to="partner" column="partner_importId" search="self.importId =:partner_importId" update="true" />
 		<bind to="isDefault" eval="true" />
 	</input>
+	
+	 <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
     
 </csv-inputs>

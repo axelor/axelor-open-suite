@@ -18,17 +18,15 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 
 public class AppCrmController {
 
-  @Inject private AppCrmService appCrmService;
-
   public void generateCrmConfigurations(ActionRequest request, ActionResponse response) {
 
-    appCrmService.generateCrmConfigurations();
+    Beans.get(AppCrmService.class).generateCrmConfigurations();
 
     response.setReload(true);
   }

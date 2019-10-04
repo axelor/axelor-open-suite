@@ -15,13 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.talent.db;
+package com.axelor.apps.csv.script;
 
-@Deprecated
-public class ITalent {
+import com.axelor.inject.Beans;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
+import java.util.Map;
 
-  /** Static select in Sequence */
+public class TeamTaskScript {
 
-  // TYPE
-  public static final String JOB_POSITION = "jobPosition";
+  public Object computeFullname(Object bean, Map<String, Object> values) {
+    TeamTask task = ((TeamTask) bean);
+    Beans.get(TeamTaskRepository.class).save(task);
+    return task;
+  }
 }

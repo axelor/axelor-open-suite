@@ -123,9 +123,9 @@
 		</panel>
 		<panel name="linesPanel">
 			<panel-dashlet name="timesheetLineEditorPanel" colSpan="12" action="action-timesheet-show-timesheet-line-editor" showIf="showEditor" height="365"/>
-			<panel-related name="timesheetLineListPanel" field="timesheetLineList"   colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true"/>
+			<panel-related name="timesheetLineListPanel" field="timesheetLineList" canMove="true" orderBy="sequence" colSpan="12" height="20" grid-view="timesheet-line-timesheet-grid" editable="true" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true"/>
 			<panel-related name="timesheetLineListPanel" field="timesheetLineList"  colSpan="12" height="20" grid-view="timesheet-line-timesheet-manuf-order-grid" editable="true" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
-			<panel-related name="timesheetLineListPanel" field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true" />
+			<panel-related name="timesheetLineListPanel" field="timesheetLineList" canMove="true" orderBy="sequence" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)" x-can-copy="true" />
 			<panel-related name="timesheetLineListPanel" field="timesheetLineList" colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-manuf-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true" showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2" x-can-copy="true" if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
 			<button name="fullScreenEditorBtn" colSpan="3" title="Fullscreen Editor" showIf="id != null &amp;&amp; showEditor" if="__config__.app.getApp('timesheet').getTimesheetEditor()" onClick="save,action-timesheet-method-open-timesheet-editor"/>
 			<field name="$showActivity" hidden="true" type="boolean"/>
@@ -182,6 +182,7 @@
 		<action name="action-timesheet-attrs-from-date"/>
 		<action name="action-timesheet-attrs-panels"/>
 		<action name="action-timesheet-attrs-refresh-editor"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -227,11 +228,15 @@
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-record-from-period-date"/>
 		<action name="action-timesheet-record-to-date" if="fromDate != null"/>
+		<action name="action-timesheet-prefill-lines" if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
 	</action-group>
 
+	<action-method name="action-timesheet-prefill-lines">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="prefillLines" />
+	</action-method>
 
 	<action-method name="action-timesheet-method-timesheet-compute-period-total">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>

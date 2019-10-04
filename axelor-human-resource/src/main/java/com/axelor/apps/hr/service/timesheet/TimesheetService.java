@@ -167,4 +167,6 @@ public interface TimesheetService {
 
   public TimesheetLine generateTimesheetLine(
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException;
+
+  public void prefillLines(Timesheet timesheet) throws AxelorException;
 }

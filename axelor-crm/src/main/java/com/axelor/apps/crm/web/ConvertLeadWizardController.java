@@ -37,22 +37,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Map;
 
 @Singleton
 public class ConvertLeadWizardController {
-
-  @Inject private LeadRepository leadRepo;
-
-  @Inject private ConvertLeadWizardService convertLeadWizardService;
-
-  @Inject private PartnerRepository partnerRepo;
-
-  @Inject private AppBaseService appBaseService;
-
-  @Inject private LeadService leadService;
 
   @SuppressWarnings("unchecked")
   public void convertLead(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -61,7 +50,7 @@ public class ConvertLeadWizardController {
 
     Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
 
-    Lead lead = leadRepo.find(((Integer) leadContext.get("id")).longValue());
+    Lead lead = Beans.get(LeadRepository.class).find(((Integer) leadContext.get("id")).longValue());
 
     Partner partner = createPartnerData(context);
     Partner contactPartner = null;
@@ -71,7 +60,7 @@ public class ConvertLeadWizardController {
     }
 
     try {
-      lead = leadService.convertLead(lead, partner, contactPartner);
+      lead = Beans.get(LeadService.class).convertLead(lead, partner, contactPartner);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -89,6 +78,7 @@ public class ConvertLeadWizardController {
   private Partner createPartnerData(Context context) throws AxelorException {
 
     Integer leadToPartnerSelect = (Integer) context.get("leadToPartnerSelect");
+    ConvertLeadWizardService convertLeadWizardService = Beans.get(ConvertLeadWizardService.class);
     Partner partner = null;
 
     if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
@@ -100,7 +90,9 @@ public class ConvertLeadWizardController {
       // TODO check all required fields...
     } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
       Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
-      partner = partnerRepo.find(((Integer) selectPartnerContext.get("id")).longValue());
+      partner =
+          Beans.get(PartnerRepository.class)
+              .find(((Integer) selectPartnerContext.get("id")).longValue());
       if (!partner.getIsCustomer()) {
         partner.setIsProspect(true);
       }
@@ -113,8 +105,8 @@ public class ConvertLeadWizardController {
   private Partner createContactData(Context context, Partner partner) throws AxelorException {
 
     Partner contactPartner = null;
-
     Integer leadToContactSelect = (Integer) context.get("leadToContactSelect");
+    ConvertLeadWizardService convertLeadWizardService = Beans.get(ConvertLeadWizardService.class);
 
     if (leadToContactSelect == null) {
       return null;
@@ -132,7 +124,9 @@ public class ConvertLeadWizardController {
     } else if (leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT
         && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
       Map<String, Object> selectContactContext = (Map<String, Object>) context.get("selectContact");
-      contactPartner = partnerRepo.find(((Integer) selectContactContext.get("id")).longValue());
+      contactPartner =
+          Beans.get(PartnerRepository.class)
+              .find(((Integer) selectContactContext.get("id")).longValue());
     }
 
     return contactPartner;
@@ -183,7 +177,7 @@ public class ConvertLeadWizardController {
 
     Lead lead = findLead(request);
 
-    AppBase appBase = appBaseService.getAppBase();
+    AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
     response.setAttr("name", "value", lead.getEnterpriseName());
     response.setAttr("industrySector", "value", lead.getIndustrySector());
     response.setAttr("titleSelect", "value", lead.getTitleSelect());
@@ -224,7 +218,7 @@ public class ConvertLeadWizardController {
     response.setAttr("fixedPhone", "value", lead.getFixedPhone());
     response.setAttr("user", "value", lead.getUser());
     response.setAttr("team", "value", lead.getTeam());
-    response.setAttr("jobTitle", "value", lead.getJobTitle());
+    response.setAttr("jobTitleFunction", "value", lead.getJobTitleFunction());
   }
 
   public void setConvertLeadIntoOpportunity(ActionRequest request, ActionResponse response)
@@ -232,7 +226,7 @@ public class ConvertLeadWizardController {
 
     Lead lead = findLead(request);
 
-    AppBase appBase = appBaseService.getAppBase();
+    AppBase appBase = Beans.get(AppBaseService.class).getAppBase();
     response.setAttr("lead", "value", lead);
     response.setAttr("amount", "value", lead.getEstimatedBudget());
     response.setAttr("customerDescription", "value", lead.getDescription());
@@ -275,7 +269,7 @@ public class ConvertLeadWizardController {
 
     Map leadMap = (Map) context.get("_lead");
     if (leadMap != null && leadMap.get("id") != null) {
-      lead = leadRepo.find(Long.parseLong(leadMap.get("id").toString()));
+      lead = Beans.get(LeadRepository.class).find(Long.parseLong(leadMap.get("id").toString()));
     }
 
     if (lead == null) {

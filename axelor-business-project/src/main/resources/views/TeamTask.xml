@@ -38,9 +38,4 @@
 		<field name="isOrderProposed" expr="eval: teamTaskInvoicing"/>
 	</action-record>
 	
-	<action-record name="action-team-task-record-update-invoicing-type-and-time-invoicing" model="com.axelor.team.db.TeamTask">
-		<field name="teamTaskInvoicing" expr="eval: project.teamTaskInvoicing"/>
-		<field name="invoicingType" expr="eval: project.invoicingType"/>
-	</action-record>
-
 </object-views>

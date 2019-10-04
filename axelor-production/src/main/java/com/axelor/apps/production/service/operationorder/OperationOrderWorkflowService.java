@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
-import com.axelor.apps.production.db.IWorkCenter;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -28,6 +27,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
@@ -471,8 +471,8 @@ public class OperationOrderWorkflowService {
 
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-    if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
-        || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
       Machine machine = workCenter.getMachine();
       if (machine == null) {
         throw new AxelorException(

@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +44,10 @@ public interface PartnerService {
 
   void setPartnerFullName(Partner partner);
 
+  @CallMethod
   String computeFullName(Partner partner);
 
+  @CallMethod
   String computeSimpleFullName(Partner partner);
 
   Map<String, String> getSocialNetworkUrl(String name, String firstName, Integer typeSelect);
@@ -62,8 +65,10 @@ public interface PartnerService {
 
   void addContactToPartner(Partner contact);
 
+  @CallMethod
   Address getInvoicingAddress(Partner partner);
 
+  @CallMethod
   Address getDeliveryAddress(Partner partner);
 
   Address getDefaultAddress(Partner partner);

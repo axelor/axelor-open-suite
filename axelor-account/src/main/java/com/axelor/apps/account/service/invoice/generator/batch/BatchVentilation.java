@@ -22,7 +22,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -55,7 +55,7 @@ public class BatchVentilation extends BatchWkf {
         TraceBackService.trace(
             new AxelorException(
                 e, e.getCategory(), I18n.get("Invoice") + " %s", invoice.getInvoiceId()),
-            IException.INVOICE_ORIGIN,
+            ExceptionOriginRepository.INVOICE_ORIGIN,
             batch.getId());
         incrementAnomaly();
 
@@ -63,7 +63,7 @@ public class BatchVentilation extends BatchWkf {
 
         TraceBackService.trace(
             new Exception(String.format(I18n.get("Invoice") + " %s", invoice.getInvoiceId()), e),
-            IException.INVOICE_ORIGIN,
+            ExceptionOriginRepository.INVOICE_ORIGIN,
             batch.getId());
         incrementAnomaly();
 

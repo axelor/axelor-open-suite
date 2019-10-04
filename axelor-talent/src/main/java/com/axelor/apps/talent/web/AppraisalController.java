@@ -28,7 +28,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.HashSet;
@@ -38,18 +37,14 @@ import java.util.Set;
 @Singleton
 public class AppraisalController {
 
-  @Inject private AppraisalRepository appraisalRepo;
-
-  @Inject private AppraisalService appraisalService;
-
   public void send(ActionRequest request, ActionResponse response) {
 
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
     try {
-      appraisal = appraisalRepo.find(appraisal.getId());
+      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      appraisalService.send(appraisal);
+      Beans.get(AppraisalService.class).send(appraisal);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -62,9 +57,9 @@ public class AppraisalController {
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
     try {
-      appraisal = appraisalRepo.find(appraisal.getId());
+      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      appraisalService.realize(appraisal);
+      Beans.get(AppraisalService.class).realize(appraisal);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -77,9 +72,9 @@ public class AppraisalController {
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
     try {
-      appraisal = appraisalRepo.find(appraisal.getId());
+      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      appraisalService.cancel(appraisal);
+      Beans.get(AppraisalService.class).cancel(appraisal);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -92,9 +87,9 @@ public class AppraisalController {
     Appraisal appraisal = request.getContext().asType(Appraisal.class);
 
     try {
-      appraisal = appraisalRepo.find(appraisal.getId());
+      appraisal = Beans.get(AppraisalRepository.class).find(appraisal.getId());
 
-      appraisalService.draft(appraisal);
+      Beans.get(AppraisalService.class).draft(appraisal);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -122,11 +117,12 @@ public class AppraisalController {
 
       Long templateId = Long.parseLong(context.get("templateId").toString());
 
-      Appraisal appraisalTemplate = appraisalRepo.find(templateId);
+      Appraisal appraisalTemplate = Beans.get(AppraisalRepository.class).find(templateId);
 
       Boolean send = (Boolean) context.get("sendAppraisals");
 
-      Set<Long> createdIds = appraisalService.createAppraisals(appraisalTemplate, employees, send);
+      Set<Long> createdIds =
+          Beans.get(AppraisalService.class).createAppraisals(appraisalTemplate, employees, send);
 
       response.setView(
           ActionView.define("Appraisal")

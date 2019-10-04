@@ -18,19 +18,17 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AppPurchaseController {
 
-  @Inject private AppPurchaseService appPurchaseService;
-
   public void generatePurchaseConfigurations(ActionRequest request, ActionResponse response) {
 
-    appPurchaseService.generatePurchaseConfigurations();
+    Beans.get(AppPurchaseService.class).generatePurchaseConfigurations();
 
     response.setReload(true);
   }

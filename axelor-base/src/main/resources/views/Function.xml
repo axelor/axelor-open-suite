@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+    
+    <grid name="function-grid" title="Functions" model="com.axelor.apps.base.db.Function" >
+        <field name="name"/>
+        <field name="code"/>
+    </grid>
+    
+    <form name="function-form" title="Function" model="com.axelor.apps.base.db.Function" >
+    	<panel name="mainPanel" >
+	        <field name="name"/>
+	        <field name="code"/>
+        </panel>
+    </form>
+    
+</object-views>

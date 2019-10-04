@@ -40,7 +40,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -115,6 +114,7 @@ public class PartnerServiceImpl implements PartnerService {
     return partner;
   }
 
+  @Override
   public void onSave(Partner partner) throws AxelorException {
 
     if (partner.getPartnerSeq() == null
@@ -240,12 +240,13 @@ public class PartnerServiceImpl implements PartnerService {
     return defaultInvoicingAddress;
   }
 
+  @Override
   public void setPartnerFullName(Partner partner) {
     partner.setSimpleFullName(this.computeSimpleFullName(partner));
     partner.setFullName(this.computeFullName(partner));
   }
 
-  @CallMethod
+  @Override
   public String computeFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getPartnerSeq())) {
       return partner.getPartnerSeq() + " - " + partner.getSimpleFullName();
@@ -253,7 +254,7 @@ public class PartnerServiceImpl implements PartnerService {
     return computeSimpleFullName(partner);
   }
 
-  @CallMethod
+  @Override
   public String computeSimpleFullName(Partner partner) {
     if (!Strings.isNullOrEmpty(partner.getName())
         && !Strings.isNullOrEmpty(partner.getFirstName())) {
@@ -267,6 +268,7 @@ public class PartnerServiceImpl implements PartnerService {
     }
   }
 
+  @Override
   public Map<String, String> getSocialNetworkUrl(
       String name, String firstName, Integer typeSelect) {
 
@@ -315,6 +317,7 @@ public class PartnerServiceImpl implements PartnerService {
     return urlMap;
   }
 
+  @Override
   public List<Long> findPartnerMails(Partner partner) {
     List<Long> idList = new ArrayList<Long>();
 
@@ -329,6 +332,7 @@ public class PartnerServiceImpl implements PartnerService {
     return idList;
   }
 
+  @Override
   public List<Long> findContactMails(Partner partner) {
     List<Long> idList = new ArrayList<Long>();
 
@@ -338,6 +342,7 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public List<Long> findMailsFromPartner(Partner partner) {
     String query =
         "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 AND "
@@ -365,6 +370,7 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Transactional
+  @Override
   public void resetDefaultAddress(Partner partner, String addrTypeQuery) {
 
     if (partner.getId() != null) {
@@ -383,6 +389,7 @@ public class PartnerServiceImpl implements PartnerService {
     }
   }
 
+  @Override
   public Partner addPartnerAddress(
       Partner partner,
       Address address,
@@ -411,6 +418,7 @@ public class PartnerServiceImpl implements PartnerService {
     return partner;
   }
 
+  @Override
   public void addContactToPartner(Partner contact) {
     if (contact.getMainPartner() != null) {
       Partner partner = contact.getMainPartner();
@@ -442,7 +450,7 @@ public class PartnerServiceImpl implements PartnerService {
     return null;
   }
 
-  @CallMethod
+  @Override
   public Address getInvoicingAddress(Partner partner) {
 
     return getAddress(
@@ -451,7 +459,7 @@ public class PartnerServiceImpl implements PartnerService {
         "self.partner.id = ?1 AND self.isInvoicingAddr = true");
   }
 
-  @CallMethod
+  @Override
   public Address getDeliveryAddress(Partner partner) {
 
     return getAddress(
@@ -460,6 +468,7 @@ public class PartnerServiceImpl implements PartnerService {
         "self.partner.id = ?1 AND self.isDeliveryAddr = true");
   }
 
+  @Override
   public Address getDefaultAddress(Partner partner) {
 
     return getAddress(
@@ -469,10 +478,12 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Transactional
+  @Override
   public Partner savePartner(Partner partner) {
     return partnerRepo.save(partner);
   }
 
+  @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
 
     for (BankDetails bankDetails : partner.getBankDetailsList()) {
@@ -485,6 +496,7 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public String getSIRENNumber(Partner partner) throws AxelorException {
     char[] Str = new char[9];
     if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
@@ -504,6 +516,7 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Transactional
+  @Override
   public void convertToIndividualPartner(Partner partner) {
     partner.setIsContact(false);
     partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
@@ -517,6 +530,7 @@ public class PartnerServiceImpl implements PartnerService {
    * @param partner a context partner object
    * @return if there is a duplicate partner
    */
+  @Override
   public boolean isThereDuplicatePartner(Partner partner) {
     String newName = this.computeSimpleFullName(partner);
     if (Strings.isNullOrEmpty(newName)) {
@@ -556,6 +570,7 @@ public class PartnerServiceImpl implements PartnerService {
    * @param partner
    * @return the sale price list for the partner null if no active price list has been found
    */
+  @Override
   public PriceList getSalePriceList(Partner partner) {
     PartnerPriceList partnerPriceList = partner.getSalePartnerPriceList();
     if (partnerPriceList == null) {
@@ -595,6 +610,7 @@ public class PartnerServiceImpl implements PartnerService {
    * @param partner
    * @return
    */
+  @Override
   public String getPartnerLanguageCode(Partner partner) {
 
     String locale = null;
@@ -615,6 +631,7 @@ public class PartnerServiceImpl implements PartnerService {
    * @param phoneNumber
    * @return
    */
+  @Override
   public String normalizePhoneNumber(String phoneNumber) {
     return StringUtils.isBlank(phoneNumber) ? null : phoneNumber.replaceAll("\\s|\\.|-", "");
   }
@@ -625,6 +642,7 @@ public class PartnerServiceImpl implements PartnerService {
    * @param phoneNumber
    * @return
    */
+  @Override
   public boolean checkPhoneNumber(String phoneNumber) {
     return StringUtils.isBlank(phoneNumber)
         ? false
@@ -637,15 +655,18 @@ public class PartnerServiceImpl implements PartnerService {
    * @param actionName
    * @return
    */
+  @Override
   public String getPhoneNumberFieldName(String actionName) {
     Preconditions.checkNotNull(actionName, I18n.get("Action name cannot be null."));
     return actionName.substring(actionName.lastIndexOf('-') + 1);
   }
 
+  @Override
   public void setCompanyStr(Partner partner) {
     partner.setCompanyStr(this.computeCompanyStr(partner));
   }
 
+  @Override
   public String computeCompanyStr(Partner partner) {
     String companyStr = "";
     if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
@@ -657,6 +678,7 @@ public class PartnerServiceImpl implements PartnerService {
     return null;
   }
 
+  @Override
   public String getPartnerDomain(Partner partner) {
     String domain = "";
 

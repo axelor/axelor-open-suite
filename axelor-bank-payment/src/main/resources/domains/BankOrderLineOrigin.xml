@@ -11,6 +11,8 @@
    	<string name="relatedToSelect" title="Related to" selection="bank.payment.bank.order.line.origin.related.to.select"/>
 	<long name="relatedToSelectId"/>
     <string name="relatedToSelectName" title="Related to" readonly="true"/>
+    <date name="relatedToSelectDate" title="Date" readonly="true"/>
+    <date name="relatedToSelectDueDate" title="Due date" readonly="true"/>
 	
   	
   	<extra-code>

@@ -55,7 +55,7 @@ public class ClientViewController {
       User clientUser = clientViewService.getClientUser();
       String domain = clientViewService.getOrdersInProgressOfUser(clientUser);
       response.setView(
-          ActionView.define(I18n.get("Orders"))
+          ActionView.define(I18n.get("Orders in progress"))
               .model(SaleOrder.class.getName())
               .add("grid", "sale-order-grid-client")
               .add("form", "sale-order-form-client")

@@ -38,7 +38,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -50,17 +49,13 @@ public class BankOrderController {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject protected BankOrderService bankOrderService;
-
-  @Inject protected BankOrderRepository bankOrderRepo;
-
   public void confirm(ActionRequest request, ActionResponse response) {
 
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      bankOrder = bankOrderRepo.find(bankOrder.getId());
+      bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        bankOrderService.confirm(bankOrder);
+        Beans.get(BankOrderService.class).confirm(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -71,7 +66,7 @@ public class BankOrderController {
   public void sign(ActionRequest request, ActionResponse response) throws AxelorException {
 
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    bankOrder = bankOrderRepo.find(bankOrder.getId());
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
     try {
       ActionViewBuilder confirmView =
           ActionView.define("Sign bank order")
@@ -93,9 +88,10 @@ public class BankOrderController {
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();
+    BankOrderService bankOrderService = Beans.get(BankOrderService.class);
 
     BankOrder bankOrder = context.asType(BankOrder.class);
-    bankOrder = bankOrderRepo.find(bankOrder.getId());
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
 
     try {
 
@@ -132,9 +128,9 @@ public class BankOrderController {
 
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      bankOrder = bankOrderRepo.find(bankOrder.getId());
+      bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        bankOrderService.realize(bankOrder);
+        Beans.get(BankOrderService.class).realize(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -166,12 +162,13 @@ public class BankOrderController {
     try {
 
       List<Integer> listSelectedBankOrder = (List<Integer>) request.getContext().get("_ids");
+      BankOrderRepository bankOrderRepository = Beans.get(BankOrderRepository.class);
 
       List<BankOrder> bankOrderList = Lists.newArrayList();
       if (listSelectedBankOrder != null) {
         for (Integer bankOrderId : listSelectedBankOrder) {
 
-          BankOrder bankOrder = bankOrderRepo.find(bankOrderId.longValue());
+          BankOrder bankOrder = bankOrderRepository.find(bankOrderId.longValue());
 
           if (bankOrder != null) {
             bankOrderList.add(bankOrder);
@@ -198,7 +195,8 @@ public class BankOrderController {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     if (bankOrder.getSenderBankDetails() != null) {
       EbicsUser ebicsUser =
-          bankOrderService.getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
+          Beans.get(BankOrderService.class)
+              .getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
       bankOrder.setSignatoryEbicsUser(ebicsUser);
       response.setValues(bankOrder);
     }
@@ -206,7 +204,7 @@ public class BankOrderController {
 
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    String domain = bankOrderService.createDomainForBankDetails(bankOrder);
+    String domain = Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder);
     // if nothing was found for the domain, we set it at a default value.
     if (domain.equals("")) {
       response.setAttr("senderBankDetails", "domain", "self.id IN (0)");
@@ -217,14 +215,14 @@ public class BankOrderController {
 
   public void fillBankDetails(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    BankDetails bankDetails = bankOrderService.getDefaultBankDetails(bankOrder);
+    BankDetails bankDetails = Beans.get(BankOrderService.class).getDefaultBankDetails(bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
 
   public void resetReceivers(ActionRequest request, ActionResponse response) {
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      bankOrderService.resetReceivers(bankOrder);
+      Beans.get(BankOrderService.class).resetReceivers(bankOrder);
       response.setValue("bankOrderLineList", bankOrder.getBankOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -234,9 +232,8 @@ public class BankOrderController {
   public void displayBankOrderLines(ActionRequest actionRequest, ActionResponse response) {
     try {
       String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
-      System.out.println(linesDomain);
       response.setView(
-          bankOrderService
+          Beans.get(BankOrderService.class)
               .buildBankOrderLineView("bank-order-line-grid", "bank-order-line-form", linesDomain)
               .map());
     } catch (Exception e) {
@@ -249,7 +246,7 @@ public class BankOrderController {
     try {
       String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
       response.setView(
-          bankOrderService
+          Beans.get(BankOrderService.class)
               .buildBankOrderLineView(
                   "bank-order-line-bank-to-bank-grid", "bank-order-line-form", linesDomain)
               .map());
@@ -261,8 +258,8 @@ public class BankOrderController {
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-      bankOrder = bankOrderRepo.find(bankOrder.getId());
-      bankOrderService.cancelBankOrder(bankOrder);
+      bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+      Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

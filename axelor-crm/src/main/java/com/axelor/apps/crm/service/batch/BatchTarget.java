@@ -22,7 +22,7 @@ import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.TargetService;
 import com.axelor.db.JPA;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -71,7 +71,7 @@ public class BatchTarget extends BatchStrategy {
                     I18n.get(IExceptionMessage.BATCH_TARGET_1),
                     targetConfigurationRepo.find(targetConfiguration.getId()).getCode()),
                 e),
-            IException.CRM,
+            ExceptionOriginRepository.CRM,
             batch.getId()); // TODO
 
         incrementAnomaly();

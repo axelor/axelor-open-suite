@@ -119,6 +119,15 @@
 - STOCK RULE : new M2O stockRuleMessageTemplate on StockRule and StockConfig
 - ABC ANALYSIS : Add support for printing report in 'xls' type.
 - EBICSUSER : replace the O2M ebicsRequestLogList per a dashlet
+- TEAMTASK : Addition of field 'project' in grid and kanban view
+- CONFORMITY CERTIFICATE : new field on printing
+- TIMESHEET : new config to display line numbers
+- Advanced Import : Add support of remove imported records.
+- Business Project : Add 'Project invoicing assistant' batch to update tasks and generate invoicing projects.
+- PARTNER : new HTML field on partner for proforma
+- COMPANY : autocomplete companySet when enableMultiCompany = false
+- FUNCTION : new object function on Sales and CRM and new M2O on partner
+- CITIZENSHIP : Add new object citizenship on base and new M2O in country and employee
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -170,6 +179,7 @@
 - ACCOUNTING : year and accountSet fields are set empty when company is changed
 - ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
 - PARTNER: Checks the consistency of the address list of a partner.
+- EXCEPTION : Removing deprecated interface IException
 - PORTAL CLIENT : Add config to choose the type of connection (from ABS or external)
 - DEMO DATA : Rename field data.
 - SALE ORDER/ PURCHASE ORDER : Removal of spacer.
@@ -183,6 +193,12 @@
 - BIRT TEMPLATE PARAMETER: new paratmeter "ReportType" is added.
 - ACCOUNTING REPORT : add ODS file formate in report export type
 - FORECAST RECAP : reset fields while creating duplicate record
+- PICKING ORDER : new comment field 'pickingOrderComments' on partner
+- INVOCIE : Add field 'language' to change report language in company
+- PROJECT : remove unused action and method
+- QUALITY CONTROL : Add send email option when status is finished.
+- Timesheet : replace private method to protected in TimesheetServiceImpl.
+- Deleting deprecated interfaces
 - EMPLOYEE : add emergency contact relationship
 
 ## Bug Fixes
@@ -237,5 +253,12 @@
 - USER : Fix for login with a user account that is not valid.
 - Advance data import: Fix Data import error when there is same object in two different sheets.
 - SALE ORDER : Fix issue of getting name null.
+- Fix nonexistent views
+- INVOICE : fix issue of invoice copy
+- TEAMTASK: Add fullname in demo data.
+- Timesheet line : Duration label issue when created from mobile app
+- EXPENSE : fix NPE on validate Expense.
+- Controller: Use Beans.get instead of Inject
+- PROJECT : Kanban view doesn't change status
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip

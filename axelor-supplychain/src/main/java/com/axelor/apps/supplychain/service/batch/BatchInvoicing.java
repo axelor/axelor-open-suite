@@ -23,7 +23,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -58,13 +58,13 @@ public class BatchInvoicing extends BatchStrategy {
           TraceBackService.trace(
               new AxelorException(
                   e, e.getCategory(), I18n.get("Order %s"), saleOrder.getSaleOrderSeq()),
-              IException.INVOICE_ORIGIN,
+              ExceptionOriginRepository.INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
         } catch (Exception e) {
           TraceBackService.trace(
               new Exception(String.format(I18n.get("Order %s"), saleOrder.getSaleOrderSeq()), e),
-              IException.INVOICE_ORIGIN,
+              ExceptionOriginRepository.INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
 

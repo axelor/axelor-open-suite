@@ -27,7 +27,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -35,8 +34,6 @@ import org.iban4j.UnsupportedCountryException;
 
 @Singleton
 public class BankDetailsController {
-
-  @Inject private BankDetailsServiceImpl bds;
 
   public void validateIban(ActionRequest request, ActionResponse response) {
     response.setAttr("invalidIbanText", "hidden", true);
@@ -53,8 +50,7 @@ public class BankDetailsController {
         && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
       try {
         Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
-
-        bankDetails = bds.detailsIban(bankDetails);
+        bankDetails = Beans.get(BankDetailsServiceImpl.class).detailsIban(bankDetails);
         if (bank.getCountry() != null && bank.getCountry().getAlpha2Code().equals("FR")) {
           response.setValue("bankCode", bankDetails.getBankCode());
           response.setValue("sortCode", bankDetails.getSortCode());

@@ -24,4 +24,6 @@ public interface FileTabService {
   public FileTab updateFields(FileTab fileTab) throws ClassNotFoundException;
 
   public FileTab compute(FileTab fileTab);
+
+  public String getShowRecordIds(FileTab fileTab, String field) throws ClassNotFoundException;
 }

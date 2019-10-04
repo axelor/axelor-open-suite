@@ -17,6 +17,7 @@
 	        <field name="alpha2Code" x-bind="{{alpha2Code|uppercase}}"/>
 	        <field name="numericCode"/>
             <field name="economicArea" canEdit="false"/>
+            <field name="citizenship"/>
 	    </panel>
 		<panel name="attributesPanel" title="Attributes">
 			<field name="cog" />
