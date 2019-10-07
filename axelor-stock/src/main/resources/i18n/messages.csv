@@ -457,6 +457,7 @@
 "Please select the StockMove(s) to print.",,,
 "Please select the stock move(s) to print",,,
 "Please set an economic are in AppStock.",,,
+"Price used for WAP",,,
 "Print",,,
 "Print Incoming Move",,,
 "Print Internal Move",,,
