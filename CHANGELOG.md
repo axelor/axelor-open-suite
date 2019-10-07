@@ -4,6 +4,7 @@
 ## Features
 - ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
 - SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
+- MRP WEEKLY PRINTING : Added first line in every page
 
 ## Improvements
 - PROJECT : Fixing financial report to follow the Axelor report guidelines
@@ -14,6 +15,8 @@
 - SALE/PURCHASE ORDER : autofill supplier in purchase order when 'directOrderLocation' is true.
 - LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'
 - Message : Add status "In progress" when sending a message
+- INVOICE LINE MENU GRID : add the possibility to search on invoice date. 
+- MOVE LINE EXPORT : special caracter removed
 - DEMO DATA : update demo data for account config and hr config
 
 ## Bug Fixes
@@ -26,6 +29,9 @@
 - SALEORDER/PURCHASE ORDER/INVOICE : removed the possibility to copy a line
 - Fix translations.
 - DEMO DATA : change tracking number config of the product classic server in order to avoid a bug when it's sale. 
+- INVOICE : Fix NPE on mass payment on supplier Invoice
+- STOCKMOVE : Fix NPE on printing stock move
+- CRM : Fix NPE when creating a new client.
 
 ## [5.1.8] - 2019-09-26
 ## Features
