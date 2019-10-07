@@ -17,6 +17,7 @@
 - Message : Add status "In progress" when sending a message
 - INVOICE LINE MENU GRID : add the possibility to search on invoice date. 
 - MOVE LINE EXPORT : special caracter removed
+- DEMO DATA : update demo data for account config and hr config
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
