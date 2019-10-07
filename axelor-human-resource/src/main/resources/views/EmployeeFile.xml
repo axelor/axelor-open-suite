@@ -10,7 +10,9 @@
     <form name="employee-file-form" title="File" model="com.axelor.apps.hr.db.EmployeeFile">   
     	<panel name="mainPanel">    	
 	    	<field name="fileType" />
-			<field name="metaFile" widget="binary-link"/>			
+			<field name="metaFile" widget="binary-link"/>	
+			<field name="expirationDate" showIf="fileType.hasExpirationDate" />		
+			<field name="fileType.hasExpirationDate" hidden="true" />
         </panel>       
     </form>
 
