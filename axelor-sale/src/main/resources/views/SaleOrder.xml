@@ -489,8 +489,8 @@
 	</form>
 
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew"
-		onLoad="action-group-sale-saleorder-onload">
+		onNew="action-group-sale-saleorder-onnew,action-sale-order-template-hide-allocated-qty"
+		onLoad="action-group-sale-saleorder-onload,action-sale-order-template-hide-allocated-qty">
 	  <panel name="overviewPanel">
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="deliveryState" css="label-bold bold" showIf="statusSelect >= 3" />
@@ -526,7 +526,6 @@
           </panel>
 	      <field name="priceList" onSelect="action-sale-order-method-price-list-domain" onChange="action-sale-order-record-hide-discount" form-view="price-list-form" grid-view="price-list-grid" readonlyIf="statusSelect == 3"/>
 	      <field name="hideDiscount"/>
-      	<field name="externalReference" onChange="action-sale-order-attrs-external-reference"/>
       	<field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
           <viewer>
             <![CDATA[
@@ -548,8 +547,8 @@
 	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
 	      <panel name="financialTermsPanel" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-	        <field name="paymentMode" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-	        <field name="paymentCondition" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+	        <field name="paymentMode" canEdit="false" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	        <field name="paymentCondition" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
 	      <panel name="stockLocationPanel" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
    		      <field name="stockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -1350,6 +1349,12 @@
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
 	</action-method>
+	
+	<action-attrs name="action-sale-order-template-hide-allocated-qty">
+		<attribute name="hidden" for="saleOrderLineList.reservedQty" expr="true"/>
+		<attribute name="hidden" for="saleOrderLineList.allocateAll" expr="true"/>
+		<attribute name="hidden" for="saleOrderLineList.deallocate" expr="true"/>
+	</action-attrs>
 
   <action-method name="action-sale-order-method-check-analytic-distribution-template">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkSaleOrderAnalyticDistributionTemplate" if="company?.saleConfig?.isAnalyticDistributionRequired"/>

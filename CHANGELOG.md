@@ -33,6 +33,7 @@
 - STOCKMOVE : Fix NPE on printing stock move
 - CRM : Fix NPE when creating a new client.
 - STOCK MOVE: update stock move form's title
+- Sale Order Template Form : change and remove unwanted fields.
 
 ## [5.1.8] - 2019-09-26
 ## Features
