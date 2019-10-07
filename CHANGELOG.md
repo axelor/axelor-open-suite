@@ -1,5 +1,42 @@
 # Changelog
 
+## [5.1.9] - 2019-10-07
+## Features
+- SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
+
+## Improvements
+- PROJECT: Fixing financial report to follow the Axelor report guidelines.
+- BANK STATEMENT: improved bank statement line grid for AFB120 file format.
+- EbicsBank: Disable canEdit on language field in ebics-bank-form.
+- SALE/PURCHASE ORDER: autofill same stocklocation in purchase order.
+- TIMESHEET: Generate TS lines for leaves and holidays automatically.
+- SALE/PURCHASE ORDER: autofill supplier in purchase order when 'directOrderLocation' is true.
+- LOGISTICAL FORMS: change french translation from 'provision' to 'Mise à disposition'.
+- Message: Add status "In progress" when sending a message.
+- INVOICE LINE MENU GRID: add the possibility to search on invoice date.
+- MOVE LINE EXPORT: special caracter removed.
+- DEMO DATA: update demo data for account config and hr config.
+- DEMO DATA: create new schedule in demo data to update customer account.
+- MRP WEEKLY PRINTING: Added first line in every page.
+
+## Bug Fixes
+- Stock Move: fix WAP computation on customer returns.
+- Move Line: fix error when we reconcile multiple moves.
+- ACCOUNTING REPORT: balance reports are now faster to generate.
+- DEBT RECOVERY: Replace partnerFullName with accountingSituation.partner.fullName.
+- Accounting Batch: fix error during Reimbursement import.
+- MANUF. ORDER: clear costsheetlist when creating duplicate manufacturing order.
+- SALEORDER/PURCHASE ORDER/INVOICE: removed the possibility to copy a line.
+- Fix translations.
+- DEMO DATA: change tracking number config of the product classic server in order to avoid a bug when it is sold.
+- INVOICE: Fix NPE on mass payment on supplier Invoice.
+- STOCKMOVE: Fix NPE on printing stock move.
+- CRM: Fix NPE when creating a new client.
+- STOCK MOVE: update stock move form's title.
+- Sale Order Template Form: change and remove unwanted fields.
+- EXPENSE: replace line break caracter per a space for move creation.
+- MOVES TEMPLATE: Fixed NPE on move generation.
+
 ## [5.1.8] - 2019-09-26
 ## Features
 - SALE ORDER : Manage mandatory advance payment on SaleOrder according payment condition
@@ -1311,12 +1348,15 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-[5.1.8]: https://github.com/axelor/abs-webapp/compare/v5.1.7...v5.1.8
-[5.1.7]: https://github.com/axelor/abs-webapp/compare/v5.1.6...v5.1.7
-[5.1.6]: https://github.com/axelor/abs-webapp/compare/v5.1.5...v5.1.6
-[5.1.5]: https://github.com/axelor/abs-webapp/compare/v5.1.4...v5.1.5
-[5.1.4]: https://github.com/axelor/abs-webapp/compare/v5.1.3...v5.1.4
-[5.1.3]: https://github.com/axelor/abs-webapp/compare/v5.1.2...v5.1.3
-[5.1.2]: https://github.com/axelor/abs-webapp/compare/v5.1.1...v5.1.2
-[5.1.1]: https://github.com/axelor/abs-webapp/compare/v5.1.0...v5.1.1
-[5.1.0]: https://github.com/axelor/abs-webapp/compare/5.0...v5.1.0
+
+[5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9
+[5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...v5.1.8
+[5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
+[5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
+[5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
+[5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
+[5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3
+[5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...v5.1.2
+[5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...v5.1.1
+[5.1.0]: https://github.com/axelor/axelor-business-suite/compare/5.0...v5.1.0
+
