@@ -46,6 +46,7 @@
         <field name="netMass"
             onChange="action-stock-move-line-group-net-mass-onchange"
             width="100px"/>
+		<field name="wapPrice" x-scale="2" hidden="true"/>
         <field name="trackingNumber"
 			canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
 			onSelect="action-stock-move-line-attrs-tracking-number-domain"
@@ -104,6 +105,7 @@
 					<field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed"/>
         	<field name="unitPriceTaxed" hidden="true"/>
+			<field name="wapPrice" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
@@ -363,6 +365,7 @@
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
 		<action name="action-stock-move-line-tracking-number-attrs"/>
 		<action name="action-stock-move-line-qty-attrs"/>
+		<action name="action-stock-move-line-attrs-hide-avg-price"/>
 		<action name="action-stock-move-line-price-attrs-readonly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-stock-move-subline-price-attrs-readonly" if="isSubLine &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
@@ -517,6 +520,7 @@
 
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
 		<attribute name="scale" for="unitPriceUntaxed" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="wapPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 	<action-view name="action-stock-move-line-product-default-planned" title="${fullName} plan. st. move"
@@ -585,6 +589,11 @@
     <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="realQty"/>
     <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="productModel"/>
   </action-attrs>
+
+	<action-attrs name="action-stock-move-line-attrs-hide-avg-price">
+		<attribute name="hidden" for="wapPrice" expr="eval: stockMove.typeSelect != 3 || !stockMove.isReversion || !stockMove.reversionOriginStockMove" if="stockMove"/>
+		<attribute name="hidden" for="wapPrice" expr="eval: __parent__.typeSelect != 3 || !__parent__.isReversion || !__parent__.reversionOriginStockMove" if="!stockMove"/>
+	</action-attrs>
 
 	<action-method name="action-stock-move-subline-method-reset-data-on-select-pack-line">
 		<call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="resetSubLines"/>

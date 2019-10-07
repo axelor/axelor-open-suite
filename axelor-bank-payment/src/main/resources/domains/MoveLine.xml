@@ -5,7 +5,7 @@
   
   <entity name="MoveLine" lang="java">
   
-    <decimal name="bankReconciledAmount" title="Bank reconciled amount" readonly="true"/>
+    <decimal name="bankReconciledAmount" title="Bank reconciled amount"/>
 
   </entity>
 

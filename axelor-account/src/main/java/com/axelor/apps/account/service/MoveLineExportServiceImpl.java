@@ -116,7 +116,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       List<Move> moveList,
       AccountingReport accountingReport,
       LocalDate localDate,
-      String exportToAgressoNumber) {
+      String exportNumber) {
 
     int i = 0;
 
@@ -128,7 +128,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
           moveRepo.find(move.getId()),
           accountingReportRepo.find(accountingReport.getId()),
           localDate,
-          exportToAgressoNumber);
+          exportNumber);
 
       if (i % 10 == 0) {
         JPA.clear();
@@ -141,12 +141,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Move updateMove(
-      Move move,
-      AccountingReport accountingReport,
-      LocalDate localDate,
-      String exportToAgressoNumber) {
+      Move move, AccountingReport accountingReport, LocalDate localDate, String exportNumber) {
 
-    move.setExportNumber(exportToAgressoNumber);
+    move.setExportNumber(exportNumber);
     move.setExportDate(localDate);
     move.setAccountingOk(true);
     move.setAccountingReport(accountingReport);
@@ -281,7 +278,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type vente
+   * Méthode réalisant l'export SI - pour les journaux de type vente
    *
    * @param mlr
    * @param replay
@@ -304,7 +301,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type vente
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type vente
    *
    * @param mlr
    * @param replay
@@ -471,7 +468,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type avoir
+   * Méthode réalisant l'export SI - pour les journaux de type avoir
    *
    * @param mlr
    * @param replay
@@ -494,7 +491,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type avoir
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type avoir
    *
    * @param mlr
    * @param replay
@@ -662,7 +659,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type trésorerie
+   * Méthode réalisant l'export SI - pour les journaux de type trésorerie
    *
    * @param mlr
    * @param replay
@@ -685,7 +682,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type trésorerie
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type trésorerie
    *
    * @param mlr
    * @param replay
@@ -854,7 +851,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso pour les journaux de type achat
+   * Méthode réalisant l'export SI - pour les journaux de type achat
    *
    * @param mlr
    * @param replay
@@ -876,7 +873,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des en-têtes pour les journaux de type achat
+   * Méthode réalisant l'export SI - des en-têtes pour les journaux de type achat
    *
    * @param mlr
    * @param replay
@@ -1131,7 +1128,14 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     LocalDate interfaceDate = accountingReport.getDate();
 
-    String moveLineQueryStr = "";
+    String moveLineQueryStr =
+        String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_VALIDATED);
+    if (!administration) {
+      moveLineQueryStr +=
+          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
+    }
+    moveLineQueryStr += ")";
+
     moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
     if (accountingReport.getYear() != null) {
       moveLineQueryStr +=
@@ -1151,6 +1155,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
       }
     }
+
     if (accountingReport.getDate() != null) {
       moveLineQueryStr +=
           String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
@@ -1174,14 +1179,12 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<MoveLine> moveLineList =
         moveLineRepo
             .all()
-            .filter(
-                "(self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) " + moveLineQueryStr,
-                MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK)
+            .filter(moveLineQueryStr)
             .order("move.validationDate")
             .order("date")
             .order("name")
             .fetch();
+
     if (!moveLineList.isEmpty()) {
       List<Move> moveList = new ArrayList<>();
       for (MoveLine moveLine : moveLineList) {
@@ -1259,7 +1262,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   /**
-   * Méthode réalisant l'export SI - Agresso des fichiers détails
+   * Méthode réalisant l'export SI - des fichiers détails
    *
    * @param mlr
    * @param fileName
@@ -1338,7 +1341,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     for (LocalDate localDate : dates) {
 
-      Query queryExportAgressoRef =
+      Query queryExportRef =
           JPA.em()
               .createQuery(
                   "SELECT DISTINCT self.move.exportNumber from MoveLine self where self.account != null "
@@ -1346,11 +1349,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                       + localDate.toString()
                       + "'"
                       + moveLineQueryStr);
-      List<String> exportAgressoRefs = new ArrayList<String>();
-      exportAgressoRefs = queryExportAgressoRef.getResultList();
-      for (String exportAgressoRef : exportAgressoRefs) {
+      List<String> exportRefs = new ArrayList<String>();
+      exportRefs = queryExportRef.getResultList();
+      for (String exportRef : exportRefs) {
 
-        if (exportAgressoRef != null && !exportAgressoRef.isEmpty()) {
+        if (exportRef != null && !exportRef.isEmpty()) {
 
           int sequence = 1;
 
@@ -1361,7 +1364,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                           + "AND self.date = '"
                           + localDate.toString()
                           + "' AND self.move.exportNumber = '"
-                          + exportAgressoRef
+                          + exportRef
                           + "'"
                           + moveLineQueryStr
                           + " group by self.account.id");
@@ -1381,7 +1384,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
                           "self.account.id = ?1 AND (self.debit > 0 OR self.credit > 0) AND self.date = '"
                               + localDate.toString()
                               + "' AND self.move.exportNumber = '"
-                              + exportAgressoRef
+                              + exportRef
                               + "'"
                               + moveLineQueryStr,
                           accountId)
@@ -1473,7 +1476,15 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       List<String[]> allMoveData,
       AccountingReport accountingReport)
       throws AxelorException, IOException {
+
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
+
+    for (String[] iteams : allMoveData) {
+      for (String iteam : iteams) {
+        iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+      }
+    }
+
     if (filePath == null) {
       filePath = Files.createTempDir().getAbsolutePath();
     } else {

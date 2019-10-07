@@ -182,6 +182,7 @@
 		<action name="action-timesheet-attrs-from-date"/>
 		<action name="action-timesheet-attrs-panels"/>
 		<action name="action-timesheet-attrs-refresh-editor"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -227,11 +228,15 @@
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-record-from-period-date"/>
 		<action name="action-timesheet-record-to-date" if="fromDate != null"/>
+		<action name="action-timesheet-prefill-lines" if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
 	</action-group>
 
+	<action-method name="action-timesheet-prefill-lines">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="prefillLines" />
+	</action-method>
 
 	<action-method name="action-timesheet-method-timesheet-compute-period-total">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>

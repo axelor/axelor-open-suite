@@ -66,3 +66,4 @@
 170;"depositSlip";"Deposit slip";1;4;"DS%YY%FM";;1;1
 169;"subrogationRelease";"Subrogation release";1;4;"SR%YY%FM";;1;1
 107;"debitReject";"Direct debit reject";1;4;"REJDD%YY";;1;1
+180;"move";"Move line for expense";1;4;"MVEXP%YY%FM";;1;1
