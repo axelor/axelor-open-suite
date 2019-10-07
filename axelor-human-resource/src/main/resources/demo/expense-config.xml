@@ -21,7 +21,6 @@
 	<input file="base_expenseTemplate.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
 	
     <input file="base_sequence_new.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
-     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
      	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
      	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
      	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>

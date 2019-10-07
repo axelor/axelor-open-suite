@@ -164,7 +164,7 @@ public class DPAEServiceImpl implements DPAEService {
     if (dpae.getSocialSecurityNumber() == null) {
       errors.add(I18n.get("Social security number"));
     }
-    if (dpae.getSocialSecurityNumber() == null) {
+    if (dpae.getSocialSecurityNumber() != null && dpae.getSocialSecurityNumber().length() == 15) {
       errors.add(I18n.get("Social security number"));
     }
     if (dpae.getFirstName() == null) {

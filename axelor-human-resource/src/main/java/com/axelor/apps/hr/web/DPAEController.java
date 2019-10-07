@@ -17,10 +17,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import java.util.List;
-import javax.annotation.Nullable;
+import java.util.stream.Collectors;
 
 public class DPAEController {
 
@@ -38,15 +36,12 @@ public class DPAEController {
       }
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
         List<Long> ids =
-            Lists.transform(
-                (List) request.getContext().get("_ids"),
-                new Function<Object, Long>() {
-                  @Nullable
-                  @Override
-                  public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                  }
-                });
+            (List)
+                (((List) context.get("_ids"))
+                    .stream()
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         MetaFile metafile = dpaeService.sendMultiple(ids);
         if (metafile != null) {
           response.setView(
