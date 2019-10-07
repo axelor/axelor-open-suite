@@ -15,6 +15,7 @@
 - LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'
 - Message : Add status "In progress" when sending a message
 - INVOICE LINE MENU GRID : add the possibility to search on invoice date. 
+- MOVE LINE EXPORT : special caracter removed
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
