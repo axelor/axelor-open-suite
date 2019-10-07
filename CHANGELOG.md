@@ -128,6 +128,7 @@
 - COMPANY : autocomplete companySet when enableMultiCompany = false
 - FUNCTION : new object function on Sales and CRM and new M2O on partner
 - CITIZENSHIP : Add new object citizenship on base and new M2O in country and employee
+- EMPLOYEE : Files management added domains and demo data 
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
