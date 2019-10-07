@@ -230,7 +230,9 @@
             <field name="external" colSpan="4" widget="InlineCheckbox"/>
           </panel>
         </panel>
-      </panel>
+
+       <panel-related name="employeeFileListPanel" field="employeeFileList" colSpan="12" grid-view="employee-file-grid" form-view="employee-file-form" />
+       </panel>
 
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">

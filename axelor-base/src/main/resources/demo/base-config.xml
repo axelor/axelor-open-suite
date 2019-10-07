@@ -216,6 +216,8 @@
       search="self.key = :key AND self.language = :language"/>
       
     <input file="base_citizenship.csv" separator=";" type="com.axelor.apps.base.db.Citizenship"/>
+    
+    <input file="base_fileType.csv" type="com.axelor.apps.base.db.FileType" separator=";" />
 
 </csv-inputs>
 
