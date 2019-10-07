@@ -190,7 +190,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             false,
             false,
-            true);
+            !isReverse);
     move.setFunctionalOriginSelect(functionalOriginSelect);
     counter = 0;
 
