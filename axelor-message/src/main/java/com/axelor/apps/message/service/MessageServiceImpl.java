@@ -205,6 +205,7 @@ public class MessageServiceImpl implements MessageService {
 
   public Message sendMessage(Message message) throws AxelorException {
     try {
+      message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
         return sendByMail(message);
       } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {

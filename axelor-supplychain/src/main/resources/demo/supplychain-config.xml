@@ -60,5 +60,8 @@
     <input file="account_budgetDistribution.csv" separator=";" type="com.axelor.apps.account.db.BudgetDistribution" search="self.importId = :importId" >
 		<bind to="createdOn" eval="call:com.axelor.csv.script.ImportDateTime:importDate(createdOn)" column="createdOn"/>
 	</input>
+	
+	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
+	
 </csv-inputs>
 

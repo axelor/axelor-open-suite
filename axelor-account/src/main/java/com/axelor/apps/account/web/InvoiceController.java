@@ -61,7 +61,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nullable;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -309,15 +308,12 @@ public class InvoiceController {
     try {
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
         List<Long> ids =
-            Lists.transform(
-                (List) request.getContext().get("_ids"),
-                new Function<Object, Long>() {
-                  @Nullable
-                  @Override
-                  public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                  }
-                });
+            (List)
+                (((List) context.get("_ids"))
+                    .stream()
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
       } else if (context.get("id") != null) {
@@ -847,15 +843,12 @@ public class InvoiceController {
 
       if (!ObjectUtils.isEmpty(context.get("_ids"))) {
         List<Long> invoiceIdList =
-            Lists.transform(
-                (List) context.get("_ids"),
-                new Function<Object, Long>() {
-                  @Nullable
-                  @Override
-                  public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                  }
-                });
+            (List)
+                (((List) context.get("_ids"))
+                    .stream()
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
 
         List<Long> invoiceToPay =
             Beans.get(InvoicePaymentCreateService.class).getInvoiceIdsToPay(invoiceIdList);
