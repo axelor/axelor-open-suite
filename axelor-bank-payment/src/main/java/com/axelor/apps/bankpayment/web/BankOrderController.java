@@ -257,4 +257,15 @@ public class BankOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void cancel(ActionRequest request, ActionResponse response) {
+    try {
+      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+      bankOrder = bankOrderRepo.find(bankOrder.getId());
+      bankOrderService.cancelBankOrder(bankOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

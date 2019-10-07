@@ -210,6 +210,7 @@ public class MessageServiceImpl implements MessageService {
 
   public Message sendMessage(Message message) throws AxelorException {
     try {
+      message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
         return sendByMail(message);
       } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
@@ -315,6 +316,9 @@ public class MessageServiceImpl implements MessageService {
       MetaFile metaFile = metaAttachment.getMetaFile();
       mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
     }
+
+    // Make sure message can be found in sending thread below.
+    JPA.flush();
 
     // send email using a separate process to avoid thread blocking
     executor.submit(

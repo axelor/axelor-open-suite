@@ -62,12 +62,15 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
 
     Map<String, Class<? extends DeclarationOfExchangesExporter>> map = null;
     EconomicArea economicArea = Beans.get(AppStockService.class).getAppStock().getEconomicArea();
-    if (economicArea != null) {
-      exportServiceClassMap = getExportServiceClassMap(economicArea);
-      map =
-          exportServiceClassMap.get(
-              declarationOfExchanges.getCountry().getEconomicArea().getCode());
+    if (economicArea == null) {
+      throw new AxelorException(
+          declarationOfExchanges,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK));
     }
+    exportServiceClassMap = getExportServiceClassMap(economicArea);
+    map =
+        exportServiceClassMap.get(declarationOfExchanges.getCountry().getEconomicArea().getCode());
     if (map == null) {
       throw new AxelorException(
           declarationOfExchanges,

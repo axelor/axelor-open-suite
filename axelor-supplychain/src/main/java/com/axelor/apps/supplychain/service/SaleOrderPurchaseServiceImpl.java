@@ -125,8 +125,10 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
             null,
             saleOrder.getSaleOrderSeq(),
             saleOrder.getExternalReference(),
-            Beans.get(StockLocationService.class)
-                .getDefaultReceiptStockLocation(saleOrder.getCompany()),
+            saleOrder.getDirectOrderLocation()
+                ? saleOrder.getStockLocation()
+                : Beans.get(StockLocationService.class)
+                    .getDefaultReceiptStockLocation(saleOrder.getCompany()),
             Beans.get(AppBaseService.class).getTodayDate(),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),

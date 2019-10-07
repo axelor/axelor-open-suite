@@ -462,7 +462,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public void finishPurchaseOrder(PurchaseOrder purchaseOrder) {
-
     purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
     purchaseOrderRepo.save(purchaseOrder);
   }
@@ -470,7 +469,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
-
     purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_CANCELED);
     purchaseOrderRepo.save(purchaseOrder);
   }

@@ -11,10 +11,12 @@
         <field name="company"/>
         <field name="inChargeUser"/>
         <field name="totalAmountExpected" aggregate="sum"/>
+        <field name="statusSelect"/>
     </grid>
     
-    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onLoad="action-budget-method-update-lines, save" onNew="action-budget-record-on-new" onSave="action-budget-check-shared-dates">
+    <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onNew="action-budget-record-on-new" onSave="action-budget-check-shared-dates">
   		<panel name="mainPanel">
+  			<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect" readonly="true"/>
     		<field name="name" showTitle="false" colSpan="12">
       			<viewer depends="name"><![CDATA[
 
@@ -28,31 +30,35 @@
     				<field name="name" required="true" colSpan="9"/>
      		 	</editor>
     		</field>
-		    <field name="company" canEdit="false"/>
+		    <field name="company" canEdit="false" readonlyIf="statusSelect == 2"/>
 		    <field name="company.currency" canEdit="false"/>
-		    <field name="fromDate"/>
-		    <field name="toDate"/>
-    		<panel name="periodsGenerationAssistantPanel" title="Periods generation assistant" colSpan="12" canCollapse="true" collapseIf="true">
-			    <field name="periodDurationSelect" colSpan="4"/>
-			    <field name="amountForGeneration" colSpan="4"/>
-	    		<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" colSpan="4"/>
-  			</panel>
-  		</panel>
-		<panel-related name="budgetLineListPanel" field="budgetLineList" onChange="action-budget-method-compute-total-amount"/>
-		<panel name="totalAmountExpectedPanel" readonly="true" colSpan="4" sidebar="true">
-    		<field name="totalAmountExpected" showTitle="false" colSpan="12" css="order-subtotal">
-      			<viewer><![CDATA[
+		    <field name="fromDate" readonlyIf="statusSelect == 2"/>
+		    <field name="toDate" readonlyIf="statusSelect == 2"/>
+		</panel>
+		<panel name="periodsGenerationAssistantPanel" title="Periods generation assistant" colSpan="12" canCollapse="true" collapseIf="id" showIf="statusSelect == 1">
+			<field name="periodDurationSelect" colSpan="4"/>
+			<field name="amountForGeneration" colSpan="4"/>
+			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" colSpan="4"/>
+		</panel>
+		<panel-related name="budgetLineListPanel" field="budgetLineList" onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect == 2"/>
+		<panel name="buttonPannel" colSpan="4" sidebar="true" showTitle="false">
+    		<button name="validateButton" title="Validate" onClick="save,action-account-budget-validate" showIf="statusSelect == 1"/>
+    		<button name="draftButton" title="Draft" onClick="save,action-account-budget-draft" showIf="statusSelect == 2"/>		
+    	</panel>
+		<panel name="totalAmountExpectedPanel" readonly="true" colSpan="4" sidebar="true" title="Total amounts">
+    		<field name="totalAmountExpected"/>
+    		<field name="totalAmountCommitted" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+    		<field name="totalAmountRealized"/>			
+    	</panel>
 
-                   <dl class="dl-horizontal">
-	               		<dt class="order-subtotal-total" x-translate>Expected total Amount</dt>
-	                    <dd class="order-subtotal-total">{{record.totalAmountExpected}}</dd>
-	               </dl>
+		<panel-dashlet name="budgetDistributionLinePurchaseOrderLinePanel" action="action-budget-view-budget-distribution-purchase-order-line" colSpan="12" showIf="statusSelect == 2" canSearch="true" height="350" readonly="true" if="__config__.app.isApp('supplychain')"/>
+		<panel-dashlet name="budgetDistributionLineInvoicePanel" action="action-budget-view-budget-distribution-invoice-line" colSpan="12" showIf="statusSelect == 2" canSearch="true" height="350" readonly="true"/>
 
-      			]]></viewer>
-    		</field>
-    		<panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true" collapseIf="true">
-      			<field name="inChargeUser" canNew="false" canView="false" canEdit="false"/>
-    		</panel>
+		<panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true" collapseIf="true" >
+  			<field name="inChargeUser" canNew="false" canView="false" canEdit="false"/>
+    	</panel>
+    	<panel name="configuration" title="Configuration" canCollapse="true" sidebar="true" collapseIf="true" readonlyIf="statusSelect == 2">
+   			<field name="checkAvailableBudget" widget="boolean-switch"/>
     	</panel>
 	</form>
     
@@ -73,6 +79,7 @@
     <action-record name="action-budget-record-on-new" model="com.axelor.apps.account.db.Budget">
     	<field name="company"  expr="eval:__user__.activeCompany"/>
     	<field name="inChargeUser" expr="eval: __user__"/>
+    	<field name="checkAvailableBudget" expr="eval: __config__.app.getApp('budget')?.checkAvailableBudget"/>
     </action-record>
     
     <action-method name="action-budget-method-compute-total-amount">
@@ -82,9 +89,30 @@
     <action-method name="action-budget-method-update-lines">
     	<call class="com.axelor.apps.account.web.BudgetController" method="updateLines"/>
     </action-method>
+
+	<action-group name="action-group-budget-update-amounts">
+		<action name="action-method-budget-update-total-amount-realized"/>
+		<action name="action-method-budget-update-total-amount-committed" if="__config__.app.isApp('supplychain')"/>
+	</action-group>
+
+	<action-method name="action-method-budget-update-total-amount-realized">
+		<call class="com.axelor.apps.account.web.BudgetController" method="computeTotalAmountRealized"/>
+	</action-method>
+
+	<action-method name="action-method-budget-update-total-amount-committed">
+		<call class="com.axelor.apps.supplychain.web.BudgetController" method="computeTotalAmountCommited"/>
+	</action-method>
     
     <action-method name="action-method-budget-year-generate-periods">
     	<call class="com.axelor.apps.account.web.BudgetController" method="generatePeriods"/>
+    </action-method>
+    
+    <action-method name="action-account-budget-validate">
+    	<call class="com.axelor.apps.account.web.BudgetController" method="validate"/>
+    </action-method>
+    
+    <action-method name="action-account-budget-draft">
+    	<call class="com.axelor.apps.account.web.BudgetController" method="draft"/>
     </action-method>
     
     <action-validate name="action-budget-validate-exceed-line-amount">
@@ -97,5 +125,21 @@
 	<action-method name="action-budget-check-shared-dates">
 		<call class="com.axelor.apps.account.web.BudgetController" method="checkSharedDates"/>
 	</action-method>
+
+	<action-view name="action-budget-view-budget-distribution-purchase-order-line" title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+		<view type="grid" name="budget-distribution-grid-purchase-order-line-grid"/>
+		<view type="form" name="budget-distribution-grid-purchase-order-line-form"/>
+		<view-param name="limit" value="200"/>
+		<domain>self.budget.id = :_budgetId AND self.purchaseOrderLine != null</domain>
+		<context name="_budgetId" expr="eval: __this__.id"/>
+	</action-view>
+
+	<action-view name="action-budget-view-budget-distribution-invoice-line" title="Realized lines" model="com.axelor.apps.account.db.BudgetDistribution">
+		<view type="grid" name="budget-distribution-grid-invoice-line-grid"/>
+		<view type="form" name="budget-distribution-grid-invoice-line-form"/>
+		<view-param name="limit" value="200"/>
+		<domain>self.budget.id = :_budgetId AND self.invoiceLine != null</domain>
+		<context name="_budgetId" expr="eval: __this__.id"/>
+	</action-view>
 
 </object-views>

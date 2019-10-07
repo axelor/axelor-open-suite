@@ -38,6 +38,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,13 +82,17 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
     BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
     Timesheet timesheet = Beans.get(TimesheetService.class).getCurrentOrCreateTimesheet();
+    LocalDate startDateTime =
+        (timer.getStartDateTime() == null)
+            ? Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate()
+            : timer.getStartDateTime().toLocalDate();
     TimesheetLine timesheetLine =
         Beans.get(TimesheetLineService.class)
             .createTimesheetLine(
                 timer.getProject(),
                 timer.getProduct(),
                 timer.getUser(),
-                timer.getStartDateTime().toLocalDate(),
+                startDateTime,
                 timesheet,
                 durationHours,
                 timer.getComments());
