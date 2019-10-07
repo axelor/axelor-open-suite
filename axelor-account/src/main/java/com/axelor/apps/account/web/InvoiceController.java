@@ -923,7 +923,7 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     Company company = invoice.getCompany();
 
-    long companyId = company.getPartner().getId();
+    long companyId = company.getPartner() == null ? 0 : company.getPartner().getId();
 
     String domain =
         String.format(
