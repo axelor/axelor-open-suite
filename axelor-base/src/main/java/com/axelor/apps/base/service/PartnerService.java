@@ -387,7 +387,8 @@ public class PartnerService {
               .all()
               .filter(
                   "lower(self.simpleFullName) = lower(:newName) "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect")
+                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
+                      + "and ( self.archived != true OR self.archived is null )")
               .bind("newName", newName)
               .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
               .fetchOne();
@@ -399,7 +400,8 @@ public class PartnerService {
               .filter(
                   "lower(self.simpleFullName) = lower(:newName) "
                       + "and self.id != :partnerId "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect")
+                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
+                      + "and ( self.archived != true OR self.archived is null )")
               .bind("newName", newName)
               .bind("partnerId", partnerId)
               .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
@@ -513,5 +515,40 @@ public class PartnerService {
       return companyStr.substring(0, companyStr.length() - 1);
     }
     return null;
+  }
+
+  public Partner isThereDuplicatePartnerInArchive(Partner partner) {
+    String newName = this.computeSimpleFullName(partner);
+    if (Strings.isNullOrEmpty(newName)) {
+      return null;
+    }
+    Long partnerId = partner.getId();
+    if (partnerId == null) {
+      Partner existingPartner =
+          partnerRepo
+              .all()
+              .filter(
+                  "lower(self.simpleFullName) = lower(:newName) "
+                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
+                      + "and self.archived = true")
+              .bind("newName", newName)
+              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
+              .fetchOne();
+      return existingPartner;
+    } else {
+      Partner existingPartner =
+          partnerRepo
+              .all()
+              .filter(
+                  "lower(self.simpleFullName) = lower(:newName) "
+                      + "and self.id != :partnerId "
+                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
+                      + "and self.archived = true")
+              .bind("newName", newName)
+              .bind("partnerId", partnerId)
+              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
+              .fetchOne();
+      return existingPartner;
+    }
   }
 }

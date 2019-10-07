@@ -352,6 +352,15 @@ public class PartnerController {
         "duplicatePartnerText", "hidden", !partnerService.isThereDuplicatePartner(partner));
   }
 
+  public void checkPartnerNameArchived(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    Partner partnerArchived = partnerService.isThereDuplicatePartnerInArchive(partner);
+    if (partnerArchived != null) {
+      response.setValue("duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
+      response.setAttr("duplicatePartnerInArchiveText", "hidden", false);
+    }
+  }
+
   public void showPartnerOnMap(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
