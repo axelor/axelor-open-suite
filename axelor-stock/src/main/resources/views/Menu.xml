@@ -185,6 +185,7 @@
 	<action-view name="stock.root.inventories.draft" title="Inventories"
 		model="com.axelor.apps.stock.db.Inventory" >
 		<view type="grid" name="inventory-grid" />
+		<view type="calendar" name="inventory-calendar"/>
 		<view type="form" name="inventory-form"/>
 		<view-param name="search-filters" value="inventories-filters"/>
 	</action-view>	

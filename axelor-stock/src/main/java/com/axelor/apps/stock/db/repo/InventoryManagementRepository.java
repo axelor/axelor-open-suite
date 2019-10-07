@@ -19,10 +19,10 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import java.time.ZonedDateTime;
 import javax.persistence.PersistenceException;
 
 public class InventoryManagementRepository extends InventoryRepository {
@@ -33,7 +33,6 @@ public class InventoryManagementRepository extends InventoryRepository {
 
     copy.setStatusSelect(STATUS_DRAFT);
     copy.setInventorySeq(null);
-    copy.setDateT(ZonedDateTime.now());
     return copy;
   }
 
@@ -49,6 +48,8 @@ public class InventoryManagementRepository extends InventoryRepository {
     } catch (AxelorException e) {
       throw new PersistenceException(e);
     }
+
+    entity.setInventoryTitle(Beans.get(InventoryService.class).computeTitle(entity));
 
     return inventory;
   }

@@ -39,4 +39,14 @@ public class ImportInventory {
 
     return inventory;
   }
+
+  public Object importInventory(Object bean, Map<String, Object> values) throws AxelorException {
+
+    assert bean instanceof Inventory;
+
+    Inventory inventory = (Inventory) bean;
+    inventory.setInventoryTitle(inventoryService.computeTitle(inventory));
+
+    return inventory;
+  }
 }
