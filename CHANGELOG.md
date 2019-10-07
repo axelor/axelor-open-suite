@@ -13,6 +13,8 @@
 - TIMESHEET : Generate TS lines for leaves and holidays automatically.
 - SALE/PURCHASE ORDER : autofill supplier in purchase order when 'directOrderLocation' is true.
 - LOGISTICAL FORMS : change french translation from 'provision' to 'Mise à disposition'
+- Message : Add status "In progress" when sending a message
+- INVOICE LINE MENU GRID : add the possibility to search on invoice date. 
 - MOVE LINE EXPORT : special caracter removed
 
 ## Bug Fixes
@@ -22,6 +24,12 @@
 - DEBT RECOVERY  : Replace partnerFullName with accountingSituation.partner.fullName
 - Accounting Batch: fix error during Reimbursement import
 - MANUF. ORDER : clear costsheetlist when create duplicate manufacture order
+- SALEORDER/PURCHASE ORDER/INVOICE : removed the possibility to copy a line
+- Fix translations.
+- DEMO DATA : change tracking number config of the product classic server in order to avoid a bug when it's sale. 
+- INVOICE : Fix NPE on mass payment on supplier Invoice
+- STOCKMOVE : Fix NPE on printing stock move
+- CRM : Fix NPE when creating a new client.
 
 ## [5.1.8] - 2019-09-26
 ## Features
