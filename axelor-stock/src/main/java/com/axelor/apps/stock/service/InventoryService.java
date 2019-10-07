@@ -19,7 +19,6 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.IAdministration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
@@ -77,19 +76,46 @@ public class InventoryService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private InventoryLineService inventoryLineService;
+  protected InventoryLineService inventoryLineService;
+  protected SequenceService sequenceService;
+  protected StockConfigService stockConfigService;
+  protected ProductRepository productRepo;
+  protected InventoryRepository inventoryRepo;
+  protected StockMoveRepository stockMoveRepo;
+  protected StockLocationLineService stockLocationLineService;
+  protected StockMoveService stockMoveService;
+  protected StockMoveLineService stockMoveLineService;
+  protected StockLocationLineRepository stockLocationLineRepository;
+  protected TrackingNumberRepository trackingNumberRepository;
+  protected AppBaseService appBaseService;
 
-  @Inject private SequenceService sequenceService;
-
-  @Inject private StockConfigService stockConfigService;
-
-  @Inject private ProductRepository productRepo;
-
-  @Inject private InventoryRepository inventoryRepo;
-
-  @Inject private StockMoveRepository stockMoveRepo;
-
-  @Inject private StockLocationLineService stockLocationLineService;
+  @Inject
+  public InventoryService(
+      InventoryLineService inventoryLineService,
+      SequenceService sequenceService,
+      StockConfigService stockConfigService,
+      ProductRepository productRepo,
+      InventoryRepository inventoryRepo,
+      StockMoveRepository stockMoveRepo,
+      StockLocationLineService stockLocationLineService,
+      StockMoveService stockMoveService,
+      StockMoveLineService stockMoveLineService,
+      StockLocationLineRepository stockLocationLineRepository,
+      TrackingNumberRepository trackingNumberRepository,
+      AppBaseService appBaseService) {
+    this.inventoryLineService = inventoryLineService;
+    this.sequenceService = sequenceService;
+    this.stockConfigService = stockConfigService;
+    this.productRepo = productRepo;
+    this.inventoryRepo = inventoryRepo;
+    this.stockMoveRepo = stockMoveRepo;
+    this.stockLocationLineService = stockLocationLineService;
+    this.stockMoveService = stockMoveService;
+    this.stockMoveLineService = stockMoveLineService;
+    this.stockLocationLineRepository = stockLocationLineRepository;
+    this.trackingNumberRepository = trackingNumberRepository;
+    this.appBaseService = appBaseService;
+  }
 
   public Inventory createInventory(
       LocalDate date,
@@ -115,7 +141,7 @@ public class InventoryService {
 
     inventory.setDescription(description);
 
-    inventory.setFormatSelect(IAdministration.PDF);
+    inventory.setFormatSelect(InventoryRepository.FORMAT_PDF);
 
     inventory.setStockLocation(stockLocation);
 
@@ -271,20 +297,19 @@ public class InventoryService {
   public TrackingNumber getTrackingNumber(String sequence) {
 
     if (sequence != null && !sequence.isEmpty()) {
-      return Beans.get(TrackingNumberRepository.class).findBySeq(sequence);
+      return trackingNumberRepository.findBySeq(sequence);
     }
     return null;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public StockMove validateInventory(Inventory inventory) throws AxelorException {
-    AppBaseService baseService = Beans.get(AppBaseService.class);
-    StockMove stockMove = generateStockMove(inventory);
+  public void validateInventory(Inventory inventory) throws AxelorException {
+    generateStockMove(inventory, true);
+    generateStockMove(inventory, false);
     storeLastInventoryData(inventory);
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
-    inventory.setValidatedOn(baseService.getTodayDate());
-    return stockMove;
+    inventory.setValidatedOn(appBaseService.getTodayDate());
   }
 
   private void storeLastInventoryData(Inventory inventory) {
@@ -349,72 +374,58 @@ public class InventoryService {
     }
   }
 
-  public StockMove generateStockMove(Inventory inventory) throws AxelorException {
+  /**
+   * Generate a stock move from an inventory.
+   *
+   * @param inventory a realized inventory.
+   * @param isEnteringStock whether we want to create incoming or upcoming stock move of this
+   *     inventory.
+   * @return the generated stock move.
+   * @throws AxelorException
+   */
+  public StockMove generateStockMove(Inventory inventory, boolean isEnteringStock)
+      throws AxelorException {
 
-    StockLocation toStockLocation = inventory.getStockLocation();
-    Company company = toStockLocation.getCompany();
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
-    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
-
-    if (company == null) {
-      throw new AxelorException(
-          inventory,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_6),
-          toStockLocation.getName());
+    StockLocation toStockLocation;
+    StockLocation fromStockLocation;
+    Company company = inventory.getCompany();
+    if (isEnteringStock) {
+      toStockLocation = inventory.getStockLocation();
+      fromStockLocation =
+          stockConfigService.getInventoryVirtualStockLocation(
+              stockConfigService.getStockConfig(company));
+    } else {
+      toStockLocation =
+          stockConfigService.getInventoryVirtualStockLocation(
+              stockConfigService.getStockConfig(company));
+      fromStockLocation = inventory.getStockLocation();
     }
 
     String inventorySeq = inventory.getInventorySeq();
 
+    LocalDate inventoryDate = inventory.getDateT().toLocalDate();
     StockMove stockMove =
-        this.createStockMoveHeader(
-            inventory, company, toStockLocation, inventory.getDateT().toLocalDate(), inventorySeq);
+        stockMoveService.createStockMove(
+            null,
+            null,
+            company,
+            fromStockLocation,
+            toStockLocation,
+            inventoryDate,
+            inventoryDate,
+            null,
+            StockMoveRepository.TYPE_INTERNAL);
+
+    stockMove.setName(inventorySeq);
+
     stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_INVENTORY);
     stockMove.setOriginId(inventory.getId());
     stockMove.setOrigin(inventorySeq);
 
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
-      BigDecimal currentQty = inventoryLine.getCurrentQty();
-      BigDecimal realQty = inventoryLine.getRealQty();
-      Product product = inventoryLine.getProduct();
-      TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
-
-      if (currentQty.compareTo(realQty) != 0) {
-        BigDecimal diff = realQty.subtract(currentQty);
-        BigDecimal avgPrice;
-        StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
-        if (stockLocationLine != null) {
-          avgPrice = stockLocationLine.getAvgPrice();
-        } else {
-          avgPrice = BigDecimal.ZERO;
-        }
-
-        StockMoveLine stockMoveLine =
-            stockMoveLineService.createStockMoveLine(
-                product,
-                product.getName(),
-                product.getDescription(),
-                diff,
-                avgPrice,
-                avgPrice,
-                product.getUnit(),
-                stockMove,
-                StockMoveLineService.TYPE_NULL,
-                false,
-                BigDecimal.ZERO);
-        if (stockMoveLine == null) {
-          throw new AxelorException(
-              inventory,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.INVENTORY_7) + " " + inventorySeq);
-        }
-        if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
-          stockMoveLine.setTrackingNumber(trackingNumber);
-        }
-      }
+      generateStockMoveLines(inventoryLine, stockMove, isEnteringStock);
     }
-    if (stockMove.getStockMoveLineList() != null) {
+    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
 
       stockMoveService.plan(stockMove);
       stockMoveService.copyQtyToRealQty(stockMove);
@@ -423,45 +434,76 @@ public class InventoryService {
     return stockMove;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public StockMove cancel(Inventory inventory) throws AxelorException {
-    StockMove stockMove = stockMoveRepo.findByName(inventory.getInventorySeq());
+  /**
+   * Generate lines for the given stock move. Depending if we are creating an incoming or outgoing
+   * stock move, we only create stock move line with positive quantity.
+   *
+   * @param inventoryLine an inventory line
+   * @param stockMove a stock move being created
+   * @param isEnteringStock whether we are creating an incoming or outgoing stock move.
+   * @throws AxelorException
+   */
+  protected void generateStockMoveLines(
+      InventoryLine inventoryLine, StockMove stockMove, boolean isEnteringStock)
+      throws AxelorException {
+    Product product = inventoryLine.getProduct();
+    TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
+    BigDecimal diff = inventoryLine.getRealQty().subtract(inventoryLine.getCurrentQty());
+    if (!isEnteringStock) {
+      diff = diff.negate();
+    }
+    if (diff.signum() > 0) {
+      BigDecimal avgPrice;
+      StockLocationLine stockLocationLine =
+          stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+      if (stockLocationLine != null) {
+        avgPrice = stockLocationLine.getAvgPrice();
+      } else {
+        avgPrice = BigDecimal.ZERO;
+      }
 
-    if (stockMove != null) {
-      StockMoveService stockMoveService = Beans.get(StockMoveService.class);
+      StockMoveLine stockMoveLine =
+          stockMoveLineService.createStockMoveLine(
+              product,
+              product.getName(),
+              product.getDescription(),
+              diff,
+              avgPrice,
+              avgPrice,
+              product.getUnit(),
+              stockMove,
+              StockMoveLineService.TYPE_NULL,
+              false,
+              BigDecimal.ZERO);
+      if (stockMoveLine == null) {
+        throw new AxelorException(
+            inventoryLine.getInventory(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.INVENTORY_7)
+                + " "
+                + inventoryLine.getInventory().getInventorySeq());
+      }
+      if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
+        stockMoveLine.setTrackingNumber(trackingNumber);
+      }
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancel(Inventory inventory) throws AxelorException {
+    List<StockMove> stockMoveList =
+        stockMoveRepo
+            .all()
+            .filter("self.originTypeSelect = :originTypeSelect AND self.originId = :originId")
+            .bind("originTypeSelect", StockMoveRepository.ORIGIN_INVENTORY)
+            .bind("originId", inventory.getId())
+            .fetch();
+
+    for (StockMove stockMove : stockMoveList) {
       stockMoveService.cancel(stockMove);
     }
 
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
-
-    return stockMove;
-  }
-
-  public StockMove createStockMoveHeader(
-      Inventory inventory,
-      Company company,
-      StockLocation toStockLocation,
-      LocalDate inventoryDate,
-      String name)
-      throws AxelorException {
-
-    StockMove stockMove =
-        Beans.get(StockMoveService.class)
-            .createStockMove(
-                null,
-                null,
-                company,
-                stockConfigService.getInventoryVirtualStockLocation(
-                    stockConfigService.getStockConfig(company)),
-                toStockLocation,
-                inventoryDate,
-                inventoryDate,
-                null,
-                StockMoveRepository.TYPE_INTERNAL);
-
-    stockMove.setName(name);
-
-    return stockMove;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -485,7 +527,7 @@ public class InventoryService {
             == null) { // if no tracking number on stockLocationLine, check if there is a tracking
           // number on the product
           long numberOfTrackingNumberOnAProduct =
-              Beans.get(StockLocationLineRepository.class)
+              stockLocationLineRepository
                   .all()
                   .filter(
                       "self.product = ?1 AND self.trackingNumber IS NOT null AND self.detailsStockLocation = ?2",
@@ -548,10 +590,7 @@ public class InventoryService {
       params.add(inventory.getToRack());
     }
 
-    return Beans.get(StockLocationLineRepository.class)
-        .all()
-        .filter(query, params.toArray())
-        .fetch();
+    return stockLocationLineRepository.all().filter(query, params.toArray()).fetch();
   }
 
   public InventoryLine createInventoryLine(
@@ -654,13 +693,13 @@ public class InventoryService {
     }
   }
 
-  public StockMove findStockMove(Inventory inventory) {
+  public List<StockMove> findStockMoves(Inventory inventory) {
     return stockMoveRepo
         .all()
         .filter(
             "self.originTypeSelect = ?1 AND self.originId = ?2",
             StockMoveRepository.ORIGIN_INVENTORY,
             inventory.getId())
-        .fetchOne();
+        .fetch();
   }
 }

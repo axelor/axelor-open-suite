@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -34,22 +35,29 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.EmployeeVehicle;
@@ -100,6 +108,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
+  protected PaymentModeService paymentModeService;
 
   @Inject
   public ExpenseServiceImpl(
@@ -112,7 +121,8 @@ public class ExpenseServiceImpl implements ExpenseService {
       AccountingSituationService accountingSituationService,
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
-      TemplateMessageService templateMessageService) {
+      TemplateMessageService templateMessageService,
+      PaymentModeService paymentModeService) {
 
     this.moveService = moveService;
     this.expenseRepository = expenseRepository;
@@ -124,6 +134,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.analyticMoveLineService = analyticMoveLineService;
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
+    this.paymentModeService = paymentModeService;
   }
 
   @Override
@@ -280,9 +291,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDate(appAccountService.getTodayDate());
 
-    PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
-    expense.setPaymentMode(paymentMode);
-
+    if (expense.getUser().getPartner() != null) {
+      PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+      expense.setPaymentMode(paymentMode);
+    }
     expenseRepository.save(expense);
   }
 
@@ -345,12 +357,11 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   protected Move createAndSetMove(Expense expense) throws AxelorException {
-    LocalDate moveDate = expense.getMoveDate();
+    LocalDate moveDate = expense.getPeriod().getToDate();
     if (moveDate == null) {
       moveDate = appAccountService.getTodayDate();
-      expense.setMoveDate(moveDate);
     }
-
+    expense.setMoveDate(moveDate);
     Company company = expense.getCompany();
     Partner partner = expense.getUser().getPartner();
 
@@ -427,7 +438,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               moveDate,
               moveLineId++,
               expense.getExpenseSeq(),
-              expenseLine.getComments());
+              expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " "));
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
@@ -537,21 +548,107 @@ public class ExpenseServiceImpl implements ExpenseService {
           Beans.get(BankOrderCreateServiceHr.class).createBankOrder(expense, bankDetails);
       expense.setBankOrder(bankOrder);
       Beans.get(BankOrderRepository.class).save(bankOrder);
-    }
-
-    if (paymentMode.getAutomaticTransmission()) {
       expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
     } else {
-      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+      if (accountConfigService
+          .getAccountConfig(expense.getCompany())
+          .getGenerateMoveForInvoicePayment()) {
+        this.createMoveForExpensePayment(expense);
+      }
+      if (paymentMode.getAutomaticTransmission()) {
+        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+      } else {
+        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+      }
     }
-
     expense.setPaymentAmount(
         expense
             .getInTaxTotal()
             .subtract(expense.getAdvanceAmount())
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount()));
+  }
+
+  public Move createMoveForExpensePayment(Expense expense) throws AxelorException {
+    Company company = expense.getCompany();
+    PaymentMode paymentMode = expense.getPaymentMode();
+    Partner partner = expense.getUser().getPartner();
+    LocalDate paymentDate = expense.getPaymentDate();
+    BigDecimal paymentAmount = expense.getInTaxTotal();
+    BankDetails companyBankDetails = company.getDefaultBankDetails();
+
+    Account employeeAccount;
+
+    Journal journal =
+        paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
+
+    MoveLine expenseMoveLine = this.getExpenseEmployeeMoveLineByLoop(expense);
+
+    if (expenseMoveLine == null) {
+      return null;
+    }
+    employeeAccount = expenseMoveLine.getAccount();
+
+    Move move =
+        moveService
+            .getMoveCreateService()
+            .createMove(
+                journal,
+                company,
+                expense.getMove().getCurrency(),
+                partner,
+                paymentDate,
+                paymentMode,
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+
+    move.addMoveLineListItem(
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails),
+            paymentAmount,
+            false,
+            paymentDate,
+            null,
+            1,
+            expense.getExpenseSeq(),
+            null));
+
+    MoveLine employeeMoveLine =
+        moveLineService.createMoveLine(
+            move,
+            partner,
+            employeeAccount,
+            paymentAmount,
+            true,
+            paymentDate,
+            null,
+            2,
+            expense.getExpenseSeq(),
+            null);
+    employeeMoveLine.setTaxAmount(expense.getTaxTotal());
+
+    move.addMoveLineListItem(employeeMoveLine);
+
+    moveService.getMoveValidateService().validate(move);
+    expense.setPaymentMove(move);
+
+    Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);
+
+    expenseRepository.save(expense);
+
+    return move;
+  }
+
+  protected MoveLine getExpenseEmployeeMoveLineByLoop(Expense expense) {
+    MoveLine expenseEmployeeMoveLine = null;
+    for (MoveLine moveline : expense.getMove().getMoveLineList()) {
+      if (moveline.getCredit().compareTo(BigDecimal.ZERO) > 0) {
+        expenseEmployeeMoveLine = moveline;
+      }
+    }
+    return expenseEmployeeMoveLine;
   }
 
   @Override
@@ -570,9 +667,15 @@ public class ExpenseServiceImpl implements ExpenseService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.EXPENSE_PAYMENT_CANCEL));
-      } else {
+      } else if (bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
         Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
       }
+    }
+
+    Move paymentMove = expense.getPaymentMove();
+    if (paymentMove != null) {
+      expense.setPaymentMove(null);
+      Beans.get(MoveCancelService.class).cancel(paymentMove);
     }
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
@@ -693,8 +796,22 @@ public class ExpenseServiceImpl implements ExpenseService {
       Company company = null;
       if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
         company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+      } else {
+        company = user.getActiveCompany();
       }
+
+      Period period =
+          Beans.get(PeriodRepository.class)
+              .all()
+              .filter(
+                  "self.fromDate <= ?1 AND self.toDate >= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = ?3",
+                  Beans.get(AppBaseService.class).getTodayDate(),
+                  company,
+                  YearBaseRepository.STATUS_OPENED)
+              .fetchOne();
+
       expense.setCompany(company);
+      expense.setPeriod(period);
       expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
     }
     return expense;

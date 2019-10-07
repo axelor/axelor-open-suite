@@ -28,17 +28,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 
 @Singleton
 public class PayrollPreparationController {
-
-  @Inject protected PayrollPreparationService payrollPreparationService;
-
-  @Inject protected PayrollPreparationRepository payrollPreparationRepo;
 
   public void generateFromEmploymentContract(ActionRequest request, ActionResponse response) {
 
@@ -48,8 +43,8 @@ public class PayrollPreparationController {
             .find(new Long(request.getContext().get("_idEmploymentContract").toString()));
 
     response.setValues(
-        payrollPreparationService.generateFromEmploymentContract(
-            payrollPreparation, employmentContract));
+        Beans.get(PayrollPreparationService.class)
+            .generateFromEmploymentContract(payrollPreparation, employmentContract));
   }
 
   public void fillInPayrollPreparation(ActionRequest request, ActionResponse response)
@@ -57,7 +52,7 @@ public class PayrollPreparationController {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
 
     List<PayrollLeave> payrollLeaveList =
-        payrollPreparationService.fillInPayrollPreparation(payrollPreparation);
+        Beans.get(PayrollPreparationService.class).fillInPayrollPreparation(payrollPreparation);
 
     response.setValue("extraHoursLineList", payrollPreparation.getExtraHoursLineList());
     response.setValue("$payrollLeavesList", payrollLeaveList);
@@ -80,7 +75,7 @@ public class PayrollPreparationController {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
 
     List<PayrollLeave> payrollLeaveList =
-        payrollPreparationService.fillInLeaves(payrollPreparation);
+        Beans.get(PayrollPreparationService.class).fillInLeaves(payrollPreparation);
 
     response.setValue("$payrollLeavesList", payrollLeaveList);
   }
@@ -88,8 +83,11 @@ public class PayrollPreparationController {
   public void exportPayrollPreparation(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 
+    PayrollPreparationService payrollPreparationService =
+        Beans.get(PayrollPreparationService.class);
     PayrollPreparation payrollPreparation =
-        payrollPreparationRepo.find(request.getContext().asType(PayrollPreparation.class).getId());
+        Beans.get(PayrollPreparationRepository.class)
+            .find(request.getContext().asType(PayrollPreparation.class).getId());
 
     if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD) {
       response.setExportFile(

@@ -96,19 +96,6 @@ public class PaymentVoucherControlService {
     }
   }
 
-  public void checkPayboxAmount(PaymentVoucher paymentVoucher) throws AxelorException {
-    if (paymentVoucher.getPayboxAmountPaid() != null
-        && paymentVoucher.getPayboxAmountPaid().compareTo(paymentVoucher.getPaidAmount()) != 0) {
-      throw new AxelorException(
-          paymentVoucher,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYMENT_VOUCHER_CONTROL_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          paymentVoucher.getPaidAmount(),
-          paymentVoucher.getPayboxAmountPaid());
-    }
-  }
-
   /**
    * Fonction vérifiant si l'ensemble des lignes à payer ont le même compte et que ce compte est le
    * même que celui du trop-perçu

@@ -30,6 +30,8 @@
   	
   	<string name="invoicePaymentRef" title="Reference"/>
 
+	<string name="description" title="Description"/>
+	
 	<finder-method name="findByReconcile" using="reconcile" all="true"/>
 
   	<extra-code>

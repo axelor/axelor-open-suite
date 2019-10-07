@@ -356,6 +356,7 @@ public class IntercoServiceImpl implements IntercoService {
     if (accountingSituation != null) {
       intercoInvoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
       intercoInvoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+      intercoInvoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
     intercoInvoice.setPriceList(intercoPriceList);
     intercoInvoice.setInvoicesCopySelect(intercoPartner.getInvoicesCopySelect());

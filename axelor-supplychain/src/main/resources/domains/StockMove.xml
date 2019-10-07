@@ -33,7 +33,7 @@
 
     <track on="UPDATE">
 		<field name="pfpValidateStatusSelect"/>
-      <field name="invoice"/>
+      <field name="invoiceSet"/>
     </track>
 
   </entity>

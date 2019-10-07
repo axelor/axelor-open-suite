@@ -28,16 +28,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class InvoiceLineController {
-
-  @Inject private InvoiceLineRepository invoiceLineRepo;
-
-  @Inject private InvoiceLineService invoiceLineService;
 
   public void getProductPrice(ActionRequest request, ActionResponse response) {
 
@@ -71,6 +66,8 @@ public class InvoiceLineController {
     BigDecimal companyInTaxTotal = BigDecimal.ZERO;
     BigDecimal priceDiscounted = BigDecimal.ZERO;
     BigDecimal taxRate = BigDecimal.ZERO;
+
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     if (invoiceLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
@@ -130,7 +127,7 @@ public class InvoiceLineController {
 
     if (packLine.getOldQty() == null || packLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
       if (packLine.getId() != null) {
-        InvoiceLine line = invoiceLineRepo.find(packLine.getId());
+        InvoiceLine line = Beans.get(InvoiceLineRepository.class).find(packLine.getId());
         if (line.getQty().compareTo(BigDecimal.ZERO) != 0) {
           oldKitQty = line.getQty();
         }

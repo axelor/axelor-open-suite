@@ -23,11 +23,11 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -37,9 +37,6 @@ import java.time.temporal.ChronoUnit;
 
 @Singleton
 public class ProductionOrderWizardController {
-
-  @Inject private ProductionOrderWizardService productionOrderWizardService;
-  @Inject private AppProductionService appProductionService;
 
   public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
 
@@ -52,7 +49,9 @@ public class ProductionOrderWizardController {
               context.get("_startDate").toString(),
               DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
 
-      if (ChronoUnit.MINUTES.between(appProductionService.getTodayDateTime(), startDateT) < 0) {
+      if (ChronoUnit.MINUTES.between(
+              Beans.get(AppProductionService.class).getTodayDateTime(), startDateT)
+          < 0) {
         response.setError(I18n.get(IExceptionMessage.PRODUCTION_ORDER_5));
       }
     }
@@ -64,7 +63,9 @@ public class ProductionOrderWizardController {
               DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
 
       if ((startDateT != null && ChronoUnit.MINUTES.between(startDateT, endDateT) < 0)
-          || ChronoUnit.MINUTES.between(appProductionService.getTodayDateTime(), endDateT) < 0) {
+          || ChronoUnit.MINUTES.between(
+                  Beans.get(AppProductionService.class).getTodayDateTime(), endDateT)
+              < 0) {
         response.setError(I18n.get(IExceptionMessage.PRODUCTION_ORDER_5));
       }
     }
@@ -81,7 +82,9 @@ public class ProductionOrderWizardController {
               .add("form", "production-order-form")
               .add("grid", "production-order-grid")
               .param("forceEdit", "true")
-              .context("_showRecord", productionOrderWizardService.validate(context).toString())
+              .context(
+                  "_showRecord",
+                  Beans.get(ProductionOrderWizardService.class).validate(context).toString())
               .map());
 
       response.setCanClose(true);

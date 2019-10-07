@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
-import com.axelor.apps.base.db.IImports;
 import com.axelor.apps.base.db.ImportConfiguration;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.inject.Beans;
 import java.io.File;
 
@@ -28,7 +28,7 @@ public class FactoryImporter {
 
     Importer importer;
 
-    if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
+    if (importConfiguration.getTypeSelect().equals(ImportConfigurationRepository.TYPE_XML)) {
       importer = Beans.get(ImporterXML.class);
     } else {
       importer = Beans.get(ImporterCSV.class);
@@ -41,7 +41,7 @@ public class FactoryImporter {
 
     Importer importer;
 
-    if (importConfiguration.getTypeSelect().equals(IImports.XML)) {
+    if (importConfiguration.getTypeSelect().equals(ImportConfigurationRepository.TYPE_XML)) {
       importer = Beans.get(ImporterXML.class);
     } else {
       importer = Beans.get(ImporterCSV.class);

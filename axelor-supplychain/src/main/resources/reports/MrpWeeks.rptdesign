@@ -1239,6 +1239,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                                 <property name="resultSetColumn">Week Of Year</property>
                                                             </data>
                                                         </property>
+                                                        <property name="fontSize">5pt</property>
                                                         <property name="textAlign">center</property>
                                                         <property name="verticalAlign">middle</property>
                                                         <property name="borderTopStyle">solid</property>
@@ -1249,7 +1250,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                         <property name="borderBottomWidth">thin</property>
                                                         <property name="borderRightStyle">solid</property>
                                                         <property name="borderRightWidth">thin</property>
-                                                        <property name="height">1.5875cm</property>
                                                     </extended-item>
                                                 </property>
                                             </extended-item>
@@ -1295,6 +1295,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </property>
+                                <property name="fontSize">5pt</property>
                                 <property name="verticalAlign">middle</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
@@ -1336,6 +1337,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </property>
+                                <property name="fontSize">5pt</property>
                                 <property name="verticalAlign">middle</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
@@ -1377,6 +1379,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </property>
+                                <property name="fontSize">5pt</property>
                                 <property name="verticalAlign">middle</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
@@ -1393,6 +1396,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="text">typeSeq</text-property>
                                     </label>
                                 </property>
+                                <property name="fontSize">5pt</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
                                 <property name="borderLeftStyle">solid</property>
@@ -1433,6 +1437,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </property>
+                                <property name="fontSize">5pt</property>
                                 <property name="verticalAlign">middle</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>

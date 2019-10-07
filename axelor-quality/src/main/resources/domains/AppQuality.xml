@@ -5,6 +5,10 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppQuality" lang="java" extends="App">
+
+		<many-to-one name="qualityControlTemplate" title="Model for quality control" ref="com.axelor.apps.message.db.Template"/>
+		<boolean name="automaticMail" title="Automatic mail by completing quality control"/>
+
 	</entity>
 
 </domain-models>

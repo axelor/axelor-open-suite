@@ -319,7 +319,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
       Beans.get(InvoicePrintService.class)
           .printAndSave(
-              invoice, InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE, ReportSettings.FORMAT_PDF);
+              invoice,
+              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+              ReportSettings.FORMAT_PDF,
+              null);
     }
   }
 

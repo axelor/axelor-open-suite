@@ -26,12 +26,14 @@ import com.axelor.apps.base.service.readers.DataReaderFactory;
 import com.axelor.apps.base.service.readers.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.common.Inflector;
+import com.axelor.data.XStreamUtils;
 import com.axelor.data.adapter.DataAdapter;
 import com.axelor.data.adapter.JavaTimeAdapter;
 import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
@@ -43,6 +45,8 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
+import com.axelor.rpc.Context;
+import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -207,7 +211,8 @@ public class DataImportServiceImpl implements DataImportService {
       csvWriter.close();
 
       inputList.add(csvInput);
-      importContext.put(fileTab.getMetaModel().getFullName(), ifList);
+      importContext.put("ifConditions" + fileTab.getId(), ifList);
+      importContext.put("jsonContextValues" + fileTab.getId(), createJsonContext(fileTab));
     }
     return inputList;
   }
@@ -261,6 +266,11 @@ public class DataImportServiceImpl implements DataImportService {
       allBindings = this.createCSVBinding(column, fileField, mapper, allBindings);
       cnt++;
     }
+
+    CSVBind fileTabBind = new CSVBind();
+    fileTabBind.setField("fileTabId");
+    fileTabBind.setExpression(fileTab.getId().toString());
+    allBindings.add(fileTabBind);
 
     for (Entry<String, Object> entry : searchMap.entrySet()) {
       if (Strings.isNullOrEmpty(csvInput.getSearch())) {
@@ -418,7 +428,7 @@ public class DataImportServiceImpl implements DataImportService {
       update = true;
     }
 
-    XStream stream = new XStream();
+    XStream stream = XStreamUtils.createXStream();
     stream.processAnnotations(CSVInput.class);
     CSVInput input = (CSVInput) stream.fromXML("<input update=\"" + update + "\" />");
     input.setFileName(fileName);
@@ -884,5 +894,20 @@ public class DataImportServiceImpl implements DataImportService {
             "importLog-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".log");
 
     return logMetaFile;
+  }
+
+  @Override
+  public Map<String, Object> createJsonContext(FileTab fileTab) {
+
+    Class<? extends Model> klass = (Class<? extends Model>) fileTab.getClass();
+    Context context = new Context(klass);
+
+    JsonContext jsonContext =
+        new JsonContext(context, Mapper.of(klass).getProperty("attrs"), fileTab.getAttrs());
+
+    Map<String, Object> _map = new HashMap<String, Object>();
+    _map.put("context", context);
+    _map.put("jsonContext", jsonContext);
+    return _map;
   }
 }

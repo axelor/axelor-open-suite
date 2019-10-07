@@ -71,9 +71,10 @@
       <field name="birthDate" colSpan="4"/>
       <field name="maritalStatus" colSpan="4"/>
       <field name="sexSelect" colSpan="4"/>
-      <field name="cityOfBirth" colSpan="4"/>
-      <field name="departmentOfBirth" colSpan="4"/>
-      <field name="countryOfBirth" colSpan="4"/>
+      <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
+      <field name="departmentOfBirth" colSpan="4" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+      <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
+      <field name="citizenship" colSpan="4"/>
       <field name="maidenName" colSpan="4"/>
       <field name="maritalName" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
@@ -82,6 +83,7 @@
     <panel name="emergencyContactSBSPanel" title="Contact in case of emergency" showIf="stepByStepSelect == 1">
       <field name="emergencyContact" colSpan="4"/>
       <field name="emergencyNumber" onChange="action-employee-method-normalize-emergencyNumber" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+      <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
     </panel>
 
     <panel name="rhInfoSBSPanel" title="HR information" showIf="stepByStepSelect == 1">
@@ -196,9 +198,10 @@
           <field name="birthDate" colSpan="4"/>
           <field name="maritalStatus" colSpan="4"/>
           <field name="sexSelect" colSpan="4"/>
-          <field name="cityOfBirth" colSpan="4"/>
-          <field name="departmentOfBirth" colSpan="4"/>
-          <field name="countryOfBirth" colSpan="4"/>
+          <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
+          <field name="departmentOfBirth" colSpan="4" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+          <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
+          <field name="citizenship" colSpan="4"/>
           <field name="maidenName" colSpan="4"/>
           <field name="maritalName" colSpan="4"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
@@ -207,6 +210,7 @@
         <panel name="emergencyContactPanel" title="Contact in case of emergency" colSpan="12">
           <field name="emergencyContact" colSpan="4"/>
           <field name="emergencyNumber" onChange="action-employee-method-normalize-emergencyNumber" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+          <field name="emergencyContactRelationship" colSpan="4" title="Relationship"/>
         </panel>
 
         <panel name="rhInfoPanel" title="HR information" colSpan="12">
@@ -227,7 +231,9 @@
             <field name="external" colSpan="4" widget="InlineCheckbox"/>
           </panel>
         </panel>
-      </panel>
+
+       <panel-related name="employeeFileListPanel" field="employeeFileList" colSpan="12" grid-view="employee-file-grid" form-view="employee-file-form" />
+       </panel>
 
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">
@@ -332,6 +338,21 @@
   <action-record name="action-employee-record-finish-sbs" model="com.axelor.apps.hr.db.Employee">
     <field name="stepByStepSelect" expr="eval: 5"/>
   </action-record>
+  
+  <action-attrs name="action-employee-attrs-country-of-birth-on-change">
+  	<attribute name="value" for="citizenship" expr="eval: countryOfBirth?.citizenship"/>
+  </action-attrs>
+  
+  <action-attrs name="action-employee-attrs-department-of-birth-on-select">
+  	<attribute name="domain" for="departmentOfBirth" expr="eval: &quot; self.region.country.id = ${countryOfBirth?.id} &quot;"/>
+  </action-attrs>
+  
+  <action-attrs name="action-employee-attrs-city-of-birth-on-select">
+  	<attribute name="domain" for="cityOfBirth" expr="eval: &quot; self.id IN (0) &quot;"/>
+  	<attribute name="domain" for="cityOfBirth" expr="eval: &quot; self.country.id = ${countryOfBirth?.id} &quot;" if="countryOfBirth != null &amp;&amp; departmentOfBirth == null"/>
+  	<attribute name="domain" for="cityOfBirth" expr="eval: &quot; self.department.id = ${departmentOfBirth?.id} &quot;" if="countryOfBirth == null &amp;&amp; departmentOfBirth != null"/>
+  	<attribute name="domain" for="cityOfBirth" expr="eval: &quot; self.country.id = ${countryOfBirth?.id} AND self.department.id = ${departmentOfBirth?.id} &quot;" if="countryOfBirth != null &amp;&amp; departmentOfBirth != null"/>
+  </action-attrs>
 
   <form name="employee-annual-report-form" title="Annual report" model="com.axelor.apps.hr.db.Employee">
     <panel name="mainPanel">

@@ -14,10 +14,4 @@
 		<option value="3">In test</option>
 		<option value="4">In production</option>
 	</selection>
-
-	<selection name="support.default.invoicing.select">
-		<option value="1">No</option>
-		<option value="2">Time Spent</option>
-		<option value="3">Package</option>
-	</selection>
 </object-views>

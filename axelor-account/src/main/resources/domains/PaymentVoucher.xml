@@ -24,11 +24,9 @@
 	 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
 	 	<string name="bankCardTransactionNumber" title="CC Transaction N°" readonly="true"/>
 	 	<string name="receiptNo" title="Receipt N°" readonly="true"/>
-	 	<boolean name="payboxPaidOk" title="Paid through paybox" default="false" hidden="true"/>
 	 	<string name="email" title="Email to use"/>
 	 	<boolean name="toSaveEmailOk" title="Save email sent to contact" default="true"/>
 	 	<boolean name="defaultEmailOk" title="Default email address" default="false"/>
-	 	<decimal name="payboxAmountPaid" title="Paybox transaction Amount" hidden="true"/>
  	   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency"/>
 	  	<decimal name="paidAmountInCurrency"  title="Amount paid in currency"/>

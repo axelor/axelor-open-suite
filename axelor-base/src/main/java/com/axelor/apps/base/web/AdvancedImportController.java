@@ -26,29 +26,21 @@ import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 
 public class AdvancedImportController {
-
-  @Inject private AdvancedImportRepository advancedImportRepo;
-
-  @Inject private AdvancedImportService advancedImportService;
-
-  @Inject private ValidatorService validatorService;
-
-  @Inject private DataImportService dataImportService;
 
   public void apply(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
       if (advancedImport.getId() != null) {
-        advancedImport = advancedImportRepo.find(advancedImport.getId());
+        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
       }
 
-      boolean isValid = advancedImportService.apply(advancedImport);
+      boolean isValid = Beans.get(AdvancedImportService.class).apply(advancedImport);
       if (isValid) {
         response.setReload(true);
       } else {
@@ -63,10 +55,10 @@ public class AdvancedImportController {
     try {
       AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
       if (advancedImport.getId() != null) {
-        advancedImport = advancedImportRepo.find(advancedImport.getId());
+        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
       }
 
-      boolean isLog = validatorService.validate(advancedImport);
+      boolean isLog = Beans.get(ValidatorService.class).validate(advancedImport);
       if (isLog) {
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_CHECK_LOG));
         response.setReload(true);
@@ -83,17 +75,37 @@ public class AdvancedImportController {
     try {
       AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
       if (advancedImport.getId() != null) {
-        advancedImport = advancedImportRepo.find(advancedImport.getId());
+        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
       }
 
-      MetaFile logFile = dataImportService.importData(advancedImport);
+      MetaFile logFile = Beans.get(DataImportService.class).importData(advancedImport);
       if (logFile != null) {
         response.setValue("errorLog", logFile);
       } else {
         response.setValue("errorLog", null);
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
+        response.setSignal("refresh-app", true);
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void resetImport(ActionRequest request, ActionResponse response) {
+    try {
+      AdvancedImport advancedImport = request.getContext().asType(AdvancedImport.class);
+      if (advancedImport.getId() != null) {
+        advancedImport = Beans.get(AdvancedImportRepository.class).find(advancedImport.getId());
+      }
+
+      boolean isReset = Beans.get(AdvancedImportService.class).resetImport(advancedImport);
+      if (isReset) {
+        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_RESET));
+        response.setSignal("refresh-app", true);
+      } else {
+        response.setFlash(I18n.get(IExceptionMessage.ADVANCED_IMPORT_NO_RESET));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
