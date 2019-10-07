@@ -10,10 +10,10 @@
   	<many-to-one name="stockMove" readonly="true" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
     <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
 
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	<boolean name="filterOnAvailableProducts" title="Filter on available products" default="true" transient="true"/>
-	<decimal name="qty" title="Expected Qty"/>
-	<decimal name="realQty" title="Real Qty"/>
+	<decimal name="qty" min="0" title="Expected Qty"/>
+	<decimal name="realQty" min="0" title="Real Qty"/>
 	<decimal name="oldQty" hidden="true"/>
 	<decimal name="availableQty" title="Available qty" transient="true"/>
 	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
@@ -41,7 +41,9 @@
     <decimal name="unitPriceTaxed" precision="20" scale="10" title="Unit price"/>
     
     <decimal name="companyUnitPriceUntaxed" precision="20" scale="10" title="Company Unit price W.T."/>
-    
+
+    <decimal name="wapPrice" precision="20" scale="10" readonly="true" nullable="true" title="Price used for WAP"/>
+
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
 

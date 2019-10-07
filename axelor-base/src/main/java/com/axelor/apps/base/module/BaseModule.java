@@ -75,6 +75,8 @@ import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
@@ -183,5 +185,6 @@ public class BaseModule extends AxelorModule {
     bind(DataImportService.class).to(DataImportServiceImpl.class);
     bind(FileTabService.class).to(FileTabServiceImpl.class);
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
+    bind(PartnerService.class).to(PartnerServiceImpl.class);
   }
 }

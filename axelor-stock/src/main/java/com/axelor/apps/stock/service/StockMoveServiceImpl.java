@@ -305,6 +305,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveRepo.save(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail() != null
         && stockMove.getPlannedStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
     }
@@ -381,6 +382,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     String newStockSeq = null;
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
+    if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
+    }
     checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);
@@ -435,6 +439,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
       partnerProductQualityRatingService.calculate(stockMove);
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getRealStockMoveAutomaticMail() != null
         && stockMove.getRealStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
     }

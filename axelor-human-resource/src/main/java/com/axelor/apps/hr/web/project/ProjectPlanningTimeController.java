@@ -23,12 +23,12 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
@@ -37,10 +37,6 @@ import java.util.Map;
 
 @Singleton
 public class ProjectPlanningTimeController {
-
-  @Inject private ProjectPlanningTimeService projectPlanningTimeService;
-
-  @Inject private ProjectPlanningTimeRepository projectPlanningTimeRepo;
 
   public void showPlanning(ActionRequest request, ActionResponse response) {
 
@@ -79,8 +75,7 @@ public class ProjectPlanningTimeController {
       throws AxelorException {
 
     Context context = request.getContext();
-
-    projectPlanningTimeService.addMultipleProjectPlanningTime(context);
+    Beans.get(ProjectPlanningTimeService.class).addMultipleProjectPlanningTime(context);
 
     response.setCanClose(true);
   }
@@ -99,12 +94,13 @@ public class ProjectPlanningTimeController {
       ProjectPlanningTime projectPlanningTime =
           request.getContext().asType(ProjectPlanningTime.class);
 
-      projectPlanningTime = projectPlanningTimeRepo.find(projectPlanningTime.getId());
+      projectPlanningTime =
+          Beans.get(ProjectPlanningTimeRepository.class).find(projectPlanningTime.getId());
 
       projectPlanningTime.setIsIncludeInTurnoverForecast(
           !projectPlanningTime.getIsIncludeInTurnoverForecast());
 
-      projectPlanningTimeRepo.save(projectPlanningTime);
+      Beans.get(ProjectPlanningTimeRepository.class).save(projectPlanningTime);
 
       response.setValue(
           "isIncludeInTurnoverForecast", projectPlanningTime.getIsIncludeInTurnoverForecast());
@@ -119,7 +115,8 @@ public class ProjectPlanningTimeController {
         (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSet");
 
     if (projectPlanningTimeLines != null) {
-      projectPlanningTimeService.removeProjectPlanningLines(projectPlanningTimeLines);
+      Beans.get(ProjectPlanningTimeService.class)
+          .removeProjectPlanningLines(projectPlanningTimeLines);
     }
 
     response.setReload(true);
@@ -131,7 +128,8 @@ public class ProjectPlanningTimeController {
         (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSpentSet");
 
     if (projectPlanningTimeSpentLines != null) {
-      projectPlanningTimeService.removeProjectPlanningLines(projectPlanningTimeSpentLines);
+      Beans.get(ProjectPlanningTimeService.class)
+          .removeProjectPlanningLines(projectPlanningTimeSpentLines);
     }
 
     response.setReload(true);

@@ -30,11 +30,11 @@ import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -47,12 +47,6 @@ public class GenerateMessageController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private TemplateMessageService templateMessageService;
-
-  @Inject private TemplateRepository templateRepo;
-
-  @Inject private MessageService messageService;
-
   public void callMessageWizard(ActionRequest request, ActionResponse response) {
 
     Model context = request.getContext().asType(Model.class);
@@ -62,9 +56,10 @@ public class GenerateMessageController {
 
     String[] decomposeModel = model.split("\\.");
     String simpleModel = decomposeModel[decomposeModel.length - 1];
-
     Query<? extends Template> templateQuery =
-        templateRepo.all().filter("self.metaModel.fullName = ?1 AND self.isSystem != true", model);
+        Beans.get(TemplateRepository.class)
+            .all()
+            .filter("self.metaModel.fullName = ?1 AND self.isSystem != true", model);
 
     try {
 
@@ -112,7 +107,9 @@ public class GenerateMessageController {
     Map<?, ?> templateContext = (Map<?, ?>) context.get("_xTemplate");
     Template template = null;
     if (templateContext != null) {
-      template = templateRepo.find(Long.parseLong(templateContext.get("id").toString()));
+      template =
+          Beans.get(TemplateRepository.class)
+              .find(Long.parseLong(templateContext.get("id").toString()));
     }
 
     Long objectId = Long.parseLong(context.get("_objectId").toString());
@@ -129,8 +126,8 @@ public class GenerateMessageController {
 
   public Map<String, Object> generateMessage(
       long objectId, String model, String tag, Template template)
-      throws SecurityException, NoSuchFieldException, ClassNotFoundException,
-          InstantiationException, IllegalAccessException, AxelorException, IOException {
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException {
 
     LOG.debug("template : {} ", template);
     LOG.debug("object id : {} ", objectId);
@@ -138,23 +135,25 @@ public class GenerateMessageController {
     LOG.debug("tag : {} ", tag);
     Message message = null;
     if (template != null) {
-      message = templateMessageService.generateMessage(objectId, model, tag, template);
+      message =
+          Beans.get(TemplateMessageService.class).generateMessage(objectId, model, tag, template);
     } else {
       message =
-          messageService.createMessage(
-              model,
-              Long.valueOf(objectId).intValue(),
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              null,
-              MessageRepository.MEDIA_TYPE_EMAIL,
-              null);
+          Beans.get(MessageService.class)
+              .createMessage(
+                  model,
+                  Math.toIntExact(objectId),
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  null,
+                  MessageRepository.MEDIA_TYPE_EMAIL,
+                  null);
     }
 
     return ActionView.define(I18n.get(IExceptionMessage.MESSAGE_3))

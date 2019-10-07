@@ -26,12 +26,14 @@ import com.axelor.apps.base.service.readers.DataReaderFactory;
 import com.axelor.apps.base.service.readers.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.common.Inflector;
+import com.axelor.data.XStreamUtils;
 import com.axelor.data.adapter.DataAdapter;
 import com.axelor.data.adapter.JavaTimeAdapter;
 import com.axelor.data.csv.CSVBind;
 import com.axelor.data.csv.CSVConfig;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.data.csv.CSVInput;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
@@ -43,11 +45,14 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
+import com.axelor.rpc.Context;
+import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.opencsv.CSVWriter;
 import com.thoughtworks.xstream.XStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,6 +70,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 
 public class DataImportServiceImpl implements DataImportService {
 
@@ -137,6 +143,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
 
     MetaFile logFile = this.importData(inputs);
+    FileUtils.forceDelete(dataDir);
     return logFile;
   }
 
@@ -159,7 +166,7 @@ public class DataImportServiceImpl implements DataImportService {
 
       this.initializeVariables();
 
-      String fileName = createDataFileName(fileTab.getMetaModel());
+      String fileName = createDataFileName(fileTab);
       csvInput = this.createCSVInput(fileTab, fileName);
       ifList = new ArrayList<String>();
 
@@ -204,7 +211,8 @@ public class DataImportServiceImpl implements DataImportService {
       csvWriter.close();
 
       inputList.add(csvInput);
-      importContext.put(fileTab.getMetaModel().getFullName(), ifList);
+      importContext.put("ifConditions" + fileTab.getId(), ifList);
+      importContext.put("jsonContextValues" + fileTab.getId(), createJsonContext(fileTab));
     }
     return inputList;
   }
@@ -258,6 +266,11 @@ public class DataImportServiceImpl implements DataImportService {
       allBindings = this.createCSVBinding(column, fileField, mapper, allBindings);
       cnt++;
     }
+
+    CSVBind fileTabBind = new CSVBind();
+    fileTabBind.setField("fileTabId");
+    fileTabBind.setExpression(fileTab.getId().toString());
+    allBindings.add(fileTabBind);
 
     for (Entry<String, Object> entry : searchMap.entrySet()) {
       if (Strings.isNullOrEmpty(csvInput.getSearch())) {
@@ -415,7 +428,7 @@ public class DataImportServiceImpl implements DataImportService {
       update = true;
     }
 
-    XStream stream = new XStream();
+    XStream stream = XStreamUtils.createXStream();
     stream.processAnnotations(CSVInput.class);
     CSVInput input = (CSVInput) stream.fromXML("<input update=\"" + update + "\" />");
     input.setFileName(fileName);
@@ -456,8 +469,10 @@ public class DataImportServiceImpl implements DataImportService {
         dummyBind.setExpression(expression);
         dummyBind.setAdapter(adapter);
         bind = this.createCSVBind(column, prop.getName(), null, null, null, null);
+        this.setImportIf(prop, bind, column);
       } else {
         bind = this.createCSVBind(column, prop.getName(), null, expression, adapter, null);
+        this.setImportIf(prop, bind, column);
       }
       allBindings.add(bind);
       this.setSearch(column, prop.getName(), fileField, null);
@@ -523,7 +538,6 @@ public class DataImportServiceImpl implements DataImportService {
             subFields, index + 1, column, childProp, fileField, subBind, dummyBind);
 
       } else {
-        String field = childProp.getName();
         String expression = this.setExpression(column, fileField, childProp);
         String adapter = null;
         String dateFormat = fileField.getDateFormat();
@@ -533,11 +547,11 @@ public class DataImportServiceImpl implements DataImportService {
 
         if (!fileField.getIsMatchWithFile()) {
           this.createBindForNotMatchWithFile(
-              column, field, importType, dummyBind, expression, adapter, parentBind);
+              column, importType, dummyBind, expression, adapter, parentBind, childProp);
 
         } else {
           this.createBindForMatchWithFile(
-              column, field, importType, expression, adapter, relationship, parentBind);
+              column, importType, expression, adapter, relationship, parentBind, childProp);
         }
         this.setSearch(column, childProp.getName(), fileField, parentBind);
 
@@ -550,31 +564,32 @@ public class DataImportServiceImpl implements DataImportService {
 
   private void createBindForNotMatchWithFile(
       String column,
-      String field,
       int importType,
       CSVBind dummyBind,
       String expression,
       String adapter,
-      CSVBind parentBind) {
+      CSVBind parentBind,
+      Property childProp) {
 
     dummyBind.setExpression(expression);
     dummyBind.setAdapter(adapter);
 
     if (importType == FileFieldRepository.IMPORT_TYPE_FIND_NEW
         || importType == FileFieldRepository.IMPORT_TYPE_NEW) {
-      CSVBind subBind = this.createCSVBind(column, field, null, null, null, null);
+      CSVBind subBind = this.createCSVBind(column, childProp.getName(), null, null, null, null);
+      this.setImportIf(childProp, subBind, column);
       parentBind.getBindings().add(subBind);
     }
   }
 
   private void createBindForMatchWithFile(
       String column,
-      String field,
       int importType,
       String expression,
       String adapter,
       String relationship,
-      CSVBind parentBind) {
+      CSVBind parentBind,
+      Property childProp) {
 
     if (importType != FileFieldRepository.IMPORT_TYPE_FIND) {
       if (!Strings.isNullOrEmpty(expression)
@@ -584,7 +599,9 @@ public class DataImportServiceImpl implements DataImportService {
         parentBind.setExpression(expression);
         return;
       }
-      CSVBind subBind = this.createCSVBind(column, field, null, expression, adapter, null);
+      CSVBind subBind =
+          this.createCSVBind(column, childProp.getName(), null, expression, adapter, null);
+      this.setImportIf(childProp, subBind, column);
       parentBind.getBindings().add(subBind);
 
     } else {
@@ -790,11 +807,14 @@ public class DataImportServiceImpl implements DataImportService {
     return bind;
   }
 
-  private String createDataFileName(MetaModel model) {
+  private String createDataFileName(FileTab fileTab) {
     String fileName = null;
+    MetaModel model = fileTab.getMetaModel();
+    Long fileTabId = fileTab.getId();
     try {
       Mapper mapper = advancedImportService.getMapper(model.getFullName());
-      fileName = inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + ".csv";
+      fileName =
+          inflector.camelize(mapper.getBeanClass().getSimpleName(), true) + fileTabId + ".csv";
 
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);
@@ -860,21 +880,34 @@ public class DataImportServiceImpl implements DataImportService {
     return null;
   }
 
+  private void setImportIf(Property prop, CSVBind bind, String column) {
+    if (prop.isRequired()) {
+      bind.setCondition(column.toString() + "!= null && !" + column.toString() + ".empty");
+    }
+  }
+
   private MetaFile createImportLogFile(ImporterListener listener) throws IOException {
 
-    File logFile = File.createTempFile("importLog", ".log");
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(logFile);
-      writer.write(listener.getImportLog());
-    } finally {
-      writer.close();
-    }
     MetaFile logMetaFile =
         metaFiles.upload(
-            new FileInputStream(logFile),
+            new ByteArrayInputStream(listener.getImportLog().getBytes()),
             "importLog-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".log");
 
     return logMetaFile;
+  }
+
+  @Override
+  public Map<String, Object> createJsonContext(FileTab fileTab) {
+
+    Class<? extends Model> klass = (Class<? extends Model>) fileTab.getClass();
+    Context context = new Context(klass);
+
+    JsonContext jsonContext =
+        new JsonContext(context, Mapper.of(klass).getProperty("attrs"), fileTab.getAttrs());
+
+    Map<String, Object> _map = new HashMap<String, Object>();
+    _map.put("context", context);
+    _map.put("jsonContext", jsonContext);
+    return _map;
   }
 }

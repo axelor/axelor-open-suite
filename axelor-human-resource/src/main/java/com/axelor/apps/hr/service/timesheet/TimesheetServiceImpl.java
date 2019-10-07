@@ -20,8 +20,10 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.AppTimesheet;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -33,11 +35,15 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -71,6 +77,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -393,7 +400,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     return timesheet;
   }
 
-  private Map<Integer, String> getCorresMap() {
+  protected Map<Integer, String> getCorresMap() {
     Map<Integer, String> correspMap = new HashMap<>();
     correspMap.put(1, "monday");
     correspMap.put(2, "tuesday");
@@ -405,7 +412,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     return correspMap;
   }
 
-  private boolean isWorkedDay(
+  protected boolean isWorkedDay(
       LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
     DayPlanning dayPlanningCurr = new DayPlanning();
     for (DayPlanning dayPlanning : dayPlanningList) {
@@ -470,9 +477,16 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     timesheet.setUser(user);
     Company company = null;
-    if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
-      company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+    Employee employee = user.getEmployee();
+    if (employee != null && employee.getMainEmploymentContract() != null) {
+      company = employee.getMainEmploymentContract().getPayCompany();
+    } else {
+      company = user.getActiveCompany();
     }
+
+    String timeLoggingPreferenceSelect =
+        employee == null ? null : employee.getTimeLoggingPreferenceSelect();
+    timesheet.setTimeLoggingPreferenceSelect(timeLoggingPreferenceSelect);
     timesheet.setCompany(company);
     timesheet.setFromDate(fromDate);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
@@ -1128,5 +1142,50 @@ public class TimesheetServiceImpl implements TimesheetService {
               .fetch();
     }
     return planningList;
+  }
+
+  @Override
+  public void prefillLines(Timesheet timesheet) throws AxelorException {
+    PublicHolidayService holidayService = Beans.get(PublicHolidayService.class);
+    LeaveService leaveService = Beans.get(LeaveService.class);
+    WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
+    AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
+
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
+    User user = timesheet.getUser();
+
+    Employee employee = user.getEmployee();
+    HRConfig config = timesheet.getCompany().getHrConfig();
+    WeeklyPlanning weeklyPlanning =
+        employee != null ? employee.getWeeklyPlanning() : config.getWeeklyPlanning();
+    EventsPlanning holidayPlanning =
+        employee != null
+            ? employee.getPublicHolidayEventsPlanning()
+            : config.getPublicHolidayEventsPlanning();
+
+    for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
+      BigDecimal dayValueInHours =
+          weeklyPlanningService.getWorkingDayValueInHours(
+              weeklyPlanning, date, LocalTime.MIN, LocalTime.MAX);
+
+      if (appTimesheet.getCreateLinesForHolidays()
+          && holidayService.checkPublicHolidayDay(date, holidayPlanning)) {
+        timesheetLineService.createTimesheetLine(
+            user, date, timesheet, dayValueInHours, I18n.get(IExceptionMessage.TIMESHEET_HOLIDAY));
+
+      } else if (appTimesheet.getCreateLinesForLeaves()) {
+        LeaveRequest leave = leaveService.getLeave(user, date);
+        if (leave != null) {
+          BigDecimal hours = leaveService.computeDuration(leave);
+          if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
+              == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+            hours = hours.multiply(dayValueInHours);
+          }
+          timesheetLineService.createTimesheetLine(
+              user, date, timesheet, hours, I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
+        }
+      }
+    }
   }
 }

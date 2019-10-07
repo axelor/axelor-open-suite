@@ -24,6 +24,16 @@
 	    <panel-include view="json-field-form-base" />
     </form>
     
+    <form name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" id="studio-json-field-form" extension="true">
+		<extend target="panel-include[last()]">
+			<insert position="after">
+				<panel-mail name="mailPanel">
+					<mail-messages limit="4"/>
+				</panel-mail>
+			</insert>
+		</extend>
+    </form>
+
 	<grid name="studio-meta-json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
 	  <field name="name"/>
 	  <field name="title" />

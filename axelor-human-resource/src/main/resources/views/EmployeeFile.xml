@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<grid name="employee-file-grid" title="Files" model="com.axelor.apps.hr.db.EmployeeFile" >	
+		<field name="fileType"  />
+		<field name="metaFile" />		
+    </grid>
+
+    <form name="employee-file-form" title="File" model="com.axelor.apps.hr.db.EmployeeFile">   
+    	<panel name="mainPanel">    	
+	    	<field name="fileType" />
+			<field name="metaFile" widget="binary-link"/>			
+        </panel>       
+    </form>
+
+</object-views>

@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -103,7 +103,7 @@ public class BatchBankStatement extends AbstractBatch {
             IExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
             ebicsPartner.getPartnerId(),
             cause.getMessage());
-    TraceBackService.trace(exception, IException.BANK_STATEMENT, batch.getId());
+    TraceBackService.trace(exception, ExceptionOriginRepository.BANK_STATEMENT, batch.getId());
   }
 
   @Override

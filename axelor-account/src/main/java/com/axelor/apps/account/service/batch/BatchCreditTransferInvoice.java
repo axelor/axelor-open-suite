@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -137,7 +137,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
           incrementAnomaly();
           anomalyList.add(invoice.getId());
           query.bind("anomalyList", anomalyList);
-          TraceBackService.trace(ex, IException.CREDIT_TRANSFER, batch.getId());
+          TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
           ex.printStackTrace();
           log.error(
               String.format(

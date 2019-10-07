@@ -28,25 +28,18 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
 
 @Singleton
 public class SubrogationReleaseController {
 
-  private SubrogationReleaseService subrogationReleaseService;
-
-  @Inject
-  public SubrogationReleaseController(SubrogationReleaseService subrogationReleaseService) {
-    this.subrogationReleaseService = subrogationReleaseService;
-  }
-
   public void retrieveInvoices(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
       Company company = subrogationRelease.getCompany();
-      List<Invoice> invoiceList = subrogationReleaseService.retrieveInvoices(company);
+      List<Invoice> invoiceList =
+          Beans.get(SubrogationReleaseService.class).retrieveInvoices(company);
       response.setValue("invoiceSet", invoiceList);
     } catch (Exception e) {
       response.setError(e.getMessage());
@@ -59,7 +52,7 @@ public class SubrogationReleaseController {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
       subrogationRelease =
           Beans.get(SubrogationReleaseRepository.class).find(subrogationRelease.getId());
-      subrogationReleaseService.transmitRelease(subrogationRelease);
+      Beans.get(SubrogationReleaseService.class).transmitRelease(subrogationRelease);
       response.setReload(true);
     } catch (Exception e) {
       response.setError(e.getMessage());
@@ -73,7 +66,8 @@ public class SubrogationReleaseController {
       String name =
           String.format(
               "%s %s", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
-      String fileLink = subrogationReleaseService.printToPDF(subrogationRelease, name);
+      String fileLink =
+          Beans.get(SubrogationReleaseService.class).printToPDF(subrogationRelease, name);
       response.setView(ActionView.define(name).add("html", fileLink).map());
       response.setReload(true);
     } catch (Exception e) {
@@ -85,7 +79,7 @@ public class SubrogationReleaseController {
   public void exportToCSV(ActionRequest request, ActionResponse response) {
     try {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
-      subrogationReleaseService.exportToCSV(subrogationRelease);
+      Beans.get(SubrogationReleaseService.class).exportToCSV(subrogationRelease);
       response.setReload(true);
     } catch (Exception e) {
       response.setError(e.getMessage());
@@ -98,7 +92,7 @@ public class SubrogationReleaseController {
       SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
       subrogationRelease =
           Beans.get(SubrogationReleaseRepository.class).find(subrogationRelease.getId());
-      subrogationReleaseService.enterReleaseInTheAccounts(subrogationRelease);
+      Beans.get(SubrogationReleaseService.class).enterReleaseInTheAccounts(subrogationRelease);
       response.setReload(true);
     } catch (Exception e) {
       response.setError(e.getMessage());

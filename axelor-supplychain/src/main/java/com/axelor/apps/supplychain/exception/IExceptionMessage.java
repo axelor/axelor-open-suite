@@ -232,4 +232,9 @@ public interface IExceptionMessage {
 
   static final String PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR = /*$$(*/
       "There is no analytic distribution on %s purchase order line" /*)*/;
+
+  static final String STOCK_MOVE_INVOICE_ERROR = /*$$(*/
+      "No stockMoveLine remains to invoice" /*)*/;
+  static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
+      "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
 }

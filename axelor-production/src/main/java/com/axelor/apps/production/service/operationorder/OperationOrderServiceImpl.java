@@ -383,14 +383,10 @@ public class OperationOrderServiceImpl implements OperationOrderService {
           }
           if (numberOfMinutesPerDay != 0) {
 
-            BigDecimal sumOfOperationLength = BigDecimal.ZERO;
-            sumOfOperationLength =
-                sumOfOperationLength.add(new BigDecimal(operationOrder.getRealDuration()));
-
             BigDecimal percentage =
-                sumOfOperationLength
+                new BigDecimal(numberOfMinutes)
                     .multiply(new BigDecimal(100))
-                    .divide(new BigDecimal(numberOfMinutesPerDay), RoundingMode.HALF_UP);
+                    .divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
 
             if (map.containsKey(machine)) {
               map.put(machine, map.get(machine).add(percentage));

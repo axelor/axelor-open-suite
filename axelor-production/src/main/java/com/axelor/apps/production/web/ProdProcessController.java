@@ -34,16 +34,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
 
 @Singleton
 public class ProdProcessController {
-
-  @Inject protected ProdProcessService prodProcessService;
-
-  @Inject ProdProcessRepository prodProcessRepo;
 
   public void validateProdProcess(ActionRequest request, ActionResponse response) {
     ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
@@ -66,7 +61,7 @@ public class ProdProcessController {
       }
       if (bom != null) {
         try {
-          prodProcessService.validateProdProcess(prodProcess, bom);
+          Beans.get(ProdProcessService.class).validateProdProcess(prodProcess, bom);
         } catch (AxelorException e) {
           TraceBackService.trace(response, e, ResponseMessageType.ERROR);
         }
@@ -78,7 +73,7 @@ public class ProdProcessController {
       throws AxelorException {
     ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
     if (prodProcess.getProdProcessLineList() != null) {
-      prodProcessService.changeProdProcessListOutsourcing(prodProcess);
+      Beans.get(ProdProcessService.class).changeProdProcessListOutsourcing(prodProcess);
     }
     response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
   }
@@ -101,12 +96,13 @@ public class ProdProcessController {
 
   public void checkOriginalProductionProcess(ActionRequest request, ActionResponse response) {
 
+    ProdProcessRepository prodProcessRepository = Beans.get(ProdProcessRepository.class);
     ProdProcess prodProcess =
-        prodProcessRepo.find(request.getContext().asType(ProdProcess.class).getId());
+        prodProcessRepository.find(request.getContext().asType(ProdProcess.class).getId());
 
     List<ProdProcess> prodProcessSet = Lists.newArrayList();
     prodProcessSet =
-        prodProcessRepo
+        prodProcessRepository
             .all()
             .filter("self.originalProdProcess = :origin")
             .bind("origin", prodProcess)
@@ -134,9 +130,10 @@ public class ProdProcessController {
   public void generateNewVersion(ActionRequest request, ActionResponse response) {
 
     ProdProcess prodProcess =
-        prodProcessRepo.find(request.getContext().asType(ProdProcess.class).getId());
+        Beans.get(ProdProcessRepository.class)
+            .find(request.getContext().asType(ProdProcess.class).getId());
 
-    ProdProcess copy = prodProcessService.generateNewVersion(prodProcess);
+    ProdProcess copy = Beans.get(ProdProcessService.class).generateNewVersion(prodProcess);
 
     response.setView(
         ActionView.define("Production process")

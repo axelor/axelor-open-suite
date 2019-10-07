@@ -16,19 +16,15 @@
 				<field name="logo" widget="Image" colSpan="12" onChange="action-company-logo-onchange-update-dimension"/>
 				<field name="width" requiredIf="height" onChange="action-company-condition-validate-logo-height-and-width">
 				  <viewer depends="width"><![CDATA[
-				    <h4>
 				      {{record.width}}
 				      <span x-translate>px</span>
-				    </h4>
 				  ]]></viewer>
 				</field>
 				<spacer name="widthSpacer"/>
 				<field name="height" requiredIf="width" onChange="action-company-condition-validate-logo-height-and-width">
 				  <viewer depends="height"><![CDATA[
-				    <h4>
 				      {{record.height}}
               <span x-translate>px</span>
-				    </h4>
 				  ]]></viewer>
 				</field>
 				<spacer name="heightSpacer"/>
@@ -72,6 +68,7 @@
 				<field name="tradingNamePrintingSettingsList" canNew="true" form-view="trading-name-printing-settings-company-form" grid-view="trading-name-printing-settings-company-grid" colSpan="12" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 				<field name="weeklyPlanning" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
 				<field name="publicHolidayEventsPlanning" form-view="events-planning-form" grid-view="events-planning-grid" canNew="true" />
+				<field name="language" colSpan="6" canEdit="false"/>
 	  		</panel>
 	    	<panel name="bankDetailsPanel" title="Bank details">
                 <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>

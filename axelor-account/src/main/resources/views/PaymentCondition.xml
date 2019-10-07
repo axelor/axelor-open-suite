@@ -20,6 +20,7 @@
 	        <field name="paymentTime" colSpan="6"/>	        
 	        <field name="periodTypeSelect" colSpan="6"></field>
 	        <field name="daySelect" colSpan="6" showIf="typeSelect == 4"/>
+	        <field name="advancePaymentNeeded" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
         </panel>
     </form>
     

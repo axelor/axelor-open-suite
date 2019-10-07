@@ -39,7 +39,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -56,19 +55,13 @@ public class ManufOrderController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private ManufOrderWorkflowService manufOrderWorkflowService;
-
-  @Inject private ManufOrderService manufOrderService;
-
-  @Inject private ManufOrderRepository manufOrderRepo;
-
   public void start(ActionRequest request, ActionResponse response) {
 
     try {
       Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
 
-      manufOrderWorkflowService.start(manufOrder);
+      Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -80,9 +73,9 @@ public class ManufOrderController {
 
     try {
       Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
 
-      manufOrderWorkflowService.pause(manufOrder);
+      Beans.get(ManufOrderWorkflowService.class).pause(manufOrder);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -94,9 +87,9 @@ public class ManufOrderController {
 
     try {
       Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
 
-      manufOrderWorkflowService.resume(manufOrder);
+      Beans.get(ManufOrderWorkflowService.class).resume(manufOrder);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -108,9 +101,9 @@ public class ManufOrderController {
 
     try {
       Long manufOrderId = (Long) request.getContext().get("id");
-      ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
 
-      if (!manufOrderWorkflowService.finish(manufOrder)) {
+      if (!Beans.get(ManufOrderWorkflowService.class).finish(manufOrder)) {
         response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
       }
 
@@ -123,7 +116,7 @@ public class ManufOrderController {
   public void partialFinish(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
 
       if (!Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder)) {
         response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
@@ -140,10 +133,11 @@ public class ManufOrderController {
       Context context = request.getContext();
       ManufOrder manufOrder = context.asType(ManufOrder.class);
 
-      manufOrderWorkflowService.cancel(
-          manufOrderRepo.find(manufOrder.getId()),
-          manufOrder.getCancelReason(),
-          manufOrder.getCancelReasonStr());
+      Beans.get(ManufOrderWorkflowService.class)
+          .cancel(
+              Beans.get(ManufOrderRepository.class).find(manufOrder.getId()),
+              manufOrder.getCancelReason(),
+              manufOrder.getCancelReasonStr());
       response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_CANCEL));
       response.setCanClose(true);
     } catch (Exception e) {
@@ -158,10 +152,10 @@ public class ManufOrderController {
       List<ManufOrder> manufOrders = new ArrayList<>();
       if (context.get("id") != null) {
         Long manufOrderId = (Long) request.getContext().get("id");
-        manufOrders.add(manufOrderRepo.find(manufOrderId));
+        manufOrders.add(Beans.get(ManufOrderRepository.class).find(manufOrderId));
       } else if (context.get("_ids") != null) {
         manufOrders =
-            manufOrderRepo
+            Beans.get(ManufOrderRepository.class)
                 .all()
                 .filter(
                     "self.id in ?1 and self.statusSelect in (?2,?3)",
@@ -171,7 +165,7 @@ public class ManufOrderController {
                 .fetch();
       }
       for (ManufOrder manufOrder : manufOrders) {
-        manufOrderWorkflowService.plan(manufOrder);
+        Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -190,7 +184,7 @@ public class ManufOrderController {
   public void consumeStockMove(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
       Beans.get(ManufOrderStockMoveService.class).consumeInStockMoves(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -223,7 +217,8 @@ public class ManufOrderController {
 
       if (!manufOrderIds.equals("")) {
         manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length() - 1);
-        manufOrder = manufOrderRepo.find(new Long(lstSelectedManufOrder.get(0)));
+        manufOrder =
+            Beans.get(ManufOrderRepository.class).find(new Long(lstSelectedManufOrder.get(0)));
       } else if (manufOrder.getId() != null) {
         manufOrderIds = manufOrder.getId().toString();
       }
@@ -269,7 +264,7 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       ManufOrderService moService = Beans.get(ManufOrderService.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
       moService.preFillOperations(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -280,8 +275,8 @@ public class ManufOrderController {
   public void generateWasteStockMove(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
-      manufOrderService.generateWasteStockMove(manufOrder);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderService.class).generateWasteStockMove(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -298,8 +293,8 @@ public class ManufOrderController {
   public void updatePlannedQty(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
-      manufOrderService.updatePlannedQty(manufOrder);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderService.class).updatePlannedQty(manufOrder);
       response.setReload(true);
       response.setCanClose(true);
     } catch (Exception e) {
@@ -317,9 +312,9 @@ public class ManufOrderController {
   public void updateRealQty(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
       BigDecimal qtyToUpdate = new BigDecimal(request.getContext().get("qtyToUpdate").toString());
-      manufOrderService.updateRealQty(manufOrder, qtyToUpdate);
+      Beans.get(ManufOrderService.class).updateRealQty(manufOrder, qtyToUpdate);
       response.setReload(true);
       response.setCanClose(true);
     } catch (Exception e) {
@@ -353,12 +348,12 @@ public class ManufOrderController {
       ManufOrder manufOrderView = request.getContext().asType(ManufOrder.class);
 
       if (manufOrderView.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
-        ManufOrder manufOrder = manufOrderRepo.find(manufOrderView.getId());
+        ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderView.getId());
 
         if (manufOrderView.getPlannedStartDateT() != null) {
           if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
-            manufOrderWorkflowService.updatePlannedDates(
-                manufOrder, manufOrderView.getPlannedStartDateT());
+            Beans.get(ManufOrderWorkflowService.class)
+                .updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
             response.setReload(true);
           }
         } else {
@@ -381,7 +376,7 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-      manufOrderService.checkProducedStockMoveLineList(manufOrder, oldManufOrder);
+      Beans.get(ManufOrderService.class).checkProducedStockMoveLineList(manufOrder, oldManufOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -399,8 +394,8 @@ public class ManufOrderController {
       ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
-      manufOrderService.updateProducedStockMoveFromManufOrder(manufOrder);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderService.class).updateProducedStockMoveFromManufOrder(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -418,7 +413,7 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       ManufOrder oldManufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-      manufOrderService.checkConsumedStockMoveLineList(manufOrder, oldManufOrder);
+      Beans.get(ManufOrderService.class).checkConsumedStockMoveLineList(manufOrder, oldManufOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
@@ -436,8 +431,8 @@ public class ManufOrderController {
       ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
-      manufOrderService.updateConsumedStockMoveFromManufOrder(manufOrder);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderService.class).updateConsumedStockMoveFromManufOrder(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -454,7 +449,7 @@ public class ManufOrderController {
   public void computeCostPrice(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      manufOrder = manufOrderRepo.find(manufOrder.getId());
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
 
       CostSheet costSheet =
           Beans.get(CostSheetService.class)

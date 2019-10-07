@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+    
+    <form id="business-project-batch-form" name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" extension="true">
+    	
+    	<extend target="//field[@name='comments']">
+    		<insert position="after">
+    			<field name="projectInvoicingAssistantBatch" hidden="true"/>
+		    	<field name="projectInvoicingAssistantBatch.actionSelect" hidden="true"/>
+    		</insert>
+    	</extend>
+		
+    </form>
+    
+</object-views>

@@ -45,8 +45,6 @@
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
     <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Ventilated by"/>
-
-    
     
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice" title="Invoice Lines" />
@@ -134,6 +132,8 @@
 	<integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
 	<many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay" ref="com.axelor.apps.base.db.CancelReason"/>
 	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+	
+	<string name="proformaComments" title="Description to display on proforma" large="true"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

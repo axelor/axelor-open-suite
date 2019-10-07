@@ -27,14 +27,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class InvoiceLineController {
-
-  @Inject private InvoiceLineService invoiceLineService;
 
   public List<InvoiceLine> updateQty(
       List<InvoiceLine> invoiceLines, BigDecimal oldKitQty, BigDecimal newKitQty, Invoice invoice)
@@ -47,6 +44,8 @@ public class InvoiceLineController {
     BigDecimal companyInTaxTotal = BigDecimal.ZERO;
     BigDecimal priceDiscounted = BigDecimal.ZERO;
     BigDecimal taxRate = BigDecimal.ZERO;
+
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     if (invoiceLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {

@@ -185,9 +185,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
     project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
-    if (parentProject != null && parentProject.getTeamTaskInvoicing()) {
-      project.setTeamTaskInvoicing(true);
-      project.setInvoicingType(parentProject.getInvoicingType());
+    if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
+      project.setIsInvoicingTimesheet(true);
     }
     return project;
   }
@@ -227,10 +226,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         project.setPriceList(
             clientPartner.getSalePartnerPriceList().getPriceListSet().iterator().next());
       }
-      project.setTeamTaskInvoicing(projectTemplate.getTeamTaskInvoicing());
       project.setIsInvoicingExpenses(projectTemplate.getIsInvoicingExpenses());
       project.setIsInvoicingPurchases(projectTemplate.getIsInvoicingPurchases());
-      project.setInvoicingType(projectTemplate.getInvoicingTypeSelect());
       project.setInvoicingComment(projectTemplate.getInvoicingComment());
       project.setIsBusinessProject(projectTemplate.getIsBusinessProject());
     }

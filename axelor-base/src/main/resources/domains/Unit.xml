@@ -6,8 +6,8 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Unit" lang="java" cacheable="true">
-    <string name="name" title="Unit" namecolumn="true" required="true"/>
-  	<string name="labelToPrinting" title="Label To Printing"/>
+    <string name="name" title="Unit" namecolumn="true" required="true" translatable="true"/>
+  	<string name="labelToPrinting" title="Label To Printing" translatable="true"/>
   	<integer name="unitTypeSelect" title="Unit type" selection="unit.unit.type.select"/>
   </entity>
 

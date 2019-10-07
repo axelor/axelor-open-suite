@@ -27,6 +27,7 @@
       <date name="birthDate" title="Birth date" />
       <string name="maritalStatus" title="Marital status" selection="hr.employee.marital.status"/>
     <many-to-one name="cityOfBirth" title="City of birth" ref="com.axelor.apps.base.db.City"/>
+    <many-to-one name="citizenship" title="Citizenship" ref="com.axelor.apps.base.db.Citizenship"/>
     <many-to-one name="departmentOfBirth" title="Department of birth" ref="com.axelor.apps.base.db.Department" help="For foreign-born employees, please enter the code 99"/>
     <many-to-one name="countryOfBirth" title="Country of birth" ref="com.axelor.apps.base.db.Country"/>
     <string name="sexSelect" title="Sex" selection="employee.hr.sex.select"/>
@@ -35,6 +36,7 @@
       <string name="phoneAtCustomer" title="Phone at the customer"/>
       <string name="emergencyContact" title="Emergency contact"/>
       <string name="emergencyNumber" title="Phone"/>
+      <string name="emergencyContactRelationship" title="Emergency contact relationship"/>
       <date name="dateOfHire" title="Date of hire" />
       <date name="seniorityDate" title="Seniority date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
@@ -64,6 +66,7 @@
 
     <!-- DPAE -->
     <one-to-many name="dpaeList" title="DPAEs" ref="com.axelor.apps.hr.db.DPAE" mappedBy="employee"/>
+    <one-to-many name="employeeFileList" title="Files" ref="com.axelor.apps.hr.db.EmployeeFile" mappedBy="employee" />		
 
 	<string name="maidenName" title="Maiden name"/>
 	<string name="maritalName" title="Marital name"/>
