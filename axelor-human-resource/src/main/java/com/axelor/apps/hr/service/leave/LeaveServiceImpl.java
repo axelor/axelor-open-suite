@@ -890,6 +890,10 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   public boolean isLeaveDay(User user, LocalDate date) {
+    return getLeave(user, date) != null;
+  }
+
+  public LeaveRequest getLeave(User user, LocalDate date) {
     List<LeaveRequest> leaves =
         JPA.all(LeaveRequest.class)
             .filter("self.user = :userId AND self.statusSelect IN (:awaitingValidation,:validated)")
@@ -903,10 +907,10 @@ public class LeaveServiceImpl implements LeaveService {
         LocalDate from = leave.getFromDateT().toLocalDate();
         LocalDate to = leave.getToDateT().toLocalDate();
         if ((from.isBefore(date) && to.isAfter(date)) || from.isEqual(date) || to.isEqual(date)) {
-          return true;
+          return leave;
         }
       }
     }
-    return false;
+    return null;
   }
 }
