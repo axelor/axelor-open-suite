@@ -10,7 +10,9 @@
   	<string name="inventorySeq" title="Inventory N°" readonly="true" namecolumn="true"/>
   	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" required="true"/>
     <integer name="statusSelect" title="Status" selection="inventory.status.select" readonly="true"/>
-  	<datetime name="dateT" title="Date" required="true" tz="true"/>
+	<datetime name="plannedStartDateT" title="Planned Start Date" tz="true"/>
+	<datetime name="plannedEndDateT" title="Planned End Date" tz="true"/>
+	<string name="inventoryTitle" title="Inventory Title"/>
   	<string name="description" title="Description" large="true"/>
   	<one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
   	<string name="formatSelect" title="File Format" selection="inventory.export.format.select"/>
