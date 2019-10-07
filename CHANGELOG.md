@@ -232,6 +232,7 @@
 - BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
 - PROJECT FORM :change the position of hidden field '$toInvoiceCounter' in project form
 - WKF : Fix NPE when select a status field with selection which is not exist.
+- BANKORDER : Fix error when merge bankorders generated from expense
 - Studio: Fix translation for 'Order'
 - Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
 - PERIOD : Fix NPE when date is null.
