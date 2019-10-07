@@ -32,6 +32,7 @@
 - INVOICE : Fix NPE on mass payment on supplier Invoice
 - STOCKMOVE : Fix NPE on printing stock move
 - CRM : Fix NPE when creating a new client.
+- STOCK MOVE: update stock move form's title
 
 ## [5.1.8] - 2019-09-26
 ## Features
