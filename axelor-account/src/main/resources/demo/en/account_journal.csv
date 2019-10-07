@@ -19,7 +19,7 @@
 18;"OUT_IPO";"IPO Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1;129
 19;"OUT_WT";"Wire Transfer Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1;130
 20;"OUT_DD";"Direct Debit Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1;131
-21;"OUT_OTH";"Other Payments";3;"true";"false";"Payment Emit.";"true";"false" ;;"1";1;132
+21;"OUT_OTH";"Other Payments";3;"true";"false";"Payment Emit.";"true";"false";;"1";1;132
 22;"ACC_CLR";"Account clearance";3;"true";"false";;"false";"false";;"1";1;135
 23;"MISC_AUTO";"Auto Misc. Operation on invoices or cashing";3;"false";"false";;"false";"false";;"1";1;133
 24;"MISC_MAN";"Manual Misc. Operation";3;"false";"false";;"false";"false";;"1";1;134
