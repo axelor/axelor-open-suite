@@ -77,6 +77,16 @@ public class TimesheetController {
   @Inject private Provider<ProjectRepository> projectRepoProvider;
   @Inject private Provider<UserHrService> userHrservice;
 
+  public void prefillLines(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      timesheetServiceProvider.get().prefillLines(timesheet);
+      response.setValues(timesheet);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
