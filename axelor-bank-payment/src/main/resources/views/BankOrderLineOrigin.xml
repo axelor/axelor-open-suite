@@ -6,6 +6,8 @@
     <grid name="bank-order-line-origin-grid" model="com.axelor.apps.bankpayment.db.BankOrderLineOrigin" title="Origins">
         <field name="relatedToSelect"/>
         <field name="relatedToSelectName"/>
+        <field name="relatedToSelectDate"/>
+        <field name="relatedToSelectDueDate"/>
     </grid>
     
 	<form name="bank-order-line-origin-form" model="com.axelor.apps.bankpayment.db.BankOrderLineOrigin" title="Origin">

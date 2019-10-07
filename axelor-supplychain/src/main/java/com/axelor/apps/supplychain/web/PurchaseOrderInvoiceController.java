@@ -28,13 +28,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class PurchaseOrderInvoiceController {
-
-  @Inject private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
   public void generateInvoice(ActionRequest request, ActionResponse response) {
 
@@ -43,7 +40,7 @@ public class PurchaseOrderInvoiceController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
     try {
-      Invoice invoice = purchaseOrderInvoiceService.generateInvoice(purchaseOrder);
+      Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
 
       if (invoice != null) {
         response.setReload(true);

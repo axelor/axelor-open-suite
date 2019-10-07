@@ -54,6 +54,7 @@ public interface IExceptionMessage {
       "Error during production's order's creation" /*)*/;
   static final String PRODUCTION_ORDER_3 = /*$$(*/ "You must add a positive quantity" /*)*/;
   static final String PRODUCTION_ORDER_4 = /*$$(*/ "You must select a nomenclature" /*)*/;
+  static final String PRODUCTION_ORDER_5 = /*$$(*/ "Invalid date" /*)*/;
 
   /** Production Config Service */
   static final String PRODUCTION_CONFIG_1 = /*$$(*/

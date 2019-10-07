@@ -9,16 +9,29 @@
 		<boolean name="manageSaleOrders" title="Manage sale orders" default="false"/>
 		<boolean name="manageInvoices" title="Manage invoices" default="false"/>
 		<boolean name="manageTickets" title="Manage tickets" default="false"/>
+		<boolean name="manageProjects" title="Manage projects" default="false"/>
+		<boolean name="manageDelivery" title="Manage delivery" default="false"/>
 		<boolean name="canConfirmOnline" title="Can confirm online" default="false"/>
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
 		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
+   		<integer name="portalSelect" title="Portal" selection="clientportal.extern.or.intern" default="1"/>
 		
+		<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int ABS_PORTAL = 1;
+		public static final int EXTERNAL_PORTAL = 2;
+		
+	]]></extra-code>
 		<track>
 			<field name="manageSaleOrders" on="UPDATE"/>
 			<field name="manageInvoices" on="UPDATE"/>
 			<field name="manageTickets" on="UPDATE"/>
+			<field name="manageProjects" on="UPDATE"/>
+			<field name="manageDelivery" on="UPDATE"/>
 			<field name="canConfirmOnline" on="UPDATE"/>
 			<field name="canPayOnline" on="UPDATE"/>
+			<field name="portalSelect" on="UPDATE"/>
 		</track>
    	</entity>
 

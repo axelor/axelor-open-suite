@@ -41,7 +41,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
@@ -62,9 +61,6 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class AddressController {
-
-  @Inject protected AddressService addressService;
-  @Inject protected AppBaseService appBaseService;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -88,7 +84,7 @@ public class AddressController {
     String search = a.getAddressL4() + " " + a.getAddressL6();
     Map<String, Object> retDict =
         Beans.get(AddressService.class)
-            .validate(appBaseService.getAppBase().getQasWsdlUrl(), search);
+            .validate(Beans.get(AppBaseService.class).getAppBase().getQasWsdlUrl(), search);
     LOG.debug("validate retDict = {}", retDict);
 
     VerifyLevelType verifyLevel = (VerifyLevelType) retDict.get("verifyLevel");
@@ -168,7 +164,7 @@ public class AddressController {
       if (moniker != null) {
         com.qas.web_2005_02.Address address =
             Beans.get(AddressService.class)
-                .select(appBaseService.getAppBase().getQasWsdlUrl(), moniker);
+                .select(Beans.get(AppBaseService.class).getAppBase().getQasWsdlUrl(), moniker);
         LOG.debug("select address = {}", address);
         // addressL4: title="N° et Libellé de la voie"
         // addressL6: title="Code Postal - Commune"/>
@@ -205,10 +201,12 @@ public class AddressController {
   }
 
   public void viewMap(ActionRequest request, ActionResponse response) {
+
     try {
       Address address = request.getContext().asType(Address.class);
       address = Beans.get(AddressRepository.class).find(address.getId());
-      Optional<Pair<BigDecimal, BigDecimal>> latLong = addressService.getOrUpdateLatLong(address);
+      Optional<Pair<BigDecimal, BigDecimal>> latLong =
+          Beans.get(AddressService.class).getOrUpdateLatLong(address);
 
       if (latLong.isPresent()) {
         MapService mapService = Beans.get(MapService.class);
@@ -228,10 +226,12 @@ public class AddressController {
   }
 
   public void viewDirection(ActionRequest request, ActionResponse response) {
+    AddressRepository addressRepository = Beans.get(AddressRepository.class);
     try {
       MapService mapService = Beans.get(MapService.class);
       String key = null;
-      if (appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE) {
+      if (Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
+          == AppBaseRepository.MAP_API_GOOGLE) {
         key = mapService.getGoogleMapsApiKey();
       }
 
@@ -246,9 +246,9 @@ public class AddressController {
         return;
       }
 
-      departureAddress = Beans.get(AddressRepository.class).find(departureAddress.getId());
+      departureAddress = addressRepository.find(departureAddress.getId());
       Optional<Pair<BigDecimal, BigDecimal>> departureLatLong =
-          addressService.getOrUpdateLatLong(departureAddress);
+          Beans.get(AddressService.class).getOrUpdateLatLong(departureAddress);
 
       if (!departureLatLong.isPresent()) {
         response.setFlash(
@@ -257,9 +257,9 @@ public class AddressController {
       }
 
       Address arrivalAddress = request.getContext().asType(Address.class);
-      arrivalAddress = Beans.get(AddressRepository.class).find(arrivalAddress.getId());
+      arrivalAddress = addressRepository.find(arrivalAddress.getId());
       Optional<Pair<BigDecimal, BigDecimal>> arrivalLatLong =
-          addressService.getOrUpdateLatLong(arrivalAddress);
+          Beans.get(AddressService.class).getOrUpdateLatLong(arrivalAddress);
 
       if (!arrivalLatLong.isPresent()) {
         response.setFlash(
@@ -281,6 +281,7 @@ public class AddressController {
   }
 
   public void updateLatLong(ActionRequest request, ActionResponse response) {
+    AddressService addressService = Beans.get(AddressService.class);
     try {
       Address address = request.getContext().asType(Address.class);
       address = Beans.get(AddressRepository.class).find(address.getId());

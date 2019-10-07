@@ -25,7 +25,6 @@ import com.axelor.auth.db.AuditableModel;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -121,11 +120,11 @@ public abstract class AbstractBatch {
 
   protected boolean isRunnable(Model model) {
     this.model = model;
-    return model.getArchived() != Boolean.TRUE;
+    return !Boolean.TRUE.equals(model.getArchived());
   }
 
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
-    LOG.info("Début batch {} ::: {}", new Object[] {model, batch.getStartDate()});
+  protected void start() throws IllegalAccessException {
+    LOG.info("Début batch {} ::: {}", model, batch.getStartDate());
 
     model.setArchived(true);
     associateModel();
@@ -144,7 +143,7 @@ public abstract class AbstractBatch {
 
     checkPoint();
 
-    LOG.info("Fin batch {} ::: {}", new Object[] {model, batch.getEndDate()});
+    LOG.info("Fin batch {} ::: {}", model, batch.getEndDate());
   }
 
   protected void incrementDone() {
@@ -202,14 +201,15 @@ public abstract class AbstractBatch {
     return ChronoUnit.MINUTES.between(batch.getStartDate(), batch.getEndDate());
   }
 
-  private void associateModel() throws IllegalArgumentException, IllegalAccessException {
-    LOG.debug("ASSOCIATE batch:{} TO model:{}", new Object[] {batch, model});
+  private void associateModel() throws IllegalAccessException {
+    LOG.debug("ASSOCIATE batch:{} TO model:{}", batch, model);
 
     for (Field field : batch.getClass().getDeclaredFields()) {
 
       LOG.debug(
           "TRY TO ASSOCIATE field:{} TO model:{}",
-          new Object[] {field.getType().getName(), model.getClass().getName()});
+          field.getType().getName(),
+          model.getClass().getName());
       if (isAssociable(field)) {
 
         LOG.debug("FIELD ASSOCIATE TO MODEL");

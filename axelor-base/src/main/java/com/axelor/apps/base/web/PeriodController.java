@@ -21,29 +21,20 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class PeriodController {
 
-  private PeriodService periodService;
-  private PeriodRepository periodRepository;
-
-  @Inject
-  public PeriodController(PeriodService periodService, PeriodRepository periodRepository) {
-    this.periodService = periodService;
-    this.periodRepository = periodRepository;
-  }
-
   public void close(ActionRequest request, ActionResponse response) {
     Period period = request.getContext().asType(Period.class);
-    period = periodRepository.find(period.getId());
+    period = Beans.get(PeriodRepository.class).find(period.getId());
 
     try {
-      periodService.close(period);
+      Beans.get(PeriodService.class).close(period);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -52,10 +43,10 @@ public class PeriodController {
 
   public void adjust(ActionRequest request, ActionResponse response) {
     Period period = request.getContext().asType(Period.class);
-    period = periodRepository.find(period.getId());
+    period = Beans.get(PeriodRepository.class).find(period.getId());
 
     try {
-      periodService.adjust(period);
+      Beans.get(PeriodService.class).adjust(period);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

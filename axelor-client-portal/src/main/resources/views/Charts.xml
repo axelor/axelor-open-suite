@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	
+
+  <chart name="chart.client.portal.sum.invoices.three.months" title="Sum of last 3 months invoices">
+    <dataset type="jpql">
+    <![CDATA[
+  SELECT
+    SUM(self.inTaxTotal) AS amount,
+    MONTH(self.invoiceDate) AS month
+  FROM
+        Invoice self
+  WHERE
+        self.invoiceDate >= :fromDate
+  GROUP BY
+        MONTH(self.invoiceDate)
+  ORDER BY
+        month
+     ]]>
+    </dataset>
+    <category key="month" type="month" title="Months" />
+    <series key="amount" type="bar" title="Sum" />
+  </chart>
+	
+	
+  <action-view name="dashlet.client.portal.sum.invoices.three.months" title="chart">
+    <view type="chart" name="chart.client.portal.sum.invoices.three.months"/>
+    <context name="fromDate" expr="eval: java.time.LocalDate.now().minusMonths(3)"/>
+  </action-view>
+	
+</object-views>

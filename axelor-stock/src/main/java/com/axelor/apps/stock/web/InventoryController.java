@@ -25,6 +25,7 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
@@ -36,11 +37,11 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
+import java.util.List;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,10 +50,6 @@ import org.slf4j.LoggerFactory;
 public class InventoryController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject InventoryService inventoryService;
-
-  @Inject InventoryRepository inventoryRepo;
 
   /**
    * Fonction appeler par le bouton imprimer
@@ -91,10 +88,10 @@ public class InventoryController {
   public void exportInventory(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      inventory = inventoryRepo.find(inventory.getId());
+      inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
 
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
-      MetaFile metaFile = inventoryService.exportInventoryAsCSV(inventory);
+      MetaFile metaFile = Beans.get(InventoryService.class).exportInventoryAsCSV(inventory);
 
       response.setView(
           ActionView.define(name)
@@ -113,9 +110,10 @@ public class InventoryController {
   public void importFile(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory =
-          inventoryRepo.find(request.getContext().asType(Inventory.class).getId());
+          Beans.get(InventoryRepository.class)
+              .find(request.getContext().asType(Inventory.class).getId());
 
-      Path filePath = inventoryService.importFile(inventory);
+      Path filePath = Beans.get(InventoryService.class).importFile(inventory);
       response.setFlash(
           String.format(I18n.get(IExceptionMessage.INVENTORY_8), filePath.toString()));
 
@@ -129,7 +127,7 @@ public class InventoryController {
     try {
       Long id = request.getContext().asType(Inventory.class).getId();
       Inventory inventory = Beans.get(InventoryRepository.class).find(id);
-      inventoryService.validateInventory(inventory);
+      Beans.get(InventoryService.class).validateInventory(inventory);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -139,8 +137,8 @@ public class InventoryController {
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      inventory = inventoryRepo.find(inventory.getId());
-      inventoryService.cancel(inventory);
+      inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
+      Beans.get(InventoryService.class).cancel(inventory);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -151,8 +149,8 @@ public class InventoryController {
     try {
       Long inventoryId = (Long) request.getContext().get("id");
       if (inventoryId != null) {
-        Inventory inventory = inventoryRepo.find(inventoryId);
-        Boolean succeed = inventoryService.fillInventoryLineList(inventory);
+        Inventory inventory = Beans.get(InventoryRepository.class).find(inventoryId);
+        Boolean succeed = Beans.get(InventoryService.class).fillInventoryLineList(inventory);
         if (succeed == null) {
           response.setFlash(I18n.get(IExceptionMessage.INVENTORY_9));
         } else {
@@ -180,27 +178,33 @@ public class InventoryController {
         StockLocation stockLocation = inventory.getStockLocation();
 
         response.setValue(
-            "inventorySeq", inventoryService.getInventorySequence(stockLocation.getCompany()));
+            "inventorySeq",
+            Beans.get(InventoryService.class).getInventorySequence(stockLocation.getCompany()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void showStockMove(ActionRequest request, ActionResponse response) {
+  public void showStockMoves(ActionRequest request, ActionResponse response) {
     try {
       Inventory inventory = request.getContext().asType(Inventory.class);
-      StockMove stockMove = inventoryService.findStockMove(inventory);
-      if (inventory != null) {
-        ActionViewBuilder builder =
-            ActionView.define(I18n.get("Stock Move"))
-                .model(StockMove.class.getName())
-                .add("grid", "stock-move-grid")
-                .add("form", "stock-move-form")
-                .context("_showRecord", stockMove.getId());
-        response.setView(builder.map());
+      List<StockMove> stockMoveList = Beans.get(InventoryService.class).findStockMoves(inventory);
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get("Internal Stock Moves"))
+              .model(StockMove.class.getName())
+              .add("grid", "stock-move-grid")
+              .add("form", "stock-move-form");
+      if (stockMoveList.isEmpty()) {
+        response.setFlash(I18n.get("No stock moves found for this inventory."));
       } else {
-        response.setFlash(I18n.get("No record found"));
+        builder
+            .context("_showSingle", true)
+            .domain(
+                String.format(
+                    "self.originTypeSelect = '%s' AND self.originId = %s",
+                    StockMoveRepository.ORIGIN_INVENTORY, inventory.getId()));
+        response.setView(builder.map());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

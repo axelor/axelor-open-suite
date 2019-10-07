@@ -25,28 +25,50 @@ import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.readers.DataReaderFactory;
 import com.axelor.apps.base.service.readers.DataReaderService;
+import com.axelor.common.Inflector;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AdvancedImportServiceImpl implements AdvancedImportService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static final String forSelectUseValues = "values";
+  private static final String forSelectUseTitles = "titles";
+  private static final String forSelectUseTranslatedTitles = "translated titles";
+
+  private Inflector inflector = Inflector.getInstance();
+
+  private List<String> searchFieldList;
+
+  private boolean isTabWithoutConfig = false;
 
   @Inject private MetaModelRepository metaModelRepo;
 
@@ -60,11 +82,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   @Inject private FileFieldRepository fileFieldRepository;
 
-  private static final String forSelectUseValues = "values";
-  private static final String forSelectUseTitles = "titles";
-  private static final String forSelectUseTranslatedTitles = "translated titles";
-  private List<String> searchFieldList;
-  private boolean isTabWithoutConfig = false;
+  @Inject private DataImportService dataImportService;
 
   @Override
   public boolean apply(AdvancedImport advancedImport)
@@ -106,6 +124,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
     int tabConfigRowCount = 0;
     int startIndex = isConfig ? 0 : linesToIgnore;
+    int fileTabSequence = 1;
 
     for (String sheet : sheets) {
       int totalLines = reader.getTotalLines(sheet);
@@ -115,6 +134,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       FileTab fileTab = new FileTab();
       fileTab.setName(sheet);
+      fileTab.setSequence(fileTabSequence);
+      fileTabSequence++;
 
       String[] objectRow = reader.read(sheet, startIndex, 0);
       if (objectRow == null) {
@@ -492,7 +513,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     if (Strings.isNullOrEmpty(importType)) {
       if (value.contains(".")) {
-        return FileFieldRepository.IMPORT_TYPE_FIND;
+        return FileFieldRepository.IMPORT_TYPE_NEW;
       }
       return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }
@@ -512,7 +533,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       default:
         if (value.contains(".")) {
-          return FileFieldRepository.IMPORT_TYPE_FIND;
+          return FileFieldRepository.IMPORT_TYPE_NEW;
         }
         return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }
@@ -643,5 +664,197 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   public Mapper getMapper(String modelFullName) throws ClassNotFoundException {
     Class<? extends Model> klass = (Class<? extends Model>) Class.forName(modelFullName);
     return Mapper.of(klass);
+  }
+
+  @Override
+  public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException {
+    List<FileTab> fileTabList = advancedImport.getFileTabList();
+    Beans.get(ValidatorService.class).sortFileTabList(fileTabList);
+
+    boolean isResetValue = resetRelationalFields(fileTabList);
+    if (isResetValue) {
+      removeRecords(fileTabList);
+    }
+    return isResetValue;
+  }
+
+  @SuppressWarnings("unchecked")
+  public boolean resetRelationalFields(List<FileTab> fileTabList) throws ClassNotFoundException {
+
+    boolean isResetValue = false;
+
+    for (FileTab fileTab : fileTabList) {
+
+      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
+      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+
+      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
+      if (CollectionUtils.isEmpty(recordList)) {
+        continue;
+      }
+      isResetValue = true;
+
+      Class<? extends Model> modelKlass =
+          (Class<? extends Model>) Class.forName(fileTab.getMetaModel().getFullName());
+      this.resetPropertyValue(modelKlass, recordList);
+      this.resetSubPropertyValue(modelKlass, jsonContext);
+    }
+    return isResetValue;
+  }
+
+  @Transactional
+  private void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
+      throws ClassNotFoundException {
+
+    JpaRepository<? extends Model> modelRepo = JpaRepository.of(klass);
+
+    for (Property prop : Mapper.of(klass).getProperties()) {
+      if (prop.getTarget() == null || prop.isRequired()) {
+        continue;
+      }
+
+      for (Object obj : recordList) {
+        Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+        Long id = Long.valueOf(recordMap.get("id").toString());
+        Object bean = modelRepo.find(id);
+        if (bean != null) {
+          prop.set(bean, null);
+        }
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void resetSubPropertyValue(Class<? extends Model> klass, JsonContext jsonContext)
+      throws ClassNotFoundException {
+
+    for (Property prop : Mapper.of(klass).getProperties()) {
+      if (prop.getTarget() == null || prop.isRequired()) {
+        continue;
+      }
+
+      String simpleModelName = StringUtils.substringAfterLast(prop.getTarget().getName(), ".");
+      String field = inflector.camelize(simpleModelName, true) + "Set";
+
+      if (!jsonContext.containsKey(field)) {
+        continue;
+      }
+
+      List<Object> recordList = (List<Object>) jsonContext.get(field);
+
+      Class<? extends Model> modelKlass =
+          (Class<? extends Model>) Class.forName(prop.getTarget().getName());
+
+      this.resetPropertyValue(modelKlass, recordList);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void removeRecords(List<FileTab> fileTabList) throws ClassNotFoundException {
+
+    for (FileTab fileTab : fileTabList) {
+
+      String targetModelName = fileTab.getMetaModel().getFullName();
+
+      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
+      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+
+      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
+      if (CollectionUtils.isEmpty(recordList)) {
+        continue;
+      }
+
+      Class<? extends Model> modelKlass = (Class<? extends Model>) Class.forName(targetModelName);
+      removeRecord(fileTab, modelKlass, recordList, fileTabList);
+      removeSubRecords(modelKlass, jsonContext);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public void removeRecord(
+      FileTab fileTab,
+      Class<? extends Model> modelKlass,
+      List<Object> recordList,
+      List<FileTab> fileTabList)
+      throws ClassNotFoundException {
+
+    JpaRepository<? extends Model> modelRepo = JpaRepository.of(modelKlass);
+
+    for (FileTab tab : fileTabList) {
+
+      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(tab);
+      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
+      String fieldName = inflector.camelize(tab.getMetaModel().getName(), true) + "Set";
+
+      List<Object> recList = (List<Object>) jsonContext.get(fieldName);
+      if (CollectionUtils.isEmpty(recList)) {
+        continue;
+      }
+
+      Class<? extends Model> klass =
+          (Class<? extends Model>) Class.forName(tab.getMetaModel().getFullName());
+
+      Property[] props = Mapper.of(klass).getProperties();
+
+      for (Property prop : props) {
+        if (prop.getTarget() != null && prop.getTarget() == modelKlass && prop.isRequired()) {
+          removeRecord(tab, klass, recList, fileTabList);
+        }
+      }
+    }
+
+    String ids =
+        recordList
+            .stream()
+            .map(
+                obj -> {
+                  Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+                  return recordMap.get("id").toString();
+                })
+            .collect(Collectors.joining(","));
+
+    modelRepo.all().filter("self.id IN (" + ids + ")").delete();
+    fileTab.setAttrs(null);
+
+    LOG.debug("Reset imported data : {}", modelKlass.getSimpleName());
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public void removeSubRecords(Class<? extends Model> klass, JsonContext jsonContext)
+      throws ClassNotFoundException {
+
+    for (Property prop : Mapper.of(klass).getProperties()) {
+      if (prop.getTarget() == null || prop.isCollection()) {
+        continue;
+      }
+
+      String simpleModelName = StringUtils.substringAfterLast(prop.getTarget().getName(), ".");
+      String field = inflector.camelize(simpleModelName, true) + "Set";
+
+      if (!jsonContext.containsKey(field)) {
+        continue;
+      }
+
+      List<Object> recList = (List<Object>) jsonContext.get(field);
+
+      String ids =
+          recList
+              .stream()
+              .map(
+                  obj -> {
+                    Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+                    return recordMap.get("id").toString();
+                  })
+              .collect(Collectors.joining(","));
+
+      JpaRepository<? extends Model> modelRepo =
+          JpaRepository.of((Class<? extends Model>) Class.forName(prop.getTarget().getName()));
+
+      modelRepo.all().filter("self.id IN (" + ids + ")").delete();
+    }
   }
 }

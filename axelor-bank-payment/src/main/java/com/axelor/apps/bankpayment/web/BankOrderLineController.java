@@ -22,26 +22,20 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class BankOrderLineController {
 
-  protected BankOrderLineService bankOrderLineService;
-
-  @Inject
-  public BankOrderLineController(BankOrderLineService bankOrderLineService) {
-    this.bankOrderLineService = bankOrderLineService;
-  }
-
   // settings the domain for the bank details view.
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
     BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
-    String domain = bankOrderLineService.createDomainForBankDetails(bankOrderLine, bankOrder);
+    String domain =
+        Beans.get(BankOrderLineService.class).createDomainForBankDetails(bankOrderLine, bankOrder);
     // if nothing was found for the domain, we set it at a default value.
     if (domain.equals("")) {
       response.setAttr("receiverBankDetails", "domain", "self.id IN (0)");
@@ -54,7 +48,8 @@ public class BankOrderLineController {
     BankOrderLine bankOrderLine = request.getContext().asType(BankOrderLine.class);
     BankOrder bankOrder = request.getContext().getParent().asType(BankOrder.class);
 
-    BankDetails bankDetails = bankOrderLineService.getDefaultBankDetails(bankOrderLine, bankOrder);
+    BankDetails bankDetails =
+        Beans.get(BankOrderLineService.class).getDefaultBankDetails(bankOrderLine, bankOrder);
     response.setValue("receiverBankDetails", bankDetails);
   }
 
@@ -67,7 +62,8 @@ public class BankOrderLineController {
 
       response.setValue(
           "companyCurrencyAmount",
-          bankOrderLineService.computeCompanyCurrencyAmount(bankOrder, bankOrderLine));
+          Beans.get(BankOrderLineService.class)
+              .computeCompanyCurrencyAmount(bankOrder, bankOrderLine));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -8,7 +8,7 @@
   <entity name="StockMove" lang="java">
   
     <!-- Onglet Configuration -->
-    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
+    <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoice"  mappedBy="stockMoveSet"/>
     <string name="specificPackage" large="true"/>
 
     <datetime name="reservationDateTime" readonly="true"/>
@@ -24,12 +24,16 @@
     <![CDATA[
 		public static final String ORIGIN_SALE_ORDER = "com.axelor.apps.sale.db.SaleOrder";
 		public static final String ORIGIN_PURCHASE_ORDER = "com.axelor.apps.purchase.db.PurchaseOrder";
+		
+		// INVOICE
+	    public static final int INVOICE_ALL = 1;
+	    public static final int INVOICE_PARTILLY = 2;
     ]]>
     </extra-code>
 
     <track on="UPDATE">
 		<field name="pfpValidateStatusSelect"/>
-      <field name="invoice"/>
+      <field name="invoiceSet"/>
     </track>
 
   </entity>

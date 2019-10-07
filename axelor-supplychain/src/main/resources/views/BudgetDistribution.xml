@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="purchase-order-budget-distribution-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
+    <field name="budget"/>
+    <field name="purchaseOrderLine.product"/>
+    <field name="budgetAmountAvailable"/>
+    <field name="amount"/>
+  </grid>
+
+  <grid name="purchase-order-budget-distribution-complete-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
+    <field name="budget"/>
+    <field name="purchaseOrderLine.product"/>
+    <field name="purchaseOrderLine.purchaseOrder"/>
+    <field name="purchaseOrderLine.purchaseOrder.validationDate"/>
+    <field name="budgetAmountAvailable"/>
+    <field name="amount"/>
+  </grid>
+
+  <form name="purchase-order-budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
+    <panel name="mainPanel" >
+      <field name="budget" readonly="true"/>
+      <field name="purchaseOrderLine.product" readonly="true"/>
+      <field name="budgetAmountAvailable" readonly="true"/>
+      <field name="amount" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+      <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="purchase-order-budget-distribution-complete-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
+    <panel name="mainPanel" >
+      <field name="budget" readonly="true"/>
+      <field name="purchaseOrderLine.product" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder.validationDate" readonly="true"/>
+      <field name="budgetAmountAvailable" readonly="true"/>
+      <field name="amount" readonly="true"/>
+      <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+      <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-view name="action-supplychain-budget-distribuion-view-budget-distribution" title="Budget distribution"
+               model="com.axelor.apps.account.db.BudgetDistribution">
+    <view type="grid" name="purchase-order-budget-distribution-grid"/>
+    <view type="form" name="purchase-order-budget-distribution-form"/>
+    <view-param name="limit" value="200"/>
+    <domain>self.purchaseOrderLine.purchaseOrder.id = :_purchaseOrderId</domain>
+    <context name="_purchaseOrderId" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-view name="action-purchase-order-see-budget-distribution-lines" title="See budget distribution lines"
+               model="com.axelor.apps.account.db.BudgetDistribution">
+    <view type="grid" name="purchase-order-budget-distribution-complete-grid"/>
+    <view type="form" name="purchase-order-budget-distribution-complete-form"/>
+    <domain>self.purchaseOrderLine.purchaseOrder.statusSelect in (3,4)</domain>
+  </action-view>
+
+</object-views>

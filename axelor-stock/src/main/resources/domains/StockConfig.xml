@@ -49,9 +49,12 @@
 	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing"/>
 	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing"/>
 	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"/>
+	<integer name="stockLocationValue" title="Stock location value on form view" selection="stock.stock.location.value.type" />
 
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
-	
+	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
+	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+
 	<track>
 		<field name="company" on="UPDATE"/>
 		

@@ -48,9 +48,9 @@
 	    <boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
 	    <boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
+    	<boolean name="manageAdvancePaymentsFromPaymentConditions" title="Manage advance payments from payment conditions" default="false"/>
     
     <track>
-    	<field name="manageInvoicedAmountByLine" on="UPDATE"/>
     	<field name="custStockMoveMgtOnSO" on="UPDATE"/>
     	<field name="customerStockMoveGenerationAuto" on="UPDATE"/>
     	<field name="supplStockMoveMgtOnPO" on="UPDATE"/>

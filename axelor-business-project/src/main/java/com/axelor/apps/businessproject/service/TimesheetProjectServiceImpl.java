@@ -90,7 +90,10 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       tabInformations[2] = timesheetLine.getDate();
       // End date, useful only for consolidation
       tabInformations[3] = timesheetLine.getDate();
-      tabInformations[4] = timesheetLine.getHoursDuration();
+      tabInformations[4] =
+          timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+              ? timesheetLine.getDurationForCustomer()
+              : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
 
       String key = null;
@@ -112,7 +115,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
             tabInformations[3] = timesheetLine.getDate();
           }
           tabInformations[4] =
-              ((BigDecimal) tabInformations[4]).add(timesheetLine.getHoursDuration());
+              ((BigDecimal) tabInformations[4])
+                  .add(
+                      timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+                          ? timesheetLine.getDurationForCustomer()
+                          : timesheetLine.getHoursDuration());
         } else {
           timeSheetInformationsMap.put(key, tabInformations);
         }
@@ -159,7 +166,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
     if (timesheetLine != null && timesheetLine.getTeamTask() != null) {
       if (timesheetLine.getTeamTask().getTeamTaskInvoicing()
           && timesheetLine.getTeamTask().getInvoicingType()
-              == TeamTaskRepository.INVOICE_TYPE_TIME_SPENT) {
+              == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
         timesheetLine.setToInvoice(true);
       } else {
         timesheetLine.setToInvoice(false);

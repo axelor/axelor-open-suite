@@ -14,6 +14,8 @@
 
 		<decimal name="reservedQty" title="Allocated Qty" />
 		<decimal name="requestedReservedQty" title="Requested reserved qty"/>
+		
+		<decimal name="qtyInvoiced" title="Invoiced Qty"/>
 
 		<finder-method name="findAllBySaleOrder"
 			using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"

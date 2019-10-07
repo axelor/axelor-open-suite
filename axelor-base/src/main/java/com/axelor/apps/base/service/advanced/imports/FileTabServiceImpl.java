@@ -20,14 +20,21 @@ package com.axelor.apps.base.service.advanced.imports;
 import com.axelor.apps.base.db.FileField;
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.rpc.Context;
+import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class FileTabServiceImpl implements FileTabService {
@@ -110,5 +117,34 @@ public class FileTabServiceImpl implements FileTabService {
       fileField.setFullName(fileFieldService.computeFullName(fileField));
     }
     return fileTab;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public String getShowRecordIds(FileTab fileTab, String field) throws ClassNotFoundException {
+
+    Context context = new Context(fileTab.getClass());
+    Class<? extends Model> klass =
+        (Class<? extends Model>) Class.forName(fileTab.getClass().getName());
+
+    JsonContext jsonContext =
+        new JsonContext(context, Mapper.of(klass).getProperty("attrs"), fileTab.getAttrs());
+
+    List<Object> recordList = (List<Object>) jsonContext.get(field);
+    if (CollectionUtils.isEmpty(recordList)) {
+      return null;
+    }
+
+    String ids =
+        recordList
+            .stream()
+            .map(
+                obj -> {
+                  Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+                  return recordMap.get("id").toString();
+                })
+            .collect(Collectors.joining(","));
+
+    return ids;
   }
 }

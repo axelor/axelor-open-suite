@@ -18,6 +18,9 @@
 		<field name="bankOrder.confirmationDateTime"/>
 		<field name="bankOrder.senderCompany"/>
 		<field name="bankOrder.statusSelect"/>
+		<field name="$pieceReferenceList" title="Piece references"/>
+		<field name="$pieceDateList" title="Piece dates"/>
+		<field name="$pieceDueDateList" title="Piece due dates"/>
 	</grid>
 
 	<grid name="bank-order-line-grid" title="Bank Order lines"
@@ -34,6 +37,9 @@
 		<field name="bankOrder.confirmationDateTime"/>
 		<field name="bankOrder.senderCompany"/>
 		<field name="bankOrder.statusSelect"/>
+		<field name="$pieceReferenceList" title="Piece references"/>
+		<field name="$pieceDateList" title="Piece dates"/>
+		<field name="$pieceDueDateList" title="Piece due dates"/>
 	</grid>
 
 	<!-- TODO -->

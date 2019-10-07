@@ -74,7 +74,7 @@
 					<field name="exportCode" readonlyIf="notExportOk"/>
 					<field name="notExportOk" onChange="account-journal-on-change-not-export-ok"/>
 				</panel>
-
+				<field name="compatiblePartnerTypeSelect" widget="MultiSelect"/>
 			</panel>
 
 		</panel-tabs>
@@ -106,5 +106,5 @@
     <action-method name="action-journal-method-set-totals">
       <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
     </action-method>
-    
+
 </object-views>

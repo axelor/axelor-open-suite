@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,7 +36,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -45,8 +45,6 @@ import java.time.ZoneId;
 public class SaleOrderProjectController {
 
   private static final String CONTEXT_SHOW_RECORD = "_showRecord";
-
-  @Inject private SaleOrderRepository saleOrderRepo;
 
   public void generateProject(ActionRequest request, ActionResponse response) {
     try {
@@ -73,7 +71,7 @@ public class SaleOrderProjectController {
               .map());
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
       response.setReload(true);
     }
   }
@@ -106,7 +104,7 @@ public class SaleOrderProjectController {
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = saleOrderRepo.find(saleOrder.getId());
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
       orderLine.setProject(saleOrder.getProject());

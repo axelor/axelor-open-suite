@@ -5,13 +5,15 @@
 	
 	<grid name="category-grid" title="Category" model="com.axelor.apps.project.db.ProjectCategory">
 		<field name="name"/>
-		<field name="defaultInvoicing" if="__config__.app.isApp('business-support')" if-module="axelor-business-support"/>
+		<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 	</grid>
 	
-	<form title="Category" name="category-form"  model="com.axelor.apps.project.db.ProjectCategory">
+	<form title="Category" name="category-form" model="com.axelor.apps.project.db.ProjectCategory">
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="defaultInvoicing" if="__config__.app.isApp('business-support')" if-module="axelor-business-support"/>
+			<field name="defaultProduct" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+			<field name="teamTaskInvoicing" onChange="action-project-category-attrs-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+			<field name="defaultInvoicingType" showIf="teamTaskInvoicing" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 		</panel>
 	</form>
 	

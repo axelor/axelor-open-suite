@@ -78,8 +78,9 @@ public class MapRest {
         ObjectNode objectNode = nodeFactory.objectNode();
 
         Address address = partnerService.getInvoicingAddress(partner);
-        if (address != null && StringUtils.notBlank(address.getFullName())
-        && address.getIsValidLatLong()) {
+        if (address != null
+            && StringUtils.notBlank(address.getFullName())
+            && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           if (StringUtils.isBlank(addressString)) {
             continue;

@@ -25,13 +25,14 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
@@ -42,24 +43,24 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       InvoiceRepository invoiceRepository,
-      StockMoveRepository stockMoveRepo,
       SaleOrderRepository saleOrderRepo,
-      PurchaseOrderRepository purchaseOrderRepo) {
+      PurchaseOrderRepository purchaseOrderRepo,
+      StockMoveLineRepository stockMoveLineRepository) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         stockMoveLineServiceSupplychain,
         invoiceRepository,
-        stockMoveRepo,
         saleOrderRepo,
-        purchaseOrderRepo);
+        purchaseOrderRepo,
+        stockMoveLineRepository);
   }
 
   @Override
-  public List<InvoiceLine> createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine)
-      throws AxelorException {
+  public List<InvoiceLine> createInvoiceLine(
+      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty) throws AxelorException {
 
-    List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, stockMoveLine);
+    List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, stockMoveLine, qty);
     for (InvoiceLine invoiceLine : invoiceLines) {
       SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
       if (saleOrderLine != null) {

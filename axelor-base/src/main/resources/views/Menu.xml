@@ -54,7 +54,7 @@
     <menuitem id="calendar.root.menu.configuration.calendars" name="menu-calendar-configuration-calendars" title="My calendars" parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars"/>
 
 	<action-view name="calendar.root.menu.my.calendars" title="My calendars" model="com.axelor.apps.base.db.ICalendar">
-		<view type="grid" name="calendar-user-calendars-grid"/>
+		<view type="grid" name="calendar-user-grid"/>
 		<view type="form" name="calendar-form"/>
 		<domain>self.user = :__user__</domain>
 	</action-view>
@@ -235,6 +235,15 @@
 	</action-view>
 
 	<menuitem name="referential-conf" title="Configuration" order="100" parent="referential-root" icon="fa-cog"/>
+	
+	<menuitem name="referential-conf-contact-function" parent="referential-conf"
+		title="Contact function" action="referential.conf.contact.function" />
+		
+	<action-view name="referential.conf.contact.function" title="Contact function"
+		model="com.axelor.apps.base.db.Function" >
+		<view type="grid" name="function-grid"/>
+		<view type="form" name="function-form"/>
+	</action-view>
 	
 	<menuitem name="referential-conf-address" parent="referential-conf"
 		title="Addresses" action="referential.conf.address" order="110"/>
@@ -465,6 +474,16 @@
       title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
       <view type="grid" name="economic-area-grid"/>
       <view type="form" name="economic-area-form"/>
+    </action-view>
+    
+    <menuitem name="admin-root-organisation-territory-citizenship"
+      parent="admin-root-organisation-territory" title="Citizenship"
+      action="admin.root.organisation.territory.citizenship" />
+  
+    <action-view name="admin.root.organisation.territory.citizenship"
+      title="Citizenship" model="com.axelor.apps.base.db.Citizenship">
+      <view type="grid" name="citizenship-grid"/>
+      <view type="form" name="citizenship-form"/>
     </action-view>
 
 	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"

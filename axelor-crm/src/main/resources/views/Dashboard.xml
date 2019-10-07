@@ -239,6 +239,9 @@
 		<dashlet action="dashlet.team.leads" height="350"/>		
 		<dashlet action="dashlet.created.leads.per.month" height="350" />
 		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
+		<dashlet action="dashlet.created.leads.with.opportunity" height="350" />
+		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
+		<dashlet action="dashlet.created.leads.average.duration.first.opportunity" height="350" />
 	</dashboard>
 
 	<action-view name="dashlet.salesman.dashboard.leads" title="My Current Leads" model="com.axelor.apps.crm.db.Lead">
@@ -302,6 +305,16 @@
 	
 	<action-view name="dashlet.created.leads.by.industry.sector" title="Created leads by industry sector" model="com.axelor.apps.crm.db.Lead">
 	  <view type="chart" name="chart.created.leads.by.industry.sector"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<action-view name="dashlet.created.leads.with.opportunity" title="Created leads with at least one opportunity" model="com.axelor.apps.crm.db.Lead">
+	  <view type="chart" name="chart.created.leads.with.opportunity"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<action-view name="dashlet.created.leads.average.duration.first.opportunity" title="Average duration between lead and first opportunity (days)" model="com.axelor.apps.crm.db.Lead">
+	  <view type="chart" name="chart.created.leads.average.duration.first.opportunity"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 

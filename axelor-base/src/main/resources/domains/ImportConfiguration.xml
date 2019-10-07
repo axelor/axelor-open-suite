@@ -14,6 +14,14 @@ xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml
     <one-to-many name="importHistoryList" ref="ImportHistory" mappedBy="importConfiguration" title="Historical"/>
     <string name="description" large="true" title="Description" />
     
+    <extra-code><![CDATA[
+    	
+    	//TYPE SELECT
+		public static final String TYPE_CSV = "csv";
+		public static final String TYPE_XML = "xml";
+
+	]]></extra-code>
+    
   </entity>
 
 </domain-models>

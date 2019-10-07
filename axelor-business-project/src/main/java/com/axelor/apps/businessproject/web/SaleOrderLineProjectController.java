@@ -24,21 +24,15 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SaleOrderLineProjectController {
-
-  @Inject private SaleOrderLineProjectService saleOrderLineProjectService;
-
-  @Inject private ProjectRepository projectRepository;
-
-  @Inject private SaleOrderLineRepository saleOrderLineRepo;
 
   /**
    * Set project from context selected lines
@@ -51,7 +45,7 @@ public class SaleOrderLineProjectController {
     try {
 
       Project project = request.getContext().asType(Project.class);
-      project = projectRepository.find(project.getId());
+      project = Beans.get(ProjectRepository.class).find(project.getId());
 
       setProject(request, response, project);
 
@@ -71,7 +65,7 @@ public class SaleOrderLineProjectController {
               .stream()
               .map(it -> Long.parseLong(it.get("id").toString()))
               .collect(Collectors.toList());
-      saleOrderLineProjectService.setProject(lineIds, project);
+      Beans.get(SaleOrderLineProjectService.class).setProject(lineIds, project);
       response.setAttr("$salesOrderLineSet", "hidden", true);
       response.setAttr("addSelectedSOLinesBtn", "hidden", true);
       response.setAttr("unlinkSelectedSOLinesBtn", "hidden", true);
@@ -106,11 +100,12 @@ public class SaleOrderLineProjectController {
    */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      saleOrderLine = saleOrderLineRepo.find(saleOrderLine.getId());
+      saleOrderLine = saleOrderLineRepository.find(saleOrderLine.getId());
       saleOrderLine.setToInvoice(!saleOrderLine.getToInvoice());
-      saleOrderLineRepo.save(saleOrderLine);
+      saleOrderLineRepository.save(saleOrderLine);
       response.setValue("toInvoice", saleOrderLine.getToInvoice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

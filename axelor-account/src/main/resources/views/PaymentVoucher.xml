@@ -34,21 +34,6 @@
 			<button name="confirmPaymentVoucherBtn" title="Confirm payment" hidden="true" onClick="action-group-account-payment-voucher-confirm-click" showIf="statusSelect == 1"/>
 			<button name="printPaymentVoucherBtn" title="Print receipt" hidden="true" icon="fa-print" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:printPaymentVoucher" showIf="statusSelect == 3"/>
 		</panel>
-
-		<panel sidebar="true" hidden="true" name="payboxGroupPanel" title="Paybox" readonlyIf="statusSelect == 3">
-			<panel name="payboxEmailPanel" title="Add an email for payment through Paybox" hidden="true">
-				<label name="emailLabel" title="The payer doesn't have email attached. Please input/provide the email to use."/>
-				<field name="email" widget="Email"/>
-				<field name="toSaveEmailOk"/>
-				<button name="validateEmailBtn" title="Validate"   onClick="save,com.axelor.apps.account.web.PayboxController:addPayboxEmail,save"/>
-				<field name="defaultEmailOk"/>
-			</panel>
-			<panel name="payboxDetailsPanel">
-				<button name="payboxBtn" title="Paybox"   onClick="action-group-account-payment-voucher-paybox-onclick"/>
-				<field name="bankCardTransactionNumber"/>
-				<field name="payboxPaidOk" onChange="action-pv-hide-confirm-button,action-attrs-payment-voucher-readonly-status"/>
-			</panel>
-		</panel>
 		
 		<panel sidebar="true" name="infoPanel" title="Info" itemSpan="6" readonly="true">
 			<field name="statusSelect"/>
@@ -76,7 +61,7 @@
 			<button name="loadMoveLinesBtn" title="Search elements to pay" onClick="save,com.axelor.apps.account.web.PaymentVoucherController:loadMoveLines,save" colSpan="6"/>
 		</panel>
 		
-		<panel name="paymentInfoPanel" readonlyIf="statusSelect == 3 || payboxPaidOk" colSpan="12">
+		<panel name="paymentInfoPanel" readonlyIf="statusSelect == 3" colSpan="12">
 		 	<field name="paidAmount" colSpan="4" onChange="action-group-payment-voucher-reset-imputation" />
 			<field name="currency" canEdit="false" colSpan="4" form-view="currency-form" grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation" />
 			<field name="remainingAmount" readonly="true" colSpan="4"/>
@@ -102,8 +87,7 @@
 		<field name="currency" expr="eval: partner ? partner.currency : company?.currency"/>
 	</action-record>
     
-    <action-group name="action-account-payment-voucher-onnew-group">
-	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
+    <action-group name="action-account-payment-voucher-onnew-group">	    
 	    <action name="action-record-payment-voucher-default-record"/>
 	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-payment-voucher-getDate"/>
@@ -116,8 +100,7 @@
         <action name="action-payment-voucher-from-invoice" if="_invoice"/>
 	</action-group>
     
-    <action-group name="action-account-payment-voucher-onload-group">
-	    <action name="action-payment-voucher-attrs-hidden-paybox-email"/>
+    <action-group name="action-account-payment-voucher-onload-group">	    
 	    <action name="action-pv-hide-confirm-button"/>
 	    <action name="action-pv-attrs-hidden-bankCardTransactionNumber"/>
 	    <action name="action-attrs-payment-voucher-hidden-receipt"/>
@@ -139,18 +122,8 @@
     	<action name="action-attrs-payment-voucher-hidden-receipt"/>
     	<action name="action-attrs-payment-voucher-readonly-status"/>
         <action name="action-payment-voucher-method-fill-bank-details"/>
-    </action-group>
-    
-    <action-group name="action-group-account-payment-voucher-paybox-onclick">
-    	<action name="save"/>
-    	<action name="action-method-account-payment-voucher-set-num"/>
-    	<action name="action-payment-voucher-attrs-hidden-paybox-email"/>
-    	<action name="action-method-account-payment-voucher-paybox"/>
-    </action-group>
-    
-    <action-method name="action-method-account-payment-voucher-paybox">
-    	<call class="com.axelor.apps.account.web.PayboxController" method="paybox"/>
-    </action-method>
+    </action-group>   
+
     
     <action-method name="action-method-account-payment-voucher-set-num">
     	<call class="com.axelor.apps.account.web.PaymentVoucherController" method="paymentVoucherSetNum"/>
@@ -174,11 +147,11 @@
 	</action-attrs>
 	 
 	<action-attrs name="action-pv-moveLine-attrs">
-		<attribute name="readonly" for="paidAmount" expr="eval: moveLine != null || payboxPaidOk"/>
+		<attribute name="readonly" for="paidAmount" expr="eval: moveLine != null"/>
 	</action-attrs>
 	
    	<action-attrs name="action-pv-hide-confirm-button">
-		<attribute name="hidden" for="confirmPaymentVoucherBtn" expr="eval: statusSelect > __repo__(PaymentVoucher).STATUS_DRAFT || (!payboxPaidOk &amp;&amp; paymentMode?.typeSelect == 6 &amp;&amp; operationTypeSelect == 3)"/>
+		<attribute name="hidden" for="confirmPaymentVoucherBtn" expr="eval: statusSelect > __repo__(PaymentVoucher).STATUS_DRAFT || (paymentMode?.typeSelect == 6 &amp;&amp; operationTypeSelect == 3)"/>
    	</action-attrs>
    	
 	<action-attrs name="action-attrs-payment-voucher-hidden-receipt">
@@ -187,14 +160,11 @@
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-payment-voucher-readonly-status">
-		<attribute name="hidden" for="payboxBtn" expr="eval: payboxPaidOk || paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
-		<attribute name="hidden" for="payboxGroupPanel" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
-		<attribute name="readonly" for="paidGroup" expr="eval: statusSelect >= __repo__(PaymentVoucher).STATUS_WAITING_FOR_DEPOSIT_SLIP || payboxPaidOk"/>
+		<attribute name="readonly" for="paidGroup" expr="eval: statusSelect >= __repo__(PaymentVoucher).STATUS_WAITING_FOR_DEPOSIT_SLIP"/>
 	</action-attrs>
 	
 	<action-attrs name="action-pv-attrs-hidden-bankCardTransactionNumber">
-		<attribute name="hidden" for="bankCardTransactionNumber" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
-		<attribute name="hidden" for="payboxBtn" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>
+		<attribute name="hidden" for="bankCardTransactionNumber" expr="eval: paymentMode?.typeSelect != 6 || operationTypeSelect != 3"/>		
 	</action-attrs>
 	
 	<action-attrs name="action-pv-moveLine-domain">
@@ -217,10 +187,6 @@
 	<action-record name="action-payment-voucher-getDate" model="com.axelor.apps.account.db.PaymentVoucher">
     	<field name="paymentDate" expr="eval: __config__.app.getTodayDate()"/>
    	</action-record>
-   	
-	<action-attrs name="action-payment-voucher-attrs-hidden-paybox-email">
-		<attribute name="hidden" for="payboxEmailPanel" expr="eval: ((email == null || email.isEmpty()) &amp;&amp; payboxPaidOk) || paymentMode?.typeSelect != 6|| operationTypeSelect != 3 || (partner.emailAddress != null &amp;&amp; !partner.emailAddress.isEmpty())"/>
-	</action-attrs>
 	
 	<action-attrs name="action-payment-voucher-hidden-fields-if-purchase">
 		<attribute name="hidden" for="paymentScheduleToPay" expr="eval: operationTypeSelect != 3"/>
@@ -241,9 +207,6 @@
 		</filter>
 		<filter title="Customer payments with remaining">
 			<domain>self.operationTypeSelect = 3 AND self.remainingAllocatedAmount &gt; 0</domain>
-		</filter>
-		<filter title="Customer Paybox payments">
-			<domain>self.operationTypeSelect = 3 AND self.payboxPaidOk = true</domain>
 		</filter>
 		<filter title="Customer refunds">
 			<domain>self.operationTypeSelect = 4</domain>

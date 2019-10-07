@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.ControlPointModel;
 import com.axelor.apps.quality.db.QualityControl;
@@ -27,11 +29,14 @@ import com.axelor.apps.quality.db.repo.ControlPointRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityCorrectiveActionRepository;
 import com.axelor.apps.quality.db.repo.QualityMeasuringPointRepository;
+import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.util.List;
+import javax.mail.MessagingException;
 
 public class QualityControlServiceImpl implements QualityControlService {
 
@@ -119,5 +124,17 @@ public class QualityControlServiceImpl implements QualityControlService {
     }
 
     Beans.get(QualityControlRepository.class).save(qualityControl);
+  }
+
+  @Override
+  public void sendEmail(QualityControl qualityControl)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException {
+    Template template =
+        Beans.get(AppQualityService.class).getAppQuality().getQualityControlTemplate();
+
+    if (template != null) {
+      Beans.get(TemplateMessageService.class).generateAndSendMessage(qualityControl, template);
+    }
   }
 }

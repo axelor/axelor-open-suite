@@ -22,6 +22,7 @@
   	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select" massUpdate="true" required="true"/>
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
+	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
   	
   	 <extra-code><![CDATA[
 	   	// USE CASE SELECT

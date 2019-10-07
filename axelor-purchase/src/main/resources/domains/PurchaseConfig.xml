@@ -24,7 +24,6 @@
   		<field name="company" on="UPDATE"/>
   		<field name="purchaseOrderInAtiSelect" on="UPDATE"/>
   		<field name="purchaseOrderSupplierBox" on="UPDATE"/>
-  		<field name="priceDisplay" on="UPDATE"/>
   		<field name="displayBuyerOnPrinting" on="UPDATE"/>
   		<field name="displayProductCodeOnPrinting" on="UPDATE"/>
   		<field name="displayTaxDetailOnPrinting" on="UPDATE"/>
