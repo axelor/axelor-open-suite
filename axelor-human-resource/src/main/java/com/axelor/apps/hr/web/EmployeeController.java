@@ -80,9 +80,9 @@ public class EmployeeController {
     if (employee.getContactPartner() != null) {
       Map<String, String> urlMap =
           Beans.get(EmployeeService.class)
-            .getSocialNetworkUrl(
-                employee.getContactPartner().getName(),
-                employee.getContactPartner().getFirstName());
+              .getSocialNetworkUrl(
+                  employee.getContactPartner().getName(),
+                  employee.getContactPartner().getFirstName());
       response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
       response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
       response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
