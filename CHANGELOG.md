@@ -2,11 +2,15 @@
 
 ## [Unreleased 5.1.10]
 ## Improvements
+- SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
+
 ## Bug Fixes
 
 ## [5.1.9] - 2019-10-07
 ## Features
-- SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
+- ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
+- SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
+- INVENTORY : added unit field in inventory line form view and printing
 
 ## Improvements
 - PROJECT: Fixing financial report to follow the Axelor report guidelines.
