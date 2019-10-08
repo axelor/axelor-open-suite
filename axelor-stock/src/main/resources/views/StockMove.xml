@@ -426,7 +426,7 @@
   <action-view name="action-stock-move-view-back-order" title="Backorder Stock Move" model="com.axelor.apps.stock.db.StockMove">
     <view type="form" name="stock-move-form"/>
     <view-param name="popup" value="reload"/>
-    <view-param name="forceEdit" value="false"/>
+    <view-param name="forceEdit" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false" />
     <view-param name="popup-save" value="true"/>
