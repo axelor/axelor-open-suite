@@ -14,7 +14,7 @@
  	
  	<string name="name" title="Name">
  		<![CDATA[
-	    	if (paymentScheduleLine != null) return paymentScheduleLine.getName();
+	    	if (paymentScheduleLine != null && paymentScheduleLine.getName() != null) return paymentScheduleLine.getName();
 	    	else return "";
 	    ]]>
 	</string>

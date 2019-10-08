@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.10]
 ## Improvements
 - SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
+- Fix computed fields NPE from all domains.
 
 ## Bug Fixes
 - Employee : fix error on duplicate
