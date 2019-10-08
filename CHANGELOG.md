@@ -5,6 +5,7 @@
 - SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
 
 ## Bug Fixes
+- Employee : fix error on duplicate
 
 ## [5.1.9] - 2019-10-07
 ## Features
