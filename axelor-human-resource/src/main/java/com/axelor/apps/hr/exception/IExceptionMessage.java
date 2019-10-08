@@ -84,6 +84,8 @@ public interface IExceptionMessage {
       "Please add an employee's public holiday events planning related to user %s" /*)*/;
   static final String TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY = /*$$(*/
       "Timesheet line list is empty, please add a timesheet line list" /*)*/;
+  static final String TIMESHEET_HOLIDAY = /*$$(*/ "Holiday" /*)*/;
+  static final String TIMESHEET_DAY_LEAVE = /*$$(*/ "Day leave" /*)*/;
 
   static final String LEAVE_USER_EMPLOYEE = /*$$(*/
       "Please create an employee for the user %s" /*)*/;
@@ -95,6 +97,8 @@ public interface IExceptionMessage {
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
       "You now have a negative amount of leave available for the reason %s" /*)*/;
+  static final String LEAVE_REASON_NO_UNIT = /*$$(*/
+      "Please, choose unit in leave reason %s." /*)*/;
 
   static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s" /*)*/;
   static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/

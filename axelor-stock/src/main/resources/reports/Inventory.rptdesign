@@ -590,7 +590,7 @@ left outer join base_product_category as ProductCategory
 left outer join meta_file as BarCodeFile 
 	on (BarCodeFile.id = Product.bar_code)
 left outer join base_unit as Unit
-	on (Product.unit = Unit.id)
+	on (InventoryLine.unit = Unit.id)
 left outer join stock_tracking_number as TrackingNumber
 	on (InventoryLine.tracking_number = TrackingNumber.id)
 left outer join stock_stock_location as StockLocation 

@@ -50,7 +50,11 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
     }
 
     Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
-    json.put("availableStatus", stockMoveLine.getAvailableStatus());
+    json.put(
+        "availableStatus",
+        stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
+            ? stockMoveLine.getAvailableStatus()
+            : null);
     json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
 
     return super.populate(json, context);

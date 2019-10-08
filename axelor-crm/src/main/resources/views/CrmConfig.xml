@@ -12,14 +12,13 @@
 	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 	  	</panel>
 	  	<panel name="reminderTemplatesPanel" title="Reminder Templates">
-	  		<field name="sendMail"/>
-	  		<spacer name="sendMailSpacer"/>
+	  		<field name="eventTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="taskTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
+	    	<field name="callTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingDateChangeTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingGuestAddedTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	    	<field name="meetingGuestDeletedTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
-	    	<field name="callTemplate" canNew="true" form-view="template-form" grid-view="template-grid"/>
 	  	</panel>
 	  					        
 		<panel-mail name="mailPanel">

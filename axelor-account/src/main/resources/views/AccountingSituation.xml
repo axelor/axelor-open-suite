@@ -20,8 +20,8 @@
 		  onNew="action-accounting-situation-group-form-onnew" width="large">
 		<panel name="mainPanel">
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-supplychain-method-compute-used-credit"/>
-			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 			<field name="customerAccount" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
 			<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
@@ -66,15 +66,16 @@
     </grid>
     
 	 <form name="accounting-situation-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation" 
-	     onNew="action-account-accounting-situation-default-set" >
+	     onNew="action-account-accounting-situation-default-set,action-accounting-situation-attrs-hidden-multi-banks" 
+	     onLoad="action-accounting-situation-attrs-hidden-multi-banks">
 		<panel name="mainPanel" >
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" domain=":company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="customerAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="supplierAccount" form-view="account-form" grid-view="account-grid"/>
        		<field name="employeeAccount" form-view="account-form" grid-view="account-grid"/>
-			<field name="companyInBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="companyOutBankDetails" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
+			<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 		</panel>
 	    	
 		<panel name="customerBalancePanel" title="Customer balance"  itemSpan="4" >
@@ -99,12 +100,14 @@
 	<action-group name="action-accounting-situation-group-form-onnew">
 		<action name="action-account-accounting-situation-default-set"/>
         <action name="action-accounting-situation-method-set-default-mail"/>
+        <action name="action-accounting-situation-attrs-hidden-multi-banks"/>
 	</action-group>
 
 	<action-group name="action-accounting-situation-group-form-onload">
 		<action name="action-accounting-situation-attrs-hide-supplier-account"/>
 		<action name="action-accounting-situation-attrs-hide-customer-account"/>
 		<action name="action-accounting-situation-attrs-hide-employee-account"/>
+		<action name="action-accounting-situation-attrs-hidden-multi-banks"/>
 	</action-group>
 
 	<action-attrs name="action-accounting-situation-attrs-hide-supplier-account">
@@ -117,6 +120,11 @@
 
 	<action-attrs name="action-accounting-situation-attrs-hide-employee-account">
 		<attribute name="hidden" for="employeeAccount" expr="eval: !__parent__?.isEmployee"/>
+	</action-attrs>
+	
+		<action-attrs name="action-accounting-situation-attrs-hidden-multi-banks">
+    	<attribute name="hidden" for="companyInBankDetails" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
+    	<attribute name="hidden" for="companyOutBankDetails" expr="eval: !__config__.app.getApp('base').getManageMultiBanks()"/>
 	</action-attrs>
 
 	<action-method name="action-supplychain-method-compute-used-credit">

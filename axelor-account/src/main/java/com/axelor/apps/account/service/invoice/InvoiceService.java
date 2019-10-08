@@ -146,8 +146,6 @@ public interface InvoiceService {
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
 
-  public void generateBudgetDistribution(Invoice invoice);
-
   public Invoice mergeInvoiceProcess(
       List<Invoice> invoiceList,
       Company company,
@@ -273,4 +271,6 @@ public interface InvoiceService {
   Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
 
   public Boolean checkPartnerBankDetailsList(Invoice invoice);
+
+  public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
 }

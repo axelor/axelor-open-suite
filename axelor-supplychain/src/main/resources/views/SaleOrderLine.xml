@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
-        model="com.axelor.apps.sale.db.SaleOrderLine" onNew="action-group-sale-saleorderline-onnew"
+        model="com.axelor.apps.sale.db.SaleOrderLine" onNew="action-group-sale-saleorderline-onnew,action-record-sale-order-line-fill-request-qty"
 		onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
         width="large">
         <panel-include view="sale-order-line-form" from="axelor-sale" />
@@ -51,14 +51,24 @@
 	<action-method name="action-method-sale-order-line-change-requested-reserved-qty">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="changeRequestedReservedQty"/>
 	</action-method>
+	
+	<action-method name="action-sale-order-line-method-check-delivered-or-invoiced-order-qty">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkInvoicedOrDeliveredOrderQty"/>
+	</action-method>
+
+	<action-method name="action-method-sale-order-line-request-qty">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="requestQty"/>
+	</action-method>
+
+	<action-method name="action-method-sale-order-line-cancel-reservation">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="cancelReservation"/>
+	</action-method>
 
 	<action-record name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="requestedReservedQty" expr="eval: BigDecimal.ZERO.max(qty)" if="requestedReservedQty &gt; qty || saleOrder?.company?.supplyChainConfig?.autoRequestReservedQty || __parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
+    <field name="requestedReservedQty" expr="eval: BigDecimal.ZERO.max(qty)" if="requestedReservedQty &gt; qty || isQtyRequested"/>
 	</action-record>
 
 	<action-attrs name="action-supplychain-sale-order-line-attrs-hide-button">
-		<attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3" if="__parent__"/>
-    <attribute for="updateRequestedReservedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3" if="saleOrder"/>
 		<attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3" if="__parent__"/>
     <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3" if="saleOrder"/>
 	</action-attrs>
@@ -115,5 +125,10 @@
 	<action-record name="action-record-sale-order-line-future-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, __parent__.stockLocation.id)"/>
 	</action-record>
+
+  <action-record name="action-record-sale-order-line-fill-request-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="isQtyRequested" expr="eval: __parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
+    <field name="requestedReservedQty" expr="eval: qty" if="__parent__?.company?.supplyChainConfig?.autoRequestReservedQty"/>
+  </action-record>
 
 </object-views>	
