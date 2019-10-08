@@ -2,18 +2,16 @@
 
 ## [Unreleased 5.1.10]
 ## Improvements
-- SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
-- Fix computed fields NPE from all domains.
+- INVENTORY : added unit field in inventory line form view and printing
 
 ## Bug Fixes
 - Employee : fix error on duplicate
 - BUDGET : purchase order and applyToAllBtn when manageMultiBudget = false
+- Fix computed fields NPE from all domains.
 
 ## [5.1.9] - 2019-10-07
 ## Features
-- ACCOUNTING BATCH : create metaschedule for accountingbatch actionselect = 17
 - SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
-- INVENTORY : added unit field in inventory line form view and printing
 
 ## Improvements
 - PROJECT: Fixing financial report to follow the Axelor report guidelines.
