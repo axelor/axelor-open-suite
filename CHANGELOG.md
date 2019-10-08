@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.10]
 ## Improvements
 - INVENTORY : added unit field in inventory line form view and printing
+- Partner: Improve advance search fields name.
 
 ## Bug Fixes
 - Employee : fix error on duplicate
