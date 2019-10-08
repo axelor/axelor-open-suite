@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.10]
 ## Improvements
 - INVENTORY : added unit field in inventory line form view and printing
+- STOCK MOVE : stock move editable on back order button
 - Partner: Improve advance search fields name.
 
 ## Bug Fixes
