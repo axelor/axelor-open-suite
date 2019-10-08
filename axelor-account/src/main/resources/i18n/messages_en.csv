@@ -1372,7 +1372,7 @@
 "Please fill printing settings on following invoices: %s",,,
 "Please fill printing settings on invoice %s.",,,
 "Please input values between 1 to 100",,,
-"Please select 'Draft' moves or 'Daybook' moves or 'Cancel' moves",,,
+"Please select 'Draft' or 'Daybook' or 'Canceled' moves",,,
 "Please select 'Draft' or 'Simulated' moves",,,
 "Please select the invoice(s) to print.",,,
 "Prefix based",,,

@@ -5,6 +5,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.tool.service.ArchivingToolService;
@@ -21,8 +22,10 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
       ArchivingToolService archivingToolService,
-      ReconcileService reconcileService) {
-    super(moveRepo, moveLineRepo, archivingToolService, reconcileService);
+      ReconcileService reconcileService,
+      AccountingSituationService accountingSituationService) {
+    super(
+        moveRepo, moveLineRepo, archivingToolService, reconcileService, accountingSituationService);
   }
 
   @Override

@@ -132,7 +132,7 @@ public class MoveController {
       move = moveRepo.find(move.getId());
 
       if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-        moveRepo.remove(move);
+        moveService.getMoveRemoveService().deleteMove(move);
         response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
       } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
         moveService.getMoveRemoveService().archiveDaybookMove(move);
@@ -164,9 +164,11 @@ public class MoveController {
           moveRepo
               .all()
               .filter(
-                  "self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)",
+                  "self.id in ?1 AND self.statusSelect in (?2,?3,?4) AND (self.archived = false or self.archived = null)",
                   moveIds,
-                  MoveRepository.STATUS_NEW)
+                  MoveRepository.STATUS_NEW,
+                  MoveRepository.STATUS_DAYBOOK,
+                  MoveRepository.STATUS_CANCELED)
               .fetch();
       if (!moveList.isEmpty()) {
         boolean error = moveService.getMoveRemoveService().deleteMultiple(moveList);

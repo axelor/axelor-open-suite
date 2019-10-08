@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.tool.service.ArchivingToolService;
 import com.axelor.db.JPA;
@@ -45,36 +46,53 @@ public class MoveRemoveService {
 
   protected ReconcileService reconcileService;
 
+  protected AccountingSituationService accountingSituationService;
+
   @Inject
   public MoveRemoveService(
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
       ArchivingToolService archivingToolService,
-      ReconcileService reconcileService) {
+      ReconcileService reconcileService,
+      AccountingSituationService accountingSituationService) {
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
     this.archivingToolService = archivingToolService;
     this.reconcileService = reconcileService;
+    this.accountingSituationService = accountingSituationService;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public void archiveDaybookMove(Move move) throws Exception {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
       this.checkDaybookMove(move);
-      this.cleanMove(move);
-      move.setStatusSelect(MoveRepository.STATUS_CANCELED);
+      this.cleanMoveToArchived(move);
+      move = this.updateMoveToArchived(move);
       this.archiveMove(move);
+      this.updateSystem(move);
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void cleanMove(Move move) throws Exception {
+  protected Move updateMoveToArchived(Move move) {
+    move.setStatusSelect(MoveRepository.STATUS_CANCELED);
+    return move;
+  }
+
+  protected void cleanMoveToArchived(Move move) throws Exception {
     for (MoveLine moveLine : move.getMoveLineList()) {
       for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
         reconcileService.unreconcile(reconcile);
       }
       for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
         reconcileService.unreconcile(reconcile);
+      }
+    }
+  }
+
+  protected void updateSystem(Move move) throws Exception {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLine.getPartner() != null) {
+        accountingSituationService.updateCustomerCredit(moveLine.getPartner());
       }
     }
   }
@@ -115,11 +133,12 @@ public class MoveRemoveService {
   protected void checkIfCanArchiveMoveLine() {}
 
   @Transactional(rollbackOn = {Exception.class})
-  public void archiveMove(Move move) {
+  public Move archiveMove(Move move) {
     move.setArchived(true);
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLine.setArchived(true);
     }
+    return move;
   }
 
   public boolean deleteMultiple(List<? extends Move> moveList) {
@@ -148,7 +167,7 @@ public class MoveRemoveService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void deleteMove(Move move) throws Exception {
+  public void deleteMove(Move move) throws Exception {
     moveRepo.remove(move);
   }
 }
