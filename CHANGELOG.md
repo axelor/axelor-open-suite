@@ -31,6 +31,7 @@
 - DEMO DATA: update demo data for account config and hr config.
 - DEMO DATA: create new schedule in demo data to update customer account.
 - MRP WEEKLY PRINTING: Added first line in every page.
+- SALE ORDER : advancePaymentAmount rename to advancePaymentAmountNeeded
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
