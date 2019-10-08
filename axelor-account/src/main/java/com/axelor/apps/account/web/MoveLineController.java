@@ -141,7 +141,7 @@ public class MoveLineController {
     List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 
     try {
-      if (idList != null) {
+      if (idList != null && !idList.isEmpty()) {
         MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
         for (Integer id : idList) {
           if (id != null) {
