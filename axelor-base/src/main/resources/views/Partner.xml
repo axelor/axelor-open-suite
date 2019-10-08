@@ -945,6 +945,11 @@
 	</action-attrs>
    	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
+	    <field name="partnerAddressList" hidden="true"/>
+        <field name="mainAddress" title="Main address"/>
+        <field name="isContact" title="Is a contact"/>
+        <field name="simpleFullName" hidden="true"/>
+        <field name="isCarrier" title="Is a carrier" if="__config__.app.isApp('stock')"/>
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
 		</filter>
