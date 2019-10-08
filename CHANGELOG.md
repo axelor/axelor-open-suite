@@ -5,6 +5,7 @@
 - INVENTORY : added unit field in inventory line form view and printing
 - STOCK MOVE : stock move editable on back order button
 - Partner: Improve advance search fields name.
+- MOVELINE: change display condition for tax amount (used for on payment tax report).
 
 ## Bug Fixes
 - Employee : fix error on duplicate
