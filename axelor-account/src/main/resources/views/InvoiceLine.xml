@@ -399,4 +399,7 @@
 		<attribute name="value" for="totalPack" expr="eval:subLineList.collect{it->it.inTaxTotal}.sum()" if="typeSelect == 2 &amp;&amp; subLineList != null &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 	</action-attrs>
 
+	<search-filters name="invoice-line-filters" model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
+		<field name="invoice.invoiceDate" title="Invoice Date"/>
+	</search-filters>
 </object-views>
