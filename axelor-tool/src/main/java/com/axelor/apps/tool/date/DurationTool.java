@@ -22,6 +22,10 @@ import java.time.LocalDateTime;
 
 public class DurationTool {
 
+  private DurationTool() {
+    throw new IllegalStateException("Utility class");
+  }
+
   public static Duration computeDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
     return Duration.between(startDateTime, endDateTime);
   }

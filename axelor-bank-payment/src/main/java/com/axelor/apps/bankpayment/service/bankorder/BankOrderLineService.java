@@ -191,10 +191,19 @@ public class BankOrderLineService {
         .equals(BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT)) {
       bankOrderLine.setBankOrderEconomicReason(bankOrderFileFormat.getBankOrderEconomicReason());
       bankOrderLine.setReceiverCountry(bankOrderFileFormat.getReceiverCountry());
-      Bank bank = bankDetails.getBank();
-      if (bank != null && bank.getCountry() != null) {
-        bankOrderLine.setReceiverCountry(bank.getCountry());
+
+      if (bankDetails != null) {
+        Bank bank = bankDetails.getBank();
+        if (bank != null && bank.getCountry() != null) {
+          bankOrderLine.setReceiverCountry(bank.getCountry());
+        }
+      } else {
+        throw new AxelorException(
+            bankOrderLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
       }
+
       bankOrderLine.setPaymentModeSelect(bankOrderFileFormat.getPaymentModeSelect());
       bankOrderLine.setFeesImputationModeSelect(bankOrderFileFormat.getFeesImputationModeSelect());
       bankOrderLine.setReceiverAddressStr(getReceiverAddress(partner));

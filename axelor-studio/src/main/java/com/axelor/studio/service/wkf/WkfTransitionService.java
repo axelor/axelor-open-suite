@@ -194,12 +194,11 @@ class WkfTransitionService {
 
     MetaJsonField button = wkfService.getJsonField(name, "button");
     button.setTitle(title);
-    ;
     button.setShowIf(condition);
     button.setSequence(sequence);
     button.setVisibleInGrid(false);
     button.setIsWkf(true);
-    button.setWidgetAttrs("{\"colSpan\": \"3\"}");
+    button.setWidgetAttrs("{\"colSpan\": \"" + transition.getColSpan() + "\"}");
     button.setOnClick(addButtonActions(transition, name));
 
     if (transition.getRoleSet() != null) {

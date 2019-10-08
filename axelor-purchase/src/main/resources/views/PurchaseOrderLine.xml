@@ -8,6 +8,7 @@
 		<hilite color="danger" if="receiptState == 1"/>
 		<hilite color="warning" if="receiptState == 2"/>
 		<hilite color="success" if="receiptState == 3"/>
+		<field name="sequence" if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
 		<field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')" />
     	<field name="productName"/>
     	<field name="productCode"/>
@@ -121,15 +122,19 @@
 				<panel-related name="purchaseOrderSupplierLineListPanel" field="purchaseOrderSupplierLineList" colSpan="12" form-view="purchase-order-supplier-line-form" grid-view="purchase-order-supplier-line-grid"/>
 			</panel>
 			<panel name="budgetDistributionPanel" title="Budget" if="__config__.app.isApp('budget')" if-module="axelor-supplychain">
-				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" domain="self.statusSelect = 2"/>
 				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
 			</panel>
-			<panel name="deliveryPanel" title="Delivery" hidden="true">
+			<panel name="deliveryPanel" title="Delivery" hidden="true" colSpan="12">
+				<panel name="deliveryDatePanel" colSpan="12">
 				<field name="desiredDelivDate"/>
 				<field name="estimatedDelivDate"/>
+				</panel>
+				<panel name="deliveryInformationPanel" colSpan="12">
 				<field name="receivedQty" readonly="true"/>
 				<field name="supplierComment" colSpan="12"/>
 				<panel-dashlet title="In Stock Moves" name="POLineStockMoveLinePanel" action="action-purchase-order-line-view-stock-move-line" colSpan="12"/>
+				</panel>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" if-module="axelor-account" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
 				<field name="amountInvoiced"/>
@@ -376,7 +381,7 @@
 		<attribute name="readonly" for="budgetDistributionPanel" expr="eval: __parent__?.statusSelect &gt; 2"/>
 		<attribute name="readonly" for="projectPanel" expr="eval: __parent__?.statusSelect &gt; 3"/>
 		<attribute name="readonly" for="budgetPanel" expr="eval: __parent__?.statusSelect &gt; 2"/>
-		<attribute name="readonly" for="deliveryPanel" expr="eval: __parent__?.statusSelect &gt; 3"/>
+		<attribute name="readonly" for="deliveryInformationPanel" expr="eval: __parent__?.statusSelect &gt; 3"/>
 	</action-attrs>
     
 <!--     ACTION VIEW -->

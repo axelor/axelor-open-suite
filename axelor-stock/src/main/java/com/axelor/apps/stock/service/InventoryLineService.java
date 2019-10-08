@@ -77,7 +77,7 @@ public class InventoryLineService {
     if (product != null) {
       StockLocationLine stockLocationLine =
           Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
-
+      inventoryLine.setUnit(product.getUnit());
       BigDecimal gap =
           inventoryLine.getRealQty() != null
               ? inventoryLine

@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class WkfController {
@@ -182,7 +183,7 @@ public class WkfController {
     //
     List<Option> select = getSelect(statusField);
 
-    if (!select.isEmpty()) {
+    if (!CollectionUtils.isEmpty(select)) {
       StringBuilder elements = new StringBuilder();
       StringBuilder designs = new StringBuilder();
       int count = 1;
