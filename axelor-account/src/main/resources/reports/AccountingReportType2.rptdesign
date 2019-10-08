@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -132,7 +132,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -309,16 +308,6 @@ left outer join public.base_company as Company on (AccountingReport.company = Co
 left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
-
-where
-(AccountingReport.currency = Move.company_currency) AND
-(AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
-(AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
-MoveLine.date_val <= AccountingReport.date_val AND
-Move.company = AccountingReport.company AND
-
-Account.id in (
-Select Distinct(Account.id) from account_account as Account
 left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
 left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
 left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
@@ -326,8 +315,13 @@ left outer join public.account_account as ParentAccount4 on (ParentAccount3.pare
 left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
-where 
-AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
+where
+(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
+(AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
+MoveLine.date_val <= AccountingReport.date_val AND
+Move.company = AccountingReport.company AND
+(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
 or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
 or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
 or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)

@@ -18,12 +18,14 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.AppBudget;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.AppBudgetRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -50,6 +52,7 @@ import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Singleton
 public class PurchaseOrderController {
@@ -172,6 +175,7 @@ public class PurchaseOrderController {
     // Useful to determine if a difference exists between stock locations of all
     // purchase orders
     boolean existLocationDiff = false;
+    boolean allTradingNamesAreNull = true;
 
     PurchaseOrder purchaseOrderTemp;
     int count = 1;
@@ -186,6 +190,7 @@ public class PurchaseOrderController {
         commonPriceList = purchaseOrderTemp.getPriceList();
         commonLocation = purchaseOrderTemp.getStockLocation();
         commonTradingName = purchaseOrderTemp.getTradingName();
+        allTradingNamesAreNull = commonTradingName == null;
       } else {
         if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -197,9 +202,9 @@ public class PurchaseOrderController {
         if (commonCompany != null && !commonCompany.equals(purchaseOrderTemp.getCompany())) {
           commonCompany = null;
         }
-        if (commonTradingName != null
-            && !commonTradingName.equals(purchaseOrderTemp.getTradingName())) {
+        if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
           commonTradingName = null;
+          allTradingNamesAreNull = false;
         }
         if (commonContactPartner != null
             && !commonContactPartner.equals(purchaseOrderTemp.getContactPartner())) {
@@ -244,7 +249,7 @@ public class PurchaseOrderController {
               com.axelor.apps.purchase.exception.IExceptionMessage
                   .PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
-    if (commonTradingName == null) {
+    if (commonTradingName == null && !allTradingNamesAreNull) {
       fieldErrors.append(
           I18n.get(
               com.axelor.apps.purchase.exception.IExceptionMessage
@@ -350,10 +355,19 @@ public class PurchaseOrderController {
 
   public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
 
+    PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl =
+        Beans.get(PurchaseOrderServiceSupplychainImpl.class);
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    Beans.get(PurchaseOrderServiceSupplychainImpl.class)
-        .applyToallBudgetDistribution(purchaseOrder);
+    AppBudget AppBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
+
+    if (AppBudget.getManageMultiBudget() == true) {
+      purchaseOrderServiceSupplychainImpl.applyToallBudgetDistribution(purchaseOrder);
+    } else {
+      purchaseOrderServiceSupplychainImpl.setPurchaseOrderLineBudget(purchaseOrder);
+
+      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+    }
   }
 
   public void updateEstimatedDelivDate(ActionRequest request, ActionResponse response) {

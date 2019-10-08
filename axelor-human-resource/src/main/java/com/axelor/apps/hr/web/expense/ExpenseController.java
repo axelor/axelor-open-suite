@@ -15,6 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/*
+< * Axelor Business Solutions
+ *
+ * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.web.expense;
 
 import com.axelor.apps.ReportFactory;
@@ -341,8 +358,7 @@ public class ExpenseController {
       expenseServiceProvider.get().addPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(e);
-      response.setException(e);
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -359,7 +375,7 @@ public class ExpenseController {
       expenseServiceProvider.get().cancelPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -478,7 +494,7 @@ public class ExpenseController {
 
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get("Date problem for line(s) : %s"),
+            I18n.get("Date can't be in the future for line(s) : %s"),
             expenseLineListId.stream().map(id -> id.toString()).collect(Collectors.joining(",")));
       }
 

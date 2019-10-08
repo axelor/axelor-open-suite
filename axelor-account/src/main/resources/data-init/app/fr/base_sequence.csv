@@ -66,3 +66,4 @@
 170;"depositSlip";"Bordereau de remise";"NUMBERS";"UPPERCASE";1;4;"BR%YY%FM";;1;1
 169;"subrogationRelease";"Quittance subrogative";"NUMBERS";"UPPERCASE";1;4;"QS%YY%FM";;1;1
 107;"debitReject";"Rejet des prélèvements";"NUMBERS";"UPPERCASE";1;4;"PRLREJ%YY";;1;1
+180;"move";"Ecriture de note de frais";"NUMBERS";"UPPERCASE";1;4;"ENF%YY%FM";;1;1

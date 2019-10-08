@@ -30,6 +30,9 @@
 		 	  <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
 		  </panel>
 	  </panel>
+	  <panel name="stockLocationValuePanel" title="Stock location value">
+		<field name="stockLocationValue" />
+	  </panel>
 	  <panel name="customsInfoPanel" title="Customs">
 	  	<field name="customsMassUnit" domain="self.unitTypeSelect = 1"/>
 	  </panel>
@@ -67,6 +70,8 @@
 			<field name="isDisplaySaleValueInPrinting" widget="boolean-switch"/>
 			<field name="isDisplayAccountingValueInPrinting" widget="boolean-switch"/>
 			<field name="isDisplayAgPriceInPrinting" widget="boolean-switch"></field>
+			<field name="displayTrackNbrOnCertificateOfConformityPrinting" widget="boolean-switch"/>
+			<field name="displayExtRefOnCertificateOfConformityPrinting" widget="boolean-switch"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">

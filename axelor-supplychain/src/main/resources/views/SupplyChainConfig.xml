@@ -19,10 +19,12 @@
 				<field name="autoAllocateOnReceipt" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 				<field name="autoAllocateOnAllocation" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 				<field name="autoRequestReservedQty" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
-	  	</panel>
+				<field name="autoAllocateOnAvailabilityRequest" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+		</panel>
 	  	
 	  	<panel name="datePanel">
-		    <field name="defaultEstimatedDate" colSpan="12"/>
+		    <field name="defaultEstimatedDate" colSpan="8" />
+		    <field name="numberOfDays" colSpan="4" showIf="defaultEstimatedDate == 2" />
 		</panel>
 	
         	<panel-mail name="mailPanel">

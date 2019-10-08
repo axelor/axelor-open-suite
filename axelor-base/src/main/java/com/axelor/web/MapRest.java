@@ -87,9 +87,13 @@ public class MapRest {
         }
 
         Address address = partnerService.getInvoicingAddress(partner);
-        if (address != null && StringUtils.notBlank(address.getFullName())) {
+        if (address != null
+            && StringUtils.notBlank(address.getFullName())
+            && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
+        } else {
+          continue;
         }
 
         objectNode.put("pinColor", partner.getIsProspect() ? "red" : "orange");
@@ -134,7 +138,8 @@ public class MapRest {
               : Collections.emptyList();
 
       for (PartnerAddress partnerAddress : partnerAddressList) {
-        if (partnerAddress.getAddress() == null) {
+        Address address = partnerAddress.getAddress();
+        if (address == null || (address != null && !address.getIsValidLatLong())) {
           continue;
         }
         ObjectNode objectNode = nodeFactory.objectNode();
@@ -149,8 +154,6 @@ public class MapRest {
             objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
           }
         }
-
-        Address address = partnerAddress.getAddress();
 
         if (!StringUtils.isBlank(address.getFullName())) {
           String addressString;
@@ -196,9 +199,11 @@ public class MapRest {
         }
 
         Address address = partnerService.getInvoicingAddress(customer);
-        if (address != null) {
+        if (address != null && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
+        } else {
+          continue;
         }
 
         objectNode.put("pinColor", "orange");
@@ -238,9 +243,11 @@ public class MapRest {
         }
 
         Address address = partnerService.getInvoicingAddress(prospect);
-        if (address != null) {
+        if (address != null && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
+        } else {
+          continue;
         }
 
         objectNode.put("pinColor", "red");
@@ -279,9 +286,11 @@ public class MapRest {
         }
 
         Address address = partnerService.getInvoicingAddress(supplier);
-        if (address != null) {
+        if (address != null && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           objectNode.put("address", addressString);
+        } else {
+          continue;
         }
 
         objectNode.put("pinColor", "purple");

@@ -16,10 +16,10 @@
 		<view type="form" name="partner-customer-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isContact = false AND self.isCustomer = true OR self.isProspect = true</domain>
+		<domain>self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="_isCustomer" expr="true"/>
-		<context name="_domain" expr="self.isContact = false AND self.isCustomer = true OR self.isProspect = true"/>
+		<context name="_domain" expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
 		<context name="json-enhance" expr="eval:true" />
 	</action-view>
 	
@@ -32,6 +32,7 @@
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
 		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
 	</action-view>

@@ -72,14 +72,16 @@ public class EmployeeController {
   public void setEmployeeSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 
     Employee employee = request.getContext().asType(Employee.class);
-    Map<String, String> urlMap =
-        employeeService.getSocialNetworkUrl(
-            employee.getContactPartner().getName(), employee.getContactPartner().getFirstName());
-    response.setAttr("contactPartner.googleLabel", "title", urlMap.get("google"));
-    response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
-    response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+    if (employee.getContactPartner() != null) {
+      Map<String, String> urlMap =
+          employeeService.getSocialNetworkUrl(
+              employee.getContactPartner().getName(), employee.getContactPartner().getFirstName());
+      response.setAttr("contactPartner.googleLabel", "title", urlMap.get("google"));
+      response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
+      response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
+      response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
+      response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+    }
   }
 
   public void setContactSocialNetworkUrl(ActionRequest request, ActionResponse response) {
