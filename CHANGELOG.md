@@ -7,6 +7,7 @@
 
 ## Bug Fixes
 - Employee : fix error on duplicate
+- BUDGET : purchase order and applyToAllBtn when manageMultiBudget = false
 
 ## [5.1.9] - 2019-10-07
 ## Features
