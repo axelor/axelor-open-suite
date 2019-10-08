@@ -290,6 +290,7 @@
 - JOB COSTING : Fix division by zero error on financial report
 - Manuf Order: updating planned quantities correctly changes planned dates.
 - Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
+- Sale Order : Fix null on report for Unit field
 
 ## [5.1.7] - 2019-06-17
 ## Features
