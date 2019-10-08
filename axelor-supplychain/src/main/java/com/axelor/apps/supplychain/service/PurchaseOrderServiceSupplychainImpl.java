@@ -366,4 +366,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     super.cancelPurchaseOrder(purchaseOrder);
     budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
   }
+
+  @SuppressWarnings("unused")
+  public void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder) {
+
+    Budget budget = purchaseOrder.getBudget();
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      purchaseOrderLine.setBudget(budget);
+    }
+  }
 }

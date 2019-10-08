@@ -12,7 +12,7 @@
 	<string name="name" readonly="true" required="true" namecolumn="true">
 		<![CDATA[
 		String name = "";
-	    if(partner != null)  {   name += partner.getFullName()+" ";  }
+	    if(partner != null && partner.getFullName() != null)  {   name += partner.getFullName()+" ";  }
 	    if(address != null)  {   name += "["+address+"]";  }
 	    return name;
 	    ]]>
