@@ -4,6 +4,7 @@
 ## Improvements
 - SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
 - Fix computed fields NPE from all domains.
+- STOCK MOVE : stock move editable on back order button
 
 ## Bug Fixes
 - Employee : fix error on duplicate
