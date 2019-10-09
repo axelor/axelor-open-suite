@@ -13,6 +13,7 @@
 - BUDGET : purchase order and applyToAllBtn when manageMultiBudget = false
 - Fix computed fields NPE from all domains.
 - META SCHEDULE : Make grid view non editable
+- EBICS-USER-FORM : remove the double quote from SPR button name
 
 ## [5.1.9] - 2019-10-07
 ## Features
