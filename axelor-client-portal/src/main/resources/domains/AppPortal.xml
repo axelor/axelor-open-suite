@@ -12,6 +12,8 @@
 		<boolean name="manageProjects" title="Manage projects" default="false"/>
 		<boolean name="manageDelivery" title="Manage delivery" default="false"/>
 		<boolean name="canConfirmOnline" title="Can confirm online" default="false"/>
+		<boolean name="showCatalog" title="Display product catalog" default="false"/>
+		
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
 		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
    		<integer name="portalSelect" title="Portal" selection="clientportal.extern.or.intern" default="1"/>
