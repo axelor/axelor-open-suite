@@ -43,8 +43,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -56,7 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.annotation.Nullable;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,15 +160,12 @@ public class StockMoveController {
 
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
         List<Long> ids =
-            Lists.transform(
-                (List) request.getContext().get("_ids"),
-                new Function<Object, Long>() {
-                  @Nullable
-                  @Override
-                  public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                  }
-                });
+            (List)
+                (((List) context.get("_ids"))
+                    .stream()
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         fileLink = stockMovePrintService.printStockMoves(ids);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -210,15 +205,12 @@ public class StockMoveController {
 
       if (!ObjectUtils.isEmpty(context.get("_ids"))) {
         List<Long> ids =
-            Lists.transform(
-                (List) context.get("_ids"),
-                new Function<Object, Long>() {
-                  @Nullable
-                  @Override
-                  public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                  }
-                });
+            (List)
+                (((List) context.get("_ids"))
+                    .stream()
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         fileLink = pickingstockMovePrintService.printStockMoves(ids, userType);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -260,15 +252,12 @@ public class StockMoveController {
 
       if (!ObjectUtils.isEmpty(context.get("_ids"))) {
         List<Long> ids =
-            Lists.transform(
-                (List) context.get("_ids"),
-                new Function<Object, Long>() {
-                  @Nullable
-                  @Override
-                  public Long apply(@Nullable Object input) {
-                    return Long.parseLong(input.toString());
-                  }
-                });
+            (List)
+                (((List) context.get("_ids"))
+                    .stream()
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         fileLink = conformityCertificatePrintService.printConformityCertificates(ids);
         title = I18n.get("Conformity Certificates");
       } else if (context.get("id") != null) {

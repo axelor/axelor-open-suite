@@ -146,43 +146,12 @@
         <field name="name" />
     </calendar>
     
-    <form name="stock-move-customer-deliveries-form" title="Customer delivery" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
-					<toolbar>
-						<button name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-stock-move-method-refresh-net-mass"/>
-					</toolbar>
-    	<panel-include view="stock-move-form"/>
-	</form>
-	
-	<form name="stock-move-customer-returns-form" title="Customer return" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
-    	<panel-include view="stock-move-form"/>
-	</form>
-	
-	<form name="stock-move-supplier-returns-form" title="Supplier return" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
-    	<panel-include view="stock-move-form"/>
-	</form>
-	
-	<form name="stock-move-internal-move-form" title="Internal Stock Move" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
-    	<panel-include view="stock-move-form"/>
-	</form>
-	
-	
-	<form name="stock-move-availability-requests-form" title="Availability request" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
-    	<panel-include view="stock-move-form"/>
-	</form>
-       
-       
-	<form name="stock-move-supplier-arrivals-form" title="Supplier Arrival" model="com.axelor.apps.stock.db.StockMove" width="large"
-					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
-    	<panel-include view="stock-move-form"/>
-	</form>
 
     <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
 					onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
+		<toolbar>
+			<button showIf="typeSelect == 2 &amp;&amp; !isReversion" name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-stock-move-method-refresh-net-mass"/>
+		</toolbar>
         <menubar>
             <menu title="Reports" icon="fa-files-o">
                 <item title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
@@ -477,7 +446,7 @@
   <action-view name="action-stock-move-view-back-order" title="Backorder Stock Move" model="com.axelor.apps.stock.db.StockMove">
     <view type="form" name="stock-move-form"/>
     <view-param name="popup" value="reload"/>
-    <view-param name="forceEdit" value="false"/>
+    <view-param name="forceEdit" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false" />
     <view-param name="popup-save" value="true"/>

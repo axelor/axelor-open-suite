@@ -18,12 +18,14 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.AppBudget;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.AppBudgetRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -353,10 +355,19 @@ public class PurchaseOrderController {
 
   public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
 
+    PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl =
+        Beans.get(PurchaseOrderServiceSupplychainImpl.class);
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    Beans.get(PurchaseOrderServiceSupplychainImpl.class)
-        .applyToallBudgetDistribution(purchaseOrder);
+    AppBudget AppBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
+
+    if (AppBudget.getManageMultiBudget() == true) {
+      purchaseOrderServiceSupplychainImpl.applyToallBudgetDistribution(purchaseOrder);
+    } else {
+      purchaseOrderServiceSupplychainImpl.setPurchaseOrderLineBudget(purchaseOrder);
+
+      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+    }
   }
 
   public void updateEstimatedDelivDate(ActionRequest request, ActionResponse response) {

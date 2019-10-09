@@ -44,8 +44,19 @@
 		<string name="name">
 			<![CDATA[
 			String name = "";
-		    if (partner != null) name += partner.getFullName()+" ("+partner.getPartnerSeq()+")";
-		    if (company != null) name += " - "+company.getName(); 
+		    if (partner != null) {
+              if(partner.getFullName() != null)
+              {
+               if(partner.getPartnerSeq() != null)
+                name += partner.getFullName()+" ("+partner.getPartnerSeq()+")";
+               else
+                name += partner.getFullName();
+              }
+              else if(partner.getPartnerSeq() != null){
+               name += "("+partner.getPartnerSeq()+")";
+              }
+            }
+		    if (company != null) name += (name.isEmpty()?"":"-") +company.getName(); 
 			return name;
 	    ]]>
 		</string>
