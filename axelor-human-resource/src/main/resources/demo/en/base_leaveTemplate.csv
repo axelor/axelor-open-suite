@@ -2,7 +2,7 @@
 4;"Leave request sent";"$LeaveRequest.user.partner.emailAddress.address$";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"$LeaveRequest.user.partner.emailAddress.address$";"Leave request of ($LeaveRequest.user.name$)";"<p>Hello $LeaveRequest.user.employee.managerUser.name$,</p>
 <p><br></p>
 <p>$LeaveRequest.user.name$ informs you of a leave request from $LeaveRequest.fromDate; format=""E. d MMM yyyy""$ to $LeaveRequest.toDate; format=""E. d MMM yyyy""$ on $LeaveRequest.leaveReason.leaveReason$ ($LeaveRequest.duration$ day(s)).</p>
-<a href=""http://localhost:8080/aos-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Please log in to consult it.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Please log in to consult it.</a>
 
 <div>
 <br><p>You may reject or validate it.</p>
@@ -12,7 +12,7 @@
 5;"Leave request refused";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"$LeaveRequest.user.partner.emailAddress.address$";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"Leave request rejection";"<p>Hello $LeaveRequest.user.name$,</p>
 <p><br></p>
 <p>unfortunately, Your leave request for the period from $LeaveRequest.fromDate; format=""E. d MMM yyyy""$ to $LeaveRequest.toDate; format=""E. d MMM yyyy""$ can not be accepted.</p>
-<a href=""http://localhost:8080/aos-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Please log in to consult it.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Please log in to consult it.</a>
 
 <div>
 <br><p>In staying at your disposal to discuss it,</p>
@@ -24,7 +24,7 @@
 6;"Leave request validated";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"$LeaveRequest.user.partner.emailAddress.address$";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"Leave request validation";"<p>Hello $LeaveRequest.user.name$,</p>
 <p><br></p>
 <p>Your leave request for the period from $LeaveRequest.fromDate; format=""E. d MMM yyyy""$ to $LeaveRequest.toDate; format=""E. d MMM yyyy""$ has been validated.</p>
-<a href=""http://localhost:8080/aos-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Please log in to consult it.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Please log in to consult it.</a>
 
 <div>
 <p><br></p>

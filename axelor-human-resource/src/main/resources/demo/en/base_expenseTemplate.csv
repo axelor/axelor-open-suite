@@ -2,7 +2,7 @@
 1;"Expense sent";;;"$Expense.user.partner.emailAddress.address$";"Expense submission by $Expense.user.name$";"<p>Hello,</p>
 <p><br></p>
 <p>An expense has been submitted to you by $Expense.user.name$.</p>
-<a href=S""http://localhost:8080/aos-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
+<a href=S""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
 
 <div>
 <br><p>You may reject or validate it.</p>
@@ -12,7 +12,7 @@
 2;"Expense refused";;"$Expense.user.partner.emailAddress.address$";;"Expense rejection";"<p>Hello,</p>
 <p><br></p>
 <p>Your expense $Expense.fullName$ is unfortunately not congruent and can not be validated as is.</p>
-<a href=""http://localhost:8080/aos-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
 
 <div>
 <br><p>In order to know the missing information for this expense to be validated, please reply to this e-mail.</p>
@@ -24,7 +24,7 @@
 3;"Expense validated";;"$Expense.user.partner.emailAddress.address$";;"Expense validation";"<p>Hello,</p>
 <p><br></p>
 <p>Your expense ($Expense.user.name$) has been validated and will be payed as soon as possible.</p>
-<a href=""http://localhost:8080/aos-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
 
 <div>
 <p><br></p>
