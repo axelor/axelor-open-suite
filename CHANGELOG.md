@@ -6,6 +6,7 @@
 - STOCK MOVE : stock move editable on back order button
 - Partner: Improve advance search fields name.
 - MOVELINE: change display condition for tax amount (used for on payment tax report).
+- APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
 
 ## Bug Fixes
 - Employee : fix error on duplicate
