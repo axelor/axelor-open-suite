@@ -18,7 +18,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: "com.axelor.app"
 
-apply from: "modules/abs/version.gradle"
+apply from: "modules/axelor-open-suite/version.gradle"
 
 apply from: './gradle/style.gradle'
 
@@ -32,7 +32,7 @@ allprojects {
 	apply plugin: 'eclipse'
 
 	group = "com.axelor"
-	version = absVersion
+	version = appVersion
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -72,7 +72,7 @@ task("dataImport", type: JavaExec) {
 }
 
 task archiveReports(type: Zip){
-	from 'modules/abs'
+	from 'modules/axelor-open-suite'
 	include '*/src/main/resources/reports/*'
 	classifier 'reports'
 	eachFile { fileCopyDetails ->
@@ -83,7 +83,7 @@ task archiveReports(type: Zip){
 }
 
 task archiveImages(type: Zip){
-	from 'modules/abs'
+	from 'modules/axelor-open-suite'
 	include '*/src/main/resources/data-demo/img/**'
 	include '*/src/main/resources/data-init/img/**'
 	classifier 'img'

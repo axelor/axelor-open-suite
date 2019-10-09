@@ -825,9 +825,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[5.1.5]: https://github.com/axelor/abs-webapp/compare/v5.1.4...v5.1.5
-[5.1.4]: https://github.com/axelor/abs-webapp/compare/v5.1.3...v5.1.4
-[5.1.3]: https://github.com/axelor/abs-webapp/compare/v5.1.2...v5.1.3
-[5.1.2]: https://github.com/axelor/abs-webapp/compare/v5.1.1...v5.1.2
-[5.1.1]: https://github.com/axelor/abs-webapp/compare/v5.1.0...v5.1.1
-[5.1.0]: https://github.com/axelor/abs-webapp/compare/5.0...v5.1.0
+[5.1.5]: https://github.com/axelor/aos-webapp/compare/v5.1.4...v5.1.5
+[5.1.4]: https://github.com/axelor/aos-webapp/compare/v5.1.3...v5.1.4
+[5.1.3]: https://github.com/axelor/aos-webapp/compare/v5.1.2...v5.1.3
+[5.1.2]: https://github.com/axelor/aos-webapp/compare/v5.1.1...v5.1.2
+[5.1.1]: https://github.com/axelor/aos-webapp/compare/v5.1.0...v5.1.1
+[5.1.0]: https://github.com/axelor/aos-webapp/compare/5.0...v5.1.0
