@@ -806,8 +806,15 @@ public class MrpServiceImpl implements MrpService {
 
   protected LocalDate computeMaturityDate(LocalDate maturityDate, MrpLineType mrpLineType) {
     if ((maturityDate != null && maturityDate.isBefore(today))
-        || (maturityDate == null && mrpLineType.getIncludeElementWithoutDate())) {
+        || (maturityDate == null
+            && mrpLineType.getIncludeElementWithoutDate()
+            && mrpLineType.getSetElementToSelect() == MrpLineTypeRepository.CURRENT_DATE)) {
       maturityDate = today;
+    } else if (maturityDate == null
+        && mrpLineType.getIncludeElementWithoutDate()
+        && mrpLineType.getSetElementToSelect() == MrpLineTypeRepository.CURRENT_DATE_PLUS_DAYS
+        && mrpLineType.getNumberOfDays().compareTo(BigDecimal.ZERO) >= 0) {
+      maturityDate = today.plusDays(mrpLineType.getNumberOfDays().longValue());
     }
     return maturityDate;
   }

@@ -17,6 +17,11 @@
       <boolean name="includeElementWithoutDate" title="Include element without date" 
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
 
+	  <integer name="setElementToSelect" title="Set elements to" selection="supplychain.mrplinetype.set.element.to.select" default="1"/>
+      <decimal name="numberOfDays" title="Number of days" min="0" />
+
+
+    
       <extra-code><![CDATA[
 	
 	
@@ -38,6 +43,11 @@
 		// TYPE SELECT
 		public static final int TYPE_IN = 1;  // Entry of stock
 		public static final int TYPE_OUT = 2;  // Out of stock
+		
+		// Default estimated Date
+     	public static final int CURRENT_DATE = 1;
+     	public static final int CURRENT_DATE_PLUS_DAYS = 2;
+		
 	
 	]]></extra-code>
       
