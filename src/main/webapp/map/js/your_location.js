@@ -51,7 +51,6 @@ function addYourLocationButton(map, markers, bounds) {
           if (map.getZoom() < minZoom) {
             map.setZoom(minZoom);
           }
-          map.setCenter(options.center);
         }
       }
 
