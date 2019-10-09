@@ -20,7 +20,7 @@
 - TeamTask : Added 'Private','internalDesription' and 'orderAccepted' in bussiness-support module.
 - Business Project module : Two new fileds in TeamTask and Project (TimeInvoicing / InvoicingType)
 - TeamTask : Add new o2m 'projectPlanningTimeSpentList' field.
-- Timesheet : Assign Task to lines when generating from Realise Planning. 
+- Timesheet : Assign Task to lines when generating from Realise Planning.
 - Project : Added new O2M field 'announcementList' in bussiness-support module.
 - TeamTask : Addition of new boolean 'isOrderProposed' in business-support module and label on isOrderAccepted.
 - TeamTask : Make 'toInvoice' field hidden and set its value automatically from invoiceType.
@@ -28,30 +28,30 @@
 - TeamTask : Add button to enter spent time.
 - TeamTask : Added action onClick of 'acceptOrderBtn' to set value for assignment
 - Business Support Module : assigningProvider / assigningCustomer button and label added in TeamTask.
-- Business support model : ProjectCategory / TeamTask objects - Adding defaultInvoicing field - Onchange TeamTask.projectCategory 
+- Business support model : ProjectCategory / TeamTask objects - Adding defaultInvoicing field - Onchange TeamTask.projectCategory
 - TeamTask : Setting panel-mail mail-messages.
 - Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
 - APP for axelor-business-support with a field 'providerCompany'.
 - Stock Correction
 - Business support module : New form/grid views of TeamTask for customers.
 - Business Support module / Objet TeamTask : Menu entries for customers.Added new role(role.customer) in data-init.
-- Employee:Company(Employee) Phonebook 
+- Employee:Company(Employee) Phonebook
 - User Form : Provide step wise view.
-- TeamTask : Update teamtask client view. 
+- TeamTask : Update teamtask client view.
 - Project : Default value for project on Wiki/Version/Announcement.
 - Project : Divide planned and spent time project planning lines in seprate dashlets.
 - Team Task : Add new field 'customerReferral'.
 - TeamTask : Assign default value to fields and change in track of object.
 - MANUF. APP : new boolean manageCostSheetGroup
-- Business Project : new InvoicingProject menu and separate project-task-customer from menu-project-root 
-- Project : Addition of M2M 'projectSet' in User object. 
+- Business Project : new InvoicingProject menu and separate project-task-customer from menu-project-root
+- Project : Addition of M2M 'projectSet' in User object.
 - Purchase Request : Addition of M2M 'purchaseOrderSet'
 - Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
 - Invoicing project : Menu organisation
-- Business Project : Addition of required contion on parentTaskTemplate. 
+- Business Project : Addition of required contion on parentTaskTemplate.
 - TeamTask : Added relation with saleOrderLine and InvoiceLine.
 - Project module : ProjectPlanningTime ( Start time / End time )
-- TeamTask : Addition of o2m 'projectPlanningTimeList' field. 
+- TeamTask : Addition of o2m 'projectPlanningTimeList' field.
 - MOVE : improve reversion process.
 - SaleOrder : Task By product and Task_By_Line Invoicing
 - SALE ORDER : Update in 'Quotations template' working process and view.
@@ -62,7 +62,7 @@
 - PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
 - WEEKLY PLANNING : Add a type and minor changes
 - TeamTask : Business Project module / TeamTask.toInvoice (Package)
-- BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence. 
+- BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence.
 - InvoicingProject : Added new report 'InvoicingProjectAnnex.rptdesign' and attach to object on generating invoice
 - HR : Add CSV export support for Employment Contracts from its view and HR batch
 - MRP : Generate new sequence on save
@@ -76,7 +76,7 @@
 - INVOICE : new process to print
 - QUALITY CONTROL : New report to print
 - PERMISSIONS : Display dashlets for groups/roles/users using the permission in permission and meta permission form views.
-- AppBase : Addition of new boolean 'enableMultiCompany' also show/hide company column in all grid-view base on it. 
+- AppBase : Addition of new boolean 'enableMultiCompany' also show/hide company column in all grid-view base on it.
 - Quality module : Changes in views.
 - OPPORTUNITY : Changes on opportunityType field.
 - INVOICE : Change form view's organization to fit the SaleOrder view.
@@ -128,7 +128,7 @@
 - COMPANY : autocomplete companySet when enableMultiCompany = false
 - FUNCTION : new object function on Sales and CRM and new M2O on partner
 - CITIZENSHIP : Add new object citizenship on base and new M2O in country and employee
-- EMPLOYEE : Files management added domains and demo data 
+- EMPLOYEE : Files management added domains and demo data
 - Inventory : Added calendar-view
 
 ## Improvements
@@ -140,10 +140,10 @@
 - Project : adding new O2M field Roadmap and panel Tab Roadmap.
 - HR Module : Timesheet - Rename Action Title in "timesheet-form".
 - Studio : Allowing to export all data without selecting any app builder.
-- Studio: Custom model editor - Added title property for model and removed required condition for AppBuilder. 
+- Studio: Custom model editor - Added title property for model and removed required condition for AppBuilder.
 - Project : Display task field on logTimesPanel.
 - Project : Default value set for ProjectPlanningTime.product.
-- TeamTask : Change in team-task-form view. 
+- TeamTask : Change in team-task-form view.
 - TeamTask object : Change label "Task assigned to the provider".
 - MENUS : new organisation in CRM and Sales modules
 - Team Task : Change in team-task-form view
@@ -151,7 +151,7 @@
 - JobPosition : Hide statusOpenBtn on statusSelect = 2.
 - Purchase Order : remove IPurchaseOrder deprecated class
 - Project module : Add metaFile field on TeamTask
-- Event : Allowing to suppress unsynchronized events. 
+- Event : Allowing to suppress unsynchronized events.
 - Employee : Add new fields 'birthDepartment' and 'cityofBirth'
 - Employment Contract : Add buttons to "Tools" in menubar and set form width to large
 - TeamsTask : New menu titles
@@ -206,7 +206,7 @@
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
-- Studio: Fix import app without image. 
+- Studio: Fix import app without image.
 - TeamTask : Resolve NPE by updating action of HR module.
 - Generation of Project/Phase from SaleOrder
 - Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
@@ -216,7 +216,7 @@
 - Employee : Fix issue of not saving each phase of creation process
 - TeamTask : Fix issue of creating new record from calendar view
 - Marketing : Fix error when trying to generate an event per target
-- Contract : Fix import error in data-init. 
+- Contract : Fix import error in data-init.
 - Sale Quotation : Move menu from CRM to Sale module.
 - BoM:  added a menu showing personalized bills of materials
 - BUSINESS PROJECT : Report printing Division by zero
@@ -232,7 +232,7 @@
 - ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
 - Transactionnal : correction and standardisation of rollback.
 - CONFIGURATOR BOM : product, qty and unit are displayed in the grid-view.
-- Upgraded to ADK 5.1.
+- Upgraded to Axelor Open Platform 5.1.
 - SALE ORDER LINE : Fixed Error when selecting a product
 - Studio : Fix readonly fields are enabled when imported an application.
 - Studio : Fix error when click on wkf buttons.
@@ -246,7 +246,7 @@
 - REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 - PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
-- Update xsd to ADK 5.1
+- Update xsd to Axelor Open Platform 5.1
 - Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
 - SaleOrder : Fix NPE on click of generate customer deliveries
@@ -263,10 +263,9 @@
 - EXPENSE : fix NPE on validate Expense.
 - Controller: Use Beans.get instead of Inject
 - PROJECT : Kanban view doesn't change status
-- Partner : Remove NPE and persistence exception on contact form  . 
+- Partner : Remove NPE and persistence exception on contact form  .
 - BankDetails : Fix error when bank details form opens
 - INVOICE : Remove NPE from getInvoicePartnerDomain
 - Purchase : Corrected translation of purchase not configured
 
-[Unreleased 5.2.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
-
+[Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

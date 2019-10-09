@@ -33,7 +33,7 @@ public class QualityMobileController {
    *
    * @param request
    * @param response
-   *     <p>POST: /abs-webapp/ws/action Content-Type: application/json Fields: id
+   *     <p>POST: /aos-webapp/ws/action Content-Type: application/json Fields: id
    *     <p>payload : { "action":
    *     "com.axelor.apps.quality.mobile.QualityMobileController:sendEmail", "data": { "context":
    *     {"id": 1} } }

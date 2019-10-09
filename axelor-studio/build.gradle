@@ -3,7 +3,7 @@ apply plugin: "com.axelor.app-module"
 apply from: "../version.gradle"
 
 apply {
-	version = absVersion
+	version = appVersion
 }
 
 axelor {
@@ -33,7 +33,7 @@ def updateJsp(jspFile, check, lines) {
 	file(jsp).write(text, 'UTF-8')
 }
 
-//XXX: this task should be removed when we introduce per module webapp support in adk
+//XXX: this task should be removed when we introduce per module webapp support in Axelor Open Platform
 task copyWebapp(type: Copy) {
 	destinationDir = file(rootProject.buildDir)
 	into("webapp/studio") {
