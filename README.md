@@ -19,8 +19,8 @@ Axelor Open Suite is built on top of [Axelor Open Platform](https://github.com/a
 Download
 -------------------------
 ```bash
-$ git clone git@github.com:axelor/aos-webapp.git
-$ cd aos-webapp
+$ git clone git@github.com:axelor/open-suite-webapp.git
+$ cd open-suite-webapp
 $ git checkout master
 $ git submodule init
 $ git submodule update
