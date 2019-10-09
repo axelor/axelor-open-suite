@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.1.10]
+## Features
+- Help on important fields in partner-form, sale-order-form, invoice-form, product-form.
+
 ## Improvements
 - INVENTORY : added unit field in inventory line form view and printing
 - STOCK MOVE : stock move editable on back order button
