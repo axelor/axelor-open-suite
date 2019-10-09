@@ -91,7 +91,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   /* SaleOrder Indicators */
   protected Integer getOrdersInProgressIndicator(User user) {
-    List<SaleOrder> saleOrderList = saleOrderRepo.all().filter(getOrdersInProgressOfUser(user)).fetch();
+    List<SaleOrder> saleOrderList =
+        saleOrderRepo.all().filter(getOrdersInProgressOfUser(user)).fetch();
     return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
   }
 

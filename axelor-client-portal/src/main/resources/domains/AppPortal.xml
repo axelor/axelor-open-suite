@@ -11,6 +11,7 @@
 		<boolean name="manageTickets" title="Manage tickets" default="false"/>
 		<boolean name="manageProjects" title="Manage projects" default="false"/>
 		<boolean name="manageDelivery" title="Manage delivery" default="false"/>
+		<boolean name="showCatalog" title="Display product catalog" default="false"/>
 		<boolean name="canConfirmOnline" title="Can confirm online" default="false"/>
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
 		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
@@ -29,6 +30,7 @@
 			<field name="manageTickets" on="UPDATE"/>
 			<field name="manageProjects" on="UPDATE"/>
 			<field name="manageDelivery" on="UPDATE"/>
+			<field name="showCatalog" on="UPDATE"/>
 			<field name="canConfirmOnline" on="UPDATE"/>
 			<field name="canPayOnline" on="UPDATE"/>
 			<field name="portalSelect" on="UPDATE"/>
