@@ -119,7 +119,7 @@
 		<boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
 		<boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
 		<boolean name="fixedAssetCatReqOnInvoice" title="Fixed asset category required on invoices"/>
-		<boolean name="isPrintInvoicesInCompanyLanguage" title="Print invoices in company language"/>
+		<boolean name="isPrintInvoicesInCompanyLanguage" title="Print invoices in company language" default="true"/>
 
 		<!-- Account chart template -->
 		<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart"/>

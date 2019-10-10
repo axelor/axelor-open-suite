@@ -392,7 +392,7 @@
 	    <button name="validateChangesBtn" title="Validate changes" showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12" onClick="action-group-sale-order-validate-changes"/>
 	    <button if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain').customerStockMoveGenerationAuto" name="generateCustomerStockMoveBtn" title="Generate customer deliveries" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" readonlyIf="!saleOrderLineList || !saleOrderLineList.length" colSpan="12" onClick="save, action-supplychain-sale-order-create-stock-move"/>
 	    <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-group-confirmed" readonlyIf="advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmount)"/>
-	    <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 2 &amp;&amp; taxTotal != 0" colSpan="12" onClick="save,action-sale-order-view-invoicing-advance-payment-wizard" if-module="axelor-supplychain"/>
+	    <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()" showIf="statusSelect == 2 &amp;&amp; taxTotal != 0 &amp;&amp; advancePaymentAmount > 0  &amp;&amp; advancePaymentNeeded" colSpan="12" onClick="save,action-sale-order-view-invoicing-advance-payment-wizard" if-module="axelor-supplychain"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromSaleOrder()" if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="action-supplychain-sale-order-group-generate-invoice"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getPurchaseOrderGenerationAuto()" name="generatePOBtn" title="Generate purchase order" showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
 	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrderBtn" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
@@ -508,8 +508,8 @@
 	</form>
 
 	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder"
-		onNew="action-group-sale-saleorder-onnew"
-		onLoad="action-group-sale-saleorder-onload">
+		onNew="action-group-sale-saleorder-onnew,action-sale-order-template-hide-allocated-qty"
+		onLoad="action-group-sale-saleorder-onload,action-sale-order-template-hide-allocated-qty">
 	  <panel name="overviewPanel">
 	  	<field name="clientPartner.saleOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null"/>
 	    <field name="title"/>
@@ -543,7 +543,6 @@
                      form-view="address-partner-address-form"
                      grid-view="address-grid"/>
 			</panel>
-	      	<field name="externalReference" onChange="action-sale-order-attrs-external-reference"/>
 	      	<field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
 	          <viewer>
 	            <![CDATA[
@@ -561,8 +560,8 @@
 	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
 	      <panel name="financialTermsPanel" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-	        <field name="paymentMode" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
-	        <field name="paymentCondition" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
+	        <field name="paymentMode" canEdit="false" domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+	        <field name="paymentCondition" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
 	      </panel>
 	      <panel name="stockLocationPanel" title="Stock location" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
    		      <field name="stockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -992,7 +991,7 @@
     <action-record name="action-sale-order-record-set-contact-partner" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="contactPartner" expr="eval: clientPartner?.contactPartnerSet?.size() == 1 ? clientPartner.contactPartnerSet.collect{it}[0] : null"/>
     </action-record>
-    
+
     <action-record name="action-sale-order-record-from-partner" model="com.axelor.apps.sale.db.SaleOrder">
     	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
@@ -1373,6 +1372,12 @@
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
 	</action-method>
+
+	<action-attrs name="action-sale-order-template-hide-allocated-qty">
+		<attribute name="hidden" for="saleOrderLineList.reservedQty" expr="true"/>
+		<attribute name="hidden" for="saleOrderLineList.allocateAll" expr="true"/>
+		<attribute name="hidden" for="saleOrderLineList.deallocate" expr="true"/>
+	</action-attrs>
 
   <action-validate name="action-sale-order-validate-client-partner">
 		<error message="Please select a customer" if="!clientPartner"/>

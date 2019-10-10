@@ -9,6 +9,7 @@
 		<many-to-one name="fileType" title="File type" ref="com.axelor.apps.base.db.FileType" />
 		<many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile"/>
 		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" />
+		<date name="expirationDate" title="Expiration date" />
 	</entity>
 
 </domain-models>

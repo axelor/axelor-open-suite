@@ -2,7 +2,7 @@
 1;"NDF envoyée";;;"$Expense.user.partner.emailAddress.address$";"Soumission note de frais par $Expense.user.name$";"<p>Bonjour,</p>
 <p><br></p>
 <p>Une note de frais vous a été soumise par $Expense.user.name$.</p>
-<a href=""http://localhost:8080/abs-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
 
 <div>
 <br><p>Merci de bien vouloir la valider ou la rejeter.</p>
@@ -12,7 +12,7 @@
 2;"NDF refusée";;"$Expense.user.partner.emailAddress.address$";;"Rejet de note de frais";"<p>Bonjour,</p>
 <p><br></p>
 <p>Votre note de frais $Expense.fullName$ n'est malheureusement pas conforme et ne pourra pas être validée en l'état.</p>
-<a href=""http://localhost:8080/abs-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
 
 <div>
 <br><p>Afin de connaître les informations manquantes pour que cette note de frais soit validée, merci de répondre à cet e-mail.</p>
@@ -24,7 +24,7 @@
 3;"NDF validée";;"$Expense.user.partner.emailAddress.address$";;"Validation de note de frais";"<p>Bonjour,</p>
 <p><br></p>
 <p>Votre note de frais ($Expense.user.name$) a été validée et vous sera réglée dans les plus brefs délais.</p>
-<a href=""http://localhost:8080/abs-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
 
 <div>
 <br><p>Cordialement</p>

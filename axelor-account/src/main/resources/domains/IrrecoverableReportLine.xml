@@ -16,7 +16,7 @@
   	<string name="name" title="Name">
   		<![CDATA[
 	    	if (irrecoverableInvoiceLine != null) return irrecoverableInvoiceLine.getInvoiceLineSeq() + " - " + reportLineSeq;
-	    	if (irrecoverablePaymentScheduleLineLine != null) return irrecoverablePaymentScheduleLineLine.getName() + " - " + reportLineSeq;
+	    	if (irrecoverablePaymentScheduleLineLine != null && irrecoverablePaymentScheduleLineLine.getName() != null) return irrecoverablePaymentScheduleLineLine.getName() + " - " + reportLineSeq;
 	    	else return reportLineSeq.toString();
 	    ]]>
   	</string>
