@@ -48,15 +48,8 @@ axelor {
 	description "Axelor Entreprise Application"
 }
 
-def modules = []
-file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { it ->
-	if(new File(it, "build.gradle").exists()) {
-		modules.add(it)
-	}
-}
-
 dependencies {
-	modules.each { dir ->
+	gradle.appModules.each { dir ->
 		compile project(":modules:$dir.name")
 	}
 }
@@ -71,27 +64,18 @@ task("dataImport", type: JavaExec) {
 	}
 }
 
-task archiveReports(type: Zip){
-	from 'modules/axelor-open-suite'
-	include '*/src/main/resources/reports/*'
+task archiveReports(type: Zip) {
+	file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { dir ->
+		if(new File(dir, "build.gradle").exists() && new File(dir, "/src/main/resources/reports").exists()) {
+			new File(dir, "/src/main/resources/reports/").listFiles().each { report ->
+				from report.getPath()
+			}
+		}
+	}
+
 	classifier 'reports'
-	eachFile { fileCopyDetails ->
-		fileCopyDetails.path = fileCopyDetails.path.replaceAll(".*/src/main/resources/reports/", '')
-	}
 	includeEmptyDirs = false
-	destinationDir = new File("$buildDir/libs")
+	destinationDir = file("$buildDir/libs")
 }
 
-task archiveImages(type: Zip){
-	from 'modules/axelor-open-suite'
-	include '*/src/main/resources/data-demo/img/**'
-	include '*/src/main/resources/data-init/img/**'
-	classifier 'img'
-	eachFile { fileCopyDetails ->
-		fileCopyDetails.path = fileCopyDetails.path.replaceAll(".*/src/main/resources/data-demo/img/", '').replaceAll(".*/src/main/resources/data-init/img/", "")
-	}
-	destinationDir = new File("$buildDir/libs")
-	includeEmptyDirs = false
-}
-
-build.finalizedBy archiveReports, archiveImages
+build.finalizedBy archiveReports
