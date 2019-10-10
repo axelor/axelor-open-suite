@@ -62,16 +62,15 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   }
 
   @Override
-  @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsProject(true);
     project.setIsBusinessProject(true);
-    return projectRepository.save(project);
+    return project;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
@@ -106,6 +105,9 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         }
         teamTaskRepository.save(task);
         tasks.add(task);
+        if (project.getId() != null) {
+          projectRepository.save(project);
+        }
       }
     }
     if (tasks == null || tasks.isEmpty()) {

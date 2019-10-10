@@ -68,16 +68,15 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   }
 
   @Override
-  @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsProject(true);
     project.setIsBusinessProject(true);
-    return projectRepository.save(project);
+    return project;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
@@ -101,6 +100,9 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
                   || orderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
               && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
         continue;
+      }
+      if (project.getId() != null) {
+        projectRepository.save(project);
       }
       boolean isTaskGenerated =
           teamTaskRepository

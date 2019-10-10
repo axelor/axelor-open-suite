@@ -59,12 +59,11 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
   }
 
   @Override
-  @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsProject(true);
     project.setIsBusinessProject(true);
-    return projectRepository.save(project);
+    return project;
   }
 
   @Override
@@ -75,6 +74,9 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
       Product product = saleOrderLine.getProduct();
       if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
+        if (project.getId() != null) {
+          projectRepository.save(project);
+        }
         Project phase = projectBusinessService.generatePhaseProject(saleOrderLine, project);
         phase.setFromDate(startDate);
         saleOrderLineRepository.save(saleOrderLine);
