@@ -50,7 +50,7 @@
 			<field name="inspectorSignature" widget="Image"/>
 			<field name="customerSignature" widget="Image"/>
 		</panel>
-		<panel name="controlPointsPanel" sidebar="true">
+		<panel name="controlPointsPanel" sidebar="true" hideIf="statusSelect == 2 || statusSelect == 6">
 			<button name="chooseQualityProcessBtn" title="Choose quality process" onClick="save,action-quality-control-view-quality-process" showIf="statusSelect == 1"/>
 			<button name="addOptionalControlPointsBtn" title="Add optional control points" onClick="save,action-quality-control-view-optional-control-points"/>
 			<button name="editControlPointsBtn" title="Edit control points" onClick="action-quality-control-method-open-control-points"/>
