@@ -14,6 +14,7 @@
 - Studio : group by application on json model grid view.
 - Export studio app: email action - email template
 - Export Studio app: export actions created with meta-action-from
+- FORECAST RECAP LINE TYPE : create new object ForecastRecapLineType
 
 ## Improvements
 - Remove Pack Feature from Product.
