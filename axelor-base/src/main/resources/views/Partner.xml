@@ -238,6 +238,7 @@
 					</field>
 				</panel>
 				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
+					<static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
 						<editor layout="table" x-show-titles="false" >
 							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelperLabel" hidden="true" showIf="address == null || address.addressL4 == null" />
@@ -409,6 +410,7 @@
 					<field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 				</panel>
 				<panel colSpan="12" name="postalAddressesPanel" title="Postal addresses" hideIf="isContact">
+					<static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
 					<field name="partnerAddressList" colSpan="12">
 						<editor layout="table" x-show-titles="false">
 							<field name="address" canNew="true"/>
@@ -716,6 +718,7 @@
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
+        <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
@@ -764,6 +767,10 @@
         <attribute name="title" for="name" expr="Name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
     </action-attrs>
 
+   	<action-attrs name="action-partner-attrs-hide-invoice-and-delivery-address-text">
+			<attribute name="hidden" for="invoiceAndDeliveryAddressText" expr="eval: partnerAddressList?.findAll{it.isInvoicingAddr}?.size() &gt; 0 &amp;&amp; partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0" /> 
+    </action-attrs>
+    
     <action-group name="action-partner-partner-type-select-change">
         <action name="action-partner-attrs-change-name"/>
         <action name="action-partner-empty-first-name" if="partnerTypeSelect != __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
