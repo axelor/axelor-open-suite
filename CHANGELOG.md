@@ -14,6 +14,7 @@
 - Fix computed fields NPE from all domains.
 - META SCHEDULE : Make grid view non editable
 - USER : appPermissions title and translation
+- SALE DASHBOARD : Translation
 
 ## [5.1.9] - 2019-10-07
 ## Features
