@@ -11,9 +11,9 @@
 
 	<form name="file-type-form" title="File type" model="com.axelor.apps.base.db.FileType" >
 		<panel name="mainPanel">		
-			<field name="code" />
+			<field name="code" colSpan="3"/>
 			<field name="name" />	
-			<field name="hasExpirationDate" />		
+			<field name="hasExpirationDate" colSpan="3"/>		
 		</panel>
 	</form>
 
