@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.1.10]
+## Features
+- SUPPLYCHAIN CONFIG : created defaultEstimatedDate for purchase order
+
 ## Improvements
 - INVENTORY : added unit field in inventory line form view and printing
 - STOCK MOVE : stock move editable on back order button
