@@ -393,7 +393,12 @@ AND MoveLine.date_val <= AccountingReport.date_to
 AND (Move.status_select = 3 OR Move.status_select = 2) 
 AND MoveLine.tax_line is not null
 AND Tax.type_select = 2
-AND (AccountingReport.display_closing_accounting_moves is true OR(AccountingReport.display_closing_accounting_moves is false AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -723,7 +728,12 @@ AND MoveLine.date_val <= AccountingReport.date_to
 AND (Move.status_select = 3 OR Move.status_select = 2) 
 AND MoveLine.tax_line is not null
 AND Tax.type_select = 2
-AND (AccountingReport.display_closing_accounting_moves is true OR(AccountingReport.display_closing_accounting_moves is false AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 group by Tax.id, TaxLine.value 
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>
