@@ -810,6 +810,7 @@
 "Discount rate","Taux remise",,
 "Display code account on printing","Afficher le numéro du compte comptable",,
 "Display closing accounting moves","Afficher les écritures de clôture",,
+"Display opening accounting moves","Afficher les écritures d'ouverture",,
 "Display delivery address on printing","Afficher adresse de livraison sur les impressions",,
 "Display move sequence on printing","Afficher la référence de l'écriture comptable",,
 "Display name account on printing","Afficher le nom du compte comptable",,
