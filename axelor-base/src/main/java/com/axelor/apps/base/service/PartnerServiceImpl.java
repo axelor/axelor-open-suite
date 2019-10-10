@@ -208,37 +208,28 @@ public class PartnerServiceImpl implements PartnerService {
    */
   protected Address checkDefaultAddress(Partner partner) throws AxelorException {
     List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
-    if (partnerAddressList == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
-    }
-
     Address defaultInvoicingAddress = null;
     Address defaultDeliveryAddress = null;
 
-    for (PartnerAddress partnerAddress : partnerAddressList) {
-      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
-        if (defaultInvoicingAddress != null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+    if (partnerAddressList != null) {
+      for (PartnerAddress partnerAddress : partnerAddressList) {
+        if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
+          if (defaultInvoicingAddress != null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+          }
+          defaultInvoicingAddress = partnerAddress.getAddress();
         }
-        defaultInvoicingAddress = partnerAddress.getAddress();
-      }
-
-      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
-        if (defaultDeliveryAddress != null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+  
+        if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
+          if (defaultDeliveryAddress != null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+          }
+          defaultDeliveryAddress = partnerAddress.getAddress();
         }
-        defaultDeliveryAddress = partnerAddress.getAddress();
       }
     }
-
-    if (defaultInvoicingAddress == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
-    }
-
     return defaultInvoicingAddress;
   }
 
