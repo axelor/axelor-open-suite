@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.tool.service.ArchivingToolService;
@@ -48,18 +49,22 @@ public class MoveRemoveService {
 
   protected AccountingSituationService accountingSituationService;
 
+  protected AccountCustomerService accountCustomerService;
+
   @Inject
   public MoveRemoveService(
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
       ArchivingToolService archivingToolService,
       ReconcileService reconcileService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      AccountCustomerService accountCustomerService) {
     this.moveRepo = moveRepo;
     this.moveLineRepo = moveLineRepo;
     this.archivingToolService = archivingToolService;
     this.reconcileService = reconcileService;
     this.accountingSituationService = accountingSituationService;
+    this.accountCustomerService = accountCustomerService;
   }
 
   public void archiveDaybookMove(Move move) throws Exception {
@@ -92,6 +97,12 @@ public class MoveRemoveService {
   protected void updateSystem(Move move) throws Exception {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (moveLine.getPartner() != null) {
+        accountCustomerService.updateAccountingSituationCustomerAccount(
+            accountingSituationService.getAccountingSituation(
+                moveLine.getPartner(), move.getCompany()),
+            true,
+            true,
+            true);
         accountingSituationService.updateCustomerCredit(moveLine.getPartner());
       }
     }
