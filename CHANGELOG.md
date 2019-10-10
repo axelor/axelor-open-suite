@@ -203,6 +203,7 @@
 - Deleting deprecated interfaces
 - EMPLOYEE : add emergency contact relationship
 - INVOICE PAYMENT : additionnal informations
+- ACCOUNT CONFIG : update demo data for account config and 'is print invoices in company language' boolean is now at true by default.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
