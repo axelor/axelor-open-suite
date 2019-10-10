@@ -16,7 +16,8 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-out-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-customer-deliveries-form"/>
+		<view type="form" name="stock-move-form"/>
+ 		<view-param name="forceTitle" value="true"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
@@ -29,7 +30,8 @@
         model="com.axelor.apps.stock.db.StockMove" >
         <view type="grid" name="stock-move-in-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-customer-returns-form"/>
+        <view type="form" name="stock-move-form"/>
+ 		<view-param name="forceTitle" value="true"/>
         <view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
@@ -43,7 +45,8 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-in-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-supplier-arrivals-form"/>
+		<view type="form" name="stock-move-form"/>
+ 		<view-param name="forceTitle" value="true"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
@@ -57,7 +60,8 @@
         model="com.axelor.apps.stock.db.StockMove" >
         <view type="grid" name="stock-move-out-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-supplier-returns-form"/>
+        <view type="form" name="stock-move-form"/>
+        <view-param name="forceTitle" value="true"/>
         <view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
@@ -72,7 +76,8 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-internal-move-form"/>
+		<view type="form" name="stock-move-form"/>
+        <view-param name="forceTitle" value="true"/>
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
 		<domain>self.typeSelect = :_typeSelect</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
@@ -180,6 +185,7 @@
 	<action-view name="stock.root.inventories.draft" title="Inventories"
 		model="com.axelor.apps.stock.db.Inventory" >
 		<view type="grid" name="inventory-grid" />
+		<view type="calendar" name="inventory-calendar"/>
 		<view type="form" name="inventory-form"/>
 		<view-param name="search-filters" value="inventories-filters"/>
 	</action-view>	

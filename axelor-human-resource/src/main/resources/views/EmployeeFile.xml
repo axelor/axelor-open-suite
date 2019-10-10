@@ -4,14 +4,21 @@
 
 	<grid name="employee-file-grid" title="Files" model="com.axelor.apps.hr.db.EmployeeFile" >	
 		<field name="fileType"  />
-		<field name="metaFile" />		
+		<field name="metaFile" />
+        <field name="expirationDate" />		
     </grid>
 
     <form name="employee-file-form" title="File" model="com.axelor.apps.hr.db.EmployeeFile">   
     	<panel name="mainPanel">    	
-	    	<field name="fileType" />
-			<field name="metaFile" widget="binary-link"/>			
+	    	<field name="fileType" colSpan="4" onChange="action-record-set-expiration-date"/>
+			<field name="metaFile" widget="binary-link" colSpan="4"/>	
+			<field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="4"/>		
+			<field name="fileType.hasExpirationDate" hidden="true" />
         </panel>       
     </form>
+   
+   <action-record name="action-record-set-expiration-date" model="com.axelor.apps.hr.db.EmployeeFile">
+      <field name="expirationDate" expr="eval: null" if="!fileType?.hasExpirationDate"/>
+   </action-record>
 
 </object-views>

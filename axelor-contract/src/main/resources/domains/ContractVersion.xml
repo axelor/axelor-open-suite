@@ -51,7 +51,7 @@
 		<string name="fullName" namecolumn="true">
 			<![CDATA[
 	  		String fullName = "";
-	  		if(contract != null )  {
+	  		if(contract != null && contract.getName() != null)  {
 				fullName += contract.getName();
 				if (contract.getVersionNumber() != null && contract.getVersionNumber() != 0){
 					fullName += " " +  contract.getVersionNumber();

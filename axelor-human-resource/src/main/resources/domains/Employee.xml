@@ -54,8 +54,8 @@
       <string name="companyCbDetails" title="Company credit card details"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
-	       		if(contactPartner != null) { return contactPartner.getFullName(); }
-	       		return null;
+	       		if(contactPartner != null && contactPartner.getFullName() != null) { return contactPartner.getFullName(); }
+	       		return "";
 	       ]]>
 	       
       </string>

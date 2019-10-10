@@ -56,6 +56,10 @@ public interface ITranslation {
   public static final String INVENTORY_RACK = /*$$(*/ "Inventory.rack"; /*)*/
   public static final String INVENTORY_TRACKING_NUMBER = /*$$(*/ "Inventory.trackingNumber"; /*)*/
   public static final String INVENTORY_COMPANY = /*$$(*/ "Inventory.company"; /*)*/
+  public static final String INVENTORY_PLANNED_START_DATE = /*$$(*/
+      "Inventory.plannedStartDateT"; /*)*/
+  public static final String INVENTORY_PLANNED_END_DATE = /*$$(*/ "Inventory.plannedEndDateT"; /*)*/
+  public static final String INVENTORY_CREATED_ON_DATE = /*$$(*/ "Inventory.createdOn"; /*)*/
   public static final String INVENTORY_PRODUCT_CATEGORY = /*$$(*/ "Inventory.productCategory"; /*)*/
   public static final String INVENTORY_LAST_INVENTORY_DATE = /*$$(*/
       "Inventory.lastInventoryDate"; /*)*/

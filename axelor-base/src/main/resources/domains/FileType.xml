@@ -8,6 +8,7 @@
 	<entity name="FileType">
 		<string name="code" title="Code" />
 		<string name="name" title="Name" />
+		<boolean name="hasExpirationDate" title="Display an expiration date" />
 	</entity>
 
 </domain-models>
