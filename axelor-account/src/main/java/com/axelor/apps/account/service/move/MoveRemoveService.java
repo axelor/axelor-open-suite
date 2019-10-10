@@ -141,8 +141,6 @@ public class MoveRemoveService {
     }
   }
 
-  protected void checkIfCanArchiveMoveLine() {}
-
   @Transactional(rollbackOn = {Exception.class})
   public Move archiveMove(Move move) {
     move.setArchived(true);
