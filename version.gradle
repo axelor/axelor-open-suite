@@ -1,5 +1,5 @@
-ext.versionFile = "modules/axelor-open-suite/version.txt"
-ext.baseVersion = rootProject.file(versionFile).text.trim()
+ext.versionFile = "../version.txt"
+ext.baseVersion = project.file(versionFile).text.trim()
 
 version baseVersion
 
@@ -7,4 +7,4 @@ if(project.hasProperty("mavenRepository") && !project.hasProperty("finalRelease"
   version += "-SNAPSHOT"
 }
 
-ext.appVersion = version
+ext.openSuiteVersion = version

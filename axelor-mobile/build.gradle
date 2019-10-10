@@ -3,7 +3,7 @@ apply plugin: "com.axelor.app-module"
 apply from: "../version.gradle"
 
 apply {
-	version = appVersion
+	version = openSuiteVersion
 }
 
 
