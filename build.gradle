@@ -6,9 +6,11 @@ buildscript {
 		maven { url 'https://plugins.gradle.org/m2/' }
 		maven { url 'https://repository.axelor.com/nexus/public/' }
 	}
+	ext.openPlatformVersion = '5.2.+'
+	ext.appVersion = '5.2.5-SNAPSHOT'
 	repositories repos
 	dependencies {
-		classpath "com.axelor:axelor-gradle:5.2.+"
+		classpath "com.axelor:axelor-gradle:${openPlatformVersion}"
 	}
 }
 
@@ -17,8 +19,6 @@ allprojects { repositories repos }
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: "com.axelor.app"
-
-apply from: "modules/axelor-open-suite/version.gradle"
 
 apply from: './gradle/style.gradle'
 
@@ -32,7 +32,7 @@ allprojects {
 	apply plugin: 'eclipse'
 
 	group = "com.axelor"
-	version = appVersion
+	version = "${appVersion}"
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
