@@ -102,6 +102,7 @@
 "Declaration of exchanges","Déclaration d'échanges",,
 "Declaration of exchanges of goods","Déclaration d'échanges de biens",,
 "Declarations of exchanges","Déclarations d'échanges",,
+"Default estimated date in stock move from purchase order","Date estimée du BR quand elle n'est pas renseignée dans la commande",,
 "Default estimated date in stock move from sale order","Date estimée du BL quand elle n'est pas renseignée dans la commande",,
 "Delivery State","État de livraison",,
 "Delivery conditions",,,
