@@ -56,7 +56,7 @@ public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime localDateTime)
       throws AxelorException {
     throw new AxelorException(
-        TraceBackRepository.TYPE_FUNCTIONNAL,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.FACTORY_FILL_WITH_PROJECT_ALONE));
   }
 }
