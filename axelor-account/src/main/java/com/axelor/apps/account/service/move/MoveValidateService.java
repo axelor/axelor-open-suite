@@ -163,7 +163,8 @@ public class MoveValidateService {
                 I18n.get(IExceptionMessage.MOVE_9), account.getName(), moveLine.getName()));
       }
 
-      if (move.getFunctionalOriginSelect() != 1 && move.getFunctionalOriginSelect() != 2) {
+      if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
+          && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
         if (moveLine.getAnalyticDistributionTemplate() == null
             && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
             && account.getAnalyticDistributionAuthorized()
