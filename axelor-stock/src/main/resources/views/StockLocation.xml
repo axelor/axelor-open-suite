@@ -41,7 +41,7 @@
 		</toolbar>
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="typeSelect" colSpan="3"/>
+			<field name="typeSelect" colSpan="3" onChange="action-stock-location-attrs-set-isOutsourcingLocation"/>
 			<field name="parentStockLocation" canEdit="false" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" canEdit="false" showIf="typeSelect == 2" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
@@ -67,8 +67,11 @@
 				<field name="directOrderLocation" colSpan="3"/>
 				<field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
                 <field name="isNotInCalculStock" colSpan="3"/>
-				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
-            </panel>
+
+				<field name="isWorkshop"  colSpan="3" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
+				<field name="isOutsourcingLocation" showIf="typeSelect==2 || typeSelect==3"  colSpan="3" if-module="axelor-production" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+			</panel>
+
 		</panel-tabs>
 		
 	</form>
@@ -95,6 +98,10 @@
     	<field name="usableOnProduction" expr="eval:_productionWorkshop"/>
     	<field name="isWorkshop" expr="eval:_productionWorkshop"/>
 	</action-record>
+	
+	<action-attrs name="action-stock-location-attrs-set-isOutsourcingLocation" model="com.axelor.apps.stock.db.StockLocation">
+		<attribute name="value" for="isOutsourcingLocation" expr="eval:false" if="typeSelect==1"/>
+	</action-attrs>
     
     <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.stock.db.Inventory">
 		<view type="form" name="inventory-form"/>

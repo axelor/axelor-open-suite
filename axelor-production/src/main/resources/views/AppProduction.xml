@@ -48,6 +48,9 @@
 				<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
 				<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
 			</panel>
+			<panel name="outsourcingPanel" title="Outsourcing">
+				<field name="manageOutsourcing"/>
+			</panel>
 		</panel>
 		
 		<panel-mail name="mailPanel">

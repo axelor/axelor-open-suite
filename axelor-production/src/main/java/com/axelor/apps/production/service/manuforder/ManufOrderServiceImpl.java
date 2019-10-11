@@ -430,7 +430,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(stockConfig);
+        stockConfigService.getProductionVirtualStockLocation(stockConfig, false);
     StockLocation wasteStockLocation = stockConfigService.getWasteStockLocation(stockConfig);
 
     wasteStockMove =

@@ -108,6 +108,49 @@
 		<domain>self.statusSelect = 6</domain>
 	</action-view>
 	
+	
+	<menuitem name="manufacturing-root-outsourcing" title="Outsourcing" parent="manufacturing-root" order="37" if="__config__.app.getApp('production').getManageOutsourcing()"/>
+	
+	<menuitem name="manufacturing-root-outsourcing-subcontractors" title="Subcontractors" parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors"/>
+	<action-view name="manufacturing.root.subcontractors" title="Subcontractors" model="com.axelor.apps.base.db.Partner">
+		<view type="cards" name="partner-cards"/>
+		<view type="grid" name="partner-grid" />
+		<view type="form" name="partner-form" />
+		<domain>self.isSubcontractor = :_isSubcontractor</domain>
+		<context name="_isSubcontractor" expr="eval:true"/>
+	</action-view>
+	
+	<menuitem name="manufacturing-root-outsourcing-subcontractors-deliveries" title="Subcontractors deliveries" 
+		parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors.deliveries"/>
+	<action-view name="manufacturing.root.subcontractors.deliveries" title="Subcontractors deliveries" model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-out-grid"/>
+        <view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-customer-deliveries-form"/>
+        <domain>self.typeSelect = :_typeSelect AND 
+        		self.isReversion = FALSE AND 
+        		self.toStockLocation.typeSelect=:_stockLocTypeSelect AND 
+        		self.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
+		<context name="_isOutsourcingLoc" expr="eval:true"/>
+	</action-view>
+	
+	<menuitem name="manufacturing-root-outsourcing-subcontractors-arrivals" title="Subcontractors arrivals" 
+		parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors.arrivals"/>
+	<action-view name="manufacturing.root.subcontractors.arrivals" title="Subcontractors arrivals" model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-in-grid"/>
+        <view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-supplier-arrivals-form"/>
+        <domain>self.typeSelect = :_typeSelect AND 
+        		self.isReversion = FALSE AND 
+        		self.fromStockLocation.typeSelect=:_stockLocTypeSelect AND 
+        		self.fromStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+		<context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
+		<context name="_isOutsourcingLoc" expr="eval:true"/>
+	</action-view>
+	
+	
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
 		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboard" order="40" />
 

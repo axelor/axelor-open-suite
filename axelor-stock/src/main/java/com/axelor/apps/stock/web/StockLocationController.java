@@ -129,10 +129,11 @@ public class StockLocationController {
   public void setStocklocationValue(ActionRequest request, ActionResponse response) {
 
     StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-
-    response.setValue(
-        "stockLocationValue",
-        Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+    if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      response.setValue(
+          "stockLocationValue",
+          Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+    }
   }
 
   public void openPrintWizard(ActionRequest request, ActionResponse response) {

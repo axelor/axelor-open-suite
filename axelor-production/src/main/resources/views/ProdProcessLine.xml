@@ -7,7 +7,7 @@
 		<field name="priority" width="75"/>
 		<field name="name"/>
 		<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
-		<field name="outsourcing" width="115"/>
+		<field name="outsourcing" width="115" if="__config__.app.getApp('production').getManageOutsourcing()"/>
 		<field name="optional"/>
 		<field name="description"/>
 	</grid>
@@ -68,6 +68,7 @@
     <action-attrs name="action-prod-process-line-attrs-default">
     	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
+		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
     </action-attrs>
     
 </object-views>

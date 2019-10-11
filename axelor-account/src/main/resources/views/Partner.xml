@@ -52,7 +52,7 @@
 	</form>
 
     <form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
-        <panel name="blockingsPanel" title="Blockings" colSpan="12" showIf="isSupplier || isCustomer">
+        <panel name="blockingsPanel" title="Blockings" colSpan="12" showIf="isSupplier || isCustomer || isSubcontractor">
             <field name="blockingList" colSpan="12" title="Blockings" showIf="$readonly()">
 				<editor colSpan="12" x-viewer="true" x-show-on-new="false">
 					<field name="companySet" colSpan="3" widget="TagSelect"/>
