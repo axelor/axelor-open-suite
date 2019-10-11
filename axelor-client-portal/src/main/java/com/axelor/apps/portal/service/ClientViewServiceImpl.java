@@ -350,6 +350,8 @@ public class ClientViewServiceImpl implements ClientViewService {
             + user.getPartner().getId()
             + " AND self.dueDate < current_date() "
             + " AND self.amountRemaining != 0 AND self.statusSelect != "
+            + InvoiceRepository.STATUS_DRAFT
+            + " AND self.statusSelect != "
             + InvoiceRepository.STATUS_CANCELED;
     if (user.getActiveCompany() != null) {
       query = query + " AND self.company.id = " + user.getActiveCompany().getId();
@@ -362,8 +364,9 @@ public class ClientViewServiceImpl implements ClientViewService {
     String query =
         "self.partner.id = "
             + user.getPartner().getId()
-            + " AND self.dueDate < current_date() "
             + " AND self.amountRemaining != 0 AND self.statusSelect != "
+            + InvoiceRepository.STATUS_DRAFT
+            + " AND self.statusSelect != "
             + InvoiceRepository.STATUS_CANCELED;
     if (user.getActiveCompany() != null) {
       query = query + " AND self.company.id = " + user.getActiveCompany().getId();
@@ -377,6 +380,8 @@ public class ClientViewServiceImpl implements ClientViewService {
         "self.partner.id = "
             + user.getPartner().getId()
             + " AND self.amountRemaining != 0 AND self.statusSelect != "
+            + InvoiceRepository.STATUS_DRAFT
+            + " AND self.statusSelect != "
             + InvoiceRepository.STATUS_CANCELED;
     if (user.getActiveCompany() != null) {
       query = query + " AND self.company.id = " + user.getActiveCompany().getId();
