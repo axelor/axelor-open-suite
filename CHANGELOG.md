@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.10]
 ## Features
 - SUPPLYCHAIN CONFIG : created defaultEstimatedDate for purchase order
+- Help on important fields in partner-form, sale-order-form, invoice-form, product-form
 
 ## Improvements
 - INVENTORY : added unit field in inventory line form view and printing
