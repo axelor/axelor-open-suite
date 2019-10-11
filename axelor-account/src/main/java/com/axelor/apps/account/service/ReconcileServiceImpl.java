@@ -396,9 +396,22 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
-
+    this.reverseTaxPaymentMoveLines(reconcile);
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
+  }
+
+  protected void reverseTaxPaymentMoveLines(Reconcile reconcile) throws AxelorException {
+    Move debitMove = reconcile.getDebitMoveLine().getMove();
+    Move creditMove = reconcile.getCreditMoveLine().getMove();
+    Invoice debitInvoice = debitMove.getInvoice();
+    Invoice creditInvoice = creditMove.getInvoice();
+    if (debitInvoice == null) {
+      moveLineService.reverseAllTaxPaymentMoveLine(reconcile.getDebitMoveLine());
+    }
+    if (creditInvoice == null) {
+      moveLineService.reverseAllTaxPaymentMoveLine(reconcile.getCreditMoveLine());
+    }
   }
 
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {
