@@ -174,8 +174,9 @@ public class PartnerServiceImpl implements PartnerService {
     Address address = partner.getMainAddress();
 
     if (!partner.getIsContact() && !partner.getIsEmployee()) {
-      partner.setMainAddress(checkDefaultAddress(partner));
-
+      if (partner.getPartnerAddressList() != null) {
+        partner.setMainAddress(checkDefaultAddress(partner));
+      }
     } else if (address == null) {
       partner.removePartnerAddressListItem(
           JPA.all(PartnerAddress.class)
@@ -183,11 +184,12 @@ public class PartnerServiceImpl implements PartnerService {
               .bind("partnerId", partner.getId())
               .fetchOne());
 
-    } else if (partner
-        .getPartnerAddressList()
-        .stream()
-        .map(PartnerAddress::getAddress)
-        .noneMatch(address::equals)) {
+    } else if (partner.getPartnerAddressList() != null
+        && partner
+            .getPartnerAddressList()
+            .stream()
+            .map(PartnerAddress::getAddress)
+            .noneMatch(address::equals)) {
       PartnerAddress mainAddress = new PartnerAddress();
       mainAddress.setAddress(address);
       mainAddress.setIsDefaultAddr(true);
@@ -206,37 +208,28 @@ public class PartnerServiceImpl implements PartnerService {
    */
   protected Address checkDefaultAddress(Partner partner) throws AxelorException {
     List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
-    if (partnerAddressList == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
-    }
-
     Address defaultInvoicingAddress = null;
     Address defaultDeliveryAddress = null;
 
-    for (PartnerAddress partnerAddress : partnerAddressList) {
-      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
-        if (defaultInvoicingAddress != null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+    if (partnerAddressList != null) {
+      for (PartnerAddress partnerAddress : partnerAddressList) {
+        if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
+          if (defaultInvoicingAddress != null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_8));
+          }
+          defaultInvoicingAddress = partnerAddress.getAddress();
         }
-        defaultInvoicingAddress = partnerAddress.getAddress();
-      }
-
-      if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
-        if (defaultDeliveryAddress != null) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+  
+        if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
+          if (defaultDeliveryAddress != null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_9));
+          }
+          defaultDeliveryAddress = partnerAddress.getAddress();
         }
-        defaultDeliveryAddress = partnerAddress.getAddress();
       }
     }
-
-    if (defaultInvoicingAddress == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.ADDRESS_10));
-    }
-
     return defaultInvoicingAddress;
   }
 

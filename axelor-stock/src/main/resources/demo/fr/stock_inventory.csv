@@ -1,2 +1,2 @@
-"importId";"stockLocation.importId";"statusSelect";"dateT";"description"
+"importId";"stockLocation.importId";"statusSelect";"plannedStartDateT";"description"
 1;1;2;"TODAY[-6M]";"Inventaire de départ pour initialisation des qtés en stock."

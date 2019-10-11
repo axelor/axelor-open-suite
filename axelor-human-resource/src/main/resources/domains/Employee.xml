@@ -36,6 +36,7 @@
       <string name="phoneAtCustomer" title="Phone at the customer"/>
       <string name="emergencyContact" title="Emergency contact"/>
       <string name="emergencyNumber" title="Phone"/>
+      <string name="emergencyContactRelationship" title="Emergency contact relationship"/>
       <date name="dateOfHire" title="Date of hire" />
       <date name="seniorityDate" title="Seniority date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
@@ -53,8 +54,8 @@
       <string name="companyCbDetails" title="Company credit card details"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
-	       		if(contactPartner != null) { return contactPartner.getFullName(); }
-	       		return null;
+	       		if(contactPartner != null && contactPartner.getFullName() != null) { return contactPartner.getFullName(); }
+	       		return "";
 	       ]]>
 	       
       </string>
@@ -65,6 +66,7 @@
 
     <!-- DPAE -->
     <one-to-many name="dpaeList" title="DPAEs" ref="com.axelor.apps.hr.db.DPAE" mappedBy="employee"/>
+    <one-to-many name="employeeFileList" title="Files" ref="com.axelor.apps.hr.db.EmployeeFile" mappedBy="employee" />		
 
 	<string name="maidenName" title="Maiden name"/>
 	<string name="maritalName" title="Marital name"/>

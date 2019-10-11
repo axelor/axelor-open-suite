@@ -122,7 +122,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="supplierPartner == null">
 			<panel name="contentPanel" title="Content" colSpan="12">
-				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" x-can-copy="statusSelect &lt; 3" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence" height="30"/>
+				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence" height="30"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
 			</panel>
 			<panel name="taxPanel" title="Tax" colSpan="12">
@@ -151,7 +151,7 @@
 			</panel>
 			<panel name="budgetDistributionPanel" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain" showIf="statusSelect &lt;= 4">
 				<field name="budget" showIf="statusSelect &lt;= 2"/>
-				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget" showIf="statusSelect &lt;= 2"/>
+				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all,save" readonlyIf="!budget" showIf="statusSelect &lt;= 2"/>
 			    <panel-dashlet name="budgetDistributionPanel" action="action-supplychain-budget-distribuion-view-budget-distribution" colSpan="12" showIf="statusSelect &gt;= 3 &amp;&amp; statusSelect &lt;= 4" readonly="true"/>
 			</panel>
 			<panel name="printingPanel" title="Printing">

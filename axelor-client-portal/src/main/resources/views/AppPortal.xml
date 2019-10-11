@@ -11,6 +11,7 @@
 		    	<field name="manageDelivery" widget="boolean-switch"/>
 		    	<field name="manageTickets" widget="boolean-switch"/>
 		    	<field name="manageProjects"  widget="boolean-switch"/>
+		    	<field name="showCatalog" widget="boolean-switch"/>
 		    </panel>
 		    <panel name="portalSelectConfigPanel" colSpan="12">
 		    	<field name="portalSelect"/>

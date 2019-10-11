@@ -51,6 +51,8 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
     entity.setProducedStockMoveLineList(null);
     entity.setWasteProdProductList(null);
     entity.setOperationOrderList(null);
+    entity.setCostSheetList(null);
+    entity.setCostPrice(null);
     return super.copy(entity, deep);
   }
 

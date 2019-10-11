@@ -750,12 +750,14 @@
 	<action-view name="action-customer-invoice-line-menu" title="Customer Invoice Line" model="com.axelor.apps.account.db.InvoiceLine">
 		<view type="grid" name="invoice-line-menu-grid"/>
 		<view type="form" name="invoice-line-menu-form"/>
+		<view-param name="search-filters" value="invoice-line-filters"/>
 		<domain>self.invoice.operationTypeSelect in (3,4)</domain>
 	</action-view>
 
 	<action-view name="action-supplier-invoice-line-menu" title="Supplier Invoice Line" model="com.axelor.apps.account.db.InvoiceLine">
 		<view type="grid" name="invoice-line-menu-grid"/>
 		<view type="form" name="invoice-line-menu-form"/>
+		<view-param name="search-filters" value="invoice-line-filters"/>
 		<domain>self.invoice.operationTypeSelect in (1,2)</domain>
 	</action-view>
 	

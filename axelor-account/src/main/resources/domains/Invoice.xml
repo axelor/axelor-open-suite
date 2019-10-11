@@ -133,6 +133,8 @@
 	<integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
 	<many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay" ref="com.axelor.apps.base.db.CancelReason"/>
 	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+	
+	<string name="proformaComments" title="Description to display on proforma" large="true"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

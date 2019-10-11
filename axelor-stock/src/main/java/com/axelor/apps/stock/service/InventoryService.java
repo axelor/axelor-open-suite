@@ -68,6 +68,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +119,8 @@ public class InventoryService {
   }
 
   public Inventory createInventory(
-      LocalDate date,
+      LocalDate plannedStartDate,
+      LocalDate plannedEndDate,
       String description,
       StockLocation stockLocation,
       boolean excludeOutOfStock,
@@ -137,7 +139,9 @@ public class InventoryService {
 
     inventory.setInventorySeq(this.getInventorySequence(stockLocation.getCompany()));
 
-    inventory.setDateT(date.atStartOfDay(ZoneOffset.UTC));
+    inventory.setPlannedStartDateT(plannedStartDate.atStartOfDay(ZoneOffset.UTC));
+
+    inventory.setPlannedEndDateT(plannedEndDate.atStartOfDay(ZoneOffset.UTC));
 
     inventory.setDescription(description);
 
@@ -304,12 +308,13 @@ public class InventoryService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void validateInventory(Inventory inventory) throws AxelorException {
+
+    inventory.setValidatedOn(appBaseService.getTodayDate());
+    inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
+    inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMove(inventory, true);
     generateStockMove(inventory, false);
     storeLastInventoryData(inventory);
-    inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
-    inventory.setValidatedBy(AuthUtils.getUser());
-    inventory.setValidatedOn(appBaseService.getTodayDate());
   }
 
   private void storeLastInventoryData(Inventory inventory) {
@@ -343,7 +348,8 @@ public class InventoryService {
         BigDecimal realQty = consolidatedRealQties.get(product);
         if (realQty != null) {
           stockLocationLine.setLastInventoryRealQty(realQty);
-          stockLocationLine.setLastInventoryDateT(inventory.getDateT());
+          stockLocationLine.setLastInventoryDateT(
+              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -363,7 +369,8 @@ public class InventoryService {
         BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
         if (realQty != null) {
           detailsStockLocationLine.setLastInventoryRealQty(realQty);
-          detailsStockLocationLine.setLastInventoryDateT(inventory.getDateT());
+          detailsStockLocationLine.setLastInventoryDateT(
+              inventory.getValidatedOn().atStartOfDay().atZone(ZoneOffset.UTC));
         }
 
         String rack = realRacks.get(product);
@@ -403,7 +410,8 @@ public class InventoryService {
 
     String inventorySeq = inventory.getInventorySeq();
 
-    LocalDate inventoryDate = inventory.getDateT().toLocalDate();
+    LocalDate inventoryDate = inventory.getPlannedStartDateT().toLocalDate();
+    LocalDate realDate = inventory.getValidatedOn();
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
@@ -411,7 +419,7 @@ public class InventoryService {
             company,
             fromStockLocation,
             toStockLocation,
-            inventoryDate,
+            realDate,
             inventoryDate,
             null,
             StockMoveRepository.TYPE_INTERNAL);
@@ -562,7 +570,7 @@ public class InventoryService {
 
     if (!inventory.getIncludeObsolete()) {
       query += " and (self.product.endDate > ? or self.product.endDate is null)";
-      params.add(inventory.getDateT().toLocalDate());
+      params.add(inventory.getPlannedEndDateT().toLocalDate());
     }
 
     if (inventory.getProductFamily() != null) {
@@ -701,5 +709,12 @@ public class InventoryService {
             StockMoveRepository.ORIGIN_INVENTORY,
             inventory.getId())
         .fetch();
+  }
+
+  public String computeTitle(Inventory entity) {
+    return entity.getStockLocation().getName()
+        + (!Strings.isNullOrEmpty(entity.getDescription())
+            ? "-" + StringUtils.abbreviate(entity.getDescription(), 10)
+            : "");
   }
 }

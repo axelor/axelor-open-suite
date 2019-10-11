@@ -144,7 +144,14 @@
     	<view type="grid" name="weekly-planning-grid"/>
 	    <view type="form" name="weekly-planning-form"/>
 	</action-view>
-
+ 
+    <menuitem name="hr-root-emp-mgt-conf-file-type" parent="hr-root-emp-mgt-conf" title="File types" action="hr.root.emp.mgt.conf.file.type"/>
+    
+    <action-view name="hr.root.emp.mgt.conf.file.type" title="File types" model="com.axelor.apps.base.db.FileType">
+    	<view type="grid" name="file-type-grid"/>
+	    <view type="form" name="file-type-form"/>
+	</action-view>
+  
 	<!-- Leave App -->
 	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="5"/>
 
