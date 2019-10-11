@@ -95,6 +95,7 @@
 "Templates","Modèles",,
 "Test connection","Tester connexion",,
 "The email template model (%s) is different than the entity generating the email (%s)","Le modèle du modèle d'email (%s) est différent du modèle générant l'email (%s)",,
+"The pdf file %s is incorrect. Please check the file before sending message.","Le fichier pdf %s est incorrecte. Merci de le vérifier avant d'envoyer le message.",,
 "There is already a default account","Il existe déjà une compte email par défaut.",,
 "To","À",,
 "Type","Type",,

@@ -95,6 +95,7 @@
 "Templates","Szablony",,
 "Test connection","Przyłącze testowe",,
 "The email template model (%s) is different than the entity generating the email (%s)",,,
+"The pdf file (%s) is incorrect. Please check the file before sending message.",,,
 "There is already a default account","Istnieje już konto domyślne",,
 "To","Do",,
 "Type","Typ",,

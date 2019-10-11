@@ -18,6 +18,7 @@
 - META SCHEDULE : Make grid view non editable
 - USER : appPermissions title and translation
 - SALE DASHBOARD : Translation
+- MESSAGE : check if pdfFile attachment of message are correct
 
 ## [5.1.9] - 2019-10-07
 ## Features

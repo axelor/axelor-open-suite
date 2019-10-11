@@ -46,6 +46,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.lowagie.text.exceptions.InvalidPdfException;
+import com.lowagie.text.pdf.PdfReader;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
@@ -314,7 +316,16 @@ public class MessageServiceImpl implements MessageService {
 
     for (MetaAttachment metaAttachment : getMetaAttachments(message)) {
       MetaFile metaFile = metaAttachment.getMetaFile();
-      mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
+      try {
+        if (metaFile.getFileType().equals("application/pdf")) {
+          new PdfReader(MetaFiles.getPath(metaFile).toString());
+        }
+        mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
+      } catch (InvalidPdfException e) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(I18n.get(IExceptionMessage.INVALID_PDF_FILE), metaFile.getFileName()));
+      }
     }
 
     // Make sure message can be found in sending thread below.

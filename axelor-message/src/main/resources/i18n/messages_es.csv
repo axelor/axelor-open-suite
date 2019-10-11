@@ -95,6 +95,7 @@
 "Templates","Plantillas",,
 "Test connection","Conexión de prueba",,
 "The email template model (%s) is different than the entity generating the email (%s)",,,
+"The pdf file (%s) is incorrect. Please check the file before sending message.",,,
 "There is already a default account","Ya hay una cuenta por defecto",,
 "To","Para",,
 "Type","Tipo",,

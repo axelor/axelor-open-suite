@@ -56,4 +56,6 @@ public interface IExceptionMessage {
       "Please set the email template to send" /*)*/;
   static final String INVALID_MODEL_TEMPLATE_EMAIL = /*$$(*/
       "The email template model (%s) is different than the entity generating the email (%s)" /*)*/;
+  static final String INVALID_PDF_FILE = /*$$(*/
+      "The pdf file %s is incorrect. Please check the file before sending message." /*)*/;
 }
