@@ -19,6 +19,7 @@
 - META SCHEDULE : Make grid view non editable
 - USER : appPermissions title and translation
 - SALE DASHBOARD : Translation
+- EBICS-USER-FORM : removed the double quotes from translation of the SPR button title
 
 ## [5.1.9] - 2019-10-07
 ## Features
