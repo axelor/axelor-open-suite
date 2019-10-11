@@ -57,9 +57,16 @@ public class SaleOrderProjectController {
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
       LocalDateTime startDate = getElementStartDate(request.getContext());
 
-      ProjectGeneratorFactory factory =
-          ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
-      Project project = factory.generate(saleOrder, startDate);
+      ProjectGeneratorType projectGeneratorType = ProjectGeneratorType.valueOf(generatorType);
+
+      ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
+
+      Project project;
+      if (projectGeneratorType.equals(ProjectGeneratorType.PROJECT_ALONE)) {
+        project = factory.create(saleOrder);
+      } else {
+        project = factory.generate(saleOrder, startDate);
+      }
 
       response.setReload(true);
       response.setView(
