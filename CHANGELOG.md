@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased 5.1.10]
+## Features
+- SUPPLYCHAIN CONFIG : created defaultEstimatedDate for purchase order
+- Help on important fields in partner-form, sale-order-form, invoice-form, product-form
+
 ## Improvements
 - INVENTORY : added unit field in inventory line form view and printing
 - STOCK MOVE : stock move editable on back order button
@@ -13,7 +17,9 @@
 - BUDGET : purchase order and applyToAllBtn when manageMultiBudget = false
 - Fix computed fields NPE from all domains.
 - META SCHEDULE : Make grid view non editable
-- EBICS-USER-FORM : remove the double quote from SPR button name
+- USER : appPermissions title and translation
+- SALE DASHBOARD : Translation
+- EBICS-USER-FORM : removed the double quotes from translation of the SPR button title
 
 ## [5.1.9] - 2019-10-07
 ## Features
