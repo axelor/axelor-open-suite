@@ -2,7 +2,8 @@
 
 ## [Unreleased 5.1.10]
 ## Features
-- Help on important fields in partner-form, sale-order-form, invoice-form, product-form.
+- SUPPLYCHAIN CONFIG : created defaultEstimatedDate for purchase order
+- Help on important fields in partner-form, sale-order-form, invoice-form, product-form
 
 ## Improvements
 - INVENTORY : added unit field in inventory line form view and printing
@@ -16,6 +17,8 @@
 - BUDGET : purchase order and applyToAllBtn when manageMultiBudget = false
 - Fix computed fields NPE from all domains.
 - META SCHEDULE : Make grid view non editable
+- USER : appPermissions title and translation
+- SALE DASHBOARD : Translation
 
 ## [5.1.9] - 2019-10-07
 ## Features
