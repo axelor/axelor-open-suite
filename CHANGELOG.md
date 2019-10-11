@@ -10,6 +10,7 @@
 - Partner: Improve advance search fields name.
 - MOVELINE: change display condition for tax amount (used for on payment tax report).
 - APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
+- Tax payment move lines : are canceled after unreconcil.
 
 ## Bug Fixes
 - Employee : fix error on duplicate
@@ -18,6 +19,7 @@
 - META SCHEDULE : Make grid view non editable
 - USER : appPermissions title and translation
 - SALE DASHBOARD : Translation
+- Tax payment move line : corrected calculation
 
 ## [5.1.9] - 2019-10-07
 ## Features

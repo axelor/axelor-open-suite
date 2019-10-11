@@ -47,6 +47,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
@@ -86,6 +87,7 @@ public class MoveLineService {
   protected CurrencyService currencyService;
   protected CompanyConfigService companyConfigService;
   protected MoveLineRepository moveLineRepository;
+  protected TaxPaymentMoveLineService taxPaymentMoveLineService;
 
   public static final boolean IS_CREDIT = false;
   public static final boolean IS_DEBIT = true;
@@ -99,7 +101,8 @@ public class MoveLineService {
       AnalyticMoveLineService analyticMoveLineService,
       CurrencyService currencyService,
       CompanyConfigService companyConfigService,
-      MoveLineRepository moveLineRepository) {
+      MoveLineRepository moveLineRepository,
+      TaxPaymentMoveLineService taxPaymentMoveLineService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -108,6 +111,7 @@ public class MoveLineService {
     this.currencyService = currencyService;
     this.companyConfigService = companyConfigService;
     this.moveLineRepository = moveLineRepository;
+    this.taxPaymentMoveLineService = taxPaymentMoveLineService;
   }
 
   public MoveLine computeAnalyticDistribution(MoveLine moveLine) {
@@ -1204,12 +1208,12 @@ public class MoveLineService {
       InvoicePayment invoicePayment, MoveLine customerMoveLine) throws AxelorException {
     BigDecimal paymentAmount = customerMoveLine.getCredit().add(customerMoveLine.getDebit());
     Invoice invoice = invoicePayment.getInvoice();
-    BigDecimal invoiceTotalAmount = invoice.getExTaxTotal();
+    BigDecimal invoiceTotalAmount = invoice.getCompanyInTaxTotal();
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
       TaxLine taxLine = invoiceLineTax.getTaxLine();
       BigDecimal vatRate = taxLine.getValue();
-      BigDecimal baseAmount = invoiceLineTax.getExTaxBase();
+      BigDecimal baseAmount = invoiceLineTax.getCompanyExTaxBase();
 
       BigDecimal detailPaymentAmount =
           baseAmount
@@ -1218,12 +1222,34 @@ public class MoveLineService {
               .setScale(2, RoundingMode.HALF_UP);
 
       TaxPaymentMoveLine taxPaymentMoveLine =
-          new TaxPaymentMoveLine(customerMoveLine, taxLine, vatRate, detailPaymentAmount);
+          new TaxPaymentMoveLine(
+              customerMoveLine,
+              taxLine,
+              vatRate,
+              detailPaymentAmount,
+              Beans.get(AppBaseService.class).getTodayDate());
 
-      taxPaymentMoveLine =
-          Beans.get(TaxPaymentMoveLineService.class).computeTaxAmount(taxPaymentMoveLine);
+      taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
       customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
+    }
+    this.computeTaxAmount(customerMoveLine);
+    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine reverseAllTaxPaymentMoveLine(MoveLine customerMoveLine) throws AxelorException {
+    List<TaxPaymentMoveLine> reverseTaxPaymentMoveLines = new ArrayList<TaxPaymentMoveLine>();
+    for (TaxPaymentMoveLine taxPaymentMoveLine : customerMoveLine.getTaxPaymentMoveLineList()) {
+      if (!taxPaymentMoveLine.getIsAlreadyReverse()) {
+        TaxPaymentMoveLine reverseTaxPaymentMoveLine =
+            taxPaymentMoveLineService.getReverseTaxPaymentMoveLine(taxPaymentMoveLine);
+
+        reverseTaxPaymentMoveLines.add(reverseTaxPaymentMoveLine);
+      }
+    }
+    for (TaxPaymentMoveLine reverseTaxPaymentMoveLine : reverseTaxPaymentMoveLines) {
+      customerMoveLine.addTaxPaymentMoveLineListItem(reverseTaxPaymentMoveLine);
     }
     this.computeTaxAmount(customerMoveLine);
     return Beans.get(MoveLineRepository.class).save(customerMoveLine);
