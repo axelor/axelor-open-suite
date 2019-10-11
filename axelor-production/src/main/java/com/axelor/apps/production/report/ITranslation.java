@@ -209,4 +209,9 @@ public interface ITranslation {
       "CostSheet.calculationTypeBillOfMaterial"; /*)*/
   public static final String COST_SHEET_CALCULATION_DATE = /*$$(*/
       "CostSheet.calculationDate"; /*)*/
+
+  public static final String MPS_CHARGE_TITLE = /*$$(*/ "MpsCharge.title"; /*)*/
+  public static final String MPS_CHARGE_CODE = /*$$(*/ "MpsCharge.code"; /*)*/
+  public static final String MPS_CHARGE_START_MONTH = /*$$(*/ "MpsCharge.startMonth"; /*)*/
+  public static final String MPS_CHARGE_END_MONTH = /*$$(*/ "MpsCharge.endMonth"; /*)*/
 }

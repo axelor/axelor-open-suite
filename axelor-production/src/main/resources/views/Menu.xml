@@ -222,6 +222,16 @@
 		<view type="form" name="sop-form"/>
 	</action-view>
 	
+	<menuitem name="manufacturing-root-mps-charge" parent="manufacturing-root"
+		title="MPS Charge" action="manufacturing.root.mps.charge" order="43"
+		if="__user__?.activeCompany?.productionConfig?.isMps"/>
+
+ 	<action-view name="manufacturing.root.mps.charge" title="Master Production Scheduling Charge"
+		model="com.axelor.apps.production.db.MpsCharge">
+		<view type="grid" name="mps-charge-grid"/>
+		<view type="form" name="mps-charge-form"/>
+	</action-view>
+	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
@@ -364,6 +374,14 @@
 		<view type="form" name="stock-location-form"/>
 		<domain>self.usableOnProduction = true AND self.isWorkshop = true</domain>
 		<context name="_productionWorkshop" expr="eval:true"/>
+	</action-view>
+	
+	<menuitem title="MPS Weekly schedules" name="manufacturing-conf-mps-weekly-schedule" parent="manufacturing-conf" 
+		action="manufacturing.conf.mps.weekly.schedule" if="__user__.activeCompany.productionConfig.isMps"/>
+
+ 	<action-view name="manufacturing.conf.mps.weekly.schedule" title="MPS Weekly schedules" model="com.axelor.apps.production.db.MpsWeeklySchedule">
+		<view type="grid" name="mps-weekly-schedule-grid"/>
+		<view type="form" name="mps-weekly-schedule-form"/>
 	</action-view>
 	
 	<!-- ADMINISTRATION -->

@@ -13,6 +13,7 @@
 		</panel>
 		<panel name="realizeOrderPanel">
 			<field name="stockMoveRealizeOrderSelect"/>
+			<field name="isMps"/>
 		</panel>
 		<panel name="automaticEmailPanel">
 			<field name="finishMoAutomaticEmail"/>
