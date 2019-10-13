@@ -224,7 +224,7 @@
 	
 	<menuitem name="manufacturing-root-mps-charge" parent="manufacturing-root"
 		title="MPS Charge" action="manufacturing.root.mps.charge" order="43"
-		if="__user__?.activeCompany?.productionConfig?.isMps"/>
+		if="__config__.app.getApp('production')?.manageMpsCharge"/>
 
  	<action-view name="manufacturing.root.mps.charge" title="Master Production Scheduling Charge"
 		model="com.axelor.apps.production.db.MpsCharge">
@@ -377,7 +377,7 @@
 	</action-view>
 	
 	<menuitem title="MPS Weekly schedules" name="manufacturing-conf-mps-weekly-schedule" parent="manufacturing-conf" 
-		action="manufacturing.conf.mps.weekly.schedule" if="__user__.activeCompany.productionConfig.isMps"/>
+		action="manufacturing.conf.mps.weekly.schedule" if-module="axelor-production" if="__config__.app.getApp('production')?.manageMpsCharge"/>
 
  	<action-view name="manufacturing.conf.mps.weekly.schedule" title="MPS Weekly schedules" model="com.axelor.apps.production.db.MpsWeeklySchedule">
 		<view type="grid" name="mps-weekly-schedule-grid"/>
@@ -397,7 +397,7 @@
 
 	<!-- TOP MENU -->
 	
-	<menuitem name="top-manufacturing" title="Manufacturing" order="6" left="false" top="true"  if="__config__.app.isApp('production')"/>
+	<menuitem name="top-manufacturing" title="Manufacturing" order="6" left="false" top="true"  if-module="axelor-production"  if="__config__.app.isApp('production')"/>
 	
 	<menuitem name="top-manufacturing-manuf-order" parent="top-manufacturing"
 		title="Manuf. orders" action="top.manufacturing.manuf.order" top="true"/>

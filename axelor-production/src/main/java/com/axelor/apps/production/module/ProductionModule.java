@@ -37,12 +37,12 @@ import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepositor
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
-import com.axelor.apps.production.service.MrpForecastProductionService;
-import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
 import com.axelor.apps.production.service.MpsWeeklyScheduleServiceImpl;
+import com.axelor.apps.production.service.MrpForecastProductionService;
+import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;

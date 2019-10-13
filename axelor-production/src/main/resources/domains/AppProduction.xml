@@ -33,6 +33,7 @@
 
 		<string name="mOFilterOnStockDetailStatusSelect" title="Status considered to filter a manuf order" selection="production.manuf.order.status.select" default="4,5"/>
 		<boolean name="manageOutsourcing" title="Manage outsourcing"/>
+		<boolean name="manageMpsCharge" title="Manage Master Production Scheduling Charge"/>	
 
 		<track>
 			<field name="prodOrderMgtOnSO" on="UPDATE"/>
@@ -59,6 +60,8 @@
 			<field name="barcodeTypeConfig" on="UPDATE"/>
 			<field name="printPlannedDateOnManufOrder" on="UPDATE"/>
 			<field name="manageOutsourcing" on="UPDATE"/>
+			<field name="manageMpsCharge" on="UPDATE"/>
+			
 		</track>
 		
 

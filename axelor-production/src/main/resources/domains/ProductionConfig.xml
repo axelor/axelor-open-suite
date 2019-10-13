@@ -18,8 +18,6 @@
 		<boolean name="partFinishMoAutomaticEmail" title="Send email when manufacturing order partially finished" default="false"/>
 		<many-to-one name="partFinishMoMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 
-		<boolean name="isMps" title="Master Production Scheduling Charge"/>	
-
 
 	  <finder-method name="findByCompany" using="company"/>
 
@@ -38,7 +36,6 @@
 			<field name="finishMoMessageTemplate" on="UPDATE"/>
 			<field name="partFinishMoAutomaticEmail" on="UPDATE"/>
 			<field name="partFinishMoMessageTemplate" on="UPDATE"/>
-			<field name="isMps" on="UPDATE"/>
 	
 		</track>
 

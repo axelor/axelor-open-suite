@@ -55,7 +55,7 @@ public class MrpController {
     MrpService mrpService = Beans.get(MrpService.class);
     MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
-    	mrpService.runCalculation(mrpRepository.find(mrp.getId()));
+      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       mrpService.reset(mrpRepository.find(mrp.getId()));

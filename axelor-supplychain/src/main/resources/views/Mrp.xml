@@ -56,7 +56,6 @@
 	        <field name="stockLocation.company"/>
 	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
 	        <field name="browseStockLocation" widget="boolean-switch"/>
-	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
 	        <spacer name="companySpacer"/>
 	        <field name="year" showIf="mrpTypeSelect == 2" domain="self.typeSelect = 3" onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form" grid-view="year-account-grid"/>
 	        <field name="period" showIf="mrpTypeSelect == 2" domain="self.year = :year" form-view="period-form" grid-view="period-grid"/>
