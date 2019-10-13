@@ -24,6 +24,7 @@
         <!-- TRANSIENT FIELD -->
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" transient="true"/>
     
+		<boolean name="isEditedByUser" title="Edited by user"/>
 		
   </entity>
 

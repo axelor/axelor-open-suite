@@ -1,5 +1,4 @@
 # Changelog
-
 ## [Unreleased 6.0]
 ## Features
 - Production : Remove stockLocation from Machine Type object.
