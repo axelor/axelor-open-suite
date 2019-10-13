@@ -25,28 +25,17 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class DebtRecoveryController {
-  private DebtRecoveryRepository debtRecoveryRepository;
-  private DebtRecoveryActionService debtRecoveryActionService;
-
-  @Inject
-  public DebtRecoveryController(
-      DebtRecoveryRepository debtRecoveryRepository,
-      DebtRecoveryActionService debtRecoveryActionService) {
-    this.debtRecoveryRepository = debtRecoveryRepository;
-    this.debtRecoveryActionService = debtRecoveryActionService;
-  }
 
   public void runDebtRecovery(ActionRequest request, ActionResponse response) {
     DebtRecovery debtRecovery = request.getContext().asType(DebtRecovery.class);
-
-    debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
+    debtRecovery = Beans.get(DebtRecoveryRepository.class).find(debtRecovery.getId());
     try {
       if (debtRecovery.getAccountingSituation() == null) {
         throw new AxelorException(
@@ -54,10 +43,7 @@ public class DebtRecoveryController {
             I18n.get(IExceptionMessage.DEBT_RECOVERY_1));
       }
       debtRecovery.setDebtRecoveryMethodLine(debtRecovery.getWaitDebtRecoveryMethodLine());
-      debtRecoveryActionService.runManualAction(debtRecovery);
-      // find the updated debtRecovery
-      debtRecovery = debtRecoveryRepository.find(debtRecovery.getId());
-      debtRecoveryActionService.runMessage(debtRecovery);
+      Beans.get(DebtRecoveryActionService.class).runManualAction(debtRecovery);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -28,16 +28,17 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.base.db.App;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -49,9 +50,6 @@ public class AccountingReportController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject AccountingReportService accountingReportService;
-
-  @Inject AccountingReportRepository accountingReportRepo;
   /**
    * @param request
    * @param response
@@ -59,9 +57,10 @@ public class AccountingReportController {
   public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
     try {
-      accountingReport = accountingReportRepo.find(accountingReport.getId());
+      accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
 
       String query = accountingReportService.getMoveLineList(accountingReport);
       BigDecimal debitBalance = accountingReportService.getDebitBalance();
@@ -138,7 +137,7 @@ public class AccountingReportController {
   public void replayExport(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = accountingReportRepo.find(accountingReport.getId());
+    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
     MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
     try {
@@ -155,7 +154,8 @@ public class AccountingReportController {
   public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = accountingReportRepo.find(accountingReport.getId());
+    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
     try {
 
@@ -173,16 +173,24 @@ public class AccountingReportController {
 
       if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
           && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
-
         MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
-        moveLineExportService.exportMoveLine(accountingReport);
+        MetaFile accesssFile = moveLineExportService.exportMoveLine(accountingReport);
+        if (typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION && accesssFile != null) {
 
-      } else {
-
-        if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
-          typeSelect = AccountingReportRepository.REPORT_GENERAL_LEDGER;
+          response.setView(
+              ActionView.define(I18n.get("Export file"))
+                  .model(App.class.getName())
+                  .add(
+                      "html",
+                      "ws/rest/com.axelor.meta.db.MetaFile/"
+                          + accesssFile.getId()
+                          + "/content/download?v="
+                          + accesssFile.getVersion())
+                  .param("download", "true")
+                  .map());
         }
+      } else {
 
         accountingReportService.setPublicationDateTime(accountingReport);
 

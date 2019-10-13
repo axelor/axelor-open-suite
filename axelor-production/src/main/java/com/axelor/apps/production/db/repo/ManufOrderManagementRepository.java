@@ -50,23 +50,9 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
     entity.setToProduceProdProductList(null);
     entity.setProducedStockMoveLineList(null);
     entity.setWasteProdProductList(null);
-    if (entity.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : entity.getOperationOrderList()) {
-        operationOrder.setStatusSelect(OperationOrderRepository.STATUS_DRAFT);
-        operationOrder.setPlannedStartDateT(null);
-        operationOrder.setPlannedEndDateT(null);
-        operationOrder.setPlannedDuration(0L);
-        operationOrder.setRealStartDateT(null);
-        operationOrder.setRealEndDateT(null);
-        operationOrder.setRealDuration(0L);
-        operationOrder.setOperationOrderDurationList(null);
-        operationOrder.setInStockMoveList(null);
-        operationOrder.setToConsumeProdProductList(null);
-        operationOrder.setConsumedStockMoveLineList(null);
-        operationOrder.setDiffConsumeProdProductList(null);
-        operationOrder.setBarCode(null);
-      }
-    }
+    entity.setOperationOrderList(null);
+    entity.setCostSheetList(null);
+    entity.setCostPrice(null);
     return super.copy(entity, deep);
   }
 

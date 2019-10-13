@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -33,7 +33,15 @@
     
  	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
-    
+    <extra-code><![CDATA[
+        
+        //PERIOD TYPE
+        public static final int PERIOD_TYPE_NONE = 0;
+        public static final int PERIOD_TYPE_MONTHLY = 1;
+        public static final int PERIOD_TYPE_WEEKLY = 2;
+        public static final int PERIOD_TYPE_DAILY = 3;        
+
+	]]></extra-code>
     
   </entity>
 </domain-models>

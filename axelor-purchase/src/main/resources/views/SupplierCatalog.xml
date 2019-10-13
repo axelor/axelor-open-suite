@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
     <grid name="supplier-catalog-grid" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog">
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -38,7 +38,7 @@
 		<panel name="descriptionPanel" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
-		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
+		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping-coef-grid"/>
     </form>
 
 	<form name="supplier-catalog-partner-form" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog"
@@ -55,7 +55,7 @@
 		<panel name="descriptionPanel" title="Description" colSpan="12">
 			<field name="description" showTitle="false" colSpan="12"/>
 		</panel>
-		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping_coef-grid"/>
+		<panel-related name="shippingCoefListPanel" field="shippingCoefList" form-view="shipping-coef-form" grid-view="shipping-coef-grid"/>
 	</form>
 
     <action-attrs name="action-supplier-catalog-attrs-init">

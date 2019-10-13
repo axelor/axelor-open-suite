@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
       <!--
@@ -97,7 +97,7 @@
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5">
 					<editor x-show-titles="false">
 						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
-						<field name="jobTitle" colSpan="6" placeholder="Function"/>
+						<field name="jobTitleFunction" colSpan="6" placeholder="Function"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>

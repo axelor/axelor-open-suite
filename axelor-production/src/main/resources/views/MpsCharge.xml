@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid name="mps-charge-grid" model="com.axelor.apps.production.db.MpsCharge" title="Master Production Scheduling Charge">
+  		<field name="startMonthDate" title="Start Month"/>
+  		<field name="endMonthDate" title="End Month"/>  		  	
+	</grid>
+    
+    <form name="mps-charge-form" model="com.axelor.apps.production.db.MpsCharge" title="Master Production Scheduling Charge" width="large" onLoad="action-mps-charge-attrs-show-second-year-chart">
+		<toolbar>
+    		<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-mps-charge-method-print" showIf="id"/>
+  		</toolbar>
+    	<panel name="mainPanel">
+    		<field name="startMonthDate" onChange="action-mps-charge-group-date-on-change"/>
+    		<field name="endMonthDate" onChange="action-mps-charge-group-date-on-change"/>
+    	</panel>
+    	<panel name="detailsPanel" title="MPS Weekly schedules" showIf="startMonthDate &amp;&amp; endMonthDate">
+    		<panel-dashlet action="custom:mps-charge-mps-weekley-schedule-custom" name="mpsWeeklySchedualCustomPanel" colSpan="12" showTitle="false"/>
+    		<panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.first.year" name="mpsWeeklySchedualChartFirstYearPanel" colSpan="6"/>
+    		<panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.second.year" name="mpsWeeklySchedualChartSecondYearPanel" colSpan="6"/>
+    	</panel>
+    </form>
+	
+	 <custom name="mps-charge-mps-weekley-schedule-custom" title="">
+	 	<dataset type="rpc">
+	 	<![CDATA[
+			com.axelor.apps.production.web.MpsChargeController:getMpsWeeklyScheduleCustom
+	 	]]>
+	 	</dataset>
+	 	<template><![CDATA[
+	 		<report-table data='data' columns='code,january,february,march,april,may,june,july,august,september,october,november,december'></report-table>
+	 	]]></template>
+	 </custom>
+
+	<chart name="mps.charge.mps.weekley.schedule.chart.first.year" title="">
+		<dataset type="rpc">
+			<![CDATA[
+				com.axelor.apps.production.web.MpsChargeController:getMpsWeeklyScheduleChartFirstYear
+			]]>
+		</dataset>
+		<category key="month" type="month"/>
+		<series key="count" groupBy="code" type="line"/>
+	</chart>
+
+	<chart name="mps.charge.mps.weekley.schedule.chart.second.year" title="">
+		<dataset type="rpc">
+			<![CDATA[
+				com.axelor.apps.production.web.MpsChargeController:getMpsWeeklyScheduleChartSecondYear
+			]]>
+		</dataset>
+		<category key="month" type="month"/>
+		<series key="count" groupBy="code" type="line"/>
+	</chart>
+	
+	<action-group name="action-mps-charge-group-date-on-change">
+		<action name="action-mps-charge-validate-date-on-change"/>
+		<action name="action-mps-charge-attrs-date-on-change"/>
+		<action name="action-mps-charge-attrs-show-second-year-chart"/>
+	</action-group>	
+	
+	<action-attrs name="action-mps-charge-attrs-date-on-change">
+		<attribute name="refresh" for="mpsWeeklySchedualCustomPanel,mpsWeeklySchedualChartFirstYearPanel" expr="eval: startMonthDate &amp;&amp; endMonthDate"/>
+		<attribute name="refresh" for="mpsWeeklySchedualChartSecondYearPanel" expr="eval: (startMonthDate &amp;&amp; endMonthDate) &amp;&amp; startMonthDate.getYear() != endMonthDate.getYear()"/>
+	</action-attrs>
+
+	<action-attrs name="action-mps-charge-attrs-show-second-year-chart">		
+		<attribute name="hidden" for="mpsWeeklySchedualChartSecondYearPanel" expr="eval: (startMonthDate &amp;&amp; endMonthDate) &amp;&amp; startMonthDate.getYear() == endMonthDate.getYear()"/>
+	</action-attrs>
+	
+	<action-validate name="action-mps-charge-validate-date-on-change">
+		<error message="End month should be after Start Month" if="(startMonthDate &amp;&amp; endMonthDate) &amp;&amp; endMonthDate &lt; startMonthDate"/>
+		<error message="Start and End Month should not be more than 12 months apart" if="(startMonthDate &amp;&amp; endMonthDate) &amp;&amp; java.time.Period.between(startMonthDate?.withDayOfMonth(1),endMonthDate?.withDayOfMonth(1)).getYears() &gt;= 1"/>
+	</action-validate>
+	
+	<action-method name="action-mps-charge-method-print">
+		<call class="com.axelor.apps.production.web.MpsChargeController" method="print"/>
+	</action-method>
+	    
+</object-views>
+

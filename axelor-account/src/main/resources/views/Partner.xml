@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
 	    <panel name="mainPanel" colSpan="12">
@@ -52,7 +52,7 @@
 	</form>
 
     <form name="incl-blocking-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
-        <panel name="blockingsPanel" title="Blockings" colSpan="12" showIf="isSupplier || isCustomer">
+        <panel name="blockingsPanel" title="Blockings" colSpan="12" showIf="isSupplier || isCustomer || isSubcontractor">
             <field name="blockingList" colSpan="12" title="Blockings" showIf="$readonly()">
 				<editor colSpan="12" x-viewer="true" x-show-on-new="false">
 					<field name="companySet" colSpan="3" widget="TagSelect"/>
@@ -76,11 +76,6 @@
         </panel>
     </form>
 
-	<form name="incl-reported-balance-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
-		<panel title="Reported balance" colSpan="12" name="reportedBalancePanel">
-			<field name="reportedBalanceList" colSpan="12" hideIf="isContact || id == null || reportedBalanceList.length == 0"  title="Reported balance" grid-view="reported-balance-grid" form-view="reported-balance-form" readonly="true"/>
-		</panel>
-	</form>
 	
 	<!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form-->
 

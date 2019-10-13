@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
   <grid name="purchase-config-grid" title="Purchase configurations" model="com.axelor.apps.purchase.db.PurchaseConfig">
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -22,7 +22,10 @@
 			<field name="displayPriceOnQuotationRequest" widget="boolean-switch"/>
 		  	<field name="priceRequest" colSpan="12"/>
 		</panel>
-		
+    <panel name="analyticDistributionPanel" title="Analytic distribution">
+      <field name="isAnalyticDistributionRequired" widget="boolean-switch" if="__config__.app.getApp('account')"/>
+    </panel>
+
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
 			<mail-followers/>

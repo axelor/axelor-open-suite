@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
-	<grid name="general-expense-line-grid"
+	<grid name="expense-line-grid"
 		  title="Expense lines"
 		  model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-kilometric-allowance-record-default">
@@ -40,10 +40,10 @@
 	</grid>
 
     <form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" readonlyIf="true" canEdit="false">
-        <panel-include view="general-expense-line-form"/>
+        <panel-include view="expense-line-form"/>
     </form>
 
-	<form name="general-expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
+	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 		

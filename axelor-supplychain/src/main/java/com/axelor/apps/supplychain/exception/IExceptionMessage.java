@@ -82,6 +82,8 @@ public interface IExceptionMessage {
       "An invoice not canceled already exists for the outgoing stock move %s" /*)*/;
   static final String INCOMING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
+  static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
+      "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
 
   /** Stock move line service */
   static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
@@ -113,6 +115,9 @@ public interface IExceptionMessage {
   /** Mrp Line Service */
   static final String MRP_LINE_1 = /*$$(*/
       "No default supplier is defined for the product %s" /*)*/;
+
+  static final String MRP_MISSING_STOCK_LOCATION_VALID = /*$$(*/
+      "No stock location valid. Please uncheck the chosen stock location 'is not in MRP'." /*)*/;
 
   static final String MRP_NO_PRODUCT = /*$$(*/ "Please select an element to run calculation" /*)*/;
 
@@ -196,6 +201,9 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_REQUESTED_QTY_TOO_LOW = /*$$(*/
       "The requested quantity must be greater than the already delivered quantity." /*)*/;
 
+  static final String SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED = /*$$(*/
+      "This product is not stock managed." /*)*/;
+
   /** Account config supplychain service */
   static final String FORECASTED_INVOICE_CUSTOMER_ACCOUNT = /*$$(*/
       "You must configure a forecasted invoiced customer account for the company %s" /*)*/;
@@ -218,4 +226,15 @@ public interface IExceptionMessage {
 
   static final String STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR = /*$$(*/
       "Product stock for %s is not enough for availability request" /*)*/;
+
+  static final String SALE_ORDER_ANALYTIC_DISTRIBUTION_ERROR = /*$$(*/
+      "There is no analytic distribution on %s sale order line" /*)*/;
+
+  static final String PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR = /*$$(*/
+      "There is no analytic distribution on %s purchase order line" /*)*/;
+
+  static final String STOCK_MOVE_INVOICE_ERROR = /*$$(*/
+      "No stockMoveLine remains to invoice" /*)*/;
+  static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
+      "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
 }

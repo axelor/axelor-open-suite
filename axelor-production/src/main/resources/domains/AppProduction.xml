@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -30,16 +30,9 @@
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="printPlannedDateOnManufOrder" title="Print planned date on manuf order ?" default="true"/>
 
-        <string name="mOFilterOnStockDetailStatusSelect" title="Status considered to filter a manuf order" selection="production.manuf.order.status.select" default="4,5"/>
-		<boolean name="finiteCapacity" title="Finite capacity"/>
-		<integer name="schedulingGranularity" title="Scheduling granularity" selection="production.manuf.order.optaplanner.granularity.select"/>
 
-		<extra-code><![CDATA[
-			// Scheduling granularity
-			public static final int GRANULARITY_MINUTES = 1;
-			public static final int GRANULARITY_HOURS = 2;
-			public static final int GRANULARITY_DAYS = 3;
-		]]></extra-code>
+		<string name="mOFilterOnStockDetailStatusSelect" title="Status considered to filter a manuf order" selection="production.manuf.order.status.select" default="4,5"/>
+		<boolean name="manageOutsourcing" title="Manage outsourcing"/>
 
 		<track>
 			<field name="prodOrderMgtOnSO" on="UPDATE"/>
@@ -65,9 +58,10 @@
 
 			<field name="barcodeTypeConfig" on="UPDATE"/>
 			<field name="printPlannedDateOnManufOrder" on="UPDATE"/>
+			<field name="manageOutsourcing" on="UPDATE"/>
 		</track>
 		
-		
+
 	</entity>
   
   

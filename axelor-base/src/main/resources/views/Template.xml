@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="template-grid" id="template-grid-base" title="Templates" model="com.axelor.apps.message.db.Template">
         <field name="name"/>
@@ -12,7 +12,7 @@
 
 	<form id="template-form-base" name="template-form" title="Template"
 		model="com.axelor.apps.message.db.Template" onSave="action-template-check-receptor"
-		onNew="action-template-record-new">
+		onNew="action-template-record-new,action-template-attrs-onnew-onload" onLoad="action-template-attrs-onnew-onload">
 		<panel name="mainPanel" colSpan="12">
 			<field name="name" showTitle="false" colSpan="12">
 				<viewer depends="name"><![CDATA[
@@ -24,14 +24,15 @@
 					<field name="name" showTitle="true" />
 				</editor>
 			</field>
-			<field name="mediaTypeSelect" colSpan="6" />
-			<field name="metaModel" canEdit="false" form-view="meta-model-form"
-				grid-view="meta-model-grid" onSelect="action-template-attrs-meta-model-domain" />
+			<field name="mediaTypeSelect" />
+			<field name="language" canEdit="false" form-view="language-form" grid-view="language-grid" />
+			<field name="isJson" onChange="action-template-record-is-json-change"/>
+			<panel itemSpan="12">
+				<field name="metaModel" hideIf="isJson" canEdit="false" form-view="meta-model-form" grid-view="meta-model-grid" onSelect="action-template-attrs-meta-model-domain" />
+				<field name="metaJsonModel" showIf="isJson" canEdit="false" form-view="json-model-form" grid-view="json-model-grid" />			
+			</panel>
 			<field name="target" hidden="true" />
-			<field name="templateContext" canEdit="false" form-view="template-context-form"
-				grid-view="template-context-grid" hidden="true" />
-			<field name="language" canEdit="false" form-view="language-form"
-				grid-view="language-grid" />
+			<field name="templateContext" canEdit="false" form-view="template-context-form" grid-view="template-context-grid" hidden="true" />
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="contentPanel" title="Contenu">
@@ -55,6 +56,7 @@
 					<field name="subject" colSpan="12" height="2" />
 					<field name="content" showTitle="false" colSpan="12" widget="html" />
 				</panel>
+				<panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
 				<panel name="attachedFilesPanel" title="Attached files" colSpan="12">
 					<field name="birtTemplate" colSpan="12" canEdit="false"
 						form-view="birt-template-form" grid-view="birt-template-grid" />
@@ -67,7 +69,7 @@
 		</panel-tabs>
 	</form>
 
-	 <action-method name="action-template-check-receptor">
+	<action-method name="action-template-check-receptor">
     	<call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
     </action-method>
     

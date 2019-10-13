@@ -32,6 +32,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,11 +53,11 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
     mrp.setStockLocation(findStockLocation(company, stockLocation));
     // If a company has no stockLocation
     if (mrp.getStockLocation() == null) {
-      return null;
+      return Collections.emptyList();
     }
     mrp.addProductSetItem(product);
     mrp = Beans.get(MrpRepository.class).save(mrp);
-    mrp = Beans.get(MrpService.class).completeProjectedStock(mrp, product, company, stockLocation);
+    mrp = Beans.get(MrpService.class).createProjectedStock(mrp, product, company, stockLocation);
 
     List<MrpLine> mrpLineList =
         Beans.get(MrpLineRepository.class)
@@ -68,8 +69,16 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
             .order("id")
             .fetch();
 
+    if (mrpLineList.isEmpty()) {
+      List<MrpLine> mrpLineListToDelete =
+          Beans.get(MrpLineRepository.class).all().filter("self.mrp = ?1", mrp).fetch();
+      removeMrpAndMrpLine(mrpLineListToDelete);
+      return Collections.emptyList();
+    }
+
     for (MrpLine mrpLine : mrpLineList) {
       mrpLine.setCompany(mrpLine.getStockLocation().getCompany());
+      mrpLine.setUnit(mrpLine.getProduct().getUnit());
     }
     return mrpLineList;
   }
@@ -110,16 +119,36 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
         (LinkedHashMap<String, Object>) context.get("company");
     if (companyHashMap != null) {
       companyId = Long.valueOf(companyHashMap.get("id").toString());
+    } else {
+      companyHashMap = (LinkedHashMap<String, Object>) context.get("$company");
+      if (companyHashMap != null) {
+        companyId = Long.valueOf(companyHashMap.get("id").toString());
+      }
     }
     LinkedHashMap<String, Object> stockLocationHashMap =
         (LinkedHashMap<String, Object>) context.get("stockLocation");
     if (stockLocationHashMap != null) {
       stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
+    } else {
+      stockLocationHashMap = (LinkedHashMap<String, Object>) context.get("$stockLocation");
+      if (stockLocationHashMap != null) {
+        stockLocationId = Long.valueOf(stockLocationHashMap.get("id").toString());
+      }
     }
 
     mapId.put("productId", productId);
     mapId.put("companyId", companyId);
     mapId.put("stockLocationId", stockLocationId);
     return mapId;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void removeMrpAndMrpLine(List<MrpLine> mrpLineList) {
+    if (mrpLineList != null && !mrpLineList.isEmpty()) {
+      Long mrpId = mrpLineList.get(0).getMrp().getId();
+      Beans.get(MrpLineRepository.class).all().filter("self.mrp.id = ?1", mrpId).remove();
+      Beans.get(MrpRepository.class).all().filter("self.id = ?1", mrpId).remove();
+    }
   }
 }

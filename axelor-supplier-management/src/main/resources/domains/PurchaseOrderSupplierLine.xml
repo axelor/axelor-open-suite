@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="suppliermanagement" package="com.axelor.apps.suppliermanagement.db"/>
 
@@ -20,6 +20,17 @@
   	<integer name="stateSelect" title="State" selection="isuppliermanagement.purchase.order.supplier.line.state.select" initParam="true"/>
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier" initParam="true" index="idx_suppmanage_po_supp_line_supp_partner"/>
+  	
+  	<extra-code><![CDATA[
+	
+	   	//STATE SELECT
+	   	public static final int STATE_REQUESTED = 1;
+        public static final int STATE_SUBMITTED = 2;
+        public static final int STATE_ACCEPTED = 3;
+        public static final int STATE_NOT_ACCEPTED = 4;
+        public static final int STATE_CANCELED = 5;
+	  ]]>
+	</extra-code>
   	
   	
   </entity>

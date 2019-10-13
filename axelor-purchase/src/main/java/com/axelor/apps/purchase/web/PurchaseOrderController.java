@@ -56,12 +56,12 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,12 +71,6 @@ public class PurchaseOrderController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private PurchaseOrderService purchaseOrderService;
-
-  @Inject private PurchaseOrderRepository purchaseOrderRepo;
-
-  @Inject private PurchaseOrderPrintService purchaseOrderPrintService;
-
   public void setSequence(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
@@ -84,7 +78,8 @@ public class PurchaseOrderController {
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
 
         response.setValue(
-            "purchaseOrderSeq", purchaseOrderService.getSequence(purchaseOrder.getCompany()));
+            "purchaseOrderSeq",
+            Beans.get(PurchaseOrderService.class).getSequence(purchaseOrder.getCompany()));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -97,7 +92,7 @@ public class PurchaseOrderController {
 
     if (purchaseOrder != null) {
       try {
-        purchaseOrder = purchaseOrderService.computePurchaseOrder(purchaseOrder);
+        purchaseOrder = Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
         response.setValues(purchaseOrder);
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -109,7 +104,8 @@ public class PurchaseOrderController {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
-    response.setValue("supplierPartner", purchaseOrderService.validateSupplier(purchaseOrder));
+    response.setValue(
+        "supplierPartner", Beans.get(PurchaseOrderService.class).validateSupplier(purchaseOrder));
   }
 
   /**
@@ -125,6 +121,8 @@ public class PurchaseOrderController {
     Context context = request.getContext();
     String fileLink;
     String title;
+    PurchaseOrderPrintService purchaseOrderPrintService =
+        Beans.get(PurchaseOrderPrintService.class);
 
     try {
       if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
@@ -142,7 +140,7 @@ public class PurchaseOrderController {
         title = I18n.get("Purchase orders");
       } else if (context.get("id") != null) {
         PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-        title = Beans.get(PurchaseOrderPrintService.class).getFileName(purchaseOrder);
+        title = purchaseOrderPrintService.getFileName(purchaseOrder);
         fileLink =
             purchaseOrderPrintService.printPurchaseOrder(purchaseOrder, ReportSettings.FORMAT_PDF);
         logger.debug("Printing " + title);
@@ -162,7 +160,9 @@ public class PurchaseOrderController {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
 
     try {
-      purchaseOrderService.requestPurchaseOrder(purchaseOrderRepo.find(purchaseOrder.getId()));
+      Beans.get(PurchaseOrderService.class)
+          .requestPurchaseOrder(
+              Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -172,7 +172,8 @@ public class PurchaseOrderController {
   public void updateCostPrice(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrderService.updateCostPrice(purchaseOrderRepo.find(purchaseOrder.getId()));
+      Beans.get(PurchaseOrderService.class)
+          .updateCostPrice(Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -216,6 +217,7 @@ public class PurchaseOrderController {
     // Useful to determine if a difference exists between price lists of all purchase orders
     boolean existPriceListDiff = false;
     PurchaseOrder purchaseOrderTemp;
+    boolean allTradingNamesAreNull = true;
     int count = 1;
     for (Long purchaseOrderId : purchaseOrderIdList) {
       purchaseOrderTemp = JPA.em().find(PurchaseOrder.class, purchaseOrderId);
@@ -227,6 +229,8 @@ public class PurchaseOrderController {
         commonContactPartner = purchaseOrderTemp.getContactPartner();
         commonPriceList = purchaseOrderTemp.getPriceList();
         commonTradingName = purchaseOrderTemp.getTradingName();
+        allTradingNamesAreNull = commonTradingName == null;
+
       } else {
         if (commonCurrency != null && !commonCurrency.equals(purchaseOrderTemp.getCurrency())) {
           commonCurrency = null;
@@ -247,9 +251,9 @@ public class PurchaseOrderController {
           commonPriceList = null;
           existPriceListDiff = true;
         }
-        if (commonTradingName != null
-            && !commonTradingName.equals(purchaseOrderTemp.getTradingName())) {
+        if (!Objects.equals(commonTradingName, purchaseOrderTemp.getTradingName())) {
           commonTradingName = null;
+          allTradingNamesAreNull = false;
         }
       }
       count++;
@@ -271,7 +275,7 @@ public class PurchaseOrderController {
       }
       fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_COMPANY));
     }
-    if (commonTradingName == null) {
+    if (commonTradingName == null && !allTradingNamesAreNull) {
       fieldErrors.append(I18n.get(IExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
     }
 
@@ -325,14 +329,15 @@ public class PurchaseOrderController {
 
     try {
       PurchaseOrder purchaseOrder =
-          purchaseOrderService.mergePurchaseOrders(
-              purchaseOrderList,
-              commonCurrency,
-              commonSupplierPartner,
-              commonCompany,
-              commonContactPartner,
-              commonPriceList,
-              commonTradingName);
+          Beans.get(PurchaseOrderService.class)
+              .mergePurchaseOrders(
+                  purchaseOrderList,
+                  commonCurrency,
+                  commonSupplierPartner,
+                  commonCompany,
+                  commonContactPartner,
+                  commonPriceList,
+                  commonTradingName);
       if (purchaseOrder != null) {
         // Open the generated purchase order in a new tab
         response.setView(
@@ -380,8 +385,8 @@ public class PurchaseOrderController {
   public void validate(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
-      purchaseOrderService.validatePurchaseOrder(purchaseOrder);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderService.class).validatePurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -391,8 +396,8 @@ public class PurchaseOrderController {
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-      purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
-      purchaseOrderService.cancelPurchaseOrder(purchaseOrder);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderService.class).cancelPurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -482,7 +487,7 @@ public class PurchaseOrderController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
-      purchaseOrderService.finishPurchaseOrder(purchaseOrder);
+      Beans.get(PurchaseOrderService.class).finishPurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

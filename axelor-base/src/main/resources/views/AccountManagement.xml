@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="account-management-grid" title="Account management list"
 		model="com.axelor.apps.account.db.AccountManagement">
@@ -53,8 +53,9 @@
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
-				<field name="product" canEdit="false" colSpan="12" form-view="product-form"
+				<field name="product" canEdit="false" form-view="product-form"
 					grid-view="product-grid" showIf="typeSelect == 1"/>
+				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" showIf="typeSelect == 1"/>
 			</panel>
 
 			<!-- PRODUCT -->

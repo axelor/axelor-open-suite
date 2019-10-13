@@ -3,7 +3,7 @@ apply plugin: "com.axelor.app-module"
 apply from: "../version.gradle"
 
 apply {
-	version = absVersion
+	version = openSuiteVersion
 }
 
 axelor {
@@ -22,7 +22,7 @@ dependencies {
     	 'javax.xml.bind:jaxb-api:2.2.2'
 
 	compile files("src/main/lib/ebics-1.0.2.jar")
-	compile "org.bouncycastle:bcprov-jdk15:1.46"
+	compile "org.bouncycastle:bcprov-jdk15on:1.62"
 	compile "org.apache.santuario:xmlsec:1.4.3"
 	compile "commons-codec:commons-codec:1.11"
 }

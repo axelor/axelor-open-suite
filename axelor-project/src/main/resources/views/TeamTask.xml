@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
 		<field name="name"/>
+		<field name="project"/>
 		<field name="taskDate"/>
 		<field name="taskEndDate" hidden="true"/>
 		<field name="status"/>
@@ -73,7 +74,7 @@
 					<field name="project" colSpan="6" onChange="action-team-task-group-project-onchange" required="true"/>
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
-					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="grid-form" if="!__config__.app.isApp('business-support')"/>
+					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="team-grid" if="!__config__.app.isApp('business-support')"/>
 					<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" hidden="true" showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
 					<field name="isPrivate" hidden="true" showIf="typeSelect == 'ticket'" colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<field name="isOrderAccepted" colSpan="3" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
@@ -153,8 +154,9 @@
 				</panel-related>
 			</panel>
 			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="teamTaskInvoicing" colSpan="4" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+				<field name="teamTaskInvoicing" colSpan="3" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="teamTaskInvoicing" onChange="action-team-task-attrs-to-invoice"/>
+				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="3"/>
 				<field name="saleOrderLine" readonly="true" showIf="saleOrderLine" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
 				<field name="invoiceLine" readonly="true" showIf="invoiceLine" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 				<panel name="packagePanel" title="Package" colSpan="12" showIf="invoicingType == 2">
@@ -267,6 +269,7 @@
 	
 	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence"  model="com.axelor.team.db.TeamTask">
 		<field name="name"/>
+		<field name="project"/>
 		<field name="status"/>
 		<field name="assignedTo"/>
 		<field name="taskDate"/>
@@ -279,6 +282,7 @@
 		<template>
 		<![CDATA[
 			<h4>{{name}}</h4>
+			<h4><span style="font-weight:normal;">{{project.fullName}}</span></h4>
 			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
 			<div class="card-body">
 				<div>
@@ -320,7 +324,6 @@
 		<action name="action-task-record-project-configurations"/>
 		<action name="action-team-task-method-update-discount" if="__config__.app.isApp('business-project')"/>
 		<action name="action-team-task-method-compute" if="__config__.app.isApp('business-project')"/>
-		<action name="action-team-task-record-update-invoicing-type-and-time-invoicing" if="__config__.app.isApp('business-project') &amp;&amp; project != null"/>
 	</action-group>
 	
 	<action-group name="action-team-task-group-product-onchange">
@@ -387,9 +390,7 @@
 		<field name="membersUserSet" expr="eval: null"/>
 		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
         <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
-		<field name="invoicingType" expr="eval: project?.invoicingType"/>
-		<field name="teamTaskInvoicing" expr="eval: project?.teamTaskInvoicing"/>
-		<field name="toInvoice" expr="eval: project?.teamTaskInvoicing &amp;&amp; project?.invoicingType == 2"/>
+        <field name="invoicingType" expr="eval: 2" if="project?.invoicingSequenceSelect == 1"/>
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
@@ -495,7 +496,7 @@
 	</action-group>
 	
 	<action-group name="action-team-task-group-project-category-onchange">
-		<action name="action-team-task-method-onchange-category" if="__config__.app.isApp('business-support')" />
+		<action name="action-team-task-method-onchange-category" if="__config__.app.isApp('business-project')" />
 	</action-group>
 
 	<action-method name="action-team-task-method-start-timer">
@@ -511,7 +512,7 @@
 	</action-method>
 	
 	<action-method name="action-team-task-method-onchange-category">
-		<call class="com.axelor.apps.businesssupport.web.TeamTaskController" method="onChangeCategory"/>
+		<call class="com.axelor.apps.businessproject.web.TeamTaskController" method="onChangeCategory"/>
 	</action-method>
 	
 	<action-attrs name="action-team-task-attrs-to-invoice">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
     <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -27,7 +27,7 @@
         <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
 
         <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-        <integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
+        <integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0"/>
 
         <string name="description" title="Description" large="true"/>
         <boolean name="fixedAssets" title="Fixed Assets"/>

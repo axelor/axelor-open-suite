@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="ActionBuilderView" cachable="true">
+  <entity name="ActionBuilderView" cacheable="true">
   	<string name="viewType" title="Type" required="true" selection="view.type.selection"/>
   	<string name="viewName" title="Name" required="true"/>
   	<many-to-one name="actionBuilder" ref="ActionBuilder" />
   	<integer name="sequence" title="Sequence" />
+  	<string name="viewConditionToCheck" title="If"/>
   </entity>
   
 </domain-models>

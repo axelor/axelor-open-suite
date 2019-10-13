@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<menuitem name="mail-conf"  title="Message"  />
 	
@@ -33,8 +33,8 @@
 		
 	<action-view name="mail.root.email.conf.email.address" title="Email addresses" 
 		model="com.axelor.apps.message.db.EmailAddress" >
-		<view type="grid" />
-		<view type="form" />
+		<view type="grid" name="email-address-grid"/>
+		<view type="form" name="email-address-form"/>
 		<context name="_duplicateFinderFields" expr="address"/>
 	</action-view>
 	
@@ -51,7 +51,7 @@
 	<action-view name="mail.root.messages.not.send" title="Messages not sent" model="com.axelor.apps.message.db.Message">
 		<view type="grid" name="message-not-sent-grid"/>
 		<view type="form" name="message-form"/>
-        <domain>self.statusSelect = 1 AND self.sentDateT = null</domain>
+        <domain>(self.statusSelect = 1 AND self.sentDateT = null) OR self.statusSelect = 2</domain>
 	</action-view>
 
 	<menuitem name="mail-root-email-conf-routing" parent="mail-conf" title="Routings" action="mail.root.email.conf.routing" order="30"  />	

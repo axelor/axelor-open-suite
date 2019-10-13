@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -32,6 +33,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -44,6 +46,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -52,7 +55,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -69,16 +71,12 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class PartnerController {
 
-  @Inject private PartnerService partnerService;
-
-  @Inject private PartnerRepository partnerRepo;
-
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void setPartnerSequence(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
-    partner = partnerRepo.find(partner.getId());
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
     if (partner.getPartnerSeq() == null) {
       String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
       if (seq == null)
@@ -202,6 +200,7 @@ public class PartnerController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
+  @CallMethod
   public Company getActiveCompany() {
     Company company = Beans.get(UserService.class).getUser().getActiveCompany();
     if (company == null) {
@@ -216,8 +215,9 @@ public class PartnerController {
   public void setSocialNetworkUrl(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     Map<String, String> urlMap =
-        partnerService.getSocialNetworkUrl(
-            partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
+        Beans.get(PartnerService.class)
+            .getSocialNetworkUrl(
+                partner.getName(), partner.getFirstName(), partner.getPartnerTypeSelect());
     response.setAttr("googleLabel", "title", urlMap.get("google"));
     response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
     response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
@@ -227,7 +227,7 @@ public class PartnerController {
 
   public void findPartnerMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = partnerService.findPartnerMails(partner);
+    List<Long> idList = Beans.get(PartnerService.class).findPartnerMails(partner);
 
     List<Message> emailsList = new ArrayList<Message>();
     for (Long id : idList) {
@@ -241,13 +241,14 @@ public class PartnerController {
   }
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
-    Partner contact = partnerRepo.find(request.getContext().asType(Partner.class).getId());
-    partnerService.addContactToPartner(contact);
+    Partner contact =
+        Beans.get(PartnerRepository.class).find(request.getContext().asType(Partner.class).getId());
+    Beans.get(PartnerService.class).addContactToPartner(contact);
   }
 
   public void findContactMails(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
-    List<Long> idList = partnerService.findContactMails(partner);
+    List<Long> idList = Beans.get(PartnerService.class).findContactMails(partner);
 
     List<Message> emailsList = new ArrayList<Message>();
     for (Long id : idList) {
@@ -302,6 +303,7 @@ public class PartnerController {
   }
 
   public void normalizePhoneNumber(ActionRequest request, ActionResponse response) {
+    PartnerService partnerService = Beans.get(PartnerService.class);
     try {
       String phoneNumberFieldName = partnerService.getPhoneNumberFieldName(request.getAction());
       String phoneNumber = (String) request.getContext().get(phoneNumberFieldName);
@@ -329,8 +331,8 @@ public class PartnerController {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.PARTNER_3));
     }
-    partner = partnerRepo.find(partner.getId());
-    partnerService.convertToIndividualPartner(partner);
+    partner = Beans.get(PartnerRepository.class).find(partner.getId());
+    Beans.get(PartnerService.class).convertToIndividualPartner(partner);
   }
 
   /**
@@ -343,7 +345,9 @@ public class PartnerController {
   public void checkPartnerName(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     response.setAttr(
-        "duplicatePartnerText", "hidden", !partnerService.isThereDuplicatePartner(partner));
+        "duplicatePartnerText",
+        "hidden",
+        !Beans.get(PartnerService.class).isThereDuplicatePartner(partner));
   }
 
   public void showPartnerOnMap(ActionRequest request, ActionResponse response) {
@@ -351,7 +355,12 @@ public class PartnerController {
       Partner partner = request.getContext().asType(Partner.class);
       response.setView(
           ActionView.define(partner.getFullName())
-              .add("html", Beans.get(MapService.class).getMapURI("partner", partner.getId()))
+              .add(
+                  "html",
+                  Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
+                          == AppBaseRepository.MAP_API_GOOGLE
+                      ? Beans.get(MapService.class).getMapURI("partner", partner.getId())
+                      : Beans.get(MapService.class).getOsmMapURI("partner", partner.getId()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);

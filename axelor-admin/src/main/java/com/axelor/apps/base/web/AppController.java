@@ -34,7 +34,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,22 +46,12 @@ import java.util.Set;
 @Singleton
 public class AppController {
 
-  @Inject private AppService appService;
-
-  @Inject private AppRepository appRepo;
-
-  @Inject private AccessTemplateService accessTemplateService;
-
-  @Inject private AccessConfigImportService accessConfigImportService;
-
-  @Inject private MetaFileRepository metaFileRepo;
-
   public void importDataDemo(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     App app = request.getContext().asType(App.class);
-    app = appRepo.find(app.getId());
-    appService.importDataDemo(app);
+    app = Beans.get(AppRepository.class).find(app.getId());
+    Beans.get(AppService.class).importDataDemo(app);
 
     response.setFlash(I18n.get(IExceptionMessages.DEMO_DATA_SUCCESS));
 
@@ -72,9 +61,9 @@ public class AppController {
   public void installApp(ActionRequest request, ActionResponse response) throws AxelorException {
 
     App app = request.getContext().asType(App.class);
-    app = appRepo.find(app.getId());
+    app = Beans.get(AppRepository.class).find(app.getId());
 
-    appService.installApp(app, null);
+    Beans.get(AppService.class).installApp(app, null);
 
     response.setSignal("refresh-app", true);
   }
@@ -103,9 +92,9 @@ public class AppController {
   public void uninstallApp(ActionRequest request, ActionResponse response) throws AxelorException {
 
     App app = request.getContext().asType(App.class);
-    app = appRepo.find(app.getId());
+    app = Beans.get(AppRepository.class).find(app.getId());
 
-    appService.unInstallApp(app);
+    Beans.get(AppService.class).unInstallApp(app);
 
     response.setSignal("refresh-app", true);
   }
@@ -122,16 +111,16 @@ public class AppController {
     }
 
     Boolean importDemo = (Boolean) context.get("importDemoData");
-
     String language = (String) context.get("languageSelect");
+    AppRepository appRepository = Beans.get(AppRepository.class);
 
     List<App> appList = new ArrayList<App>();
     for (Map<String, Object> appData : apps) {
-      App app = appRepo.find(Long.parseLong(appData.get("id").toString()));
+      App app = appRepository.find(Long.parseLong(appData.get("id").toString()));
       appList.add(app);
     }
 
-    appService.bulkInstall(appList, importDemo, language);
+    Beans.get(AppService.class).bulkInstall(appList, importDemo, language);
 
     response.setFlash(I18n.get(IExceptionMessages.BULK_INSTALL_SUCCESS));
     response.setSignal("refresh-app", true);
@@ -140,7 +129,7 @@ public class AppController {
   public void refreshApp(ActionRequest request, ActionResponse response) {
 
     try {
-      appService.refreshApp();
+      Beans.get(AppService.class).refreshApp();
       response.setNotify(I18n.get(IExceptionMessages.REFRESH_APP_SUCCESS));
       response.setReload(true);
     } catch (IOException | ClassNotFoundException e) {
@@ -152,7 +141,7 @@ public class AppController {
   public void generateAccessTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    MetaFile accesssFile = accessTemplateService.generateTemplate();
+    MetaFile accesssFile = Beans.get(AccessTemplateService.class).generateTemplate();
 
     if (accesssFile == null) {
       return;
@@ -175,9 +164,9 @@ public class AppController {
 
     App app = request.getContext().asType(App.class);
 
-    app = appRepo.find(app.getId());
+    app = Beans.get(AppRepository.class).find(app.getId());
 
-    appService.importRoles(app);
+    Beans.get(AppService.class).importRoles(app);
     response.setReload(true);
     response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
   }
@@ -185,7 +174,7 @@ public class AppController {
   public void importAllRoles(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    appService.importRoles();
+    Beans.get(AppService.class).importRoles();
 
     response.setFlash(I18n.get(IExceptionMessages.ROLE_IMPORT_SUCCESS));
     response.setReload(true);
@@ -198,7 +187,8 @@ public class AppController {
 
     if (metaFileMap != null) {
       Long fileId = Long.parseLong(metaFileMap.get("id").toString());
-      accessConfigImportService.importAccessConfig(metaFileRepo.find(fileId));
+      Beans.get(AccessConfigImportService.class)
+          .importAccessConfig(Beans.get(MetaFileRepository.class).find(fileId));
       response.setFlash(I18n.get(IExceptionMessages.ACCESS_CONFIG_IMPORTED));
       response.setCanClose(true);
     }

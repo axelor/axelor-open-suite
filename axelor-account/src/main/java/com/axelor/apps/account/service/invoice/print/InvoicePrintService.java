@@ -34,10 +34,14 @@ public interface InvoicePrintService {
    * @param forceRefresh Only used in case of ventilated invoices: if <code>true</code> forces PDF
    *     regeneration, if <code>false</code> and a stored copy already exists it will be used,
    *     changes made to invoice between last print and current state won't appear on printed copy.
+   * @param format
+   * @param reportType
+   * @param locale
    * @return the file link to the printed invoice.
    * @throws AxelorException
    */
-  String printInvoice(Invoice invoice, boolean forceRefresh, String format, Integer reportType)
+  String printInvoice(
+      Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException;
 
   /**
@@ -47,11 +51,15 @@ public interface InvoicePrintService {
    * @param forceRefresh Only used in case of ventilated invoices: if <code>true</code> forces PDF
    *     regeneration, if <code>false</code> and a stored copy already exists it will be used,
    *     changes made to invoice between last print and current state won't appear on printed copy.
+   * @param reportType
+   * @param format
+   * @param locale
    * @return the generated file.
    * @throws AxelorException
    * @throws IOException
    */
-  File printCopiesToFile(Invoice invoice, boolean forceRefresh, Integer reportType)
+  File printCopiesToFile(
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
       throws AxelorException, IOException;
 
   /**
@@ -62,28 +70,40 @@ public interface InvoicePrintService {
    * @param forceRefresh Only used in case of ventilated invoices: if <code>true</code> forces PDF
    *     regeneration, if <code>false</code> and a stored copy already exists it will be used,
    *     changes made to invoice between last print and current state won't appear on printed copy.
+   * @param reportType
+   * @param format
+   * @param locale
    * @return a file with the invoice as PDF.
    */
-  File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType)
+  File getPrintedInvoice(
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
       throws AxelorException;
 
   /**
    * Print an invoice but doesn't save the generated file in the invoice.
    *
    * @param invoice an invoice
+   * @param reportType
+   * @param format
+   * @param locale
    * @return a file of the invoice printing.
    * @throws AxelorException
    */
-  public File print(Invoice invoice, Integer reportType) throws AxelorException;
+  public File print(Invoice invoice, Integer reportType, String format, String locale)
+      throws AxelorException;
 
   /**
    * Print an invoice, then save the generated file in this invoice.
    *
    * @param invoice an invoice
+   * @param format
+   * @param reportType
+   * @param locale
    * @return a metafile of the invoice printing.
    * @throws AxelorException
    */
-  File printAndSave(Invoice invoice, Integer reportType) throws AxelorException;
+  File printAndSave(Invoice invoice, Integer reportType, String format, String locale)
+      throws AxelorException;
 
   /**
    * Print a list of invoices in the same output.
@@ -99,8 +119,12 @@ public interface InvoicePrintService {
    * Prepare report settings for one invoice.
    *
    * @param invoice an invoice
+   * @param reportType
+   * @param format
+   * @param locale
    * @return the report settings to print the given invoice
    * @throws AxelorException
    */
-  ReportSettings prepareReportSettings(Invoice invoice, Integer reportType) throws AxelorException;
+  ReportSettings prepareReportSettings(
+      Invoice invoice, Integer reportType, String format, String locale) throws AxelorException;
 }

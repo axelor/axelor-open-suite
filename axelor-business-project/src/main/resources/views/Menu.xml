@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<menuitem name="business-project-root" title="Job costing" order="-102" icon="fa-list-alt" icon-background="blue" if="__config__.app.isApp('business-project')"/>
 	
@@ -27,6 +27,17 @@
 	<action-view name="business.project.root.invoicing.project" title="Invoicing project" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<view type="grid" name="invoicing-project-grid"/>
 		<view type="form" name="invoicing-project-form"/>
+	</action-view>
+	
+	<!-- ADMINISTRATION -->
+
+	<menuitem name="admin-root-batch-project-invoicing-assistant" parent="admin-root-batch" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" 
+	title="Project invoicing assistant batches" action="admin.root.batch.project.invoicing.assistant" />
+
+	<action-view name="admin.root.batch.project.invoicing.assistant" title="Project invoicing assistant batches"
+		model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch" >
+		<view type="grid" name="project-invoicing-assistant-batch-grid" />
+		<view type="form" name="project-invoicing-assistant-batch-form" />
 	</action-view>
 	
 </object-views>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="HrBatch" lang="java" cachable="true">
+  <entity name="HrBatch" lang="java" cacheable="true">
   	
   	<!-- HEADER -->
   	<string name="code" title="Code" namecolumn="true" unique="true"/>
@@ -41,6 +41,10 @@
 	<boolean name="exportAlreadyExported" title="Also export already exported payroll preparations" />
 	
   	<integer name="employmentContractExportTypeSelect" title="Export type" selection="hr.batch.employment.contract.export.type.select"/>
+    
+    <!-- Timesheet Reminder -->
+    <long name="daysBeforeReminder" title="Number of days before reminder" />
+    <many-to-one name="template" ref="com.axelor.apps.message.db.Template" title="Template"/>
   	
   	<extra-code><![CDATA[
 	
@@ -51,6 +55,7 @@
 		public static final int ACTION_PAYROLL_PREPARATION_EXPORT = 4;
 		public static final int ACTION_LEAVE_MANAGEMENT_RESET = 5;
 		public static final int ACTION_EMPLOYMENT_CONTRACT_EXPORT = 6;
+        public static final int ACTION_TIMESHEET_REMINDER = 7;
 		
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;
@@ -58,6 +63,7 @@
 
 		//EMPLOYMENT CONTRACT EXPORT TYPE SELECT
 		public static final int EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE = 1;
+        
 	]]></extra-code>
   	
   </entity>

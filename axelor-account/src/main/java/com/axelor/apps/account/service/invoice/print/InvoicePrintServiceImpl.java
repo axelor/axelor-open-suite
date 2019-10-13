@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.invoice.print;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
@@ -27,12 +28,14 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -47,28 +50,40 @@ import java.util.List;
 @Singleton
 public class InvoicePrintServiceImpl implements InvoicePrintService {
 
-  @Inject private InvoiceRepository invoiceRepo;
+  protected InvoiceRepository invoiceRepo;
+  protected AccountConfigRepository accountConfigRepo;
 
-  @Override
-  public String printInvoice(
-      Invoice invoice, boolean forceRefresh, String format, Integer reportType)
-      throws AxelorException, IOException {
-    String fileName = getInvoiceFilesName(false, format);
-    return PdfTool.getFileLinkFromPdfFile(
-        printCopiesToFile(invoice, forceRefresh, reportType), fileName);
+  @Inject
+  public InvoicePrintServiceImpl(
+      InvoiceRepository invoiceRepo, AccountConfigRepository accountConfigRepo) {
+    this.invoiceRepo = invoiceRepo;
+    this.accountConfigRepo = accountConfigRepo;
   }
 
   @Override
-  public File printCopiesToFile(Invoice invoice, boolean forceRefresh, Integer reportType)
+  public String printInvoice(
+      Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
-    File file = getPrintedInvoice(invoice, forceRefresh, reportType);
+    String fileName = getInvoiceFilesName(false, format);
+    return PdfTool.getFileLinkFromPdfFile(
+        printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
+  }
+
+  @Override
+  public File printCopiesToFile(
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
+      throws AxelorException, IOException {
+    File file = getPrintedInvoice(invoice, forceRefresh, reportType, format, locale);
     int copyNumber = invoice.getInvoicesCopySelect();
-    return PdfTool.printCopiesToFile(file, copyNumber);
+    return format.equals(ReportSettings.FORMAT_PDF)
+        ? PdfTool.printCopiesToFile(file, copyNumber)
+        : file;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public File getPrintedInvoice(Invoice invoice, boolean forceRefresh, Integer reportType)
+  public File getPrintedInvoice(
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
       throws AxelorException {
 
     // if invoice is ventilated (or just validated for advance payment invoices)
@@ -89,24 +104,26 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         // generate a new printing
         return reportType != null
                 && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
-            ? print(invoice, reportType)
-            : printAndSave(invoice, reportType);
+            ? print(invoice, reportType, format, locale)
+            : printAndSave(invoice, reportType, format, locale);
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
       // don't save
-      return print(invoice, reportType);
+      return print(invoice, reportType, format, locale);
     }
   }
 
-  public File print(Invoice invoice, Integer reportType) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(invoice, reportType);
+  public File print(Invoice invoice, Integer reportType, String format, String locale)
+      throws AxelorException {
+    ReportSettings reportSettings = prepareReportSettings(invoice, reportType, format, locale);
     return reportSettings.generate().getFile();
   }
 
-  public File printAndSave(Invoice invoice, Integer reportType) throws AxelorException {
+  public File printAndSave(Invoice invoice, Integer reportType, String format, String locale)
+      throws AxelorException {
 
-    ReportSettings reportSettings = prepareReportSettings(invoice, reportType);
+    ReportSettings reportSettings = prepareReportSettings(invoice, reportType, format, locale);
     MetaFile metaFile;
 
     reportSettings.toAttach(invoice);
@@ -119,7 +136,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       return MetaFiles.getPath(metaFile).toFile();
     } catch (IOException e) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_TECHNICAL,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.INVOICE_PRINTING_IO_ERROR) + " " + e.getLocalizedMessage());
     }
   }
@@ -142,7 +159,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         new ThrowConsumer<Invoice>() {
           @Override
           public void accept(Invoice invoice) throws Exception {
-            printedInvoices.add(printCopiesToFile(invoice, false, null));
+            printedInvoices.add(
+                printCopiesToFile(invoice, false, null, ReportSettings.FORMAT_PDF, null));
           }
         });
 
@@ -164,8 +182,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   }
 
   @Override
-  public ReportSettings prepareReportSettings(Invoice invoice, Integer reportType)
-      throws AxelorException {
+  public ReportSettings prepareReportSettings(
+      Invoice invoice, Integer reportType, String format, String locale) throws AxelorException {
 
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
@@ -175,7 +193,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               invoice.getInvoiceId()),
           invoice);
     }
-    String locale = ReportSettings.getPrintingLocale(invoice.getPartner());
 
     String title = I18n.get("Invoice");
     if (invoice.getInvoiceId() != null) {
@@ -185,10 +202,29 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
 
+    if (Strings.isNullOrEmpty(locale)) {
+      String userLanguageCode = AuthUtils.getUser().getLanguage();
+      String companyLanguageCode =
+          invoice.getCompany().getLanguage() != null
+              ? invoice.getCompany().getLanguage().getCode()
+              : userLanguageCode;
+      String partnerLanguageCode =
+          invoice.getPartner().getLanguage() != null
+              ? invoice.getPartner().getLanguage().getCode()
+              : userLanguageCode;
+      locale =
+          accountConfigRepo
+                  .findByCompany(invoice.getCompany())
+                  .getIsPrintInvoicesInCompanyLanguage()
+              ? companyLanguageCode
+              : partnerLanguageCode;
+    }
+
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
-        .addParam("ReportType", reportType == null ? 0 : reportType);
+        .addParam("ReportType", reportType == null ? 0 : reportType)
+        .addFormat(format);
   }
 
   /**

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
@@ -14,7 +14,7 @@
     <integer name="titleSelect" title="Civility" selection="partner.title.type.select" massUpdate="true"/>
     <string name="name" title="Name/Company Name" required="true" index="false"/>
     <string name="firstName" title="First Name"/>
-    <string name="jobTitle" title="Function"/>
+    <many-to-one name="jobTitleFunction" title="Function" ref="com.axelor.apps.base.db.Function"/>
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo" index="false"/>
     <boolean name="isCustomer" title="Customer"/>
     <boolean name="isProspect" title="Prospect"/>
@@ -51,6 +51,8 @@
 
     <many-to-one name="salePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Sale price lists"/>
     <many-to-one name="purchasePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Purchase price lists"/>
+	<decimal name="paymentDelay" title="Payment delay (Average)" massUpdate="true" />
+   
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
 	
@@ -87,6 +89,9 @@
 	<string name="saleOrderComments" title="Description to display on sale order" large="true"/>
 	<string name="purchaseOrderComments" title="Description to display on purchase order" large="true"/>
 	<string name="deliveryComments" title="Description to display on delivery" large="true"/>
+	<string name="pickingOrderComments" title="Description to display on picking order" large="true"/>
+	
+	<string name="proformaComments" title="Description to display on proforma" large="true"/>
 
 	<finder-method name="findByUser" using="user"/>
 

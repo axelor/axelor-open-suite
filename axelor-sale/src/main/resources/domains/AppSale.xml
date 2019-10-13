@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -17,6 +17,8 @@
         <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
 		<boolean name="enablePackManagement" title="Pack Management"/>
+		<boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
+
 		<track>
 			<field name="manageSaleOrderVersion" on="UPDATE"/>
 			<field name="printingOnSOFinalization" on="UPDATE"/>

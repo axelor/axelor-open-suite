@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
-import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -39,6 +38,7 @@ import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -357,14 +357,14 @@ public class CostSheetServiceImpl implements CostSheetService {
 
           int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-          if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN
-              || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+          if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
+              || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
             this._computeHumanResourceCost(
                 workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine);
           }
-          if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
-              || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+          if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+              || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
             this._computeMachineCost(
                 prodProcessLine, producedQty, pieceUnit, bomLevel, parentCostSheetLine);
@@ -438,7 +438,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     int costType = workCenter.getCostTypeSelect();
 
-    if (costType == IWorkCenter.COST_PER_CYCLE) {
+    if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
@@ -449,7 +449,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           workCenter.getCostAmount(),
           cycleUnit);
 
-    } else if (costType == IWorkCenter.COST_PER_HOUR) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
 
       BigDecimal qty =
           new BigDecimal(prodProcessLine.getDurationPerCycle())
@@ -470,7 +470,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           costPrice,
           hourUnit);
 
-    } else if (costType == IWorkCenter.COST_PER_PIECE) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
 
       BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
 
@@ -745,8 +745,8 @@ public class CostSheetServiceImpl implements CostSheetService {
         continue;
       }
       int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-      if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN
-          || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+      if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
+          || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
         this.computeRealHumanResourceCost(
             operationOrder,
@@ -755,8 +755,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             parentCostSheetLine,
             previousCostSheetDate);
       }
-      if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
-          || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+      if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+          || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
         this.computeRealMachineCost(
             operationOrder,
@@ -869,7 +869,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       LocalDate previousCostSheetDate) {
     int costType = workCenter.getCostTypeSelect();
 
-    if (costType == IWorkCenter.COST_PER_CYCLE) {
+    if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           operationOrder.getPriority(),
@@ -878,7 +878,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           this.getNbCycle(producedQty, workCenter.getMaxCapacityPerCycle()),
           workCenter.getCostAmount(),
           cycleUnit);
-    } else if (costType == IWorkCenter.COST_PER_HOUR) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
       BigDecimal qty = BigDecimal.ZERO;
 
       if (workCenter.getIsRevaluationAtActualPrices()) {
@@ -925,7 +925,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           qty,
           costPrice,
           hourUnit);
-    } else if (costType == IWorkCenter.COST_PER_PIECE) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
 
       BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
       costSheetLineService.createWorkCenterMachineCostSheetLine(

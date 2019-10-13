@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Company" lang="java" cachable="true">
+  <entity name="Company" lang="java" cacheable="true">
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
     <many-to-one name="address" ref="Address" title="Address"/>  <!-- A supprimer si Partner sur company  -->  
@@ -18,6 +18,8 @@
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
 
    	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+   	<decimal name="customerPaymentDelay" title="Customers payment delay (Average in days)"/>
+	<decimal name="supplierPaymentDelay" title="Suppliers payment delay (Average in days)"/>
 
 	<!--  Onglet Bank Details -->
 	<many-to-one name="defaultBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Account"/>
@@ -32,7 +34,10 @@
     
    	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" />
     <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning"/>
+    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
 
+    <integer name="width" title="Width" min="0"/>
+    <integer name="height" title="Height" help="Maximum height should be 60 px." min="0" max="60"/>
   </entity>
   
 </domain-models>

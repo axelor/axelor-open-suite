@@ -83,35 +83,11 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     Product product = productRepository.find(productId);
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
-
-    if (stockLocationId != 0L) {
-      List<StockLocation> stockLocationList =
-          stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
-      if (!stockLocationList.isEmpty()) {
-        BigDecimal consumeManufOrderQty = BigDecimal.ZERO;
-        BigDecimal buildingQty = BigDecimal.ZERO;
-        BigDecimal availableQty =
-            (BigDecimal) map.getOrDefault("$availableQty", BigDecimal.ZERO.setScale(2));
-
-        for (StockLocation sl : stockLocationList) {
-          consumeManufOrderQty =
-              consumeManufOrderQty.add(this.getConsumeManufOrderQty(product, company, sl));
-          buildingQty = buildingQty.add(this.getBuildingQty(product, company, sl));
-        }
-        map.put("$consumeManufOrderQty", consumeManufOrderQty.setScale(2));
-        map.put("$buildingQty", buildingQty.setScale(2));
-        map.put(
-            "$missingManufOrderQty",
-            BigDecimal.ZERO.max(consumeManufOrderQty.subtract(availableQty)).setScale(2));
-        return map;
-      }
-    }
-
     BigDecimal consumeManufOrderQty =
-        this.getConsumeManufOrderQty(product, company, null).setScale(2);
+        this.getConsumeManufOrderQty(product, company, stockLocation).setScale(2);
     BigDecimal availableQty =
         (BigDecimal) map.getOrDefault("$availableQty", BigDecimal.ZERO.setScale(2));
-    map.put("$buildingQty", this.getBuildingQty(product, company, null).setScale(2));
+    map.put("$buildingQty", this.getBuildingQty(product, company, stockLocation).setScale(2));
     map.put("$consumeManufOrderQty", consumeManufOrderQty);
     map.put(
         "$missingManufOrderQty",
@@ -142,7 +118,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
 
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        BigDecimal productBuildingQty = stockMoveLine.getQty();
+        BigDecimal productBuildingQty = stockMoveLine.getRealQty();
         unitConversionService.convert(
             stockMoveLine.getUnit(),
             unitConversion,
@@ -177,7 +153,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     if (!stockMoveLineList.isEmpty()) {
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        BigDecimal productConsumeManufOrderQty = stockMoveLine.getQty();
+        BigDecimal productConsumeManufOrderQty = stockMoveLine.getRealQty();
         unitConversionService.convert(
             stockMoveLine.getUnit(),
             unitConversion,

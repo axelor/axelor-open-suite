@@ -356,23 +356,38 @@ public class OperationOrderServiceImpl implements OperationOrderService {
                     LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
                         .toLocalDate());
             if (dayPlanning != null) {
-              numberOfMinutesPerDay =
-                  Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
-                      .toMinutes();
-              numberOfMinutesPerDay +=
-                  Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo())
-                      .toMinutes();
+              if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null) {
+                numberOfMinutesPerDay =
+                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
+                        .toMinutes();
+              }
+              if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null) {
+                numberOfMinutesPerDay +=
+                    Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo())
+                        .toMinutes();
+              }
+              if (dayPlanning.getMorningFrom() != null
+                  && dayPlanning.getMorningTo() == null
+                  && dayPlanning.getAfternoonFrom() == null
+                  && dayPlanning.getAfternoonTo() != null) {
+                numberOfMinutesPerDay +=
+                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getAfternoonTo())
+                        .toMinutes();
+              }
+
             } else {
               numberOfMinutesPerDay = 0;
             }
           } else {
-            numberOfMinutesPerDay = 60 * 8;
+            numberOfMinutesPerDay = 60 * 24;
           }
           if (numberOfMinutesPerDay != 0) {
+
             BigDecimal percentage =
                 new BigDecimal(numberOfMinutes)
                     .multiply(new BigDecimal(100))
                     .divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
+
             if (map.containsKey(machine)) {
               map.put(machine, map.get(machine).add(percentage));
             } else {

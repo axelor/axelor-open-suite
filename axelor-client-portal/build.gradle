@@ -3,7 +3,7 @@ apply plugin: "com.axelor.app-module"
 apply from: "../version.gradle"
 
 apply {
-	version = absVersion
+	version = openSuiteVersion
 }
 
 axelor {
@@ -14,4 +14,5 @@ axelor {
 dependencies {
 	compile project(":modules:axelor-supplychain")
 	compile project(":modules:axelor-helpdesk")
+	compile project(":modules:axelor-project")
 }

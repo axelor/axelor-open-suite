@@ -353,7 +353,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   @Override
-  public String printReport(ABCAnalysis abcAnalysis) throws AxelorException {
+  public String printReport(ABCAnalysis abcAnalysis, String reportType) throws AxelorException {
     if (abcAnalysis.getStatusSelect() != ABCAnalysisRepository.STATUS_FINISHED) {
       throw new AxelorException(
           abcAnalysis,
@@ -366,6 +366,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     return ReportFactory.createReport(IReport.ABC_ANALYSIS, name)
         .addParam("abcAnalysisId", abcAnalysis.getId())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addFormat(reportType)
         .toAttach(abcAnalysis)
         .generate()
         .getFileLink();

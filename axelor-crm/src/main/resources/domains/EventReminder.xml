@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -9,12 +9,33 @@
 
 	 <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
 	 <integer name="typeSelect" title="Type" selection="crm.event.reminder.type.select" default="1"/>
+	 <integer name="modeSelect" title="Operation mode" selection="crm.event.reminder.mode.select" default="1" required="true"/>
+	 <many-to-one name="user" title="User" column="user_id" ref="com.axelor.auth.db.User" required="true"/>
 	 <integer name="duration" title="Duration"/>
-	 <integer name="durationTypeSelect" title="Duration type" selection="crm.eventReminder.duration.type.select" default = "3"/>
+	 <integer name="durationTypeSelect" title="Duration type" selection="crm.eventReminder.duration.type.select"/>
 	 <integer name="assignToSelect" title="Assign to" selection="crm.eventReminder.assign.to.select" default = "1"/>
 	 <boolean name="isReminded" title="Reminded" default="false"/>
-  	 <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+	 <datetime name="sendingDateT" title="Sending date"/>
+	 <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	  
+	 <extra-code>
+       <![CDATA[
+      		// ASSIGN TO SELECT
+	  		public static final Integer ASSIGN_TO_ME = 1;
+	  		public static final Integer ASSIGN_TO_ALL = 3;
+	  		
+	  		// MODE SELECT
+	  		public static final Integer MODE_BEFORE_DATE = 1;
+	  		public static final Integer MODE_AT_DATE = 2;
+	  		
+	  		// DURATION TYPE SELECT
+	  		public static final int DURATION_TYPE_MINUTES = 1;
+	  		public static final int DURATION_TYPE_HOURS = 2;
+	  		public static final int DURATION_TYPE_DAYS = 3;
+	  		public static final int DURATION_TYPE_WEEKS = 4;
+	   ]]>
+	 </extra-code>
+    
   </entity>
 
 </domain-models>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
+    	<toolbar>
+    		<button name="generateRandomPasswordsBtn" title="Generate random passwords" onClick="action-user-method-open-generate-random-passwords-wizard"/>
+    	</toolbar>
         <field name="name"/>
         <field name="fullName"/>
         <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
@@ -15,7 +18,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode">
+    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company,action-attrs-select-in-step-status-select" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select">
     	<panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1" >
 	    	<panel name="stepStatusPanel" colSpan="12">
 	    		<field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12" readonly="true"/>
@@ -221,6 +224,13 @@
           <field name="transientPassword"/>
         </panel>
 	</form>
+	
+	<form name="generate-random-passwords-wizard" title="Generate random passwords" model="com.axelor.apps.base.db.Wizard">
+		<panel name="mainPanel">
+			<field name="currentUserPassword" title="Your Password" widget="password"/>
+			<button name="generateRandomPasswordsBtn" title="Generate random passwords" readonlyIf="!currentUserPassword" onClick="action-user-method-generate-random-passwords"/>
+		</panel>
+	</form>
 
     <action-attrs name="action-user-attrs-domain-followers">
     	<attribute name="domain" for="followersCalUserSet" expr="eval: &quot; self.id IN 
@@ -248,18 +258,23 @@
         expr="call: com.axelor.apps.base.service.user.UserService:getPasswordPatternDescription()"/>
     </action-attrs>
 
+    <action-attrs name="action-attrs-select-in-step-status-select">
+      <attribute name="selection-in" for="stepStatusSelect" expr="eval: __config__.app.isApp('employee') ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
+    </action-attrs>
+    
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
     </action-record>
 
     <action-record name="action-user-record-step-status-next" model="com.axelor.auth.db.User">
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 1" if="stepStatusSelect != 2 || (stepStatusSelect == 2 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
+        <field name="blocked" expr="false" if="stepStatusSelect == 4"/>
     </action-record>
 
     <action-record name="action-user-record-step-status-previous" model="com.axelor.auth.db.User">
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 2" if="stepStatusSelect == 4 &amp;&amp; (partner?.isCustomer || partner?.isEmployee || partner?.isSupplier)"/>
-    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 1" if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 2" if="stepStatusSelect == 4 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
+    	<field name="stepStatusSelect" expr="eval: stepStatusSelect - 1" if="stepStatusSelect != 4 || (stepStatusSelect == 4 &amp;&amp; (!partner?.isCustomer &amp;&amp; !partner?.isEmployee &amp;&amp; !partner?.isSupplier) &amp;&amp; __config__.app.isApp('employee'))"/>
     </action-record>
 
     <action-validate name="action-user-check-company">
@@ -306,6 +321,14 @@
         <check error="A user with this login already exists." field="code"
             if="code &amp;&amp; ![null, id].contains(__repo__(User).findByCode(code)?.id)"/>
     </action-condition>
+    
+    <action-method name="action-user-method-open-generate-random-passwords-wizard">
+    	<call class="com.axelor.apps.base.web.UserController" method="openGenerateRandomPasswordsWizard"/>
+    </action-method>
+    
+    <action-method name="action-user-method-generate-random-passwords">
+    	<call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
+    </action-method>
     
     <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
     	<filter title="Active users">

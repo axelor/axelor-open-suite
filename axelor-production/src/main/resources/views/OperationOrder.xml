@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
     eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machineWorkCenter.machine" mode="week"
@@ -97,7 +97,6 @@
 				<field name="plannedStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true" x-big="true"/>
-				<field name="isPinned" />
 			</panel>
 			<panel name="realDatesPanel" title="Real dates" colSpan="6">
 				<field name="realStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>

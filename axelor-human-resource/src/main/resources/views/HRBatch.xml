@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
@@ -9,7 +9,7 @@
 		<field name="actionSelect"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="description"/>
-  </grid>
+    </grid>
  
 	<form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch" width="large" onNew="action-hr-batch-record-default,action-hr-batch-attrs-employee-set-domain" onLoad="action-hr-batch-attrs-employee-set-domain">
 	  	<panel name="mainPanel">
@@ -69,6 +69,12 @@
             	<field name="employmentContractExportTypeSelect" colSpan="4"/>
             	<spacer name="employmentContractExportSpacer" colSpan="8"/>
             	<button name="employmentContractExportBatchBtn" readonlyIf="employmentContractExportTypeSelect == null" title="Employment contract export batch" onClick="save,action-hrbatch-method-hr-batch" colSpan="4"/>
+            </panel>
+            
+            <panel title="Email reminder for timesheets" hidden="true" showIf="actionSelect == 7">
+                <field name="daysBeforeReminder" />
+                <field name="template" widget="SuggestBox" form-view="template-form" grid-view="template-grid" />
+                <button name="emailReminderForTimesheetsBatchBtn" title="Email reminder for timesheet filling batch" onClick="save, action-hrbatch-method-hr-batch" />
             </panel>
 
 			<panel name="informationsPanel" title="Information">

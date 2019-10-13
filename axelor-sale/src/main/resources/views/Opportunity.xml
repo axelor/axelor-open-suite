@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<action-group name="action-sale-group-generate-sale-order">
 		<action name="action-sale-validate-create-client" if="partner == null"/>
@@ -11,7 +11,8 @@
 	</action-group>
 	
 	<action-validate name="action-sale-validate-create-client">
-		<alert message="No client selected, a new one will be created from the lead, do you agree?"/>
+		<alert message="No client selected, a new one will be created from the lead, do you agree?" if="lead"/>
+		<error message="Please select a customer to be able to convert opportunity into quotation." if="!lead"/>
 	</action-validate>
 	
 	<action-method name="action-sale-method-create-client">

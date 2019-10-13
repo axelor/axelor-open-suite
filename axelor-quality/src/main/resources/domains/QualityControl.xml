@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 	
@@ -22,6 +22,18 @@
 	    <many-to-one name="customerSignature" title="Customer signature" ref="com.axelor.meta.db.MetaFile"/>
 	    <string name="name" title="Name"/>
 	    <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings" title="Printing settings"/>
+
+	    <extra-code><![CDATA[
+
+	    //STATUS SELECT
+	    public static final int STATUS_DRAFT = 1;
+	    public static final int STATUS_CANCELED = 2;
+	    public static final int STATUS_PLANNED = 3;
+	    public static final int STATUS_IN_PROGRESS = 4;
+	    public static final int STATUS_STANDBY = 5;
+	    public static final int STATUS_FINISHED = 6;
+
+	    ]]></extra-code>
 	</entity>
   
 </domain-models>

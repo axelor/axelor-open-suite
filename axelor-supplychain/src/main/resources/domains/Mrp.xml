@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
  
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
  
@@ -16,8 +16,12 @@
       <datetime name="startDateTime" title="Calculation Start Date"/>
       <datetime name="endDateTime" title="Calculation End Date"/>
       <string name="mrpSeq" title="MRP number" readonly="true"/>
+      <boolean name="displayProductWithoutProposal" title="Display product without proposal" default="false"/>
       <integer name="mrpTypeSelect" title="MRP Type" selection="supplychain.mrp.mrp.type.select"/>
-      
+
+      <boolean name="browseStockLocation" title="Browse stock location's level" />
+
+
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -28,7 +32,7 @@
 	   	// MRP TYPE SELECT
 		public static final int MRP_TYPE_MRP = 1;
 		public static final int MRP_TYPE_MPS = 2;
-	
+
 	]]></extra-code>
       
   </entity>

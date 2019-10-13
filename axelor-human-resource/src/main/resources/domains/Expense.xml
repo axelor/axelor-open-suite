@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Expense" cachable="true">
+  <entity name="Expense" cacheable="true">
 
       <string name="expenseSeq"  title="Expense N°" readonly="true"/>
 
@@ -43,6 +43,7 @@
   	  <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder" readonly="true" title="Bank Order"/>
   	  <decimal name="paymentAmount" title="Payment amount" readonly="true" />
   	  <integer name="paymentStatusSelect" title="Payment Status" selection="invoice.payment.status.select" readonly="true" default="0"/>
+      <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move"/>
 
       <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

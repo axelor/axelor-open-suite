@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
-  <grid name="partner-stock-settings-grid" title="Partner stock settings" editable="true" model="com.axelor.apps.stock.db.PartnerStockSettings">
+  <grid name="partner-stock-settings-grid" title="Partner stock settings" editable="true" model="com.axelor.apps.stock.db.PartnerStockSettings" onNew="action-partner-stock-settings-record-set-default-company">
     <field name="company" form-view="company-form" grid-view="company-grid" onChange="action-partner-stock-settings-group-company-onchange"
       canEdit="false" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="defaultStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"
@@ -20,7 +20,7 @@
 
     <form name="partner-stock-settings-form"
           title="Partner stock settings"
-          model="com.axelor.apps.stock.db.PartnerStockSettings">
+          model="com.axelor.apps.stock.db.PartnerStockSettings" onNew="action-partner-stock-settings-record-set-default-company">
         <panel name="mainPanel">
             <field name="company" form-view="company-form"
                    grid-view="company-grid" onChange="action-partner-stock-settings-group-company-onchange"/>
@@ -46,9 +46,20 @@
         </panel>
     </form>
 
-    <action-attrs name="action-partner-default-stock-location-form-domain"
-                  model="com.axelor.apps.stock.db.PartnerStockSettings">
-        <attribute for="defaultStockLocation" name="domain" expr="eval: &quot; self.company = :company AND (self.typeSelect = 1 OR (self.typeSelect = 2 AND self.partner.id = ${__parent__?.id})) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) &quot;"/>
+    <action-attrs name="action-partner-default-stock-location-form-domain" model="com.axelor.apps.stock.db.PartnerStockSettings">
+    	
+    	<attribute for="defaultStockLocation" name="domain"  if="!__parent__.isSubcontractor" 
+    		expr="eval: company == null ? &quot; (self.typeSelect = 1 OR self.typeSelect = 2) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) &quot;
+    		: &quot; self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) &quot;"/>
+		          
+	<attribute for="defaultStockLocation" name="domain"  if="__parent__.isSubcontractor &amp;&amp; !__parent__.isSupplier"
+          	expr="eval: company == null ? &quot; self.usableOnProduction = true AND self.isOutsourcingLocation = true &quot;
+		: &quot; self.company = :company AND self.usableOnProduction = true AND self.isOutsourcingLocation = true &quot;"/>
+          	
+	<attribute for="defaultStockLocation" name="domain"  if="__parent__.isSubcontractor &amp;&amp; __parent__.isSupplier"
+          	expr="eval: company == null ? &quot; self.usableOnProduction = true OR self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true &quot;
+          	: &quot; self.company = :company AND self.usableOnProduction = true OR self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true &quot;"/>
+
     </action-attrs>
     
     <action-group name="action-partner-stock-settings-group-company-onchange">
@@ -69,6 +80,10 @@
     	<field name="realStockMoveAutomaticMail" expr="eval: $stockConfig?.realStockMoveAutomaticMail" if="$stockConfig!=null"/>
     	<field name="realStockMoveMessageTemplate" expr="eval: null" if="$stockConfig==null"/>
     	<field name="realStockMoveMessageTemplate" expr="eval: $stockConfig?.realStockMoveMessageTemplate" if="$stockConfig!=null"/>
+    </action-record>
+
+    <action-record name="action-partner-stock-settings-record-set-default-company" model="com.axelor.apps.stock.db.PartnerStockSettings">
+		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="!(__config__.app.getApp('base').getEnableMultiCompany())"/>
     </action-record>
 
 </object-views>

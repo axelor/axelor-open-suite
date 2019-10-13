@@ -430,7 +430,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(stockConfig);
+        stockConfigService.getProductionVirtualStockLocation(stockConfig, false);
     StockLocation wasteStockLocation = stockConfigService.getWasteStockLocation(stockConfig);
 
     wasteStockMove =
@@ -474,6 +474,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
     updateRealQty(manufOrder, manufOrder.getQty());
+    LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
+    manufOrderWorkflowService.updatePlannedDates(
+        manufOrder,
+        plannedStartDateT != null
+            ? plannedStartDateT
+            : appProductionService.getTodayDateTime().toLocalDateTime());
 
     manufOrderRepo.save(manufOrder);
   }

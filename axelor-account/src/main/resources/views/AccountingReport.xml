@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 <!--     ACCOUNTING REPORT -->
     
@@ -56,8 +56,12 @@
 			<panel name="printingInformationsPanel" title="Printing information" hideIf="!typeSelect || [16,17].indexOf(typeSelect) != -1">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13,15,16,17].indexOf(typeSelect) != -1"	onChange="action-accounting-report-record-global" />
 				<field name="globalByDate" hideIf="!typeSelect || [3,4,5,10,11,12,13,14,15,16,17].indexOf(typeSelect) != -1" onChange="action-accounting-report-record-global-by-date" />
-				<field name="globalByPartner" hideIf="typeSelect != 3" onChange="action-accounting-report-record-global-by-partner" />
+				<field name="globalByPartner" hideIf="typeSelect != 3 &amp;&amp; typeSelect != 7" onChange="action-accounting-report-record-global-by-partner" />
 				<field name="detailed" hideIf="typeSelect != 4" onChange="action-accounting-report-record-detailed" />
+				<field name="displayOnlyNotCompletelyLetteredMoveLines" hideIf="typeSelect != 7"/>
+				<field name="displayCodeAccountOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayNameAccountOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayMoveSequenceOnPrinting" showIf="typeSelect == 1"/>
 			</panel>
 		</panel-tabs>
 		

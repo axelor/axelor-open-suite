@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<grid name="business-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
@@ -45,9 +45,9 @@
 		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
 	
-	<action-record name="action-project-record-set-invoicing-type" model="com.axelor.apps.project.db.Project">
-		<field name="invoicingType" expr="eval: null"/>
-	</action-record>
+	<action-attrs name="action-project-attrs-set-invoicing-sequence">
+		<attribute name="value" for="invoicingSequenceSelect" expr="eval: null"/>
+	</action-attrs>
 	
 	<action-method name="action-project-method-get-partner-data">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="getPartnerData"/>

@@ -31,7 +31,6 @@ import com.axelor.meta.schema.actions.Action;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Resource;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -39,15 +38,14 @@ import java.util.Map;
 
 public class TemplateRuleService {
 
-  @Inject private TemplateBaseService ts;
-
   public Map<String, Object> getContext(TemplateRule templateRule, Model bean) {
     Template template = this.getTemplate(bean, templateRule);
 
     if (template == null) {
       return null;
     }
-    return ts.getContext(template, bean);
+    //    return ts.getContext(template, bean);
+    return null;
   }
 
   public Template getTemplate(Model bean, TemplateRule templateRule) {

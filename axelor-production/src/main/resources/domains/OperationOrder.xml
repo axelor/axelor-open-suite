@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -39,7 +39,6 @@
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in" mappedBy="inOperationOrder"/>
     <long name="plannedDuration" title="Planned duration (hh:mm:ss)"/>
     <long name="realDuration" title="Real duration (hh:mm:ss)"/>
-    <boolean name="isPinned" title="Is pinned" />
     
     <boolean name="isWithDifference" >
 	    <![CDATA[

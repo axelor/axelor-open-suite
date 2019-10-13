@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<!--  Partner Dashboard  -->
 	
@@ -14,6 +14,7 @@
 		<dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/> 
 		<dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
 		<dashlet height="350" action="dashlet.my.prospects" canSearch="true"/>
+		<dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"/>
   	</dashboard>
   	
   	<dashboard title="Contact Dashboard" name="base.contact.dashboard"  >
@@ -74,6 +75,12 @@
 		  <view type="form" name="partner-form"/>
 		  <domain>self.user = :__user__ AND self.isProspect=true AND :activeCompany MEMBER OF self.companySet</domain>
 		  <context name="activeCompany" expr="eval:__user__.activeCompany != null ? __user__.activeCompany : null"/>  
+	</action-view>
+	
+	<action-view name="dashlet.customers.with.first.sale.order" model="com.axelor.apps.base.db.Partner"
+				title="New customers with first sale order">
+		<view type="chart" name="chart.customers.with.first.sale.order" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>				
 	</action-view>
   	
 </object-views>

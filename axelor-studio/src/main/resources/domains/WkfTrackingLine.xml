@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="WkfTrackingLine" cachable="true">
+  <entity name="WkfTrackingLine" cacheable="true">
       <![CDATA[
 	    This object stores the sub details of the {@link WkfTracking} class.
 	    The details like status and time spent on particular status. 

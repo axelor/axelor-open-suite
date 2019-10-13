@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
 	<module name="base" package="com.axelor.apps.base.db"/>
   
@@ -13,6 +13,14 @@ xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml
     <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true" />
     <one-to-many name="importHistoryList" ref="ImportHistory" mappedBy="importConfiguration" title="Historical"/>
     <string name="description" large="true" title="Description" />
+    
+    <extra-code><![CDATA[
+    	
+    	//TYPE SELECT
+		public static final String TYPE_CSV = "csv";
+		public static final String TYPE_XML = "xml";
+
+	]]></extra-code>
     
   </entity>
 

@@ -35,7 +35,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -49,8 +48,6 @@ import org.slf4j.LoggerFactory;
 public class LeadController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject LeadRepository leadRepo;
 
   /**
    * Method to generate Lead as a Pdf
@@ -170,7 +167,8 @@ public class LeadController {
   public void loseLead(ActionRequest request, ActionResponse response) {
     try {
       Lead lead = request.getContext().asType(Lead.class);
-      Beans.get(LeadService.class).loseLead(leadRepo.find(lead.getId()), lead.getLostReason());
+      Beans.get(LeadService.class)
+          .loseLead(Beans.get(LeadRepository.class).find(lead.getId()), lead.getLostReason());
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

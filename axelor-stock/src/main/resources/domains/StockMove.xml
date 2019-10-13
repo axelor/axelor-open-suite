@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -81,9 +81,8 @@
 
     <many-to-one name="stockCorrectionReason" ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Correction Reason"/>
 
-	<boolean name="pickingIsEdited" title="Outgoing Stock Move is edited"/>
-	<date name="pickingEditDate" title="Outgoing Stock Move edit date"/>
-
+	<boolean name="pickingIsEdited" title="Picking order is edited"/>
+	<date name="pickingEditDate" title="Picking order edit date"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
     
     <string name="note" title="Notes" large="true"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
   <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="name"/>
@@ -15,7 +15,7 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
           onNew="action-prod-process-group-on-new"
-          onLoad="action-prod-process-record-count-number-of-phases"
+          onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-hide-outsourcing"
           onSave="action-prod-process-method-validate-prod-process" width="large">
 
     	<toolbar>
@@ -49,12 +49,12 @@
 			<panel-related title="Phases" name="prodProcessLineListPanel" field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			
 			<panel title="Details" name="detailsPanel">
-				<field name="stockLocation" canEdit="false" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company"/>
-				<field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
+				<field name="stockLocation" canEdit="false" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
+				<field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
 				<field name="launchQty"/>
 				<field name="stockMoveRealizeOrderSelect"/>
 				<field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro" readonlyIf="isEnabledForAllProducts"/>
-				<field name="outsourcing" colSpan="4" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+				<field name="outsourcing" colSpan="4" onChange="action-prod-process-method-change-prodprocesslist-outsourcing" if="__config__.app.getApp('production').getManageOutsourcing()"/>
 				<field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
 			</panel>
 			
@@ -72,6 +72,10 @@
     <action name="action-prod-process-record-set-default-company"/>
     <action name="action-prod-process-record-set-realize-order-select"/>
   </action-group>
+    
+    <action-attrs name="action-prod-process-attrs-hide-outsourcing">
+    	<attribute name="hidden" for="prodProcessLineList.outsourcing" expr="eval:!__this__.outsourcing"/>
+    </action-attrs>
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"

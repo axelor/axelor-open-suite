@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate" title="Project template">
 		<field name="name"/>
@@ -31,7 +31,7 @@
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
-			<panel title="Task template" name="taskPanel" showIf="isProject">
+			<panel title="Task template" name="taskPanel">
 				<field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
 			</panel>
 
@@ -58,13 +58,12 @@
 				<field name="projectCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
 				<field name="imputable" colSpan="4" widget="boolean-switch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
-				<field name="excludePlanning" if-module="axelor-business-project" showIf="isProject" />
+				<field name="excludePlanning" if-module="axelor-business-project"/>
 			</panel>
 		</panel-tabs>
 
 		<panel name="characteristicsPanel" title="Characteristics" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="12" sidebar="true" canCollapse="true">
-			<field name="isProject" colSpan="6" widget="boolean-switch" />
-			<field name="isBusinessProject" colSpan="6" widget="boolean-switch" />
+			<field name="isBusinessProject" colSpan="6" widget="boolean-switch"/>
 			<field name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 		</panel>
 

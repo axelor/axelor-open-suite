@@ -63,8 +63,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +134,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
     invoice.setSaleOrder(saleOrder);
     invoice.setNote(saleOrder.getInvoiceComments());
+    invoice.setProformaComments(saleOrder.getProformaComments());
 
     // fill default advance payment invoice
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -762,7 +765,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         .fetch()
         .forEach(
             stockMove -> {
-              stockMove.setInvoice(newInvoice);
+              if (stockMove.getInvoiceSet() != null) {
+                stockMove.getInvoiceSet().add(newInvoice);
+              } else {
+                Set<Invoice> invoiceSet = new HashSet<>();
+                invoiceSet.add(newInvoice);
+                stockMove.setInvoiceSet(invoiceSet);
+              }
               stockMoveRepository.save(stockMove);
             });
   }

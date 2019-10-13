@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -411,7 +412,9 @@ public class DoubtfulCustomerService {
             + "AND m.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"
             + date.toString()
             + "' AND ml.account.id != "
-            + doubtfulCustomerAccount.getId();
+            + doubtfulCustomerAccount.getId()
+            + " AND m.invoice.operationTypeSelect = "
+            + InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
 
     log.debug("Requete : {} ", request);
 
@@ -457,10 +460,12 @@ public class DoubtfulCustomerService {
                 .filter(
                     "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                         + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3",
+                        + "AND self.account != ?3 "
+                        + "AND self.invoiceReject.operationTypeSelect = ?4",
                     company,
                     date,
-                    doubtfulCustomerAccount)
+                    doubtfulCustomerAccount,
+                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .fetch();
         break;
 
@@ -476,10 +481,12 @@ public class DoubtfulCustomerService {
                 .filter(
                     "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
                         + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3",
+                        + "AND self.account != ?3 "
+                        + "AND self.invoiceReject.operationTypeSelect = ?4",
                     company,
                     date,
-                    doubtfulCustomerAccount)
+                    doubtfulCustomerAccount,
+                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .fetch();
         break;
 

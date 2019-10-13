@@ -161,7 +161,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       childTask.setToInvoice(true);
       childTask.setTeamTaskInvoicing(true);
       childTask.setSaleOrderLine(orderLine);
-      childTask.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+      childTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
     }
   }
 }

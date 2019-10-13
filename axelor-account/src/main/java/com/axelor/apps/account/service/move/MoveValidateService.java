@@ -209,6 +209,13 @@ public class MoveValidateService {
 
     this.checkPreconditions(move);
 
+    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED
+        && !move.getAutoYearClosureMove()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_VALIDATION_FISCAL_PERIOD_CLOSED));
+    }
+
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();
 

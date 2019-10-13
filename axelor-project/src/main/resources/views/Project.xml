@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
@@ -70,7 +70,7 @@
 						</viewer>
 				</field>
 			</panel>
-			
+
 			<panel name="informationPanel" colSpan="10">
 				<field name="fullName" showTitle="false" colSpan="12"
 					css="label-bold bold large">
@@ -167,8 +167,8 @@
 		                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
 		       			]]></viewer>
 					</field>
-					
-					<button name="planPlanningBtn" title="Plan project" css="btn-custom text-left" onClick="save,action-project-view-project-planning-wizard"  hideIf="$popup()" colSpan="3"/>				
+
+					<button name="planPlanningBtn" title="Plan project" css="btn-custom text-left" onClick="save,action-project-view-project-planning-wizard"  hideIf="$popup()" colSpan="3"/>
 					<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3" hideIf="$popup()"/>
 					<button name="addProjectPlanningTimeLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-add-new,save" />
 					<button name="removeProjectPlanningTimeLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-remove,save" />
@@ -178,14 +178,14 @@
 					<button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 					<button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
 					<panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning" action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
-					
+
 					<spacer name="timeSpentSpacer" colSpan="4"/>
-					
+
 					<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-spent-time" colSpan="3" hideIf="$popup()"/>
 					<button name="addProjectPlanningTimeSpentLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-spent-add-new,save" />
 					<button name="removeProjectPlanningTimeSpentLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-spent-remove,save" />
 					<field name="$projectPlanningTimeSpentSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time Spent"
-					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" 
+					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
 					grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
 					<button name="removeSelectedPlanningTimeSpentBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time-spent"/>
 					<button name="cancelRemovePlanningTimeSpentBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-spent-cancel-remove" />
@@ -284,11 +284,12 @@
 			</panel>
 			<panel title="Invoicing" name="invoicingPanel"  showIf="isBusinessProject"
 				 if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-				<field name="teamTaskInvoicing" colSpan="4" onChange="action-project-record-set-invoicing-type"/>
-				<field name="isInvoicingExpenses" colSpan="4" />
-				<field name="isInvoicingPurchases" colSpan="4" />
-				<field name="invoicingType" showIf="teamTaskInvoicing" colSpan="6"/>
-				<spacer name="invoicingTypeSpacer" colSpan="6"/>
+				<field name="isInvoiceable" colSpan="3" onChange="action-project-attrs-set-invoicing-sequence"/>
+				<field name="isInvoicingTimesheet" colSpan="3"/>
+				<field name="isInvoicingExpenses" colSpan="3" />
+				<field name="isInvoicingPurchases" colSpan="3" />
+				<field name="invoicingSequenceSelect" showIf="isInvoiceable" requiredIf="isInvoiceable" selection-in="[1,2]" colSpan="6"/>
+				<spacer name="invoicingSequenceSelectSpacer" colSpan="6"/>
 				<button name="showInvoicingProjectsBtn" title="Create invoicing project"
 						css="btn-custom" icon="fa-file-text-o"
 						onClick="save,action-project-view-show-invoicing-projects"/>
@@ -389,9 +390,9 @@
 					name="isProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
-				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 			</panel>
 			<panel if-module="axelor-business-project" name="project"
 				showIf="isProject" colSpan="12">
@@ -435,7 +436,7 @@
 		</panel>
 	</form>
 	
-	<kanban columnBy="statusSelect" sequenceBy="statusSelect" limit="10"
+	<kanban columnBy="statusSelect" sequenceBy="orderByState" limit="10"
 	 name="project-kanban" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
 		<field name="description"/>
@@ -753,10 +754,6 @@
 		<field name="clientPartner" expr="eval: _parent?.clientPartner"/>
 	</action-record>
 	
-	<action-method name="action-project-method-set-stored-time-spent" model="com.axelor.apps.project.db.Project">
-		<call class="com.axelor.apps.hr.web.project.ProjectController" method="setStoredTimeSpent"/>
-	</action-method>
-	
 	<action-method name="action-method-project-compute-progress">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="computeProgress"/>
 	</action-method>
@@ -814,7 +811,7 @@
 		<view-param name="popup" value="reload"/>
 		<context name="_project" expr="eval:__this__"/>
 	</action-view>
-	
+
 	<action-attrs name="action-business-support-attrs-project-default">
 		<attribute name="hidden" for="project" expr="eval:true" if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
 	</action-attrs>
@@ -848,5 +845,10 @@
 		<view type="form" name="invoice-form"/>
 		<domain>self.contract.project.id = :_id</domain>
 	</action-view>
-	
+
+    <action-view name="dashlet.task" title="Tasks" model="com.axelor.apps.project.db.Project">
+        <view type="grid" name="task-grid" />
+        <view type="form" name="task-form" />
+    </action-view>
+
 </object-views>

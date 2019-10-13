@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -45,12 +45,12 @@
 
         <string name="sOFilterOnStockDetailStatusSelect" title="Status considered to filter a sale order" selection="sale.order.status.select" default="3"/>
 	    <string name="pOFilterOnStockDetailStatusSelect" title="Status considered to filter a purchase order" selection="purchase.purchase.order.status.select" default="3"/>
-    <boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
-<boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
+	    <boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
+	    <boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
+    	<boolean name="manageAdvancePaymentsFromPaymentConditions" title="Manage advance payments from payment conditions" default="false"/>
     
     <track>
-    	<field name="manageInvoicedAmountByLine" on="UPDATE"/>
     	<field name="custStockMoveMgtOnSO" on="UPDATE"/>
     	<field name="customerStockMoveGenerationAuto" on="UPDATE"/>
     	<field name="supplStockMoveMgtOnPO" on="UPDATE"/>

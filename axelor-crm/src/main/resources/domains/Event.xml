@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
@@ -43,9 +43,20 @@
   	<extra-code>
       	<![CDATA[
       		// TYPE SELECT
-	  		public static final Integer TYPE_CALL = 1;
-	  		public static final Integer TYPE_MEETING = 2;
-	  		public static final Integer TYPE_TASK = 3;
+      		public static final int TYPE_EVENT = 0;
+	  		public static final int TYPE_CALL = 1;
+	  		public static final int TYPE_MEETING = 2;
+	  		public static final int TYPE_TASK = 3;
+	  		
+	  		// STATUS SELECT
+	  		public static final int STATUS_PLANNED = 1;
+	  		public static final int STATUS_REALIZED = 2;
+	  		public static final int STATUS_CANCELED = 3;
+	  		public static final int STATUS_NOT_STARTED = 11;
+	  		public static final int STATUS_ON_GOING = 12;
+	  		public static final int STATUS_PENDING = 13;
+	  		public static final int STATUS_FINISHED = 14;
+	  		public static final int STATUS_REPORTED = 15;
 	  ]]>
     </extra-code>
 

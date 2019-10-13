@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 	    <toolbar>
@@ -76,7 +76,7 @@
                         <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
                         <field name="product" colSpan="12"
                                showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
-                               form-view="product-view" grid-view="product-grid"/>
+                               form-view="product-form" grid-view="product-grid"/>
                         <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                                x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
                     </panel>
@@ -89,7 +89,7 @@
                     <panel name="unitPanel" title="Unit">
                         <field name="defUnitAsFormula" colSpan="6" type="boolean"/>
                         <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
-                        form-view="unit-view" grid-view="unit-grid"/>
+                        form-view="unit-form" grid-view="unit-grid"/>
                         <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
                                showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
                     </panel>

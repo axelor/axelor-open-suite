@@ -39,7 +39,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +46,6 @@ import javax.annotation.Nullable;
 
 @Singleton
 public class InvoicePaymentController {
-
-  @Inject private InvoiceRepository invoiceRepo;
 
   public void cancelInvoicePayment(ActionRequest request, ActionResponse response) {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
@@ -67,7 +64,8 @@ public class InvoicePaymentController {
   @SuppressWarnings("unchecked")
   public void filterPaymentMode(ActionRequest request, ActionResponse response) {
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
-    Invoice invoice = invoiceRepo.find(Long.valueOf(partialInvoice.get("id").toString()));
+    Invoice invoice =
+        Beans.get(InvoiceRepository.class).find(Long.valueOf(partialInvoice.get("id").toString()));
     PaymentMode paymentMode = invoice.getPaymentMode();
     if (invoice != null && paymentMode != null) {
       if (paymentMode.getInOutSelect() != null) {
@@ -88,7 +86,8 @@ public class InvoicePaymentController {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
 
-    Invoice invoice = invoiceRepo.find(((Integer) partialInvoice.get("id")).longValue());
+    Invoice invoice =
+        Beans.get(InvoiceRepository.class).find(((Integer) partialInvoice.get("id")).longValue());
     Company company = invoice.getCompany();
     List<BankDetails> bankDetailsList =
         Beans.get(InvoicePaymentToolService.class)
@@ -115,7 +114,8 @@ public class InvoicePaymentController {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
     Map<String, Object> partialInvoice = (Map<String, Object>) request.getContext().get("_invoice");
 
-    Invoice invoice = invoiceRepo.find(((Integer) partialInvoice.get("id")).longValue());
+    Invoice invoice =
+        Beans.get(InvoiceRepository.class).find(((Integer) partialInvoice.get("id")).longValue());
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     Company company = invoice.getCompany();
     List<BankDetails> bankDetailsList =

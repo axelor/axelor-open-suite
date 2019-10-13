@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="stock-move-line-sale-order-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
     	canNew="false" canDelete="false">
         <field name="stockMove.stockMoveSeq" width="120"/>	
         <field name="stockMove.realDate"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+        <field name="qtyInvoiced"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -26,6 +27,7 @@
         <field name="stockMove.stockMoveSeq" /> 
         <field name="stockMove.realDate"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+        <field name="qtyInvoiced"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -45,6 +47,7 @@
         <field name="stockMove.stockMoveSeq" /> 
         <field name="stockMove.realDate"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+        <field name="qtyInvoiced"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>

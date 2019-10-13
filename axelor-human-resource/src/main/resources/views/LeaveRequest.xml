@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="leave-request-grid" title="Leave Requests" model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
 		 <hilite color="danger" if="statusSelect == 4"/>
@@ -60,7 +60,7 @@
                 canNew="false" canEdit="false" canView="false" />
             <field name="requestDate" colSpan="12" width="50%" />
             <field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
-                onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change" form-view="leave-line-form" grid-view="leave-line-grid" />
+                onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-methode-compute-duration" form-view="leave-line-form" grid-view="leave-line-grid" />
             <panel>
                 <field name="leaveLine.quantity" title="Available quantity (acquired)" showIf="statusSelect != 3" colSpan="12" />
                 <field name="quantityBeforeValidation" showIf="statusSelect == 3" colSpan="12" />
@@ -192,7 +192,7 @@
 	<action-attrs name="action-leave-request-attrs-select">
 		<attribute name="hidden" for="injectConsumeSelect" expr="!leaveLine.leaveReason.manageAccumulation" if="leaveLine != null" />
 		<attribute name="readonly" for="injectConsumeSelect" expr="!leaveLine.leaveReason.allowInjection" if="leaveLine != null" />
-		<attribute name="value" for="injectConsumeSelect" if="!leaveLine?.leaveReason.allowInjection" expr="eval: 1"/>
+		<attribute name="value" for="injectConsumeSelect" if="!leaveLine?.leaveReason?.allowInjection" expr="eval: 1"/>
 	</action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-send">

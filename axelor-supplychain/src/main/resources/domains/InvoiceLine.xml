@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -7,6 +7,7 @@
   	
   	<many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" />
   	<many-to-one name="purchaseOrderLine" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line" />
+  	<many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line" />
   	<many-to-one name="outgoingStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Customer delivery"/>
 	<many-to-one name="incomingStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Supplier arrival"/>
   	<many-to-one name="parentLine" ref="com.axelor.apps.account.db.InvoiceLine" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
     <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results" groupBy="product" sortable="false" orderBy="product.code,maturityDate,mrpLineType.typeSelect,mrpLineType.sequence,id">
         <hilite if="isEditedByUser" color="danger" strong="true"/>
@@ -13,6 +13,7 @@
         <field name="cumulativeQty" css="bold"/>
         <field name="product.unit"/>
         <field name="minQty"/>
+        <field name="cumulativeMinQty"/>
         <field name="stockLocation"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
@@ -32,6 +33,7 @@
         	<field name="cumulativeQty" css="bold" readonly="true"/>
         	<field name="product.unit" readonly="true"/>
    	        <field name="minQty" readonly="true"/>
+     	    <field name="cumulativeQty" readonly="true" css="bold"/>
         	<field name="stockLocation" readonly="true"/>
         	<field name="maxLevel" readonly="true"/>
         	<field name="partner" showIf="partner"/>

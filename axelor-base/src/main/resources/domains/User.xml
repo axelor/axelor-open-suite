@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
@@ -34,7 +34,7 @@
    	<string name="language" selection="select.language" massUpdate="true"/>
    	<boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>
    	<boolean name="noHelp" help="Whether to show help messages." massUpdate="true"/>
-   	<boolean name="blocked" default="false" help="Specify whether to block the user for an indefinite period." massUpdate="true"/>
+   	<boolean name="blocked" default="true" help="Specify whether to block the user for an indefinite period." massUpdate="true"/>
     <boolean name="sendEmailUponPasswordChange"/>
     <string name="homeAction" massUpdate="true"/>
     <boolean name="receiveEmails" title="Receive notifications by email" help="Allow notifications to be sent by email" default="true"/>
@@ -44,6 +44,8 @@
     <string name="transientPassword" transient="true"/>
     
     <integer name="stepStatusSelect" selection="base.user.form.step.select" default="0"/>
+
+    <string name="attrs" json="true"/>
 
     <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
 

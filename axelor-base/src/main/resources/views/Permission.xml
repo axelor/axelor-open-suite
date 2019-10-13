@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
    <form name="permission-form" id="base-permission-form" title="Permission" model="com.axelor.auth.db.Permission">
   	   <panel-include view="permission-form" from="axelor-core"/>
@@ -17,15 +17,15 @@
    </form>
 
    <action-view name="action-dashlet-permission-group" title="Group" model="com.axelor.auth.db.Group">
-		<view type="grid" name="base-group-grid"/>
-		<view type="form" name="base-group-form"/>
+		<view type="grid" name="group-grid"/>
+		<view type="form" name="group-form"/>
 		<domain>self.permissions.id = :permission</domain>
   		<context name="permission" expr="eval: id"/>
    </action-view>
 
    <action-view name="action-dashlet-permission-user" title="User" model="com.axelor.auth.db.User">
-		<view type="grid" name="user-grid-base"/>
-		<view type="form" name="user-form-base"/>
+		<view type="grid" name="user-grid"/>
+		<view type="form" name="user-form"/>
 		<domain>self.permissions.id = :permission</domain>
   		<context name="permission" expr="eval: id"/>
    </action-view>

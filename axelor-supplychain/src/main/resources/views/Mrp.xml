@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
    
@@ -29,7 +29,6 @@
 	    		<item name="printListItem" title="List"  action="save,action-method-mrp-print-list" showIf="statusSelect == 2"/>
 	    	</menu>
 	    </menubar>
-	  
 	    <panel name="infoPanel">
 			<field name="mrpSeq" showTitle="false" colSpan="12">
 				<viewer depends="mrpSeq"><![CDATA[
@@ -53,8 +52,11 @@
 	        <field name="createdBy"/>
 	        <field name="mrpTypeSelect" hidden="true"/>
 	        <field name="endDate" colSpan="6" hideIf="mrpTypeSelect == 2"/>
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3" canEdit="false"/>
+	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false"/>
 	        <field name="stockLocation.company"/>
+	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
+	        <field name="browseStockLocation" widget="boolean-switch"/>
+	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
 	        <spacer name="companySpacer"/>
 	        <field name="year" showIf="mrpTypeSelect == 2" domain="self.typeSelect = 3" onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form" grid-view="year-account-grid"/>
 	        <field name="period" showIf="mrpTypeSelect == 2" domain="self.year = :year" form-view="period-form" grid-view="period-grid"/>
@@ -70,7 +72,15 @@
 	    </panel>
         <panel-dashlet name="mrpLinePanel" action="action-mrp-view-mrp-line" colSpan="12" showIf="statusSelect == 2" canSearch="true" height="800"/>
 	 </form>
-	 
+
+
+	 <form name="mrp-generate-proposal-wizard-form" onNew="action-mrp-wizard-attrs-set-default-onnew" model="com.axelor.apps.base.db.Wizard" title="Mrp" >
+		 <panel name="wizardPanel">
+		 	<field name="$consolidateProposalsPerSupplier" title="Consolidate the proposals per supplier" type="boolean" widget="boolean-switch" />
+	 		<button name="generateProposalsBtn" title="Generate all proposals" onClick="action-method-mrp-generate-all-proposal,close"/>
+		 </panel>
+	 </form>
+
 	<action-method name="action-method-mrp-run-calculation">
 	    <call class="com.axelor.apps.supplychain.web.MrpController" method="runCalculation"/>
 	</action-method>
@@ -91,14 +101,31 @@
 	    <view type="grid" name="mrp-line-grid"/>
 	    <view type="form" name="mrp-line-form"/>
 		<view-param name="limit" value="200"/>
-	    <domain>self.mrp.id = :_mrpId</domain>
+		<domain>
+			(self.mrp.displayProductWithoutProposal = true AND self.mrp.id = :_mrpId)
+				OR
+			(self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.mrpLineType.elementSelect not in (:_proposalElementSelect))
+		</domain>
 		<context name="_mrpId" expr="eval: __this__.id"/>
+		<context name="_proposalElementSelect" expr="eval: [__repo__(MrpLineType).ELEMENT_PURCHASE_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL_NEED]"/>
 	</action-view>
+
+	<action-view name="action-mrp-view-generate-proposal-wizard" title="Mrp" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="mrp-generate-proposal-wizard-form"/>
+		<view-param name="popup" value="reload"/>
+	    <view-param name="show-confirm" value="false" />
+	    <view-param name="show-toolbar" value="false" />
+   	  	<view-param name="popup-save" value="false"/>
+	</action-view>
+
+	<action-attrs name="action-mrp-wizard-attrs-set-default-onnew">
+		<attribute name="value" for="$consolidateProposalsPerSupplier" expr="eval:true"/>
+	</action-attrs>
 
 	<action-attrs name="action-attrs-mrp-generate-all-proposals"
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<attribute name="readonly" for="generateAllProposalsBtn"
-			expr="eval: __repo__(MrpLine).all().filter(&quot; self.proposalGenerated is false AND self.mrpLineType.elementSelect in (5,8) &quot;).count() > 0"/>
+			expr="eval: !(__repo__(MrpLine).all().filter(&quot; self.mrp.id= ? AND self.proposalGenerated is false AND self.mrpLineType.elementSelect in (5,8) &quot;,__this__.id).count() > 0)"/>
 	</action-attrs>
 	
 	<action-attrs name="action-mrp-attrs-sale-order-domain">

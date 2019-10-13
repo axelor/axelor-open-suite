@@ -20,13 +20,16 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -35,6 +38,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
 
   @Inject private ProjectRepository projectRepo;
   @Inject private TeamTaskRepository teamTaskaRepo;
+  @Inject private TimesheetLineRepository timesheetLineRepo;
 
   @Override
   public TimesheetLine createTimesheetLine(
@@ -49,12 +53,9 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
         super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 
     if (project != null
-        && ((project.getTeamTaskInvoicing()
-                && project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_TIME_BASED)
+        && (project.getIsInvoicingTimesheet()
             || (project.getParentProject() != null
-                && project.getParentProject().getTeamTaskInvoicing()
-                && project.getParentProject().getInvoicingType()
-                    == ProjectRepository.INVOICING_TYPE_TIME_BASED)))
+                && project.getParentProject().getIsInvoicingTimesheet())))
       timesheetLine.setToInvoice(true);
 
     return timesheetLine;
@@ -76,23 +77,23 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     } else if (teamTask != null) {
       toInvoice =
           teamTask.getTeamTaskInvoicing()
-              ? (teamTask.getInvoicingType() == TeamTaskRepository.INVOICE_TYPE_TIME_SPENT
+              ? (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT
                   ? true
-                  : (teamTask.getInvoicingType() == TeamTaskRepository.INVOICE_TYPE_PACKAGE
+                  : (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE
                       ? false
                       : null))
               : false;
     } else {
-      toInvoice =
-          project.getTeamTaskInvoicing()
-              ? (project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_TIME_BASED
-                  ? true
-                  : (project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_PACKAGE
-                      ? false
-                      : null))
-              : false;
+      toInvoice = project.getIsInvoicingTimesheet() ? true : false;
     }
     timesheetLine.setToInvoice(toInvoice);
     return timesheetLine;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Override
+  public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine) {
+    timesheetLine = getDefaultToInvoice(timesheetLine);
+    return timesheetLineRepo.save(timesheetLine);
   }
 }

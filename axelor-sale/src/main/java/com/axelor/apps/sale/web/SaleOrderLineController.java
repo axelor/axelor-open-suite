@@ -33,7 +33,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -41,17 +40,13 @@ import java.util.Map;
 @Singleton
 public class SaleOrderLineController {
 
-  @Inject private SaleOrderLineService saleOrderLineService;
-
-  @Inject private FiscalPositionService fiscalPositionService;
-
   public void compute(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
 
-    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
 
     try {
       compute(response, saleOrder, saleOrderLine);
@@ -64,8 +59,8 @@ public class SaleOrderLineController {
       throws AxelorException {
 
     Context context = request.getContext();
-
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 
     saleOrderLine.setSaleOrder(saleOrder);
@@ -84,6 +79,7 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 
       Product product = saleOrderLine.getProduct();
@@ -96,8 +92,8 @@ public class SaleOrderLineController {
       try {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
-        response.setValues(saleOrderLine);
         response.setValue("saleSupplySelect", product.getSaleSupplySelect());
+        response.setValues(saleOrderLine);
       } catch (Exception e) {
         resetProductInformation(response, saleOrderLine);
         TraceBackService.trace(response, e);
@@ -110,15 +106,15 @@ public class SaleOrderLineController {
   public void resetProductInformation(ActionResponse response, SaleOrderLine line) {
     Beans.get(SaleOrderLineService.class).resetProductInformation(line);
     response.setValue("saleSupplySelect", null);
-    response.setValues(line);
     response.setValue("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
+    response.setValues(line);
   }
 
   public void getTaxEquiv(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
 
     response.setValue("taxEquiv", null);
 
@@ -129,15 +125,17 @@ public class SaleOrderLineController {
 
     response.setValue(
         "taxEquiv",
-        fiscalPositionService.getTaxEquiv(
-            saleOrder.getClientPartner().getFiscalPosition(), saleOrderLine.getTaxLine().getTax()));
+        Beans.get(FiscalPositionService.class)
+            .getTaxEquiv(
+                saleOrder.getClientPartner().getFiscalPosition(),
+                saleOrderLine.getTaxLine().getTax()));
   }
 
   public void getDiscount(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
-
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
 
     SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
 
@@ -220,7 +218,9 @@ public class SaleOrderLineController {
       BigDecimal inTaxPrice = saleOrderLine.getInTaxPrice();
       TaxLine taxLine = saleOrderLine.getTaxLine();
 
-      response.setValue("price", saleOrderLineService.convertUnitPrice(true, taxLine, inTaxPrice));
+      response.setValue(
+          "price",
+          Beans.get(SaleOrderLineService.class).convertUnitPrice(true, taxLine, inTaxPrice));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -242,7 +242,8 @@ public class SaleOrderLineController {
       TaxLine taxLine = saleOrderLine.getTaxLine();
 
       response.setValue(
-          "inTaxPrice", saleOrderLineService.convertUnitPrice(false, taxLine, exTaxPrice));
+          "inTaxPrice",
+          Beans.get(SaleOrderLineService.class).convertUnitPrice(false, taxLine, exTaxPrice));
     } catch (Exception e) {
       response.setFlash(e.getMessage());
     }
@@ -254,7 +255,7 @@ public class SaleOrderLineController {
 
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
 
-    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
 
     if (saleOrder == null
         || saleOrderLine.getProduct() == null
@@ -291,13 +292,14 @@ public class SaleOrderLineController {
 
     Context context = request.getContext();
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-    saleOrderLineService.checkMultipleQty(saleOrderLine, response);
+    Beans.get(SaleOrderLineService.class).checkMultipleQty(saleOrderLine, response);
   }
 
   private void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
 
-    Map<String, BigDecimal> map = saleOrderLineService.computeValues(saleOrder, orderLine);
+    Map<String, BigDecimal> map =
+        Beans.get(SaleOrderLineService.class).computeValues(saleOrder, orderLine);
 
     map.put("price", orderLine.getPrice());
     map.put("inTaxPrice", orderLine.getInTaxPrice());

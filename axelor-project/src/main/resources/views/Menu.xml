@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<menuitem name="menu-project-root" order="-103" title="Projects" icon="fa-tasks"  if="__config__.app.isApp('project')"
 	     icon-background="#3f6bb9"/> 	
@@ -78,6 +78,7 @@
 	<action-view name="all.tasks.history" title="Task history" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
+		<domain>self.status = 'closed' or self.status = 'canceled'</domain>
 	</action-view>
 
   <menuitem name="project-reporting" parent="menu-project-root" order="40" title="Reportings" icon="fa-bar-chart"/>

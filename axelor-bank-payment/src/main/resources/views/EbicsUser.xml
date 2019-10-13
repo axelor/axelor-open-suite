@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<grid name="ebics-user-grid" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" >
 		<toolbar>
@@ -20,18 +20,19 @@
 		<field name="statusSelect"/>
 	</grid>
 	
-	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
+	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn" onLoad="action-ebics-user-attrs-set-change-password">
 		<panel name="generalInformationPanel" title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="fullName" colSpan="12" hidden="true"/>
 			<field name="name" onChange="action-ebics-user-record-set-fullname"/>
-			<field name="password" requiredIf="ebicsPartner.ebicsTypeSelect == 0"/>
+			<field name="$changePassword" type="boolean" title="Change password" hideIf="!id" colSpan="2"/>
+			<field name="password" showIf="$changePassword || !id" colSpan="4" requiredIf="$changePassword"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3" onChange="action-ebics-user-record-set-fullname"/>
 			<field name="associatedUser" canNew="false" canEdit="false" canView="false" onChange="action-ebics-user-record-set-fullname" showIf="userTypeSelect == 1"/>
 			<field name="nextOrderId"/>
-			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
+			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2" onChange="action-ebics-user-attrs-set-change-password"/>
 			<field name="ebicsPartner.ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="ebicsPartner.ebicsBank"/>
 		</panel>
@@ -49,7 +50,7 @@
 					<button name="generateDnBtn" title="Generate DN" onClick="save,action-ebics-user-method-generate-dn" showIf="!dn" colSpan="3"/>
 					<field name="dn" readonly="true" showTitle="false" />
 				</panel>
-				<panel name="electronicSignatureCertiPanel" title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
+				<panel name="electronicSignatureCertiPanel" title="Electronic signature certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0 || userTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
 					<field name="a005Certificate" domain="self.typeSelect = 'signature'" form-view="ebics-certificate-form" showTitle="false" canNew="true"/>
 				</panel>
 				<panel name="encryptedCertiPanel" title="Encryption certificate" colSpan="12" itemSpan="12" readonlyIf="ebicsPartner.ebicsTypeSelect == 0" showIf="ebicsPartner.ebicsTypeSelect == 1 || (ebicsPartner.ebicsTypeSelect == 0  &amp;&amp; statusSelect >= 1)">
@@ -59,7 +60,7 @@
 					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-related name="ebicsRequestLogListPanel" field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
+			<panel-dashlet action="action-ebics-user-view-ebics-request-log" name="ebicsRequestLogPanel" title="Request log"/>
 		</panel-tabs>
 		
 		<panel name="actionBtnsPanel" sidebar="true">
@@ -154,6 +155,11 @@
     	<attribute name="readonly" for="nextOrderId" expr="false"/>
     </action-attrs>
     
+    <action-attrs name="action-ebics-user-attrs-set-change-password">
+        <attribute name="value" expr="eval: ebicsPartner?.ebicsTypeSelect == 0 &amp;&amp; !password" for="$changePassword"/>
+        <attribute  name="readonly" expr="eval: ebicsPartner?.ebicsTypeSelect == 0 &amp;&amp; !password" for="$changePassword"/>
+    </action-attrs>
+
     <action-view name="action-ebics-open-import-ebics-users" title="Import ebics users" model="com.axelor.apps.bankpayment.db.EbicsUser">
     	<view type="form" name="import-ebics-user-form"/>
     	<view-param name="popup" value="true"/>
@@ -162,6 +168,12 @@
     	<view-param name="show-toolbar" value="false"/>
     </action-view>
     
+    <action-view name="action-ebics-user-view-ebics-request-log" title="Request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
+        <view type="grid" name="ebics-request-log-grid"/>
+        <view type="form" name="ebics-request-log-form"/>
+        <domain>self.ebicsUser = :id</domain>
+    </action-view>
+
     <action-export name="action-export-ebics-user" output="${date}${time}" download="true">
 	  <export name="EbicsExport-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
 	    	  template="data-export/export-ebics-user.txt"

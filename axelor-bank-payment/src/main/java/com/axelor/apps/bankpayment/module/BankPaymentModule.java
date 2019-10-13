@@ -24,11 +24,13 @@ import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.web.InvoicePaymentController;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
@@ -61,6 +63,7 @@ import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimb
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
 import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCancelServiceBankPayImpl;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPay;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.move.MoveServiceBankPaymentImpl;
@@ -76,6 +79,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankReconciliationRepository.class).to(BankReconciliationManagementRepository.class);
 
     bind(BankOrderRepository.class).to(BankOrderManagementRepository.class);
+
+    bind(BankOrderLineRepository.class).to(BankOrderLineManagementRepository.class);
 
     bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
 
@@ -110,6 +115,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(PaymentScheduleLineBankPaymentService.class)
         .to(PaymentScheduleLineBankPaymentServiceImpl.class);
 
+    bind(InvoicePaymentCreateServiceBankPay.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
+
     bind(InvoicePaymentCreateServiceImpl.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
 
     bind(InvoicePaymentController.class).to(InvoicePaymentBankPayController.class);
@@ -118,7 +125,7 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(BankOrderLineOriginService.class).to(BankOrderLineOriginServiceImpl.class);
 
-    bind(MoveService.class).to(MoveServiceBankPaymentImpl.class);
+    bind(MoveServiceImpl.class).to(MoveServiceBankPaymentImpl.class);
 
     bind(ExtractContextMoveServiceImpl.class).to(ExtractContextMoveServiceBankPaymentImpl.class);
   }

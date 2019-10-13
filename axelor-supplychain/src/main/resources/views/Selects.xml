@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -75,6 +75,11 @@
 		<option value="2">Subscription</option>
 	</selection>
 	
+	<selection name="supplychain.sale.order.line.available.status.select">
+		<option value="1">Available</option>
+		<option value="2">Missing</option>
+	</selection>
+	
 	<selection name='iinvoice.operation.sub.type.select' id="supplychain.iinvoice.operation.sub.type.select">
 		<option value="6">Subscription</option>
 	</selection>
@@ -92,7 +97,18 @@
 	
 	<selection name="sequence.generic.code.select" id="supplychain.sequence.generic.code.select">
 		<option value="mrp">MRP</option>
+	</selection>	
+	
+	<selection name="supplychain.estimated.date.select">
+		<option value="0">Current date</option>
+		<option value="1">Left empty</option>
+		<option value="2">Current date + days</option>
 	</selection>
+
+	<selection name="supplychain.stock.move.invoicing.wizard.select">
+      <option value="1">Invoice all</option>
+      <option value="2">Invoice partially stock move</option>
+    </selection>
 
 	<selection name="supplychain.mrp.mrp.type.select">
 		<option value="1">MRP</option>
@@ -103,7 +119,7 @@
 		<option value="1">MRP</option>
 		<option value="2">MPS</option>
 	</selection>
-	
+
 	<selection name="supplychain.mrp.forecast.technical.origin.select">
 		<option value="1">Created manually</option>
 		<option value="2">Created from SOP</option>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -132,6 +132,7 @@
 		<option value="pdf">PDF</option>
 		<option value="xlsx">XLS</option>
 		<option value="csv">CSV</option>
+		<option value="ods">ODS</option>
 	</selection>
 
 	<selection name="stock.correction.status.select">
@@ -141,6 +142,12 @@
 
 	<selection name="abc.analysis.type.select" id="stock.abc.analysis.type.select">
 		<option value="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl">Stock</option>
+	</selection>
+
+	<selection name='stock.stock.location.value.type'>
+		<option value="1">WAP value</option>
+		<option value="2">Accounting value</option>
+		<option value="3">Sale value</option>
 	</selection>
 
 </object-views>

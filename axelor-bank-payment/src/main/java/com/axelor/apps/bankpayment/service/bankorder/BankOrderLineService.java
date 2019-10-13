@@ -40,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -191,10 +192,19 @@ public class BankOrderLineService {
         .equals(BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT)) {
       bankOrderLine.setBankOrderEconomicReason(bankOrderFileFormat.getBankOrderEconomicReason());
       bankOrderLine.setReceiverCountry(bankOrderFileFormat.getReceiverCountry());
-      Bank bank = bankDetails.getBank();
-      if (bank != null && bank.getCountry() != null) {
-        bankOrderLine.setReceiverCountry(bank.getCountry());
+
+      if (bankDetails != null) {
+        Bank bank = bankDetails.getBank();
+        if (bank != null && bank.getCountry() != null) {
+          bankOrderLine.setReceiverCountry(bank.getCountry());
+        }
+      } else {
+        throw new AxelorException(
+            bankOrderLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
       }
+
       bankOrderLine.setPaymentModeSelect(bankOrderFileFormat.getPaymentModeSelect());
       bankOrderLine.setFeesImputationModeSelect(bankOrderFileFormat.getFeesImputationModeSelect());
       bankOrderLine.setReceiverAddressStr(getReceiverAddress(partner));
@@ -203,6 +213,7 @@ public class BankOrderLineService {
     return bankOrderLine;
   }
 
+  @CallMethod
   public String getReceiverAddress(Partner partner) {
 
     Address receiverAddress = Beans.get(PartnerService.class).getInvoicingAddress(partner);

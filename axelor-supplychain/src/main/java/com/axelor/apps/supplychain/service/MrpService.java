@@ -28,7 +28,7 @@ public interface MrpService {
 
   public void runCalculation(Mrp mrp) throws AxelorException;
 
-  public void generateProposals(Mrp mrp) throws AxelorException;
+  public void generateProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
 
   public void reset(Mrp mrp);
 
@@ -42,7 +42,7 @@ public interface MrpService {
    */
   public LocalDate findMrpEndDate(Mrp mrp);
 
-  public Mrp completeProjectedStock(
+  public Mrp createProjectedStock(
       Mrp mrp, Product product, Company company, StockLocation stockLocation)
       throws AxelorException;
 }

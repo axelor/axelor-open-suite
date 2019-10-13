@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
   <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
 	 	<toolbar>
@@ -49,7 +49,7 @@
 		<button name="next-stageBtn" readonlyIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click"/>
 		<button name="closed-wonBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click"/>
 		<button name="closed-lostBtn" readonlyIf="salesStageSelect &gt; 4" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click"/>
-	</grid>
+  	</grid>
 
   <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner">
 		<field name="name"/>
@@ -146,8 +146,8 @@
 				</panel>
 			</panel>
 			<panel name="referencePanel" title="Reference" canCollapse="true">
-				<field name="partner" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
-				<field name="lead" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-from-lead"/>
+				<field name="partner" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid" onChange="action-opportunity-record-set-lead-onchange"/>
+				<field name="lead" canEdit="false" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" form-view="lead-form" grid-view="lead-grid" onChange="action-opportunity-record-set-partner-onchange"/>
 			</panel>
 			<panel name="postitPanel" title="Memo" canCollapse="true">
 				<field name="memo" showTitle="false" colSpan="12"/>
@@ -308,6 +308,14 @@
 		<field name="salesStageSelect" expr="eval:6"/>
 	</action-record>
 	
+	<action-record name="action-opportunity-record-set-partner-onchange" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="partner" expr="eval: null" if="lead"/>
+	</action-record>
+
+	<action-record name="action-opportunity-record-set-lead-onchange" model="com.axelor.apps.crm.db.Opportunity">
+		<field name="lead" expr="eval: null" if="partner"/>
+	</action-record>
+
 	<action-method name="action-show-opportunities-on-map-page">
 	  <call method="showOpportunitiesOnMap" class="com.axelor.apps.crm.web.OpportunityController"/>
 	</action-method>
@@ -315,5 +323,10 @@
     <action-method name="action-opportunity-record-from-lead">
         <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="setConvertLeadIntoOpportunity"/>
     </action-method>
+
+	<action-view name="dashlet.opportunity" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity">
+		<view type="grid" name="opportunity-grid"/>
+		<view type="form" name="opportunity-form" />
+	</action-view>
 
 </object-views>

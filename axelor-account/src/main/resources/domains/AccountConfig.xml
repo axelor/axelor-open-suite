@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="AccountConfig" lang="java" cachable="true">
+	<entity name="AccountConfig" lang="java" cacheable="true">
 
 		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
@@ -20,6 +20,7 @@
 		<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
 		<many-to-one name="autoMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Auto Misc. Operation Journal"/>
 		<many-to-one name="manualMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Manual Misc. Operation Journal"/>
+		<many-to-one name="reportedBalanceJournal" ref="com.axelor.apps.account.db.Journal" title="Reported Balance Journal"/>
 
 		<many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
 		<many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
@@ -111,8 +112,6 @@
 		<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
 		<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
 
-		<!-- Onglet Paybox -->
-		<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 
 		<!-- Invoice page -->
 		<boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
@@ -120,6 +119,7 @@
 		<boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
 		<boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
 		<boolean name="fixedAssetCatReqOnInvoice" title="Fixed asset category required on invoices"/>
+		<boolean name="isPrintInvoicesInCompanyLanguage" title="Print invoices in company language" default="true"/>
 
 		<!-- Account chart template -->
 		<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart"/>
@@ -261,7 +261,6 @@
 		<field name="irrecoverableReasonPassage" on="UPDATE"/>
 		<field name="irrecoverableStandardRateTax" on="UPDATE"/>
 		
-		<field name="payboxConfig" on="UPDATE"/>
 
 		<field name="allowCancelVentilatedInvoice" on="UPDATE"/>
 		<field name="allowRemovalValidatedMove" on="UPDATE"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
@@ -36,13 +36,13 @@
   		</toolbar>
   		<panel name="mainPanel" >
    			<panel name="namePanel" colSpan="4">
-    			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
+            <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12" width="600">
         			<editor x-show-titles="false">
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" readonly="true" 
           					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
           					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
-          				<field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name"/>
+                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="400"/>
         			</editor>
       			</field>
     		</panel>
@@ -95,7 +95,7 @@
 		      	</panel>
       			<panel name="inAtiExpensePanel" colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
-			        <field name="expense" hidden="true"/>
+			        <field name="expense" hidden="true" if-module="axelor-human-resource"/>
       			</panel>
       			<panel name="BarcodePanel" readonlyIf="barCode != null" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" title="Barcode" colSpan="12">
       				<field name="serialNumber" />
@@ -350,7 +350,7 @@
    	 	<action name="action-product-attrs-scale-and-precision"/>
    	 	<action name="action-product-attrs-scale-and-precision-production"/>
 		<action name="action-product-attrs-scale-and-precision-stock"/>
-    	<action name="action-product-record-default-new"/>
+    	<action name="action-product-group-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
     	<action name="action-product-attrs-in-ati"/>
@@ -451,9 +451,13 @@
         <attribute for="costTypeSelect" name="hidden" expr="eval: true"
 				   if="parentProduct?.manageVariantPrice"/>
 	</action-attrs>
-    
+	
+	<action-group name="action-product-group-default-new">
+		<action name="action-product-record-default-new"/>
+		<action name="hr-action-product-record-default-new" if="__config__.app.getApp('expense')"/>
+	</action-group>
+	
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
-    	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
     	<field name="procurementMethodSelect" expr="buy"/>
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>

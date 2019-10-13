@@ -36,7 +36,6 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
-import com.axelor.apps.production.service.ManufOrderPlanService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -124,20 +123,25 @@ public class ManufOrderWorkflowService {
         manufOrderService.createToProduceProdProductList(manufOrder);
       }
 
-      if (manufOrder.getPlannedStartDateT() == null) {
+      if (manufOrder.getPlannedStartDateT() == null && manufOrder.getPlannedEndDateT() == null) {
         manufOrder.setPlannedStartDateT(
             Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+      } else if (manufOrder.getPlannedStartDateT() == null
+          && manufOrder.getPlannedEndDateT() != null) {
+        long duration = 0;
+        for (OperationOrder order : manufOrder.getOperationOrderList()) {
+          duration +=
+              operationOrderWorkflowService.computeEntireCycleDuration(
+                  order, order.getManufOrder().getQty()); // in seconds
+        }
+        manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
       }
     }
 
-    if (Beans.get(AppProductionService.class).getAppProduction().getFiniteCapacity()) {
-      Beans.get(ManufOrderPlanService.class).optaPlan(manufOrderList, quickSolve);
-    } else {
-      for (ManufOrder manufOrder : manufOrderList) {
-        if (manufOrder.getOperationOrderList() != null) {
-          for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-            operationOrderWorkflowService.plan(operationOrder);
-          }
+    for (ManufOrder manufOrder : manufOrderList) {
+      if (manufOrder.getOperationOrderList() != null) {
+        for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
+          operationOrderWorkflowService.plan(operationOrder);
         }
       }
     }
@@ -460,7 +464,7 @@ public class ManufOrderWorkflowService {
    * @param manufOrder
    * @return
    */
-  private List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
+  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
     List<OperationOrder> operationOrderList =
         MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
     Comparator<OperationOrder> byPriority =

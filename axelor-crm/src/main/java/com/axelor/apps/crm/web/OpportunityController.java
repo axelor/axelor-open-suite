@@ -23,33 +23,32 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class OpportunityController {
 
-  @Inject private OpportunityRepository opportunityRepo;
-
-  @Inject private OpportunityService opportunityService;
-
   @SuppressWarnings("rawtypes")
   public void assignToMe(ActionRequest request, ActionResponse response) {
 
+    OpportunityService opportunityService = Beans.get(OpportunityService.class);
+    OpportunityRepository opportunityRepository = Beans.get(OpportunityRepository.class);
     if (request.getContext().get("id") != null) {
-      Opportunity opportunity = opportunityRepo.find((Long) request.getContext().get("id"));
+      Opportunity opportunity = opportunityRepository.find((Long) request.getContext().get("id"));
       opportunity.setUser(AuthUtils.getUser());
       opportunityService.saveOpportunity(opportunity);
     } else if (ObjectUtils.notEmpty(request.getContext().get("_ids"))) {
       for (Opportunity opportunity :
-          opportunityRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
+          opportunityRepository
+              .all()
+              .filter("id in ?1", request.getContext().get("_ids"))
+              .fetch()) {
         opportunity.setUser(AuthUtils.getUser());
         opportunityService.saveOpportunity(opportunity);
       }
@@ -72,10 +71,15 @@ public class OpportunityController {
     }
   }
 
-  public void createClient(ActionRequest request, ActionResponse response) throws AxelorException {
-    Opportunity opportunity = request.getContext().asType(Opportunity.class);
-    opportunity = opportunityRepo.find(opportunity.getId());
-    opportunityService.createClientFromLead(opportunity);
-    response.setReload(true);
+  public void createClient(ActionRequest request, ActionResponse response) {
+    try {
+      Opportunity opportunity = request.getContext().asType(Opportunity.class);
+      opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
+      Beans.get(OpportunityService.class).createClientFromLead(opportunity);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      response.setError(e.getMessage());
+    }
   }
 }

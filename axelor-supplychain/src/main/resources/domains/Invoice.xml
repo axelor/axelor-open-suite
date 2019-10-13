@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -7,6 +7,7 @@
 	
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
 	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order"/>
+	<many-to-many name="stockMoveSet" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves"/>
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
 	
