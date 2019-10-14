@@ -44,21 +44,34 @@ import org.slf4j.LoggerFactory;
 
 public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeService {
 
-  private static final Logger log = LoggerFactory.getLogger(ProjectPlanningTimeService.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(ProjectPlanningTimeService.class);
 
-  @Inject private ProjectPlanningTimeRepository planningTimeRepo;
+  protected ProjectPlanningTimeRepository planningTimeRepo;
+  protected ProjectRepository projectRepo;
+  protected TeamTaskRepository teamTaskRepo;
+  protected WeeklyPlanningService weeklyPlanningService;
+  protected PublicHolidayHrService holidayService;
+  protected ProductRepository productRepo;
+  protected UserRepository userRepo;
 
-  @Inject private ProjectRepository projectRepo;
-
-  @Inject private TeamTaskRepository teamTaskRepo;
-
-  @Inject private WeeklyPlanningService weeklyPlanningService;
-
-  @Inject private PublicHolidayHrService holidayService;
-
-  @Inject private ProductRepository productRepo;
-
-  @Inject private UserRepository userRepo;
+  @Inject
+  public ProjectPlanningTimeServiceImpl(
+      ProjectPlanningTimeRepository planningTimeRepo,
+      ProjectRepository projectRepo,
+      TeamTaskRepository teamTaskRepo,
+      WeeklyPlanningService weeklyPlanningService,
+      PublicHolidayHrService holidayService,
+      ProductRepository productRepo,
+      UserRepository userRepo) {
+    super();
+    this.planningTimeRepo = planningTimeRepo;
+    this.projectRepo = projectRepo;
+    this.teamTaskRepo = teamTaskRepo;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.holidayService = holidayService;
+    this.productRepo = productRepo;
+    this.userRepo = userRepo;
+  }
 
   @Override
   public BigDecimal getTaskPlannedHrs(TeamTask task) {
@@ -77,7 +90,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         totalPlanned =
             plannings
                 .stream()
-                .map(p -> p.getPlannedHours())
+                .map(ProjectPlanningTime::getPlannedHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
@@ -100,7 +113,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
               .fetch();
       if (plannings != null) {
         totalRealHrs =
-            plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+            plannings
+                .stream()
+                .map(ProjectPlanningTime::getRealHours)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
 
@@ -125,7 +141,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         totalPlanned =
             plannings
                 .stream()
-                .map(p -> p.getPlannedHours())
+                .map(ProjectPlanningTime::getPlannedHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
@@ -149,7 +165,10 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
               .fetch();
       if (plannings != null) {
         totalRealHrs =
-            plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+            plannings
+                .stream()
+                .map(ProjectPlanningTime::getRealHours)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
 
@@ -211,7 +230,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
       LocalDate date = fromDate.toLocalDate();
 
-      log.debug("Create Planning for the date: {}", date);
+      LOG.debug("Create Planning for the date: {}", date);
 
       double dayHrs = 0;
       if (employee.getWeeklyPlanning() != null) {
