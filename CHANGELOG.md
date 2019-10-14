@@ -190,7 +190,6 @@
 - CLIENT PORTAL : update the client form view
 - MESSAGE MODULE: Refactor code.
 - USER : Mass generation of random passwords
-- MRP : add cumulative Min qty and generate proposal only for the last mrpLine type stock available (compare to cumulative min qty).
 - Advance data import: Set sequence of filetab and removed temporary file at the end which is created during the process
 - QUALITY: removed translation for "Close"
 - BIRT TEMPLATE PARAMETER: new paratmeter "ReportType" is added.

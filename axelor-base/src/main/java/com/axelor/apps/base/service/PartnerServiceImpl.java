@@ -220,7 +220,7 @@ public class PartnerServiceImpl implements PartnerService {
           }
           defaultInvoicingAddress = partnerAddress.getAddress();
         }
-  
+
         if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
           if (defaultDeliveryAddress != null) {
             throw new AxelorException(
