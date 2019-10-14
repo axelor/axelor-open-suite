@@ -14,6 +14,7 @@
 - Studio : group by application on json model grid view.
 - Export studio app: email action - email template
 - Export Studio app: export actions created with meta-action-from
+- STOCK RULE : New boolean alert when orderAlertSelect is not alert and stockRuleMessageTemplate added.
 
 ## Improvements
 - Remove Pack Feature from Product.

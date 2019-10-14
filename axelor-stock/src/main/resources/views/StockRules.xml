@@ -27,10 +27,11 @@
 			<field name="typeSelect" colSpan="3" showIf="useCaseSelect == 2" requiredIf="useCaseSelect == 2"/>
 	        <field name="product" canEdit="false" domain="self.productTypeSelect = 'storable' and self.stockManaged = true " onChange="action-stock-rules-record-product-change" form-view="product-form" grid-view="product-grid"/>
 			<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]" colSpan="3"/>
-			<field name="stockRuleMessageTemplate" colSpan="3" showIf="useCaseSelect == 2 &amp;&amp; orderAlertSelect == 1"/>
+			<field name="stockRuleMessageTemplate" colSpan="3" showIf="(useCaseSelect == 2 &amp;&amp; orderAlertSelect == 1) || alert"/>
 			<field name="product.procurementMethodSelect" hidden="true"/>
 	        <field name="minQty" onChange="action-stock-rules-minqty-change"
 	        	validIf="$number(minQty) >= 0" colSpan="2"/>
+			<field name="alert" showIf="orderAlertSelect != 1" colSpan="3"/>
 	        <panel colSpan="4" name="idealQtyPanel">
 	        	<field name="useIdealQty" />
 				<field name="idealQty" showIf="useIdealQty" onChange="action-stock-rules-idealqty-change"
@@ -43,7 +44,7 @@
 			</panel>
 			<field name="reOrderQty" colSpan="2" validIf="$number(reOrderQty) >= 0" />
         </panel>
-		<panel name="reorderingManagedByPanel" title="Reordering managed by"  showIf="orderAlertSelect == 1">
+		<panel name="reorderingManagedByPanel" title="Reordering managed by"  showIf="alert">
 			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
 		</panel>
