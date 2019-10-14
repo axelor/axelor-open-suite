@@ -39,6 +39,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
+        <field name="senderBankDetails.bank.bankName"/>
         <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
         <field name="statusSelect"/>
     </grid>
