@@ -36,7 +36,7 @@
 
 		<one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
 		
-		<decimal name="budgetedTime" title="Budgeted time"/>
+		<decimal name="budgetedTime" title="Estimated time"/>
 		<many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile" />
 
 	 <track replace="true">
