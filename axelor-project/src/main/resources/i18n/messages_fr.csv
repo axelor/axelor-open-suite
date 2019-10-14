@@ -63,6 +63,8 @@
 "Enable task signature","Activer la signature de tâche",,
 "Enter Time spent","Saisir temps passé",,
 "Estimated time","Temps estimé",,
+"Estimated time (in days)","Temps estimé (en jours)",,
+"Estimated time (in hours)","Temps estimé (en heures)",,
 "Exclude planning","Exclure planification",,
 "Expense lines",,,
 "Expenses",,,
