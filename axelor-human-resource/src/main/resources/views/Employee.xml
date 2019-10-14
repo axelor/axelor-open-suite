@@ -229,9 +229,7 @@
             <field name="hrManager" colSpan="4" widget="InlineCheckbox"/>
             <field name="external" colSpan="4" widget="InlineCheckbox"/>
           </panel>
-        </panel>
-
-       <panel-related name="employeeFileListPanel" field="employeeFileList" colSpan="12" grid-view="employee-file-grid" form-view="employee-file-form" />
+        </panel>     
        </panel>
 
       <panel name="employmentContractsPanel" title="Employment contracts">
@@ -318,6 +316,17 @@
       <panel name="dpaePanel" title="DPAE" if="__user__.activeCompany?.hrConfig?.enableDPAE">
         <button name="generateNewDPAE" title="Generate new DPAE" colSpan="3" onClick="save,action-employee-method-generate-new-dpae"/>
         <panel-related field="dpaeList" colSpan="12" canNew="false" grid-view="dpae-grid" form-view="dpae-form"/>
+      </panel>
+      
+      <panel name="employeeFileListPanel" title="Files" colSpan="12">
+        <field name="employeeFileList" showTitle="false" colSpan="12">
+          <editor colSpan="12" x-viewer="true" x-show-on-new="true" x-layout="table">          
+            <field name="fileType" colSpan="4" onChange="action-record-set-expiration-date"/>
+			<field name="metaFile" widget="binary-link" colSpan="4"/>	
+			<field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="4"/>	
+            <field name="fileType.hasExpirationDate" hidden="true" />
+          </editor>
+        </field>
       </panel>
     </panel-tabs>
   </form>
