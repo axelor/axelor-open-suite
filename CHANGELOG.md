@@ -12,6 +12,7 @@
 - MOVELINE: change display condition for tax amount (used for on payment tax report).
 - APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
 - Tax payment move lines: are canceled after unreconcile.
+- SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
 
 ## Bug Fixes
 - Employee : fix error on duplicate
