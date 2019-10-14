@@ -130,6 +130,7 @@
 - CITIZENSHIP : Add new object citizenship on base and new M2O in country and employee
 - EMPLOYEE : Files management added domains and demo data
 - Inventory : Added calendar-view
+- change term "Description" to "Comment" in english and "Commentaire" in french
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
