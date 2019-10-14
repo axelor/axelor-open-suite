@@ -22,6 +22,7 @@
 - SALE DASHBOARD : Translation
 - EBICS-USER-FORM : removed the double quotes from translation of the SPR button title
 - Tax payment move line: corrected amount calculation
+- APPEMPLOYEE : Reorganize view
 
 ## [5.1.9] - 2019-10-07
 ## Features
