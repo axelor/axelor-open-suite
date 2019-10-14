@@ -369,10 +369,10 @@ InvoiceSet.length > 0))"
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" hidden="true"/>
-				<panel name="descriptionToDisplayOnInvoicePanel" title="Description to display on invoice" colSpan="12">
+				<panel name="descriptionToDisplayOnInvoicePanel" title="Comment to display on invoice" colSpan="12">
 				  <field name="note" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
-				<panel name="descriptionToDisplayOnProformaPanel" title="Description to display on proforma" colSpan="12">
+				<panel name="descriptionToDisplayOnProformaPanel" title="Comment to display on proforma" colSpan="12">
 				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
