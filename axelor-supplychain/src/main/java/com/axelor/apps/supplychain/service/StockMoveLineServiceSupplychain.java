@@ -78,4 +78,6 @@ public interface StockMoveLineServiceSupplychain {
       throws AxelorException;
 
   boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine);
+
+  void setInvoiceStatus(StockMoveLine stockMoveLine);
 }
