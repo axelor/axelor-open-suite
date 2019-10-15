@@ -17,13 +17,18 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Role;
 import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaActionRepository;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
@@ -34,6 +39,9 @@ import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -286,5 +294,53 @@ public class StudioMetaService {
     } catch (NoResultException e) {
       return 0;
     }
+  }
+
+  public String createFieldTracking(MetaJsonModel jsonModel) {
+
+    List<MetaJsonField> metaJsonFieldList = jsonModel.getFields();
+    String trackingFields = "";
+
+    if (jsonModel.getId() == null && metaJsonFieldList != null) {
+      return this.createTracking(metaJsonFieldList, "Added");
+    }
+
+    List<MetaJsonField> jsonFieldList =
+        Beans.get(MetaJsonModelRepository.class).find(jsonModel.getId()).getFields();
+
+    if (metaJsonFieldList.equals(jsonFieldList)) {
+      return jsonModel.getJsonFieldTracking();
+    }
+
+    List<MetaJsonField> commonJsonFieldList = new ArrayList<>(jsonFieldList);
+    commonJsonFieldList.retainAll(metaJsonFieldList);
+
+    metaJsonFieldList.removeAll(jsonFieldList);
+    if (!metaJsonFieldList.isEmpty()) {
+      trackingFields += this.createTracking(metaJsonFieldList, "Added");
+    }
+    jsonFieldList.removeAll(commonJsonFieldList);
+    if (!jsonFieldList.isEmpty()) {
+      trackingFields += this.createTracking(jsonFieldList, "Removed");
+    }
+
+    trackingFields +=
+        jsonModel.getJsonFieldTracking() != null ? jsonModel.getJsonFieldTracking() : "";
+
+    return trackingFields;
+  }
+
+  private String createTracking(List<MetaJsonField> metaJsonFieldList, String type) {
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    String dateTime = LocalDateTime.now().format(dtf);
+    String userName = AuthUtils.getUser().getName();
+    String trackingFields = "";
+
+    for (MetaJsonField metaJsonField : metaJsonFieldList) {
+      trackingFields +=
+          dateTime + ", " + "User:" + userName + ", " + type + ":" + metaJsonField.getName() + "\n";
+    }
+    return trackingFields;
   }
 }
