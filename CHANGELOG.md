@@ -24,6 +24,7 @@
 - EBICS-USER-FORM : removed the double quotes from translation of the SPR button title
 - Tax payment move line: corrected amount calculation
 - MOVE LINE : corrected error and calculation of tax amount computation.
+- Expense : Fix issue of scale for KilometricExpenseLine
 
 ## [5.1.9] - 2019-10-07
 ## Features
