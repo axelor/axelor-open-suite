@@ -14,6 +14,7 @@
 - Studio : group by application on json model grid view.
 - Export studio app: email action - email template
 - Export Studio app: export actions created with meta-action-from
+- JSON-MODEL-FORM : add tracking on json fields
 - STOCK RULE : New boolean alert when orderAlertSelect is not alert and stockRuleMessageTemplate added.
 
 ## Improvements
