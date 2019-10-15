@@ -272,5 +272,6 @@
 - QualityControl : status selection order and other translation changes
 - Frequency: Error on clear of Frequency type fix
 - RH : NPE on ventilation of expense fixed
+- Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect"
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
