@@ -64,6 +64,7 @@
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
         </field>
         <field name="stockMove" width="120" hidden="true" />
         <field name="stockMove.pickingIsEdited" hidden="true"/>
@@ -161,6 +162,7 @@
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
         </field>
 	</grid>
     
@@ -182,6 +184,7 @@
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
         </field>
     </grid>
     
@@ -209,6 +212,7 @@
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
         </field>
     </grid>
 
@@ -235,6 +239,7 @@
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
+        	<hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
         </field>
 	</grid>
 
