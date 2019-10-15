@@ -1,13 +1,98 @@
 # Changelog
 
-## [Unreleased 5.1.8]
+## [Unreleased 5.1.10]
 ## Features
-- PROJECT : Translate Total real hours
+- SUPPLYCHAIN CONFIG : created defaultEstimatedDate for purchase order
+- Help on important fields in partner-form, sale-order-form, invoice-form, product-form
+
+## Improvements
+- INVENTORY : added unit field in inventory line form view and printing
+- STOCK MOVE : stock move editable on back order button
+- Partner: Improve advance search fields name.
+- MOVELINE: change display condition for tax amount (used for on payment tax report).
+- APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
+- Tax payment move lines: are canceled after unreconcile.
+- BANK ORDER : add bank name in grid view
+- Partner : correct addresses to display on form.
+- Invoice : add two fields, active subrogration release and its move.
+- Subrogration release : add the total amount remaining and highlight invoice lines with remaining amount > 0 and when the subrogration status is at accounting.
+- Payment notification : add the possibility to reconcile debit payment move line to subrogation move line if it exist, accounts are reconcil able and notification type is 'payment to the factor'.
+
+## Bug Fixes
+- Employee : fix error on duplicate
+- BUDGET : purchase order and applyToAllBtn when manageMultiBudget = false
+- Fix computed fields NPE from all domains.
+- META SCHEDULE : Make grid view non editable
+- USER : appPermissions title and translation
+- SALE DASHBOARD : Translation
+- EBICS-USER-FORM : removed the double quotes from translation of the SPR button title
+- Tax payment move line: corrected amount calculation
+- MOVE LINE : corrected error and calculation of tax amount computation.
+- Expense : Fix issue of scale for KilometricExpenseLine
+
+## [5.1.9] - 2019-10-07
+## Features
+- SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
+
+## Improvements
+- PROJECT: Fixing financial report to follow the Axelor report guidelines.
+- BANK STATEMENT: improved bank statement line grid for AFB120 file format.
+- EbicsBank: Disable canEdit on language field in ebics-bank-form.
+- SALE/PURCHASE ORDER: autofill same stocklocation in purchase order.
+- TIMESHEET: Generate TS lines for leaves and holidays automatically.
+- SALE/PURCHASE ORDER: autofill supplier in purchase order when 'directOrderLocation' is true.
+- LOGISTICAL FORMS: change french translation from 'provision' to 'Mise à disposition'.
+- Message: Add status "In progress" when sending a message.
+- INVOICE LINE MENU GRID: add the possibility to search on invoice date.
+- MOVE LINE EXPORT: special caracter removed.
+- DEMO DATA: update demo data for account config and hr config.
+- DEMO DATA: create new schedule in demo data to update customer account.
+- MRP WEEKLY PRINTING: Added first line in every page.
+- SALE ORDER : advancePaymentAmount rename to advancePaymentAmountNeeded
+
+## Bug Fixes
+- Stock Move: fix WAP computation on customer returns.
+- Move Line: fix error when we reconcile multiple moves.
+- ACCOUNTING REPORT: balance reports are now faster to generate.
+- DEBT RECOVERY: Replace partnerFullName with accountingSituation.partner.fullName.
+- Accounting Batch: fix error during Reimbursement import.
+- MANUF. ORDER: clear costsheetlist when creating duplicate manufacturing order.
+- SALEORDER/PURCHASE ORDER/INVOICE: removed the possibility to copy a line.
+- Fix translations.
+- DEMO DATA: change tracking number config of the product classic server in order to avoid a bug when it is sold.
+- INVOICE: Fix NPE on mass payment on supplier Invoice.
+- STOCKMOVE: Fix NPE on printing stock move.
+- CRM: Fix NPE when creating a new client.
+- STOCK MOVE: update stock move form's title.
+- Sale Order Template Form: change and remove unwanted fields.
+- EXPENSE: replace line break caracter per a space for move creation.
+- MOVES TEMPLATE: Fixed NPE on move generation.
+
+## [5.1.8] - 2019-09-26
+## Features
+- SALE ORDER : Manage mandatory advance payment on SaleOrder according payment condition
+
+## Improvements
 - ACCOUNTINGREPORT : Downloads accounting export attachement for TypeSelect 'Export journal entry -> Administration' on Export.
 - LOGISTICAL FORM: Update net mass by refresh button when a net mass is changed in an existing product form
 - ActionBuilderView : Add condition option
-
-## Improvements
+- FORECAST RECAP LINE : Add reference to display related invoice, expense, sale order, purchase order or forecast reason
+- MrpForecast : Enable Tracking Feature for all fields on the creation of record
+- SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
+- Wkf : Add an option to display 'Track flow' button.
+- HR : Enable Tracking Feature for 'statusSelect' field.
+- PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
+- BUDGET: Added 2 dashlets with the budget distribution lines information related to PO and invoices.
+- MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
+- EBICS USER : add the possibility to print ebics request log.
+- REPORTING : number of qualified leads
+- REPORTING : average duration to qualify a lead
+- REPORTING : number of new customers
+- STOCK LOCATION : Addition of new selection field 'Stock location value' in Stock Config to allow to choose the stock valuation method.
+- CONFORMITY CERTIFICATE : new field "externalReference" on printing
+- JOURNALS : add new configuration to filter partners (with their types) on Accounting move lines.
+- Availability request: new config to allocate automatically a stock move during availability request.
+- ACCOUNTING SITUATION : show 'dueDate' in moveLinesPanel.
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
@@ -24,29 +109,95 @@
 - USER MANAGEMENT : add traking on all fields of user-form, group-form, role-form and permission-form
 - EMPLOYEE CARD : add tag for rh, company and department field.
 - STOCK MOVES : updating filterOnAvailableProducts field display conditions
-- DEBT RECOVERY : process rollbacked when message sending fails.
 - MESSAGE SERVICE : exception message improved. 
 - MOVELINE : change calculateBtn title from "Calculation" to "Calculation of totals".
 - APP PURCHASE : change title of supplierRequestMgt field
 - OPPORTUNITY : delete canEdit on partner and lead
 - SALE ORDER - placed merge sale orders button on sale-order-quotation-cards instead of sale-order-cards
 - CUSTOMERS : Tab blockings : "Reimbursement blocking" Changed to "Refund blocking".
+- EVENT : add tag viewer if the event start date is in the past
 - YEAR : disable canEdit on company field in year-form.
 - SALE ORDER COPY : order being edited tag removed from copy sale Order
-- OPPORTUNITY : convert into quotation error when no customer selected on opportunity
 - EVENT : delete canEdit on partner, contactPartner and lead and campaign and eventCategory fields on event-form.
+- STOCK MOVE / STOCK CONFIG Certificate of conformity : add tracking numbers to the lines in certificate of conformity printing and add the option in stock configuration to display or not the tracking numbers on the certificate. 
 - ACCOUNTING SITUATION : company in bank details and company out bank details are now hidden if manage multi banks is disabled in base configuration. 
-- SALE/PURCHASE without stock moves : issue on page numbering
 - ActionBuilder : Use CodeEditor widget for script.
 - Studio : Add colspan field on worklow transition.
 - ActionBuilderLine : Changes in form view, increased colspan of value.
 - Wkf : Add confirmation message when edit status field.
 - Expense : Fill bankDetails from employee's mainEmploymentContract payCompany or from user's activeCompany
-- Invoice : add two fields, active subrogration release and its move.
-- Subrogration release : add the total amount remaining and highlight invoice lines with remaining amount > 0 and when the subrogration status is at accounting.
-- Payment notification : add the possibility to reconcile debit payment move line to subrogation move line if it exist, accounts are reconcil able and notification type is 'payment to the factor'.
+- Bank payment: upgrade Bouncy Castle dependencies
+- PROJECT : Add missing translation
+- FORECAST RECAP : Changes in populating forecastRecapLineList
+- FORECAST RECAP : Changes in form view. Add new field Calculation Date.
+- Studio: Removed description field from model properties. 
+- ForecastRecapLine : Add translation for Balance field.
+- SALE CHARTS : Turnover (excl. Tax) per saleman chart renamed and resized.
+- PROJECTS CATEGORY: Make 'name' field required and remove 'byDefault' field
+- FORECAST GENERATOR : Remove O2M forecastList and use dashlet to display generated lines.
+- Stock Move: add config for default delivery date from sale order.
+- SUPPLIER INVOICE : add a new verification, if an active bank order already exist for a supplier invoice, it's impossible to create an other bank order from the supplier invoice. 
+- MENU BUILDER : Re-arrange the position of 'lines' field
+- PARTNER GENERAL LEDGER REPORT : add the possibility to group on partner and add the possibility to display only not completely lettered move lines.
+- PURCHASE ORDER PRINTING : Add versionNumber on sequence
+- EXPENSE : Reduce calling of three action-methods to one onSave of form
+- UNIT CONVERSION : Set to two the number of decimal on grid view.
+- MRP : Add field in stock location to take in consideration in Mrp
+- INVOICE SUPPLIER FORM : add a new flash message on ventilation who pop when unlettered supplier move lines are found for the invoice partner.
+- Fixed assets : add stock location and tracking number management
+- STOCK CONFIG : Put panel customsPanel above stockConfigPanel
+- MENU BUILDER : Delete a menu completely
+- MRP : Compute cumulative qty when mrp line type is stock
+- PRODUCT : increased the width of the field "name" in form view
+- ACCOUNTING : general ledger new columns on BIRT
+- FORECAST RECAP : Improve the birt report to follow the Axelor guidelines
+- MOVELINE : bank reconciled amount is now editable.
+- MOVELINE : reverse move line stop to appear in bank reconciliation.
+- MOVELINE : add a verification between bank reconcile amount and credit or debit.
+- ACCOUNTING : display 'productFamily' field on Account Management Form.
+- SALE/PURCHASE ORDER : translation "fusionner devis fournisseurs"
+- LUNCH VOUCHER LINE: Display period instead of from- and toDates.
+- SALE/PURCHASE ORDER : new config to display lines sequences
+- TIMESHEET : Throw an alert on timesheet validation.
+- PAYMENT MOVE LINE : add in payment move line a details tax payment grid for taxes on cashing.
+- SUBROGATION RELEASE MOVE LINE : add in description the origin invoice id.
+- STOCK MOVE / STOCK CONFIG Certificate of conformity and picking stock move report : add the possibility to display stock move lines in group or in details.
+- MOVE LINES : lettering move lines is now quicker.
+- EVENT REMINDER : improved behaviour of event reminders.
+- Production : Remove stockLocation from Machine Type.
+- PRODUCTION: Complete demo data.
+- SALE ORDER LINE VIEW : Removal of spacer.
+- Move/MoveLine : Changed condition in dispalying fields in form-view and also added translation
+- BANKPAYMENTBATCH : form and grid views are defined for field 'bankStatementFileFormatSet'
+- PAYMENTMODE : form and grid views defined on bankOrderFileFormat
+- EBICS PARTNER SERVICE : ebics-partner-service-form renamed to bo-ebics-partner-service-form
+- ACCOUNTING MOVE : Addition of widget boolean-switch in form view
+- MANUF ORDER : copy MO but not operations orders
+- MOVE : add a control on period status
+- EXPENSE : add the payment move and its generation.
+- BANK ORDER : add a viewer with technical origin (Automatic,Entry,Import) information display.
+- BANK ORDER : when technical origin is automatic, it's not possible to edit the bank order.
+- Expense : Set Move.date and expense.moveDate as expense.period.toDate
+- BankStatementFileFormat : remove wrong data.
+- EBICSUSER : signature certificate editable only if the ebicsPartner mode is "EBICS TS" and the user type is "Signatory"
+- FIXED ASSETS : add Translations in FixedAsset and FixedAssetCategory
+- Advanced Export : Update security issues in query to create joins.
+- Stock Move: forbid negative quantity in stock move lines.
+- Inventory: Generate two stock moves to avoid generating negative quantity.
+- SALE ORDER : set company's printing settings on sale order print when it is null.
+- ACCOUNTING REPORT : change french title for field "displayOnlyNotCompletelyLetteredMoveLines"
+- EBICS USER : password should be filled one time and used to sign the BankOrders in EBICS T mode
 
 ## Bug Fixes
+- ACCOUNT : Fix NPE in Move Template
+- STOCK LOCATION LINE : fixed missing stock location on form view
+- MRP : add a try catch block in generateAllProposals method.
+- SALE/PURCHASE without stock moves : issue on page numbering
+- OPPORTUNITY : convert into quotation error when no customer selected on opportunity
+- DEBT RECOVERY : process rollbacked when message sending fails.
+- EBICS: fix ClassCastException when adding certificates.
+- PROJECT : Translate Total real hours
+- PURCHASE ORDER : Fix error when merging a set of Purchase Orders with no trading names
 - SALE/PURCHASE ORDER LINES : dates should not be in readonly
 - ACCOUNTING BATCH : doubtful customer action is now working.
 - PROJECT : display the cancel button even if the status is draft
@@ -69,18 +220,23 @@
 - EVENTREMINDER : Made the batch work as intended.
 - SALE ORDER : Fix generate invoice error
 - OPPORTUNITY : Error message 'Parent lead is missing' is removed onchange of lead
+- DEBT RECOVERY : Fixed highlight in grid view.
 - DEBT RECOVERY METHOD : name field is now required.
 - DEBT RECOVERY LEVEL : label field is now required.
 - ACCOUNT MANAGEMENT DEMO DATA : tax account management are now correctly imported.
 - INVOICE : add in demo data more information for demo supplier invoices.
+- DEMO DATA : clean and corrected errors from import demo data.
 - PURCHASE REQUEST : seq number is retrieved depending on the company.
 - DEMO DATA : clean and corrected errors from import demo data.
 - DEBT RECOVERY : Put Customer recovery button under Tools menu in partner form
+- PRICE LIST LINE : No Discount value of base.price.list.line.amount.type.select changed to 0.
+- ORDER LINE & INVOICE LINE : discountTypeSelect cannot be empty.
 - OPPORTUNITY : do not allows select both customer and lead at same time.
 - STOCK MOVE : display discounted unit price for discounted products even if user changes quantity on stockmove
 - INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
 - TEAMTASK: task history show only canceled and closed task.
 - Sale Order: fix NPE on clicking allocate all button.
+- STOCK MOVE Certificate of conformity : corrected errors in the lines of the report.
 - INVOICE : Resolve error of sending email from Invoice.
 - Studio: Fix export of selection with app
 - CONFIGURATOR : fix configurator demo data.
@@ -91,8 +247,72 @@
 - App Builder : Fix NPE on export of action-builder type view with params.
 - Studio: Fix error on selecting target model.
 - ACCOUNTING REPORT : Added missing translation of typeSelect values
+- STOCK MOVE : Display error message on deleting stock move with status 'realize'.
+- NPE : fix NPE in timesheet timer.
+- DECLARATION OF EXCHANGES: fixed missing select option and exception message.
+- BLOCKING : Fix NPE during import of sale orders from prestashop batch
+- INVOICE SUBSCRIPTION : subscription invoice is now correctly created when a new one is made in the subscription invoices to validate grid view or form view.
+- SALE ORDER LINE : corrected the possibility to validate an order line without up to date values.
+- LEAD WIZARD : add missing translation.
+- DEBIT VAT DECLARATION REPORT : now the report completely filter on debit VAT.
+- Studio : Fix import app.
+- Studio: Fix double panel title.
+- BPM : Fix invalid domain on model when isJson is false.
+- SALE ORDER CHARTS: Date fixed on SQL queries.
+- SUPPLIER INVOICE GRID : the mass invoice payment function now works properly as the payment save function on a invoice form.  
+- INVOICE : on ventilation corrected the error produced when a product had a very long name. 
+- BANK ORDER : Fix account move generation when we realize a bank order.
+- STOCK RULES : send email if stock move rule alert is activated
+- BANK ORDER : status behavior of bank order now is like the behavior of a payment and when the bank order status also change all the associate payment status. 
+- PROJECT FORM :change the position of hidden field '$toInvoiceCounter' in project form
+- WKF : Fix NPE when select a status field with selection which is not exist.
+- BANKORDER : Fix error when merge bankorders generated from expense
+- Studio: Fix translation for 'Order'
+- Multiple Stock Moves Invoicing: copy external reference from orders to invoice.
+- PERIOD : Fix NPE when date is null.
+- ACCOUNT : addition of action on '$balanceBtn' and separator for thousands.
+- SUBROGATION RELEASE : corrected subrogation release refund moves direction and removed the possibility to select a supplier invoice or a supplier refund in a subrogation realase.
+- SaleOrderLine : Fix functionality of Edit button of Sale Order.
+- PurchaseOrder: Add analytic move lines to generated purchase order.
+- Workflow: reset domain of model and json field when app builder is changed.
+- Move various fields and actions to convenient modules.
+- Studio: Fix targetModel list move, not saving last added element and breaking view on text selection.
+- VAT ON CASHING REPORT : report completely review and now similar to vat on debit report. 
+- Resolve the working of Open Street Map
+- EXPENSE : Improving exception message when expense line date is in the future
+- HELPDESK : Fix NPE when computing a total timer duration
+- BankStatementLineAFB120 : Fix Long index name issue with entity inheritance.
+- EXPENSE : Fix NPE when the RIB is not configured for the receiver
+- ACCOUNT CONFIG: New panel for forecasted invoice accounts
+- Sale Order: Forbid negative invoicing value.
+- Studio: Fix display of duplicate models and allow to select core models
+- LEAVE REQUEST : Fix NPE on date computation 
+- LEAVE REQUEST : Fix non explicit exception on leave line select.
+- RawMaterialRequirement report: fix sql query.
+- MOVE LINE : corrected display of reimbursement status.
+- Improve exception handling in leave request form.
+- TaxLine: tax field is now readonly and cannot be edited when selected.
+- Message: fix random NPE when sending emails asynchronously.
+- BUSINESS PROJECT REPORT : Refund in negative when printing financial reports
+- CUT OFF: correct message warning.
+- EXPENSE: corrected expense bank order, now if a expense bank order is cancel the expense is also cancel.
+- Expense : period / company not getting set on getOrCreateExpense method 
+- CUSTOMER : Wrong domain on action-view
+- BANK ORDER : for file format 320c, increased length of receiver name zone if it got greater then 35 characters to a max of 70 characters but in exchange reduced receiver address zone length.
+- TIMESHEET : fix computing of the total field 
+- REPORTING : Fix 'number of new customers' chart
+- Logistical Form: Fix npe on adding stock move line with no sale orders.
+- Removed word 'Agresso' from files.
+- Remove tracking on non existent fields.
+- EXPENSE : fix NPE on validate Expense.
+- PAYROLL PREPARATION: Fix leave days calculation
+- JOB COSTING : Fix division by zero error on financial report
+- Manuf Order: updating planned quantities correctly changes planned dates.
+- Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
+- Sale Order : Fix null on report for Unit field
 
 ## [5.1.7] - 2019-06-17
+## Features
 - USER : filter assigned to user in partner form
 - AVAILABITY REQUEST : error message if availableStock is less than realQty - reservedQty on stock move line
 
@@ -138,6 +358,8 @@ workshopStockLocation, workshopStockLocationFormula, defWorkshopStockLocationAsF
 - MRP FORECAST :change a status of MrpForecast object from 'Draft' to 'Confirmed' in demo data.
 - SALE / PURCHASE ORDER : New menus for orders awaiting for a stockmove
 - TRACKING : Added all fields for all apps and also for company's configuration
+- FISCAL POSTION DEMO DATA : set several tax equivalent with reverse charge to true.
+- MOVE LINE EXPORT : only validated move for FEC Administration
 
 ## Bug Fixes
 - STOCK MOVE : Added fr translation for 'Not Invoiced' tag
@@ -469,6 +691,7 @@ in progress manuf order and for bill of material, and add a prorata method for i
 - Translation : Fix english translation of accounting export types.
 - WAITING MODEL : change error message From Waiting model: com.axelor.apps.hr.db.LeaveRequest to Please set the email template to send.
 - ACCOUTING CUTOFF : NPE when stock move not linked to a saleOrder or purchaseOrder
+- PURCHASE ORDER : product code and product name
 
 ## [5.1.3] - 2019-02-21
 ## Features
@@ -623,6 +846,7 @@ Second is the automatically merge issue that create draft bank orders when we ge
 - INVOICES : alert message if no bank details in partner-form.
 - PartnerStockSettings : Added new field 'incoterm'.
 - User : add new M2O workshopStockLocation and fill workshop on new manuf order, prodProcess or a billOfMaterial
+- Tool module: code refactoring and update documentation.
 
 ## Bug Fixes
 - App builder: export/import of a MetaJsonModel.
@@ -1156,7 +1380,10 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - DataBackup : Handle Exception.
 - Purchase Order: remove save on loading purchase order form.
 
-[Unreleased 5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...dev
+
+[Unreleased 5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...dev
+[5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9
+[5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...v5.1.8
 [5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
 [5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
 [5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5

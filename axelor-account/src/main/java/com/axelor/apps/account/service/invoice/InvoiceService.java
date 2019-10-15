@@ -271,4 +271,6 @@ public interface InvoiceService {
   Pair<Integer, Integer> massVentilate(Collection<? extends Number> invoiceIds);
 
   public Boolean checkPartnerBankDetailsList(Invoice invoice);
+
+  public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
 }

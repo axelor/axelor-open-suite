@@ -669,6 +669,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
   }
 
   public void updateProductNetMass(LogisticalForm logisticalForm) {
+    BigDecimal totalNetMass = BigDecimal.ZERO;
     if (logisticalForm.getLogisticalFormLineList() != null) {
       for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
         if (logisticalFormLine.getStockMoveLine() != null
@@ -679,8 +680,11 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
           Product product =
               productRepository.find(logisticalFormLine.getStockMoveLine().getProduct().getId());
           logisticalFormLine.setUnitNetMass(product.getNetMass());
+          totalNetMass =
+              totalNetMass.add(logisticalFormLine.getQty().multiply(product.getNetMass()));
         }
       }
+      logisticalForm.setTotalNetMass(totalNetMass);
     }
   }
 }

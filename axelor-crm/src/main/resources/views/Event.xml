@@ -119,6 +119,7 @@
 			<field name="endDateTime" colSpan="3" onChange="action-event-method-compute-from-end-date-time"/>
 			<field name="allDay" colSpan="2"/>
 			<field name="duration" widget="duration" colSpan="2" onChange="action-event-method-compute-from-duration" x-big="true" hidden="true"/>
+			<static name="pastEventText" hidden="true" showIf="id &amp;&amp; $moment(startDateTime) &lt; $moment(todayDate)" colSpan="12"><![CDATA[<span class='label label-warning'>The selected date is in the past.</span>]]></static>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
@@ -217,6 +218,11 @@
     <action-method name="action-method-crm-event-assign-tome">
     	<call class="com.axelor.apps.crm.web.EventController" method="assignToMeEvent"/>
     </action-method>
+
+    <action-view name="dashlet.meeting" title="Meetings" model="com.axelor.apps.crm.db.Event">
+        <view type="grid" name="meeting-grid" />
+        <view type="form" name="meeting-form" />
+    </action-view>
 
     <action-method name="action-event-method-add-email-guest">
     	<call class="com.axelor.apps.base.web.ICalendarEventController" method="addEmailGuest"/>

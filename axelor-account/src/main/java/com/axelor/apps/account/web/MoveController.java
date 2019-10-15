@@ -236,4 +236,12 @@ public class MoveController {
       response.setValue("moveLineList", move.getMoveLineList());
     }
   }
+
+  public void filterPartner(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    if (move != null) {
+      String domain = moveService.filterPartner(move);
+      response.setAttr("partner", "domain", domain);
+    }
+  }
 }

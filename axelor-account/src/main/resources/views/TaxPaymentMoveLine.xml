@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="tax-payment-move-line-grid" editable="true" model="com.axelor.apps.account.db.TaxPaymentMoveLine" title="Tax payment move line list">
+		<field name="moveLine" width="135" readonly="true" hidden="true"/>
+		<field name="originTaxLine" readonly="true"/>
+		<field name="detailPaymentAmount" readonly="true" title="Base"/>
+		<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
+		<field name="taxAmount" readonly="true"/>
+		<field name="date" readonly="true"/>
+	</grid>
+	
+	<form name="tax-payment-move-line-form" model="com.axelor.apps.account.db.TaxPaymentMoveLine" title="Tax payment move line" >
+		<panel name="MainInformationsPanel" itemSpan="6">
+			<field name="moveLine" readonly="true"/>
+			<field name="originTaxLine" readonly="true"/>
+			<field name="detailPaymentAmount" readonly="true" title="Base"/>
+			<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
+			<field name="taxAmount" readonly="true"/>
+			<field name="date" readonly="true"/>
+		</panel>
+	</form>
+	
+	<action-method name="account-tax-payment-move-line-compute-tax-amount-method-on-change" model="com.axelor.apps.account.db.TaxPaymentMoveLine">
+		<call class="com.axelor.apps.account.web.TaxPaymentMoveLineController" method="computeTaxAmount"/>
+	</action-method>
+	    
+
+</object-views>

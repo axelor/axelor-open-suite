@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveAdjustementService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -61,6 +62,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected ReconcileSequenceService reconcileSequenceService;
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
+  protected MoveLineService moveLineService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -71,7 +73,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveAdjustementService moveAdjustementService,
       ReconcileSequenceService reconcileSequenceService,
       InvoicePaymentCancelService invoicePaymentCancelService,
-      InvoicePaymentCreateService invoicePaymentCreateService) {
+      InvoicePaymentCreateService invoicePaymentCreateService,
+      MoveLineService moveLineService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -81,6 +84,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.reconcileSequenceService = reconcileSequenceService;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
+    this.moveLineService = moveLineService;
   }
 
   /**
@@ -328,11 +332,15 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (debitInvoice != null) {
       InvoicePayment debitInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
+      moveLineService.generateTaxPaymentMoveLineList(
+          debitInvoicePayment, reconcile.getCreditMoveLine());
       debitInvoicePayment.setReconcile(reconcile);
     }
     if (creditInvoice != null) {
       InvoicePayment creditInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
+      moveLineService.generateTaxPaymentMoveLineList(
+          creditInvoicePayment, reconcile.getDebitMoveLine());
       creditInvoicePayment.setReconcile(reconcile);
     }
   }
@@ -388,9 +396,22 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
-
+    this.reverseTaxPaymentMoveLines(reconcile);
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
+  }
+
+  protected void reverseTaxPaymentMoveLines(Reconcile reconcile) throws AxelorException {
+    Move debitMove = reconcile.getDebitMoveLine().getMove();
+    Move creditMove = reconcile.getCreditMoveLine().getMove();
+    Invoice debitInvoice = debitMove.getInvoice();
+    Invoice creditInvoice = creditMove.getInvoice();
+    if (debitInvoice == null) {
+      moveLineService.reverseAllTaxPaymentMoveLine(reconcile.getDebitMoveLine());
+    }
+    if (creditInvoice == null) {
+      moveLineService.reverseAllTaxPaymentMoveLine(reconcile.getCreditMoveLine());
+    }
   }
 
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {

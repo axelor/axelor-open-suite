@@ -72,7 +72,7 @@
  		</bind>
  		
  		<bind node="fields/field" type="com.axelor.meta.db.MetaJsonField"  if="jsonModel == null"
- 			search="self.name = :name and self.model = :model and self.modelField = :modelField"
+ 			search="self.name = :name and self.model = :model and self.modelField = :modelField and self.jsonModel is null"
  			call="com.axelor.studio.service.ImportService:importJsonField" update="true">
  			<bind node="name" to="name" />
  			<bind node="title" to="title" />
@@ -314,8 +314,9 @@
 			<bind node="model" to="model" />
 			<bind node="isJson" to="isJson" alias="_isJson"/>
 			<bind node="jsonField" to="jsonField" />
+			<bind node="isTrackFlow" to="isTrackFlow"/>
 			<bind node="statusField" to="statusField" search="self.jsonModel.name = :model and self.name = :statusField" if="_isJson == 'true'" create="false" />
-			<bind node="statusField" to="statusField" search="self.model = :model and self.modelField = :jsonField and self.name = :statusField" if="_isJson == 'false'" create="false" />
+			<bind node="statusField" to="statusField" search="self.model = :model and self.modelField = :jsonField and self.name = :statusField and self.jsonModel is null" if="_isJson == 'false'" create="false" />
 			<bind node="displayTypeSelect" to="displayTypeSelect" />
 			<bind node="bpmnXml" to="bpmnXml" />
 			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"/>

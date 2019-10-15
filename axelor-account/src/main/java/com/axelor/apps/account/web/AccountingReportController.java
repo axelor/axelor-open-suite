@@ -194,10 +194,6 @@ public class AccountingReportController {
         }
       } else {
 
-        if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
-          typeSelect = AccountingReportRepository.REPORT_GENERAL_LEDGER;
-        }
-
         accountingReportService.setPublicationDateTime(accountingReport);
 
         String name =

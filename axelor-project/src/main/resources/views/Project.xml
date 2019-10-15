@@ -338,9 +338,9 @@
 					name="isProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
-				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 			</panel>
 			<panel if-module="axelor-business-project" name="project"
 				showIf="isProject" colSpan="12">
@@ -749,5 +749,10 @@
 		<view-param name="popup" value="reload"/>
 		<context name="_project" expr="eval:__this__"/>
 	</action-view>
+
+    <action-view name="dashlet.task" title="Tasks" model="com.axelor.apps.project.db.Project">
+        <view type="grid" name="task-grid" />
+        <view type="form" name="task-form" />
+    </action-view>
 
 </object-views>
