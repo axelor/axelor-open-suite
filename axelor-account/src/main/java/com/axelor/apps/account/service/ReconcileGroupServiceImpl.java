@@ -193,14 +193,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile)
       throws AxelorException {
-    List<Reconcile> reconcileList =
-        reconcileRepository
-            .all()
-            .filter(
-                "self.statusSelect = ?1 AND self.reconcileGroup.id = ?2",
-                ReconcileRepository.STATUS_CONFIRMED,
-                reconcileGroup.getId())
-            .fetch();
+    List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     reconcileList.add(reconcile);
     addToReconcileGroup(reconcileGroup, reconcile);
     if (isBalanced(reconcileList)) {
@@ -274,13 +267,12 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     reconcileGroupRepository.save(reconcileGroup);
   }
 
-  private List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup) {
+  protected List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup) {
     return reconcileRepository
         .all()
-        .filter(
-            "self.reconcileGroup = ?1 AND self.statusSelect != ?2",
-            reconcileGroup.getId(),
-            ReconcileRepository.STATUS_CANCELED)
+        .filter("self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :confirmed")
+        .bind("reconcileGroupId", reconcileGroup.getId())
+        .bind("confirmed", ReconcileRepository.STATUS_CONFIRMED)
         .fetch();
   }
 }
