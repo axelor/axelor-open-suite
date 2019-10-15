@@ -1746,6 +1746,7 @@
 "There is at least one advance payment or payment that can be imputed to this invoice.",,,
 "There is no configured sequence for final reconcile group","There is no configured sequence for final lettering",,
 "There is no configured sequence for temporary reconcile group","There is no configured sequence for temporary lettering",,
+"There is no taxes on this invoice. Do you want to proceed ?",,,
 "There's no accounting situation.",,,
 "This batch requires the bank payment module.",,,
 "This batch requires the human resources module.",,,

@@ -13,6 +13,7 @@
 - APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
 - Tax payment move lines: are canceled after unreconcile.
 - BANK ORDER : add bank name in grid view
+- INVOICE : add new message on validation if there is no tax line. 
 
 ## Bug Fixes
 - Employee : fix error on duplicate
