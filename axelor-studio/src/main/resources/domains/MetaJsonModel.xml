@@ -8,6 +8,7 @@
     <entity name="MetaJsonModel" table="META_JSON_MODEL">
         <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder" title="App builder" />
         <boolean name="showProcessTracking" title="Show process tracking" />
+        <string name="jsonFieldTracking" large="true" title="Field tracking"/>
     </entity>
 
 </domain-models>
