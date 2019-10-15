@@ -119,11 +119,11 @@
 	<string name="subscriptionComment" title="Comment" large="true" />
 	<string name="subscriptionText" title="Subscription text to display" large="true" />
 
-	<string name="invoiceComments" title="Description to display on invoice" large="true"/>
-	<string name="deliveryComments" title="Description to display on delivery" large="true"/>
-	<string name="pickingOrderComments" title="Description to display on picking order" large="true"/>
+	<string name="invoiceComments" title="Comment to display on invoice" large="true"/>
+	<string name="deliveryComments" title="Comment to display on delivery" large="true"/>
+	<string name="pickingOrderComments" title="Comment to display on picking order" large="true"/>
 	
-	<string name="proformaComments" title="Description to display on proforma" large="true"/>
+	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 	
  	<unique-constraint columns="saleOrderSeq,company"/>
 

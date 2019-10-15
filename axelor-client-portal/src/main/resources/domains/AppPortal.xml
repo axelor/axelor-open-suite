@@ -6,13 +6,13 @@
 
 	<entity name="AppPortal" lang="java" extends="App">
 
-		<boolean name="manageSaleOrders" title="Manage sale orders" default="false"/>
-		<boolean name="manageInvoices" title="Manage invoices" default="false"/>
-		<boolean name="manageTickets" title="Manage tickets" default="false"/>
-		<boolean name="manageProjects" title="Manage projects" default="false"/>
-		<boolean name="manageDelivery" title="Manage delivery" default="false"/>
-		<boolean name="canConfirmOnline" title="Can confirm online" default="false"/>
-		<boolean name="showCatalog" title="Display product catalog" default="false"/>
+		<boolean name="manageSaleOrders" title="Manage sale orders" default="true"/>
+		<boolean name="manageInvoices" title="Manage invoices" default="true"/>
+		<boolean name="manageTickets" title="Manage tickets" default="true"/>
+		<boolean name="manageProjects" title="Manage projects" default="true"/>
+		<boolean name="manageDelivery" title="Manage delivery" default="true"/>
+		<boolean name="canConfirmOnline" title="Can confirm online" default="true"/>
+		<boolean name="showCatalog" title="Display product catalog" default="true"/>
 		
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
 		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
