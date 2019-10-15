@@ -41,6 +41,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
@@ -70,6 +71,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineServiceSupplychain stockMoveLineSupplychainService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -80,7 +82,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
       StockMoveLineRepository stockMoveLineRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderRepository saleOrderRepository) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -90,6 +93,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineSupplychainService = stockMoveLineSupplychainService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -179,6 +183,18 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (isNeedingConformityCertificate) {
       stockMove.setSignatoryUser(
           stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
+    }
+
+    SupplyChainConfig supplychainConfig =
+        Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
+    if (supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(appBaseService.getTodayDate());
+    } else if (supplychainConfig.getDefaultEstimatedDate()
+            == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(
+          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     stockMoveService.plan(stockMove);
@@ -344,7 +360,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
-      BigDecimal requestedReservedQty = saleOrderLine.getRequestedReservedQty();
+      BigDecimal requestedReservedQty =
+          saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
       BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
@@ -522,5 +539,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
     return deliveryState;
+  }
+
+  public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
+    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+        && stockMove.getOriginId() != null) {
+      return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
+    } else {
+      return Optional.empty();
+    }
   }
 }

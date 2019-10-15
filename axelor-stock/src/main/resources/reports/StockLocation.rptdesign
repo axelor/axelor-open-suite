@@ -496,18 +496,313 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="StockLocationLineDS" id="4450">
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">location_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">location_id</text-property>
+                    <text-property name="heading">location_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">location_line_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">location_line_id</text-property>
+                    <text-property name="heading">location_line_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">location_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">location_name</text-property>
+                    <text-property name="heading">location_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_code</text-property>
+                    <text-property name="heading">product_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">current_qty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">current_qty</text-property>
+                    <text-property name="heading">current_qty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">unit_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">unit_code</text-property>
+                    <text-property name="heading">unit_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">sale_price</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">sale_price</text-property>
+                    <text-property name="heading">sale_price</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency_code</text-property>
+                    <text-property name="heading">currency_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_family</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_family</text-property>
+                    <text-property name="heading">product_family</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cost_price</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cost_price</text-property>
+                    <text-property name="heading">cost_price</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">wap</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">wap</text-property>
+                    <text-property name="heading">wap</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cost_type_select</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cost_type_select</text-property>
+                    <text-property name="heading">cost_type_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_display_sale_value_in_printing</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_display_sale_value_in_printing</text-property>
+                    <text-property name="heading">is_display_sale_value_in_printing</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_display_accounting_value_in_printing</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
+                    <text-property name="heading">is_display_accounting_value_in_printing</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_display_ag_price_in_printing</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_display_ag_price_in_printing</text-property>
+                    <text-property name="heading">is_display_ag_price_in_printing</text-property>
+                </structure>
+            </list-property>
             <list-property name="filter"/>
             <list-property name="parameters"/>
-            <structure name="cachedMetaData"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">location_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">location_line_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">location_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">product_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">product_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">current_qty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">unit_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">sale_price</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">currency_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">product_family</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">cost_price</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">wap</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">cost_type_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">is_display_sale_value_in_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">is_display_accounting_value_in_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">is_display_ag_price_in_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
             <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"])]]></method>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">location_id</property>
+                    <property name="nativeName">location_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">location_line_id</property>
+                    <property name="nativeName">location_line_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">location_name</property>
+                    <property name="nativeName">location_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">product_name</property>
+                    <property name="nativeName">product_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">product_code</property>
+                    <property name="nativeName">product_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">current_qty</property>
+                    <property name="nativeName">current_qty</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">unit_code</property>
+                    <property name="nativeName">unit_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">sale_price</property>
+                    <property name="nativeName">sale_price</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">currency_code</property>
+                    <property name="nativeName">currency_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">product_family</property>
+                    <property name="nativeName">product_family</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">cost_price</property>
+                    <property name="nativeName">cost_price</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">wap</property>
+                    <property name="nativeName">wap</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">cost_type_select</property>
+                    <property name="nativeName">cost_type_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">is_display_sale_value_in_printing</property>
+                    <property name="nativeName">is_display_sale_value_in_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">is_display_accounting_value_in_printing</property>
+                    <property name="nativeName">is_display_accounting_value_in_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">is_display_ag_price_in_printing</property>
+                    <property name="nativeName">is_display_ag_price_in_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+            </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 	Location.id as location_id, StockLocationLine.id as location_line_id, Location.name as location_name, Product.name AS product_name,
 		Product.code AS product_code, StockLocationLine.current_qty, Unit.name as unit_code, Product.sale_price,
 		Currency.code AS currency_code, ProductFamily.name as product_family,
 		(CASE WHEN Product.cost_type_select = 3 THEN StockLocationLine.avg_price ELSE Product.cost_price END) as "cost_price",
-		StockLocationLine.avg_price as "wap", Product.cost_type_select
+		StockLocationLine.avg_price as "wap", Product.cost_type_select,
+		StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
+		StockConfig.is_display_ag_price_in_printing
 FROM 
 	stock_stock_location as Location 
 LEFT OUTER JOIN 
@@ -520,6 +815,8 @@ LEFT JOIN
 	base_unit AS Unit ON (Unit.id = Product.unit)
 LEFT JOIN 
 	base_company AS Company ON (Company.id = Location.company)
+LEFT OUTER JOIN 
+	stock_stock_config AS StockConfig ON (StockConfig.company = Company.id) 
 LEFT JOIN 
 	base_currency AS Currency ON (Currency.id = Company.currency)
 where StockLocationLine.current_qty != 0	and Location.type_select in (1,2) and Location.id in (@INJECTID)
@@ -695,31 +992,19 @@ order by Product.code
                 </structure>
             </list-property>
             <column id="3343">
-                <property name="width">1.8in</property>
-            </column>
-            <column id="3344">
-                <property name="width">0.9166666666666666in</property>
-            </column>
-            <column id="3345">
-                <property name="width">0.9583333333333334in</property>
-            </column>
-            <column id="3346">
-                <property name="width">0.2in</property>
+                <property name="width">20%</property>
             </column>
             <column id="3347">
-                <property name="width">1.8in</property>
-            </column>
-            <column id="3348">
-                <property name="width">5.1cm</property>
+                <property name="width">80%</property>
             </column>
             <row id="3349">
                 <property name="height">1.2in</property>
                 <cell id="3350">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <image id="3419">
-                        <property name="height">86px</property>
-                        <property name="width">318px</property>
+                        <property name="height">69px</property>
+                        <property name="width">140px</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
@@ -731,14 +1016,10 @@ order by Product.code
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                     </image>
                 </cell>
-                <cell id="4032">
+                <cell id="4400">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
-                    <property name="verticalAlign">top</property>
-                </cell>
-                <cell id="4400">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
+                    <property name="textAlign">center</property>
                     <property name="verticalAlign">top</property>
                     <text id="3804">
                         <property name="fontSize">18pt</property>
@@ -772,142 +1053,9 @@ order by Product.code
                     </text>
                 </cell>
             </row>
-            <row id="4042">
-                <property name="verticalAlign">middle</property>
-                <property name="height">0.635cm</property>
-                <cell id="4043">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="backgroundColor">#606062</property>
-                    <property name="color">#FFFFFF</property>
-                    <property name="textAlign">center</property>
-                    <text id="4081">
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'StockLocation.date'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4408">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4446">
-                        <property name="marginLeft">3pt</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy kk:mm">new Date()</VALUE-OF> ]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4407"/>
-                <cell id="4221">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="color">#FFFFFF</property>
-                    <property name="textAlign">left</property>
-                </cell>
-                <cell id="4345"/>
-            </row>
-            <row id="4416">
-                <property name="height">0.15in</property>
-                <cell id="4417"/>
-                <cell id="4418"/>
-                <cell id="4419"/>
-                <cell id="4420"/>
-                <cell id="4421"/>
-                <cell id="4422"/>
-            </row>
-            <row id="4066">
-                <property name="verticalAlign">middle</property>
-                <property name="height">0.635cm</property>
-                <list-property name="visibility"/>
-                <cell id="4067">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="backgroundColor">#606062</property>
-                    <property name="color">#FFFFFF</property>
-                    <text id="4412">
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">if( row["raw_count"] ==  1){
-'StockLocation.location'
-}else{
-'StockLocation.locations'
-}</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4410">
-                    <property name="colSpan">5</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4447">
-                        <property name="marginLeft">3pt</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["Locations"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="4423">
-                <property name="height">0.15in</property>
-                <cell id="4424"/>
-                <cell id="4425"/>
-                <cell id="4426"/>
-                <cell id="4427"/>
-                <cell id="4428"/>
-                <cell id="4429"/>
-            </row>
         </grid>
-        <grid id="4452">
-            <property name="height">1.74625cm</property>
-            <property name="dataSet">StockLocationLineDS</property>
+        <grid id="5284">
+            <property name="dataSet">StockLocationDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">location_id</property>
@@ -916,86 +1064,10 @@ order by Product.code
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">location_line_id</property>
-                    <text-property name="displayName">location_line_id</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["location_line_id"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">product_name</property>
-                    <text-property name="displayName">product_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
+                    <property name="name">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">product_code</property>
-                    <text-property name="displayName">product_code</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["product_code"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">current_qty</property>
-                    <text-property name="displayName">current_qty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["current_qty"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">unit_code</property>
-                    <text-property name="displayName">unit_code</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["unit_code"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">sale_price</property>
-                    <text-property name="displayName">sale_price</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["sale_price"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">currency_code</property>
-                    <text-property name="displayName">currency_code</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["currency_code"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">cost_price</property>
-                    <text-property name="displayName">cost_price</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["cost_price"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">wap</property>
-                    <text-property name="displayName">wap</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["wap"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">totalSalePrice</property>
-                    <text-property name="displayName">Total Sale Value</text-property>
-                    <property name="dataType">float</property>
-                    <property name="aggregateFunction">SUM</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["sale_price"] * dataSetRow["current_qty"]</expression>
-                        </structure>
-                    </list-property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">totalAccountingValue</property>
-                    <text-property name="displayName">Total Accounting Value</text-property>
-                    <property name="dataType">float</property>
-                    <property name="aggregateFunction">SUM</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">if(dataSetRow["current_qty"] != null  &amp;&amp;  dataSetRow["sale_price"] != null){
-dataSetRow["current_qty"] * dataSetRow["sale_price"]
-}</expression>
-                        </structure>
-                    </list-property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">location_name</property>
@@ -1004,242 +1076,421 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">totalAccountValue</property>
-                    <text-property name="displayName">Total Account Value</text-property>
-                    <property name="dataType">float</property>
-                    <property name="aggregateFunction">SUM</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["current_qty"] * (dataSetRow["cost_type_select"] == 3 ? dataSetRow["avg_price"] : dataSetRow["cost_price"])</expression>
-                        </structure>
-                    </list-property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">cost_type_select</property>
-                    <text-property name="displayName">cost_type_select</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["cost_type_select"]</expression>
+                    <property name="name">raw_count</property>
+                    <text-property name="displayName">raw_count</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["raw_count"]</expression>
                     <property name="dataType">integer</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">TotalWapPrice</property>
-                    <text-property name="displayName">Total Wap Value</text-property>
-                    <property name="dataType">float</property>
-                    <property name="aggregateFunction">SUM</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">dataSetRow["wap"] * dataSetRow["current_qty"]</expression>
-                        </structure>
-                    </list-property>
-                    <property name="allowExport">true</property>
+                    <property name="name">Locations</property>
+                    <text-property name="displayName">Locations</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Locations"]</expression>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <column id="4453">
-                <property name="width">1.8in</property>
-            </column>
-            <column id="4454">
-                <property name="width">1.115in</property>
-            </column>
-            <column id="4455">
-                <property name="width">1in</property>
-            </column>
-            <column id="4456">
-                <property name="width">1.8in</property>
-            </column>
-            <column id="4457">
-                <property name="width">1.1145833333333333in</property>
-            </column>
-            <column id="4458">
-                <property name="width">1in</property>
-            </column>
-            <row id="4459">
-                <property name="verticalAlign">middle</property>
-                <property name="height">0.635cm</property>
-                <cell id="4460">
-                    <property name="backgroundColor">#606062</property>
-                    <property name="color">#FFFFFF</property>
-                    <text id="4415">
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'StockLocation.totalAccountingValue'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
+            <column id="5285"/>
+            <row id="5287">
+                <cell id="5288">
+                    <grid id="5290">
+                        <property name="dataSet">StockLocationLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="name">location_id</property>
+                                <text-property name="displayName">location_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["location_id"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">location_line_id</property>
+                                <text-property name="displayName">location_line_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["location_line_id"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">location_name</property>
+                                <text-property name="displayName">location_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["location_name"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="name">product_name</property>
+                                <text-property name="displayName">product_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
                                 <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">product_code</property>
+                                <text-property name="displayName">product_code</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["product_code"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">current_qty</property>
+                                <text-property name="displayName">current_qty</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["current_qty"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">unit_code</property>
+                                <text-property name="displayName">unit_code</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["unit_code"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sale_price</property>
+                                <text-property name="displayName">sale_price</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["sale_price"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">currency_code</property>
+                                <text-property name="displayName">currency_code</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency_code"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">product_family</property>
+                                <text-property name="displayName">product_family</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["product_family"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">cost_price</property>
+                                <text-property name="displayName">cost_price</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["cost_price"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">wap</property>
+                                <text-property name="displayName">wap</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["wap"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">cost_type_select</property>
+                                <text-property name="displayName">cost_type_select</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["cost_type_select"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">is_display_sale_value_in_printing</property>
+                                <text-property name="displayName">is_display_sale_value_in_printing</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["is_display_sale_value_in_printing"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">is_display_accounting_value_in_printing</property>
+                                <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["is_display_accounting_value_in_printing"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalSaleValue</property>
+                                <text-property name="displayName">Total Sale Value</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["sale_price"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalSalePrice</property>
+                                <text-property name="displayName">Total Sale Value</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["sale_price"] * row["current_qty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalWapPrice</property>
+                                <text-property name="displayName">Total Wap Value</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["wap"] * row["current_qty"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">totalAccountValue</property>
+                                <text-property name="displayName">Total Account Value</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["current_qty"] * row["cost_price"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4461">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <data id="4529">
-                        <property name="fontWeight">bold</property>
-                        <property name="marginLeft">2pt</property>
-                        <structure name="numberFormat">
-                            <property name="category">Custom</property>
-                            <property name="pattern">###,##0.00</property>
-                        </structure>
-                        <property name="textAlign">right</property>
-                        <property name="resultSetColumn">totalAccountValue</property>
-                    </data>
-                </cell>
-                <cell id="4625">
-                    <text id="4628">
-                        <property name="fontWeight">bold</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4463">
-                    <property name="color">#FFFFFF</property>
-                </cell>
-                <cell id="4464">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="fontWeight">bold</property>
-                </cell>
-                <cell id="4626">
-                    <property name="fontWeight">bold</property>
-                </cell>
-            </row>
-            <row id="4466">
-                <property name="height">0.15in</property>
-                <cell id="4467"/>
-                <cell id="4468"/>
-                <cell id="4469"/>
-                <cell id="4470"/>
-                <cell id="4471"/>
-                <cell id="4472"/>
-            </row>
-            <row id="4652">
-                <property name="verticalAlign">middle</property>
-                <property name="height">0.635cm</property>
-                <cell id="4653">
-                    <property name="backgroundColor">#606062</property>
-                    <text id="4659">
-                        <property name="color">white</property>
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'StockLocation.totalWapValue'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4654">
-                    <data id="4661">
-                        <structure name="numberFormat">
-                            <property name="category">Custom</property>
-                            <property name="pattern">###,##0.00</property>
-                        </structure>
-                        <property name="textAlign">right</property>
-                        <property name="resultSetColumn">TotalWapPrice</property>
-                    </data>
-                </cell>
-                <cell id="4655">
-                    <text id="4660">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4656">
-                    <property name="backgroundColor">#606062</property>
-                    <text id="4413">
-                        <property name="color">white</property>
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'StockLocation.totalSaleValue'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">key</property>
-                                <text-property name="displayName">key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4657">
-                    <data id="4481">
-                        <property name="marginLeft">3pt</property>
-                        <structure name="numberFormat">
-                            <property name="category">Custom</property>
-                            <property name="pattern">###,##0.00</property>
-                        </structure>
-                        <property name="textAlign">right</property>
-                        <property name="resultSetColumn">totalSalePrice</property>
-                    </data>
-                </cell>
-                <cell id="4658">
-                    <text id="4627">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <column id="5291">
+                            <property name="width">50%</property>
+                        </column>
+                        <column id="5308">
+                            <property name="width">50%</property>
+                        </column>
+                        <row id="5292">
+                            <cell id="5293">
+                                <text id="5298">
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'StockLocation.date'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy kk:mm">new Date()</VALUE-OF> ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="5305">
+                                <property name="colSpan">1</property>
+                                <property name="rowSpan">3</property>
+                                <grid id="5338">
+                                    <column id="5339"/>
+                                    <row id="5351">
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <cell id="5352">
+                                            <text id="5354">
+                                                <property name="marginTop">0pt</property>
+                                                <property name="marginLeft">2pt</property>
+                                                <property name="marginRight">0pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="display">inline</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">'StockLocation.totalAccountingValue'</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">key</property>
+                                                        <text-property name="displayName">key</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
+                                            </text>
+                                            <data id="5355">
+                                                <structure name="numberFormat">
+                                                    <property name="category">Custom</property>
+                                                    <property name="pattern">###,##0.00</property>
+                                                </structure>
+                                                <property name="display">inline</property>
+                                                <property name="resultSetColumn">totalAccountValue</property>
+                                            </data>
+                                            <text id="5358">
+                                                <property name="paddingLeft">2pt</property>
+                                                <property name="display">inline</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                    <row id="5340">
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["is_display_sale_value_in_printing"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <cell id="5341">
+                                            <text id="5346">
+                                                <property name="color">black</property>
+                                                <property name="marginTop">0pt</property>
+                                                <property name="marginLeft">2pt</property>
+                                                <property name="marginRight">0pt</property>
+                                                <property name="textAlign">left</property>
+                                                <property name="display">inline</property>
+                                                <property name="dataSet">TranslateDS</property>
+                                                <list-property name="paramBindings">
+                                                    <structure>
+                                                        <property name="paramName">param_1</property>
+                                                        <simple-property-list name="expression">
+                                                            <value type="javascript">'StockLocation.totalSaleValue'</value>
+                                                        </simple-property-list>
+                                                    </structure>
+                                                </list-property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">key</property>
+                                                        <text-property name="displayName">key</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                    <structure>
+                                                        <property name="name">translation</property>
+                                                        <text-property name="displayName">translation</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                        <property name="dataType">string</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
+                                            </text>
+                                            <data id="5347">
+                                                <property name="paddingLeft">2pt</property>
+                                                <structure name="numberFormat">
+                                                    <property name="category">Custom</property>
+                                                    <property name="pattern">###,##0.00</property>
+                                                </structure>
+                                                <property name="display">inline</property>
+                                                <property name="resultSetColumn">totalSalePrice</property>
+                                            </data>
+                                            <text id="5348">
+                                                <property name="paddingLeft">2pt</property>
+                                                <property name="display">inline</property>
+                                                <property name="contentType">html</property>
+                                                <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                                            </text>
+                                        </cell>
+                                    </row>
+                                </grid>
+                            </cell>
+                        </row>
+                        <row id="5294">
+                            <cell id="5295">
+                                <text id="5299">
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">if( row._outer["raw_count"] ==  1){
+'StockLocation.location'
+}else{
+'StockLocation.locations'
+}</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer._outer["Locations"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5296">
+                            <cell id="5297">
+                                <text id="5300">
+                                    <property name="color">black</property>
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'StockLocation.totalWapValue'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
+                                </text>
+                                <data id="5349">
+                                    <property name="marginLeft">2pt</property>
+                                    <structure name="numberFormat">
+                                        <property name="category">Custom</property>
+                                        <property name="pattern">###,##0.00</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">totalWapPrice</property>
+                                </data>
+                                <text id="5350">
+                                    <property name="paddingLeft">2pt</property>
+                                    <property name="display">inline</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
                 </cell>
             </row>
         </grid>
@@ -1430,6 +1681,44 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">is_display_sale_value_in_printing</property>
+                    <text-property name="displayName">is_display_sale_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_sale_value_in_printing"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_accounting_value_in_printing</property>
+                    <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_accounting_value_in_printing"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">cost_type_select</property>
+                    <text-property name="displayName">cost_type_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cost_type_select"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_sale_value_in_printing_1</property>
+                    <text-property name="displayName">is_display_sale_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_sale_value_in_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_accounting_value_in_printing_1</property>
+                    <text-property name="displayName">is_display_accounting_value_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_accounting_value_in_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">is_display_ag_price_in_printing</property>
+                    <text-property name="displayName">is_display_ag_price_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_ag_price_in_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -1451,12 +1740,30 @@ dataSetRow["current_qty"] * dataSetRow["sale_price"]
                 <property name="width">1.5cm</property>
             </column>
             <column id="4506">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_sale_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">3.1cm</property>
             </column>
             <column id="4557">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">3.1cm</property>
             </column>
             <column id="4639">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">!row["is_display_ag_price_in_printing"]</expression>
+                    </structure>
+                </list-property>
                 <property name="width">3.1cm</property>
             </column>
             <header>

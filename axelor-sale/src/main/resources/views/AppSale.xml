@@ -16,11 +16,17 @@
             <field name="closeOpportunityUponSaleOrderConfirmation" widget="boolean-switch"/><field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
             <field name="salemanSelect"/>
             <field name="enableCustomerCatalogMgt" widget="boolean-switch"/>
+            <field name="isDisplaySaleOrderLineNumber" widget="boolean-switch"/>
 		</panel>
 		<panel name="actionsPanel">
 			<button name="generateSaleConfigurationsBtn" colSpan="4" title="Generate sale configurations" onClick="save,com.axelor.apps.sale.web.AppSaleController:generateSaleConfigurations"/>
 			<panel-dashlet name="saleConfigPanel" action="admin.root.conf.sale.config" colSpan="12"/>
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-view name="admin.root.conf.sale.config" title="Sale configurations"

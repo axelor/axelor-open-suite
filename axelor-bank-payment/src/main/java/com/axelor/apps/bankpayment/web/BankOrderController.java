@@ -248,12 +248,22 @@ public class BankOrderController {
       ActionRequest actionRequest, ActionResponse response) {
     try {
       String linesDomain = (String) actionRequest.getContext().get("_linesDomain");
-      System.out.println(linesDomain);
       response.setView(
           bankOrderService
               .buildBankOrderLineView(
-                  "bank-order-line-grid-bank-to-bank", "bank-order-line-form", linesDomain)
+                  "bank-order-line-bank-to-bank-grid", "bank-order-line-form", linesDomain)
               .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancel(ActionRequest request, ActionResponse response) {
+    try {
+      BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+      bankOrder = bankOrderRepo.find(bankOrder.getId());
+      bankOrderService.cancelBankOrder(bankOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

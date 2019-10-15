@@ -13,7 +13,7 @@
                 <item title="See quotation lines" action="purchase-order-see-quotation-lines" />
             </menu>
         </menubar>
-		<field name="purchaseOrderSeq"/>
+		<field name="purchaseOrderSeq" width="120"/>
 		<field name="company"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -35,7 +35,7 @@
                 <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
             </menu>
         </menubar>
-		<field name="purchaseOrderSeq"/>
+		<field name="purchaseOrderSeq" width="120"/>
 		<field name="company"/>
 		<field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -49,7 +49,7 @@
     </grid>
 
     <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid" title="Supplier RFQs/POs" model="com.axelor.apps.purchase.db.PurchaseOrder">
-		  <field name="purchaseOrderSeq"/>
+		  <field name="purchaseOrderSeq" width="120"/>
 		  <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		  <field name="externalReference"/>
 		  <field name="orderDate"/>
@@ -121,7 +121,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="supplierPartner == null">
 			<panel name="contentPanel" title="Content" colSpan="12">
-				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" readonlyIf="statusSelect == 4" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
+				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
 			</panel>
 			<panel name="taxPanel" title="Tax" colSpan="12">
@@ -150,7 +150,7 @@
 			</panel>
 			<panel name="budgetDistributionPanel" title="Budget distribution" if="__config__.app.isApp('budget')" showIf="statusSelect &lt;= 2" if-module="axelor-supplychain">
 				<field name="budget"/>
-				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
+				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all,save" readonlyIf="!budget"/>
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
@@ -173,7 +173,6 @@
 			<button name="requestedBtn" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="newVersionBtn" title="New version" showIf="statusSelect == 2" onClick="save,action-purchase-record-newVersion,save" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
 			<button name="validateBtn" title="Validate" showIf="statusSelect == 2"   onClick="action-group-purchase-order-on-validate-actions"/>
-			<button name="completedBtn" title="CompletedButton" showIf="statusSelect == 3" prompt="Are you sure you want complete the order ? Then you can't update it"  onClick="action-purchase-order-record-completed,save" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))"/>
 			<button name="generateSupplierStockMoveBtn" title="Generate supplier arrival" showIf="statusSelect == 3 || statusSelect == 4" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getSupplStockMoveMgtOnPO() &amp;&amp; !__config__.app.getApp('supplychain').getSupplierStockMoveGenerationAuto()" onClick="save,action-purchase-order-create-stock-move" if-module="axelor-supplychain" />
 			<button name="generateInvoiceBtn" title="Generate control invoice" showIf="statusSelect == 3" onClick="save,action-purchase-order-method-generate-control-invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder" if-module="axelor-supplychain"/>
 			<button name="showInvoiceBtn" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -400,6 +399,8 @@
     </action-group>
 
     <action-group name="action-group-purchase-order-on-validate-actions">
+      <action name="action-purchase-order-method-check-analytic-distribution-template"/>
+    	<action name="action-purchase-order-validate-purchase-order-line"/>
     	<action name="action-purchase-order-validate-stock-location"/>
     	<action name="save"/>
     	<action name="action-purchase-order-method-validate"/>
@@ -422,8 +423,7 @@
 	
 	<action-group name="action-group-purchase-order-cancel">
 		<action name="action-purchase-order-method-cancel-receipt" if="statusSelect==3"/>
-		<action name="action-purchase-order-record-cancel"/>
-		<action name="save"/>
+		<action name="action-purchase-order-method-cancel"/>
 	</action-group>
 	
 	<action-method name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain">
@@ -514,10 +514,6 @@
     	<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="requestPurchaseOrder"/>
     </action-method>
 
-    <action-record name="action-purchase-order-record-completed" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="statusSelect" expr="4"/>
-    </action-record>
-
     <action-record name="action-purchase-order-record-cancel" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="5"/>
     </action-record>
@@ -548,6 +544,10 @@
 
 	<action-method name="action-purchase-order-method-validate">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validate"/>
+	</action-method>
+
+	<action-method name="action-purchase-order-method-cancel">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="cancel"/>
 	</action-method>
     
     <action-attrs name="action-purchase-order-attrs-hide-contact-partner">
@@ -593,7 +593,11 @@
   	<action-validate name="action-purchase-order-validate-stock-location">
    		<error message="The field 'Stock Location' must be filled." if="stockLocation == null"/>
 	</action-validate>
-
+	
+	<action-validate name="action-purchase-order-validate-purchase-order-line">
+		<error message="Please enter at least one detail line." if="purchaseOrderLineList?.isEmpty()"/>
+	</action-validate>
+	
 	<action-record name="action-purchase-record-newVersion" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="versionNumber" expr="eval: versionNumber + 1"/>
@@ -680,4 +684,7 @@
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(PurchaseOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
 
+  <action-method name="action-purchase-order-method-check-analytic-distribution-template">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="checkPurchaseOrderAnalyticDistributionTemplate" if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
+  </action-method>
 </object-views>

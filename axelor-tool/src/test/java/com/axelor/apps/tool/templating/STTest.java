@@ -150,8 +150,8 @@ public class STTest {
       Assert.assertEquals(contentFinal, result);
     }
 
-    // Assert test total time < 10s
-    Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 10);
+    // Assert test total time < 15s
+    Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
   }
 
   @Test
@@ -178,8 +178,8 @@ public class STTest {
         Assert.assertEquals(contentFinal, result);
       }
 
-      // Assert test total time < 10s
-      Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 10);
+      // Assert test total time < 15s
+      Assert.assertTrue(((System.currentTimeMillis() - start) / 1000) < 15);
     }
   }
 }

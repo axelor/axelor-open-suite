@@ -26,6 +26,15 @@
    		]]>
 	  </extra-code>
 
+		<track>
+			<field name="company" on="UPDATE"/>
+			<field name="stockMoveRealizeOrderSelect" on="UPDATE"/>
+			<field name="manufOrderSequence" on="UPDATE"/>
+			<field name="finishMoAutomaticEmail" on="UPDATE"/>
+			<field name="finishMoMessageTemplate" on="UPDATE"/>
+			<field name="partFinishMoAutomaticEmail" on="UPDATE"/>
+			<field name="partFinishMoMessageTemplate" on="UPDATE"/>
+		</track>
 
   </entity>
   

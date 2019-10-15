@@ -17,6 +17,36 @@
     <boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"/>
     <boolean name="autoAllocateOnAllocation" title="Auto allocate stock on other stock moves" help="If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves."/>
     <boolean name="autoRequestReservedQty" title="Auto request reserved qty" help="If true, the requested quantity for reservation will be equal to the quantity of the given sale order line."/>
+    <boolean name="autoAllocateOnAvailabilityRequest" title="Auto allocate during an availability request"/>
+    
+    <integer name="defaultEstimatedDate" title="Default estimated date in stock move from sale order" selection="supplychain.estimated.date.select" default="1"/>
+    
+    <decimal name="numberOfDays" title="Number of days" min="0" />
+
+    <integer name="defaultEstimatedDateForPurchaseOrder" title="Default estimated date in stock move from purchase order" selection="supplychain.estimated.date.select" default="1" />
+    
+    <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0" />
+
+    <extra-code><![CDATA[
+
+      // Default estimated Date
+      public static final int CURRENT_DATE = 0;
+      public static final int EMPTY_DATE = 1;
+      public static final int CURRENT_DATE_PLUS_DAYS = 2;
+
+    ]]></extra-code>
+
+    <track>
+    	<field name="hasOutSmForStorableProduct" on="UPDATE"/>
+    	<field name="hasOutSmForNonStorableProduct" on="UPDATE"/>
+    	<field name="hasInSmForStorableProduct" on="UPDATE"/>
+    	<field name="hasInSmForNonStorableProduct" on="UPDATE"/>
+    	
+    	<field name="autoAllocateOnReceipt" on="UPDATE"/>
+    	<field name="autoAllocateOnAllocation" on="UPDATE"/>
+    	<field name="autoRequestReservedQty" on="UPDATE"/>
+    </track>
+    
   </entity>
   
 </domain-models>

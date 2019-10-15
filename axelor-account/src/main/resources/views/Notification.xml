@@ -7,7 +7,7 @@
 		name="notification-grid" orderBy="-paymentDate,-subrogationRelease">
 		<field name="factorPartner" />
 		<field name="paymentDate" />
-		<field name="subrogationRelease" />
+		<field name="subrogationRelease" width="120"/>
 		<field name="statusSelect" />
 	</grid>
 

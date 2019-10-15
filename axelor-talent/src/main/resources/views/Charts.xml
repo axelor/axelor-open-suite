@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
-	<chart name="chart.employee.training.per.category" title="Training per category">
+	<chart name="chart.employee.training.per.category"  title="Training per category">
   		<dataset type="jpql"><![CDATA[
 		SELECT
 			COUNT(*) AS _total,
@@ -13,6 +13,7 @@
 			TrainingRegister self
 		WHERE
 			YEAR(self.fromDate) >= (YEAR(CURRENT_DATE)-3)
+			AND self.employee =:id
 		GROUP BY
 			self.training.category.name,
 			YEAR(self.fromDate)

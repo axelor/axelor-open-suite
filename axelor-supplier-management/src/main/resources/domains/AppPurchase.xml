@@ -5,7 +5,11 @@
 	<module name="base" package="com.axelor.apps.base.db"/>
 
 	<entity name="AppPurchase" lang="java" extends="App">
-		<boolean name="supplierRequestMgt" title="Supplier request management"/>
+		<boolean name="supplierRequestMgt" title="Manage supplier consultations"/>
+		
+		<track>
+			<field name="supplierRequestMgt" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

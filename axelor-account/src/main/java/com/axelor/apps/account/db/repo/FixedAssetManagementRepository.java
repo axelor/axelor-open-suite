@@ -58,4 +58,15 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
       Beans.get(FixedAssetService.class).generateAndcomputeLines(fixedAsset);
     }
   }
+
+  @Override
+  public FixedAsset copy(FixedAsset entity, boolean deep) {
+
+    FixedAsset copy = super.copy(entity, deep);
+    copy.setStatusSelect(STATUS_DRAFT);
+    copy.setReference(null);
+    copy.setResidualValue(entity.getGrossValue());
+    copy.setFixedAssetLineList(null);
+    return copy;
+  }
 }

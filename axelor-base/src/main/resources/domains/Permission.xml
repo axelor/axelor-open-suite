@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="auth" package="com.axelor.auth.db"/>
+
+  <entity name="Permission" cachable="true">
+
+		<track>
+			<field name="name"/>
+			<field name="object"/>
+			<field name="canRead"/>
+			<field name="canWrite"/>
+			<field name="canCreate"/>
+			<field name="canRemove"/>
+			<field name="canExport"/>
+			<field name="condition"/>
+			<field name="conditionParams"/>
+		</track>
+
+  </entity>
+
+</domain-models>

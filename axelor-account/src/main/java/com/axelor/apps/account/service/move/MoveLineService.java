@@ -23,19 +23,23 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.PaymentService;
@@ -43,9 +47,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -62,6 +70,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +86,8 @@ public class MoveLineService {
   protected AppAccountService appAccountService;
   protected CurrencyService currencyService;
   protected CompanyConfigService companyConfigService;
+  protected MoveLineRepository moveLineRepository;
+  protected TaxPaymentMoveLineService taxPaymentMoveLineService;
 
   public static final boolean IS_CREDIT = false;
   public static final boolean IS_DEBIT = true;
@@ -89,7 +100,9 @@ public class MoveLineService {
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       CurrencyService currencyService,
-      CompanyConfigService companyConfigService) {
+      CompanyConfigService companyConfigService,
+      MoveLineRepository moveLineRepository,
+      TaxPaymentMoveLineService taxPaymentMoveLineService) {
     this.accountManagementService = accountManagementService;
     this.taxAccountService = taxAccountService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -97,6 +110,8 @@ public class MoveLineService {
     this.appAccountService = appAccountService;
     this.currencyService = currencyService;
     this.companyConfigService = companyConfigService;
+    this.moveLineRepository = moveLineRepository;
+    this.taxPaymentMoveLineService = taxPaymentMoveLineService;
   }
 
   public MoveLine computeAnalyticDistribution(MoveLine moveLine) {
@@ -304,7 +319,8 @@ public class MoveLineService {
         counter,
         debit,
         credit,
-        this.determineDescriptionMoveLine(move.getJournal(), origin, description),
+        StringTool.cutTooLongString(
+            this.determineDescriptionMoveLine(move.getJournal(), origin, description)),
         origin,
         currencyRate.setScale(5, RoundingMode.HALF_EVEN),
         amountInSpecificMoveCurrency,
@@ -931,9 +947,53 @@ public class MoveLineService {
    *
    * @param moveLineList
    */
+  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList) {
+
+    List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
+    List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
+
+    Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
+
+    populateCredit(moveLineMap, reconciliableCreditMoveLineList);
+
+    populateDebit(moveLineMap, reconciliableDebitMoveLineList);
+
+    Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
+
+    PaymentService paymentService = Beans.get(PaymentService.class);
+
+    for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
+      try {
+        moveLineLists = this.findMoveLineLists(moveLineLists);
+        this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+        log.debug(e.getMessage());
+      } finally {
+        JPA.clear();
+      }
+    }
+  }
+
+  protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
+    List<MoveLine> fetchedDebitMoveLineList =
+        moveLineLists
+            .getLeft()
+            .stream()
+            .map(moveLine -> moveLineRepository.find(moveLine.getId()))
+            .collect(Collectors.toList());
+    List<MoveLine> fetchedCreditMoveLineList =
+        moveLineLists
+            .getRight()
+            .stream()
+            .map(moveLine -> moveLineRepository.find(moveLine.getId()))
+            .collect(Collectors.toList());
+    return Pair.of(fetchedDebitMoveLineList, fetchedCreditMoveLineList);
+  }
+
   @Transactional
   public void reconcileMoveLines(List<MoveLine> moveLineList) {
-
     List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
     List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
 
@@ -955,6 +1015,19 @@ public class MoveLineService {
       paymentService.useExcessPaymentOnMoveLinesDontThrow(
           companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
     }
+  }
+
+  @Transactional
+  protected void useExcessPaymentOnMoveLinesDontThrow(
+      Comparator<MoveLine> byDate,
+      PaymentService paymentService,
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
+    List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+    List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+    companyPartnerCreditMoveLineList.sort(byDate);
+    companyPartnerDebitMoveLineList.sort(byDate);
+    paymentService.useExcessPaymentOnMoveLinesDontThrow(
+        companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 
   private void populateCredit(
@@ -1116,5 +1189,76 @@ public class MoveLineService {
     newOrUpdatedMoveLine.setDate(date);
 
     return newOrUpdatedMoveLine;
+  }
+
+  public void validateMoveLine(MoveLine moveLine) throws AxelorException {
+    if (moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0
+        && moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
+        && moveLine.getCurrencyAmount().compareTo(BigDecimal.ZERO) == 0) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_LINE_7),
+          moveLine.getAccount().getCode());
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine generateTaxPaymentMoveLineList(
+      InvoicePayment invoicePayment, MoveLine customerMoveLine) throws AxelorException {
+    BigDecimal paymentAmount = customerMoveLine.getCredit().add(customerMoveLine.getDebit());
+    Invoice invoice = invoicePayment.getInvoice();
+    BigDecimal invoiceTotalAmount = invoice.getCompanyInTaxTotal();
+    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+
+      TaxLine taxLine = invoiceLineTax.getTaxLine();
+      BigDecimal vatRate = taxLine.getValue();
+      BigDecimal baseAmount = invoiceLineTax.getCompanyExTaxBase();
+
+      BigDecimal detailPaymentAmount =
+          baseAmount
+              .multiply(paymentAmount)
+              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN)
+              .setScale(2, RoundingMode.HALF_UP);
+
+      TaxPaymentMoveLine taxPaymentMoveLine =
+          new TaxPaymentMoveLine(
+              customerMoveLine,
+              taxLine,
+              vatRate,
+              detailPaymentAmount,
+              Beans.get(AppBaseService.class).getTodayDate());
+
+      taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+
+      customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
+    }
+    this.computeTaxAmount(customerMoveLine);
+    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine reverseAllTaxPaymentMoveLine(MoveLine customerMoveLine) throws AxelorException {
+    List<TaxPaymentMoveLine> reverseTaxPaymentMoveLines = new ArrayList<TaxPaymentMoveLine>();
+    for (TaxPaymentMoveLine taxPaymentMoveLine : customerMoveLine.getTaxPaymentMoveLineList()) {
+      if (!taxPaymentMoveLine.getIsAlreadyReverse()) {
+        TaxPaymentMoveLine reverseTaxPaymentMoveLine =
+            taxPaymentMoveLineService.getReverseTaxPaymentMoveLine(taxPaymentMoveLine);
+
+        reverseTaxPaymentMoveLines.add(reverseTaxPaymentMoveLine);
+      }
+    }
+    for (TaxPaymentMoveLine reverseTaxPaymentMoveLine : reverseTaxPaymentMoveLines) {
+      customerMoveLine.addTaxPaymentMoveLineListItem(reverseTaxPaymentMoveLine);
+    }
+    this.computeTaxAmount(customerMoveLine);
+    return Beans.get(MoveLineRepository.class).save(customerMoveLine);
+  }
+
+  public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
+    for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
+      moveLine.setTaxAmount(moveLine.getTaxAmount().add(taxPaymentMoveLine.getTaxAmount()));
+    }
+    return moveLine;
   }
 }

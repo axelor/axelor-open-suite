@@ -74,6 +74,37 @@
 				\n\t\t</field>"""
 	})
 	
+	selections = ""
+	com.axelor.inject.Beans.get('com.axelor.meta.db.repo.MetaSelectRepository' as Class)
+		.all()
+		.filter('(self.appBuilder.id = ?1 OR self.appBuilder is null) AND self.isCustom = ?2',app.id, true)
+		.fetch()
+		.each({
+		selection -> 
+				options = ""
+				selection.items.each{
+					option -> options += """\n\t\t\t\t<option>
+					\n\t\t\t\t\t<title>${option.title}</title>
+					\n\t\t\t\t\t<value>${option.value}</value>
+					\n\t\t\t\t\t<icon>${option.icon}</icon>
+					\n\t\t\t\t\t<data>${option.data}</data>
+					\n\t\t\t\t\t<order>${option.order}</order>
+					\n\t\t\t\t\t<hidden>${option.hidden}</hidden>
+					\n\t\t\t\t\t<select>${option.select?.name}</select>
+					\n\t\t\t\t</option>"""
+				}
+				
+				selections += """\n\t\t<selection>
+				\n\t\t\t<name>${selection.name}</name>
+				\n\t\t\t<module>${selection.module}</module>
+				\n\t\t\t<priority>${selection.priority}</priority>
+				\n\t\t\t<items>$options
+				\n\t\t\t</items>
+				\n\t\t\t<isCustom>${selection.isCustom}</isCustom>
+				\n\t\t\t<appBuilder>${selection.appBuilder?.code}</appBuilder>
+				\n\t\t</selection>"""
+	})
+	
 	charts = ""
 	com.axelor.inject.Beans.get('com.axelor.studio.db.repo.ChartBuilderRepository' as Class)
 		.all()
@@ -401,6 +432,7 @@
 				\n\t\t\t<model>${wkf.model}</model>
 				\n\t\t\t<jsonField>${wkf.jsonField}</jsonField>
 				\n\t\t\t<isJson>${wkf.isJson}</isJson>
+				\n\t\t\t<isTrackFlow>${wkf.isTrackFlow}</isTrackFlow>
 				\n\t\t\t<statusField>${wkf.statusField?.name}</statusField>
 				\n\t\t\t<displayTypeSelect>${wkf.displayTypeSelect}</displayTypeSelect>
 				\n\t\t\t<bpmnXml><![CDATA[""" + wkf.bpmnXml + """]]></bpmnXml>
@@ -428,6 +460,10 @@
 	<fields>
 		$fields
 	</fields>
+	
+	<selections>
+		$selections
+	</selections>
 	
 	<chartBuilders>
 		$charts

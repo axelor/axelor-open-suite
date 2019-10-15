@@ -46,7 +46,7 @@
 	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)"
 	      orderBy="stockMove.realDate,id" all="true"/>
 		
-		<track>
+		<track on="UPDATE">
 			<field name="requestedReservedQty"/>
 			<field name="reservedQty"/>
 		</track>

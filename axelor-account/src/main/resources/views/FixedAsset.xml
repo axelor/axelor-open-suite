@@ -13,23 +13,25 @@
     	<field name="statusSelect"/>
     </grid>
     
-    <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onNew="action-fixed-asset-record-default" onSave="action-fixed-asset-category-record-compute-duration">
+    <form name="fixed-asset-form" title="Fixed asset" model="com.axelor.apps.account.db.FixedAsset" onNew="action-fixed-asset-record-default" onSave="action-fixed-asset-category-record-compute-duration,action-fixed-asset-validate-check-first-depreciation-date">
     	<panel>
 	    	<panel name="statusSelectPanel" colSpan="12">
 	    		<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12" readonly="true"/>
 	    	</panel>
 	    	<panel name="mainPanel" colSpan="12">
 	    		<field name="reference" colSpan="12"/>
-	    		<field name="name"/>
+	    		<field name="name" readonlyIf="statusSelect &gt; 1"/>
 	    		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect &gt; 1"/>
 	    		<field name="company.currency" title="Currency" form-view="currency-form" grid-view="currency-grid"/>
-	    		<field name="fixedAssetCategory" canEdit="false" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" onChange="action-fixed-asset-record-onchange-set-values"/>
+	    		<field name="fixedAssetCategory" canEdit="false" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" onChange="action-fixed-asset-record-onchange-set-values" readonlyIf="statusSelect &gt; 1"/>
+	    		<field name="stockLocation" canEdit="false" canNew="false" domain="self.company = :company" if-module="axelor-supplychain" form-view="stock-location-form" grid-view="stock-location-grid" />
+	    		<field name="trackingNumber" canEdit="false" canNew="false" if-module="axelor-supplychain" form-view="trackink-number-form" grid-view="tracking-number-grid" />
 	    	</panel>
 	    </panel>
     	<panel name="otherDetailsPanel">
 			<field name="partner" canEdit="false" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-supplier-grid" readonlyIf="statusSelect &gt; 1"/>
 			<field name="invoiceLine" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
-			<field name="purchaseAccount" canEdit="false" form-view="account-form" grid-view="account-grid"/>
+			<field name="purchaseAccount" canEdit="false" form-view="account-form" grid-view="account-grid" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"/>
 			<field name="journal" canEdit="false" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid" readonlyIf="statusSelect &gt; 1"/>
     	</panel>
     	
@@ -45,24 +47,25 @@
     		</panel>
     	</panel-tabs>
 		
-    	<panel name="actionsPanel" title="Actions" sidebar="true">
-    		<button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect &gt; 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length &gt; 0)" onClick="save,action-fixed-asset-method-compute-depreciation,save"/>
+    	<panel name="actionsPanel" title="Actions" sidebar="true" hideIf="statusSelect == 4">
+    		<button name="computeDepreciationBtn" title="Compute depreciation" hideIf="statusSelect &gt; 1 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length &gt; 0)" onClick="action-fixed-asset-group-compute-depreciation-click"/>
     		<button name="validteBtn" title="Validate" showIf="statusSelect &lt; 2 &amp;&amp; (fixedAssetLineList &amp;&amp; fixedAssetLineList.length &gt; 0)" onClick="save,action-fixed-asset-method-compute-depreciation,action-fixed-asset-record-status-validated,save"/>
-    		<button name="disposalBtn" title="Disposal" showIf="statusSelect == 3" onClick="action-fixed-asset-view-show-disposal-wizard"/>
+    		<button name="disposalBtn" title="Disposal" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect != 4" onClick="save,action-fixed-asset-group-disposal-click"/>
     	</panel>
     	<panel name="datesPanel" sidebar="true" readonlyIf="statusSelect &gt; 1">
-    		<field name="acquisitionDate" required="true"/>
-    		<field name="firstDepreciationDate" required="true"/>
+    		<field name="acquisitionDate" required="true" onChange="action-fixed-asset-validate-check-first-depreciation-date"/>
+    		<field name="firstDepreciationDate" required="true" onChange="action-fixed-asset-validate-check-first-depreciation-date"/>
     		<field name="disposalDate" showIf="statusSelect == 4" readonly="true"/>
     	</panel>
     	<panel name="allValuesPanel" sidebar="true">
     		<field name="grossValue" readonlyIf="statusSelect &gt; 1" onChange="action-fixed-asset-record-set-residual-value"/>
         	<field name="residualValue" readonly="true"/>
         	<field name="disposalValue" showIf="statusSelect == 4" readonly="true"/>
+        	<field name="disposalMove" showIf="statusSelect == 4" form-view="move-form" grid-view="move-grid" readonly="true"/>
     	</panel>
     </form>
     
-    <form model="com.axelor.apps.base.db.Wizard" title="Disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew">
+    <form model="com.axelor.apps.base.db.Wizard" title="disposal" name="fixed-asset-disposal-wizard-form" onNew="action-fixed-asset-disposal-wizard-record-onnew">
     	<panel name="mainPanel">
     		<field name="disposalDate" type="date" title="Disposal date"/>
     		<field name="disposalAmount" type="decimal" title="Disposal amount" min="0"/>
@@ -107,7 +110,7 @@
     
     <action-method name="action-fixed-asset-disposal-wizard-method-disposal">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="disposal"/>
-    </action-method>
+    </action-method>    
     
     <action-view name="action-fixed-asset-view-show-disposal-wizard" title="Disposal" model="com.axelor.apps.account.db.FixedAsset">
     	<view type="form" name="fixed-asset-disposal-wizard-form"/>
@@ -118,4 +121,25 @@
 		<context name="_fixedAsset" expr="eval: __this__"/>
     </action-view>
     
+    <action-validate name="action-fixed-asset-validate-check-first-depreciation-date">
+    	<error if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; firstDepreciationDate.isBefore(acquisitionDate)" message="First depreciation date cannot be before Acquisition date."/>
+    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate.withDayOfMonth(1), firstDepreciationDate.withDayOfMonth(1)) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
+    </action-validate>
+    
+    <action-validate name="action-fixed-asset-validate-check-puchase-account">
+    	<error message="Purchase account is required for fixed asset disposal move."/>
+    </action-validate>
+    
+    <action-group name="action-fixed-asset-group-disposal-click">
+    	<action name="action-fixed-asset-validate-check-puchase-account" if="!purchaseAccount"/>
+    	<action name="action-fixed-asset-view-show-disposal-wizard"/>
+    </action-group>
+    
+    <action-group name="action-fixed-asset-group-compute-depreciation-click">
+    	<action name="action-fixed-asset-validate-check-first-depreciation-date"/>
+    	<action name="save"/>
+    	<action name="action-fixed-asset-method-compute-depreciation"/>
+    	<action name="save"/>
+    </action-group>
+
 </object-views>

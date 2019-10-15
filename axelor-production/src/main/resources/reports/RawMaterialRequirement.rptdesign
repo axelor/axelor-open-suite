@@ -22,6 +22,26 @@
             <property name="id">7</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">7</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">7</property>
+        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -157,34 +177,193 @@
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">product</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product</text-property>
+                    <text-property name="heading">product</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">stockLocation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">stockLocation</text-property>
+                    <text-property name="heading">stockLocation</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">manuf_order_seq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">manuf_order_seq</text-property>
+                    <text-property name="heading">manuf_order_seq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">neededQty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">neededQty</text-property>
+                    <text-property name="heading">neededQty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">missingNegativeQty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">missingNegativeQty</text-property>
+                    <text-property name="heading">missingNegativeQty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">availableStockLocation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">availableStockLocation</text-property>
+                    <text-property name="heading">availableStockLocation</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">availableQty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">availableQty</text-property>
+                    <text-property name="heading">availableQty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">label_to_printing</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">label_to_printing</text-property>
+                    <text-property name="heading">label_to_printing</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">RawMaterialRequirementId</property>
-                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
-                    <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">product</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">stockLocation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">manuf_order_seq</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">neededQty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">missingNegativeQty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">availableStockLocation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">availableQty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">label_to_printing</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">missingQty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">product</property>
+                    <property name="nativeName">product</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">stockLocation</property>
+                    <property name="nativeName">stockLocation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">manuf_order_seq</property>
+                    <property name="nativeName">manuf_order_seq</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">neededQty</property>
+                    <property name="nativeName">neededQty</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">missingNegativeQty</property>
+                    <property name="nativeName">missingNegativeQty</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">availableStockLocation</property>
+                    <property name="nativeName">availableStockLocation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">availableQty</property>
+                    <property name="nativeName">availableQty</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">label_to_printing</property>
+                    <property name="nativeName">label_to_printing</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
     Product.full_name as "product",
     ProductionStockLocation.name as "stockLocation",
     ManufOrder.manuf_order_seq,
     CASE ManufOrder.is_cons_pro_on_operation
       WHEN true THEN sum(StockMoveLine.qty)
-      ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+      ELSE
+        (CASE count(OperationOrder.id)
+            WHEN 0 THEN sum(StockMoveLine.qty)
+            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+        END)
     END as "neededQty",
     (CASE ManufOrder.is_cons_pro_on_operation
       WHEN true THEN sum(StockMoveLine.qty)
-      ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+      ELSE
+        (CASE count(OperationOrder.id)
+            WHEN 0 THEN sum(StockMoveLine.qty)
+            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+        END)
     END) - ProductionStockLocationLine.current_qty as "missingNegativeQty",
     StockLocation.name as "availableStockLocation",
     sum(StockLocationLine.current_qty)/count(StockMoveLine.qty) as "availableQty",
@@ -248,26 +427,6 @@ GROUP BY
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -398,9 +557,101 @@ GROUP BY
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">company</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">stockLocationNames</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">duration</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">show_all_requirements</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">show_requirements_bymo</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">code</property>
+                    <property name="nativeName">code</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">company</property>
+                    <property name="nativeName">company</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">stockLocationNames</property>
+                    <property name="nativeName">stockLocationNames</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">duration</property>
+                    <property name="nativeName">duration</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">show_all_requirements</property>
+                    <property name="nativeName">show_all_requirements</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">show_requirements_bymo</property>
+                    <property name="nativeName">show_requirements_bymo</property>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
     RawMaterialRequirement.code,
     RawMaterialRequirement.name,
@@ -665,7 +916,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>(row["translation"] || row["en_translation"]) + " " + row._outer["code"] + " - " + row._outer["name"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[
+<VALUE-OF>(row["translation"] || row["en_translation"]) + " " + row._outer["code"] + (row._outer["name"] ? " - " + row._outer["name"] : "")</VALUE-OF>
+]]></text-property>
                             </text>
                         </cell>
                         <cell id="4827">

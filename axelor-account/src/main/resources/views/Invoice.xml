@@ -21,7 +21,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
@@ -54,7 +54,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
@@ -87,7 +87,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
         <field name="supplierInvoiceNb"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -120,7 +120,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
    		<field name="company" form-view="company-form" grid-view="company-grid" widget="200"/>
         <field name="supplierInvoiceNb"/>
 		<field name="operationTypeSelect"/>
@@ -154,7 +154,7 @@
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
 		<field name="operationSubTypeSelect"/>
@@ -166,12 +166,12 @@
         <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
     </grid>
 
-    <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+    <grid name="invoice-refund-invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<hilite color="primary" if="statusSelect == 1"/>
 	    <hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
 	    <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
-        <field name="invoiceId"/>
+        <field name="invoiceId" width="120"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect" />
 		<field name="exTaxTotal" aggregate="sum"/>
@@ -228,8 +228,10 @@
             <field name="invoiceId" colSpan="12" css="label-bold bold large" showTitle="false" showIf="id">
                 <viewer>
                     <![CDATA[
-                        <span ng-show="(record.operationSubTypeSelect != 2 && record.statusSelect &lt; 3) || (record.operationSubTypeSelect == 2 && record.statusSelect == 0)" x-translate>Proforma</span> <span>{{record.invoiceId}}</span>
-                    ]]>
+						<span ng-show="(record.operationSubTypeSelect != 2 && record.statusSelect &lt; 3) || (record.operationSubTypeSelect == 2 && record.statusSelect == 1)" x-translate>Proforma </span>
+                        <span ng-show="record.statusSelect == 4" x-translate>Cancel invoice n°</span>
+                        <span>{{record.invoiceId}}</span>
+                        ]]>
                 </viewer>
             </field>
 
@@ -284,7 +286,7 @@
         </panel>
 
 		<panel name="subscriptionPanel" title="Subscription period"
-			   showIf="[6, 7].includes(operationSubTypeSelect)">
+			   showIf="$contains([6, 7],operationSubTypeSelect)">
 			<field name="subscriptionFromDate" />
 			<field name="subscriptionToDate" />
 		</panel>
@@ -314,7 +316,7 @@
 				<panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefundBtn" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
 					<field name="originalInvoice" readonly="true" showIf="originalInvoice" form-view="invoice-form" grid-view="invoice-grid"/>
-					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-grid"/>
+					<panel-related name="refundInvoiceListPanel" field="refundInvoiceList" readonly="true" showIf="refundInvoiceList != null &amp;&amp; !refundInvoiceList.isEmpty()" colSpan="12" form-view="invoice-form" grid-view="invoice-refund-invoice-grid"/>
 				</panel>
 				<panel colSpan="12"  name="irrecoverablePanel" title="Irrecoverable" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"  showTitle="false">
 					<field name="irrecoverableStatusSelect"/>
@@ -386,11 +388,11 @@ InvoiceSet.length > 0))"
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
             <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
-            <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
-            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
+            <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
+            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
             <button name="cancelBtn" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
-            <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+            <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="action-invoice-group-add-invoice-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
 			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
@@ -570,7 +572,7 @@ InvoiceSet.length > 0))"
 	        <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
 	        <button name="cancelBtn" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
-        	<button name="addPaymentBtn" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+        	<button name="addPaymentBtn" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="action-invoice-group-add-invoice-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <button name="addPaymentBtn" title="Register payment" showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
@@ -676,8 +678,8 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
-		<field name="invoiceId" />
-		<field name="partner.partnerSeq" />
+		<field name="invoiceId" width="120"/>
+		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
 		<field name="invoiceDate" />
 		<field name="dueDate" />
@@ -789,6 +791,11 @@ InvoiceSet.length > 0))"
 		<action name="action-invoice-method-compute"/>
 		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
 	</action-group>
+	
+	<action-group name="action-invoice-group-add-invoice-payment">
+		<action name="save"/>
+		<action name="action-invoice-view-register-payment"/>
+	</action-group>
   
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
@@ -830,6 +837,7 @@ InvoiceSet.length > 0))"
     	<field name="companyInTaxTotalRemaining" expr="eval: 0"/>
         <field name="currency" expr="eval:__repo__(User).find(__user__.id)?.activeCompany?.currency" />
         <field name="operationTypeSelect" expr="eval: _operationTypeSelect" if="_operationTypeSelect"/>
+        <field name="operationSubTypeSelect" expr="eval: _operationSubTypeSelect" if="_operationSubTypeSelect"/>
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
@@ -883,7 +891,7 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: companyBankDetails?.specificNoteOnInvoice"/>
+		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
 	</action-record>
 
     <!-- ACTION ATTRS -->
@@ -1101,7 +1109,11 @@ InvoiceSet.length > 0))"
 	
 	<action-method name="action-invoice-method-check-not-imputed-refunds">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="checkNotImputedRefunds"/>
-  </action-method>
+    </action-method>
+  
+  	<action-method name="action-invoice-method-check-not-lettered-advance-payment-move-lines">
+		<call class="com.axelor.apps.account.web.InvoiceController" method="checkNotLetteredAdvancePaymentMoveLines"/>
+ 	</action-method>
 
 	<action-method name="action-invoice-method-check-partner-bank-details-list">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="checkPartnerBankDetailsList"/>
@@ -1144,6 +1156,16 @@ InvoiceSet.length > 0))"
 	</action-view>
 	
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -1168,6 +1190,16 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Validated">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -1183,6 +1215,16 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="supplier-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
@@ -1201,6 +1243,16 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="supplier-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+	    <field name="address" hidden="true"/>
+	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
+	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+	    <field name="debitBlockingReason" title="Debit blocking reason"/>
+	    <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+	    <field name="debitBlockingToDate" title="Debit blocking until"/>
+	    <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+	    <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+	    <field name="companyTaxTotal" title="Total tax in company currency"/>
+	    <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
 		</filter>

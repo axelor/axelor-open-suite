@@ -13,7 +13,7 @@
   	<datetime name="dateT" title="Date" required="true" tz="true"/>
   	<string name="description" title="Description" large="true"/>
   	<one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
-  	<string name="formatSelect" title="File Format" selection="iadministration.export.type.select"/>
+  	<string name="formatSelect" title="File Format" selection="inventory.export.format.select"/>
   	<many-to-one name="importFile" title="File (CSV)" ref="com.axelor.meta.db.MetaFile" />
   	
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />

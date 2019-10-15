@@ -28,6 +28,32 @@
 		
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="printPlannedDateOnManufOrder" title="Print planned date on manuf order ?" default="true"/>
+		
+		<track>
+			<field name="prodOrderMgtOnSO" on="UPDATE"/>
+			<field name="productionOrderGenerationAuto" on="UPDATE"/>
+			<field name="oneProdOrderPerSO" on="UPDATE"/>
+			<field name="autoPlanManufOrderFromSO" on="UPDATE"/>
+			
+			<field name="workCenterProduct" on="UPDATE"/>
+			<field name="workCenterCostSheetGroup" on="UPDATE"/>
+			<field name="productCostSheetGroup" on="UPDATE"/>
+			
+			<field name="cycleUnit" on="UPDATE"/>
+			
+			<field name="manageResidualProductOnBom" on="UPDATE"/>
+			<field name="subtractProdResidualOnCostSheet" on="UPDATE"/>
+			<field name="manageBillOfMaterialVersion" on="UPDATE"/>
+			<field name="manageProdProcessVersion" on="UPDATE"/>
+			
+			<field name="enableConfigurator" on="UPDATE"/>
+			<field name="manageWorkshop" on="UPDATE"/>
+			
+			<field name="nbDecimalDigitForBomQty" on="UPDATE"/>
+			
+			<field name="barcodeTypeConfig" on="UPDATE"/>
+			<field name="printPlannedDateOnManufOrder" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

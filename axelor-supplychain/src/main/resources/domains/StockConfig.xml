@@ -7,6 +7,10 @@
 
   <entity name="StockConfig" lang="java" cachable="true">
       <many-to-one name="directOrderStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Direct order default stock location"/>
+      
+      <track>
+      	<field name="directOrderStockLocation" on="UPDATE"/>
+      </track>
   </entity>
 
 </domain-models>

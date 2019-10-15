@@ -11,17 +11,17 @@
 	<decimal name="debit" title="Debit"/>
 	<decimal name="credit" title="Credit"/>
 
-	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
-	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
+	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" index="false"/>
+	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details" index="false"/>
 
-    <many-to-one name="operationInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejects/Return Reason Code"/>
-    <many-to-one name="rejectInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Operation Code"/>
+    <many-to-one name="operationInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejects/Return Reason Code" index="false"/>
+    <many-to-one name="rejectInterbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Operation Code" index="false"/>
 
 	<string name="description" title="Description" large="true" multiline="true"/>
 	<string name="reference" title="Reference"/>
 	<string name="origin" title="Origin"/>
 
-	<many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement" title="Bank statement" />
+	<many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement" title="Bank statement" index="false"/>
 
 	<integer name="sequence" title="Sequence"/>
 	

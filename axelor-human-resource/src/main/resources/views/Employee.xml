@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
-		 <field name="contactPartner.partnerSeq"/>
+		 <field name="contactPartner.partnerSeq" width="120"/>
 		 <field name="contactPartner.simpleFullName"/>
 		 <field name="contactPartner.fixedPhone" />
 		 <field name="contactPartner.mobilePhone" />
@@ -142,9 +142,9 @@
 							<field name="plateNo"/>
 							<field name="vehicleModel"/>
 							<field name="vehicleMake"/>
-							<field name="kilometricAllowParam" widget="SuggestBox"/>
-							<field name="startDate"/>
-							<field name="endDate"/>
+							<field name="kilometricAllowParam" canEdit="false" widget="SuggestBox"/>
+							<field name="startDate" onChange="action-employee-validate-dates"/>
+							<field name="endDate" onChange="action-employee-validate-dates"/>
                             <field name="vehicleRegistrationCertificate" widget="Image"/>
 						</editor>
 					</field>
@@ -171,6 +171,9 @@
 		<field name="contactPartner.fullName" />
 		<field name="contactPartner.fixedPhone" />
 		<field name="contactPartner.mobilePhone" />
+		<field name="mainEmploymentContract.payCompany"/>
+		<field name="mainEmploymentContract.companyDepartment"/>
+		<field name="hrManager"/>
 		<template><![CDATA[
 			<div>
 			  <div class="span4 card-image">
@@ -178,17 +181,21 @@
 			  </div>
 			  <div class="span8">
 			  	<span>
-				<strong>{{contactPartner.fullName}}</strong><br/>
-			    FP : {{contactPartner.fixedPhone}}<br/>
-			    MP : {{contactPartner.mobilePhone}}
+				   <strong>{{contactPartner.fullName}}</strong><br/>
+			       <span ng-if="contactPartner.fixedPhone"><i class='fa fa-phone fa-flip-horizontal'/> {{ contactPartner.fixedPhone}}<br/></span>
+	               <span ng-if="contactPartner.mobilePhone"><i class='fa fa-mobile' style="margin-right:9px;"/>{{contactPartner.mobilePhone}}<br/></span>
+	               <span  ng-if="mainEmploymentContract.payCompany.name"><strong><span x-translate>Company</span></strong> : {{mainEmploymentContract.payCompany.name}}<br/></span>
+                   <span  ng-if="mainEmploymentContract.companyDepartment.name"><strong><span x-translate>Department</span></strong> : {{mainEmploymentContract.companyDepartment.name}}<br/></span>
 			    </span>
+			  </div>
+			  <div class="span12" style="margin-left:30px;">
+			   <span class="label label-important" ng-show="hrManager" x-translate>{{ "HR manager" }}</span>
 			  </div>
 			</div>
 		]]>
 		</template>
 	</cards>
-
-
+	
 	<action-record name="action-employee-record-default" model="com.axelor.apps.hr.db.Employee">
 		<field name="timeLoggingPreferenceSelect" expr="eval:__config__.app.getApp('base').getTimeLoggingPreferenceSelect()"/>
 		<field name="dailyWorkHours" expr="eval:__config__.app.getApp('base').getDailyWorkHours()"/>
@@ -266,7 +273,11 @@
     <action-method name="action-employee-method-normalize-emergencyNumber">
         <call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber"/>
     </action-method>
-
+    
+	<action-condition name="action-employee-validate-dates">
+		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
+	</action-condition>
+	
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
         <field name="mainEmploymentContract.payCompany"

@@ -56,9 +56,11 @@
 					</panel>
 					<panel name="accountFactorPanel" if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
 						<field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-						<field name="factorCreditAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
-						<field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-						<field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+						<field name="factorCreditAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>						
+					</panel>
+					<panel name="forecastedInvAccountPanel" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" colSpan="12">
+					    <field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+						<field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 					</panel>
 				</panel>
 				<panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
@@ -238,6 +240,11 @@
 				<field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
 			</panel>
 		</panel-tabs>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 
 	</form>
 

@@ -278,6 +278,12 @@
 				configBom += "<companyCode>${cb.company?.code}</companyCode>"
 			}
 			configBom += """
+		<statusSelect>"""
+		if (cb.statusSelect != null) {
+			configBom += "${cb.statusSelect}"
+		}
+		configBom += "</statusSelect>"
+			configBom += """
 		<name>"""
 		if (cb.name != null) {
 			configBom += "${cb.name}"
@@ -309,7 +315,8 @@
 		configBom += """</qtyFormula>
 		<defQtyAsFormula>${cb.defQtyAsFormula}</defQtyAsFormula>"""
 			if (cb.unit?.id != null) {
-				configBom += "<unitId>${cb.unit?.id}</unitId>"
+				configBom += """
+				<unitId>${cb.unit?.id}</unitId>"""
 			}
 			configBom += """
 		<unitFormula>"""
@@ -325,9 +332,21 @@
 				configBom += """
 		<configuratorProdProcess>
 			<importId>${cb.configuratorProdProcess?.id}</importId>
+			<statusSelect>${cb.configuratorProdProcess?.statusSelect}</statusSelect>
 			<name>${cb.configuratorProdProcess?.name}</name>
+			<code>${cb.configuratorProdProcess?.code}</code>
+			<codeFormula>${cb.configuratorProdProcess?.codeFormula}</codeFormula>
+			<defCodeAsFormula>${cb.configuratorProdProcess?.defCodeAsFormula}</defCodeAsFormula>
 			<companyCode>${cb.configuratorProdProcess?.company?.code}</companyCode>
 			<stockLocation>${cb.configuratorProdProcess?.stockLocation?.id}</stockLocation>
+			<stockLocationFormula>${cb.configuratorProdProcess?.stockLocationFormula}</stockLocationFormula>
+			<defStockLocationAsFormula>${cb.configuratorProdProcess?.defStockLocationAsFormula}</defStockLocationAsFormula>
+			<producedProductStockLocation>${cb.configuratorProdProcess?.producedProductStockLocation?.id}</producedProductStockLocation>
+			<producedProductStockLocationFormula>${cb.configuratorProdProcess?.producedProductStockLocationFormula}</producedProductStockLocationFormula>
+			<defProducedProductStockLocationAsFormula>${cb.configuratorProdProcess?.defProducedProductStockLocationAsFormula}</defProducedProductStockLocationAsFormula>
+			<workshopStockLocation>${cb.configuratorProdProcess?.workshopStockLocation?.id}</workshopStockLocation>
+			<workshopStockLocationFormula>${cb.configuratorProdProcess?.workshopStockLocationFormula}</workshopStockLocationFormula>
+			<defWorkshopStockLocationAsFormula>${cb.configuratorProdProcess?.defWorkshopStockLocationAsFormula}</defWorkshopStockLocationAsFormula>
 			<configuratorProdProcessLineList>"""	
 				cb.configuratorProdProcess?.configuratorProdProcessLineList?.each( { cppl ->
 					configBom += retrieveConfiguratorProdProcessLine(cppl)

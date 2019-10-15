@@ -8,6 +8,10 @@
 	<entity name="AppBudget" lang="java" extends="App">
 		<boolean name="checkAvailableBudget" title="Check Available Budget"/>
 		<boolean name="manageMultiBudget" title="Manage multi budgets on lines"/>
-		<string name="budgetStatusSelect" title="Status considered to calculate the engaged amount" selection="purchase.purchase.order.status.select" default="4"/>
+
+		<track>
+			<field name="checkAvailableBudget" on="UPDATE"/>
+			<field name="manageMultiBudget" on="UPDATE"/>
+		</track>
 	</entity>
 </domain-models>

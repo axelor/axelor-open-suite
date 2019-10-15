@@ -54,7 +54,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -425,7 +424,6 @@ public class DebtRecoveryService {
         }
 
         debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
-        debtRecovery.setPartnerFullName(partner.getFullName());
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 

@@ -5,7 +5,7 @@
 
 	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease"
 		orderBy="-sequenceNumber">
-		<field name="sequenceNumber" />
+		<field name="sequenceNumber" width="120"/>
 		<field name="company" />
 		<field name="company.accountConfig.factorPartner" />
 		<field name="transmissionDate"/>
@@ -34,7 +34,8 @@
 				domain="self.company = :company AND self.partner.factorizedCustomer = TRUE
                     AND self.statusSelect = 3 
                     AND self.id not in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))
-                    AND ((self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE) or self.originalInvoice.id in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4)))" />
+                    AND ((self.amountRemaining &gt; 0 AND self.hasPendingPayments = FALSE) or self.originalInvoice.id in (select Invoices.id from SubrogationRelease as SR join SR.invoiceSet as Invoices where SR.statusSelect in (2,3,4))) 
+                    AND self.operationTypeSelect not in (1,2)" />
 		</panel>
 
 		<panel name="actionsPanel" title="Actions" sidebar="true">

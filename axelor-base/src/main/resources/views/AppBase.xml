@@ -48,8 +48,8 @@
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
 				<panel name="mapPanel" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
-					<button name="checkMapApiBtn" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"/>
-					<field name="googleMapsApiKey" widget="password"/>
+					<button name="checkMapApiBtn" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi" hideIf="mapApiSelect == 2"/>
+					<field name="googleMapsApiKey" widget="password" hideIf="mapApiSelect == 2"/>
 				</panel>
 				<panel name="qasPanel" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
@@ -65,6 +65,10 @@
 				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
 			</panel>
 		</panel-tabs>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<!-- ACTION METHOD -->

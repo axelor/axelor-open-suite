@@ -23,7 +23,7 @@
             <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
             <button name="updateAvgPriceBtn" title="Update average price" onClick="action-stock-location-line-attrs-update-avg-price"  colSpan="3" hideIf="( stockLocation &amp;&amp; stockLocation.typeSelect == 3 ) || $readonly() || (!$readonly() &amp;&amp; $isAvgPriceEditable)"/>
             <field name="rack"/>
-            <field name="stockLocation" hidden="true"/>
+            <field name="stockLocation"/>
             <field name="stockLocation.typeSelect" hidden="true"/>
         </panel>
 		<panel name="lastInventoryPanel" title="Last inventory">
@@ -42,6 +42,9 @@
         </panel>
         <panel-dashlet name="productQtyPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
         <panel-dashlet name="stockRulesPanel" action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
+        <panel-mail name="mailsPanel">
+          <mail-messages />
+        </panel-mail>
     </form>
 
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
@@ -135,11 +138,15 @@
             <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 	        <field name="trackingNumber" domain="self.product = :product"/>
             <field name="rack"/>
+            <field name="detailsStockLocation"/>
         </panel>
 		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
 		</panel>
+  		<panel-mail name="mailsPanel">
+    		<mail-messages />
+    	</panel-mail>
     </form>
     
     <action-group name="action-stock-location-line-group-onload">

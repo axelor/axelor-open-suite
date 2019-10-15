@@ -47,6 +47,8 @@ public interface IExceptionMessage {
       "You must configure an advance payment account for the company %s" /*)*/;
   static final String SO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The sale order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  static final String SO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/
+      "All invoices have been generated for this sale order." /*)*/;
 
   /** Sale order Purchase Service */
   static final String SO_PURCHASE_1 = /*$$(*/ "Please, select a supplier for the line %s" /*)*/;
@@ -80,6 +82,8 @@ public interface IExceptionMessage {
       "An invoice not canceled already exists for the outgoing stock move %s" /*)*/;
   static final String INCOMING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
+  static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
+      "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
 
   /** Stock move line service */
   static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
@@ -114,6 +118,10 @@ public interface IExceptionMessage {
 
   static final String MRP_MISSING_MRP_LINE_TYPE = /*$$(*/
       "No move type found for element : %s" /*)*/;
+
+  static final String MRP_MISSING_STOCK_LOCATION_VALID = /*$$(*/
+      "No stock location valid. Please uncheck the chosen stock location 'is not in MRP'." /*)*/;
+
   static final String MRP_NO_PRODUCT = /*$$(*/ "Please select an element to run calculation" /*)*/;
 
   /** Sale order Stock Service Implement */
@@ -190,6 +198,15 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_QTY_NOT_AVAILABLE = /*$$(*/
       "This quantity is not available in stock." /*)*/;
 
+  static final String SALE_ORDER_LINE_AVAILABILITY_REQUEST = /*$$(*/
+      "The reservation for an availability requested stock move cannot be lowered." /*)*/;
+
+  static final String SALE_ORDER_LINE_REQUESTED_QTY_TOO_LOW = /*$$(*/
+      "The requested quantity must be greater than the already delivered quantity." /*)*/;
+
+  static final String SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED = /*$$(*/
+      "This product is not stock managed." /*)*/;
+
   /** Account config supplychain service */
   static final String FORECASTED_INVOICE_CUSTOMER_ACCOUNT = /*$$(*/
       "You must configure a forecasted invoiced customer account for the company %s" /*)*/;
@@ -206,4 +223,13 @@ public interface IExceptionMessage {
 
   public static final String SALE_ORDER_STOCK_MOVE_CREATED = /*$$(*/
       "Stock move %s has been created for this sale order" /*)*/;
+
+  static final String STOCK_MOVE_VERIFY_PRODUCT_STOCK_ERROR = /*$$(*/
+      "Product stock for %s is not enough for availability request" /*)*/;
+
+  static final String SALE_ORDER_ANALYTIC_DISTRIBUTION_ERROR = /*$$(*/
+      "There is no analytic distribution on %s sale order line" /*)*/;
+
+  static final String PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR = /*$$(*/
+      "There is no analytic distribution on %s purchase order line" /*)*/;
 }

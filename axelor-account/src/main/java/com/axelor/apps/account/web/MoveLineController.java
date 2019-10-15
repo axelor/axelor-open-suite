@@ -127,7 +127,7 @@ public class MoveLineController {
       }
 
       if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLines(moveLineList);
+        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -141,7 +141,7 @@ public class MoveLineController {
     List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 
     try {
-      if (idList != null) {
+      if (idList != null && !idList.isEmpty()) {
         MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
         for (Integer id : idList) {
           if (id != null) {
@@ -152,7 +152,8 @@ public class MoveLineController {
             } else {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_NO_VALUE,
-                  I18n.get("Cannot find the move line with id: ") + id.longValue());
+                  I18n.get("Cannot find the move line with id: %s"),
+                  id.longValue());
             }
           } else {
             throw new AxelorException(
@@ -175,8 +176,19 @@ public class MoveLineController {
                 .context("_balance", finalBalance)
                 .map());
       } else {
-        response.setAlert(IExceptionMessage.NO_MOVE_LINE_SELECTED);
+        response.setAlert(I18n.get(IExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTaxAmount(ActionRequest request, ActionResponse response) {
+
+    try {
+      MoveLine moveLine = request.getContext().asType(MoveLine.class);
+      moveLine = Beans.get(MoveLineService.class).computeTaxAmount(moveLine);
+      response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

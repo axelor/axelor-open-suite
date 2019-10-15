@@ -4,18 +4,17 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
     <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery">
-    	<hilite if="$get('debtRecoveryMethodLine.manualValidationOk')" color="warning"/>
-    	<hilite if="batchSet.length &gt; 0" color="success"/>
+		<hilite if="waitDebtRecoveryMethodLine" color="warning"/>
+		<hilite if="!waitDebtRecoveryMethodLine" color="success"/>
     	<field name="company"/>
-    	<field name="partnerFullName"/>
+        <field name="accountingSituation.partner"/>
         <field name="referenceDate"/>
         <field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethod"/>
         <field name="debtRecoveryMethodLine"/>
         <field name="balanceDue"/>
         <field name="balanceDueDebtRecovery"/>
-        <field name="debtRecoveryMethodLine.manualValidationOk" hidden="true" />
-        <field name="batchSet" hidden="true" />
+		<field name="waitDebtRecoveryMethodLine" hidden="true"/>
         <field name="currency"/>
     </grid>
 
@@ -33,7 +32,7 @@
 			</field>
 			<field name="company" form-view="company-form" grid-view="company-grid" readonly="true" colSpan="3"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid" readonly="true" colSpan="3"/>
-			<field name="partnerFullName" readonly="true" colSpan="3"/>
+			<field name="accountingSituation.partner" readonly="true" colSpan="3" form-view="partner-form" grid-view="partner-grid"/>
 			<spacer name="partnerFullNameSpacer" colSpan="3"/>
 			<field name="balanceDue" colSpan="3" />
 			<field name="balanceDueDebtRecovery" colSpan="3" />
@@ -73,13 +72,13 @@
 		<panel sidebar="true" canCollapse="true" name="caracteristics"
 			title="Caracteristics">
 			<field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
-				grid-view="debt-recovery-method-grid" />
+				grid-view="debt-recovery-method-grid" canEdit="false"/>
 			<field name="debtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
 			<field name="waitDebtRecoveryMethodLine"
 				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" />
+				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
 		</panel>
 		<panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
 			<button name="validateDebtRecoveryBtn" title="Validate Debt Recovery" onClick="save,action-debt-recovery-method-validate-debtRecovery"/>

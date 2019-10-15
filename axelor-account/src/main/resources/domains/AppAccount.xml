@@ -34,6 +34,20 @@
 	
 		]]></extra-code>
 		
+		<track>
+			<field name="transferAndDirectDebitInterbankCode" on="UPDATE"/>
+			<field name="chequeInterbankCode" on="UPDATE"/>
+	
+			<field name="manageCustomerCredit" on="UPDATE"/>
+
+			<field name="manageAnalyticAccounting" on="UPDATE"/>
+			<field name="analyticDistributionTypeSelect" on="UPDATE"/>
+
+			<field name="manageFactors" on="UPDATE"/>
+			<field name="partnerBalConfigSelect" on="UPDATE"/>
+			<field name="manageAdvancePaymentInvoice" on="UPDATE"/>
+			<field name="paymentVouchersOnInvoice" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

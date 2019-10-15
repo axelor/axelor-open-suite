@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
 	<grid name="quality-alert-grid" title="Quality alerts" model="com.axelor.apps.quality.db.QualityAlert">
-		<field name="reference"/>
-		<field name="reference"/>
+		<field name="reference" width="120"/>
+		<field name="reference" width="120"/>
 		<field name="product"/>
 		<field name="workCenter"/>
 		<field name="team"/>

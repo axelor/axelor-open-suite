@@ -31,17 +31,13 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
-import com.axelor.data.Listener;
-import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.JPA;
-import com.axelor.db.Model;
 import com.axelor.db.annotations.Widget;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
@@ -49,35 +45,25 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.validation.constraints.NotNull;
-import org.apache.commons.io.FileUtils;
-import org.apache.xmlbeans.impl.common.IOUtil;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
   private ConfiguratorCreatorRepository configuratorCreatorRepo;
-
-  private static final String CONFIG_FILE_PATH =
-      "/data-import/import-configurator-creator-config.xml";
 
   @Inject
   public ConfiguratorCreatorServiceImpl(ConfiguratorCreatorRepository configuratorCreatorRepo) {
@@ -105,7 +91,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
 
   @Transactional
   public void updateIndicators(ConfiguratorCreator creator) {
-    List<MetaJsonField> indicators = creator.getIndicators();
+    List<MetaJsonField> indicators =
+        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
 
     // add missing formulas
     List<? extends ConfiguratorFormula> formulas;
@@ -231,7 +218,8 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
    */
   protected void addIfMissing(ConfiguratorFormula formula, ConfiguratorCreator creator) {
     MetaField formulaMetaField = formula.getMetaField();
-    List<MetaJsonField> fields = creator.getIndicators();
+    List<MetaJsonField> fields =
+        Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
     for (MetaJsonField field : fields) {
       if (field.getName().equals(formulaMetaField.getName() + "_" + creator.getId())) {
         return;
@@ -519,60 +507,5 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     field.setContextFieldTargetName(targetName);
     field.setContextFieldValue(creator.getId().toString());
     field.setContextFieldTitle(creator.getName());
-  }
-
-  @Transactional(rollbackOn = {IOException.class, RuntimeException.class})
-  public String importConfiguratorCreators(String filePath) throws IOException {
-    return importConfiguratorCreators(filePath, CONFIG_FILE_PATH);
-  }
-
-  /**
-   * Import configurator creators from given XML config file.
-   *
-   * @param filePath the path to the data file.
-   * @param configFilePath the path to XML config file.
-   * @return the import log file.
-   */
-  @Transactional(rollbackOn = {IOException.class, RuntimeException.class})
-  protected String importConfiguratorCreators(String filePath, String configFilePath)
-      throws IOException {
-    InputStream inputStream = this.getClass().getResourceAsStream(configFilePath);
-    File configFile = File.createTempFile("config", ".xml");
-    FileOutputStream fout = new FileOutputStream(configFile);
-    IOUtil.copyCompletely(inputStream, fout);
-
-    Path path = MetaFiles.getPath(filePath);
-    File tempDir = Files.createTempDir();
-    File importFile = new File(tempDir, "configurator-creator.xml");
-    Files.copy(path.toFile(), importFile);
-
-    XMLImporter importer = new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
-    final StringBuilder importLog = new StringBuilder();
-    Listener listener =
-        new Listener() {
-
-          @Override
-          public void imported(Integer imported, Integer total) {
-            importLog.append("Total records: " + total + ", Total imported: " + total);
-          }
-
-          @Override
-          public void imported(Model arg0) {}
-
-          @Override
-          public void handle(Model arg0, Exception err) {
-            importLog.append("Error in import: " + Arrays.toString(err.getStackTrace()));
-          }
-        };
-
-    importer.addListener(listener);
-
-    importer.run();
-
-    FileUtils.forceDelete(configFile);
-
-    FileUtils.forceDelete(tempDir);
-
-    return importLog.toString();
   }
 }

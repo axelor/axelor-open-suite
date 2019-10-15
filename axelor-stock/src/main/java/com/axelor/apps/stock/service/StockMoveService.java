@@ -67,7 +67,7 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       ShipmentMode shipmentMode,
       FreightCarrierMode freightCarrierMode,
       Partner carrierPartner,
@@ -105,7 +105,7 @@ public interface StockMoveService {
       StockLocation toStockLocation,
       LocalDate realDate,
       LocalDate estimatedDate,
-      String description,
+      String note,
       int typeSelect)
       throws AxelorException;
 
@@ -219,4 +219,14 @@ public interface StockMoveService {
    * @param userType
    */
   void setPickingStockMovesEditDate(List<Long> ids, String userType);
+
+  /**
+   * Update stocks using saved stock move line list and current stock move line list. Then we save
+   * current stock move line list, replacing the saved list.
+   *
+   * @param stockMove
+   */
+  void updateStocks(StockMove stockMove) throws AxelorException;
+
+  void updateProductNetMass(StockMove stockMove) throws AxelorException;
 }

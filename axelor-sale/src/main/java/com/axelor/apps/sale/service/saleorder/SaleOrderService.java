@@ -44,7 +44,7 @@ public interface SaleOrderService {
    * @param saleOrder
    * @throws AxelorException
    */
-  void enableEditOrder(SaleOrder saleOrder) throws AxelorException;
+  boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Check modified confirmed order before saving it.

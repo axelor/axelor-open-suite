@@ -114,8 +114,8 @@
 		</panel>
 		
 		<panel name="generateLinesPanel" title="Generate Lines automatically" hidden="true">
-		    <field name="$fromGenerationDate" title="From generation date" widget="Date"/>
-			<field name="$toGenerationDate" title="To generation date" widget="Date"/>
+		    <field name="$fromGenerationDate" title="From generation date" widget="Date" onChange="action-hr-condition-automatic-from-generation-date"/>
+			<field name="$toGenerationDate" title="To generation date" widget="Date" onChange="action-hr-condition-automatic-to-generation-date"/>
 			<field name="$project" title="Project" target="com.axelor.apps.project.db.Project" domain="self.imputable=true and self." type="many-to-one" form-view="project-form" grid-view="project-grid" onSelect="action-hr-timesheet-attrs-domain-project" onChange="action-hr-timesheet-record-empty-product"/>
 			<field name="$product" title="Activity" type="many-to-one" target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product" onSelect="action-hr-timesheet-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid"/>
 			<field name="$logTime" type="decimal"/>
@@ -182,6 +182,7 @@
 		<action name="action-timesheet-attrs-from-date"/>
 		<action name="action-timesheet-attrs-panels"/>
 		<action name="action-timesheet-attrs-refresh-editor"/>
+		<action name="action-timesheet-method-timesheet-compute-period-total"/>
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -227,11 +228,15 @@
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-record-from-period-date"/>
 		<action name="action-timesheet-record-to-date" if="fromDate != null"/>
+		<action name="action-timesheet-prefill-lines" if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
 	</action-group>
 
+	<action-method name="action-timesheet-prefill-lines">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="prefillLines" />
+	</action-method>
 
 	<action-method name="action-timesheet-method-timesheet-compute-period-total">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>
@@ -465,4 +470,18 @@
 	<action-record name="action-hr-record-empty-user" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="user" expr="eval: null"/>
 	</action-record>
+
+	<action-condition name="action-hr-condition-automatic-from-generation-date">
+		<check if="eval: fromGenerationDate != null &amp;&amp; ((toDate == null &amp;&amp; fromGenerationDate &lt; fromDate.toString()) || 
+			(toDate != null &amp;&amp; (fromGenerationDate &lt; fromDate.toString() || fromGenerationDate == toDate.toString() || fromGenerationDate &gt; toDate.toString())) ||
+			(toGenerationDate != null &amp;&amp; fromGenerationDate > toGenerationDate))" 
+			field="$fromGenerationDate" error="Automatic generation dates must be included in the timesheet period"/>
+	</action-condition>
+
+	<action-condition name="action-hr-condition-automatic-to-generation-date">
+		<check if="eval: toGenerationDate != null &amp;&amp; ((toDate != null &amp;&amp; (toGenerationDate &gt; toDate.toString() || toGenerationDate == fromDate.toString() || toGenerationDate &lt; fromDate.toString())) || 
+			(fromGenerationDate != null &amp;&amp; fromGenerationDate > toGenerationDate))" 
+			field="$toGenerationDate" error="Automatic generation dates must be included in the timesheet period"/>
+	</action-condition>
+
 </object-views>

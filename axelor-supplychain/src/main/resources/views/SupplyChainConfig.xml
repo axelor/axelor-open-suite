@@ -19,8 +19,20 @@
 				<field name="autoAllocateOnReceipt" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 				<field name="autoAllocateOnAllocation" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 				<field name="autoRequestReservedQty" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
-	  	</panel>
+				<field name="autoAllocateOnAvailabilityRequest" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+		</panel>
+	  	
+	  	<panel name="datePanel">
+		    <field name="defaultEstimatedDate" colSpan="8" />
+		    <field name="numberOfDays" colSpan="4" showIf="defaultEstimatedDate == 2" />
+		   	<field name="defaultEstimatedDateForPurchaseOrder" colSpan="8" />
+		   	<field name="numberOfDaysForPurchaseOrder" colSpan="4" showIf="defaultEstimatedDateForPurchaseOrder == 2" />
+		</panel>
 	
+        	<panel-mail name="mailPanel">
+		    	<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 	
 	<action-record name="action-supply-chain-config-record-default" model="com.axelor.apps.supplychain.db.SupplyChainConfig">

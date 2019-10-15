@@ -15,6 +15,7 @@
       <string name="xmlId" title="xmlId" />
       <boolean name="isButton" title="Button" />
       <string name="buttonTitle" title="Button title" />
+      <integer name="colSpan" title="Colspan" default="3" min="1" max="12"/>
       <many-to-many name="roleSet" ref="com.axelor.auth.db.Role" title="Roles" />
       <one-to-many name="conditions" ref="Filter" title="Conditions" mappedBy="wkfTransition"/>
       <many-to-one name="wkf" ref="Wkf" />

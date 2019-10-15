@@ -18,6 +18,7 @@
         <field name="isButton"/>
         <field name="buttonTitle" showIf="isButton" requiredIf="isButton"/>
         <field name="alertTypeSelect" widget="RadioSelect" showIf="isButton"/>
+        <field name="colSpan" showIf="isButton"/>
         <field name="alertMsg" showIf="isButton"/>
         <field name="successMsg" showIf="isButton"/>
         <field name="wkf" hidden="true"/>

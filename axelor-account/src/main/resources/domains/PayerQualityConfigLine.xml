@@ -12,12 +12,13 @@
     <string name="rejectType" title="Reject type"/>
     <string name="name" title="Label">
     	<![CDATA[
-    	if (incidentTypeSelect != 0){
+    	if (incidentTypeSelect != 0 && rejectType != null){
     		return "Rejet ("+rejectType+")";
     	}
-		else {
+		else if(debtRecoveryLevel != null && debtRecoveryLevel.getName() != null ) {
 			return "Relance "+debtRecoveryLevel.getName();
 		}
+         return "";
 	    ]]>
     </string>
   

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import static com.axelor.apps.tool.StringTool.getIdListString;
+
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -44,11 +46,14 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -64,7 +69,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,19 +86,23 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected SaleOrderLineService saleOrderLineService;
 
+  protected StockMoveRepository stockMoveRepository;
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceService invoiceService,
-      SaleOrderLineService saleOrderLineService) {
+      SaleOrderLineService saleOrderLineService,
+      StockMoveRepository stockMoveRepository) {
 
     this.appSupplychainService = appSupplychainService;
 
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
+    this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
   }
 
@@ -147,6 +155,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException {
     BigDecimal total = Beans.get(SaleOrderComputeService.class).getTotalSaleOrderPrice(saleOrder);
+    if (total.compareTo(BigDecimal.ZERO) == 0) {
+      if (amount.compareTo(BigDecimal.ZERO) == 0) {
+        return BigDecimal.ZERO;
+      } else {
+        throw new AxelorException(
+            saleOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SO_INVOICE_AMOUNT_MAX));
+      }
+    }
     if (!isPercent) {
       amount = amount.multiply(new BigDecimal("100")).divide(total, 4, RoundingMode.HALF_EVEN);
     }
@@ -731,7 +749,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
 
-    Query q = JPA.em().createQuery(query, BigDecimal.class);
+    javax.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
 
     q.setParameter("saleOrderId", saleOrder.getId());
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
@@ -809,6 +827,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         invoiceMerged.setSaleOrder(null);
       }
       invoiceRepo.save(invoiceMerged);
+      swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     } else {
@@ -823,20 +842,41 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                 priceList,
                 paymentMode,
                 paymentCondition);
+        swapStockMoveInvoices(invoiceList, invoiceMerged);
+        invoiceService.deleteOldInvoices(invoiceList);
         this.fillInLines(invoiceMerged);
         return invoiceMerged;
       } else {
-        return invoiceService.mergeInvoice(
-            invoiceList,
-            company,
-            currency,
-            partner,
-            contactPartner,
-            priceList,
-            paymentMode,
-            paymentCondition);
+        Invoice invoiceMerged =
+            invoiceService.mergeInvoice(
+                invoiceList,
+                company,
+                currency,
+                partner,
+                contactPartner,
+                priceList,
+                paymentMode,
+                paymentCondition);
+        swapStockMoveInvoices(invoiceList, invoiceMerged);
+        invoiceService.deleteOldInvoices(invoiceList);
+        return invoiceMerged;
       }
     }
+  }
+
+  @Transactional
+  public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice) {
+    com.axelor.db.Query<StockMove> stockMoveQuery =
+        stockMoveRepository
+            .all()
+            .filter("self.invoice.id in (" + getIdListString(invoiceList) + ")");
+    stockMoveQuery
+        .fetch()
+        .forEach(
+            stockMove -> {
+              stockMove.setInvoice(newInvoice);
+              stockMoveRepository.save(stockMove);
+            });
   }
 
   @Override
@@ -859,16 +899,85 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
-    Map<String, Integer> contextValues = new HashMap<>();
+    BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
 
+    Map<String, Integer> contextValues = new HashMap<>();
     contextValues.put(
         "invoiceAll",
-        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 ? SaleOrderRepository.INVOICE_ALL : 0);
-    contextValues.put("invoiceFraction", SaleOrderRepository.INVOICE_PART);
-    contextValues.put("invoiceLines", SaleOrderRepository.INVOICE_LINES);
+        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
+            ? SaleOrderRepository.INVOICE_ALL
+            : 0);
+    contextValues.put(
+        "invoiceFraction",
+        appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()
+                || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
+            ? 0
+            : SaleOrderRepository.INVOICE_PART);
+    contextValues.put(
+        "invoiceLines",
+        exTaxTotal.compareTo(BigDecimal.ZERO) == 0 ? 0 : SaleOrderRepository.INVOICE_LINES);
     contextValues.put(
         "invoiceAdvPayment",
-        manageAdvanceInvoice ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT : 0);
+        manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
+            ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT
+            : 0);
     return contextValues;
+  }
+
+  @Override
+  public void displayErrorMessageIfSaleOrderIsInvoiceable(
+      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
+    List<Invoice> invoices =
+        Query.of(Invoice.class)
+            .filter(
+                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
+                    + "(self.archived = NULL OR self.archived = false)")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetch();
+    if (isPercent) {
+      amountToInvoice =
+          (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
+              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN);
+    }
+    BigDecimal sumInvoices =
+        invoices
+            .stream()
+            .map(Invoice::getExTaxTotal)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO)
+            .add(amountToInvoice);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
+          saleOrder.getSaleOrderSeq());
+    }
+  }
+
+  @Override
+  public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
+    List<Invoice> invoices =
+        Query.of(Invoice.class)
+            .filter(
+                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.statusSelect != :invoiceStatus AND "
+                    + "(self.archived = NULL OR self.archived = false)")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetch();
+    BigDecimal sumInvoices =
+        invoices
+            .stream()
+            .map(Invoice::getExTaxTotal)
+            .reduce((x, y) -> x.add(y))
+            .orElse(BigDecimal.ZERO);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+    }
   }
 }

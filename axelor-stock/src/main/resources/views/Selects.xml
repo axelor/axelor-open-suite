@@ -126,5 +126,17 @@
 		<option value="com.axelor.apps.production.db.ManufOrder" data-grid="manuf-order-grid" data-form="manuf-order-form">Manufacturing order</option>
 		<option value="com.axelor.apps.production.db.OperationOrder" data-grid="operation-order-grid" data-form="operation-order-form">Operation order</option>
 	</selection>
+	
+	<selection name='inventory.export.format.select'>
+		<option value="pdf">PDF</option>
+		<option value="xlsx">XLS</option>
+		<option value="csv">CSV</option>
+	</selection>
+
+	<selection name='stock.stock.location.value.type'>
+		<option value="1">WAP value</option>
+		<option value="2">Accounting value</option>
+		<option value="3">Sale value</option>
+	</selection>
 
 </object-views>

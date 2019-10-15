@@ -45,7 +45,9 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -137,7 +139,7 @@ public class SaleOrderController {
     }
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"unchecked"})
   public void generatePurchaseOrdersFromSelectedSOLines(
       ActionRequest request, ActionResponse response) {
 
@@ -146,52 +148,21 @@ public class SaleOrderController {
     try {
       if (saleOrder.getId() != null) {
 
-        if (request.getContext().get("supplierPartnerSelect") != null) {
-          Partner partner =
-              JPA.em()
-                  .find(
-                      Partner.class,
-                      new Long(
-                          (Integer)
-                              ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
-          List<Long> saleOrderLineIdSelected = new ArrayList<>();
-          String saleOrderLineIdSelectedStr =
-              (String) request.getContext().get("saleOrderLineIdSelected");
-          for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-            saleOrderLineIdSelected.add(new Long(saleOrderId));
-          }
-          List<SaleOrderLine> saleOrderLinesSelected =
-              JPA.all(SaleOrderLine.class)
-                  .filter("self.id IN (:saleOderLineIdList)")
-                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
-                  .fetch();
-          PurchaseOrder purchaseOrder =
-              Beans.get(SaleOrderPurchaseService.class)
-                  .createPurchaseOrder(
-                      partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
-          response.setView(
-              ActionView.define(I18n.get("Purchase order"))
-                  .model(PurchaseOrder.class.getName())
-                  .add("form", "purchase-order-form")
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(purchaseOrder.getId()))
-                  .map());
-          response.setCanClose(true);
-        } else {
-          Partner supplierPartner = null;
-          List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        Partner supplierPartner = null;
+        List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        Boolean isDirectOrderLocation = false;
+        Map<String, Object> values = getSelectedId(request, response, saleOrder);
+        supplierPartner = (Partner) values.get("supplierPartner");
+        saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
+        isDirectOrderLocation = (Boolean) values.get("isDirectOrderLocation");
 
-          // Check if supplier partners of each sale order line are the same. If it is, send the
-          // partner id to view to load this partner by default into select
+        if (supplierPartner == null) {
+          saleOrderLineIdSelected = new ArrayList<>();
+
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.isSelected()) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
-              } else {
-                if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())) {
-                  supplierPartner = null;
-                  break;
-                }
               }
               saleOrderLineIdSelected.add(saleOrderLine.getId());
             }
@@ -217,11 +188,82 @@ public class SaleOrderController {
                         "saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
                     .map());
           }
+        } else {
+          List<SaleOrderLine> saleOrderLinesSelected =
+              JPA.all(SaleOrderLine.class)
+                  .filter("self.id IN (:saleOderLineIdList)")
+                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
+                  .fetch();
+          PurchaseOrder purchaseOrder =
+              Beans.get(SaleOrderPurchaseService.class)
+                  .createPurchaseOrder(
+                      supplierPartner,
+                      saleOrderLinesSelected,
+                      saleOrderRepo.find(saleOrder.getId()));
+          response.setView(
+              ActionView.define(I18n.get("Purchase order"))
+                  .model(PurchaseOrder.class.getName())
+                  .add("form", "purchase-order-form")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(purchaseOrder.getId()))
+                  .map());
+
+          if (isDirectOrderLocation == false) {
+            response.setCanClose(true);
+          }
         }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("rawtypes")
+  private Map<String, Object> getSelectedId(
+      ActionRequest request, ActionResponse response, SaleOrder saleOrder) throws AxelorException {
+    Partner supplierPartner = null;
+    List<Long> saleOrderLineIdSelected = new ArrayList<>();
+    Map<String, Object> values = new HashMap<String, Object>();
+    Boolean isDirectOrderLocation = false;
+
+    if (saleOrder.getDirectOrderLocation()
+        && saleOrder.getStockLocation() != null
+        && saleOrder.getStockLocation().getPartner() != null
+        && saleOrder.getStockLocation().getPartner().getIsSupplier()) {
+      values.put("supplierPartner", saleOrder.getStockLocation().getPartner());
+
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.isSelected()) {
+          saleOrderLineIdSelected.add(saleOrderLine.getId());
+        }
+      }
+      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
+      isDirectOrderLocation = true;
+      values.put("isDirectOrderLocation", isDirectOrderLocation);
+
+      if (saleOrderLineIdSelected.isEmpty()) {
+        throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+      }
+    } else if (request.getContext().get("supplierPartnerSelect") != null) {
+      supplierPartner =
+          JPA.em()
+              .find(
+                  Partner.class,
+                  new Long(
+                      (Integer)
+                          ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
+      values.put("supplierPartner", supplierPartner);
+      String saleOrderLineIdSelectedStr =
+          (String) request.getContext().get("saleOrderLineIdSelected");
+
+      for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
+        saleOrderLineIdSelected.add(new Long(saleOrderId));
+      }
+      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
+      values.put("isDirectOrderLocation", isDirectOrderLocation);
+    }
+
+    return values;
   }
 
   /**
@@ -242,6 +284,9 @@ public class SaleOrderController {
       boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
       BigDecimal amountToInvoice =
           new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
+
+      Beans.get(SaleOrderInvoiceService.class)
+          .displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
@@ -333,7 +378,8 @@ public class SaleOrderController {
         fromPopup = true;
       }
     }
-    // Check if currency, clientPartner and company are the same for all selected sale orders
+    // Check if currency, clientPartner and company are the same for all selected
+    // sale orders
     Currency commonCurrency = null;
     Partner commonClientPartner = null;
     Company commonCompany = null;
@@ -341,13 +387,16 @@ public class SaleOrderController {
     Team commonTeam = null;
     // Useful to determine if a difference exists between teams of all sale orders
     boolean existTeamDiff = false;
-    // Useful to determine if a difference exists between contact partners of all sale orders
+    // Useful to determine if a difference exists between contact partners of all
+    // sale orders
     boolean existContactPartnerDiff = false;
     PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all sale orders
+    // Useful to determine if a difference exists between price lists of all sale
+    // orders
     boolean existPriceListDiff = false;
     StockLocation commonLocation = null;
-    // Useful to determine if a difference exists between stock locations of all sale orders
+    // Useful to determine if a difference exists between stock locations of all
+    // sale orders
     boolean existLocationDiff = false;
 
     SaleOrder saleOrderTemp;
@@ -651,10 +700,10 @@ public class SaleOrderController {
         stockMoveRepo
             .all()
             .filter(
-                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect != ?3",
+                "self.originTypeSelect = ?1 AND self.originId = ?2 AND self.statusSelect = ?3",
                 "com.axelor.apps.sale.db.SaleOrder",
                 saleOrder.getId(),
-                StockMoveRepository.STATUS_CANCELED)
+                StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
     if (stockMove != null) {
       response.setNotify(
@@ -733,6 +782,89 @@ public class SaleOrderController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void showPopUpInvoicingWizard(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      response.setView(
+          ActionView.define("Invoicing")
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-invoicing-wizard-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "false")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(saleOrder.getId()))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view when confirming sale order and analytic distribution is
+   * required from company's sale config.
+   *
+   * @param request
+   * @param response
+   */
+  public void checkSaleOrderAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      List<String> productList = new ArrayList<String>();
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.getAnalyticDistributionTemplate() == null) {
+          productList.add(saleOrderLine.getProductName());
+        }
+      }
+      if (!productList.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.SALE_ORDER_ANALYTIC_DISTRIBUTION_ERROR),
+            productList);
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void generateAdvancePaymentInvoice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    try {
+      SaleOrder saleOrder = context.asType(SaleOrder.class);
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      Boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
+      BigDecimal amountToInvoice =
+          new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+
+      Invoice invoice =
+          Beans.get(SaleOrderInvoiceService.class)
+              .generateInvoice(
+                  saleOrder,
+                  SaleOrderRepository.INVOICE_ADVANCE_PAYMENT,
+                  amountToInvoice,
+                  isPercent,
+                  null);
+
+      if (invoice != null) {
+        response.setCanClose(true);
+        response.setView(
+            ActionView.define(I18n.get("Invoice generated"))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

@@ -10,7 +10,7 @@
         <field name="saleOrderLine" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
     	<field name="accumulatedInvoicingPercentage"/>
     	<field name="nbOfDay"/>
-		<field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>    	
+		<field name="invoice" width="120" form-view="invoice-form" grid-view="invoice-grid"/>    	
     </grid>
 
 	<form name="sale-order-schedule-line-form" title="SO schedule line"

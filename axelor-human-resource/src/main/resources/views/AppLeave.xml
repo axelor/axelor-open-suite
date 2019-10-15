@@ -8,6 +8,12 @@
 			<field name="allowNegativeLeaveEmployees" widget="boolean-switch" />
 			<field name="overtimeManagement" widget="boolean-switch" />
 		</panel>
+				
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+		
 	</form>
 	
 	

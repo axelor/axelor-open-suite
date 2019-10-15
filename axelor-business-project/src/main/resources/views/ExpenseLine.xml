@@ -6,7 +6,7 @@
         <hilite if="$get('expense.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
         <hilite if="invoiced" color="success"/>
         <field name="project" />
-        <field name="expense.expenseSeq" title="Expense"/>
+        <field name="expense.expenseSeq" title="Expense" width="120"/>
         <field name="user"/>
         <field name="expenseProduct" canView="false" readonly="true"/>
         <field name="expenseDate" readonly="true"/>

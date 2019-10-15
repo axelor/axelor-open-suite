@@ -106,10 +106,10 @@ public class ImportSupplyChain {
       }
 
       if (status == IPurchaseOrder.STATUS_FINISHED) {
-        purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
-        StockMove stockMove =
-            stockMoveRepo.all().filter("self.originId = ?1", purchaseOrder.getId()).fetchOne();
-        if (stockMove != null) {
+        List<Long> idList =
+            purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
+        for (Long id : idList) {
+          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
           stockMoveService.copyQtyToRealQty(stockMove);
           stockMoveService.realize(stockMove);
           stockMove.setRealDate(purchaseOrder.getDeliveryDate());
@@ -120,12 +120,21 @@ public class ImportSupplyChain {
             purchaseOrderServiceSupplychainImpl.validateSupplier(purchaseOrder));
         Invoice invoice =
             Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
-        if (purchaseOrder.getValidationDate() != null) {
-          invoice.setInvoiceDate(purchaseOrder.getValidationDate());
 
+        String prefixSupplierSeq = "INV000";
+        invoice.setSupplierInvoiceNb(prefixSupplierSeq + purchaseOrder.getImportId());
+
+        invoice.setInternalReference(purchaseOrder.getInternalReference());
+
+        LocalDate date;
+        if (purchaseOrder.getValidationDate() != null) {
+          date = purchaseOrder.getValidationDate();
         } else {
-          invoice.setInvoiceDate(LocalDate.now());
+          date = LocalDate.now();
         }
+        invoice.setInvoiceDate(date);
+        invoice.setOriginDate(date.minusDays(15));
+
         invoiceService.validateAndVentilate(invoice);
         purchaseOrderServiceSupplychainImpl.finishPurchaseOrder(purchaseOrder);
       }
@@ -156,7 +165,6 @@ public class ImportSupplyChain {
         // taskSaleOrderService.createTasks(saleOrder); TODO once we will have done the generation//
         // of tasks in project module
         saleOrderWorkflowService.confirmSaleOrder(saleOrder);
-        saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
         // Beans.get(SaleOrderPurchaseService.class).createPurchaseOrders(saleOrder);
         //				productionOrderSaleOrderService.generateProductionOrder(saleOrder);
         // saleOrder.setClientPartner(saleOrderWorkflowService.validateCustomer(saleOrder));
@@ -169,15 +177,17 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(LocalDate.now());
         }
         invoiceService.validateAndVentilate(invoice);
-        StockMove stockMove =
-            stockMoveRepo.all().filter("self.originId = ?1", saleOrder.getId()).fetchOne();
-        if (stockMove != null
-            && stockMove.getStockMoveLineList() != null
-            && !stockMove.getStockMoveLineList().isEmpty()) {
-          stockMoveService.copyQtyToRealQty(stockMove);
-          stockMoveService.validate(stockMove);
-          if (saleOrder.getConfirmationDateTime() != null) {
-            stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+
+        List<Long> idList = saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
+        for (Long id : idList) {
+          StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+          if (stockMove.getStockMoveLineList() != null
+              && !stockMove.getStockMoveLineList().isEmpty()) {
+            stockMoveService.copyQtyToRealQty(stockMove);
+            stockMoveService.validate(stockMove);
+            if (saleOrder.getConfirmationDateTime() != null) {
+              stockMove.setRealDate(saleOrder.getConfirmationDateTime().toLocalDate());
+            }
           }
         }
       }

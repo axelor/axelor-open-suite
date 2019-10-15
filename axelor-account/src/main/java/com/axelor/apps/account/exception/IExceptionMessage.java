@@ -153,6 +153,8 @@ public interface IExceptionMessage {
       "Account missing on the tax line : %s (company : %s)" /*)*/;
   static final String ANALYTIC_DISTRIBUTION_MISSING = /*$$(*/
       "Analytic distribution is missing on configuration for line : %s (company : %s)" /*)*/;
+  static final String MOVE_LINE_7 = /*$$(*/
+      "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
 
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
@@ -169,6 +171,8 @@ public interface IExceptionMessage {
   static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
       "Analytic distribution template is mandatory for the account %s." /*)*/;
+  static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
+      "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
   /** Payment schedule export service */
   static final String PAYMENT_SCHEDULE_1 = /*$$(*/
@@ -527,7 +531,8 @@ public interface IExceptionMessage {
   static final String DEBT_RECOVERY_ACTION_2 = /*$$(*/ "Debt recovery line missing." /*)*/;
   static final String DEBT_RECOVERY_ACTION_3 = /*$$(*/
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
-  static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/ "Email is not sent. Please check email account configuration." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
+      "Email is not sent. Please check email account configuration." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
@@ -778,4 +783,13 @@ public interface IExceptionMessage {
       "Note: there are existing not imputed client refunds."; /*)*/
   String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
       "Note: there are existing not imputed supplier refunds."; /*)*/
+
+  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_1 = /*$$(*/
+      "Disposal date must be after the date of the last depreciation." /*)*/;
+  public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
+      "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
+
+  /*Check not lettered advance move lines*/
+  public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
+      "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
 }

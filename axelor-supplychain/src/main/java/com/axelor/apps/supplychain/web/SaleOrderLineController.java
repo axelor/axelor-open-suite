@@ -29,11 +29,14 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -121,6 +124,12 @@ public class SaleOrderLineController {
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();
     try {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
       Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, newReservedQty);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -133,6 +142,54 @@ public class SaleOrderLineController {
     try {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
       Beans.get(ReservedQtyService.class).updateRequestedReservedQty(saleOrderLine, newReservedQty);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order line form view, on request qty click. Call {@link
+   * ReservedQtyService#requestQty(SaleOrderLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void requestQty(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).requestQty(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order line form view, on request qty click. Call {@link
+   * ReservedQtyService#cancelReservation(SaleOrderLine)}
+   *
+   * @param request
+   * @param response
+   */
+  public void cancelReservation(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).cancelReservation(saleOrderLine);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -232,5 +289,57 @@ public class SaleOrderLineController {
     }
 
     response.setValue("supplierPartner", supplierPartner);
+  }
+
+  /**
+   * Called from sale order form view, on clicking allocateAll button on one sale order line. Call
+   * {@link ReservedQtyService#allocateAll(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void allocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Product product = saleOrderLine.getProduct();
+      if (product == null || !product.getStockManaged()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.SALE_ORDER_LINE_PRODUCT_NOT_STOCK_MANAGED));
+      }
+      Beans.get(ReservedQtyService.class).allocateAll(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order form view, on clicking deallocate button on one sale order line. Call
+   * {@link ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal.ZERO)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void deallocateAll(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      Beans.get(ReservedQtyService.class).updateReservedQty(saleOrderLine, BigDecimal.ZERO);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkInvoicedOrDeliveredOrderQty(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+    BigDecimal qty =
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .checkInvoicedOrDeliveredOrderQty(saleOrderLine);
+
+    response.setValue("qty", qty);
   }
 }

@@ -46,7 +46,7 @@
   			<field name="account" onSelect="action-analytic-move-line-attrs-account-domain" onChange="action-analytic-move-line-record-account-onchange"/>
             <field name="accountType" onChange="action-analytic-move-line-record-account-type-onchange"/>
 	        <field name="typeSelect"/>
-           <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
+           <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
        </panel>
         
     </form>

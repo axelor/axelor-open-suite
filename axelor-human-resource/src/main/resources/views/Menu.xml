@@ -176,7 +176,7 @@
 
 	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
 		model="com.axelor.apps.base.db.ICalendarEvent" >
-		<view type="calendar" name="calendar-event-all"/>
+		<view type="calendar" name="calendar-event-leave-request"/>
 		<view type="grid" name="calendar-event-grid"/>
 		<view type="form" name="calendar-event-form"/>
 		<domain>self.typeSelect = 4</domain>

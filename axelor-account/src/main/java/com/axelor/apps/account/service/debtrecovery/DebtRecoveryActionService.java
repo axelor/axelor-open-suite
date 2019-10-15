@@ -227,6 +227,11 @@ public class DebtRecoveryActionService {
       this.debtRecoveryLevelValidate(debtRecovery);
 
       this.saveDebtRecovery(debtRecovery);
+
+      /* Messages are send from this transaction
+      If an exception occurs while sending messages
+      The debtRecovery process is rollbacked */
+      this.runMessage(debtRecovery);
     }
     log.debug("End runManualAction service");
   }
@@ -251,7 +256,8 @@ public class DebtRecoveryActionService {
       message = Beans.get(MessageRepository.class).save(message);
       message = Beans.get(MessageService.class).sendMessage(message);
 
-      if (message.getMailAccount() == null) {
+      if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
+          && message.getMailAccount() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_4));

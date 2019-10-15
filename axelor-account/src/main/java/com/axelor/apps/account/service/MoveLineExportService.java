@@ -20,12 +20,14 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.time.LocalDate;
 
 public interface MoveLineExportService {
 
-  public void exportMoveLine(AccountingReport accountingReport) throws AxelorException, IOException;
+  public MetaFile exportMoveLine(AccountingReport accountingReport)
+      throws AxelorException, IOException;
 
   public void replayExportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException;
@@ -50,6 +52,7 @@ public interface MoveLineExportService {
    * Export general balance to CSV file.
    *
    * @param accountingReport
+   * @return
    * @throws AxelorException
    * @throws IOException
    */

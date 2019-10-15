@@ -6,10 +6,27 @@
 
     <entity name="ConfiguratorProdProcess" lang="java">
         <string name="name" title="Label" required="true"/>
+        <integer name="statusSelect" title="Status" selection="production.bill.of.material.status.select" default="2"/>
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
-        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location" required="true"/>
         <one-to-many name="configuratorProdProcessLineList" title="Phase" mappedBy="configuratorProdProcess"
                      ref="com.axelor.apps.production.db.ConfiguratorProdProcessLine"/>
+
+        <string name="code" title="Code"/>
+        <string name="codeFormula" title="Code" large="true"/>
+        <boolean name="defCodeAsFormula" title="Define with a script" default="false"/>
+
+
+        <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Production stock location" required="true"/>
+        <string name="stockLocationFormula" title="Production stock location" large="true"/>
+        <boolean name="defStockLocationAsFormula" title="Define with a script" default="false"/>
+
+        <many-to-one name="producedProductStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location for produced product"/>
+        <string name="producedProductStockLocationFormula" title="Stock location for produced product" large="true"/>
+        <boolean name="defProducedProductStockLocationAsFormula" title="Define with a script" default="false"/>
+
+        <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+        <string name="workshopStockLocationFormula" title="Workshop" large="true"/>
+        <boolean name="defWorkshopStockLocationAsFormula" title="Define with a script" default="false"/>
     </entity>
 
 </domain-models>

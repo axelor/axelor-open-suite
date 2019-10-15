@@ -148,13 +148,14 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       }
     }
 
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
-      this.saveSaleOrderPDFAsAttachment(saleOrder);
-    }
     if (saleOrder.getVersionNumber() == 1
         && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
       saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+    }
+
+    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
+    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
+      this.saveSaleOrderPDFAsAttachment(saleOrder);
     }
     saleOrderRepo.save(saleOrder);
   }
@@ -203,8 +204,15 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
+    String fileNamePrefix;
+    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      fileNamePrefix = "Sale quotation";
+    } else {
+      fileNamePrefix = "Sale order";
+    }
 
-    return I18n.get("Sale order")
+    return I18n.get(fileNamePrefix)
         + " "
         + saleOrder.getSaleOrderSeq()
         + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");

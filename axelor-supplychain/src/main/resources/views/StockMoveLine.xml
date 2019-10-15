@@ -5,7 +5,7 @@
     
     <grid name="stock-move-line-sale-order-line-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
     	canNew="false" canDelete="false">
-        <field name="stockMove.stockMoveSeq" />	
+        <field name="stockMove.stockMoveSeq" width="120"/>	
         <field name="stockMove.realDate"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
         <field name="unitPriceUntaxed" x-scale="2"/>

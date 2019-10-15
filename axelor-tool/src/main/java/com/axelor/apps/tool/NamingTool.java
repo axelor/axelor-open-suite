@@ -415,7 +415,7 @@ public final class NamingTool {
 
   // Oracle
   private static final Set<String> RESERVED_ORACLE =
-      new LinkedHashSet<String>(
+      new LinkedHashSet<>(
           Arrays.asList(
               "access",
               "add",

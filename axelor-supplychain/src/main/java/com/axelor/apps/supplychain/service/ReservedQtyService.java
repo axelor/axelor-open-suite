@@ -27,6 +27,12 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
+/**
+ * A service which contains all methods managing the reservation feature. The purpose of this
+ * service is to update accordingly all reservedQty and requestedReservedQty fields in
+ * SaleOrderLine, StockMoveLine and StockLocationLine. The reservation is computed from stock move
+ * lines then fields in sale order lines and stock location lines are updated.
+ */
 public interface ReservedQtyService {
 
   /**
@@ -72,7 +78,8 @@ public interface ReservedQtyService {
    *
    * @param stockMoveLine a stock move line
    * @param stockLocation a stock location
-   * @param product the product of the line
+   * @param product the product of the line. If the product is not managed in stock, this method
+   *     does nothing.
    * @param toStatus target status for the stock move
    * @param requestedReservedQty the requested reserved quantity in stock move unit
    * @throws AxelorException
@@ -90,7 +97,8 @@ public interface ReservedQtyService {
    *
    * @param stockMoveLine a stock move line.
    * @param stockLocation a stock location.
-   * @param product the product of the line.
+   * @param product the product of the line. If the product is not managed in stock, this method
+   *     does nothing.
    * @param toStatus target status for the stock move.
    * @param qty the quantity in stock move unit.
    * @throws AxelorException
@@ -185,9 +193,10 @@ public interface ReservedQtyService {
    * @param saleOrderLine
    * @param product
    * @param newReservedQty
+   * @return the new allocated quantity
    * @throws AxelorException
    */
-  void updateRequestedReservedQuantityInStockMoveLines(
+  BigDecimal updateRequestedReservedQuantityInStockMoveLines(
       SaleOrderLine saleOrderLine, Product product, BigDecimal newReservedQty)
       throws AxelorException;
 
@@ -210,6 +219,22 @@ public interface ReservedQtyService {
   void updateRequestedReservedQty(StockLocationLine stockLocationLine) throws AxelorException;
 
   /**
+   * Request quantity for a sale order line.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void requestQty(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
+   * Cancel the reservation for a sale order line.
+   *
+   * @param saleOrderLine
+   * @throws AxelorException
+   */
+  void cancelReservation(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
    * Update reserved qty for sale order line from already updated stock move.
    *
    * @param saleOrderLine
@@ -224,4 +249,11 @@ public interface ReservedQtyService {
    * @throws AxelorException
    */
   void updateReservedQty(StockLocationLine stockLocationLine) throws AxelorException;
+
+  /**
+   * Create a reservation and allocate as much quantity as we can.
+   *
+   * @param saleOrderLine
+   */
+  void allocateAll(SaleOrderLine saleOrderLine) throws AxelorException;
 }

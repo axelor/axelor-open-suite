@@ -35,6 +35,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -143,6 +144,8 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
     }
 
+    MoveLineService moveLineService = Beans.get(MoveLineService.class);
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       Account account = moveLine.getAccount();
       if (account.getIsTaxAuthorizedOnMoveLine()
@@ -174,6 +177,8 @@ public class MoveValidateService {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.VENTILATE_STATE_7));
       }
+
+      moveLineService.validateMoveLine(moveLine);
     }
 
     this.validateWellBalancedMove(move);
@@ -202,6 +207,12 @@ public class MoveValidateService {
     log.debug("Validation de l'écriture comptable {}", move.getReference());
 
     this.checkPreconditions(move);
+
+    if (move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_VALIDATION_FISCAL_PERIOD_CLOSED));
+    }
 
     Boolean dayBookMode =
         accountConfigService.getAccountConfig(move.getCompany()).getAccountingDaybook();

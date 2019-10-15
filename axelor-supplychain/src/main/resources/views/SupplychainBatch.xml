@@ -125,8 +125,8 @@
 
 	<action-view name="action-batch-show-stock-move-lines" title="Stock move lines"
 				 model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-grid"/>
-		<view type="form" name="stock-move-line-form"/>
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
 		<domain>self.id IN :stockMovelineIdList</domain>
 		<context name="stockMovelineIdList" expr="call:com.axelor.apps.supplychain.service.AccountingCutOffService:getStockMoveLines(__self__)"/>
 	</action-view>

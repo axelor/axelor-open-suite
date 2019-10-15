@@ -7,7 +7,11 @@
 		<panel name="appBudgetPanel"  if-module="axelor-account" colSpan="12">
 			<field name="checkAvailableBudget" widget="boolean-switch"/>
 			<field name="manageMultiBudget" widget="boolean-switch"/>
-			<field name="budgetStatusSelect" widget="MultiSelect" />
 		</panel>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 </object-views>

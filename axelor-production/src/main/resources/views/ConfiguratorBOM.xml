@@ -7,7 +7,10 @@
     		onNew="action-configurator-bom-method-set-parent"
     		model="com.axelor.apps.production.db.ConfiguratorBOM">
         <panel name="mainPanel">
-            <field name="company"/>
+            <panel>
+                <field name="company"/>
+                <field name="statusSelect" selection-in="[2,3]"/>
+            </panel>
             <panel name="labelPanel" title="Label">
                 <field name="defNameAsFormula" colSpan="6"/>
                 <field name="name" colSpan="12" showIf="!defNameAsFormula"/>

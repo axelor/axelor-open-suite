@@ -8,16 +8,32 @@
   <entity name="PurchaseRequest" lang="java" cachable="true">
 	
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <boolean name="newProduct" title="New product" />
-    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" />
-    <decimal name="quantity" title="Quantity"/>
-    <many-to-one name="supplier" ref="com.axelor.apps.base.db.Partner" title="Supplier" />
-    <decimal name="price" title="Price"  />
+    <many-to-one name="supplierUser" ref="com.axelor.apps.base.db.Partner" title="Supplier" />
     <string name="description" title="Description" large="true"/>
-    <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address" />
     <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order" />
     <integer name="statusSelect" title="Status" selection="purchase.request.status.select" default="1"/>
+    <string name="purchaseRequestSeq" title="Ref."/>
+	<one-to-many ref="com.axelor.apps.purchase.db.PurchaseRequestLine" name="purchaseRequestLineList" title="Purchase Request Lines" mappedBy="purchaseRequest"/>
+
+    <unique-constraint columns="purchaseRequestSeq"/>
+
+    <extra-code>
+    	<![CDATA[
+    		// STATUS
+			public static final int STATUS_DRAFT = 1;
+			public static final int STATUS_REQUESTED = 2;
+			public static final int STATUS_ACCEPTED = 3;
+			public static final int STATUS_PURCHASED = 4;
+			public static final int STATUS_PARTIAL_DELIVERY = 5;
+			public static final int STATUS_RECEIVED = 6;
+			public static final int STATUS_REFUSED = 7;
+			public static final int STATUS_CANCELED = 8;
+		]]>
+	</extra-code>
+
+	<track>
+		<field name="supplierUser"/>
+	</track>
   	
   </entity>
   

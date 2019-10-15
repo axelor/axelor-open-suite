@@ -45,6 +45,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,16 +95,25 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
 
   @Override
   @Transactional(rollbackOn = {Exception.class, AxelorException.class})
-  public void enableEditOrder(SaleOrder saleOrder) throws AxelorException {
-    super.enableEditOrder(saleOrder);
+  public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
+    boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
 
-    List<StockMove> stockMoves =
+    List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(
                 StockMoveRepository.ORIGIN_SALE_ORDER,
                 saleOrder.getId(),
                 StockMoveRepository.STATUS_PLANNED)
             .fetch();
+    List<StockMove> stockMoves =
+        !allStockMoves.isEmpty()
+            ? allStockMoves
+                .stream()
+                .filter(stockMove -> !stockMove.getAvailabilityRequest())
+                .collect(Collectors.toList())
+            : allStockMoves;
+    checkAvailabiltyRequest =
+        stockMoves.size() != allStockMoves.size() ? true : checkAvailabiltyRequest;
     if (!stockMoves.isEmpty()) {
       StockMoveService stockMoveService = Beans.get(StockMoveService.class);
       StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
@@ -119,6 +129,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
         stockMoveRepository.remove(stockMove);
       }
     }
+    return checkAvailabiltyRequest;
   }
 
   /**

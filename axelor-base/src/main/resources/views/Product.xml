@@ -8,7 +8,7 @@
         	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
-	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name" width="300"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -35,25 +35,36 @@
     		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   		</toolbar>
   		<panel name="mainPanel" >
-   			<panel name="namePanel" colSpan="5">
-    			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
+   			<panel name="namePanel" colSpan="4">
+            <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12" width="600">
         			<editor x-show-titles="false">
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" readonly="true" 
           					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
           					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
-          				<field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name"/>
+                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="400"/>
         			</editor>
       			</field>
     		</panel>
-    		<panel name="actionsPanel" colSpan="7">
+    		<panel name="actionsPanel" colSpan="8">
        			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
-      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="9" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+				<panel name="tagsPanel" colSpan="2" if="__config__.app.isApp('sale')" if-module="axelor-sale">
+					<field name="$viewerProductTags" showTitle="false" colSpan="12" readonly="true">
+						<viewer depends="configurator">
+							<![CDATA[
+								<h4 style="text-align: right;">
+									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.configurator != null" x-translate>Customised</span>
+								</h4>
+							]]>
+						</viewer>
+					</field>
+				</panel>
+      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="7" if-module="axelor-stock" if="__config__.app.isApp('stock')">
        	 			<button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
        	 			<button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
        	 			<button name="$reservedQtyBtn" title="Allocated qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
     	  			<field name="isModel" hidden="true"/>
-			</panel>
+				</panel>
       		</panel>
     		<panel name="imagePanel" colSpan="2">
       			<field name="picture" showTitle="false" colSpan="12" widget="Image">
@@ -85,7 +96,7 @@
 		      	</panel>
       			<panel name="inAtiExpensePanel" colSpan="12">
 			        <field name="inAti" colSpan="6" onChange="action-product-attrs-change-title-based-on-inAti"/>
-			        <field name="expense" hidden="true"/>
+			        <field name="expense" hidden="true" if-module="axelor-human-resource"/>
       			</panel>
       			<panel name="BarcodePanel" readonlyIf="barCode != null" if="__config__.app.getApp('base').getActivateBarCodeGeneration()" title="Barcode" colSpan="12">
       				<field name="serialNumber" />
@@ -306,6 +317,7 @@
 		<field name="productFamily" />
 		<field name="productCategory" />
 		<field name="internalDescription"/>
+		<field name="configurator.id"/>
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
@@ -320,6 +332,9 @@
 			  </div>
 			</div>
 			<div class="span12" ng-bind-html="internalDescription"></div>
+			<div class="span12" style="margin-left:0px;">
+	  			<span class="label label-important" ng-show="record.configurator.id" x-translate>Customised</span>
+			</div>
 		]]>
 		</template>
 	</cards>
@@ -339,7 +354,7 @@
    	 	<action name="action-product-attrs-scale-and-precision"/>
    	 	<action name="action-product-attrs-scale-and-precision-production"/>
 		<action name="action-product-attrs-scale-and-precision-stock"/>
-    	<action name="action-product-record-default-new"/>
+    	<action name="action-product-group-default-new"/>
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-record-in-ati"/>
     	<action name="action-product-attrs-in-ati"/>
@@ -440,9 +455,13 @@
         <attribute for="costTypeSelect" name="hidden" expr="eval: true"
 				   if="parentProduct?.manageVariantPrice"/>
 	</action-attrs>
-    
+	
+	<action-group name="action-product-group-default-new">
+		<action name="action-product-record-default-new"/>
+		<action name="hr-action-product-record-default-new" if="__config__.app.getApp('expense')"/>
+	</action-group>
+	
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
-    	<field name="expense" expr="false"/>
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
     	<field name="procurementMethodSelect" expr="buy"/>
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
@@ -558,10 +577,16 @@
 			<domain>self.productVariantConfig != null</domain>
 		</filter>
 		<filter title="Define sub bill of material">
-			<domain>self.subTypeProductSelect = 3</domain>
+			<domain>self.productSubTypeSelect = 3</domain>
 		</filter>
 		<filter title="Obsolete Products">
 			<domain>CURRENT_DATE &gt; self.endDate</domain>
+		</filter>
+		<filter title="Classic products">
+			<domain>self.configurator IS NULL</domain>
+		</filter>
+		<filter title="Customised products">
+			<domain>self.configurator IS NOT NULL</domain>
 		</filter>
 	</search-filters>
 	

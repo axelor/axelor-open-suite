@@ -32,7 +32,6 @@ public interface IExceptionMessage {
       "An error occurred while importing the file data, product not found with code :" /*)*/;
   static final String INVENTORY_5 = /*$$(*/
       "There is currently no such file in the specified folder or the folder may not exists." /*)*/;
-  static final String INVENTORY_6 = /*$$(*/ "Company missing for stock location %s" /*)*/;
   static final String INVENTORY_7 = /*$$(*/ "Incorrect product in inventory line" /*)*/;
   static final String INVENTORY_8 = /*$$(*/ "File %s successfully imported." /*)*/;
   static final String INVENTORY_9 = /*$$(*/ "There's no product in stock location." /*)*/;
@@ -84,7 +83,10 @@ public interface IExceptionMessage {
       "All storable products used in DEB must have net mass and mass unit information for customs." /*)*/;
   static final String STOCK_MOVE_19 = /*$$(*/
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
-  static final String STOCK_MOVE_NOT_DELETED = /*$$(*/ "Can't delete a planned stock move" /*)*/;
+  static final String STOCK_MOVE_PLANNED_NOT_DELETED = /*$$(*/
+      "Can't delete a planned stock move" /*)*/;
+  static final String STOCK_MOVE_REALIZED_NOT_DELETED = /*$$(*/
+      "Can't delete a realized stock move" /*)*/;
   static final String STOCK_MOVE_SPLIT_NOT_GENERATED = /*$$(*/
       "No new stock move was generated" /*)*/;
   static final String STOCK_MOVE_INCOMING_PARTIAL_GENERATED = /*$$(*/
@@ -181,7 +183,10 @@ public interface IExceptionMessage {
       "No economic area is configured for %s." /*)*/;
   String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_UNSUPPORTED = /*$$(*/
       "Declaration of exchanges for %s is not supported." /*)*/;
+  String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK = /*$$(*/
+      "Please set an economic are in AppStock." /*)*/;
 
   String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
+  String TRACK_NUMBER_DATE_MISSING = /*$$(*/ "Please filled estimated delivery date" /*)*/;
 }

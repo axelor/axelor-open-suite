@@ -1,6 +1,5 @@
 "key","message","comment","context"
 "App Mobile",,,
-"Apps permissions",,,
 "CRM",,,
 "Contacts",,,
 "Customers",,,
@@ -9,6 +8,7 @@
 "Leads",,,
 "Leave",,,
 "Leaves",,,
+"Mobile app permissions","Permissions sur l'application mobile",,
 "Mobile apps",,,
 "Offline record limit",,,
 "Products",,,
@@ -17,4 +17,3 @@
 "Sales",,,
 "Timesheet",,,
 "Timesheets",,,
-"User",,,

@@ -142,7 +142,7 @@
 					colSpan="2" widget="boolean-switch" />
 				<field name="extendsMembersFromParent" hidden="true"
 					showIf="projectTypeSelect == 2" colSpan="3" widget="boolean-switch" />
-				<field name="membersUserSet" showTitle="false" colSpan="12"
+				<field name="membersUserSet" colSpan="12"
 					widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid" />
 				<button name="importMemberBtn" title="Import all members"
 					showIf="team != null" readonlyIf="extendsMembersFromParent" colSpan="3"
@@ -325,7 +325,7 @@
 			<button name="finishBtn" title="Finish" hidden="true" showIf="statusSelect == 2"
 				colSpan="12" icon="fa-check" onClick="action-project-record-status-finished,save" />
 			<button name="cancelBtn" title="Cancel" hidden="true"
-				showIf="statusSelect == 2 || statusSelect == 3" colSpan="12" css="btn-danger"
+				showIf="statusSelect != 4" colSpan="12" css="btn-danger"
 				icon="fa-times-circle" onClick="action-project-record-status-canceled,save" />
 			<button name="newStatusBtn" title="Reset to New" hidden="true"
 				showIf="statusSelect == 4" colSpan="12" css="btn-danger"
@@ -338,9 +338,9 @@
 					name="isProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
-				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 			</panel>
 			<panel if-module="axelor-business-project" name="project"
 				showIf="isProject" colSpan="12">
@@ -749,5 +749,10 @@
 		<view-param name="popup" value="reload"/>
 		<context name="_project" expr="eval:__this__"/>
 	</action-view>
+
+    <action-view name="dashlet.task" title="Tasks" model="com.axelor.apps.project.db.Project">
+        <view type="grid" name="task-grid" />
+        <view type="form" name="task-form" />
+    </action-view>
 
 </object-views>

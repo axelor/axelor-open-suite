@@ -42,6 +42,49 @@
         <boolean name="intercoSaleOrderCreateFinalized" title="Create interco sale quotation as finalized"/>
         <boolean name="intercoPurchaseOrderCreateRequested" title="Create interco purchase quotation as requested"/>
         <boolean name="intercoInvoiceCreateValidated" title="Create interco invoice as validated"/>
+      <boolean name="blockDeallocationOnAvailabilityRequest" title="Block deallocation on availability request"/>
+    	<boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
+    	<boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
+    	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
+    	<boolean name="manageAdvancePaymentsFromPaymentConditions" title="Manage advance payments from payment conditions" default="false"/>
+    
+    <track>
+    	<field name="manageInvoicedAmountByLine" on="UPDATE"/>
+    	<field name="custStockMoveMgtOnSO" on="UPDATE"/>
+    	<field name="customerStockMoveGenerationAuto" on="UPDATE"/>
+    	<field name="supplStockMoveMgtOnPO" on="UPDATE"/>
+    	<field name="supplierStockMoveGenerationAuto" on="UPDATE"/>
+    	<field name="allowSusbcriptionSaleOrder" on="UPDATE"/>
+    	<field name="checkSaleStocks" on="UPDATE"/>
+    	<field name="generateInvoiceFromStockMove" on="UPDATE"/>
+    	
+    	<field name="terminateSaleOrderOnDelivery" on="UPDATE"/>
+    	<field name="terminatePurchaseOrderOnReceipt" on="UPDATE"/>
+    	
+    	<field name="allowCompleteManuallySaleOrder" on="UPDATE"/>
+    	
+    	<field name="purchaseOrderGenerationAuto" on="UPDATE"/>
+    	
+    	<field name="allowFinishManuallyPurchaseOrder" on="UPDATE"/>
+    	
+    	<field name="generateInvoiceFromSaleOrder" on="UPDATE"/>
+    	<field name="generateInvoiceFromPurchaseOrder" on="UPDATE"/>
+    	<field name="allowTimetableInvoicing" on="UPDATE"/>
+    	
+    	<field name="intercoFromPurchase" on="UPDATE"/>
+    	<field name="intercoFromSale" on="UPDATE"/>
+    	<field name="intercoFromInvoice" on="UPDATE"/>
+    	
+    	<field name="intercoPurchaseCreatingStatusSelect" on="UPDATE"/>
+    	<field name="intercoSaleCreatingStatusSelect" on="UPDATE"/>
+    	<field name="manageStockReservation" on="UPDATE"/>
+    	<field name="cancelReasonOnChangingSaleOrder" on="UPDATE"/>
+    	<field name="intercoSaleOrderCreateFinalized" on="UPDATE"/>
+    	<field name="intercoPurchaseOrderCreateRequested" on="UPDATE"/>
+    	<field name="intercoInvoiceCreateValidated" on="UPDATE"/>
+    	<field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
+    	<field name="isVerifyProductStock" on="UPDATE"/>
+    </track>
 	</entity>
 
 </domain-models>

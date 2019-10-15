@@ -11,7 +11,7 @@
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" title="Email"/>
@@ -35,7 +35,7 @@
 	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
-	    <field name="partnerSeq"/>
+	    <field name="partnerSeq" width="120"/>
 	    <field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -60,7 +60,7 @@
 	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
-	    <field name="partnerSeq"/>
+	    <field name="partnerSeq" width="120" />
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="emailAddress.address" placeholder="whatever@example.com"
@@ -79,7 +79,7 @@
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -92,7 +92,7 @@
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner" model="com.axelor.apps.base.db.Partner" groupBy="user">
-    	<field name="partnerSeq"/>
+    	<field name="partnerSeq" width="120"/>
 		<field name="simpleFullName"/>
 		<field name="fixedPhone"/>
 		<field name="mobilePhone"/>
@@ -102,11 +102,8 @@
 
 	<form name="partner-customer-form"  title="Customer" model="com.axelor.apps.base.db.Partner"
 		  onNew="action-group-base-partner-onnew"
-		  onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery-btn"
+		  onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
 		  onSave="action-partner-validate-partner-stock-settings-list" width="large">
-		<toolbar>
-			<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-partner-view-show-customer-debt-recovery" if="__config__.app.isApp('account')"/>
-		</toolbar>
 		<panel-include view="partner-form" />
 	</form>
 
@@ -284,8 +281,8 @@
 				</panel>
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false"/>
-					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
-						<field name="user" colSpan="6" form-view="user-form" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
+					<panel name="assignedToPanel" title="Assigned to" colSpan="12" >
+						<field name="user" colSpan="6" form-view="user-form" onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee" canNew="false" canEdit="false" canView="false"/>
 						<field name="team" canEdit="false" colSpan="6" form-view="team-form" grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" hideIf="isEmployee"/>
 						<field name="companySet" colSpan="12" widget="TagSelect" canNew="false" form-view="company-form" grid-view="company-grid"/>
 					</panel>
@@ -779,8 +776,8 @@
 		<attribute name="domain" for="partner" expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true) AND self.isEmployee = false &quot;"/>
 	</action-attrs>
 	
-	<action-attrs name="action-partner-attrs-hide-customer-recovery-btn">
-		<attribute name="hidden" for="customerRecoveryBtn" expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}"/>
+	<action-attrs name="action-partner-attrs-hide-customer-recovery">
+		<attribute name="hidden" for="customerRecovery" expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}"/>
 	</action-attrs>
 
     <action-record name="action-partner-record-set-balance"
@@ -940,10 +937,19 @@
     </action-record>
 
     <action-validate name="action-partner-validate-partner-stock-settings-list">
-    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
+    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList != null &amp;&amp; partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
     </action-validate>
-
+   	 
+   	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
+		<attribute name="domain" for="user" expr="eval: &quot;self.group IN (${__config__.app.getApp('crm').groupsAssignable?.collect{it.id}.join(',')})&quot;" if="__config__.app.getApp('crm').assignableUsers == 1"/>
+	</action-attrs>
+   	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
+	    <field name="partnerAddressList" hidden="true"/>
+        <field name="mainAddress" title="Main address"/>
+        <field name="isContact" title="Is a contact"/>
+        <field name="simpleFullName" hidden="true"/>
+        <field name="isCarrier" title="Is a carrier" if="__config__.app.isApp('stock')"/>
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
 		</filter>
