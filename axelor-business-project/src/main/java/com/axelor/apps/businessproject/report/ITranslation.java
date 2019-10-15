@@ -60,10 +60,13 @@ public interface ITranslation {
   public static final String PROJECT_TOTAL = /*$$(*/ "Project.total"; /*)*/
   public static final String PROJECT_RESULT = /*$$(*/ "Project.result"; /*)*/
   public static final String PROJECT_CHART_TITLE = /*$$(*/ "Project.turnoverAndCostPerMonth"; /*)*/
-
   public static final String PROJECT_MANUAL_ELEMENT = /*$$(*/ "Project.manualElement"; /*)*/
   public static final String PROJECT_MANUAL_ELEMENT_TITLE = /*$$(*/
       "Project.manualElementTitle"; /*)*/
+  public static final String PROJECT_REPORT_TITLE_FOR_PLANIFICATION_AND_COST = /*$$(*/
+      "Project planification and costs"; /*)*/
+  public static final String PROJECT_REPORT_TITLE_FOR_FINANCIAL = /*$$(*/
+      "Projects financial report"; /*)*/
 
   public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/
       "Invoice.purchaseInvoiceNoAnnex"; /*)*/
