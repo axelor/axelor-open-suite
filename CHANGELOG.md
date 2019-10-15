@@ -13,6 +13,7 @@
 - APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
 - Tax payment move lines: are canceled after unreconcile.
 - BANK ORDER : add bank name in grid view
+- Partner : correct addresses to display on form.
 
 ## Bug Fixes
 - Employee : fix error on duplicate
