@@ -242,6 +242,7 @@
 					</field>
 				</panel>
 				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
+					<static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
 						<editor layout="table" x-show-titles="false" >
 							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelperLabel" hidden="true" showIf="address == null || address.addressL4 == null" />
@@ -304,10 +305,10 @@
 			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
 				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
-				<panel name="invoiceCommentsPanel" title="Description to display on invoice" colSpan="12">
+				<panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
 				  <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
-				<panel name="descriptionToDisplayOnProformaPanel" title="Description to display on proforma" colSpan="12">
+				<panel name="descriptionToDisplayOnProformaPanel" title="Comment to display on proforma" colSpan="12">
 				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
@@ -332,7 +333,7 @@
 				</panel>
 				<field name="factorizedCustomer" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 				<field name="customerCatalogList" colSpan="12" form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid" if-module="axelor-sale" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()"/>
-				<panel name="saleOrderCommentsPanel" title="Description to display on sale order" colSpan="12">
+				<panel name="saleOrderCommentsPanel" title="Comment to display on sale order" colSpan="12">
 				  <field name="saleOrderComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
@@ -344,7 +345,7 @@
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer name="supplierSpacer"/>
 				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
-				<panel name="purchaseOrderCommentsPanel" title="Description to display on purchase order" colSpan="12">
+				<panel name="purchaseOrderCommentsPanel" title="Comment to display on purchase order" colSpan="12">
 				  <field name="purchaseOrderComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
@@ -362,10 +363,10 @@
 				<field name="partnerStockSettingsList" colSpan="12"
 					   form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid"/>
                 <panel-include view="incl-freight-carrer-customer-account-number-list-partner-form"/>
-                <panel name="deliveryCommentsPanel" title="Description to display on delivery" colSpan="12">
+                <panel name="deliveryCommentsPanel" title="Comment to display on delivery" colSpan="12">
                   <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
                 </panel>
-                <panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+                <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order" colSpan="12">
                   <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
 	            </panel>
             </panel>
@@ -413,6 +414,7 @@
 					<field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
 				</panel>
 				<panel colSpan="12" name="postalAddressesPanel" title="Postal addresses" hideIf="isContact">
+					<static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
 					<field name="partnerAddressList" colSpan="12">
 						<editor layout="table" x-show-titles="false">
 							<field name="address" canNew="true"/>
@@ -721,6 +723,7 @@
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
         <action name="action-partner-attrs-set-subcontactor" if="__config__.app.isApp('production')"/>
+        <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
@@ -767,6 +770,10 @@
     <action-attrs name="action-partner-attrs-change-name">
         <attribute name="title" for="name" expr="Business name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_COMPANY" />
         <attribute name="title" for="name" expr="Name" if="partnerTypeSelect == __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
+    </action-attrs>
+
+   	<action-attrs name="action-partner-attrs-hide-invoice-and-delivery-address-text">
+			<attribute name="hidden" for="invoiceAndDeliveryAddressText" expr="eval: partnerAddressList?.findAll{it.isInvoicingAddr}?.size() &gt; 0 &amp;&amp; partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0" />
     </action-attrs>
 
     <action-group name="action-partner-partner-type-select-change">
@@ -992,7 +999,7 @@
 	<action-attrs name="action-partner-attrs-set-subcontactor">
 		<attribute name="value" for="$isSubcontractor" expr="eval:__config__.app.getApp('production')?.getManageOutsourcing()"/>
 	</action-attrs>
-   	
+
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>

@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
-   
+
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
         <hilite if="statusSelect == 2" strong="true" color="success"/>
         <field name="mrpSeq"/>
@@ -55,7 +55,6 @@
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false"/>
 	        <field name="stockLocation.company"/>
 	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
-	        <field name="browseStockLocation" widget="boolean-switch"/>
 	        <spacer name="companySpacer"/>
 	        <field name="year" showIf="mrpTypeSelect == 2" domain="self.typeSelect = 3" onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form" grid-view="year-account-grid"/>
 	        <field name="period" showIf="mrpTypeSelect == 2" domain="self.year = :year" form-view="period-form" grid-view="period-grid"/>
@@ -103,7 +102,7 @@
 		<domain>
 			(self.mrp.displayProductWithoutProposal = true AND self.mrp.id = :_mrpId)
 				OR
-			(self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.mrpLineType.elementSelect not in (:_proposalElementSelect))
+			(self.mrp.displayProductWithoutProposal = false AND self.product.id IN (select m.product from MrpLine as m where m.mrp.id = :_mrpId AND m.mrpLineType.elementSelect in (:_proposalElementSelect)))
 		</domain>
 		<context name="_mrpId" expr="eval: __this__.id"/>
 		<context name="_proposalElementSelect" expr="eval: [__repo__(MrpLineType).ELEMENT_PURCHASE_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL_NEED]"/>
@@ -134,11 +133,11 @@
 	<action-record name="action-mrp-record-onnew" model="com.axelor.apps.supplychain.db.Mrp">
 		<field name="mrpTypeSelect" expr="eval:1"/>
 	</action-record>
-	
+
 	<action-method name="action-method-mrp-undo-manual-changes">
 		<call class="com.axelor.apps.supplychain.web.MrpController" method="undoManualChanges"/>
 	</action-method>
-	
+
 </object-views>
 
 

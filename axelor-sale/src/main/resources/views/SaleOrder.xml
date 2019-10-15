@@ -326,19 +326,19 @@
 	      <field name="isIspmRequired" readonly="true" colSpan="3"/>
 	      <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details" showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
 	      <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries" showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
-	      <panel name="deliveryCommentsPanel" title="Description to display on delivery" colSpan="12">
+	      <panel name="deliveryCommentsPanel" title="Comment to display on delivery" colSpan="12">
              <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
 	      </panel>
-          <panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+          <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order" colSpan="12">
              <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
 	      </panel>
 	      </panel>
 	    <panel name="invoicingPanel" title="Invoicing">
 	    	<panel-dashlet name="saleOrderInvoicePanel" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" title="Invoicing" showIf="statusSelect >= 3" action="action-view-show-invoices-from-sale-order" colSpan="12"/>
-				<panel name="invoiceCommentsPanel" title="Description to display on invoice" colSpan="12">
+				<panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
           <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
-				<panel name="descriptionToDisplayOnProformaPanel" title="Description to display on proforma" colSpan="12">
+				<panel name="descriptionToDisplayOnProformaPanel" title="Comment to display on proforma" colSpan="12">
 				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 	    </panel>

@@ -19,9 +19,6 @@
       <boolean name="displayProductWithoutProposal" title="Display product without proposal" default="false"/>
       <integer name="mrpTypeSelect" title="MRP Type" selection="supplychain.mrp.mrp.type.select"/>
 
-      <boolean name="browseStockLocation" title="Browse stock location's level" />
-
-
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT

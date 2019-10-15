@@ -9,7 +9,7 @@
 		<field name="appBuilder" hidden="true"/>
   	</grid>
   
-  <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel">
+  <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel" onSave="action-studio-json-model-method-json-field-tracking">
     <!-- Studio changes -->
     <toolbar>
     	<button name="openWorkflowBtn" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
@@ -40,10 +40,17 @@
         <field name="name" />
       </panel-related>
     </panel-tabs>
+    <panel title="Field tracking" showIf="jsonFieldTracking">
+       <field name="jsonFieldTracking" colSpan="12" showTitle="false" readonly="true"/>
+    </panel>
   </form>
 
   <action-method name="action-studio-json-model-method-open-workflow">
 	<call class="com.axelor.studio.web.MetaJsonModelController" method="openWorkflow"/>  
   </action-method>
   
+  <action-method name="action-studio-json-model-method-json-field-tracking">
+	<call class="com.axelor.studio.web.MetaJsonModelController" method="createFieldTracking"/>
+  </action-method>
+
 </object-views>

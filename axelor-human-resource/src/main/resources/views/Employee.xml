@@ -71,7 +71,7 @@
       <field name="maritalStatus" colSpan="4"/>
       <field name="sexSelect" colSpan="4"/>
       <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
-      <field name="departmentOfBirth" colSpan="4" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+      <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
       <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
       <field name="maidenName" colSpan="4"/>
@@ -198,7 +198,7 @@
           <field name="maritalStatus" colSpan="4"/>
           <field name="sexSelect" colSpan="4"/>
           <field name="countryOfBirth" colSpan="4" onChange="action-employee-attrs-country-of-birth-on-change"/>
-          <field name="departmentOfBirth" colSpan="4" onSelect="action-employee-attrs-department-of-birth-on-select"/>
+          <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
           <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
           <field name="citizenship" colSpan="4"/>
           <field name="maidenName" colSpan="4"/>
@@ -229,9 +229,7 @@
             <field name="hrManager" colSpan="4" widget="InlineCheckbox"/>
             <field name="external" colSpan="4" widget="InlineCheckbox"/>
           </panel>
-        </panel>
-
-       <panel-related name="employeeFileListPanel" field="employeeFileList" colSpan="12" grid-view="employee-file-grid" form-view="employee-file-form" />
+        </panel>     
        </panel>
 
       <panel name="employmentContractsPanel" title="Employment contracts">
@@ -319,6 +317,17 @@
         <button name="generateNewDPAE" title="Generate new DPAE" colSpan="3" onClick="save,action-employee-method-generate-new-dpae"/>
         <panel-related field="dpaeList" colSpan="12" canNew="false" grid-view="dpae-grid" form-view="dpae-form"/>
       </panel>
+      
+      <panel name="employeeFileListPanel" title="Files" colSpan="12">
+        <field name="employeeFileList" showTitle="false" colSpan="12">
+          <editor colSpan="12" x-viewer="true" x-show-on-new="true" x-layout="table">          
+            <field name="fileType" colSpan="4" onChange="action-record-set-expiration-date"/>
+			<field name="metaFile" widget="binary-link" colSpan="4"/>	
+			<field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="4"/>	
+            <field name="fileType.hasExpirationDate" hidden="true" />
+          </editor>
+        </field>
+      </panel>
     </panel-tabs>
   </form>
 
@@ -340,6 +349,8 @@
   
   <action-attrs name="action-employee-attrs-country-of-birth-on-change">
   	<attribute name="value" for="citizenship" expr="eval: countryOfBirth?.citizenship"/>
+  	<attribute name="value" for="departmentOfBirth" expr="eval: null"/>
+  	<attribute name="value" for="cityOfBirth" expr="eval: null"/>
   </action-attrs>
   
   <action-attrs name="action-employee-attrs-department-of-birth-on-select">
@@ -351,6 +362,10 @@
   	<attribute name="domain" for="cityOfBirth" expr="eval: &quot; self.country.id = ${countryOfBirth?.id} &quot;" if="countryOfBirth != null &amp;&amp; departmentOfBirth == null"/>
   	<attribute name="domain" for="cityOfBirth" expr="eval: &quot; self.department.id = ${departmentOfBirth?.id} &quot;" if="countryOfBirth == null &amp;&amp; departmentOfBirth != null"/>
   	<attribute name="domain" for="cityOfBirth" expr="eval: &quot; self.country.id = ${countryOfBirth?.id} AND self.department.id = ${departmentOfBirth?.id} &quot;" if="countryOfBirth != null &amp;&amp; departmentOfBirth != null"/>
+  </action-attrs>
+  
+  <action-attrs name="action-employee-attrs-department-of-birth-on-change">
+  	<attribute name="value" for="cityOfBirth" expr="eval: null"/>
   </action-attrs>
 
   <form name="employee-annual-report-form" title="Annual report" model="com.axelor.apps.hr.db.Employee">

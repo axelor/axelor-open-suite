@@ -6,9 +6,6 @@
     <grid name="stock-move-line-grid" title="Stock move lines"
       model="com.axelor.apps.stock.db.StockMoveLine" onNew="action-stock-move-line-attrs-sub-line" editable="true">
 		<hilite strong="true" color="default" if="lineTypeSelect != 0"/>
-		<hilite color="danger" if="qtyInvoiced == 0"/>
-        <hilite color="warning" if="qtyInvoiced != 0 &amp;&amp; qtyInvoiced &lt; realQty"/>
-        <hilite color="success" if="qtyInvoiced != 0 &amp;&amp; qtyInvoiced == realQty"/>
 		<field name="lineTypeSelect" hidden="true"/>
         <field name="product" 
         	canEdit="false"
@@ -80,18 +77,20 @@
     	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-onload" width="large"
     	canNew="false" canDelete="false">
         <panel name="mainPanel" >
-        	<field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line" />
-		    <field name="$invoiced" colSpan="12" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-				<viewer depends="qtyInvoiced,realQty"><![CDATA[
+        	<field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
+		     <field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
+            <field name="$invoiced" colSpan="12" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+                <viewer depends="qtyInvoiced,realQty"><![CDATA[
                         <h4>
                             <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
                             <span class="label label-warning" ng-show="record.qtyInvoiced > 0 && $number(record.qtyInvoiced) < $number(record.realQty)" x-translate>Partially invoiced</span>
                             <span class="label label-important" ng-show="record.qtyInvoiced == 0" x-translate>Not invoiced</span>
                         </h4>
                 ]]>
-				</viewer>
-			</field>
-			<field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
+                </viewer>
+            </field>
+        	<field name="packPriceSelect" showIf="lineTypeSelect == 2" onChange="action-record-stock-move-line-reset-price-on-select-sub-line, action-stock-move-line-price-attrs-readonly, action-stock-move-subline-method-reset-data-on-select-pack-line"/>
+          <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
 	        <field name="filterOnAvailableProducts" widget="boolean-switch" hidden="true"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
             <field name="productName"/>
@@ -110,6 +109,16 @@
 						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.$availableQtyForProduct - record.realQty}}</span>
 					</h4>
 				]]></viewer>
+			</field>
+			<field name="$invoiced" colSpan="3" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+				<viewer depends="qtyInvoiced,realQty"><![CDATA[
+                        <h4>
+                            <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
+                            <span class="label label-warning" ng-show="record.qtyInvoiced > 0 && $number(record.qtyInvoiced) < $number(record.realQty)" x-translate>Partially invoiced</span>
+                            <span class="label label-important" ng-show="record.qtyInvoiced == 0" x-translate>Not invoiced</span>
+                        </h4>
+                ]]>
+				</viewer>
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
@@ -241,16 +250,6 @@
         <panel name="stockMovePanel" title="Stock move" readonlyIf="stockMove.statusSelect == 3">
 	    	<field name="stockMove.stockMoveSeq" width="120"/>
 	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid" colSpan="3"/>
-	    	<field name="$invoiced" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" colSpan="3">
-				<viewer depends="qtyInvoiced,realQty"><![CDATA[
-                        <h4>
-                            <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
-                            <span class="label label-warning" ng-show="record.qtyInvoiced > 0 && $number(record.qtyInvoiced) < $number(record.realQty)" x-translate>Partially invoiced</span>
-                            <span class="label label-important" ng-show="record.qtyInvoiced == 0" x-translate>Not invoiced</span>
-                        </h4>
-                ]]>
-				</viewer>
-			</field>
 	    	<field name="stockMove.estimatedDate"/>
             <field name="stockMove.reservationDateTime" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
 	    	<field name="stockMove.realDate"/>
@@ -279,6 +278,16 @@
 						<span class="label label-important" ng-show="($number(record.$availableQty) < $number(record.realQty)) && ($number(record.$availableQtyForProduct) < $number(record.realQty)) && record.product && record.product.trackingNumberConfiguration">{{record.$availableQtyForProduct - record.realQty}}</span>
 					</h4>
 				]]></viewer>
+			</field>
+			<field name="$invoiced" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" colSpan="3">
+				<viewer depends="qtyInvoiced,realQty"><![CDATA[
+                        <h4>
+                            <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
+                            <span class="label label-warning" ng-show="record.qtyInvoiced > 0 && $number(record.qtyInvoiced) < $number(record.realQty)" x-translate>Partially invoiced</span>
+                            <span class="label label-important" ng-show="record.qtyInvoiced == 0" x-translate>Not invoiced</span>
+                        </h4>
+                ]]>
+				</viewer>
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1"/>
