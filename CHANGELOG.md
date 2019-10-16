@@ -14,6 +14,7 @@
 - Tax payment move lines: are canceled after unreconcile.
 - BANK ORDER : add bank name in grid view
 - Partner : correct addresses to display on form.
+- SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
 
 ## Bug Fixes
 - Employee : fix error on duplicate
