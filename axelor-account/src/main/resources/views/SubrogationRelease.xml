@@ -50,6 +50,7 @@
 				onClick="save,action-subrogation-release-method-enter-release-in-the-accounts" showIf="statusSelect == 2" />
 			<button name="cancelReleaseBtn" title="Cancel release"
 				onClick="action-subrogation-release-record-cancel-release,save" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 3" />
+			<button name="displayMoveLines" title="See Move Lines" onClick="action-subrogation-release-display-move-lines-view" showIf="statusSelect == 3 || statusSelect == 4"/>
 		</panel>
 		
 		<panel sidebar="true">
@@ -90,6 +91,11 @@
 	<action-method name="action-subrogation-release-method-enter-release-in-the-accounts">
 		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
 			method="enterReleaseInTheAccounts" />
+	</action-method>
+	
+	<action-method name="action-subrogation-release-display-move-lines-view">
+		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
+			method="displayMoveLines" />
 	</action-method>
 	
 	<action-record name="action-subrogation-release-onnew"

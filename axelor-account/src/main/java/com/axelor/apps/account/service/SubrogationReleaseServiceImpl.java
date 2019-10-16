@@ -274,6 +274,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
       invoice.setSubrogationRelease(subrogationRelease);
       invoice.setSubrogationReleaseMove(move);
+
+      subrogationRelease.addMoveListItem(move);
     }
 
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);
