@@ -1188,9 +1188,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {
     StockLocation stockLocation = stockMoveLine.getStockMove().getFromStockLocation();
-    StockLocationLine stockLocationLine =
-        stockLocationLineService.getStockLocationLine(stockLocation, stockMoveLine.getProduct());
+    Optional<StockLocationLine> stockLocationLineOpt =
+        Optional.ofNullable(
+            stockLocationLineService.getStockLocationLine(
+                stockLocation, stockMoveLine.getProduct()));
 
-    stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice());
+    stockLocationLineOpt.ifPresent(
+        stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
   }
 }
