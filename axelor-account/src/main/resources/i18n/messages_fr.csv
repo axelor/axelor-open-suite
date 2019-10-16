@@ -1746,7 +1746,7 @@
 "There is at least one advance payment or payment that can be imputed to this invoice.","Il existe au moins un acompte ou un paiement pouvant être imputé sur cette facture.",,
 "There is no configured sequence for final reconcile group","Il n'y a pas de séquence configurée pour les lettrages définitifs",,
 "There is no configured sequence for temporary reconcile group","Il n'y a pas de séquence configurée pour les lettrages provisoires",,
-"There is no taxes on this invoice. Do you want to proceed ?","Il n'y a pas de taxes sur cette facture. Souhaitez-vous continuer ?",,
+"There is no taxes on this invoice. Do you want to proceed ?","Il n'y a pas de taxe sur cette facture. Souhaitez-vous continuer ?",,
 "There's no accounting situation.","Pas de situation comptable.",,
 "This batch requires the bank payment module.","Ce batch nécessite le module des paiements bancaires.",,
 "This batch requires the human resources module.","Ce batch nécessite le module des ressources humaines.",,
