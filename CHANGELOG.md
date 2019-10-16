@@ -28,6 +28,7 @@
 - MOVE LINE : corrected error and calculation of tax amount computation.
 - Expense : Fix issue of scale for KilometricExpenseLine
 - DataBackup : delay in backup creation
+- Bank order : the signatory user field is now changeable when bank order is generated automatically 
 
 ## [5.1.9] - 2019-10-07
 ## Features
