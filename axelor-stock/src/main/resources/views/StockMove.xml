@@ -348,7 +348,12 @@
               <field name="modeOfTransport" />
             </panel>
             <panel name="notePanel" title="Note" colSpan="12">
-        		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
+                <panel name="stockMoveCommentsPanel" title="Description to display on stock move" colSpan="12">
+                  <field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
+	            </panel>
+        		<panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+                  <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+	            </panel>
             </panel>
             <panel name="linksPanel" title="Links" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="id">
                 <panel name="OriginPanel" itemSpan="3" colSpan="12">
@@ -685,6 +690,7 @@
 	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
     	<field name="shipmentMode" expr="eval: partner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: partner?.freightCarrierMode"/>
+    	<field name="note" expr="eval: partner?.description"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-is-conformity-certif-signed-onchange" model="com.axelor.apps.stock.db.StockMove">
