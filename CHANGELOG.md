@@ -17,6 +17,7 @@
 - Invoice : add two fields, active subrogration release and its move.
 - Subrogration release : add the total amount remaining and highlight invoice lines with remaining amount > 0 and when the subrogration status is at accounting.
 - Payment notification : add the possibility to reconcile debit payment move line to subrogation move line if it exist, accounts are reconcil able and notification type is 'payment to the factor'.
+- SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
 
 ## Bug Fixes
 - Employee : fix error on duplicate
@@ -29,6 +30,8 @@
 - Tax payment move line: corrected amount calculation
 - MOVE LINE : corrected error and calculation of tax amount computation.
 - Expense : Fix issue of scale for KilometricExpenseLine
+- DataBackup : delay in backup creation
+- Bank order : the signatory user field is now changeable when bank order is generated automatically 
 
 ## [5.1.9] - 2019-10-07
 ## Features
