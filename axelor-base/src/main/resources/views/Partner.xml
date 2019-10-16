@@ -241,13 +241,15 @@
 				</panel>
 				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
-						<editor layout="table" x-show-titles="false" >
+						<editor x-show-titles="false" >
 							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelperLabel" hidden="true" showIf="address == null || address.addressL4 == null" />
-							<field name="address.addressL4" hidden="true" colSpan="12"/>
-							<field name="address" form-view="address-form" grid-view="address-grid" colSpan="3" canNew="true"/>
-							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
+							<field name="address.addressL4" hidden="true"/>
+							<panel colSpan="12" stacked="true" css="field-append">
+								<field name="address" form-view="address-form" grid-view="address-grid" canNew="true"/>
+								<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" hideIf="$readonly()"/>
+								<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" hideIf="$readonly()"/>
+								<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" hideIf="$readonly()"  />
+							</panel>
 						</editor>
 					</field>
 				</panel>

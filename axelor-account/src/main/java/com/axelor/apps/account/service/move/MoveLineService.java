@@ -50,6 +50,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -1255,9 +1256,13 @@ public class MoveLineService {
     return Beans.get(MoveLineRepository.class).save(customerMoveLine);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
-    for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
-      moveLine.setTaxAmount(moveLine.getTaxAmount().add(taxPaymentMoveLine.getTaxAmount()));
+    moveLine.setTaxAmount(BigDecimal.ZERO);
+    if (!ObjectUtils.isEmpty(moveLine.getTaxPaymentMoveLineList())) {
+      for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
+        moveLine.setTaxAmount(moveLine.getTaxAmount().add(taxPaymentMoveLine.getTaxAmount()));
+      }
     }
     return moveLine;
   }
