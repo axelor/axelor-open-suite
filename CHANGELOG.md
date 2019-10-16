@@ -27,6 +27,7 @@
 - Tax payment move line: corrected amount calculation
 - MOVE LINE : corrected error and calculation of tax amount computation.
 - Expense : Fix issue of scale for KilometricExpenseLine
+- DataBackup : delay in backup creation
 
 ## [5.1.9] - 2019-10-07
 ## Features
