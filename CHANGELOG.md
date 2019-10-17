@@ -131,6 +131,7 @@
 - EMPLOYEE : Files management added domains and demo data
 - Inventory : Added calendar-view
 - change term "Description" to "Comment" in english and "Commentaire" in french
+- PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future

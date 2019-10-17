@@ -87,6 +87,11 @@
 	<action-view name="project.my.projects" title="My projects">
 		<view type="dashboard" name="project-my-projects"/>
 	</action-view>
+	
+	<menuitem name="project-reporting-planned-charge" parent="project-reporting" order="32" title="Planned charge" action="project.planned.charge"/>
+	<action-view name="project.planned.charge" title="Planned charge">
+		<view type="dashboard" name="project-planned-charge"/>
+	</action-view>
 
 	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" if="__config__.app.getApp('project').getResourceManagement()" />
 	<action-view name="project.resource.booking" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
