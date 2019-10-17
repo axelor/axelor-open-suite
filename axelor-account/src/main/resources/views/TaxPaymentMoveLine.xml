@@ -9,6 +9,7 @@
 		<field name="detailPaymentAmount" readonly="true" title="Base"/>
 		<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
 		<field name="taxAmount" readonly="true"/>
+		<field name="date" readonly="true"/>
 	</grid>
 	
 	<form name="tax-payment-move-line-form" model="com.axelor.apps.account.db.TaxPaymentMoveLine" title="Tax payment move line" >
@@ -18,6 +19,7 @@
 			<field name="detailPaymentAmount" readonly="true" title="Base"/>
 			<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
 			<field name="taxAmount" readonly="true"/>
+			<field name="date" readonly="true"/>
 		</panel>
 	</form>
 	

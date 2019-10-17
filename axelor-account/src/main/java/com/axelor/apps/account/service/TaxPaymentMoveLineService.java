@@ -24,4 +24,7 @@ public interface TaxPaymentMoveLineService {
 
   public TaxPaymentMoveLine computeTaxAmount(TaxPaymentMoveLine taxPaymentMoveLine)
       throws AxelorException;
+
+  public TaxPaymentMoveLine getReverseTaxPaymentMoveLine(TaxPaymentMoveLine taxPaymentMoveLine)
+      throws AxelorException;
 }
