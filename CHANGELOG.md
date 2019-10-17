@@ -16,6 +16,7 @@
 - Partner : correct addresses to display on form.
 - SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
 - MOVE : allow to delete(archive) a daybook move.
+- AccountingReport : Added a boolean field option to print report(type=7) with cumulative balance
 
 ## Bug Fixes
 - Employee : fix error on duplicate

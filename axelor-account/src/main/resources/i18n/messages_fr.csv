@@ -789,6 +789,7 @@
 "Discount amount","Montant remise",,
 "Discount rate","Taux remise",,
 "Display code account on printing","Afficher le numéro du compte comptable",,
+"Display cumulative balance on printing","Afficher le solde cumulé",,
 "Display delivery address on printing","Afficher adresse de livraison sur les impressions",,
 "Display move sequence on printing","Afficher la référence de l'écriture comptable",,
 "Display name account on printing","Afficher le nom du compte comptable",,
