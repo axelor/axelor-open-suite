@@ -103,8 +103,8 @@
                   </viewer>
             </field>
 		</panel>
-  		<panel name="mainPanel" colSpan="12" readonlyIf="technicalOriginSelect == 1">
-  			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
+  		<panel name="mainPanel" colSpan="12">
+  			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1">
 	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
 	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
 	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
@@ -113,7 +113,7 @@
 	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-group-partner-type-select-change" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
 		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
 	        </panel>
-	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3 || technicalOriginSelect == 1" >  
+	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3" >  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1 AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
@@ -268,8 +268,8 @@
                   </viewer>
             </field>
 		</panel>
-  		<panel name="mainPanel" colSpan="12" readonlyIf="technicalOriginSelect == 1">
-			<panel name="detailPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
+  		<panel name="mainPanel" colSpan="12">
+			<panel name="detailPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1">
 				<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
 				<field name="generatedMetaFile" required="true" widget="binary-link" title="File to send"/>
 				<field name="paymentMode" css="label-bold bold" colSpan="6" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-update-bankorder-currency"/>
@@ -280,7 +280,7 @@
 				<field name="senderBankDetails" canView="false" grid-view="bank-details-bank-order-company-grid" form-view="bank-details-form" colSpan="6" onChange="action-bank-order-group-sender-bank-details-onchange" onSelect="action-bank-order-method-bank-details-domain"/>
 				<field name="orderTypeSelect" hidden="true"/>
 			</panel>
-	        <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3 || technicalOriginSelect == 1">  	
+	        <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
 				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 				<field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 				<field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>

@@ -447,6 +447,7 @@
 "The trading name must be the same for all purchase orders.",,,
 "The trading name must be the same for all sale orders.",,,
 "There are no lines to invoice",,,
+"There is at least one draft or planned stock move for this sale order.",,,
 "There is no analytic distribution on %s purchase order line",,,
 "There is no analytic distribution on %s sale order line",,,
 "This batch has already been running this month",,,
