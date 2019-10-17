@@ -15,6 +15,7 @@
 - BANK ORDER : add bank name in grid view
 - Partner : correct addresses to display on form.
 - SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
+- MOVE : allow to delete(archive) a daybook move.
 
 ## Bug Fixes
 - Employee : fix error on duplicate
@@ -188,7 +189,6 @@
 - SALE ORDER : set company's printing settings on sale order print when it is null.
 - ACCOUNTING REPORT : change french title for field "displayOnlyNotCompletelyLetteredMoveLines"
 - EBICS USER : password should be filled one time and used to sign the BankOrders in EBICS T mode
-- MOVE : allow to delete(archive) a daybook move.
 
 ## Bug Fixes
 - ACCOUNT : Fix NPE in Move Template
