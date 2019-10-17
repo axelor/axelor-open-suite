@@ -477,7 +477,7 @@
     </action-attrs> -->
     
     <action-attrs name="action-stock-move-attrs-filter-on-available-products">
-    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1 || fromStockLocation.typeSelect == 3"/>
+    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1 || (fromStockLocation != null &amp;&amp; fromStockLocation.typeSelect == 3)"/>
     </action-attrs>
     
     <action-group name="action-group-stock-stockmove-onnew">
