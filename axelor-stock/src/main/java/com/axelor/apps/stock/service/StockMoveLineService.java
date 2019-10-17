@@ -258,4 +258,12 @@ public interface StockMoveLineService {
 
   public List<TrackingNumber> getAvailableTrackingNumbers(
       StockMoveLine stockMoveLine, StockMove stockMove);
+
+  /**
+   * Fill realize avg price in stock move line. This method is called on realize, to save avg price
+   * at the time of realization.
+   *
+   * @param stockMoveLine a stock move line being realized.
+   */
+  public void fillRealizeWapPrice(StockMoveLine stockMoveLine);
 }

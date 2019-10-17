@@ -20,7 +20,6 @@ package com.axelor.csv.script;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -31,11 +30,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -188,7 +183,6 @@ public class ImportSupplyChain {
           StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
           if (stockMove.getStockMoveLineList() != null
               && !stockMove.getStockMoveLineList().isEmpty()) {
-            stockMove = generateManualTrackingNumber(stockMove);
             stockMoveService.copyQtyToRealQty(stockMove);
             stockMoveService.validate(stockMove);
             if (saleOrder.getConfirmationDateTime() != null) {
@@ -202,36 +196,5 @@ public class ImportSupplyChain {
       TraceBackService.trace(e);
     }
     return null;
-  }
-
-  @Transactional
-  protected StockMove generateManualTrackingNumber(StockMove stockMove) {
-    try {
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-
-        Product product =
-            Beans.get(ProductRepository.class).find(stockMoveLine.getProduct().getId());
-        TrackingNumberConfiguration trackingNumberConf = product.getTrackingNumberConfiguration();
-
-        if (trackingNumberConf != null && !trackingNumberConf.getHasSaleAutoSelectTrackingNbr()) {
-
-          StockLocationLine stockLocationLine =
-              Beans.get(StockLocationLineRepository.class)
-                  .all()
-                  .filter(
-                      "self.stockLocation = ?1 AND self.product = ?2 AND self.trackingNumber != null",
-                      stockMove.getFromStockLocation().getId(),
-                      product.getId())
-                  .fetchOne();
-          if (stockLocationLine != null) {
-            stockMoveLine.setTrackingNumber(stockLocationLine.getTrackingNumber());
-          }
-        }
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
-    return stockMove;
   }
 }

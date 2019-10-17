@@ -3,22 +3,25 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
 
-	<grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="sequence">
-		<hilite if="lineTypeSelect == 1" color="info"/>
-		<hilite if="lineTypeSelect == 2" color="default"/>
-		<hilite if="lineTypeSelect == 3" color="primary"/>
+	<grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="sequence" edit-icon="true">
+		<hilite color="info" if="lineTypeSelect 1"/>
+		<hilite color="primary" if="lineTypeSelect 3"/>
+		<hilite color="danger" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile >= debit + credit"/>
+		<hilite color="warning" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &lt; debit + credit"/>
+		<hilite color="success" if="amountRemainToReconcile == 0"/>
 		<field name="sequence" width="50"/>
 		<field name="lineTypeSelect" width="90"/>
 		<field name="operationDate" width="90"/>
 		<field name="valueDate" width="90"/>
 		<field name="debit" width="90"/>
 		<field name="credit" width="90"/>
-		<field name="currency" grid-view="currency-grid" form-view="currency-form" width="60"/>
-		<field name="bankDetails" grid-view="bank-details-grid" form-view="bank-details-form" width="400"/>
-        <field name="bankDetails.code" width="60" />
+		<field name="currency" width="60" form-view="currency-form" grid-view="currency-grid"/>
+		<field name="bankDetails" width="400" form-view="bank-details-form" grid-view="bank-details-grid"/>
+		<field name="bankDetails.code" width="60"/>
 		<field name="origin" width="70"/>
 		<field name="reference" width="150"/>
 		<field name="description" width="500"/>
+		<field name="amountRemainToReconcile" width="80"/>
 	</grid>
 
 	<form name="bank-statement-line-afb-120-form" title="Bank Statement line" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" readonlyIf="true">

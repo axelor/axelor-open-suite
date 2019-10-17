@@ -16,7 +16,7 @@
 		    <field name="name"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
 		    <field name="company" canEdit="false" readonlyIf="journal" colSpan="3" canNew="false" form-view="company-form" grid-view="company-grid"/>
-		    <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form"/>
+		    <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form" required="true"/>
    		    <field name="moveTemplateType" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
    		    <field name="moveTemplateType.typeSelect"/>
    		    <field name="endOfValidityDate"/>

@@ -15,3 +15,4 @@
 "axelor-sale";"SaleConfig";"sale-config-form";"displayDelCondOnPrinting";"Sur un devis/commande, dans l'onglet ""Informations de livraison"", il y a un champ texte ""Conditions de livraison"". Si l'option est activée, le contenu de ce champ apparaitra sur les impressions."
 "axelor-sale";"SaleConfig";"sale-config-form";"saleOrderClientBox";"Cela vous offre la possibilité de personnaliser un encadré client avec des informations de votre choix sur les impressions de devis/commandes grâce à un champ html."
 "axelor-sale";"SaleConfig";"sale-config-form";"saleOrderLegalNote";"Vous pouvez entrer ici des mentions légales qui apparaitront sur les impressions de vos commandes."
+"axelor-sale";"SaleOrder";"sale-order-form";"versionNumber";"Numéro de version de la commande. Celui-ci s'incrémente lorsque l'on utilise le bouton ""nouvelle version"" sur une commande au statut "" demandé """
