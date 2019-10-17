@@ -29,6 +29,7 @@
 - Expense : Fix issue of scale for KilometricExpenseLine
 - DataBackup : delay in backup creation
 - Bank order : the signatory user field is now changeable when bank order is generated automatically 
+- TIMESHEET : Remove NPE from checkEmptyPeriod method
 
 ## [5.1.9] - 2019-10-07
 ## Features
