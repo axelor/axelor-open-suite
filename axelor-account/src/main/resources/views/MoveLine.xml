@@ -15,7 +15,7 @@
    		<field name="move.period" width="100" canView="false"/>
         <field name="move.journal" width="140"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-record-check-analytic-distribution-authorized,action-move-line-method-compute-analytic-distribution"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"/>
@@ -43,7 +43,7 @@
 		<field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
 		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-record-check-analytic-distribution-authorized,action-move-line-method-compute-analytic-distribution"/>
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
@@ -65,7 +65,7 @@
         <field name="date" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
    		<field name="move.period" canView="false"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-record-check-analytic-distribution-authorized,action-move-line-method-compute-analytic-distribution"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
         <field name="move.company" form-view="company-form" grid-view="company-grid"/>
@@ -91,7 +91,7 @@
 		<field name="move.period" canView="false"/>
         <field name="move.journal"/>
         <field name="description"/>
-        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-method-compute-analytic-distribution"/>
+        <field name="account" form-view="account-form" grid-view="account-grid" onChange="action-move-line-record-check-analytic-distribution-authorized,action-move-line-method-compute-analytic-distribution"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
         <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
         <field name="debit" aggregate="sum"/>
@@ -149,7 +149,7 @@
 				<field name="originDate"/>
 			</panel>
 			<field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
-	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
+	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-record-check-analytic-distribution-authorized,action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
 	        <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 	        <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
@@ -250,7 +250,7 @@
 				<field name="originDate"/>
 			</panel>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
-			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
+			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-record-check-analytic-distribution-authorized,action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
 			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
@@ -434,6 +434,11 @@
 	<action-record name="action-move-line-record-set-amount" model="com.axelor.apps.account.db.MoveLine">
 		<field name="debit" expr="eval: currencyRate * currencyAmount" if="debit != 0"/>
 		<field name="credit" expr="eval: currencyRate * currencyAmount" if="credit != 0"/>
+	</action-record>
+	
+	<action-record name="action-move-line-record-check-analytic-distribution-authorized" model="com.axelor.apps.account.db.MoveLine">
+		<field name="analyticMoveLineList" expr="eval: null" if="!__this__.account.analyticDistributionAuthorized"/>
+		<field name="analyticDistributionTemplate" expr="eval: null" if="!__this__.account.analyticDistributionAuthorized"/>
 	</action-record>
 
 	<action-attrs name="action-move-line-attrs-hidden-reconcileLists">
