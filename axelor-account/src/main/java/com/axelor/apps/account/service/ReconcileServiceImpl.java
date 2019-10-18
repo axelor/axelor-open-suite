@@ -170,6 +170,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
+    this.udpatePaymentTax(reconcile);
     if (updateInvoicePayments) {
       this.updateInvoicePayments(reconcile);
     }
@@ -332,16 +333,28 @@ public class ReconcileServiceImpl implements ReconcileService {
     if (debitInvoice != null) {
       InvoicePayment debitInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
-      moveLineService.generateTaxPaymentMoveLineList(
-          debitInvoicePayment, reconcile.getCreditMoveLine());
       debitInvoicePayment.setReconcile(reconcile);
     }
     if (creditInvoice != null) {
       InvoicePayment creditInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
-      moveLineService.generateTaxPaymentMoveLineList(
-          creditInvoicePayment, reconcile.getDebitMoveLine());
       creditInvoicePayment.setReconcile(reconcile);
+    }
+  }
+
+  protected void udpatePaymentTax(Reconcile reconcile) throws AxelorException {
+    Move debitMove = reconcile.getDebitMoveLine().getMove();
+    Move creditMove = reconcile.getCreditMoveLine().getMove();
+    Invoice debitInvoice = debitMove.getInvoice();
+    Invoice creditInvoice = creditMove.getInvoice();
+
+    if (debitInvoice != null && creditInvoice == null) {
+      moveLineService.generateTaxPaymentMoveLineList(
+          reconcile.getCreditMoveLine(), debitInvoice, reconcile);
+    }
+    if (creditInvoice != null && debitInvoice == null) {
+      moveLineService.generateTaxPaymentMoveLineList(
+          reconcile.getDebitMoveLine(), creditInvoice, reconcile);
     }
   }
 
@@ -407,10 +420,10 @@ public class ReconcileServiceImpl implements ReconcileService {
     Invoice debitInvoice = debitMove.getInvoice();
     Invoice creditInvoice = creditMove.getInvoice();
     if (debitInvoice == null) {
-      moveLineService.reverseAllTaxPaymentMoveLine(reconcile.getDebitMoveLine());
+      moveLineService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
     }
     if (creditInvoice == null) {
-      moveLineService.reverseAllTaxPaymentMoveLine(reconcile.getCreditMoveLine());
+      moveLineService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
     }
   }
 
