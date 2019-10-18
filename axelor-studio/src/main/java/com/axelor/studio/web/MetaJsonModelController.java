@@ -52,7 +52,7 @@ public class MetaJsonModelController {
     response.setView(builder.map());
   }
 
-  public void createFieldTracking(ActionRequest request, ActionResponse response) {
+  public void trackJsonField(ActionRequest request, ActionResponse response) {
     try {
       MetaJsonModel jsonModel = request.getContext().asType(MetaJsonModel.class);
 
@@ -60,7 +60,7 @@ public class MetaJsonModelController {
         return;
       }
 
-      String jsonFieldTracking = Beans.get(StudioMetaService.class).createFieldTracking(jsonModel);
+      String jsonFieldTracking = Beans.get(StudioMetaService.class).trackJsonField(jsonModel);
       response.setValue("jsonFieldTracking", jsonFieldTracking);
 
     } catch (Exception e) {

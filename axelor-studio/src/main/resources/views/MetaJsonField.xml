@@ -32,6 +32,9 @@
 				</panel-mail>
 			</insert>
 		</extend>
+		<extend target="/">
+			<attribute name="onSave" value="action-studio-json-field-method-json-field-tracking"/>
+		</extend>
     </form>
 
 	<grid name="studio-meta-json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
@@ -71,4 +74,8 @@
     	<attribute name="readonly" for="appBuilder" expr="eval: _parent?._model == 'com.axelor.studio.db.Wkf'"/>
     </action-attrs>
     
+    <action-method name="action-studio-json-field-method-json-field-tracking">
+       <call class="com.axelor.studio.web.MetaJsonFieldController" method="trackJsonField"/>
+    </action-method>
+
 </object-views>

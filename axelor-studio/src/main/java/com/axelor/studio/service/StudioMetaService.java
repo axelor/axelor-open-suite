@@ -26,10 +26,12 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.views.AbstractView;
@@ -64,6 +66,8 @@ public class StudioMetaService {
   @Inject private MetaMenuRepository metaMenuRepo;
 
   @Inject private MenuBuilderRepository menuBuilderRepo;
+
+  @Inject private MetaModelRepository metaModelRepo;
 
   /**
    * Removes MetaActions from comma separated names in string.
@@ -296,13 +300,16 @@ public class StudioMetaService {
     }
   }
 
-  public String createFieldTracking(MetaJsonModel jsonModel) {
+  public String trackJsonField(MetaJsonModel jsonModel) {
 
     List<MetaJsonField> metaJsonFieldList = jsonModel.getFields();
     String trackingFields = "";
 
     if (jsonModel.getId() == null && metaJsonFieldList != null) {
-      return this.createTracking(metaJsonFieldList, "Added");
+      for (MetaJsonField metaJsonField : metaJsonFieldList) {
+        trackingFields += this.createTracking(metaJsonField, "Added:");
+      }
+      return trackingFields;
     }
 
     List<MetaJsonField> jsonFieldList =
@@ -317,11 +324,15 @@ public class StudioMetaService {
 
     metaJsonFieldList.removeAll(jsonFieldList);
     if (!metaJsonFieldList.isEmpty()) {
-      trackingFields += this.createTracking(metaJsonFieldList, "Added");
+      for (MetaJsonField metaJsonField : metaJsonFieldList) {
+        trackingFields += this.createTracking(metaJsonField, "Added:");
+      }
     }
     jsonFieldList.removeAll(commonJsonFieldList);
     if (!jsonFieldList.isEmpty()) {
-      trackingFields += this.createTracking(jsonFieldList, "Removed");
+      for (MetaJsonField metaJsonField : jsonFieldList) {
+        trackingFields += this.createTracking(metaJsonField, "Removed:");
+      }
     }
 
     trackingFields +=
@@ -330,17 +341,34 @@ public class StudioMetaService {
     return trackingFields;
   }
 
-  private String createTracking(List<MetaJsonField> metaJsonFieldList, String type) {
+  @Transactional
+  public void trackJsonField(MetaJsonField metaJsonField) {
+
+    MetaModel metaModel =
+        metaModelRepo.all().filter("self.fullName = ?1", metaJsonField.getModel()).fetchOne();
+
+    String trackingField = this.createTracking(metaJsonField, "Added:");
+
+    trackingField +=
+        metaModel.getJsonFieldTracking() != null ? metaModel.getJsonFieldTracking() : "";
+
+    metaModel.setJsonFieldTracking(trackingField);
+    metaModelRepo.save(metaModel);
+  }
+
+  public String createTracking(MetaJsonField metaJsonField, String actionType) {
 
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     String dateTime = LocalDateTime.now().format(dtf);
     String userName = AuthUtils.getUser().getName();
-    String trackingFields = "";
 
-    for (MetaJsonField metaJsonField : metaJsonFieldList) {
-      trackingFields +=
-          dateTime + ", " + "User:" + userName + ", " + type + ":" + metaJsonField.getName() + "\n";
-    }
-    return trackingFields;
+    return dateTime
+        + ", "
+        + "User:"
+        + userName
+        + ", "
+        + actionType
+        + metaJsonField.getName()
+        + "\n";
   }
 }
