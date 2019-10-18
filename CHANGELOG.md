@@ -16,6 +16,7 @@
 - Partner : correct addresses to display on form.
 - SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
 - MOVE : allow to delete(archive) a daybook move.
+- Employee config : modify the view of app-employee-config-form.
 
 ## Bug Fixes
 - Employee : fix error on duplicate
