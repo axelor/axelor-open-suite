@@ -9,6 +9,7 @@
         <boolean name="isWkf" />
         <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder"
             title="App builder" />
+        <string name="validIf" title="Valid if"/>
 		<track>
 			<field name="name" />
 			<field name="title" />
@@ -25,6 +26,7 @@
 			<field name="requiredIf" />
 			<field name="readonlyIf" />
 			<field name="includeIf" />
+			<field name="validIf" />
 			<field name="contextField" />
 			<field name="contextFieldTarget" />
 			<field name="contextFieldTargetName" />

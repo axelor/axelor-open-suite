@@ -34,6 +34,14 @@
 		</extend>
     </form>
 
+    <form model="com.axelor.meta.db.MetaJsonField" title="Custom field" name="json-field-form-base" extension="true" id="studio-json-field-form-base">
+       <extend target="//field[@name='includeIf']">
+			<insert position="after">
+				<field name="validIf"/>
+			</insert>
+		</extend>
+    </form>
+
 	<grid name="studio-meta-json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
 	  <field name="name"/>
 	  <field name="title" />
