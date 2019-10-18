@@ -27,6 +27,7 @@
 - STUDIO : add 'attrs' for User.
 - Studio: Added colSpan,title for the label and  visibleInGrid option for button.
 - Studio: Added restriction for model and model field names, allowed only alphanumberic characters
+- Studio: Disable 'Visible in grid' option for spacer
 
 ## Bug Fixes
 - Fix injection error during test
