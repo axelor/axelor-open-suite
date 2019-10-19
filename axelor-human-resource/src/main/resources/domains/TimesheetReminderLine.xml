@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="human-resource" package="com.axelor.apps.hr.db" />
+
+	<entity name="TimesheetReminderLine" cacheable="true">
+
+		<many-to-one name="timesheetReminder" ref="com.axelor.apps.hr.db.TimesheetReminder" title="Timesheet reminder" />
+		<date name="fromDate" title="From date" />
+		<date name="toDate" title="To date" />
+		<decimal name="missingHours" title="Missing hours" />
+		<decimal name="extraHours" title="Extra hours" />
+		<decimal name="requiredHours" title="Total required hours"/>
+
+	</entity>
+
+</domain-models>

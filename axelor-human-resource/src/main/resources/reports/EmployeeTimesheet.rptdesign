@@ -1,0 +1,1046 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <list-property name="userProperties">
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.width</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.height</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.TimesheetLineDS.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.TimesheetLineDS.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+    </list-property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.x">216</property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.y">58</property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.width">150</property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.height">200</property>
+    <property name="Data Cube.TimesheetLineDS.x">135</property>
+    <property name="Data Cube.TimesheetLineDS.y">80</property>
+    <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[var width = params["Days"].value;
+if(width > 10){
+	reportContext.getDesignHandle().findMasterPage("TSMasterPage").setProperty("width", width+"in");
+	reportContext.getDesignHandle().findMasterPage("TSMasterPage").pageType="custom";
+}]]></method>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">auto layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="TimesheetReportId" id="3265">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DBName" id="3946">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-test</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="3947">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="4030">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4031">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Days" id="4543">
+            <property name="valueType">static</property>
+            <property name="dataType">integer</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <script-data-source name="SrcDataSource" id="4748"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="SrcTimesheetDS" id="4749">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">userName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">date</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">workedHour</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">workingHour</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">yearWeekNumber</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">totalWorksHour</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">totalWorkedHour</property>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">userName</property>
+                </structure>
+                <structure>
+                    <property name="columnName">date</property>
+                </structure>
+                <structure>
+                    <property name="columnName">workedHour</property>
+                </structure>
+                <structure>
+                    <property name="columnName">workingHour</property>
+                </structure>
+                <structure>
+                    <property name="columnName">yearWeekNumber</property>
+                </structure>
+                <structure>
+                    <property name="columnName">totalWorksHour</property>
+                </structure>
+                <structure>
+                    <property name="columnName">totalWorkedHour</property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">TimesheetReportId</property>
+                    <property name="dataType">string</property>
+                    <property name="position">1</property>
+                    <expression name="defaultValue" type="javascript">params["TimesheetReportId"].value</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">userName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">date</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">workedHour</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">workingHour</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">yearWeekNumber</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">totalWorksHour</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">totalWorkedHour</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">SrcDataSource</property>
+            <method name="open"><![CDATA[importPackage(Packages.com.axelor.apps.hr.service.timesheet);
+packageClass = new Packages.com.axelor.apps.hr.service.timesheet.TimesheetReportServiceImpl();
+timesheetList = packageClass.getTimesheetReportList(reportContext.getParameterValue("TimesheetReportId")).iterator();]]></method>
+            <method name="fetch"><![CDATA[if(timesheetList.hasNext()){
+node = timesheetList.next();
+	row["date"] = node.get("date").toString();
+	row["userName"] = node.get("userName").toString();
+	row["workedHour"] = node.get("workedHour").toString();
+	row["workingHour"] = node.get("workingHour").toString();
+	row["yearWeekNumber"] = node.get("yearWeekNumber").toString();
+	row["totalWorksHour"] = node.get("totalWorksHour").toString();
+	row["totalWorkedHour"] = node.get("totalWorkedHour").toString();
+	return true;
+}
+
+return false;]]></method>
+        </script-data-set>
+    </data-sets>
+    <cubes>
+        <tabular-cube name="SrcTimesheetDC" id="4830">
+            <property name="dimensions">
+                <tabular-dimension name="yearWeekNumber" id="4831">
+                    <property name="defaultHierarchy">NewTabularHierarchy</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy" id="4832">
+                            <property name="levels">
+                                <tabular-level name="yearWeekNumber" id="4833">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">yearWeekNumber</property>
+                                </tabular-level>
+                                <tabular-level name="date" id="4834">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">date</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="user" id="4835">
+                    <property name="defaultHierarchy">NewTabularHierarchy1</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy1" id="4836">
+                            <property name="levels">
+                                <tabular-level name="userName" id="4837">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">userName</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+            </property>
+            <property name="measureGroups">
+                <tabular-measure-group name="WorkingHours" id="4838">
+                    <property name="measures">
+                        <tabular-measure name="workingHour" id="4839">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["workingHour"]</expression>
+                            <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+                <tabular-measure-group name="WorkedHours" id="4841">
+                    <property name="measures">
+                        <tabular-measure name="workedHour" id="4842">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["workedHour"]</expression>
+                            <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+                <tabular-measure-group name="TotalWorksHours" id="4897">
+                    <property name="measures">
+                        <tabular-measure name="totalWorksHour" id="4898">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["totalWorksHour"]</expression>
+                            <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+                <tabular-measure-group name="TotalWorkedHours" id="4899">
+                    <property name="measures">
+                        <tabular-measure name="totalWorkedHour" id="4900">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["totalWorkedHour"]</expression>
+                            <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+            </property>
+            <property name="dataSet">SrcTimesheetDS</property>
+        </tabular-cube>
+    </cubes>
+    <page-setup>
+        <simple-master-page name="TSMasterPage" id="2">
+            <property name="type">custom</property>
+            <property name="orientation">landscape</property>
+            <property name="height">11in</property>
+            <property name="width">10in</property>
+            <method name="onPageStart"><![CDATA[
+]]></method>
+            <page-footer>
+                <text id="3">
+                    <property name="contentType">html</property>
+                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                </text>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <text id="4747">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">16pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="marginLeft">2pt</property>
+            <property name="textAlign">center</property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('TimesheetReport');</VALUE-OF>
+]]></text-property>
+        </text>
+        <grid id="4707">
+            <property name="dataSet">SrcTimesheetDS</property>
+            <list-property name="paramBindings">
+                <structure>
+                    <property name="paramName">TimesheetReportId</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">params["TimesheetReportId"].value</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">userName</property>
+                    <text-property name="displayName">userName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">date</property>
+                    <text-property name="displayName">date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["date"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour</property>
+                    <text-property name="displayName">workedHour</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["workedHour"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour</property>
+                    <text-property name="displayName">workingHour</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["workingHour"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">yearWeekNumber</property>
+                    <text-property name="displayName">yearWeekNumber</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["yearWeekNumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">fromDate</property>
+                    <property name="dataType">date</property>
+                    <property name="aggregateFunction">MIN</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["date"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">toDate</property>
+                    <property name="dataType">date</property>
+                    <property name="aggregateFunction">MAX</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["date"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+            </list-property>
+            <column id="4708"/>
+            <column id="4709"/>
+            <column id="4710"/>
+            <column id="4711"/>
+            <row id="4712">
+                <cell id="4713">
+                    <text id="3425">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">right</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('EmployeeTimesheet.fromDate');</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4714">
+                    <data id="4895">
+                        <property name="fontSize">14pt</property>
+                        <property name="resultSetColumn">fromDate</property>
+                    </data>
+                </cell>
+                <cell id="4715">
+                    <text id="4744">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">right</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('EmployeeTimesheet.toDate');</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4716">
+                    <property name="fontSize">14pt</property>
+                    <data id="4896">
+                        <property name="resultSetColumn">toDate</property>
+                    </data>
+                </cell>
+            </row>
+            <row id="4717">
+                <cell id="4718"/>
+                <cell id="4719"/>
+                <cell id="4720"/>
+                <cell id="4721"/>
+            </row>
+            <row id="4722">
+                <cell id="4723"/>
+                <cell id="4724"/>
+                <cell id="4725"/>
+                <cell id="4726"/>
+            </row>
+        </grid>
+        <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="4962">
+            <property name="cube">SrcTimesheetDC</property>
+            <property name="measures">
+                <extended-item extensionName="MeasureView" id="4967">
+                    <property name="measure">workedHour</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="4968">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">yearWeekNumber/date</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="content">
+                                <data id="4969">
+                                    <property name="resultSetColumn">workedHour_user/userName_yearWeekNumber/date</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="aggregations">
+                        <extended-item extensionName="AggregationCell" id="5054">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">yearWeekNumber/yearWeekNumber</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="content">
+                                <data id="5064">
+                                    <property name="fontWeight">bold</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">(data["totalWorkedHour_user/userName_yearWeekNumber/date"] != data["totalWorksHour_user/userName_yearWeekNumber/date"] 
+&amp;&amp; data["workedHour_user/userName_yearWeekNumber/yearWeekNumber"] != data["workingHour_user/userName_yearWeekNumber/yearWeekNumber"])
+|| (data["workedHour_user/userName_yearWeekNumber/yearWeekNumber"] == data["workingHour_user/userName_yearWeekNumber/yearWeekNumber"] 
+&amp;&amp; data["totalWorkedHour_user/userName_yearWeekNumber/date"] &lt; data["totalWorksHour_user/userName_yearWeekNumber/date"])</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">workedHour_user/userName_yearWeekNumber/yearWeekNumber</property>
+                                </data>
+                                <data id="5065">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="color">#000AFF</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">(data["totalWorkedHour_user/userName_yearWeekNumber/date"] &lt;= data["totalWorksHour_user/userName_yearWeekNumber/date"] 
+&amp;&amp; data["workedHour_user/userName_yearWeekNumber/yearWeekNumber"] &lt;= data["workingHour_user/userName_yearWeekNumber/yearWeekNumber"]) 
+|| (data["totalWorkedHour_user/userName_yearWeekNumber/date"] &lt;= data["totalWorksHour_user/userName_yearWeekNumber/date"] 
+&amp;&amp; data["workedHour_user/userName_yearWeekNumber/yearWeekNumber"] >= data["workingHour_user/userName_yearWeekNumber/yearWeekNumber"])
+|| (data["workedHour_user/userName_yearWeekNumber/yearWeekNumber"] == data["workingHour_user/userName_yearWeekNumber/yearWeekNumber"] 
+&amp;&amp; data["totalWorkedHour_user/userName_yearWeekNumber/date"] > data["totalWorksHour_user/userName_yearWeekNumber/date"])</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">workedHour_user/userName_yearWeekNumber/yearWeekNumber</property>
+                                </data>
+                                <data id="5066">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="color">#FF0000</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">(data["totalWorkedHour_user/userName_yearWeekNumber/date"] >= data["totalWorksHour_user/userName_yearWeekNumber/date"] &amp;&amp; 
+data["workedHour_user/userName_yearWeekNumber/yearWeekNumber"] >= data["workingHour_user/userName_yearWeekNumber/yearWeekNumber"])
+|| (data["totalWorkedHour_user/userName_yearWeekNumber/date"] >= data["totalWorksHour_user/userName_yearWeekNumber/date"] 
+&amp;&amp; data["workedHour_user/userName_yearWeekNumber/yearWeekNumber"] &lt;= data["workingHour_user/userName_yearWeekNumber/yearWeekNumber"])</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">workedHour_user/userName_yearWeekNumber/yearWeekNumber</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="4970">
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                        </extended-item>
+                        <extended-item extensionName="CrosstabCell" id="5058">
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+                <extended-item extensionName="MeasureView" id="4972">
+                    <property name="measure">workingHour</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="4973">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">yearWeekNumber/date</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="width">0%</property>
+                            <property name="content">
+                                <data id="4974">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">true</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">workingHour_user/userName_yearWeekNumber/date</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="aggregations">
+                        <extended-item extensionName="AggregationCell" id="5056">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">yearWeekNumber/yearWeekNumber</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="width">0%</property>
+                            <property name="content">
+                                <data id="5057">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">true</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">workingHour_user/userName_yearWeekNumber/yearWeekNumber</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="4975">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                        </extended-item>
+                        <extended-item extensionName="CrosstabCell" id="5060">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+                <extended-item extensionName="MeasureView" id="4982">
+                    <property name="measure">totalWorkedHour</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="4983">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">yearWeekNumber/date</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="width">0%</property>
+                            <property name="content">
+                                <data id="4984">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">true</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">totalWorkedHour_user/userName_yearWeekNumber/date</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="4985">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+                <extended-item extensionName="MeasureView" id="4977">
+                    <property name="measure">totalWorksHour</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="4978">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">yearWeekNumber/date</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="width">0%</property>
+                            <property name="content">
+                                <data id="4979">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">true</expression>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">totalWorksHour_user/userName_yearWeekNumber/date</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="4980">
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+            </property>
+            <property name="rows">
+                <extended-item extensionName="CrosstabView" id="4999">
+                    <property name="views">
+                        <extended-item extensionName="DimensionView" id="5000">
+                            <property name="dimension">user</property>
+                            <property name="levels">
+                                <extended-item extensionName="LevelView" name="NewLevel View5" id="5001">
+                                    <property name="level">user/userName</property>
+                                    <property name="member">
+                                        <extended-item extensionName="CrosstabCell" id="5002">
+                                            <property name="content">
+                                                <data name="userName1" id="5003">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="resultSetColumn">userName</property>
+                                                </data>
+                                            </property>
+                                            <property name="borderTopStyle">solid</property>
+                                            <property name="borderTopWidth">thin</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                            <property name="width">10%</property>
+                                        </extended-item>
+                                    </property>
+                                </extended-item>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="grandTotalLocation">after</property>
+                </extended-item>
+            </property>
+            <property name="columns">
+                <extended-item extensionName="CrosstabView" id="4987">
+                    <property name="views">
+                        <extended-item extensionName="DimensionView" id="4988">
+                            <property name="dimension">yearWeekNumber</property>
+                            <property name="levels">
+                                <extended-item extensionName="LevelView" name="NewLevel View3" id="4989">
+                                    <property name="level">yearWeekNumber/yearWeekNumber</property>
+                                    <property name="member">
+                                        <extended-item extensionName="CrosstabCell" id="4990">
+                                            <property name="content">
+                                                <data name="yearWeekNumber1" id="4992">
+                                                    <list-property name="visibility">
+                                                        <structure>
+                                                            <property name="format">all</property>
+                                                            <expression name="valueExpr" type="javascript">true</expression>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="resultSetColumn">yearWeekNumber</property>
+                                                </data>
+                                            </property>
+                                            <property name="borderTopStyle">solid</property>
+                                            <property name="borderTopWidth">thin</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                            <property name="height">0%</property>
+                                        </extended-item>
+                                    </property>
+                                    <property name="aggregationHeader">
+                                        <extended-item extensionName="CrosstabCell" id="5053">
+                                            <property name="content">
+                                                <text id="5063">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <property name="fontSize">10pt</property>
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="marginLeft">2pt</property>
+                                                    <property name="textAlign">center</property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('EmployeeTimesheet.weekTotal');</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                        </extended-item>
+                                    </property>
+                                </extended-item>
+                                <extended-item extensionName="LevelView" name="NewLevel View4" id="4994">
+                                    <property name="level">yearWeekNumber/date</property>
+                                    <property name="member">
+                                        <extended-item extensionName="CrosstabCell" id="4995">
+                                            <property name="content">
+                                                <data name="date1" id="4997">
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="resultSetColumn">date</property>
+                                                </data>
+                                            </property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                        </extended-item>
+                                    </property>
+                                </extended-item>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="grandTotalLocation">after</property>
+                </extended-item>
+            </property>
+            <property name="header">
+                <extended-item extensionName="CrosstabCell" id="4991">
+                    <property name="content">
+                        <text id="5010">
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="marginLeft">2pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('EmployeeTimesheet.user');</VALUE-OF>]]></text-property>
+                        </text>
+                    </property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
+                    <property name="borderLeftStyle">solid</property>
+                    <property name="borderLeftWidth">thin</property>
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderRightStyle">solid</property>
+                    <property name="borderRightWidth">thin</property>
+                </extended-item>
+            </property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">workedHour</property>
+                    <expression name="expression">measure["workedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour</property>
+                    <expression name="expression">measure["workingHour"]</expression>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorksHour</property>
+                    <expression name="expression">measure["totalWorksHour"]</expression>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorkedHour</property>
+                    <expression name="expression">measure["totalWorkedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">yearWeekNumber</property>
+                    <expression name="expression">dimension["yearWeekNumber"]["yearWeekNumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour_yearWeekNumber/yearWeekNumber</property>
+                    <expression name="expression">measure["workedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/yearWeekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour_yearWeekNumber/yearWeekNumber</property>
+                    <expression name="expression">measure["workingHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/yearWeekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorkedHour_yearWeekNumber/yearWeekNumber</property>
+                    <expression name="expression">measure["totalWorkedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/yearWeekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorksHour_yearWeekNumber/yearWeekNumber</property>
+                    <expression name="expression">measure["totalWorksHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/yearWeekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">date</property>
+                    <expression name="expression">dimension["yearWeekNumber"]["date"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour_yearWeekNumber/date</property>
+                    <expression name="expression">measure["workedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour_yearWeekNumber/date</property>
+                    <expression name="expression">measure["workingHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorkedHour_yearWeekNumber/date</property>
+                    <expression name="expression">measure["totalWorkedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorksHour_yearWeekNumber/date</property>
+                    <expression name="expression">measure["totalWorksHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">userName</property>
+                    <expression name="expression">dimension["user"]["userName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour_user/userName_yearWeekNumber/date</property>
+                    <expression name="expression">measure["workedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour_user/userName_yearWeekNumber/date</property>
+                    <expression name="expression">measure["workingHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorkedHour_user/userName_yearWeekNumber/date</property>
+                    <expression name="expression">measure["totalWorkedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorksHour_user/userName_yearWeekNumber/date</property>
+                    <expression name="expression">measure["totalWorksHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>yearWeekNumber/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour_user/userName_yearWeekNumber/yearWeekNumber</property>
+                    <expression name="expression">measure["workedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>yearWeekNumber/yearWeekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">yearWeekNumber_TOTAL</property>
+                    <expression name="expression">dimension["yearWeekNumber"]["yearWeekNumber"]+" TOTAL"</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour_user/userName_yearWeekNumber/yearWeekNumber</property>
+                    <expression name="expression">measure["workingHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>yearWeekNumber/yearWeekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+            </list-property>
+        </extended-item>
+    </body>
+</report>
