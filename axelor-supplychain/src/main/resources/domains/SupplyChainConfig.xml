@@ -23,6 +23,10 @@
     
     <decimal name="numberOfDays" title="Number of days" min="0" />
 
+    <integer name="defaultEstimatedDateForPurchaseOrder" title="Default estimated date in stock move from purchase order" selection="supplychain.estimated.date.select" default="1" />
+    
+    <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0" />
+
     <extra-code><![CDATA[
 
       // Default estimated Date

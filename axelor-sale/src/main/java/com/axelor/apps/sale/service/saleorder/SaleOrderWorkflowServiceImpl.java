@@ -181,7 +181,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Transactional
-  public void completeSaleOrder(SaleOrder saleOrder) {
+  public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     saleOrder.setOrderBeingEdited(false);
 

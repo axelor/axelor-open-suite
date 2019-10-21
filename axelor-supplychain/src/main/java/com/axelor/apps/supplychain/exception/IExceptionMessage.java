@@ -238,6 +238,10 @@ public interface IExceptionMessage {
 
   static final String STOCK_MOVE_INVOICE_ERROR = /*$$(*/
       "No stockMoveLine remains to invoice" /*)*/;
+
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
+
+  static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
+      "There is at least one draft or planned stock move for this sale order." /*)*/;
 }
