@@ -16,6 +16,7 @@
 - Partner : correct addresses to display on form.
 - SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
 - MOVE : allow to delete(archive) a daybook move.
+- TAX PAYMENT MOVE LINE : add reconcile.
 - AccountingReport : Added a boolean field option to print report(type=7) with cumulative balance
 
 ## Bug Fixes
@@ -33,6 +34,8 @@
 - Bank order : the signatory user field is now changeable when bank order is generated automatically 
 - TIMESHEET : Remove NPE from checkEmptyPeriod method
 - StockMove : Fix NPE of field fromStockLocation on new action in StockMove form
+- Employee management: Fix french translation typo.
+- TAX PAYMENT MOVE LINE : corrected calculation in all generation possibilities, corrected cancelation function.
 
 ## [5.1.9] - 2019-10-07
 ## Features
