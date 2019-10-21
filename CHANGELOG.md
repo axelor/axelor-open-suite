@@ -275,5 +275,6 @@
 - Frequency: Error on clear of Frequency type fix
 - RH : NPE on ventilation of expense fixed
 - TEAMTASKS : paid field appears in all related teamTasks if project.invoicingSequenceSelect is "Invoice pre task"
+- SALEORDERLINE : Issue when Production module isn't installed
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
