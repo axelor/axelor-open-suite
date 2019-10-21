@@ -527,10 +527,10 @@
 
 <!--     TODO : should be splited per module -->
     <action-record name="action-sale-order-line-get-production-information" model="com.axelor.apps.sale.db.SaleOrderLine">
-    	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
-    	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
-    	<field name="standardDelay" expr="eval: product?.standardDelay" if="saleSupplySelect == 2 || saleSupplySelect == 3" />
-    	<field name="standardDelay" expr="eval: 0" if="saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3" />
+    	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
+    	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
+    	<field name="standardDelay" expr="eval: product?.standardDelay" if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect == 2 || saleSupplySelect == 3" />
+    	<field name="standardDelay" expr="eval: 0" if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3" />
     </action-record>
     
     <action-record name="action-sale-order-line-record-progress" model="com.axelor.apps.sale.db.SaleOrderLine">
