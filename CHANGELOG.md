@@ -16,6 +16,7 @@
 - Export Studio app: export actions created with meta-action-from
 - JSON-MODEL-FORM : add tracking on json fields
 - STOCK RULE : New boolean alert when orderAlertSelect is not alert and stockRuleMessageTemplate added.
+- Meta-action-grid: groupBy app
 
 ## Improvements
 - Remove Pack Feature from Product.
