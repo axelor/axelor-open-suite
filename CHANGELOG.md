@@ -36,6 +36,7 @@
 - StockMove : Fix NPE of field fromStockLocation on new action in StockMove form
 - Employee management: Fix french translation typo.
 - TAX PAYMENT MOVE LINE : corrected calculation in all generation possibilities, corrected cancelation function.
+- EXPORT FEC : corrected error when a field was null.
 
 ## [5.1.9] - 2019-10-07
 ## Features
