@@ -16,7 +16,7 @@
 - Export Studio app: export actions created with meta-action-from
 - JSON-MODEL-FORM : add tracking on json fields
 - STOCK RULE : New boolean alert when orderAlertSelect is not alert and stockRuleMessageTemplate added.
-- Meta-action-grid: groupBy app
+- Studio: MetaAction and MetaSelect menus with group by on app
 
 ## Improvements
 - Remove Pack Feature from Product.
@@ -28,6 +28,7 @@
 - STUDIO : add 'attrs' for User.
 - Studio: Added colSpan,title for the label and  visibleInGrid option for button.
 - Studio: Added restriction for model and model field names, allowed only alphanumberic characters
+- Studio: Disable 'Visible in grid' option for spacer
 
 ## Bug Fixes
 - Fix injection error during test

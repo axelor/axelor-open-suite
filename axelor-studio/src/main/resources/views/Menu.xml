@@ -76,7 +76,7 @@
 	<menuitem title="Selections" name="app-builder-config-selections" parent="app-builder-config" action="action.studio.meta.select.view" order="46"/>
 	
 	<action-view name="action.studio.meta.select.view" title="Selections" model="com.axelor.meta.db.MetaSelect">
-		<view name="meta-select-grid" type="grid"/>
+		<view name="studio-meta-select-grid" type="grid"/>
   		<view name="meta-select-form" type="form"/>
   		<domain>self.isCustom = true</domain>
   		<context name="_fromStudio" expr="eval:true"/>
