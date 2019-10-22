@@ -38,6 +38,7 @@
 - TAX PAYMENT MOVE LINE : corrected calculation in all generation possibilities, corrected cancelation function.
 - EXPORT FEC : corrected error when a field was null.
 - BANK ORDER : bank order data now can be changed when bank order is created automatically.
+- Stock Move: Fix OptimisticLockException silencing other exceptions when realizing a stock move.
 
 ## [5.1.9] - 2019-10-07
 ## Features
