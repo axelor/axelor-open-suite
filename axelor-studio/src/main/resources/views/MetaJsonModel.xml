@@ -50,7 +50,7 @@
   </action-method>
   
   <action-method name="action-studio-json-model-method-json-field-tracking">
-	<call class="com.axelor.studio.web.MetaJsonModelController" method="createFieldTracking"/>
+	<call class="com.axelor.studio.web.MetaJsonModelController" method="trackJsonField"/>
   </action-method>
 
 </object-views>

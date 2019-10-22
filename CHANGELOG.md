@@ -17,6 +17,7 @@
 - JSON-MODEL-FORM : add tracking on json fields
 - STOCK RULE : New boolean alert when orderAlertSelect is not alert and stockRuleMessageTemplate added.
 - Studio: MetaAction and MetaSelect menus with group by on app
+- META-MODEL-FORM : add tracking on json fields
 
 ## Improvements
 - Remove Pack Feature from Product.
