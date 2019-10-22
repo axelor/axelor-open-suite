@@ -37,7 +37,7 @@
 - Employee management: Fix french translation typo.
 - TAX PAYMENT MOVE LINE : corrected calculation in all generation possibilities, corrected cancelation function.
 - EXPORT FEC : corrected error when a field was null.
-- BANK ORDER : bank order data now can be changed when bank order is created automatically.
+- BANK ORDER : bank order data now can be changed when bank order is created automatically and bank order sequence is now read only.
 - Stock Move: Fix OptimisticLockException silencing other exceptions when realizing a stock move.
 - Stock Move: Fix exception message when realizing relicate stock move with reservation when there is no quantity available.
 

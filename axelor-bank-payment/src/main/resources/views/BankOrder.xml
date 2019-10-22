@@ -105,7 +105,7 @@
 		</panel>
   		<panel name="mainPanel" colSpan="12">
   			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
-	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12" readonlyIf="technicalOriginSelect == 1"/>
+	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12" readonly="true"/>
 	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
 	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true" readonlyIf="technicalOriginSelect == 1"/>
 	    		<field name="paymentMode" css="label-bold bold" colSpan="6" canView="false" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter" readonlyIf="technicalOriginSelect == 1"/>
@@ -270,7 +270,7 @@
 		</panel>
   		<panel name="mainPanel" colSpan="12">
 			<panel name="detailPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1">
-				<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
+				<field name="bankOrderSeq" css="label-bold bold" colSpan="6" readonly="true"/>
 				<field name="generatedMetaFile" required="true" widget="binary-link" title="File to send"/>
 				<field name="paymentMode" css="label-bold bold" colSpan="6" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-update-bankorder-currency"/>
 		    	<field name="bankOrderFileFormat" colSpan="6" onChange="action-bank-order-record-update-bankorder-currency"/>
