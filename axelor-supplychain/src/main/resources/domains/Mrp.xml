@@ -17,9 +17,6 @@
       <datetime name="endDateTime" title="Calculation End Date"/>
       <string name="mrpSeq" title="MRP number" readonly="true"/>
       <boolean name="displayProductWithoutProposal" title="Display product without proposal" default="false"/>
-      <boolean name="browseStockLocation" title="Browse stock location's level" />
-      
-      
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT

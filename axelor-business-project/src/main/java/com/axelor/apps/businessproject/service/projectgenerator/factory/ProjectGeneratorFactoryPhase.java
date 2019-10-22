@@ -59,18 +59,18 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
   }
 
   @Override
-  @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsProject(true);
     project.setIsBusinessProject(true);
-    return projectRepository.save(project);
+    return project;
   }
 
   @Override
   @Transactional
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
     List<Project> projects = new ArrayList<>();
+    projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
