@@ -80,4 +80,6 @@ public interface MoveService {
   public MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   public Map<String, Object> computeTotals(Move move);
+
+  public String filterPartner(Move move);
 }
