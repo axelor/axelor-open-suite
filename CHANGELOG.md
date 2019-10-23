@@ -40,6 +40,8 @@
 - BANK ORDER : bank order data now can be changed when bank order is created automatically and bank order sequence is now read only.
 - Stock Move: Fix OptimisticLockException silencing other exceptions when realizing a stock move.
 - Stock Move: Fix exception message when realizing relicate stock move with reservation when there is no quantity available.
+- Lettering : removed create new button in form view and removed completely the possibility to delete a lettering.
+- Lettering : corrected bug where all move line are removed from lettering after unreconcile one reconcile.
 
 ## [5.1.9] - 2019-10-07
 ## Features
