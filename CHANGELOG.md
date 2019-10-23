@@ -5,6 +5,8 @@
 ## Improvements
 ## Bug Fixes
 - Reconcile : canceled status is now a final state meaning that it's not possible to reconcile again a canceled one.
+- Lettering : removed create new button in form view and removed completely the possibility to delete a lettering.
+- Lettering : corrected bug where all move line are removed from lettering after unreconcile one reconcile.
 
 ## [5.1.10] - 2019-10-23
 ## Features
