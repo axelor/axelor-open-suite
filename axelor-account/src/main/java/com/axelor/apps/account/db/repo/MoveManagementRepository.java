@@ -116,12 +116,11 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public void remove(Move entity) {
 
-    if (!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)
-        && !entity.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
+    if (!entity.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK),
+            I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getReference());
       } catch (AxelorException e) {
         throw new PersistenceException(e);

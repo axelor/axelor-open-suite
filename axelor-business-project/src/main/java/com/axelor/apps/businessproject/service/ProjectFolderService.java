@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.TaxPaymentMoveLine;
+import com.axelor.apps.project.db.ProjectFolder;
 import com.axelor.exception.AxelorException;
+import java.io.IOException;
 
-public interface TaxPaymentMoveLineService {
+public interface ProjectFolderService {
 
-  public TaxPaymentMoveLine computeTaxAmount(TaxPaymentMoveLine taxPaymentMoveLine)
-      throws AxelorException;
+  String printProjectsPlanificationAndCost(ProjectFolder projectFolder)
+      throws IOException, AxelorException;
 
-  public TaxPaymentMoveLine getReverseTaxPaymentMoveLine(TaxPaymentMoveLine taxPaymentMoveLine)
-      throws AxelorException;
+  String printProjectFinancialReport(ProjectFolder projectFolder)
+      throws IOException, AxelorException;
 }

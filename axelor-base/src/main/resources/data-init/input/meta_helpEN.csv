@@ -46,3 +46,6 @@
 "axelor-core";"MetaJsonField";"json-field-form-base";"hideIf";"When referencing already existing base fields, use "$record.""
 "axelor-core";"MetaJsonField";"json-field-form-base";"requiredIf";"When referencing already existing base fields, use "$record.""
 "axelor-core";"MetaJsonField";"json-field-form-base";"readonlyIf";"When referencing already existing base fields, use "$record.""
+"axelor-base";"Product";"product-form";"shippingCoef";"Shipping cost is the final cost associated with the reception of a stocked product"
+"axelor-base";"Partner";"partner-form";"user";"Fill here the salesman assigned to this partner. "Salesman" field on sale order will auto-fill with this value if "User to fill salesman" in Sales App Config is set to "User assigned to customer""
+"axelor-base";"Partner";"partner-form";"payerQuality";"You have to fill payer quality on app account to see a value on this field."
