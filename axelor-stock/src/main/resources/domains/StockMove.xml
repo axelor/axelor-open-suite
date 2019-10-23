@@ -91,6 +91,7 @@
 
     <many-to-one name="reversionOriginStockMove" title="Origin stock move" ref="com.axelor.apps.stock.db.StockMove"/>
     
+    <string name="pickingOrderComments" title="Description to display on picking order" large="true"/>
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[

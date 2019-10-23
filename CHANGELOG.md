@@ -207,6 +207,7 @@
 - ACCOUNT CONFIG : update demo data for account config and 'is print invoices in company language' boolean is now at true by default.
 - Contract : change filter on project field
 - TEAMTASKS : Creation from Same Order
+- PROJECT : show sub-menu project list when projectTypeSelect value = null
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -276,6 +277,7 @@
 - RH : NPE on ventilation of expense fixed
 - TEAMTASKS : paid field appears in all related teamTasks if project.invoicingSequenceSelect is "Invoice pre task"
 - SALEORDERLINE : Issue when Production module isn't installed
+- Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect"
 - SALE ORDER : fix error generating project without salemanUser
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
