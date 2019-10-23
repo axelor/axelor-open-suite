@@ -4,6 +4,7 @@
 ## [Unreleased 5.1.11]
 ## Improvements
 ## Bug Fixes
+- Reconcile : canceled status is now a final state meaning that it's not possible to reconcile again a canceled one.
 
 ## [5.1.10] - 2019-10-23
 ## Features
