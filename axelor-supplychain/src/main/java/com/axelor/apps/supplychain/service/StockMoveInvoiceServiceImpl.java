@@ -514,26 +514,28 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
   @CallMethod
   public int getStockMoveInvoiceStatus(StockMove stockMove) {
-    stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
     Integer invoiceStatus = 0;
+    if (stockMove != null && stockMove.getId() != null) {
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
-    if (stockMove.getInvoiceSet() != null && !stockMove.getInvoiceSet().isEmpty()) {
-      Double totalInvoicedQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
-              .mapToDouble(sml -> Double.parseDouble(sml.getQtyInvoiced().toString()))
-              .sum();
-      Double totalRealQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
-              .mapToDouble(sml -> Double.parseDouble(sml.getRealQty().toString()))
-              .sum();
-      if (totalRealQty.compareTo(totalInvoicedQty) == 1) {
-        invoiceStatus = 1;
-      } else if (totalRealQty.compareTo(totalInvoicedQty) == 0) {
-        invoiceStatus = 2;
+      if (stockMove.getInvoiceSet() != null && !stockMove.getInvoiceSet().isEmpty()) {
+        Double totalInvoicedQty =
+            stockMove
+                .getStockMoveLineList()
+                .stream()
+                .mapToDouble(sml -> Double.parseDouble(sml.getQtyInvoiced().toString()))
+                .sum();
+        Double totalRealQty =
+            stockMove
+                .getStockMoveLineList()
+                .stream()
+                .mapToDouble(sml -> Double.parseDouble(sml.getRealQty().toString()))
+                .sum();
+        if (totalRealQty.compareTo(totalInvoicedQty) == 1) {
+          invoiceStatus = 1;
+        } else if (totalRealQty.compareTo(totalInvoicedQty) == 0) {
+          invoiceStatus = 2;
+        }
       }
     }
     return invoiceStatus;

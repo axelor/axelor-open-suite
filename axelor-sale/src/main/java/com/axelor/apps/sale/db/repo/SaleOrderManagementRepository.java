@@ -26,6 +26,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
@@ -51,6 +52,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setEndOfValidityDate(null);
     copy.setDeliveryDate(null);
     copy.setOrderBeingEdited(false);
+    copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
+    copy.setAdvancePaymentNeeded(false);
+    copy.clearAdvancePaymentList();
 
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {

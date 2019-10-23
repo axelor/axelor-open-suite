@@ -14,3 +14,4 @@ Le montant d'encours accepté peut également être configuré par client, dans 
 "axelor-account";"AccountConfig";"account-config-form";"accountChart";"Plan de compte par défaut utilisé pour cette société."
 "axelor-account";"AppInvoice";"app-invoice-config-form";"isInvoiceMoveConsolidated";"Cette option peut s'activer sur les journaux comptables. Elle permet de regrouper les lignes d'écritures de facture par comptes comptables et par axes analytiques."
 "axelor-account";"AppInvoice";"app-invoice-config-form";"isVentilationSkipped";"Permet d'enlever l'étape de ventilation des factures pour garder seulement l'étape de validation. Une fois une facture validée, elle pourra alors être traitée comptablement sans avoir à passer par une étape de ventilation."
+"axelor-account";"Invoice";"invoice-form";"priceList";"Permet d'associer une liste de prix à utiliser spécifiquement pour cette commande. Ce champ est rempli automatiquement si une liste de prix est rattachée au tiers. "

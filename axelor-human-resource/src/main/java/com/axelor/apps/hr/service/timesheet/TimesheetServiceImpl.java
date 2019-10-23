@@ -155,6 +155,9 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     User user = timesheet.getUser();
     Employee employee = user.getEmployee();
+    if (employee == null) {
+      return;
+    }
     if (employee.getPublicHolidayEventsPlanning() == null) {
       throw new AxelorException(
           timesheet,

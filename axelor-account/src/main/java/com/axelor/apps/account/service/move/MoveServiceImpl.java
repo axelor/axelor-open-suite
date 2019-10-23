@@ -37,6 +37,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -571,5 +572,25 @@ public class MoveServiceImpl implements MoveService {
             orgineMoveLine.getName(),
             null);
     return reverseMoveLine;
+  }
+
+  @Override
+  public String filterPartner(Move move) {
+    Long companyId = move.getCompany().getId();
+    String domain = "self.isContact = false AND " + companyId + " member of self.companySet";
+    if (move.getJournal() != null
+        && !Strings.isNullOrEmpty(move.getJournal().getCompatiblePartnerTypeSelect())) {
+      domain += " AND (";
+      String[] partnerSet = move.getJournal().getCompatiblePartnerTypeSelect().split(", ");
+      String lastPartner = partnerSet[partnerSet.length - 1];
+      for (String partner : partnerSet) {
+        domain += "self." + partner + " = true";
+        if (!partner.equals(lastPartner)) {
+          domain += " OR ";
+        }
+      }
+      domain += ")";
+    }
+    return domain;
   }
 }

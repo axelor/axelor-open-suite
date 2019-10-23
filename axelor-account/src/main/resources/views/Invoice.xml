@@ -1042,7 +1042,7 @@ InvoiceSet.length > 0))"
 	</action-method>
 
 	<action-attrs name="action-invoice-attrs-collapse-irrecoverable-group">
-		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
+		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverableStatusSelect == null || irrecoverableStatusSelect == 0"/>
 	</action-attrs>
 
 	<action-attrs name="action-invoice-attrs-change-total-title">

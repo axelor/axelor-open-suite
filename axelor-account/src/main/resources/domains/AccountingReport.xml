@@ -37,6 +37,7 @@
     
     <!--Report 7 : Partner genereal ledger  --> 
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>
+    <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
     
     
 	<!--Report 1 : genereal ledger  --> 

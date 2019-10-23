@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
-  <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
+  <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine"  canArchive="false" canDelete="false" canNew="false">
   	<toolbar>
   		<button name="accountingReconcileBtn" title="Accounting Reconcile" onClick="action-method-accounting-reconcile"/>
       <button name="calculateBtn" title="Calculation of totals" onClick="action-account-move-line-method-calculate-balance"/>
@@ -34,14 +34,14 @@
 		<field name="analyticMoveLineList" hidden="true"/>
   </grid>
 
-  <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  onNew="action-account-move-line-onnew-group">
+  <grid name="move-line-move-grid" model="com.axelor.apps.account.db.MoveLine" title="Move lines"  canArchive="false" onNew="action-account-move-line-onnew-group">
 		<field name="counter" hidden="true" width="80"/>
 		<field name="account.isTaxRequiredOnMoveLine" hidden="true" />
 		<field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
 		<field name="account.analyticDistributionAuthorized" hidden="true"/>
 		<field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
 		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
+        <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
         <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
         <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
@@ -57,7 +57,7 @@
 	</grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"
-    groupBy="account" expandable="true"  >
+    groupBy="account" expandable="true" canArchive="false">
 		<hilite color="info" if="$get('move.statusSelect') == 1"/>
 		<hilite color="danger" if="$get('move.statusSelect') == 4"/>
     <field name="name" width="135"/>
@@ -82,7 +82,7 @@
     <field name="analyticMoveLineList" hidden="true"/>
   </grid>
 
-    <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false">
+    <grid name="move-line-accounting-situation-grid" orderBy="-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false" canArchive="false">
     	<hilite color="info" if="$get('move.statusSelect') == 1"/>
     	<hilite color="danger" if="$get('move.statusSelect') == 4"/>
         <field name="name" width="135"/>
@@ -108,7 +108,7 @@
         <field name="analyticMoveLineList" hidden="true"/>
     </grid>
 
-    <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line">
+    <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false">
     	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" showIf="account.analyticDistributionAuthorized">
 			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized"
               requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
@@ -122,7 +122,7 @@
 
 	<form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
 	onNew="action-account-move-line-onnew-group"
-	canNew="false" canDelete="false" onLoad="action-account-moveline-onload-group">
+	canNew="false" canDelete="false" onLoad="action-account-moveline-onload-group" canArchive="false">
 		<panel name="mainPanel" readonly="true">
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">
@@ -148,14 +148,14 @@
 				<field name="originDate"/>
 			</panel>
 			<field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
-	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-method-compute-analytic-distribution"/>
+	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
 	        <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 	        <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
-			<field name="taxAmount" showIf="taxAmount != 0"/>
+			<field name="taxAmount" hidden="true"/>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>
@@ -223,7 +223,7 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-moveline-onload-group" width="large">
-		<panel name="informationsPanel" title="Informations" colSpan="12">
+		<panel name="informationsPanel" title="Informations" colSpan="12" canArchive="false">
 
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">
@@ -249,14 +249,14 @@
 				<field name="originDate"/>
 			</panel>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
-			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
+			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
 			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || (move.statusSelect == 1 || move.statusSelect == 4"/>
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
-			<field name="taxAmount" showIf="taxAmount != 0"/>
+			<field name="taxAmount" hidden="true"/>
 			<field name="move.statusSelect" hidden="true"/>
 			<field name="account.reconcileOk" hidden="true"/>
 		</panel>
@@ -314,7 +314,7 @@
 	</form>
 
   <form name="account-move-line-calculation-wizard-form" title="Calculation"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-account-move-line-record-calculate-balance">
+    model="com.axelor.apps.base.db.Wizard" onNew="action-account-move-line-record-calculate-balance" canArchive="false">
     <panel name="mainPanel" colSpan="12" title="Total of the selected lines :">
       <field name="$credit" title="Credit :" readonly="true" colSpan="4" />
       <field name="$debit" title="Debit :" readonly="true" colSpan="4" />
@@ -348,6 +348,7 @@
     
      <action-group name="action-account-moveline-onload-group">
 		<action name="action-move-line-attrs-readonly"/>
+		<action name="action-move-line-attrs-show-tax-amount"/>
 	</action-group>
     
     <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -355,6 +356,11 @@
     	<action name="action-method-account-moveline-usher-process"/>
     </action-group>
     
+     <action-group name="action-account-move-line-partner-group">
+		<action name="action-account-move-line-method-filter-partner" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.Move'"/>
+	    <action name="action-move-line-attrs-domain-partner" if="_parent == null || _parent._model != 'com.axelor.apps.account.db.Move'"/>
+    </action-group>
+
     <action-method name="action-move-line-method-compute-analytic-distribution">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="computeAnalyticDistribution"/>
 	</action-method>
@@ -382,7 +388,6 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-line-attrs-domain-partner">
-		<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} MEMBER OF self.companySet&quot;" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.Move'"/>
 		<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${move?.company?.id} MEMBER OF self.companySet&quot;" if="_parent == null || _parent._model != 'com.axelor.apps.account.db.Move'"/>
 	</action-attrs>
 
@@ -453,6 +458,14 @@
 		<view type="form" name="move-line-move-form"/>
 		<domain>self.account.id = :_id</domain>
 	</action-view>
+	
+	<action-attrs name="action-move-line-attrs-show-tax-amount" model="com.axelor.apps.account.db.MoveLine">
+		<attribute name="hidden" for="taxAmount" expr="eval: !( account?.reconcileOk &amp;&amp; account?.useForPartnerBalance)"/>
+    </action-attrs>
+
+	<action-method name="action-account-move-line-method-filter-partner">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
+	</action-method>
 
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
 		<field name="move.period" title="Period"/>
