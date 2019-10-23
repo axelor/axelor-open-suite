@@ -1738,6 +1738,7 @@
 "The payment mode is not in adequacy with the invoice type",,,
 "The project must be the same for all invoices",,,
 "The reconcile group cannot be validated since there is no lines.","The lettering cannot be validated since there is no lines.",,
+"The reconcile %s cannot be removed, please select draft reconcile(s)",,,
 "The record is not %s characters",,,
 "The sale account or the purchase account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
 "The sale account or the purchase account or the cash account are associated to another company. Please make sure to select the right account in the company chart before changing the company.",,,
