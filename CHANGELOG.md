@@ -47,7 +47,8 @@
 - BANK ORDER: bank order data now can be changed when bank order is created automatically and bank order sequence is now read only.
 - Stock Move: Fix OptimisticLockException silencing other exceptions when realizing a stock move.
 - Stock Move: Fix exception message when realizing relicate stock move with reservation when there is no quantity available.
-- APPEMPLOYEE : Reorganize view
+- APPEMPLOYEE: Reorganize view.
+- Sale Order: Fix null on report for Unit field.
 
 ## [5.1.9] - 2019-10-07
 ## Features
