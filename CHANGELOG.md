@@ -207,6 +207,7 @@
 - ACCOUNT CONFIG : update demo data for account config and 'is print invoices in company language' boolean is now at true by default.
 - Contract : change filter on project field
 - TEAMTASKS : Creation from Same Order
+- PROJECT : show sub-menu project list when projectTypeSelect value = null
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
