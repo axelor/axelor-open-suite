@@ -78,19 +78,10 @@
     	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-onload" width="large"
     	canNew="false" canDelete="false">
         <panel name="mainPanel" >
-        	<field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-		     <field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
-        	<field name="packPriceSelect" showIf="lineTypeSelect == 2" onChange="action-record-stock-move-line-reset-price-on-select-sub-line, action-stock-move-line-price-attrs-readonly, action-stock-move-subline-method-reset-data-on-select-pack-line"/>	
-          <field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
-	        <field name="filterOnAvailableProducts" widget="boolean-switch" hidden="true"/>
-	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
-            <field name="productName"/>
-	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3" readonlyIf="$get('stockMove.statusSelect') > 1"/>
-	        <field name="realQty" colSpan="3" onChange="action-stock-move-line-group-real-qty-onchange"/>
-	        <field name="qtyInvoiced" colSpan="6" readonly="true"/>
-			<field name="$availableQty" type="decimal" title="Available qty" readonly="true" hidden="true" colSpan="3"/>
-			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" colSpan="5"/>
-			<field name="availableStatus" readonly="true" hidden="true" colSpan="3">
+        	<field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="4"/>
+		     <field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="4"/>
+        	<field name="packPriceSelect" showIf="lineTypeSelect == 2" onChange="action-record-stock-move-line-reset-price-on-select-sub-line, action-stock-move-line-price-attrs-readonly, action-stock-move-subline-method-reset-data-on-select-pack-line" colSpan="4"/>
+        	<field name="availableStatus" readonly="true" hidden="true" colSpan="2">
 				<viewer><![CDATA[
 					<h4>
 						<span class="label label-success" style="font-weight:bold" ng-show="($number(record.$availableQty) >= $number(record.realQty)) && record.product" x-translate>Available</span>
@@ -101,7 +92,7 @@
 					</h4>
 				]]></viewer>
 			</field>
-			<field name="$invoiced" colSpan="3" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+			<field name="$invoiced" colSpan="2" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<viewer depends="qtyInvoiced,realQty"><![CDATA[
                         <h4>
                             <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
@@ -110,7 +101,16 @@
                         </h4>
                 ]]>
 				</viewer>
-			</field>
+			</field>	
+          	<field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
+	        <field name="filterOnAvailableProducts" widget="boolean-switch" hidden="true"/>
+	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
+            <field name="productName"/>
+	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="realQty" colSpan="3" onChange="action-stock-move-line-group-real-qty-onchange"/>
+	        <field name="qtyInvoiced" colSpan="6" readonly="true"/>
+			<field name="$availableQty" type="decimal" title="Available qty" readonly="true" hidden="true" />
+			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" />
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
 			    <field name="requestedReservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
