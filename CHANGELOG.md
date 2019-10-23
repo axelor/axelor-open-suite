@@ -18,6 +18,7 @@
 - STOCK RULE : New boolean alert when orderAlertSelect is not alert and stockRuleMessageTemplate added.
 - Studio: MetaAction and MetaSelect menus with group by on app
 - META-MODEL-FORM : add tracking on json fields
+- Studio : Added validIf property for custom field.
 
 ## Improvements
 - Remove Pack Feature from Product.
@@ -35,4 +36,5 @@
 - Fix injection error during test
 - Studio : Fix access to json fields of base model in chart builder form.
 - Exception on finalizing a sale order: could not extract ResultSet
+- Studio : Fixed display blank when you click on a field which is out of a panel.
 
