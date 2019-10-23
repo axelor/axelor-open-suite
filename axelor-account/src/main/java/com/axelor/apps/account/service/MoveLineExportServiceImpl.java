@@ -1481,7 +1481,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     for (String[] iteams : allMoveData) {
       for (String iteam : iteams) {
-        iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+        if (iteam != null) {
+          iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+        }
       }
     }
 

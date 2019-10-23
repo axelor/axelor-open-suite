@@ -15,16 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.tool.service;
 
-import com.axelor.apps.account.db.TaxPaymentMoveLine;
 import com.axelor.exception.AxelorException;
+import java.util.Map;
 
-public interface TaxPaymentMoveLineService {
+public interface ArchivingToolService {
 
-  public TaxPaymentMoveLine computeTaxAmount(TaxPaymentMoveLine taxPaymentMoveLine)
-      throws AxelorException;
-
-  public TaxPaymentMoveLine getReverseTaxPaymentMoveLine(TaxPaymentMoveLine taxPaymentMoveLine)
-      throws AxelorException;
+  public Map<String, String> getObjectLinkTo(Object object, Long id) throws AxelorException;
 }
