@@ -12,6 +12,12 @@
 - MOVELINE: change display condition for tax amount (used for on payment tax report).
 - APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
 - Tax payment move lines: are canceled after unreconcile.
+- BANK ORDER : add bank name in grid view
+- Partner : correct addresses to display on form.
+- SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
+- MOVE : allow to delete(archive) a daybook move.
+- TAX PAYMENT MOVE LINE : add reconcile.
+- AccountingReport : Added a boolean field option to print report(type=7) with cumulative balance
 
 ## Bug Fixes
 - Employee : fix error on duplicate
@@ -22,6 +28,18 @@
 - SALE DASHBOARD : Translation
 - EBICS-USER-FORM : removed the double quotes from translation of the SPR button title
 - Tax payment move line: corrected amount calculation
+- MOVE LINE : corrected error and calculation of tax amount computation.
+- Expense : Fix issue of scale for KilometricExpenseLine
+- DataBackup : delay in backup creation
+- Bank order : the signatory user field is now changeable when bank order is generated automatically 
+- TIMESHEET : Remove NPE from checkEmptyPeriod method
+- StockMove : Fix NPE of field fromStockLocation on new action in StockMove form
+- Employee management: Fix french translation typo.
+- TAX PAYMENT MOVE LINE : corrected calculation in all generation possibilities, corrected cancelation function.
+- EXPORT FEC : corrected error when a field was null.
+- BANK ORDER : bank order data now can be changed when bank order is created automatically and bank order sequence is now read only.
+- Stock Move: Fix OptimisticLockException silencing other exceptions when realizing a stock move.
+- Stock Move: Fix exception message when realizing relicate stock move with reservation when there is no quantity available.
 - APPEMPLOYEE : Reorganize view
 
 ## [5.1.9] - 2019-10-07

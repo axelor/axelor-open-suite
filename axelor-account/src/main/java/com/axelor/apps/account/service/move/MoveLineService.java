@@ -23,10 +23,10 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.TaxPaymentMoveLine;
@@ -50,6 +50,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -1205,16 +1206,14 @@ public class MoveLineService {
 
   @Transactional(rollbackOn = {Exception.class})
   public MoveLine generateTaxPaymentMoveLineList(
-      InvoicePayment invoicePayment, MoveLine customerMoveLine) throws AxelorException {
-    BigDecimal paymentAmount = customerMoveLine.getCredit().add(customerMoveLine.getDebit());
-    Invoice invoice = invoicePayment.getInvoice();
+      MoveLine customerMoveLine, Invoice invoice, Reconcile reconcile) throws AxelorException {
+    BigDecimal paymentAmount = reconcile.getAmount();
     BigDecimal invoiceTotalAmount = invoice.getCompanyInTaxTotal();
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
 
       TaxLine taxLine = invoiceLineTax.getTaxLine();
       BigDecimal vatRate = taxLine.getValue();
       BigDecimal baseAmount = invoiceLineTax.getCompanyExTaxBase();
-
       BigDecimal detailPaymentAmount =
           baseAmount
               .multiply(paymentAmount)
@@ -1225,6 +1224,7 @@ public class MoveLineService {
           new TaxPaymentMoveLine(
               customerMoveLine,
               taxLine,
+              reconcile,
               vatRate,
               detailPaymentAmount,
               Beans.get(AppBaseService.class).getTodayDate());
@@ -1238,10 +1238,12 @@ public class MoveLineService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public MoveLine reverseAllTaxPaymentMoveLine(MoveLine customerMoveLine) throws AxelorException {
+  public MoveLine reverseTaxPaymentMoveLines(MoveLine customerMoveLine, Reconcile reconcile)
+      throws AxelorException {
     List<TaxPaymentMoveLine> reverseTaxPaymentMoveLines = new ArrayList<TaxPaymentMoveLine>();
     for (TaxPaymentMoveLine taxPaymentMoveLine : customerMoveLine.getTaxPaymentMoveLineList()) {
-      if (!taxPaymentMoveLine.getIsAlreadyReverse()) {
+      if (!taxPaymentMoveLine.getIsAlreadyReverse()
+          && taxPaymentMoveLine.getReconcile().equals(reconcile)) {
         TaxPaymentMoveLine reverseTaxPaymentMoveLine =
             taxPaymentMoveLineService.getReverseTaxPaymentMoveLine(taxPaymentMoveLine);
 
@@ -1255,9 +1257,13 @@ public class MoveLineService {
     return Beans.get(MoveLineRepository.class).save(customerMoveLine);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException {
-    for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
-      moveLine.setTaxAmount(moveLine.getTaxAmount().add(taxPaymentMoveLine.getTaxAmount()));
+    moveLine.setTaxAmount(BigDecimal.ZERO);
+    if (!ObjectUtils.isEmpty(moveLine.getTaxPaymentMoveLineList())) {
+      for (TaxPaymentMoveLine taxPaymentMoveLine : moveLine.getTaxPaymentMoveLineList()) {
+        moveLine.setTaxAmount(moveLine.getTaxAmount().add(taxPaymentMoveLine.getTaxAmount()));
+      }
     }
     return moveLine;
   }
