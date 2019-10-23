@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -504,36 +504,42 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="columnName">global</property>
+                    <property name="alias">global</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">global</text-property>
                     <text-property name="heading">global</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">global_by_date</property>
+                    <property name="alias">global_by_date</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">global_by_date</text-property>
                     <text-property name="heading">global_by_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">global_by_partner</property>
+                    <property name="alias">global_by_partner</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">global_by_partner</text-property>
                     <text-property name="heading">global_by_partner</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_only_not_completely_lettered_move_lines</property>
+                    <property name="alias">display_only_not_completely_lettered_move_lines</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_only_not_completely_lettered_move_lines</text-property>
                     <text-property name="heading">display_only_not_completely_lettered_move_lines</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">payment_mode</property>
+                    <property name="alias">payment_mode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">payment_mode</text-property>
                     <text-property name="heading">payment_mode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
@@ -616,11 +622,16 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
+                        <property name="name">display_cumulative_balance</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -633,98 +644,90 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">report_date_edition</property>
                     <property name="nativeName">report_date_edition</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">period_name</property>
                     <property name="nativeName">period_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">journal_name</property>
                     <property name="nativeName">journal_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">global</property>
                     <property name="nativeName">global</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">global_by_date</property>
                     <property name="nativeName">global_by_date</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">global_by_partner</property>
                     <property name="nativeName">global_by_partner</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">display_only_not_completely_lettered_move_lines</property>
                     <property name="nativeName">display_only_not_completely_lettered_move_lines</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">payment_mode</property>
-                    <property name="nativeName">payment_mode</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">display_cumulative_balance</property>
+                    <property name="nativeName">display_cumulative_balance</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">payment_mode</property>
+                    <property name="nativeName">payment_mode</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -740,6 +743,7 @@ AccountingReport.global,
 AccountingReport.global_by_date,
 AccountingReport.global_by_partner,
 AccountingReport.display_only_not_completely_lettered_move_lines,
+AccountingReport.display_cumulative_balance,
 PaymentMode.name as payment_mode, 
 Currency.code as currency
 from public.account_accounting_report as AccountingReport
@@ -1161,6 +1165,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">display_only_not_completely_lettered_move_lines</property>
                     <text-property name="displayName">display_only_not_completely_lettered_move_lines</text-property>
                     <expression name="expression" type="javascript">dataSetRow["display_only_not_completely_lettered_move_lines"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_cumulative_balance</property>
+                    <text-property name="displayName">display_cumulative_balance</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_cumulative_balance"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
@@ -1653,7 +1663,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                             <structure>
                                 <property name="name">balance</property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]-dataSetRow["credit"]</expression>
+                                <expression name="expression" type="javascript">if(row._outer["display_cumulative_balance"] == 1){
+	vars["PreviousBalance"]+(dataSetRow["debit"]-dataSetRow["credit"])
+}
+else{
+	dataSetRow["debit"]-dataSetRow["credit"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -2305,6 +2320,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </group>
                         <detail>
                             <row id="4067">
+                                <method name="onCreate"><![CDATA[vars["PreviousBalance"]=row["balance"]]]></method>
                                 <cell id="4144"/>
                                 <cell id="4068">
                                     <data id="4069">
@@ -2422,4 +2438,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="PreviousBalance">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

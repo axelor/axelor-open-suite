@@ -618,7 +618,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     BigDecimal qtyLeftToBeAllocated =
         stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-    return qtyLeftToBeAllocated.min(requestedReservedQty);
+    return qtyLeftToBeAllocated.min(requestedReservedQty).max(BigDecimal.ZERO);
   }
 
   @Override

@@ -42,6 +42,7 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
         new TaxPaymentMoveLine(
             taxPaymentMoveLine.getMoveLine(),
             taxPaymentMoveLine.getOriginTaxLine(),
+            taxPaymentMoveLine.getReconcile(),
             taxPaymentMoveLine.getTaxRate(),
             taxPaymentMoveLine.getDetailPaymentAmount().negate(),
             Beans.get(AppBaseService.class).getTodayDate());

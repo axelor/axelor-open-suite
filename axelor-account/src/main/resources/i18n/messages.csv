@@ -810,6 +810,7 @@
 "Discount rate",,,
 "Display closing accounting moves",,,
 "Display code account on printing",,,
+"Display cumulative balance on printing",,,
 "Display delivery address on printing",,,
 "Display move sequence on printing",,,
 "Display name account on printing",,,
