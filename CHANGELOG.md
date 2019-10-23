@@ -18,6 +18,7 @@
 - MOVE : allow to delete(archive) a daybook move.
 - TAX PAYMENT MOVE LINE : add reconcile.
 - AccountingReport : Added a boolean field option to print report(type=7) with cumulative balance
+- PERIOD : Adding DEMO DATA
 
 ## Bug Fixes
 - Employee : fix error on duplicate
