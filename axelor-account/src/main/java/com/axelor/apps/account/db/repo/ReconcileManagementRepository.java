@@ -18,7 +18,11 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileSequenceService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -47,5 +51,22 @@ public class ReconcileManagementRepository extends ReconcileRepository {
     copy.setStatusSelect(ReconcileRepository.STATUS_DRAFT);
 
     return copy;
+  }
+
+  @Override
+  public void remove(Reconcile entity) {
+
+    if (!entity.getStatusSelect().equals(ReconcileRepository.STATUS_DRAFT)) {
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.RECONCILE_CAN_NOT_BE_REMOVE),
+            entity.getReconcileSeq());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e);
+      }
+    } else {
+      super.remove(entity);
+    }
   }
 }

@@ -41,6 +41,7 @@
 - Stock Move: Fix OptimisticLockException silencing other exceptions when realizing a stock move.
 - Stock Move: Fix exception message when realizing relicate stock move with reservation when there is no quantity available.
 - APPEMPLOYEE : Reorganize view
+- Reconcile : removed the possibility to delete validated or canceled reconcile.
 
 ## [5.1.9] - 2019-10-07
 ## Features

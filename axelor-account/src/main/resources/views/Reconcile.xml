@@ -24,7 +24,7 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"  >
+    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" canDelete="statusSelect = 1" >
 		<panel name="companyPanel" showTitle="false">
 			<field name="company" canEdit="false"/>
 		</panel>
