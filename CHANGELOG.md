@@ -1,51 +1,61 @@
 # Changelog
 
-## [Unreleased 5.1.10]
+
+## [Unreleased 5.1.11]
+## Improvements
+## Bug Fixes
+- Reconcile : canceled status is now a final state meaning that it's not possible to reconcile again a canceled one.
+- Lettering : removed create new button in form view and removed completely the possibility to delete a lettering.
+- Lettering : corrected bug where all move line are removed from lettering after unreconcile one reconcile.
+- Reconcile : removed the possibility to delete validated or canceled reconcile.
+
+## [5.1.10] - 2019-10-23
 ## Features
-- SUPPLYCHAIN CONFIG : created defaultEstimatedDate for purchase order
-- Help on important fields in partner-form, sale-order-form, invoice-form, product-form
+- SUPPLYCHAIN CONFIG: add default estimated date for stock move generation from purchase order.
 
 ## Improvements
-- INVENTORY : added unit field in inventory line form view and printing
-- STOCK MOVE : stock move editable on back order button
+- SALE ORDER: advancePaymentAmount rename to advancePaymentAmountNeeded.
+- INVENTORY: added unit field in inventory line form view and printing.
+- STOCK MOVE: stock move accessed from back order button is now editable.
 - Partner: Improve advance search fields name.
-- MOVELINE: change display condition for tax amount (used for on payment tax report).
-- APPRAISAL : Auto-fill company from employee's mainEmployementContract.payCompany 
+- MOVELINE: change display condition for tax amount (used for payment tax report).
+- APPRAISAL: Auto-fill company from employee's main employement contract.
 - Tax payment move lines: are canceled after unreconcile.
-- BANK ORDER : add bank name in grid view
-- Partner : correct addresses to display on form.
-- SALE ORDER : show error message when user complete manually a sale order with a draft or planned stock move
-- MOVE : allow to delete(archive) a daybook move.
-- TAX PAYMENT MOVE LINE : add reconcile.
-- AccountingReport : Added a boolean field option to print report(type=7) with cumulative balance
+- BANK ORDER: add bank name in grid view.
+- Partner: correct addresses to be displayed on form.
+- SALE ORDER: show error message when user complete manually a sale order with a draft or planned stock move.
+- MOVE: allow to delete (archive) a daybook move.
+- TAX PAYMENT MOVE LINE: add reconcile.
+- Accounting Report: Added a boolean field option to print partner general ledger report with cumulative balance.
+- Add help on important fields in partner-form, sale-order-form, invoice-form, product-form.
 
 ## Bug Fixes
-- Employee : fix error on duplicate
-- BUDGET : purchase order and applyToAllBtn when manageMultiBudget = false
+- Employee: fix error on duplicate.
+- BUDGET: Fix apply to all button in purchase order when manageMultiBudget is false.
 - Fix computed fields NPE from all domains.
-- META SCHEDULE : Make grid view non editable
-- USER : appPermissions title and translation
-- SALE DASHBOARD : Translation
-- EBICS-USER-FORM : removed the double quotes from translation of the SPR button title
-- Tax payment move line: corrected amount calculation
-- MOVE LINE : corrected error and calculation of tax amount computation.
-- Expense : Fix issue of scale for KilometricExpenseLine
-- DataBackup : delay in backup creation
-- Bank order : the signatory user field is now changeable when bank order is generated automatically 
-- TIMESHEET : Remove NPE from checkEmptyPeriod method
-- StockMove : Fix NPE of field fromStockLocation on new action in StockMove form
+- META SCHEDULE: Make grid view non editable.
+- USER: appPermissions title and translation.
+- SALE DASHBOARD: Translation.
+- EBICS-USER-FORM: removed the double quotes from translation of the SPR button title.
+- Tax payment move line: corrected amount calculation.
+- MOVE LINE: corrected error and calculation of tax amount computation.
+- Expense: Fix issue of scale for kilometric expense line.
+- DataBackup: delay in backup creation.
+- Bank order: the signatory user field is now changeable when bank order is generated automatically.
+- TIMESHEET: Remove NPE in timesheet form.
+- StockMove: Fix NPE on creating a new stock move from form.
 - Employee management: Fix french translation typo.
-- TAX PAYMENT MOVE LINE : corrected calculation in all generation possibilities, corrected cancelation function.
-- EXPORT FEC : corrected error when a field was null.
-- BANK ORDER : bank order data now can be changed when bank order is created automatically and bank order sequence is now read only.
+- TAX PAYMENT MOVE LINE: corrected calculation in all generation possibilities, corrected cancelation function.
+- EXPORT FEC: corrected error when a field was null.
+- BANK ORDER: bank order data now can be changed when bank order is created automatically and bank order sequence is now read only.
 - Stock Move: Fix OptimisticLockException silencing other exceptions when realizing a stock move.
 - Stock Move: Fix exception message when realizing relicate stock move with reservation when there is no quantity available.
-- APPEMPLOYEE : Reorganize view
-- Reconcile : removed the possibility to delete validated or canceled reconcile.
+- APPEMPLOYEE: Reorganize view.
+- Sale Order: Fix null on report for Unit field.
 
 ## [5.1.9] - 2019-10-07
 ## Features
-- SUPPLYCHAIN CONFIG : added new value in defaultEstimatedDate 
+- SUPPLYCHAIN CONFIG: added new value in defaultEstimatedDate
 
 ## Improvements
 - PROJECT: Fixing financial report to follow the Axelor report guidelines.
@@ -61,7 +71,6 @@
 - DEMO DATA: update demo data for account config and hr config.
 - DEMO DATA: create new schedule in demo data to update customer account.
 - MRP WEEKLY PRINTING: Added first line in every page.
-- SALE ORDER : advancePaymentAmount rename to advancePaymentAmountNeeded
 
 ## Bug Fixes
 - Stock Move: fix WAP computation on customer returns.
@@ -322,7 +331,6 @@
 - JOB COSTING : Fix division by zero error on financial report
 - Manuf Order: updating planned quantities correctly changes planned dates.
 - Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
-- Sale Order : Fix null on report for Unit field
 
 ## [5.1.7] - 2019-06-17
 ## Features
@@ -1394,7 +1402,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...dev
+[Unreleased 5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...dev
+[5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
 [5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9
 [5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...v5.1.8
 [5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
