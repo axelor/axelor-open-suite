@@ -23,9 +23,6 @@
 				onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>
 			<button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-team-task-record-assigned-yourself,save"/>
-			<button name="startBtn" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
-			<button name="acceptBtn" icon="fa-check" onClick="action-team-task-record-status-closed,save"/>
-			<button name="stopBtn" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
 		</toolbar>
 		<menubar>
 	        <menu title="Tools">   
@@ -55,7 +52,6 @@
 					</viewer>
 				</field>
 			</panel>
-			<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="2"/>
 			<field name="$provider" hidden="true" type="string"/>
 			<panel name="projectDetailsPanel" colSpan="12">
 				<panel name="detailsPanel" colSpan="8">
@@ -210,6 +206,12 @@
 				</panel>
 			</panel>
 		</panel-tabs>
+		<panel name="actionsPanel" colSpan="2" sidebar="true">
+			<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="12"/>
+			<button name="startBtn" title="Start" icon="fa-play" onClick="action-team-task-record-status-in-progress,save" colSpan="12"/>
+			<button name="acceptBtn" title ="Close" icon="fa-check" onClick="action-team-task-record-status-closed,save" colSpan="12"/>
+			<button name="stopBtn" title ="Cancel" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save" colSpan="12"/>
+		</panel>
 		<panel-mail name="mailPanel">
 			<mail-messages/>
 			<mail-followers/>

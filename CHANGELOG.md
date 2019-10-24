@@ -208,6 +208,7 @@
 - Contract : change filter on project field
 - TEAMTASKS : Creation from Same Order
 - PROJECT : show sub-menu project list when projectTypeSelect value = null
+- TEAMTASK : add buttons in team-task-form and removed from toolbar
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
