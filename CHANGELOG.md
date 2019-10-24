@@ -15,6 +15,7 @@
 - Business Project report : show negative data in table and chart of financial report.
 - CIVIL YEAR : Allowing civil periods generation using the wizard on the Civil Year
 - CONTACT : duplicate viewer doesn't appear if duplicate is archived.
+- Fixed Asset: Fix NPE on creation.
 
 ## [5.1.10] - 2019-10-23
 ## Features
