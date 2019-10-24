@@ -428,5 +428,10 @@
 		<option value="isCarrier">Carrier</option>
 		<option value="isFactor">Factor</option>
 	</selection>
+	
+	<selection name='iaccount.move.functional.origin.select'>
+		<option value='1'>Opening</option>
+		<option value='2'>Closure</option>
+	</selection>
 
 </object-views>
