@@ -8,6 +8,7 @@
 - Lettering : removed create new button in form view and removed completely the possibility to delete a lettering.
 - Lettering : corrected bug where all move line are removed from lettering after unreconcile one reconcile.
 - Reconcile : removed the possibility to delete validated or canceled reconcile.
+- SALE ORDER LINE : hide field 'discountAmount' when no discount selected.
 
 ## [5.1.10] - 2019-10-23
 ## Features
