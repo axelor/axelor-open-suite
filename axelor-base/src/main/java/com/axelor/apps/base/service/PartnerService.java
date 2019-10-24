@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -376,38 +377,7 @@ public class PartnerService {
    * @return if there is a duplicate partner
    */
   public boolean isThereDuplicatePartner(Partner partner) {
-    String newName = this.computeSimpleFullName(partner);
-    if (Strings.isNullOrEmpty(newName)) {
-      return false;
-    }
-    Long partnerId = partner.getId();
-    if (partnerId == null) {
-      Partner existingPartner =
-          partnerRepo
-              .all()
-              .filter(
-                  "lower(self.simpleFullName) = lower(:newName) "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
-                      + "and ( self.archived != true OR self.archived is null )")
-              .bind("newName", newName)
-              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
-              .fetchOne();
-      return existingPartner != null;
-    } else {
-      Partner existingPartner =
-          partnerRepo
-              .all()
-              .filter(
-                  "lower(self.simpleFullName) = lower(:newName) "
-                      + "and self.id != :partnerId "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
-                      + "and ( self.archived != true OR self.archived is null )")
-              .bind("newName", newName)
-              .bind("partnerId", partnerId)
-              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
-              .fetchOne();
-      return existingPartner != null;
-    }
+    return isThereDuplicatePartnerQuery(partner, false) != null;
   }
 
   /**
@@ -518,37 +488,36 @@ public class PartnerService {
   }
 
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
+    return isThereDuplicatePartnerQuery(partner, true);
+  }
+
+  protected Partner isThereDuplicatePartnerQuery(Partner partner, boolean isInArchived) {
     String newName = this.computeSimpleFullName(partner);
     if (Strings.isNullOrEmpty(newName)) {
       return null;
     }
     Long partnerId = partner.getId();
-    if (partnerId == null) {
-      Partner existingPartner =
-          partnerRepo
-              .all()
-              .filter(
-                  "lower(self.simpleFullName) = lower(:newName) "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
-                      + "and self.archived = true")
-              .bind("newName", newName)
-              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
-              .fetchOne();
-      return existingPartner;
-    } else {
-      Partner existingPartner =
-          partnerRepo
-              .all()
-              .filter(
-                  "lower(self.simpleFullName) = lower(:newName) "
-                      + "and self.id != :partnerId "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect "
-                      + "and self.archived = true")
-              .bind("newName", newName)
-              .bind("partnerId", partnerId)
-              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
-              .fetchOne();
-      return existingPartner;
+    String filter =
+        "lower(self.simpleFullName) = lower(:newName) "
+            + "and self.partnerTypeSelect = :_partnerTypeSelect ";
+    if (partner != null) {
+      filter += "and self.id != :partnerId ";
     }
+    if (isInArchived) {
+      filter += "and self.archived = true ";
+    } else {
+      filter += "and ( self.archived != true OR self.archived is null ) ";
+    }
+
+    Query<Partner> partnerQuery =
+        partnerRepo
+            .all()
+            .filter(filter)
+            .bind("newName", newName)
+            .bind("_partnerTypeSelect", partner.getPartnerTypeSelect());
+    if (partner != null) {
+      partnerQuery = partnerQuery.bind("partnerId", partnerId);
+    }
+    return partnerQuery.fetchOne();
   }
 }

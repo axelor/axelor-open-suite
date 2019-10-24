@@ -347,17 +347,25 @@ public class PartnerController {
    * @param response
    */
   public void checkPartnerName(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    response.setAttr(
-        "duplicatePartnerText", "hidden", !partnerService.isThereDuplicatePartner(partner));
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      response.setAttr(
+          "duplicatePartnerText", "hidden", !partnerService.isThereDuplicatePartner(partner));
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 
   public void checkPartnerNameArchived(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    Partner partnerArchived = partnerService.isThereDuplicatePartnerInArchive(partner);
-    if (partnerArchived != null) {
-      response.setValue("duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
-      response.setAttr("duplicatePartnerInArchiveText", "hidden", false);
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      Partner partnerArchived = partnerService.isThereDuplicatePartnerInArchive(partner);
+      if (partnerArchived != null) {
+        response.setValue("duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
+        response.setAttr("duplicatePartnerInArchiveText", "hidden", false);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 
