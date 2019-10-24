@@ -9,6 +9,7 @@
 - Lettering : corrected bug where all move line are removed from lettering after unreconcile one reconcile.
 - Reconcile : removed the possibility to delete validated or canceled reconcile.
 - SALE ORDER LINE : hide field 'discountAmount' when no discount selected.
+- Business Project report : show negative data in table and chart of financial report.
 
 ## [5.1.10] - 2019-10-23
 ## Features
