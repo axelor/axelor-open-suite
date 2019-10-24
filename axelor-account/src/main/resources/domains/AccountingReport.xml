@@ -65,6 +65,7 @@
 		public static final int REPORT_GENERAL_LEDGER2 = 14;
 		public static final int REPORT_VAT_STATEMENT_RECEIVED = 15;
 		public static final int REPORT_ANALYTIC_BALANCE = 2000;
+		public static final int REPORT_ANALYTIC_GENERAL_LEDGER = 2001;
 		public static final int REPORT_ACQUISITIONS = 16;
 		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
 		

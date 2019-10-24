@@ -211,6 +211,7 @@
 - PROJECT : show sub-menu project list when projectTypeSelect value = null
 - TEAMTASK : add buttons in team-task-form and removed from toolbar
 - Financial Report : calculate Total costs (per line) in chart and totals
+- ACCOUNTING REPORT : add Analytic general ledger.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
