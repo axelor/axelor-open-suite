@@ -150,7 +150,7 @@
 			</panel>
 			<panel name="budgetDistributionPanel" title="Budget distribution" if="__config__.app.isApp('budget')" showIf="statusSelect &lt;= 2" if-module="axelor-supplychain">
 				<field name="budget"/>
-				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
+				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all,save" readonlyIf="!budget"/>
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>

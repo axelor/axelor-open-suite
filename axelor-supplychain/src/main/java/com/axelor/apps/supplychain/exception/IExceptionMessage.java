@@ -232,4 +232,7 @@ public interface IExceptionMessage {
 
   static final String PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR = /*$$(*/
       "There is no analytic distribution on %s purchase order line" /*)*/;
+
+  static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
+      "There is at least one draft or planned stock move for this sale order." /*)*/;
 }
