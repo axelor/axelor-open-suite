@@ -1297,6 +1297,7 @@
 "There is no matching address in the QAS base",,,
 "There is no records to export.",,,
 "There is no sequence set for the partners",,,
+"There is a partner with this name in the archive of reference : ",,,
 "This batch is not runnable!",,,
 "This code is already use by another batch.",,,
 "This may terminate any running jobs. Are you sure you want to continue?",,,
