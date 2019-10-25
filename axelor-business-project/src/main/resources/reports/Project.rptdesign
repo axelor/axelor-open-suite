@@ -3342,6 +3342,7 @@ order by task_end_date]]></xml-property>
     </styles>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
+            <property name="orientation">landscape</property>
             <property name="headerHeight">0in</property>
             <property name="footerHeight">0.4in</property>
             <page-footer>
@@ -3540,7 +3541,7 @@ order by task_end_date]]></xml-property>
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <grid id="6111">
-                        <property name="width">7.875in</property>
+                        <property name="width">100%</property>
                         <column id="6112">
                             <property name="width">33%</property>
                         </column>
@@ -3741,7 +3742,7 @@ order by task_end_date]]></xml-property>
             </row>
             <row id="4642">
                 <cell id="4643">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="4646">
                         <property name="fontSize">100%</property>
@@ -3780,11 +3781,10 @@ order by task_end_date]]></xml-property>
                         <text-property name="content"><![CDATA[<H1><VALUE-OF>row["translation"]</VALUE-OF></H1>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4645"/>
             </row>
             <row id="4672">
                 <cell id="4673">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="4676">
                         <property name="fontSize">100%</property>
@@ -3823,7 +3823,6 @@ order by task_end_date]]></xml-property>
                         <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4675"/>
             </row>
             <row id="4647">
                 <cell id="4648">
@@ -3832,7 +3831,7 @@ order by task_end_date]]></xml-property>
                     <table id="4656">
                         <property name="canShrink">true</property>
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">Invoice</property>
                         <list-property name="visibility">
                             <structure>
@@ -3895,13 +3894,13 @@ order by task_end_date]]></xml-property>
                         </list-property>
                         <structure name="toc"/>
                         <column id="4669">
-                            <property name="width">1.03125in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="4670">
-                            <property name="width">1.4895833333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4671">
-                            <property name="width">2.6770833333333335in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5615">
@@ -4608,7 +4607,7 @@ order by task_end_date]]></xml-property>
                     <table id="5817">
                         <property name="canShrink">true</property>
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ManualElement</property>
                         <list-property name="visibility">
                             <structure>
@@ -4659,13 +4658,13 @@ order by task_end_date]]></xml-property>
                         </list-property>
                         <structure name="toc"/>
                         <column id="5840">
-                            <property name="width">1.9479166666666667in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5841">
-                            <property name="width">1.4895833333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5842">
-                            <property name="width">2.6770833333333335in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5818">
@@ -5369,7 +5368,7 @@ order by task_end_date]]></xml-property>
             </row>
             <row id="4689">
                 <cell id="4690">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="4693">
                         <property name="fontWeight">bold</property>
@@ -5407,7 +5406,6 @@ order by task_end_date]]></xml-property>
                         <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4692"/>
             </row>
             <row id="4694">
                 <cell id="4695">
@@ -5415,7 +5413,7 @@ order by task_end_date]]></xml-property>
                     <property name="rowSpan">1</property>
                     <table id="4730">
                         <property name="height">0in</property>
-                        <property name="width">7.46875in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">Invoice</property>
                         <list-property name="visibility">
                             <structure>
@@ -5471,13 +5469,13 @@ order by task_end_date]]></xml-property>
                             </structure>
                         </list-property>
                         <column id="4755">
-                            <property name="width">0.9895833333333334in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="4756">
-                            <property name="width">1.2083333333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4757">
-                            <property name="width">2.2916666666666665in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5619">
@@ -6182,7 +6180,7 @@ order by task_end_date]]></xml-property>
                     <property name="rowSpan">1</property>
                     <table id="4789">
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">Timesheet</property>
                         <list-property name="visibility">
                             <structure>
@@ -6249,16 +6247,16 @@ order by task_end_date]]></xml-property>
                             </structure>
                         </list-property>
                         <column id="4805">
-                            <property name="width">1.5729166666666667in</property>
+                            <property name="width">30%</property>
                         </column>
                         <column id="5686">
-                            <property name="width">1.1770833333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4806">
-                            <property name="width">0.9270833333333334in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4808">
-                            <property name="width">2.15625in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5623">
@@ -7087,7 +7085,7 @@ order by task_end_date]]></xml-property>
                     <property name="rowSpan">1</property>
                     <table id="4759">
                         <property name="height">0in</property>
-                        <property name="width">7.5in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">Expense</property>
                         <list-property name="visibility">
                             <structure>
@@ -7128,13 +7126,13 @@ order by task_end_date]]></xml-property>
                             </structure>
                         </list-property>
                         <column id="4769">
-                            <property name="width">0.90625in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5693">
-                            <property name="width">0.020833333333333332in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4770">
-                            <property name="width">1.6041666666666667in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5628">
@@ -7835,7 +7833,7 @@ order by task_end_date]]></xml-property>
                     <table id="5852">
                         <property name="canShrink">true</property>
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ManualElement</property>
                         <list-property name="visibility">
                             <structure>
@@ -7886,13 +7884,13 @@ order by task_end_date]]></xml-property>
                         </list-property>
                         <structure name="toc"/>
                         <column id="5875">
-                            <property name="width">1.9479166666666667in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5876">
-                            <property name="width">1.4895833333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5877">
-                            <property name="width">2.6770833333333335in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5853">
@@ -8604,7 +8602,7 @@ order by task_end_date]]></xml-property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <property name="height">0in</property>
-                        <property name="width">7.5in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">AnalyticMoveLine</property>
                         <list-property name="visibility">
                             <structure>
@@ -8665,13 +8663,13 @@ order by task_end_date]]></xml-property>
                         <structure name="toc"/>
                         <property name="repeatHeader">false</property>
                         <column id="5095">
-                            <property name="width">1.0729166666666667in</property>
+                            <property name="width">40%</property>
                         </column>
                         <column id="5096">
-                            <property name="width">0.3020833333333333in</property>
+                            <property name="width">30%</property>
                         </column>
                         <column id="5097">
-                            <property name="width">2.2291666666666665in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5631">
@@ -11245,8 +11243,9 @@ order by task_end_date]]></xml-property>
 ]]></xml-property>
                         <property name="outputFormat">SVG</property>
                         <property name="inheritColumns">false</property>
+                        <property name="pageBreakAfter">always</property>
                         <property name="height">2.9375in</property>
-                        <property name="width">7.5in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ChartRealised</property>
                         <list-property name="visibility">
                             <structure>
@@ -11276,7 +11275,7 @@ order by task_end_date]]></xml-property>
             </row>
             <row id="5529">
                 <cell id="5530">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="5533">
                         <property name="fontSize">100%</property>
@@ -11310,11 +11309,11 @@ order by task_end_date]]></xml-property>
                                 <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <structure name="toc"/>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5532"/>
             </row>
             <row id="5534">
                 <property name="height">0.2708333333333333in</property>
@@ -11504,7 +11503,7 @@ order by task_end_date]]></xml-property>
             </row>
             <row id="5120">
                 <cell id="5121">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="4524">
                         <property name="fontSize">100%</property>
@@ -11543,11 +11542,10 @@ order by task_end_date]]></xml-property>
                         <text-property name="content"><![CDATA[<H1><VALUE-OF>row["translation"]</VALUE-OF></H1>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5123"/>
             </row>
             <row id="5124">
                 <cell id="5125">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="5136">
                         <property name="fontSize">100%</property>
@@ -11586,7 +11584,6 @@ order by task_end_date]]></xml-property>
                         <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5127"/>
             </row>
             <row id="5274">
                 <cell id="5275">
@@ -11595,7 +11592,7 @@ order by task_end_date]]></xml-property>
                     <table id="4562">
                         <property name="canShrink">true</property>
                         <property name="height">0in</property>
-                        <property name="width">7.520833333333333in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">SaleOrderLine</property>
                         <list-property name="visibility">
                             <structure>
@@ -11675,19 +11672,19 @@ order by task_end_date]]></xml-property>
                             </structure>
                         </list-property>
                         <column id="4581">
-                            <property name="width">1.2291666666666667in</property>
+                            <property name="width">25%</property>
                         </column>
                         <column id="5362">
-                            <property name="width">1.2291666666666667in</property>
+                            <property name="width">15%</property>
                         </column>
                         <column id="4583">
-                            <property name="width">1.0729166666666667in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4584">
-                            <property name="width">0.9270833333333334in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4607">
-                            <property name="width">1.3958333333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <header>
                             <row id="5589">
@@ -12592,7 +12589,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalSale
                     <property name="rowSpan">1</property>
                     <table id="5958">
                         <property name="height">0in</property>
-                        <property name="width">7.489583333333333in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">TaskInvoicing</property>
                         <list-property name="visibility">
                             <structure>
@@ -12640,16 +12637,16 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalSale
                             </structure>
                         </list-property>
                         <column id="5981">
-                            <property name="width">0.7604166666666666in</property>
+                            <property name="width">30%</property>
                         </column>
                         <column id="5982">
-                            <property name="width">0.09375in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5988">
-                            <property name="width">0.09375in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5983">
-                            <property name="width">1.1666666666666667in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5959">
@@ -13500,7 +13497,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                     <property name="rowSpan">1</property>
                     <table id="5174">
                         <property name="height">0in</property>
-                        <property name="width">7.489583333333333in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">PurchaseOrderLine</property>
                         <list-property name="visibility">
                             <structure>
@@ -13542,13 +13539,13 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                             </structure>
                         </list-property>
                         <column id="5193">
-                            <property name="width">0.7604166666666666in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5194">
-                            <property name="width">0.09375in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5195">
-                            <property name="width">1.1666666666666667in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5591">
@@ -14253,7 +14250,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                     <property name="rowSpan">1</property>
                     <table id="5201">
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ProjectPlanningTime</property>
                         <list-property name="visibility">
                             <structure>
@@ -14308,13 +14305,13 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                             </structure>
                         </list-property>
                         <column id="5224">
-                            <property name="width">0.3854166666666667in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5226">
-                            <property name="width">0.17708333333333334in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5227">
-                            <property name="width">0.8333333333333334in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5598">
@@ -15044,7 +15041,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                     <property name="rowSpan">1</property>
                     <table id="5700">
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">TimesheetLine</property>
                         <list-property name="visibility">
                             <structure>
@@ -15099,13 +15096,13 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                             </structure>
                         </list-property>
                         <column id="5723">
-                            <property name="width">0.3854166666666667in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5724">
-                            <property name="width">0.17708333333333334in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5725">
-                            <property name="width">0.8333333333333334in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5701">
@@ -15834,7 +15831,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="5253">
-                        <property name="width">7.520833333333333in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ExpenseLine</property>
                         <list-property name="visibility">
                             <structure>
@@ -15876,10 +15873,10 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                             </structure>
                         </list-property>
                         <column id="5268">
-                            <property name="width">3.3958333333333335in</property>
+                            <property name="width">70%</property>
                         </column>
                         <column id="5269">
-                            <property name="width">3.4791666666666665in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5603">
@@ -16436,7 +16433,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                     <table id="5885">
                         <property name="canShrink">true</property>
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ManualElement</property>
                         <list-property name="visibility">
                             <structure>
@@ -16487,10 +16484,10 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                         </list-property>
                         <structure name="toc"/>
                         <column id="5908">
-                            <property name="width">1.9479166666666667in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5909">
-                            <property name="width">1.4895833333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5910">
                             <property name="width">2.6770833333333335in</property>
@@ -17244,7 +17241,7 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalManu
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="5371">
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">PurchaseOrderLineCost</property>
                         <list-property name="visibility">
                             <structure>
@@ -17286,13 +17283,13 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalManu
                             </structure>
                         </list-property>
                         <column id="5391">
-                            <property name="width">1.0729166666666667in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5392">
-                            <property name="width">0.2604166666666667in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5393">
-                            <property name="width">1.5416666666666667in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5606">
@@ -17995,7 +17992,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <table id="5753">
-                        <property name="width">7.520833333333333in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ProjectPlanningTimeCost</property>
                         <list-property name="visibility">
                             <structure>
@@ -18050,13 +18047,13 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                             </structure>
                         </list-property>
                         <column id="5778">
-                            <property name="width">1.3125in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5779">
-                            <property name="width">0.0625in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5780">
-                            <property name="width">1.4270833333333333in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5754">
@@ -18783,7 +18780,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                     <table id="5916">
                         <property name="canShrink">true</property>
                         <property name="height">0in</property>
-                        <property name="width">7.479166666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ManualElement</property>
                         <list-property name="visibility">
                             <structure>
@@ -18834,13 +18831,13 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                         </list-property>
                         <structure name="toc"/>
                         <column id="5939">
-                            <property name="width">1.9479166666666667in</property>
+                            <property name="width">50%</property>
                         </column>
                         <column id="5940">
-                            <property name="width">1.4895833333333333in</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="5941">
-                            <property name="width">2.6770833333333335in</property>
+                            <property name="width">30%</property>
                         </column>
                         <header>
                             <row id="5917">
@@ -21375,7 +21372,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
                         <property name="outputFormat">SVG</property>
                         <property name="inheritColumns">false</property>
                         <property name="height">3.0208333333333335in</property>
-                        <property name="width">7.510416666666667in</property>
+                        <property name="width">100%</property>
                         <property name="dataSet">ChartRemaining</property>
                         <list-property name="visibility">
                             <structure>
@@ -21408,7 +21405,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
             </row>
             <row id="5558">
                 <cell id="5559">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="5562">
                         <property name="fontSize">100%</property>
@@ -21446,7 +21443,6 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
                         <text-property name="content"><![CDATA[<H2><VALUE-OF>row["translation"]</VALUE-OF></H2>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5561"/>
             </row>
             <row id="5563">
                 <property name="height">0.2916666666666667in</property>
@@ -21635,7 +21631,7 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
             </row>
             <row id="5426">
                 <cell id="5427">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="5455">
                         <property name="fontSize">100%</property>
@@ -21674,7 +21670,6 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalManualElementC
                         <text-property name="content"><![CDATA[<H1><VALUE-OF>row["translation"]</VALUE-OF></H1>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5429"/>
             </row>
             <row id="5430">
                 <property name="height">0.2708333333333333in</property>
