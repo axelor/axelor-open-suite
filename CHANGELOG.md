@@ -4,6 +4,7 @@
 ## [Unreleased 5.1.11]
 ## Features
 - ACCOUNTING REPORT : change name and titles of printing informations for general ledger.
+- Expense : update Expense.moveDate with the most recent date (ExpenseLine.expenseDate) in generalExpenseLineList
 
 ## Improvements
 - PERIOD : Adding DEMO DATA
