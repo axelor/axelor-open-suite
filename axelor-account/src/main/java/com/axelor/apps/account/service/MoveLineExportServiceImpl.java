@@ -1476,7 +1476,17 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       List<String[]> allMoveData,
       AccountingReport accountingReport)
       throws AxelorException, IOException {
+
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
+
+    for (String[] iteams : allMoveData) {
+      for (String iteam : iteams) {
+        if (iteam != null) {
+          iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+        }
+      }
+    }
+
     if (filePath == null) {
       filePath = Files.createTempDir().getAbsolutePath();
     } else {

@@ -241,13 +241,15 @@
 				</panel>
 				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
-						<editor layout="table" x-show-titles="false" >
+						<editor x-show-titles="false" >
 							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelperLabel" hidden="true" showIf="address == null || address.addressL4 == null" />
-							<field name="address.addressL4" hidden="true" colSpan="12"/>
-							<field name="address" form-view="address-form" grid-view="address-grid" colSpan="3" canNew="true"/>
-							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" colSpan="1" hideIf="$readonly()"/>
-							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" colSpan="1" hideIf="$readonly()"  />
+							<field name="address.addressL4" hidden="true"/>
+							<panel colSpan="12" stacked="true" css="field-append">
+								<field name="address" form-view="address-form" grid-view="address-grid" canNew="true"/>
+								<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" hideIf="$readonly()"/>
+								<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" hideIf="$readonly()"/>
+								<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" hideIf="$readonly()"  />
+							</panel>
 						</editor>
 					</field>
 				</panel>
@@ -455,6 +457,13 @@
 					</editor>
 				</field>
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+				<field name="duplicatePartnerInArchiveText" hidden="true" type="string" showTitle="false" readonly="true">
+					<viewer depends="duplicatePartnerInArchiveText">
+					<![CDATA[
+						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span  x-translate>There is a partner with this name in the archive of reference : </span> {{record.duplicatePartnerInArchiveText}}</span>
+					]]>
+					</viewer>
+				</field>
 				<panel name="companyPanel" title="Company" colSpan="12" >
 					<field name="mainPartner" domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-form" grid-view="partner-grid"/>
 				</panel>
@@ -686,6 +695,7 @@
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
+        <action name="action-partner-method-check-name-in-archive"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
@@ -700,12 +710,17 @@
 
 	<action-group name="action-group-base-partner-contact-name-onchange">
 		<action name="action-partner-method-check-name"/>
+		<action name="action-partner-method-check-name-in-archive"/>
 		<action name="action-partner-record-simple-and-full-name"/>
 		<action name="action-partner-method-set-social-network-url"/>
 	</action-group>
 
 	<action-method name="action-partner-method-check-name">
 		<call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerName"/>
+	</action-method>
+
+	<action-method name="action-partner-method-check-name-in-archive">
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerNameArchived"/>
 	</action-method>
 
 	<action-method name="action-partner-method-show-envelope">
@@ -741,6 +756,7 @@
     
     <action-group name="action-group-partner-contact-onload">
     	<action name="action-partner-method-check-name"/>
+    	<action name="action-partner-method-check-name-in-archive"/>
     	<action name="action-partner-attrs-change-name"/>
     	<action name="action-partner-method-set-social-network-url"/>
     	<action name="action-partner-attrs-partner-seq-editable"/>
@@ -937,7 +953,7 @@
     </action-record>
 
     <action-validate name="action-partner-validate-partner-stock-settings-list">
-    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
+    	<alert message="Partner has duplicate stock settings for same company" if="partnerStockSettingsList != null &amp;&amp; partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size"/>
     </action-validate>
    	 
    	<action-attrs name="action-partner-attrs-user-group" if-module="axelor-crm">
@@ -945,6 +961,11 @@
 	</action-attrs>
    	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
+	    <field name="partnerAddressList" hidden="true"/>
+        <field name="mainAddress" title="Main address"/>
+        <field name="isContact" title="Is a contact"/>
+        <field name="simpleFullName" hidden="true"/>
+        <field name="isCarrier" title="Is a carrier" if="__config__.app.isApp('stock')"/>
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
 		</filter>

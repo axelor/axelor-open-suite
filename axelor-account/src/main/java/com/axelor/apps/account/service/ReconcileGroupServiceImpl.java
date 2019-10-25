@@ -30,7 +30,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -47,6 +46,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   protected MoveLineRepository moveLineRepository;
   protected ReconcileService reconcileService;
   protected AppBaseService appBaseService;
+  protected ReconcileGroupSequenceService reconcileGroupSequenceService;
 
   @Inject
   public ReconcileGroupServiceImpl(
@@ -54,12 +54,14 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
       ReconcileRepository reconcileRepository,
       MoveLineRepository moveLineRepository,
       ReconcileService reconcileService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ReconcileGroupSequenceService reconcileGroupSequenceService) {
     this.reconcileGroupRepository = reconcileGroupRepository;
     this.reconcileRepository = reconcileRepository;
     this.moveLineRepository = moveLineRepository;
     this.reconcileService = reconcileService;
     this.appBaseService = appBaseService;
+    this.reconcileGroupSequenceService = reconcileGroupSequenceService;
   }
 
   @Override
@@ -76,7 +78,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
     reconcileGroup.setDateOfLettering(appBaseService.getTodayDate());
 
-    Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
+    reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
   }
 
   @Override
@@ -191,8 +193,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public void addAndValidate(ReconcileGroup reconcileGroup, Reconcile reconcile)
       throws AxelorException {
-    List<Reconcile> reconcileList =
-        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
+    List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     reconcileList.add(reconcile);
     addToReconcileGroup(reconcileGroup, reconcile);
     if (isBalanced(reconcileList)) {
@@ -209,7 +210,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   public void remove(Reconcile reconcile) throws AxelorException {
-    MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
+
     ReconcileGroup reconcileGroup = reconcile.getReconcileGroup();
 
     // update move lines
@@ -217,16 +218,15 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
     moveLineToRemoveList.forEach(moveLine -> moveLine.setReconcileGroup(null));
 
-    List<Reconcile> reconcileList =
-        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
+    List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     reconcileList
         .stream()
         .map(Reconcile::getDebitMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(null));
+        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
     reconcileList
         .stream()
         .map(Reconcile::getCreditMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(null));
+        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
 
     // update status
     updateStatus(reconcileGroup);
@@ -234,14 +234,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   @Override
   public void updateStatus(ReconcileGroup reconcileGroup) throws AxelorException {
-    List<Reconcile> reconcileList =
-        reconcileRepository
-            .all()
-            .filter(
-                "self.reconcileGroup = ?1 AND self.statusSelect != ?2",
-                reconcileGroup.getId(),
-                ReconcileRepository.STATUS_CANCELED)
-            .fetch();
+    List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     int status = reconcileGroup.getStatusSelect();
     if (CollectionUtils.isNotEmpty(reconcileList)
         && isBalanced(reconcileList)
@@ -255,7 +248,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         reconcileGroupRepository.save(reconcileGroup);
       } else {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
-        Beans.get(ReconcileGroupSequenceService.class).fillCodeFromSequence(reconcileGroup);
+        reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
       }
     }
   }
@@ -263,20 +256,23 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void unletter(ReconcileGroup reconcileGroup) throws AxelorException {
-    List<Reconcile> reconcileList =
-        reconcileRepository
-            .all()
-            .filter(
-                "self.reconcileGroup = ?1 AND self.statusSelect != ?2",
-                reconcileGroup.getId(),
-                ReconcileRepository.STATUS_CANCELED)
-            .fetch();
+    List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
 
     for (Reconcile reconcile : reconcileList) {
       reconcileService.unreconcile(reconcile);
     }
 
     reconcileGroup.setUnletteringDate(appBaseService.getTodayDate());
+    reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
     reconcileGroupRepository.save(reconcileGroup);
+  }
+
+  protected List<Reconcile> getReconcileList(ReconcileGroup reconcileGroup) {
+    return reconcileRepository
+        .all()
+        .filter("self.reconcileGroup.id = :reconcileGroupId AND self.statusSelect = :confirmed")
+        .bind("reconcileGroupId", reconcileGroup.getId())
+        .bind("confirmed", ReconcileRepository.STATUS_CONFIRMED)
+        .fetch();
   }
 }

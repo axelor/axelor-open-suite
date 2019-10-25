@@ -437,7 +437,9 @@ public class ExpenseServiceImpl implements ExpenseService {
               moveDate,
               moveLineId++,
               expense.getExpenseSeq(),
-              expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " "));
+              expenseLine.getComments() != null
+                  ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
+                  : null);
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);

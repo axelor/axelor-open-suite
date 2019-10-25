@@ -20,7 +20,10 @@
     
     <string name="fullName" namecolumn="true" search="score,picklist" title="Address">
 	    <![CDATA[
-	    	return score + " " + picklist;
+            String fullName = "";
+            if(score != null) fullName += score;
+            if(picklist != null) fullName += (fullName.isEmpty()?"":" ") + picklist;
+	    	return fullName;
 	    ]]>
     </string>
     
