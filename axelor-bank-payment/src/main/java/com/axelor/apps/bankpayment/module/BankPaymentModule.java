@@ -40,6 +40,8 @@ import com.axelor.apps.bankpayment.db.repo.EbicsBankAccountRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateAccountRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
@@ -132,5 +134,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(ExtractContextMoveServiceImpl.class).to(ExtractContextMoveServiceBankPaymentImpl.class);
 
     bind(MoveRemoveService.class).to(MoveRemoveServiceBankPaymentImpl.class);
+
+    bind(EbicsUserRepository.class).to(EbicsUserManagementRepository.class);
   }
 }
