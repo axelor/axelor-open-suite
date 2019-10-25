@@ -55,7 +55,7 @@ public class BatchInvoicingProjectService extends AbstractBatch {
       TraceBackService.trace(e);
     }
 
-    List<Map<String, Object>> generatedInvoicingProjectList = new ArrayList<Map<String, Object>>();
+    List<Object> generatedInvoicingProjectList = new ArrayList<Object>();
 
     List<Project> projectList =
         projectRepo

@@ -260,12 +260,15 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
   @Override
   public TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject) {
 
+    teamTask = computeDefaultInformation(teamTask);
+
     switch (teamTask.getProject().getInvoicingSequenceSelect()) {
       case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
         teamTask.setToInvoice(
             appBusinessProject.getPreTaskStatusSet() != null
                 && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
-        if (teamTask.getToInvoice()) {
+        if (teamTask.getToInvoice()
+            && teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
           teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
         }
         break;
@@ -277,54 +280,35 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
         break;
     }
 
-    if (teamTask.getToInvoice()) {
-      teamTask = computeDefaultInformation(teamTask);
-      teamTask = teamTaskRepo.save(teamTask);
-    }
-    return teamTask;
+    return teamTaskRepo.save(teamTask);
   }
 
   @Override
   public TeamTask computeDefaultInformation(TeamTask teamTask) {
 
-    ProjectCategory projectCategory = teamTask.getProjectCategory();
-    if (projectCategory == null) {
-      return teamTask;
-    }
-
-    teamTask.setInvoicingType(
-        teamTask.getInvoicingType() == 0
-            ? projectCategory.getDefaultInvoicingType()
-            : teamTask.getInvoicingType());
-
-    if (teamTask.getProduct() == null) {
-      teamTask.setProduct(projectCategory.getDefaultProduct());
-    }
-
     Product product = teamTask.getProduct();
-    if (product == null) {
-      return teamTask;
-    }
+    if (product != null) {
+      teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
 
-    if (teamTask.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
-      teamTask.setQuantity(BigDecimal.ONE);
-    }
-    if (teamTask.getUnit() == null) {
-      teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
-    }
-    if (teamTask.getUnitPrice().compareTo(BigDecimal.ZERO) == 0) {
-      teamTask.setUnitPrice(product.getSalePrice());
-    }
+    } else {
+      ProjectCategory projectCategory = teamTask.getProjectCategory();
+      if (projectCategory == null) {
+        return teamTask;
+      }
 
-    Project project = teamTask.getProject();
-    if (teamTask.getCurrency() == null) {
-      teamTask.setCurrency(
-          project.getCurrency() == null
-              ? project.getClientPartner().getCurrency() == null
-                  ? project.getCompany().getCurrency()
-                  : project.getClientPartner().getCurrency()
-              : project.getCurrency());
+      teamTask.setInvoicingType(projectCategory.getDefaultInvoicingType());
+      teamTask.setProduct(projectCategory.getDefaultProduct());
+      product = teamTask.getProduct();
+      if (product == null) {
+        return teamTask;
+      }
     }
+    teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
+    teamTask.setUnitPrice(product.getSalePrice());
+    teamTask.setCurrency(product.getSaleCurrency());
+    teamTask.setQuantity(teamTask.getBudgetedTime());
+
+    teamTask = this.updateDiscount(teamTask);
     teamTask = this.compute(teamTask);
     return teamTask;
   }
