@@ -83,4 +83,11 @@ public class ITranslation {
 
   public static final String PHONE_BOOK_COMPANY_PHONE_BOOK = /*$$(*/
       "Phonebook.employeePhonebook"; /*)*/
+
+  public static final String EMPLOYEE_TIMESHEET_FROM_DATE = /*$$(*/
+      "EmployeeTimesheet.fromDate"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_TO_DATE = /*$$(*/ "EmployeeTimesheet.toDate"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_USER = /*$$(*/ "EmployeeTimesheet.user"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_WEEK_TOTAL = /*$$(*/
+      "EmployeeTimesheet.weekTotal"; /*)*/
 }

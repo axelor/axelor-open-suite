@@ -132,6 +132,7 @@
 - Inventory : Added calendar-view
 - change term "Description" to "Comment" in english and "Commentaire" in french
 - Project Folder : Add a two Birt reports to display all project elements linked to the folder.
+- Timesheet: Add Timesheet reporting.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
