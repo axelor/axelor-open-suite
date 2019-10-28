@@ -16,6 +16,7 @@
 - CIVIL YEAR : Allowing civil periods generation using the wizard on the Civil Year
 - CONTACT : duplicate viewer doesn't appear if duplicate is archived.
 - Fixed Asset: Fix NPE on creation.
+- Payroll Preparation: Fix hibernate validation error on generation.
 
 ## [5.1.10] - 2019-10-23
 ## Features
