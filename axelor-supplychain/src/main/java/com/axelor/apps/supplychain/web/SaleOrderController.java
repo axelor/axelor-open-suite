@@ -61,12 +61,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -268,7 +268,6 @@ public class SaleOrderController {
    */
   @SuppressWarnings(value = "unchecked")
   public void generateInvoice(ActionRequest request, ActionResponse response) {
-
     Context context = request.getContext();
     try {
       SaleOrder saleOrder = context.asType(SaleOrder.class);
@@ -277,8 +276,10 @@ public class SaleOrderController {
       BigDecimal amountToInvoice =
           new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
 
-      Beans.get(SaleOrderInvoiceService.class)
-          .displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, amountToInvoice, isPercent);
+      SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
+
+      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
+          saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
@@ -290,19 +291,37 @@ public class SaleOrderController {
               new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
-            addSubLineQty(qtyToInvoiceMap, qtyToInvoiceItem, soLineId);
+            saleOrderInvoiceService.addSubLineQty(qtyToInvoiceMap, qtyToInvoiceItem, soLineId);
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
+          }
+        }
+      }
+
+      // Information to send to the service to handle an invoicing on timetables
+      List<Long> timetableIdList = new ArrayList<Long>();
+      ArrayList<LinkedHashMap<String, Object>> uninvoicedTimetablesList =
+          (context.get("uninvoicedTimetablesList") != null)
+              ? (ArrayList<LinkedHashMap<String, Object>>) context.get("uninvoicedTimetablesList")
+              : null;
+      if (uninvoicedTimetablesList != null && !uninvoicedTimetablesList.isEmpty()) {
+
+        for (LinkedHashMap<String, Object> timetable : uninvoicedTimetablesList) {
+          if (timetable.get("toInvoice") != null && (boolean) timetable.get("toInvoice")) {
+            timetableIdList.add(Long.parseLong(timetable.get("id").toString()));
           }
         }
       }
 
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
-      SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
-
       Invoice invoice =
           saleOrderInvoiceService.generateInvoice(
-              saleOrder, operationSelect, amountToInvoice, isPercent, qtyToInvoiceMap);
+              saleOrder,
+              operationSelect,
+              amountToInvoice,
+              isPercent,
+              qtyToInvoiceMap,
+              timetableIdList);
 
       if (invoice != null) {
         response.setCanClose(true);
@@ -318,26 +337,6 @@ public class SaleOrderController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  private void addSubLineQty(
-      Map<Long, BigDecimal> qtyToInvoiceMap, BigDecimal qtyToInvoiceItem, Long soLineId) {
-
-    SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(soLineId);
-
-    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
-      for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
-        BigDecimal qty = BigDecimal.ZERO;
-        if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
-          qty =
-              qtyToInvoiceItem
-                  .multiply(subLine.getQty())
-                  .divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
-        }
-        qty = qty.setScale(2, RoundingMode.HALF_EVEN);
-        qtyToInvoiceMap.put(subLine.getId(), qty);
-      }
     }
   }
 
@@ -845,6 +844,7 @@ public class SaleOrderController {
                   SaleOrderRepository.INVOICE_ADVANCE_PAYMENT,
                   amountToInvoice,
                   isPercent,
+                  null,
                   null);
 
       if (invoice != null) {

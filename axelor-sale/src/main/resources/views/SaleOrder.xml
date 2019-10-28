@@ -363,7 +363,9 @@
 
       <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable">
 	      <field name="expectedRealisationDate" colSpan="12" width="50%"/>
-	      <label name="orLabel" title="OR"/>
+	      <label name="orLabel" title="OR" colSpan="12"/>
+	       <field name="timetableTemplate" onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+	       <field name="computationDate" onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
 	      <field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
 	      <panel-related name="timetableListPanel"  if-module="axelor-supplychain" colSpan="12" field="timetableList" form-view="timetable-form" grid-view="timetable-grid" onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
 	    </panel>
@@ -940,6 +942,7 @@
 		<action name="action-sale-order-attrs-external-reference"/>
 		<action name="action-sale-order-attrs-availability-request-label"/>
 		<action name="action-sale-order-attrs-set-required"/>
+		<action name="action-sale-order-attrs-timetables-readonly" if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
 	<action-group name="action-sale-group-confirmed">
@@ -956,6 +959,8 @@
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
     	<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
+    	<action name="action-sale-order-record-update-timetable-amounts" if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
+    	<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
     	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     </action-group>
 
