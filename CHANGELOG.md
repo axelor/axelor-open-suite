@@ -23,6 +23,7 @@
 - CONTACT : duplicate viewer doesn't appear if duplicate is archived.
 - Fixed Asset: Fix NPE on creation.
 - Payroll Preparation: Fix hibernate validation error on generation.
+- Sale order line: Fix error message when trying to reserve negative quantity.
 
 ## [5.1.10] - 2019-10-23
 ## Features
