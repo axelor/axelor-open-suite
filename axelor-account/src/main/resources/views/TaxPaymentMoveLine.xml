@@ -7,7 +7,7 @@
 		<field name="moveLine" width="135" readonly="true" hidden="true"/>
 		<field name="originTaxLine" readonly="true"/>
 		<field name="detailPaymentAmount" readonly="true" title="Base"/>
-		<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
+		<field name="taxRate" readonly="true"/>
 		<field name="taxAmount" readonly="true"/>
 		<field name="date" readonly="true"/>
 	</grid>
@@ -16,16 +16,12 @@
 		<panel name="MainInformationsPanel" itemSpan="6">
 			<field name="moveLine" readonly="true"/>
 			<field name="originTaxLine" readonly="true"/>
+			<field name="reconcile" readonly="true"/>
 			<field name="detailPaymentAmount" readonly="true" title="Base"/>
-			<field name="taxRate" onChange="account-tax-payment-move-line-compute-tax-amount-method-on-change"/>
+			<field name="taxRate" readonly="true"/>
 			<field name="taxAmount" readonly="true"/>
 			<field name="date" readonly="true"/>
 		</panel>
 	</form>
-	
-	<action-method name="account-tax-payment-move-line-compute-tax-amount-method-on-change" model="com.axelor.apps.account.db.TaxPaymentMoveLine">
-		<call class="com.axelor.apps.account.web.TaxPaymentMoveLineController" method="computeTaxAmount"/>
-	</action-method>
 	    
-
 </object-views>

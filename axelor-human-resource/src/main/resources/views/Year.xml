@@ -22,7 +22,7 @@
         </panel>
         <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant">
             <field name="periodDurationSelect"/>
-            <button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
+            <button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click" />
         </panel>
     </form>
 

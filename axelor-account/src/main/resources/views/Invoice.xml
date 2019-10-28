@@ -388,9 +388,9 @@ InvoiceSet.length > 0))"
         <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
-            <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
+            <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
             <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
-            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
+            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
             <button name="cancelBtn" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
             <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments" colSpan="12" onClick="action-invoice-group-add-invoice-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
@@ -569,7 +569,7 @@ InvoiceSet.length > 0))"
 		</panel-stack>
 
 	    <panel sidebar="true" name="actionsPanel" title="Actions" >
-	        <button name="validateBtn" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
+	        <button name="validateBtn" title="Validate" showIf="statusSelect == 1" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
 	        <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
 	        <button name="cancelBtn" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
@@ -980,6 +980,10 @@ InvoiceSet.length > 0))"
 
 	<action-validate name="action-validate-send-email-remove-access-for-client">
 		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
+    </action-validate>
+    
+    <action-validate name="action-validate-invoice-ckeck-invoice-line-tax-list">
+    	<alert message="There is no taxes on this invoice. Do you want to proceed ?" if="invoiceLineTaxList == null || invoiceLineTaxList.isEmpty()"/>
     </action-validate>
     
 	<!-- ACTION METHOD -->
