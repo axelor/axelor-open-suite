@@ -447,6 +447,7 @@
 "The trading name must be the same for all purchase orders.","L’enseigne doit être identique pour toutes les cmdes d’achat.",,
 "The trading name must be the same for all sale orders.","L’enseigne doit être identique pour toutes les cmdes clients.",,
 "There are no lines to invoice","Il n'y a pas de lignes à facturer",,
+"There is at least one draft or planned stock move for this sale order.","Il existe au moins un mouvement de stock brouillon ou planifié pour cette commande.",,
 "There is no analytic distribution on %s purchase order line","Veuillez renseigner un modèle de répartition analytique dans les lignes de commandes des produits %s",,
 "There is no analytic distribution on %s sale order line","Veuillez renseigner un modèle de répartition analytique dans les lignes de commandes des produits %s",,
 "This batch has already been running this month","Attention, le batch a déjà été lancé ce mois-ci.",,

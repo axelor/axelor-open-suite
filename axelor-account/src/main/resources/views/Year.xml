@@ -26,7 +26,7 @@
 			</panel>
 		</panel>
 		<panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
-		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMovesPanel"/>
+		<panel-dashlet action="action-view-year-linked-adjusting-moves-dashlet" name="linkedAdjustingMovesPanel" showIf="statusSelect &gt; 1"/>
 		<panel name="actionsPanel" sidebar="true" readonlyIf="statusSelect == 2">
 			<field name="typeSelect" readonly="true" colSpan="6"/>
 			<field name="statusSelect" colSpan="6"/>
@@ -36,7 +36,7 @@
 		</panel>
 		<panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2">
 			<field name="periodDurationSelect"/>
-			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-year-generateperiod-click" />
+			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click" />
 		</panel>
 	</form>
 
@@ -62,18 +62,6 @@
 		<action name="save"/>
 	</action-group>
     
-    <action-group name="action-group-account-year-generateperiod-click">
-    	<action name="action-year-check-date"/>
-    	<action name="save"/>
-    	<action name="action-year-validate-generate-period"/>
-    	<action name="action-method-account-year-generate-periods"/>
-    	<action name="save"/>
-    </action-group>
-
-    <action-method name="action-method-account-year-generate-periods">
-    	<call class="com.axelor.apps.account.web.YearController" method="generatePeriods"/>
-    </action-method>
-    
     <action-record name="action-year-account-record-new" model="com.axelor.apps.base.db.Year">
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
@@ -87,11 +75,5 @@
     <action-method name="action-year-adjust-method">
     	<call class="com.axelor.apps.account.web.YearController" method="adjust"/>
     </action-method>
-    
-    <action-validate name="action-year-validate-generate-period">
-	    <error message="To generate periods, please fill in the limits of the fiscal year." if="fromDate == null || toDate == null" />
-	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null || periodDurationSelect == 0"/>
-	    <error message="Please clear all existing periods before generating new ones" if="!periodList.empty"/>
-	</action-validate>
 	
 </object-views>

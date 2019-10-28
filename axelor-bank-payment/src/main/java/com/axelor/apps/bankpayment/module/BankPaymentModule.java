@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
+import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
@@ -63,6 +64,7 @@ import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateS
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.move.BankPaymentMoveServiceImpl;
+import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.web.InvoicePaymentBankPayController;
 
 public class BankPaymentModule extends AxelorModule {
@@ -118,6 +120,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveManagementRepository.class).to(MoveBankPaymentRepository.class);
 
     bind(BankOrderLineOriginService.class).to(BankOrderLineOriginServiceImpl.class);
+
+    bind(MoveRemoveService.class).to(MoveRemoveServiceBankPaymentImpl.class);
 
     bind(MoveServiceImpl.class).to(BankPaymentMoveServiceImpl.class);
   }
