@@ -312,6 +312,7 @@
 					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
 					<field name="oldMove" readonly="true" showIf="oldMove" form-view="move-form" grid-view="move-grid"/>
 					<field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
+					<field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
 				</panel>
 				<panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefundBtn" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
@@ -678,6 +679,7 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
+		<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
 		<field name="invoiceId" width="120"/>
 		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
@@ -685,6 +687,8 @@ InvoiceSet.length > 0))"
 		<field name="dueDate" />
 		<field name="inTaxTotal" />
 		<field name="currency" />
+		<field name="$subrogationStatusSelect" hidden="true"/>
+		<field name="amountRemaining" hidden="true"/>
 	</grid>
 
     <!-- CUSTOMER INVOICES MERGE  -->
