@@ -24,6 +24,7 @@
 - Fixed Asset: Fix NPE on creation.
 - Payroll Preparation: Fix hibernate validation error on generation.
 - Sale order line: Fix error message when trying to reserve negative quantity.
+- BANK STATEMENT : corrected missing hilite in bank statement line grid for 120 file format.
 
 ## [5.1.10] - 2019-10-23
 ## Features
