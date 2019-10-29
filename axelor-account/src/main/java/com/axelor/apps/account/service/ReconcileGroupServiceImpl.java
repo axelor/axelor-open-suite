@@ -218,16 +218,15 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
         moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
     moveLineToRemoveList.forEach(moveLine -> moveLine.setReconcileGroup(null));
 
-    List<Reconcile> reconcileList =
-        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
+    List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
     reconcileList
         .stream()
         .map(Reconcile::getDebitMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(null));
+        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
     reconcileList
         .stream()
         .map(Reconcile::getCreditMoveLine)
-        .forEach(moveLine -> moveLine.setReconcileGroup(null));
+        .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
 
     // update status
     updateStatus(reconcileGroup);
@@ -264,6 +263,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     }
 
     reconcileGroup.setUnletteringDate(appBaseService.getTodayDate());
+    reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
     reconcileGroupRepository.save(reconcileGroup);
   }
 
