@@ -5,6 +5,7 @@
 ## Improvements
 - PERIOD : Adding DEMO DATA
 - CONTACT: a new viewer appears if there is a duplicate in archive.
+- FINANCIAL REPORT : Landscape and formatting
 
 ## Bug Fixes
 - Reconcile : canceled status is now a final state meaning that it's not possible to reconcile again a canceled one.
