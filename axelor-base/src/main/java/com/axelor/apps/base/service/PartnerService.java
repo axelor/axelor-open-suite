@@ -90,6 +90,14 @@ public interface PartnerService {
   boolean isThereDuplicatePartner(Partner partner);
 
   /**
+   * Check if the partner in view has an archived duplicate.
+   *
+   * @param partner a context partner object
+   * @return a found archived partner or null.
+   */
+  Partner isThereDuplicatePartnerInArchive(Partner partner);
+
+  /**
    * Search for the sale price list for the current date in the partner.
    *
    * @param partner

@@ -514,6 +514,7 @@
 "Usable on sale order","Utilisable pour les ventes",,
 "Used Credit","Encours utilisé",,
 "Verify product stock before availabity request","Vérifier le stock du produit avant la demande de mise à disposition",,
+"You cannot request reservation with a negative quantity.","Vous ne pouvez pas demander la réservation d'une quantité négative.",,
 "You have to choose at least one incoming stock move","Vous devez choisir au moins un BR",,
 "You have to choose at least one outgoing stock move","Vous devez choisir au moins un BL",,
 "You must configure a Supply chain module for the company %s",,,
