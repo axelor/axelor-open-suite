@@ -91,9 +91,8 @@ public class BatchReminderTimesheet extends AbstractBatch {
     String model = template.getMetaModel().getFullName();
     String tag = template.getMetaModel().getName();
     for (Timesheet timesheet : timesheetList) {
-      Message message = new Message();
       try {
-        message =
+        Message message =
             templateMessageService.generateMessage(
                 timesheet.getUser().getEmployee().getId(), model, tag, template);
         message = messageService.sendByEmail(message);
@@ -123,9 +122,10 @@ public class BatchReminderTimesheet extends AbstractBatch {
               .filter("self.statusSelect = 1 AND self.user.employee.timesheetReminder = true")
               .fetch();
     }
+    final MessageRepository messageRepo = Beans.get(MessageRepository.class);
     for (Timesheet timesheet : timesheetList) {
-      Message message = new Message();
       try {
+        Message message = new Message();
         message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
         message.setReplyToEmailAddressSet(new HashSet<EmailAddress>());
         message.setCcEmailAddressSet(new HashSet<EmailAddress>());
@@ -141,6 +141,7 @@ public class BatchReminderTimesheet extends AbstractBatch {
                 .filter("self.isDefault = true")
                 .fetchOne());
 
+        message = messageRepo.save(message);
         message = messageService.sendByEmail(message);
 
         incrementDone();
@@ -187,9 +188,10 @@ public class BatchReminderTimesheet extends AbstractBatch {
       employeeList =
           Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
     }
+    final MessageRepository messageRepo = Beans.get(MessageRepository.class);
     for (Employee employee : employeeList) {
-      Message message = new Message();
       try {
+        Message message = new Message();
         message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
         message.setReplyToEmailAddressSet(new HashSet<EmailAddress>());
         message.setCcEmailAddressSet(new HashSet<EmailAddress>());
@@ -204,6 +206,7 @@ public class BatchReminderTimesheet extends AbstractBatch {
                 .filter("self.isDefault = true")
                 .fetchOne());
 
+        message = messageRepo.save(message);
         message = messageService.sendByEmail(message);
 
         incrementDone();
