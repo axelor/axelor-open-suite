@@ -52,10 +52,11 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import javax.mail.MessagingException;
+import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,8 @@ public class MessageServiceImpl implements MessageService {
   protected MessageRepository messageRepository;
 
   private ExecutorService executor = Executors.newCachedThreadPool();
+  private static final int ENTIY_MANAGER_CLOSE_TIMEOUT = 10000;
+  private static final int ENTIY_MANAGER_WAIT_INTERVAL = 200;
 
   @Inject
   public MessageServiceImpl(
@@ -317,32 +320,41 @@ public class MessageServiceImpl implements MessageService {
       mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
     }
 
-    // Make sure message can be found in sending thread below.
-    JPA.flush();
+    final EntityManager em = JPA.em();
+    em.flush();
 
     // send email using a separate process to avoid thread blocking
     executor.submit(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() {
-            try {
-              mailBuilder.send();
-              Message updateMessage = messageRepository.find(message.getId());
-              JPA.em().getTransaction().begin();
-              updateMessage.setSentByEmail(true);
-              updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
-              updateMessage.setSentDateT(LocalDateTime.now());
-              updateMessage.setSenderUser(AuthUtils.getUser());
-              messageRepository.save(updateMessage);
-              JPA.em().getTransaction().commit();
-            } catch (Exception e) {
-              TraceBackService.trace(e);
-            }
-            return true;
+        () -> {
+          try {
+            waitForClosedEntityManager(em);
+            mailBuilder.send();
+            Message updateMessage = messageRepository.find(message.getId());
+            JPA.em().getTransaction().begin();
+            updateMessage.setSentByEmail(true);
+            updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
+            updateMessage.setSentDateT(LocalDateTime.now());
+            updateMessage.setSenderUser(AuthUtils.getUser());
+            messageRepository.save(updateMessage);
+            JPA.em().getTransaction().commit();
+          } catch (Exception e) {
+            TraceBackService.trace(e);
           }
+          return true;
         });
 
     return message;
+  }
+
+  private void waitForClosedEntityManager(EntityManager em)
+      throws InterruptedException, TimeoutException {
+    final long startTime = System.currentTimeMillis();
+    while (em.isOpen()) {
+      if (System.currentTimeMillis() - startTime > ENTIY_MANAGER_CLOSE_TIMEOUT) {
+        throw new TimeoutException(String.format("Entity manager still open: %s", em));
+      }
+      Thread.sleep(ENTIY_MANAGER_WAIT_INTERVAL);
+    }
   }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {
