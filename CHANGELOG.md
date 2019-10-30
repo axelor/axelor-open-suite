@@ -41,6 +41,13 @@
 - MOVELINE: change display condition for tax amount (used for payment tax report).
 - APPRAISAL: Auto-fill company from employee's main employement contract.
 - Tax payment move lines: are canceled after unreconcile.
+- BANK ORDER: add bank name in grid view.
+- Partner: correct addresses to be displayed on form.
+- SALE ORDER: show error message when user complete manually a sale order with a draft or planned stock move.
+- MOVE: allow to delete (archive) a daybook move.
+- TAX PAYMENT MOVE LINE: add reconcile.
+- Accounting Report: Added a boolean field option to print partner general ledger report with cumulative balance.
+- Add help on important fields in partner-form, sale-order-form, invoice-form, product-form.
 
 ## Bug Fixes
 - Employee: fix error on duplicate.
