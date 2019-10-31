@@ -16,14 +16,14 @@
         <date name="shipmentDate" title="Date of shipment" />
         <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
         <integer name="saleOrderTypeSelect" title="Type" required="true" default="1" selection="supplychain.sale.order.type.select"/>
-        <!-- 	Onglet échéancier -->
+        <!-- Onglet échéancier -->
         <one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
-        <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
+        <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder" copy="false"/>
         <boolean name="interco" title="Interco"/>
         <boolean name="createdByInterco" default="false"/>
-        <date name="expectedRealisationDate" title="Expected realisation date"/>
-        <date name="computationDate" title="Timetable computation date"/>
-        <many-to-one name="timetableTemplate" title="Timetable template" ref="com.axelor.apps.supplychain.db.TimetableTemplate"/>
+        <date name="expectedRealisationDate" title="Expected realisation date" copy="false"/>
+        <date name="computationDate" title="Timetable computation date" copy="false"/>
+        <many-to-one name="timetableTemplate" title="Timetable template" ref="com.axelor.apps.supplychain.db.TimetableTemplate" copy="false"/>
         <integer name="standardDelay" title="Standard delay (days)" default="0"  />
         <one-to-many name="stockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves" />
 

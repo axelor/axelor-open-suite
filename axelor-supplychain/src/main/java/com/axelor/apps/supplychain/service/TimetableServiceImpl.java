@@ -57,6 +57,7 @@ public class TimetableServiceImpl implements TimetableService {
   public Invoice createInvoice(Timetable timetable) throws AxelorException {
     SaleOrder saleOrder = timetable.getSaleOrder();
     // PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
+    
     if (saleOrder != null) {
       if (saleOrder.getCurrency() == null) {
         throw new AxelorException(
@@ -65,7 +66,7 @@ public class TimetableServiceImpl implements TimetableService {
             I18n.get(IExceptionMessage.SO_INVOICE_6),
             saleOrder.getSaleOrderSeq());
       }
-      List<Long> timetableId = new ArrayList<Long>();
+      List<Long> timetableId = new ArrayList<>();
       timetableId.add(timetable.getId());
       Invoice invoice =
           saleOrderInvoiceService.generateInvoice(
@@ -81,26 +82,8 @@ public class TimetableServiceImpl implements TimetableService {
 
     /*
     if (purchaseOrder != null) {
-      if (purchaseOrder.getCurrency() == null) {
-        throw new AxelorException(
-            timetable,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PO_INVOICE_1),
-            purchaseOrder.getPurchaseOrderSeq());
-      }
-      InvoiceGenerator invoiceGenerator =
-          new InvoiceGeneratorSupplyChain(purchaseOrder) {
-
-            @Override
-            public Invoice generate() throws AxelorException {
-
-              return super.createInvoiceHeader();
-            }
-          };
-
-      Invoice invoice = invoiceGenerator.generate();
-      invoiceGenerator.populate(invoice, this.createInvoiceLine(invoice, timetable));
-      return invoice;
+      TODO handle purchaseOrders the same way we handle saleOrders. 
+      Requires adding partial invoicing for purchaseOrders.
     }
     */
 
@@ -109,7 +92,7 @@ public class TimetableServiceImpl implements TimetableService {
 
   public List<Timetable> applyTemplate(
       TimetableTemplate template, BigDecimal exTaxTotal, LocalDate computationDate) {
-    List<Timetable> timetables = new ArrayList<Timetable>();
+    List<Timetable> timetables = new ArrayList<>();
 
     for (TimetableTemplateLine templateLine : template.getTimetableTemplateLineList()) {
       Timetable timetable = new Timetable();
@@ -117,7 +100,7 @@ public class TimetableServiceImpl implements TimetableService {
           InvoiceToolService.getDueDate(templateLine.getPaymentCondition(), computationDate));
       timetable.setPercentage(templateLine.getPercentage());
       timetable.setAmount(
-          exTaxTotal.multiply(templateLine.getPercentage()).divide(new BigDecimal(100)));
+          exTaxTotal.multiply(templateLine.getPercentage()).divide(BigDecimal.valueOf(100)));
       timetables.add(timetable);
     }
 

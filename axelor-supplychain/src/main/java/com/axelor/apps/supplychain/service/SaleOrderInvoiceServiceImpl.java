@@ -138,7 +138,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       case SaleOrderRepository.INVOICE_TIMETABLES:
         BigDecimal percentSum = BigDecimal.ZERO;
         TimetableRepository timetableRepo = Beans.get(TimetableRepository.class);
-        List<Timetable> timetableList = new ArrayList<Timetable>();
+        List<Timetable> timetableList = new ArrayList<>();
         if (timetableIdList == null || timetableIdList.isEmpty()) {
           throw new AxelorException(
               saleOrder,

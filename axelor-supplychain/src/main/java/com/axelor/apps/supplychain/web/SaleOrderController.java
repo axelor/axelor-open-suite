@@ -298,7 +298,7 @@ public class SaleOrderController {
       }
 
       // Information to send to the service to handle an invoicing on timetables
-      List<Long> timetableIdList = new ArrayList<Long>();
+      List<Long> timetableIdList = new ArrayList<>();
       ArrayList<LinkedHashMap<String, Object>> uninvoicedTimetablesList =
           (context.get("uninvoicedTimetablesList") != null)
               ? (ArrayList<LinkedHashMap<String, Object>>) context.get("uninvoicedTimetablesList")

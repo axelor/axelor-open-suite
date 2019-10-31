@@ -364,10 +364,6 @@
 		</template>
 	</cards>
 
-	<action-method name="action-purchase-order-method-update-timetable" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateTimetable" if="__config__.app.isApp('supplychain')" />
-	</action-method>
-
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>

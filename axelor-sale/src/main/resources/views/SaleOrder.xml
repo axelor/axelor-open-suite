@@ -942,7 +942,6 @@
 		<action name="action-sale-order-attrs-external-reference"/>
 		<action name="action-sale-order-attrs-availability-request-label"/>
 		<action name="action-sale-order-attrs-set-required"/>
-		<action name="action-sale-order-attrs-timetables-readonly" if="__config__.app.isApp('supplychain')"/>
 	</action-group>
 
 	<action-group name="action-sale-group-confirmed">

@@ -4,18 +4,18 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
     
 	<grid name="timetable-grid" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
-		<field name="estimatedDate" readonlyIf="invoice" required="true"/>
-		<field name="title" readonlyIf="invoice"/>
-		<field name="amount" readonlyIf="invoice" required="true" onChange="action-timetable-group-on-amount-change"/>
-		<field name="percentage" readonlyIf="invoice" required="true" onChange="action-timetable-record-on-percentage-change"/>
-		<field name="comments" readonlyIf="invoice" width="300%"/>
+		<field name="estimatedDate" readonlyIf="invoiced" required="true"/>
+		<field name="title" readonlyIf="invoiced"/>
+		<field name="amount" readonlyIf="invoiced" required="true" onChange="action-timetable-group-on-amount-change"/>
+		<field name="percentage" readonlyIf="invoiced" required="true" onChange="action-timetable-record-on-percentage-change"/>
+		<field name="comments" readonlyIf="invoiced" width="300%"/>
 		<field name="invoiced" readonly="true"/>
-		<button name="generateInvoiceBtn" readonlyIf="!id || invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+		<button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
 		<field name="invoice" width="120" hidden="true"/>
 	</grid>
 	
 	<form name="timetable-form" title="Timetable" model="com.axelor.apps.supplychain.db.Timetable">
-		<panel name="mainPanel" readonlyIf="invoice">
+		<panel name="mainPanel" readonlyIf="invoiced">
 			<field name="estimatedDate" colSpan="4"/>
 			<field name="$viewerInvoiced" showTitle="false" readonly="true" showIf="invoiced == true" colSpan="8">
 				<viewer><![CDATA[
@@ -35,18 +35,18 @@
 	
 	<!-- Partial invoicing for purchase doesn't exist yet, so here's a temporary second grid and form view that just remove the invoice button -->
 	<grid name="timetable-grid-purchase" title="Timetables" model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
-		<field name="estimatedDate" readonlyIf="invoice" required="true"/>
-		<field name="title" readonlyIf="invoice"/>
-		<field name="amount" readonlyIf="invoice" required="true" onChange="action-timetable-group-on-amount-change"/>
-		<field name="percentage" readonlyIf="invoice" required="true" onChange="action-timetable-record-on-percentage-change"/>
-		<field name="comments" readonlyIf="invoice" width="300%"/>
+		<field name="estimatedDate" readonlyIf="invoiced" required="true"/>
+		<field name="title" readonlyIf="invoiced"/>
+		<field name="amount" readonlyIf="invoiced" required="true" onChange="action-timetable-group-on-amount-change"/>
+		<field name="percentage" readonlyIf="invoiced" required="true" onChange="action-timetable-record-on-percentage-change"/>
+		<field name="comments" readonlyIf="invoiced" width="300%"/>
 		<field name="invoiced" readonly="true"/>
-		<button name="generateInvoiceBtn" readonlyIf="!id || invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+		<button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
 		<field name="invoice" width="120" hidden="true"/>
 	</grid>
 	
 	<form name="timetable-form-purchase" title="Timetable" model="com.axelor.apps.supplychain.db.Timetable">
-		<panel name="mainPanel" readonlyIf="invoice">
+		<panel name="mainPanel" readonlyIf="invoiced">
 			<field name="estimatedDate" colSpan="4"/>
 			<field name="$viewerInvoiced" showTitle="false" readonly="true" showIf="invoiced == true" colSpan="8">
 				<viewer><![CDATA[
@@ -58,7 +58,7 @@
 			<field name="title" colSpan="12"/>
 			<field name="amount" colSpan="4" required="true" onChange="action-timetable-group-on-amount-change"/>
 			<field name="percentage" colSpan="4" required="true" onChange="action-timetable-record-on-percentage-change"/>
-			<field name="invoice" hideIf="!invoice"/>
+			<field name="invoiced" hideIf="!invoice"/>
 			<field name="comments" colSpan="12"/>
 		</panel>
 	</form>
@@ -81,7 +81,7 @@
 	
 	<action-record name="action-timetable-record-on-percentage-change" model="com.axelor.apps.supplychain.db.Timetable">
 		<field name="amount" 
-			expr="eval: (__parent__.exTaxTotal != null) ? __parent__.exTaxTotal * percentage / 100 : 0" 
+			expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(__config__.app.getApp('base').nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP) : 0" 
 			if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
 	</action-record>
 	

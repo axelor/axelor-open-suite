@@ -207,6 +207,7 @@
 - ACCOUNT CONFIG : update demo data for account config and 'is print invoices in company language' boolean is now at true by default.
 - Contract : change filter on project field
 - TEAMTASKS : Creation from Same Order
+- TIMETABLE : Reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
