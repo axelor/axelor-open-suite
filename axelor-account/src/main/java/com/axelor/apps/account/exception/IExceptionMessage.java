@@ -169,18 +169,21 @@ public interface IExceptionMessage {
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
-  static final String MOVE_2 = /*$$(*/ "You must select a journal for the move" /*)*/;
-  static final String MOVE_3 = /*$$(*/ "You must select a company for the move" /*)*/;
-  static final String MOVE_4 = /*$$(*/ "You must select a period for the move" /*)*/;
+  static final String MOVE_2 = /*$$(*/ "You must select a journal for the move %s" /*)*/;
+  static final String MOVE_3 = /*$$(*/ "You must select a company for the move %s" /*)*/;
+  static final String MOVE_4 = /*$$(*/ "You must select a period for the move %s" /*)*/;
   static final String MOVE_5 = /*$$(*/
       "Journal %s does not have any account move sequence configured" /*)*/;
   static final String MOVE_6 = /*$$(*/ "Move account sens %s can't be determined" /*)*/;
   static final String MOVE_7 = /*$$(*/
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
-  static final String MOVE_8 = /*$$(*/ "A move cannot be empty" /*)*/;
-  static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
+  static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
+  static final String MOVE_9 = /*$$(*/
+      "Tax is mandatory for the account %s on the move line %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
-      "Analytic distribution template is mandatory for the account %s." /*)*/;
+      "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
+  static final String MOVE_11 = /*$$(*/
+      "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
@@ -217,6 +220,8 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a reconciliation sequence for the company %s" /*)*/;
   static final String RECONCILE_7 = /*$$(*/
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
+  static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
+      "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
 
   /** Reimbursement service and controller */
   static final String REIMBURSEMENT_1 = /*$$(*/

@@ -19,6 +19,7 @@
     <time name="morningTo" title="To"/>
     <time name="afternoonFrom" title="2nd Period From"/>
     <time name="afternoonTo" title="To"/>
+    <integer name="sequence" title="Seq."/>
   </entity>
   
 </domain-models>

@@ -33,7 +33,8 @@
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
-
+	<boolean name="displayClosingAccountingMoves" title="Display closing accounting moves" default="false"/>
+    <boolean name="displayOpeningAccountingMoves" title="Display opening accounting moves" default="false"/>
     
     <!--Report 7 : Partner genereal ledger  --> 
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>

@@ -30,6 +30,9 @@
 		<datetime name="fromDate" title="From Date"/>
 		<datetime name="toDate" title="To Date"/>
 		<datetime name="dueDate" title="Due Date"/>
+      
+        <decimal name="estimatedTimeDays" title="Estimated time (in days)" />
+        <decimal name="estimatedTimeHrs" title="Estimated time (in hours)" />
 		
 		<decimal name="timeSpent" title="Time Spent"/>
 		
