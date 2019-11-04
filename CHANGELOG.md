@@ -19,6 +19,7 @@
 - Studio: MetaAction and MetaSelect menus with group by on app
 - META-MODEL-FORM : add tracking on json fields
 - Studio : Added validIf property for custom field.
+- Invoice and SaleOrder : Invoice and SaleOrder report updated based on ticket #20927
 
 ## Improvements
 - Remove Pack Feature from Product.
