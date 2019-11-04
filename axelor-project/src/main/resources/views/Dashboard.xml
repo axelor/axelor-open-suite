@@ -10,6 +10,12 @@
 		<dashlet action="action-project-db-my-upcomming-planning"/>
 	</dashboard>
 	
+	<dashboard name="project-planned-charge" title="Planned charge">
+		<dashlet action="chart:chart.daily.planned.charge.in.month.per.project" colSpan="12"/>
+		<dashlet action="chart:chart.daily.planned.charge.in.month.per.employee" colSpan="12"/>
+		<dashlet action="chart:chart.average.daily.planned.charge.in.month.per.employee" colSpan="12"/>
+	</dashboard>
+	
 	<action-view name="action-project-db-my-tasks-to-do" title="My tasks to do" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="team-task-grid" />
 		<view type="form" name="team-task-form" />
@@ -41,6 +47,5 @@
 		<view type="form" name="project-planning-time-form" />
 		<domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
 	</action-view>
-	
 	
 </object-views>
