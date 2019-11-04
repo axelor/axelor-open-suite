@@ -348,10 +348,10 @@
               <field name="modeOfTransport" />
             </panel>
             <panel name="notePanel" title="Note" colSpan="12">
-                <panel name="stockMoveCommentsPanel" title="Description to display on stock move" colSpan="12">
+                <panel name="stockMoveCommentsPanel" title="Comment to display on stock move" colSpan="12">
                   <field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
 	            </panel>
-        		<panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+        		<panel name="pickingOrderCommentsPanel" title="Comment to display on picking order" colSpan="12">
                   <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
 	            </panel>
             </panel>
