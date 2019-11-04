@@ -40,6 +40,7 @@ import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -69,6 +70,8 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 
 @Singleton
 public class EbicsController {
+
+  private static int totalRecord = 0, importedRecord = 0;
 
   @Transactional
   public void generateCertificate(ActionRequest request, ActionResponse response) {
@@ -412,23 +415,31 @@ public class EbicsController {
       File importFile = new File(tempDir, "ebics-user.xml");
       Files.copy(path.toFile(), importFile);
 
+      totalRecord = importedRecord = 0;
       XMLImporter importer =
           new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
       final StringBuilder log = new StringBuilder();
+
       Listener listner =
           new Listener() {
 
             @Override
-            public void imported(Integer imported, Integer total) {
-              log.append("Total records: " + total + ", Total imported: " + total);
+            public void imported(Integer imported, Integer total) {}
+
+            @Override
+            public void imported(Model arg0) {
+              if (arg0.getClass().isAssignableFrom(EbicsUser.class)) {
+                totalRecord++;
+                importedRecord++;
+              }
             }
 
             @Override
-            public void imported(Model arg0) {}
-
-            @Override
             public void handle(Model arg0, Exception err) {
-              log.append("Error in import: " + err.getStackTrace().toString());
+              TraceBackService.trace(err);
+              if (arg0.getClass().isAssignableFrom(EbicsUser.class)) {
+                totalRecord++;
+              }
             }
           };
 
@@ -439,7 +450,7 @@ public class EbicsController {
       FileUtils.forceDelete(configFile);
 
       FileUtils.forceDelete(tempDir);
-
+      log.append("Total records: " + totalRecord + ", Total imported: " + importedRecord);
       response.setValue("importLog", log.toString());
 
     } catch (IOException e) {

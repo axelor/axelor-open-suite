@@ -133,6 +133,7 @@
 - change term "Description" to "Comment" in english and "Commentaire" in french
 - Project Folder : Add a two Birt reports to display all project elements linked to the folder.
 - WEEKLY PLANNING: Days can be reordered and create an util method to get first day of week.
+- PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -212,6 +213,7 @@
 - TEAMTASK : add buttons in team-task-form and removed from toolbar
 - Financial Report : calculate Total costs (per line) in chart and totals
 - TIMETABLE : Reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
+- TeamTask : set status editable.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

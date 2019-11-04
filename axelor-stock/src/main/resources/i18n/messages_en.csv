@@ -83,6 +83,8 @@
 "Code",,,
 "Collected",,,
 "Collection date",,,
+"Comment to display on picking order",,,
+"Comment to display on stock move",,,
 "Commercial regularization resulting in value increase",,,
 "Commercial regularization resulting in value reduction",,,
 "Company",,,

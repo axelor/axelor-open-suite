@@ -175,7 +175,6 @@
           <button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested" onClick="save,action-method-sale-order-line-cancel-reservation"/>
         </panel>
         </panel>
-				<spacer/>
 				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$allocatedStock" colSpan="3" readonly="true" type="decimal" title="Allocated stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$totalStock" colSpan="3" readonly="true" type="decimal" title="Total stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
