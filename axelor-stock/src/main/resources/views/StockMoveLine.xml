@@ -92,7 +92,7 @@
 					</h4>
 				]]></viewer>
 			</field>
-			<field name="$invoiced" colSpan="2" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+			<field name="$invoiced" colSpan="2" showTitle="false" readonly="true" showIf="id &amp;&amp; stockMove.statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<viewer depends="qtyInvoiced,realQty"><![CDATA[
                         <h4>
                             <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
@@ -278,7 +278,7 @@
 					</h4>
 				]]></viewer>
 			</field>
-			<field name="$invoiced" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" colSpan="3">
+			<field name="$invoiced" showTitle="false" readonly="true" showIf="id  &amp;&amp; stockMove.statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" colSpan="3">
 				<viewer depends="qtyInvoiced,realQty"><![CDATA[
                         <h4>
                             <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
