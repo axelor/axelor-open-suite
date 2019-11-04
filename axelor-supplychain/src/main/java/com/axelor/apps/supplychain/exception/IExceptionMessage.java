@@ -35,6 +35,8 @@ public interface IExceptionMessage {
   static final String SO_INVOICE_6 = /*$$(*/ "Please, select a currency for the order %s" /*)*/;
 
   static final String SO_INVOICE_NO_LINES_SELECTED = /*$$(*/ "There are no lines to invoice" /*)*/;
+  static final String SO_INVOICE_NO_TIMETABLES_SELECTED = /*$$(*/
+      "There are no selected timetables to invoice" /*)*/;
   static final String SO_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
   static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
@@ -149,8 +151,6 @@ public interface IExceptionMessage {
   static final String TIMETABLE_INVOICE_ALREADY_GENERATED = /*$$(*/
       "The invoice has already been generated." /*)*/;
 
-  static final String TIMETABLE_MISSING_PRODUCT_NAME = /*$$(*/
-      "Please fill the product name." /*)*/;
   static final String TIMETABLE_SALE_ORDER_NOT_CONFIRMED = /*$$(*/
       "Please confirm the sale order before invoicing." /*)*/;
 

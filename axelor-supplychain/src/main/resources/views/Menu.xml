@@ -132,6 +132,15 @@
 		<domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
 	
+	<menuitem name="sale-configuration-timetable-template" title="Timetable templates" 
+		parent="sc-root-sale-conf" action="sale.conf.timetable.template"/>
+	
+	<action-view name="sale.conf.timetable.template" title="Timetable templates" 
+		model="com.axelor.apps.supplychain.db.TimetableTemplate">
+		<view type="grid" name="timetable-template-grid"/>
+		<view type="form" name="timetable-template-form"/>
+	</action-view>
+	
 	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
 		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
 	

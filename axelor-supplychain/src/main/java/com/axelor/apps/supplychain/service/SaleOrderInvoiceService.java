@@ -95,7 +95,8 @@ public interface SaleOrderInvoiceService {
       int operationSelect,
       BigDecimal amount,
       boolean isPercent,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
       throws AxelorException;
 
   SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
@@ -209,6 +210,17 @@ public interface SaleOrderInvoiceService {
   List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<SaleOrderLine> saleOrderLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
+
+  /**
+   * Check if a sale order line is a pack line and add all its sublines to qtyToInvoiceMap with
+   * amount qtyToInvoiceItem.
+   *
+   * @param qtyToInvoiceMap
+   * @param qtyToInvoiceItem
+   * @param soLineId
+   */
+  public void addSubLineQty(
+      Map<Long, BigDecimal> qtyToInvoiceMap, BigDecimal qtyToInvoiceItem, Long soLineId);
 
   /**
    * Use the different parameters to have the price in % of the created invoice.

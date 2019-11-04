@@ -212,7 +212,8 @@
 - PROJECT : show sub-menu project list when projectTypeSelect value = null
 - TEAMTASK : add buttons in team-task-form and removed from toolbar
 - Financial Report : calculate Total costs (per line) in chart and totals
-- TeamTask : set status editable. 
+- TIMETABLE : Reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
+- TeamTask : set status editable.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
