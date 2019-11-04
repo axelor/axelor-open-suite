@@ -812,9 +812,9 @@ AccountingReport.global_by_date,
 PaymentMode.name as payment_mode, 
 Currency.code as currency,
 AccountingReport.type_select as report_type,
-AccountingReport.display_code_account_on_printing as display_code_account,
+AccountingReport.display_code_account_column_on_printing as display_code_account,
 AccountingReport.display_move_sequence_on_printing as display_move_sequence,
-AccountingReport.display_name_account_on_printing as display_name_account
+AccountingReport.display_name_account_column_on_printing as display_name_account
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)

@@ -2,6 +2,9 @@
 
 
 ## [Unreleased 5.1.11]
+## Features
+- ACCOUNTING REPORT : change name and titles of printing informations for general ledger.
+
 ## Improvements
 - PERIOD : Adding DEMO DATA
 - CONTACT: a new viewer appears if there is a duplicate in archive.
