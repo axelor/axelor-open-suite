@@ -179,7 +179,7 @@
                 </panel>
 
                 <panel name="subTypeSelectPanel">
-                	<field name="availableStatusSelect" colSpan="4" showTitle="false" readonly="true">
+                	<field name="availableStatusSelect" showIf="statusSelect == 2" colSpan="4" showTitle="false" readonly="true">
 						<viewer><![CDATA[
                             <h4 class="text-left">
                             	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
@@ -206,7 +206,7 @@
                             ]]>
                         </viewer>
                     </field>
-                    <field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
+                    <field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
                     	<viewer depends="$invoiceStatus">
 							<![CDATA[
 								<h4 class="text-left">
