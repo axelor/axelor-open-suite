@@ -414,6 +414,7 @@
 			<field name="fromDate" colSpan="6" />
 			<field name="toDate" colSpan="6" />
 			<field name="dueDate" showIf="isProject" colSpan="6" />
+            <field name="estimatedTimeDays" colSpan="6" />
 		</panel>
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4" />

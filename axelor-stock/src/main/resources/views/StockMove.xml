@@ -348,7 +348,12 @@
               <field name="modeOfTransport" />
             </panel>
             <panel name="notePanel" title="Note" colSpan="12">
-        		<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
+                <panel name="stockMoveCommentsPanel" title="Description to display on stock move" colSpan="12">
+                  <field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
+	            </panel>
+        		<panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+                  <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+	            </panel>
             </panel>
             <panel name="linksPanel" title="Links" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" showIf="id">
                 <panel name="OriginPanel" itemSpan="3" colSpan="12">
@@ -450,7 +455,7 @@
   <action-view name="action-stock-move-view-back-order" title="Backorder Stock Move" model="com.axelor.apps.stock.db.StockMove">
     <view type="form" name="stock-move-form"/>
     <view-param name="popup" value="reload"/>
-    <view-param name="forceEdit" value="false"/>
+    <view-param name="forceEdit" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false" />
     <view-param name="popup-save" value="true"/>
@@ -501,7 +506,7 @@
     </action-attrs> -->
     
     <action-attrs name="action-stock-move-attrs-filter-on-available-products">
-    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1 || fromStockLocation.typeSelect == 3"/>
+    	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1 || (fromStockLocation != null &amp;&amp; fromStockLocation.typeSelect == 3)"/>
     </action-attrs>
     
     <action-group name="action-group-stock-stockmove-onnew">
@@ -685,6 +690,7 @@
 	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
     	<field name="shipmentMode" expr="eval: partner?.shipmentMode"/>	
     	<field name="freightCarrierMode" expr="eval: partner?.freightCarrierMode"/>
+    	<field name="note" expr="eval: partner?.description"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-is-conformity-certif-signed-onchange" model="com.axelor.apps.stock.db.StockMove">

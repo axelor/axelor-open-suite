@@ -131,6 +131,8 @@
 - EMPLOYEE : Files management added domains and demo data
 - Inventory : Added calendar-view
 - change term "Description" to "Comment" in english and "Commentaire" in french
+- Project Folder : Add a two Birt reports to display all project elements linked to the folder.
+- WEEKLY PLANNING: Days can be reordered and create an util method to get first day of week.
 - PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
 
 ## Improvements
@@ -207,6 +209,10 @@
 - ACCOUNT CONFIG : update demo data for account config and 'is print invoices in company language' boolean is now at true by default.
 - Contract : change filter on project field
 - TEAMTASKS : Creation from Same Order
+- PROJECT : show sub-menu project list when projectTypeSelect value = null
+- TEAMTASK : add buttons in team-task-form and removed from toolbar
+- Financial Report : calculate Total costs (per line) in chart and totals
+- TeamTask : set status editable. 
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -274,5 +280,9 @@
 - QualityControl : status selection order and other translation changes
 - Frequency: Error on clear of Frequency type fix
 - RH : NPE on ventilation of expense fixed
+- TEAMTASKS : paid field appears in all related teamTasks if project.invoicingSequenceSelect is "Invoice pre task"
+- SALEORDERLINE : Issue when Production module isn't installed
+- Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect"
+- SALE ORDER : fix error generating project without salemanUser
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

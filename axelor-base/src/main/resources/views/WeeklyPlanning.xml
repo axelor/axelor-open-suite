@@ -18,7 +18,7 @@
 	    <panel-related name="weekDaysPanel" field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
 	</form>
 	
-	<grid name="day-planning-grid" title="Day" model="com.axelor.apps.base.db.DayPlanning" editable="true" orderBy="id">
+	<grid name="day-planning-grid" title="Day" model="com.axelor.apps.base.db.DayPlanning" editable="true" canMove="true" orderBy="sequence">
 		<field name="name" readonly="true"/>
 		<field name="morningFrom"/>
 		<field name="morningTo"/>

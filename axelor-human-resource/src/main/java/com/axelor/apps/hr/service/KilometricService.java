@@ -200,7 +200,7 @@ public class KilometricService {
       }
     }
 
-    return price.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return price.setScale(2, RoundingMode.HALF_UP);
   }
 
   @Transactional(rollbackOn = {Exception.class})

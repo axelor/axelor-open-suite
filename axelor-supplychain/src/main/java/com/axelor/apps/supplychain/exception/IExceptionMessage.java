@@ -186,6 +186,9 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
 
+  static final String SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE = /*$$(*/
+      "You cannot request reservation with a negative quantity." /*)*/;
+
   static final String SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE = /*$$(*/
       "Please do not enter negative quantity for reservation." /*)*/;
 
@@ -238,6 +241,10 @@ public interface IExceptionMessage {
 
   static final String STOCK_MOVE_INVOICE_ERROR = /*$$(*/
       "No stockMoveLine remains to invoice" /*)*/;
+
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
+
+  static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
+      "There is at least one draft or planned stock move for this sale order." /*)*/;
 }

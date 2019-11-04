@@ -30,7 +30,7 @@
 			</panel>
 		</panel>
 		<panel name="detailPanel">
-			<field name="employee" required="true" canEdit="false" canNew="false"/>
+			<field name="employee" required="true" canView="false" onChange="action-appraisal-record-set-company-employee-onchange"/>
 			<field name="company" canEdit="false" canNew="false"/>
 			<field name="appraisalType" canEdit="false" canNew="false"/>
 			<field name="toDate" />
@@ -107,6 +107,11 @@
 	<action-record name="action-appraisal-template-defaults" model="com.axelor.apps.talent.db.Appraisal">
 		<field name="isTemplate" expr="eval:true"/>
 	</action-record>
+	
+	<action-record name="action-appraisal-record-set-company-employee-onchange" model="com.axelor.apps.talent.db.Appraisal">
+		<field name="company" expr="eval:employee?.mainEmploymentContract?.payCompany"/>
+	</action-record>
+	
 
 	<search-filters name="appraisal-fitlers" model="com.axelor.apps.talent.db.Appraisal" title="Appraisal filters">
 		<filter title="New appraisal">

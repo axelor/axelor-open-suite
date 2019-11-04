@@ -91,7 +91,9 @@ public interface MoveService {
 
   MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
-  Map<String, Object> computeTotals(Move move);
+  public Map<String, Object> computeTotals(Move move);
+
+  public String filterPartner(Move move);
 
   Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException;
 }

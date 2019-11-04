@@ -129,7 +129,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Optional<StockMove> stockMove =
           createStockMove(saleOrder, estimatedDeliveryDate, saleOrderLineList);
-
+      
       stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
     Optional<List<SaleOrderLine>> saleOrderLineList =
@@ -200,11 +200,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     stockMoveService.plan(stockMove);
-
+    
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
       setParentStockMoveLine(stockMove);
     }
-
+    
     return Optional.of(stockMove);
   }
 
@@ -307,7 +307,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
     setReservationDateTime(stockMove, saleOrder);
     stockMove.setNote(saleOrder.getDeliveryComments());
-
+    stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }

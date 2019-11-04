@@ -47,3 +47,6 @@
 "axelor-core";"MetaJsonField";"json-field-form-base";"hideIf";"Pour référencer un objet de base déjà existant, utiliser "$record." devant le nom du champ."
 "axelor-core";"MetaJsonField";"json-field-form-base";"requiredIf";"Pour référencer un objet de base déjà existant, utiliser "$record." devant le nom du champ."
 "axelor-core";"MetaJsonField";"json-field-form-base";"readonlyIf";"Pour référencer un objet de base déjà existant, utiliser "$record." devant le nom du champ."
+"axelor-base";"Product";"product-form";"shippingCoef";"Les frais d'approche correspondent aux coûts finaux de réception d'un article en stock."
+"axelor-base";"Partner";"partner-form";"user";"Vous pouvez renseigner ici le commercial responsable de ce client. Le champ "commercial" se complétera automatiquement avec cette valeur indiquée si la configuration "Mode de remplissage du commercial sur devis/commandes" a comme valeur "Utilisateur assigné sur le client" dans les configurations de l'app Ventes."
+"axelor-base";"Partner";"partner-form";"payerQuality";"Ce champs est calculé à partir de la table des poids de la qualité payeur renseignée dans l'app comptabilité."
