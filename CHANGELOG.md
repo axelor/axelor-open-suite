@@ -4,6 +4,7 @@
 ## [Unreleased 5.1.11]
 ## Features
 - ACCOUNTING REPORT : change name and titles of printing informations for general ledger.
+- PRODUCT : Add dashlet to display stockRules.
 
 ## Improvements
 - PERIOD : Adding DEMO DATA

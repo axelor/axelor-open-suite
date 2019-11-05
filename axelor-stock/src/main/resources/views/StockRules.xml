@@ -18,7 +18,17 @@
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
     </grid>
-    
+
+    <grid name="stock-rule-product-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,useCaseSelect">
+    	<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="minQty" aggregate="min"/>
+        <field name="idealQty" aggregate="min"/>
+        <field name="useMaxQty"/>
+        <field name="reOrderQty" aggregate="sum"/>
+		<field name="useCaseSelect"/>
+        <field name="orderAlertSelect"/>
+    </grid>
+
     <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     	onNew="action-stock-rules-record-new" width="large">
     	<panel name="mainPanel" >
