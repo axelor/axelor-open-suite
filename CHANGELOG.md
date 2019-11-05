@@ -34,6 +34,7 @@
 - BANK STATEMENT : corrected missing hilite in bank statement line grid for 120 file format.
 - Fix NPE caused by wap computation on stock move realization.
 - Message: retry finding message in sending thread until success or timeout.
+- ACCOUNTING REPORT : change display move sequence on printing boolean
 
 ## [5.1.10] - 2019-10-23
 ## Features
