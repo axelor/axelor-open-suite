@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.1]
 ## Features
 - Stock Move: stock reservation management without sale order.
+- Manuf Order: manage stock reservation from stock move.
 
 ## Improvements
 - AdvancedExportLine : Add translation for field orderByType.
