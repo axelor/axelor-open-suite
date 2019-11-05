@@ -43,7 +43,7 @@
 	<!--Report 1 : general ledger  --> 
     <boolean name="displayCodeAccountColumnOnPrinting" title="Display column with accounting number"/>
     <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
-    <boolean name="displayMoveSequenceOnPrinting" title="Display move sequence on printing"/>
+    <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
 
 	<unique-constraint columns="ref,company"/>
     
