@@ -285,6 +285,7 @@
 - SALEORDERLINE : Issue when Production module isn't installed
 - Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect"
 - SALE ORDER : fix error generating project without salemanUser
+- ACCOUNTING MOVE : fix NPE when reverse the move
 - INVOICE : fix for NPE when printing from grid view
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
