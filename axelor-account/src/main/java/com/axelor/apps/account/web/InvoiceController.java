@@ -324,7 +324,7 @@ public class InvoiceController {
                 : null;
 
         Map languageMap =
-            (reportType == 1 || reportType == 3) && context.get("language") != null
+        		reportType != null && (reportType == 1 || reportType == 3) && context.get("language") != null
                 ? (Map<String, Object>) request.getContext().get("language")
                 : null;
         String locale =
