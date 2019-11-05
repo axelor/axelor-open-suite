@@ -30,14 +30,14 @@
             readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
         <field name="requestedReservedQty" if-module="axelor-supplychain"
 			readonly="true"
-            onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty"
             if="__config__.app.getApp('supplychain').getManageStockReservation()"
             aggregate="sum"/>
 		<field name="reservedQty" if-module="axelor-supplychain"
-			onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty"
 			if="__config__.app.getApp('supplychain').getManageStockReservation()"
 			aggregate="sum" readonly="true"/>
-        <field name="qtyInvoiced" readonly="true"/>
+		<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Allocate" icon="fa-plus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-stock-move-line-allocate-all"/>
+		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0" onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
+		<field name="qtyInvoiced" readonly="true"/>
         <field name="unitPriceUntaxed" x-scale="2" width="120px"
             readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
@@ -78,8 +78,8 @@
     	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-onload" width="large"
     	canNew="false" canDelete="false">
         <panel name="mainPanel" >
-        	<field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="4"/>
-		     <field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="4"/>
+        	<field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="2"/>
+		     <field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="2"/>
         	<field name="packPriceSelect" showIf="lineTypeSelect == 2" onChange="action-record-stock-move-line-reset-price-on-select-sub-line, action-stock-move-line-price-attrs-readonly, action-stock-move-subline-method-reset-data-on-select-pack-line" colSpan="4"/>
         	<field name="availableStatus" readonly="true" hidden="true" colSpan="2">
 				<viewer><![CDATA[
@@ -102,7 +102,14 @@
                 ]]>
 				</viewer>
 			</field>
-          	<field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
+			<field name="isQtyRequested" showTitle="false" colSpan="2" readonly="true" showIf="isQtyRequested" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+				<viewer><![CDATA[
+						<h4>
+							<span class="label label-success" ng-show="record.isQtyRequested" x-translate>Reservation requested</span>
+						</h4>
+					]]></viewer>
+			</field>
+			<field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
 	        <field name="filterOnAvailableProducts" widget="boolean-switch" hidden="true"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
             <field name="productName"/>
@@ -113,10 +120,19 @@
 			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" />
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-			    <field name="requestedReservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
-					<field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
-	        <field name="unitPriceUntaxed"/>
-        	<field name="unitPriceTaxed" hidden="true"/>
+			<field name="reservedQty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+			<field name="requestedReservedQty" hidden="true" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+			<panel name="reservedQtyBtnsPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
+				<button name="updateAllocatedQtyBtn" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-stock-move-line-allocated-qty-wizard"/>
+			</panel>
+			<panel name="requestedReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
+				<button name="requestQty" title="Request reservation" hidden="true" onClick="save,action-method-stock-move-line-request-qty"/>
+			</panel>
+			<panel name="cancelReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
+				<button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested" onClick="save,action-method-stock-move-line-cancel-reservation"/>
+			</panel>
+			<field name="unitPriceUntaxed"/>
+			<field name="unitPriceTaxed" hidden="true"/>
 			<field name="wapPrice" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
@@ -193,7 +209,7 @@
     	<field name="name" width="120"/>
     	<field name="stockMove.realDate"/>
     	<field name="stockMove.estimatedDate"/>
-    	<field name="stockMove.reservationDateTime" if-module="axelor-supplychain"  if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+    	<field name="reservationDateTime" if-module="axelor-supplychain"  if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
 		<field name="stockMove.typeSelect"/>
         <field name="stockMove.fromStockLocation"/>
         <field name="stockMove.toStockLocation"/>
@@ -255,8 +271,8 @@
    	 		<panel colSpan="12">
     			<field name="stockMove.estimatedDate" colSpan="4"/>
     			<field name="stockMove.realDate" colSpan="4"/>
-    			<field name="stockMove.reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())" />
-    		</panel>
+    			<field name="reservationDateTime" colSpan="4"if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+			</panel>
     		<panel colSpan="12">
 				<field name="stockMove.typeSelect" colSpan="4"/>
     			<field name="stockMove.fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4"/>
@@ -393,6 +409,7 @@
       <action name="action-stock-move-line-attrs"/>
       <action name="action-stock-move-line-record-new"/>
       <action name="action-stock-move-line-record-filter-on-available-products"/>
+      <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
     </action-group>
 
     <action-group name="action-stock-move-line-group-onload">
@@ -406,6 +423,7 @@
 		<action name="action-stock-move-subline-price-attrs-readonly" if="isSubLine &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
         <action name="action-stock-move-picking-is-edit-attrs"/>
+        <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
 	</action-group>
 	
 	<action-group name="action-stock-move-line-group-all-onload">

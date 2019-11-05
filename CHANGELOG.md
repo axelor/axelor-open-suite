@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.2.1]
+## Features
+- Stock Move: stock reservation management without sale order.
+
 ## Improvements
 - AdvancedExportLine : Add translation for field orderByType.
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'

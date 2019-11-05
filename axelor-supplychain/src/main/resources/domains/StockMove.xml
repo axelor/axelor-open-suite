@@ -11,8 +11,6 @@
     <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoice"  mappedBy="stockMoveSet"/>
     <string name="specificPackage" large="true"/>
 
-    <datetime name="reservationDateTime" readonly="true"/>
-    
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
    	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
    	

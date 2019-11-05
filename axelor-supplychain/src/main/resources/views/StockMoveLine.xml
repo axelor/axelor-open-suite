@@ -60,6 +60,16 @@
         </field>
     </grid>
 
+    <form name="allocated-qty-stock-move-line-form" title="Change allocated qty"
+          model="com.axelor.apps.stock.db.StockMoveLine">
+        <panel name="mainPanel">
+            <field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"/>
+            <button name="confirmNewReservationBtn" title="OK"
+                    onClick="action-method-stock-move-line-change-reserved-qty,close"/>
+            <field name="qty" hidden="true"/>
+        </panel>
+    </form>
+
     <action-view name="action-stock-move-line-product-reserved-planned" title="${fullName} plan. st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine">
 		<view type="grid" name="stock-move-line-all-grid-planned"/>
@@ -75,8 +85,43 @@
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
 
-  <action-attrs name="action-supplychain-attrs-stock-order-line-max-reserved-qty">
-    <attribute name="value" for="reservedQty" expr="eval: realQty" if="reservedQty > realQty"/>
-  </action-attrs>
-  
-</object-views>	
+    <action-view name="action-view-stock-move-line-allocated-qty-wizard" title="Change allocated qty"
+                 model="com.axelor.apps.stock.db.StockMoveLine">
+        <view type="form" name="allocated-qty-stock-move-line-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+        <view-param name="show-confirm" value="false" />
+        <view-param name="popup-save" value="false"/>
+        <view-param name="forceEdit" value="true"/>
+        <context name="_showRecord" expr="eval: id"/>
+    </action-view>
+
+    <action-method name="action-supplychain-stock-move-line-allocate-all">
+    <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-supplychain-stock-move-line-deallocate-all">
+    <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="deallocateAll"/>
+  </action-method>
+
+    <action-method name="action-method-stock-move-line-change-reserved-qty">
+        <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="changeReservedQty"/>
+    </action-method>
+
+    <action-method name="action-method-stock-move-line-request-qty">
+        <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="requestQty"/>
+    </action-method>
+
+    <action-method name="action-method-stock-move-line-cancel-reservation">
+        <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="cancelReservation"/>
+    </action-method>
+
+    <action-attrs name="action-supplychain-stock-move-line-attrs-hide-button">
+        <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 2" if="__parent__"/>
+        <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || stockMove.statusSelect != 2" if="stockMove"/>
+        <attribute for="requestQty" name="hidden" expr="eval: isQtyRequested || __parent__.statusSelect != 2" if="__parent__"/>
+        <attribute for="requestQty" name="hidden" expr="eval: isQtyRequested || stockMove.statusSelect != 2" if="stockMove"/>
+        <attribute for="cancelReservation" name="hidden" expr="eval: !isQtyRequested || __parent__.statusSelect != 2" if="__parent__"/>
+        <attribute for="cancelReservation" name="hidden" expr="eval: !isQtyRequested || stockMove.statusSelect != 2" if="stockMove"/>
+    </action-attrs>
+</object-views>
