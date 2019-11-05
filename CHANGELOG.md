@@ -37,6 +37,7 @@
 - Fix NPE caused by wap computation on stock move realization.
 - Message: retry finding message in sending thread until success or timeout.
 - ACCOUNTING REPORT : change display move sequence on printing boolean
+- PayrollPreparation : leave request bug fix
 
 ## [5.1.10] - 2019-10-23
 ## Features
