@@ -4,6 +4,7 @@
 ## [Unreleased 5.1.11]
 ## Features
 - ACCOUNTING REPORT : change name and titles of printing informations for general ledger.
+- STOCK RULES VIEW : new design
 
 ## Improvements
 - PERIOD : Adding DEMO DATA

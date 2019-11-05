@@ -21,32 +21,24 @@
     
     <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     	onNew="action-stock-rules-record-new" width="large">
-    	<panel name="mainPanel" >
-	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false"/>
-			<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
-			<field name="typeSelect" colSpan="3" showIf="useCaseSelect == 2" requiredIf="useCaseSelect == 2"/>
-	        <field name="product" canEdit="false" domain="self.productTypeSelect = 'storable' and self.stockManaged = true " onChange="action-stock-rules-record-product-change" form-view="product-form" grid-view="product-grid"/>
-			<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]"/>
+		<panel name="mainPanel" >
+        	<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false" colSpan="3"/>
+	    	<field name="product" canEdit="false" onChange="action-stock-rules-record-product-change" domain="self.productTypeSelect = 'storable' and self.stockManaged = true " form-view="product-form" grid-view="product-grid" colSpan="3"/>
+        	<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
+        	<field name="typeSelect" showIf="useCaseSelect == 2" colSpan="3" requiredIf="useCaseSelect == 2"/>   
+	    	<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]" colSpan="3"/>
+	    	<field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="orderAlertSelect == 1" colSpan="3"/>
+	    	<field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" showIf="orderAlertSelect == 1" colSpan="3"/>             
+        	<panel name="quantitiesPanel" title="Quantities" colSpan="6">
+	        	<field name="minQty" colSpan="6" onChange="action-stock-rules-minqty-change" validIf="$number(minQty) >= 0"/>
+	        	<field name="reOrderQty" colSpan="6" validIf="$number(reOrderQty) >= 0"/>
+	        	<field name="useIdealQty" colSpan="6"/>
+				<field name="idealQty" showIf="useIdealQty" colSpan="6" onChange="action-stock-rules-idealqty-change" validIf="!useIdealQty &amp;&amp; $number(idealQty) == 0 || $number(idealQty) >= $number(minQty) &amp;&amp; (!useMaxQty || $number(idealQty) &lt;= $number(maxQty))"/>
+		    	<field name="useMaxQty" colSpan="6"/>
+				<field name="maxQty" showIf="useMaxQty" colSpan="6" onChange="action-stock-rules-maxqty-change" validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)"/>
+			</panel>
 			<field name="product.procurementMethodSelect" hidden="true"/>
-	        <field name="minQty" onChange="action-stock-rules-minqty-change"
-	        	validIf="$number(minQty) >= 0" colSpan="2"/>
-	        <panel colSpan="4" name="idealQtyPanel">
-	        	<field name="useIdealQty" />
-				<field name="idealQty" showIf="useIdealQty" onChange="action-stock-rules-idealqty-change"
-					validIf="!useIdealQty &amp;&amp; $number(idealQty) == 0 || $number(idealQty) >= $number(minQty) &amp;&amp; (!useMaxQty || $number(idealQty) &lt;= $number(maxQty))" />
-			</panel>
-			<panel colSpan="6" name="maxQtyPanel">
-				<field name="useMaxQty" />
-				<field name="maxQty" showIf="useMaxQty" onChange="action-stock-rules-maxqty-change"
-					validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)" />
-			</panel>
-			<field name="reOrderQty" colSpan="2" validIf="$number(reOrderQty) >= 0" />
-        </panel>
-		<panel name="reorderingManagedByPanel" title="Reordering managed by"  showIf="orderAlertSelect == 1">
-			<field name="user" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
-	        <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
-		</panel>
-		
+		</panel>		
 		<panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
 	    	<mail-followers/>
