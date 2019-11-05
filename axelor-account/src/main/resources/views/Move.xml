@@ -167,7 +167,7 @@
     <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onLoad="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.account.db.Move">
     	<panel name="mainPanel">
     		<field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
-    		<field name="dateOfReversionSelect" title="Date of reversion" type="integer" selection="account.move.date.of.reversion.type.select"/>
+    		<field name="dateOfReversionSelect" title="Date of reversion" type="integer" selection="account.move.date.of.reversion.type.select" onChange="action-move-record-set-date-of-revision"/>
     		<field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
     		<field name="dateOfReversion" type="date" showTitle="false" requiredIf="dateOfReversionSelect == 3" showIf="dateOfReversionSelect == 3"
     			onChange="action-move-validate-check-date-of-reversion"/>
@@ -178,6 +178,11 @@
     	</panel>
     </form>
 
+    <action-record name="action-move-record-set-date-of-revision" model="com.axelor.apps.account.db.Move">
+        <field name="dateOfReversion" expr="eval: __date__" if="dateOfReversionSelect == 1"/>
+        <field name="dateOfReversion" expr="eval: _moveDate" if="dateOfReversionSelect == 2"/>
+    </action-record>
+    
 	<!-- ACTION GROUPs -->
 	<action-group name="action-account-move-onnew-group">
 		<action name="default-move-record"/>
@@ -261,6 +266,7 @@
 		<attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
 		<attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
 		<attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
+		<attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
 	</action-attrs>
 
 	<!-- ACTION METHOD -->
