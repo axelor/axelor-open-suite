@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased 5.1.12]
+## Improvements
+## Bug Fixes
+
 ## [5.1.11] - 2019-11-05
 ## Improvements
 - ACCOUNTING REPORT: change name and titles of printing information for general ledger.
@@ -1429,6 +1433,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
+[Unreleased 5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...dev
 [5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
 [5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
 [5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9
