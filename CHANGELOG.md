@@ -20,6 +20,7 @@
 - META-MODEL-FORM : add tracking on json fields
 - Studio : Added validIf property for custom field.
 - Invoice and SaleOrder : Invoice and SaleOrder report updated based on ticket #20927
+- CITY : Import automatically from Geonames files
 
 ## Improvements
 - Remove Pack Feature from Product.

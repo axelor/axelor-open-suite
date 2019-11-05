@@ -7,10 +7,11 @@
 
   <entity name="Region" lang="java" cacheable="true">
 
-    <string name="name" title="Region name" required="true" unique="true"/>
-    <string name="code" title="Region code" required="true" unique="true" />
+    <string name="name" title="Region name" required="true"/>
+    <string name="code" title="Region code" required="true"/>
     <many-to-one name="country" ref="Country" title="Country"/>
   
+    <unique-constraint columns="code,country"/>
   </entity>
 
   <!--

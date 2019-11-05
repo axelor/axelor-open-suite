@@ -22,6 +22,11 @@
 	<selection name="iterritory.city.type.select">
 		<option value="geonames">Geonames</option>
 	</selection>
+	
+	<selection name="base.city.auto.import.type.select">
+		<option value="FR.zip">France</option>
+		<option value="allCountries.zip">All Countries</option>
+	</selection>
 
 	<selection name="partner.title.type.select">
 		<option value="1">M.</option>
