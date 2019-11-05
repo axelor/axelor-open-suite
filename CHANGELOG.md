@@ -5,6 +5,7 @@
 ## Features
 - ACCOUNTING REPORT : change name and titles of printing informations for general ledger.
 - Expense : update Expense.moveDate with the most recent date (ExpenseLine.expenseDate) in generalExpenseLineList
+- PRODUCT : Add dashlet to display stockRules
 
 ## Improvements
 - PERIOD : Adding DEMO DATA
