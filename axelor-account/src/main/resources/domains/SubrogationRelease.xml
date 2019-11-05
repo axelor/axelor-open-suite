@@ -24,6 +24,8 @@
 		<string name="comments" title="Comments" large="true"/>
 		<string name="cancelReason" title="Reasons of cancelation" large="true"/>
 
+		<one-to-many name="moveList" ref="com.axelor.apps.account.db.Move" readonly="true" hidden="true"/>
+		
 		<extra-code><![CDATA[
 			// STATUS SELECT
 			public static final int STATUS_NEW = 1;
