@@ -39,6 +39,7 @@
 - Message: retry finding message in sending thread until success or timeout.
 - ACCOUNTING REPORT: change display move sequence on printing boolean.
 - PayrollPreparation: take into account leave requests that begin before and end after the selected period.
+- Studio : removed includeInCost field from json field form view
 
 ## [5.1.10] - 2019-10-23
 ## Features
