@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.12]
 ## Improvements
 ## Bug Fixes
+- MOVE LINE : fix error in amount of reverse move line.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
