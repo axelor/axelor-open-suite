@@ -288,6 +288,5 @@
 - ACCOUNTING MOVE : fix NPE when reverse the move
 - INVOICE : fix for NPE when printing from grid view
 - Advance Import : Resolve ArrayIndexOurOfBound exception.
-- MOVE LINE : fix error in amount of reverse move line.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
