@@ -42,6 +42,7 @@
 - ACCOUNTING REPORT: change display move sequence on printing boolean.
 - PayrollPreparation: take into account leave requests that begin before and end after the selected period.
 - Studio : removed includeInCost field from json field form view
+- STOCK : status and state
 
 ## [5.1.10] - 2019-10-23
 ## Features
