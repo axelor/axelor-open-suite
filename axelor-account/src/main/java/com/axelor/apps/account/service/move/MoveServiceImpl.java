@@ -19,11 +19,13 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -62,6 +64,7 @@ public class MoveServiceImpl implements MoveService {
   protected MoveExcessPaymentService moveExcessPaymentService;
   protected AccountConfigService accountConfigService;
   protected MoveRepository moveRepository;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   protected AppAccountService appAccountService;
 
@@ -78,7 +81,8 @@ public class MoveServiceImpl implements MoveService {
       PaymentService paymentService,
       MoveExcessPaymentService moveExcessPaymentService,
       MoveRepository moveRepository,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
 
     this.moveLineService = moveLineService;
     this.moveCreateService = moveCreateService;
@@ -91,6 +95,7 @@ public class MoveServiceImpl implements MoveService {
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
 
     this.appAccountService = appAccountService;
   }
@@ -527,6 +532,19 @@ public class MoveServiceImpl implements MoveService {
             orgineMoveLine.getCounter(),
             orgineMoveLine.getName(),
             null);
+    reverseMoveLine = this.copyAnalytic(orgineMoveLine, reverseMoveLine);
+    return reverseMoveLine;
+  }
+
+  protected MoveLine copyAnalytic(MoveLine origineMoveLine, MoveLine reverseMoveLine) {
+    reverseMoveLine.setAnalyticDistributionTemplate(
+        origineMoveLine.getAnalyticDistributionTemplate());
+    for (AnalyticMoveLine origineAnalyticMoveLine : origineMoveLine.getAnalyticMoveLineList()) {
+      AnalyticMoveLine copyAnalyticMoveLine =
+          analyticMoveLineRepository.copy(origineAnalyticMoveLine, true);
+      copyAnalyticMoveLine.setMoveLine(reverseMoveLine);
+      reverseMoveLine.addAnalyticMoveLineListItem(copyAnalyticMoveLine);
+    }
     return reverseMoveLine;
   }
 
