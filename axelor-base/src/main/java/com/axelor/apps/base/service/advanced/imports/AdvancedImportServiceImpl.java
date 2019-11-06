@@ -215,7 +215,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
           fileTab.getName());
     }
 
-    if ((StringUtils.isBlank(row[0]) && (row.length > 1 && StringUtils.isBlank(row[1])) && linesToIgnore == 0)) {
+    if ((StringUtils.isBlank(row[0])
+        && (row.length > 1 && StringUtils.isBlank(row[1]))
+        && linesToIgnore == 0)) {
       return false;
     }
 
@@ -646,7 +648,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       String sheet, DataReaderService reader, int totalLines, String[] objectRow) {
 
     int tabConfigRowCount = 0;
-    if (objectRow[0] == null && (objectRow.length > 1 && StringUtils.containsIgnoreCase(objectRow[1], "Object"))) {
+    if (objectRow[0] == null
+        && (objectRow.length > 1 && StringUtils.containsIgnoreCase(objectRow[1], "Object"))) {
       int linesForTab;
       for (linesForTab = 3; linesForTab < totalLines; linesForTab++) {
         if (reader.read(sheet, linesForTab, 0)[0] != null) {

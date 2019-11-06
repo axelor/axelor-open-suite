@@ -31,7 +31,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

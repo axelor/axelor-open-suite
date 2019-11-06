@@ -57,7 +57,7 @@ public class TimetableServiceImpl implements TimetableService {
   public Invoice createInvoice(Timetable timetable) throws AxelorException {
     SaleOrder saleOrder = timetable.getSaleOrder();
     // PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
-    
+
     if (saleOrder != null) {
       if (saleOrder.getCurrency() == null) {
         throw new AxelorException(
@@ -82,7 +82,7 @@ public class TimetableServiceImpl implements TimetableService {
 
     /*
     if (purchaseOrder != null) {
-      TODO handle purchaseOrders the same way we handle saleOrders. 
+      TODO handle purchaseOrders the same way we handle saleOrders.
       Requires adding partial invoicing for purchaseOrders.
     }
     */
