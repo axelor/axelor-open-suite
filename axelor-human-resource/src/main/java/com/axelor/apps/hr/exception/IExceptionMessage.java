@@ -187,6 +187,8 @@ public interface IExceptionMessage {
   /** Kilometric allowance */
   String KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR = /*$$(*/ "Google Maps error: %s" /*)*/;
 
+  String KILOMETRIC_ALLOWANCE_OSM_ERROR = /*$$(*/ "Open Street Maps error: %s" /*)*/;
+
   static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/
       "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
 
