@@ -639,6 +639,7 @@ public class ExpenseController {
       throws AxelorException {
 
     // Compute distance.
+    try {
 
     if (!Beans.get(AppHumanResourceService.class)
         .getAppExpense()
@@ -685,5 +686,9 @@ public class ExpenseController {
     BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
     response.setValue("totalAmount", amount);
     response.setValue("untaxedAmount", amount);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

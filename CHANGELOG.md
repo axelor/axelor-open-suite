@@ -134,6 +134,7 @@
 - Project Folder : Add a two Birt reports to display all project elements linked to the folder.
 - WEEKLY PLANNING: Days can be reordered and create an util method to get first day of week.
 - PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
+- Distance travelled calculation of kilometricExpenseLine with Open street map
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
