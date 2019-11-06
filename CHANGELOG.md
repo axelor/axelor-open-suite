@@ -22,6 +22,7 @@
 - Expense: Move date field in expense is now set to the most recent date in general expense line list.
 - PRODUCT: Add dashlet to display stock rules.
 - STOCK : Changed type select french translation
+- Expense : Modify report content.
 
 ## Bug Fixes
 - Reconcile: canceled status is now a final state meaning that it's not possible to reconcile again a canceled one.
