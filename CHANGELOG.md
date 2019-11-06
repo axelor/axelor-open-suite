@@ -14,6 +14,7 @@
 - DataImportServiceImpl : Use of try-with-resources for "ZipInputStream" and "FileOutputStream".
 - Importer : Use of try-with-resources for "FileOutputStream".
 - Advanced Import : Fix config line import
+- MOVE LINE : in reverse process, analytic is now copy from origin move line to reverse move line.
 
 ## [5.2.2] - 2020-01-09
 ## Features
