@@ -23,4 +23,6 @@ import java.util.Map;
 public interface ArchivingToolService {
 
   public Map<String, String> getObjectLinkTo(Object object, Long id) throws AxelorException;
+
+  public String getModelTitle(String modelName) throws AxelorException;
 }

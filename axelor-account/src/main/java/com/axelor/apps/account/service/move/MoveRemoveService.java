@@ -112,28 +112,45 @@ public class MoveRemoveService {
     String errorMessage = "";
     Map<String, String> objectsLinkToMoveMap =
         archivingToolService.getObjectLinkTo(move, move.getId());
+    String moveModelError = null;
     for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
-      String modelName = entry.getKey();
-      if (!modelName.equals("MoveLine")) {
-        errorMessage +=
-            String.format(
-                I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                move.getReference(),
-                modelName);
+      String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
+      if (!entry.getKey().equals("MoveLine")) {
+        if (moveModelError == null) {
+          moveModelError = modelName;
+        } else {
+          moveModelError += ", " + modelName;
+        }
       }
     }
+    if (moveModelError != null) {
+      errorMessage +=
+          String.format(
+              I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              move.getReference(),
+              moveModelError);
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
       Map<String, String> objectsLinkToMoveLineMap =
           archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
+      String moveLineModelError = null;
       for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
-        String modelName = entry.getKey();
-        if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
-          errorMessage +=
-              String.format(
-                  I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                  moveLine.getName(),
-                  modelName);
+        String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
+        if (!entry.getKey().equals("Move") && !entry.getKey().equals("Reconcile")) {
+          if (moveLineModelError == null) {
+            moveLineModelError = modelName;
+          } else {
+            moveLineModelError += ", " + modelName;
+          }
         }
+      }
+      if (moveLineModelError != null) {
+        errorMessage +=
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                moveLine.getName(),
+                moveLineModelError);
       }
     }
     if (errorMessage != null && !errorMessage.isEmpty()) {
