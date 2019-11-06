@@ -25,6 +25,8 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectCategory;
@@ -35,6 +37,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
@@ -304,12 +307,41 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       }
     }
     teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
-    teamTask.setUnitPrice(product.getSalePrice());
+    teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
     teamTask.setCurrency(product.getSaleCurrency());
     teamTask.setQuantity(teamTask.getBudgetedTime());
 
     teamTask = this.updateDiscount(teamTask);
     teamTask = this.compute(teamTask);
     return teamTask;
+  }
+
+  private BigDecimal computeUnitPrice(TeamTask teamTask) {
+    Product product = teamTask.getProduct();
+    BigDecimal unitPrice = product.getSalePrice();
+
+    PriceList priceList =
+        Beans.get(PartnerPriceListService.class)
+            .getDefaultPriceList(
+                teamTask.getProject().getClientPartner(), PriceListRepository.TYPE_SALE);
+    if (priceList == null) {
+      return unitPrice;
+    }
+
+    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList);
+    Map<String, Object> discounts =
+        priceListService.getReplacedPriceAndDiscounts(
+            priceList, priceListLine, teamTask.getProduct().getSalePrice());
+
+    if (discounts == null) {
+      return unitPrice;
+    } else {
+      unitPrice =
+          priceListService.computeDiscount(
+              product.getSalePrice(),
+              (Integer) discounts.get("discountTypeSelect"),
+              (BigDecimal) discounts.get("discountAmount"));
+    }
+    return unitPrice;
   }
 }
