@@ -21,6 +21,7 @@
 - STOCK RULES VIEW: new design.
 - Expense: Move date field in expense is now set to the most recent date in general expense line list.
 - PRODUCT: Add dashlet to display stock rules.
+- STOCK : Changed type select french translation
 - Expense : Modify report content.
 
 ## Bug Fixes
