@@ -2,7 +2,12 @@
 
 ## [Unreleased 5.1.12]
 ## Improvements
+- STOCK : Changed type select french translation
+- Expense : Modify report content.
+
 ## Bug Fixes
+- Studio : removed includeInCost field from json field form view
+- STOCK : status and state
 - MOVE LINE : fix error in amount of reverse move line.
 
 ## [5.1.11] - 2019-11-05
@@ -22,8 +27,6 @@
 - STOCK RULES VIEW: new design.
 - Expense: Move date field in expense is now set to the most recent date in general expense line list.
 - PRODUCT: Add dashlet to display stock rules.
-- STOCK : Changed type select french translation
-- Expense : Modify report content.
 
 ## Bug Fixes
 - Reconcile: canceled status is now a final state meaning that it's not possible to reconcile again a canceled one.
@@ -42,8 +45,6 @@
 - Message: retry finding message in sending thread until success or timeout.
 - ACCOUNTING REPORT: change display move sequence on printing boolean.
 - PayrollPreparation: take into account leave requests that begin before and end after the selected period.
-- Studio : removed includeInCost field from json field form view
-- STOCK : status and state
 
 ## [5.1.10] - 2019-10-23
 ## Features
