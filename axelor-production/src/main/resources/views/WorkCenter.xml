@@ -35,6 +35,11 @@
 	    <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" title="Human resources" showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3" form-view="prod-human-resource-form" grid-view="prod-human-resource-grid"/>
 	    <panel-related name="workCenterListPanel" field="workCenterList" title="Replacement machines" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="work-center-replacement-machine-form" grid-view="work-center-replacement-machine-grid"/>
 	  </panel-tabs>
+	  
+	  <panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
     
      <grid name="work-center-replacement-machine-grid" title="Machines" model="com.axelor.apps.production.db.WorkCenter">
