@@ -74,6 +74,7 @@
     	<toolbar>
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
+			<button name="seeSaleOrderLinesBtn" title="See sale orders lines" onClick="action-stock-move-view-show-sale-order-lines"/>
     	</toolbar>
         <field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
@@ -880,7 +881,7 @@
   <action-method name="action-stock-move-method-update-stocks">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="updateStocks"/>
   </action-method>
-
+	
 	<action-record name="action-stock-move-record-freight-carrier" model="com.axelor.apps.stock.db.StockMove">
 		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
 	</action-record>
@@ -901,4 +902,10 @@
 	  <error if="statusSelect == 2 &amp;&amp; pickingIsEdited &amp;&amp; availabilityRequest" message="Picking order has been edited for this stock move, it can not be canceled."/>
 	</action-validate>
 	
+	<action-view name="action-stock-move-view-show-sale-order-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<view name="sale-order-line-menu-grid" type="grid"/>
+  		<view name="sale-order-line-all-form" type="form"/>
+  		<domain>self.saleOrder IN (SELECT _stockMove.originId FROM StockMove _stockMove WHERE _stockMove.typeSelect = :_typeSelect AND _stockMove.isReversion = FALSE)</domain>
+		<context name="_typeSelect" expr="eval: _typeSelect"/>
+	</action-view>
 </object-views>
