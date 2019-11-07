@@ -7,6 +7,7 @@
 ## Improvements
 - STOCK : Changed type select french translation
 - Expense : Modify report content.
+- ACCOUNTING : generate taxlines translation
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
