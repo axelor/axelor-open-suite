@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.12]
 ## Features
 - AVAILABILITY REQUEST : Addition of button on grid-view to view sale order lines.
+- StockMove : Addition of button to view stockMoveLines on grid-view.
 
 ## Improvements
 - STOCK : Changed type select french translation
