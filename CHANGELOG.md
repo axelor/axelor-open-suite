@@ -16,6 +16,8 @@
 - Studio : removed includeInCost field from json field form view
 - STOCK : status and state
 - MOVE LINE : fix error in amount of reverse move line.
+- MOVE LINE : reconciled or lettered move lines are now read only.
+- MOVE : if a move line is reconciled or lettered display message.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
