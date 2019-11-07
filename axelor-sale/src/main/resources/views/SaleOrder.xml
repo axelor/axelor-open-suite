@@ -5,12 +5,12 @@
 
     <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-sale-order-method-show-sale-order"/>
+            <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+                <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
-                <item title="See quotation lines" action="action-view-open-quotation-lines"/>
+            <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+                <item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+                <item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
             </menu>
         </menubar>
 	    <hilite background="warning" if="(endOfValidityDate != null) &amp;&amp; ($moment(endOfValidityDate) &lt; $moment(todayDate)) &amp;&amp; (statusSelect == 3)"/>
@@ -34,11 +34,11 @@
 	<grid name="sale-order-grid" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-sale-order-method-show-sale-order"/>
+            <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+                <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
+            <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+                <item name="seeSaleOrderLinesItem" title="See sale orders lines" action="action-view-open-sale-order-lines"/>
             </menu>
         </menubar>
 		<hilite background="warning"
@@ -69,11 +69,11 @@
 	<grid name="sale-order-partner-grid" title="Sale orders"
 		model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
         <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-sale-order-method-show-sale-order"/>
+            <menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+                <item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
             </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="See sale orders lines" action="action-view-open-sale-order-lines"/>
+            <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+                <item name="seeSaleOrderLinesItem" title="See sale orders lines" action="action-view-open-sale-order-lines"/>
             </menu>
         </menubar>
 		<field name="saleOrderSeq" width="120" />
@@ -160,20 +160,20 @@
 
 	<form id="sale-order-form" name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload" onNew="action-group-sale-saleorder-onnew">
 	  <menubar>
-	    <menu title="Reports">
-	      <item title="Print" hideIf="clientPartner == null" action="save,action-sale-order-method-show-sale-order"/>
-	      <item title="Print proforma invoice" hideIf="clientPartner == null" action="save,action-sale-order-method-print-proforma-invoice"/>
-	      <item title="Excel Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-excel"/>
-	      <item title="Word Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-word"/>
+	    <menu name="saleOrderReportsMenu" title="Reports">
+	      <item name="printItem" title="Print" hideIf="clientPartner == null" action="save,action-sale-order-method-show-sale-order"/>
+	      <item name="printProformaInvoiceItem" title="Print proforma invoice" hideIf="clientPartner == null" action="save,action-sale-order-method-print-proforma-invoice"/>
+	      <item name="excelExportItem" title="Excel Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-excel"/>
+	      <item name="wordExportItem" title="Word Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-word"/>
 	    </menu>
-	    <menu title="Tools">
-	      <item title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
-	      <item title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
-	      <item title="Define as template" hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
-        <item title="Allocate all" action="save,action-sale-order-method-allocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
-        <item title="Deallocate all" action="save,action-sale-order-method-deallocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
-				<item title="Reserve all" action="save,action-sale-order-method-reserve-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
-        <item title="Cancel reservation" action="save,action-sale-order-method-cancel-reservation" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+	    <menu name="saleOrderToolsMenu" title="Tools">
+	      <item name="scheduleEventItem" title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
+	      <item name="sendEmailItem" title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
+	      <item name="defineAsTemplateItem" title="Define as template" hideIf="clientPartner == null" action="save,action-sale-order-method-generate-template"/>
+          <item name="allocateAllItem" title="Allocate all" action="save,action-sale-order-method-allocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+          <item name="deallocateAllItem" title="Deallocate all" action="save,action-sale-order-method-deallocate-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+		  <item name="reserveAllItem" title="Reserve all" action="save,action-sale-order-method-reserve-all" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
+          <item name="cancelReservationItem" title="Cancel reservation" action="save,action-sale-order-method-cancel-reservation" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" if="__config__.app.getApp('supplychain')?.manageStockReservation"/>
 	    </menu>
 	  </menubar>
 	  <panel name="mainPanel">

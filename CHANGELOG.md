@@ -7,6 +7,7 @@
 ## Improvements
 - STOCK : Changed type select french translation
 - Expense : Modify report content.
+- Add name on menu and item menu.
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
