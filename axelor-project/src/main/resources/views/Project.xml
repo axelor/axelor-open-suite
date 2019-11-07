@@ -284,11 +284,11 @@
 			</panel>
 			<panel title="Invoicing" name="invoicingPanel"  showIf="isBusinessProject"
 				 if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-				<field name="isInvoiceable" colSpan="3" onChange="action-project-attrs-set-invoicing-sequence"/>
+				<field name="toInvoice" title="Project.toInvoice" colSpan="3" onChange="action-project-attrs-set-invoicing-sequence"/>
 				<field name="isInvoicingTimesheet" colSpan="3"/>
 				<field name="isInvoicingExpenses" colSpan="3" />
 				<field name="isInvoicingPurchases" colSpan="3" />
-				<field name="invoicingSequenceSelect" showIf="isInvoiceable" requiredIf="isInvoiceable" selection-in="[1,2]" colSpan="6"/>
+				<field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice" selection-in="[1,2]" colSpan="6"/>
 				<spacer name="invoicingSequenceSelectSpacer" colSpan="6"/>
 				<button name="showInvoicingProjectsBtn" title="Create invoicing project"
 						css="btn-custom" icon="fa-file-text-o"
@@ -350,7 +350,7 @@
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
 					domain="self.isActivity = true" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
-				<field name="projectCategorySet" colSpan="12" widget="TagSelect" />
+				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
 				<field name="excludeTimesheetEditor" />
 				<field name="childProjectList" hidden="true" />
@@ -414,6 +414,7 @@
 			<field name="fromDate" colSpan="6" />
 			<field name="toDate" colSpan="6" />
 			<field name="dueDate" showIf="isProject" colSpan="6" />
+            <field name="estimatedTimeDays" colSpan="6" />
 		</panel>
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4" />

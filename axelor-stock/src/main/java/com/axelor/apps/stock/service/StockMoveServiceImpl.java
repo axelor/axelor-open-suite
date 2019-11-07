@@ -413,28 +413,25 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setRealDate(appBaseService.getTodayDate());
     resetMasses(stockMove);
 
-    try {
-      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
-        if (newStockMove.isPresent()) {
+    if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
+      Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
+      if (newStockMove.isPresent()) {
+        newStockSeq = newStockMove.get().getStockMoveSeq();
+      }
+    }
+
+    if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
+      Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
+      if (newStockMove.isPresent()) {
+        if (newStockSeq != null) {
+          newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
+        } else {
           newStockSeq = newStockMove.get().getStockMoveSeq();
         }
       }
-
-      if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
-        if (newStockMove.isPresent()) {
-          if (newStockSeq != null) {
-            newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
-          } else {
-            newStockSeq = newStockMove.get().getStockMoveSeq();
-          }
-        }
-      }
-    } finally {
-      computeMasses(stockMove);
-      stockMoveRepo.save(stockMove);
     }
+    computeMasses(stockMove);
+    stockMoveRepo.save(stockMove);
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
       partnerProductQualityRatingService.calculate(stockMove);

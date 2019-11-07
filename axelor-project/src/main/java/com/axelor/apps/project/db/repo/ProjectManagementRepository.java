@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.AppProject;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -30,15 +31,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ProjectManagementRepository extends ProjectRepository {
-
-  private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private void setAllProjectFullName(Project project) {
     String projectCode =
@@ -103,6 +99,12 @@ public class ProjectManagementRepository extends ProjectRepository {
       throw new PersistenceException(e.getLocalizedMessage());
     }
     setAllProjectFullName(project);
+
+    project.setEstimatedTimeHrs(
+        project
+            .getEstimatedTimeDays()
+            .multiply(Beans.get(AppBaseService.class).getAppBase().getDailyWorkHours()));
+
     return super.save(project);
   }
 

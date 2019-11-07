@@ -58,10 +58,12 @@
 				<field name="globalByDate" hideIf="!typeSelect || [3,4,5,10,11,12,13,14,15,16,17].indexOf(typeSelect) != -1" onChange="action-accounting-report-record-global-by-date" />
 				<field name="globalByPartner" hideIf="typeSelect != 3 &amp;&amp; typeSelect != 7" onChange="action-accounting-report-record-global-by-partner" />
 				<field name="detailed" hideIf="typeSelect != 4" onChange="action-accounting-report-record-detailed" />
+				<field name="displayClosingAccountingMoves" showIf="typeSelect != 5 &amp;&amp; typeSelect != 16 &amp;&amp; typeSelect != 17"/>
+				<field name="displayOpeningAccountingMoves" showIf="typeSelect != 5 &amp;&amp; typeSelect != 16 &amp;&amp; typeSelect != 17"/>
 				<field name="displayOnlyNotCompletelyLetteredMoveLines" hideIf="typeSelect != 7"/>
-				<field name="displayCodeAccountOnPrinting" showIf="typeSelect == 1"/>
-				<field name="displayNameAccountOnPrinting" showIf="typeSelect == 1"/>
-				<field name="displayMoveSequenceOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayCodeAccountColumnOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayNameAccountColumnOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayMoveLineSequenceOnPrinting" showIf="typeSelect == 1"/>
 				<field name="displayCumulativeBalance" showIf="typeSelect==7"/>
 			</panel>
 		</panel-tabs>

@@ -26,6 +26,8 @@ public interface ITranslation {
   public static final String TIMESHEET_MANAGEMENT_APP_NAME = /*$$(*/
       "value:Timesheet Management"; /*)*/
   public static final String LEAVE_MANAGEMENT_APP_NAME = /*$$(*/ "value:Leave Management"; /*)*/
+  
+  public static final String REQUEST_OVERFLOW = /*$$(*/ "Too many requests"; /*)*/
 
   public static final String PUBLIC_HOLIDAY_TITLE = /*$$(*/ "Public holidays"; /*)*/
   public static final String WEEKLY_PLANNING_TITLE = /*$$(*/ "6 days week"; /*)*/

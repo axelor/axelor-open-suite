@@ -32,25 +32,33 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import javax.mail.MessagingException;
 
 public class BatchTimesheetValidationReminder extends AbstractBatch {
 
   protected TemplateMessageService templateMessageService;
   protected MessageService messageService;
+  protected MessageRepository messageRepo;
 
   @Inject
   public BatchTimesheetValidationReminder(
-      TemplateMessageService templateMessageService, MessageService messageService) {
+      TemplateMessageService templateMessageService,
+      MessageService messageService,
+      MessageRepository messageRepo) {
 
     this.templateMessageService = templateMessageService;
     this.messageService = messageService;
+    this.messageRepo = messageRepo;
   }
 
   @Override
@@ -99,9 +107,8 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     String model = template.getMetaModel().getFullName();
     String tag = template.getMetaModel().getName();
     for (Timesheet timesheet : timesheetList) {
-      Message message = new Message();
       try {
-        message =
+        Message message =
             templateMessageService.generateMessage(
                 timesheet.getUser().getEmployee().getId(), model, tag, template);
         messageService.sendByEmail(message);
@@ -128,25 +135,8 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
                 .fetch();
 
     for (Timesheet timesheet : timesheetList) {
-      Message message = new Message();
       try {
-        message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
-        message.setReplyToEmailAddressSet(new HashSet<>());
-        message.setCcEmailAddressSet(new HashSet<>());
-        message.setBccEmailAddressSet(new HashSet<>());
-        message.addToEmailAddressSetItem(
-            timesheet.getUser().getEmployee().getContactPartner().getEmailAddress());
-        message.setSenderUser(AuthUtils.getUser());
-        message.setSubject(batch.getMailBatch().getSubject());
-        message.setContent(batch.getMailBatch().getContent());
-        message.setMailAccount(
-            Beans.get(EmailAccountRepository.class)
-                .all()
-                .filter("self.isDefault = true")
-                .fetchOne());
-
-        messageService.sendByEmail(message);
-
+        generateAndSendMessage(timesheet.getUser().getEmployee());
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
@@ -182,24 +172,8 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 
     for (Employee employee : employeeList) {
-      Message message = new Message();
       try {
-        message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
-        message.setReplyToEmailAddressSet(new HashSet<>());
-        message.setCcEmailAddressSet(new HashSet<>());
-        message.setBccEmailAddressSet(new HashSet<>());
-        message.addToEmailAddressSetItem(employee.getContactPartner().getEmailAddress());
-        message.setSenderUser(AuthUtils.getUser());
-        message.setSubject(batch.getMailBatch().getSubject());
-        message.setContent(batch.getMailBatch().getContent());
-        message.setMailAccount(
-            Beans.get(EmailAccountRepository.class)
-                .all()
-                .filter("self.isDefault = true")
-                .fetchOne());
-
-        messageService.sendByEmail(message);
-
+        generateAndSendMessage(employee);
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
@@ -207,6 +181,26 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
             new Exception(e), ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
       }
     }
+  }
+
+  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
+  protected Message generateAndSendMessage(Employee employee)
+      throws MessagingException, IOException, AxelorException {
+
+    Message message = new Message();
+    message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
+    message.setReplyToEmailAddressSet(new HashSet<>());
+    message.setCcEmailAddressSet(new HashSet<>());
+    message.setBccEmailAddressSet(new HashSet<>());
+    message.addToEmailAddressSetItem(employee.getContactPartner().getEmailAddress());
+    message.setSenderUser(AuthUtils.getUser());
+    message.setSubject(batch.getMailBatch().getSubject());
+    message.setContent(batch.getMailBatch().getContent());
+    message.setMailAccount(
+        Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
+    message = messageRepo.save(message);
+
+    return messageService.sendByEmail(message);
   }
 
   @Override

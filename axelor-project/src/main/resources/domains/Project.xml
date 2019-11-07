@@ -14,7 +14,7 @@
 		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="parentProject"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
-		<many-to-many name="projectCategorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
+		<many-to-many name="teamTaskCategorySet" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Type of authorized categories"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronize"/>
 	  	<boolean name="extendsMembersFromParent" default="false"/>
@@ -30,6 +30,9 @@
 		<datetime name="fromDate" title="From Date"/>
 		<datetime name="toDate" title="To Date"/>
 		<datetime name="dueDate" title="Due Date"/>
+      
+        <decimal name="estimatedTimeDays" title="Estimated time (in days)" />
+        <decimal name="estimatedTimeHrs" title="Estimated time (in hours)" />
 		
 		<decimal name="timeSpent" title="Time Spent"/>
 		

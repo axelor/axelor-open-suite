@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.1.xsd">
  	
    <input file="ebics-user.xml" root="ebics-users" >
-  	<bind node="ebics-user" type="com.axelor.apps.bankpayment.db.EbicsUser"  call="com.axelor.apps.bankpayment.ebics.script.EbicsUserImport:importEbicsUser">
+	<bind node="ebics-user" type="com.axelor.apps.bankpayment.db.EbicsUser"  call="com.axelor.apps.bankpayment.ebics.script.EbicsUserImport:importEbicsUser">
       <bind node="name" to="name" />
       <bind node="userId" to="userId" />
       <bind node="password" to="password" />
@@ -25,6 +25,7 @@
 	   		<bind node="language" to="language" search="self.code = :code"/>
 	   		<bind node="bank" to="bank" search="self.code = :code"  update="false">
 	   			<bind node="code" to="code" />
+                <bind node="bankDetailsTypeSelect" to="bankDetailsTypeSelect"/>
 	   			<bind node="bankName" to="bankName" />
 	   		</bind>
 	   		<bind node="ebicsCertificateList/ebicsCertificate" to="ebicsCertificateList" search="self.typeSelect = :bankCertType and self.ebicsBank.hostId = :hostId" >
@@ -102,12 +103,20 @@
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'encryption'" />
       	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null" />
-      </bind> 
+      </bind>
       <bind to="x002Certificate" node="x002Certificate">
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'authentication'" />
       	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null"/>
       </bind>
+    </bind>
+    <bind node="ebicsRequestLogList/ebicsRequestLog" type="com.axelor.apps.bankpayment.db.EbicsRequestLog">
+        <bind node="ebicsUser" to="ebicsUser" search="self.userId = :ebicsUser" create="false"/>
+        <bind node="requestType" to="requestType" />
+        <bind node="requestTime" to="requestTime" />
+        <bind node="responseCode" to="responseCode" />
+        <bind node="requestTraceText" to="requestTraceText" />
+        <bind node="responseTraceText" to="responseTraceText" />
     </bind>
   </input> 
     	

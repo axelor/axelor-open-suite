@@ -61,7 +61,7 @@ public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     // Module 'project' fields
     nextTeamTask.setFullName(teamTask.getFullName());
     nextTeamTask.setProject(teamTask.getProject());
-    nextTeamTask.setProjectCategory(teamTask.getProjectCategory());
+    nextTeamTask.setTeamTaskCategory(teamTask.getTeamTaskCategory());
     nextTeamTask.setProgressSelect(0);
 
     teamTask.getMembersUserSet().forEach(nextTeamTask::addMembersUserSetItem);

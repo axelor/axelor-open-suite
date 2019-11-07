@@ -52,9 +52,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setEndOfValidityDate(null);
     copy.setDeliveryDate(null);
     copy.setOrderBeingEdited(false);
-    copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
-    copy.setAdvancePaymentNeeded(false);
-    copy.clearAdvancePaymentList();
+    if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
+      copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
+      copy.setAdvancePaymentNeeded(false);
+      copy.clearAdvancePaymentList();
+    }
 
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {

@@ -1214,26 +1214,24 @@ public class MoveLineService {
       TaxLine taxLine = invoiceLineTax.getTaxLine();
       BigDecimal vatRate = taxLine.getValue();
       BigDecimal baseAmount = invoiceLineTax.getCompanyExTaxBase();
-      if (vatRate.compareTo(BigDecimal.ZERO) > 0) {
-        BigDecimal detailPaymentAmount =
-            baseAmount
-                .multiply(paymentAmount)
-                .divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN)
-                .setScale(2, RoundingMode.HALF_UP);
+      BigDecimal detailPaymentAmount =
+          baseAmount
+              .multiply(paymentAmount)
+              .divide(invoiceTotalAmount, 6, RoundingMode.HALF_EVEN)
+              .setScale(2, RoundingMode.HALF_UP);
 
-        TaxPaymentMoveLine taxPaymentMoveLine =
-            new TaxPaymentMoveLine(
-                customerMoveLine,
-                taxLine,
-                reconcile,
-                vatRate,
-                detailPaymentAmount,
-                Beans.get(AppBaseService.class).getTodayDate());
+      TaxPaymentMoveLine taxPaymentMoveLine =
+          new TaxPaymentMoveLine(
+              customerMoveLine,
+              taxLine,
+              reconcile,
+              vatRate,
+              detailPaymentAmount,
+              Beans.get(AppBaseService.class).getTodayDate());
 
-        taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
+      taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 
-        customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
-      }
+      customerMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
     }
     this.computeTaxAmount(customerMoveLine);
     return Beans.get(MoveLineRepository.class).save(customerMoveLine);

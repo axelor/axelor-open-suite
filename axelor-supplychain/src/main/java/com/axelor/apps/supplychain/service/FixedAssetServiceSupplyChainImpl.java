@@ -50,7 +50,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
       fixedAsset.setStockLocation(stockLocation);
 
       if (fixedAsset.getInvoiceLine().getIncomingStockMove() != null
-          || CollectionUtils.isNotEmpty(
+          && CollectionUtils.isNotEmpty(
               fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList())) {
         fixedAsset.setTrackingNumber(
             fixedAsset
