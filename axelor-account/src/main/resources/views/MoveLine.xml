@@ -150,8 +150,8 @@
 			</panel>
 			<field name="partner" readonlyIf="amountPaid &gt; 0" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false"/>
 	        <field name="account" readonlyIf="amountPaid &gt; 0" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
-	        <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
-	        <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+	        <field name="debit" readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
+	        <field name="credit" readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" onChange="action-group-account-moveline-debitcredit-onchange" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || move.statusSelect == 1 || move.statusSelect == 4"/>
 			<field name="origin" colSpan="12"/>
@@ -251,8 +251,8 @@
 			</panel>
 			<field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-move-line-attrs-domain-partner" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
 			<field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution,action-move-line-attrs-show-tax-amount"/>
-			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
-			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0" css="label-bold bold" colSpan="3"/>
+			<field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" colSpan="3"/>
+			<field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null" css="label-bold bold" colSpan="3"/>
 			<field name="amountRemaining" colSpan="3"/>
 			<field name="amountPaid" colSpan="3" hideIf="!account.reconcileOk || (move.statusSelect == 1 || move.statusSelect == 4"/>
 			<field name="origin" colSpan="12"/>
@@ -466,6 +466,10 @@
 
 	<action-method name="action-account-move-line-method-filter-partner">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
+	</action-method>
+	
+	<action-method name="action-move-line-readOnly-debit-credit-method">
+		<call class="com.axelor.apps.account.web.MoveLineController" method="readOnlyDebitCredit"/>
 	</action-method>
 
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">

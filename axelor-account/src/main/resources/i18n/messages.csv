@@ -1105,6 +1105,7 @@
 "Irrecoverables",,,
 "Is already reverse",,,
 "Is updating",,,
+"It is not possible to edit the amount of a reconciled and/or lettered accounting move line.",,,
 "Journal",,,
 "Journal %s does not have any account move sequence configured",,,
 "Journal Type",,,
