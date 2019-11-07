@@ -58,7 +58,7 @@
     <action-record name="action-stock-rules-record-new" model="com.axelor.apps.stock.db.StockRules">
 	    <field name="minQty" expr="1"/>
 	    <field name="idealQty" expr="1"/>
-	    <field name="orderAlertSelect" expr="1"/>
+	    <field name="orderAlertSelect" expr="2"/>
 	    <field name="useCaseSelect" expr="1"/>
 	    <field name="user" expr="eval:__user__"/>
 	    <field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
