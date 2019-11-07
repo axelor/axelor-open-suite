@@ -29,8 +29,8 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectCategory;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.TeamTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.TeamTaskProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -255,7 +255,6 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     nextTeamTask.setDiscountAmount(teamTask.getDiscountAmount());
     nextTeamTask.setPriceDiscounted(teamTask.getPriceDiscounted());
     nextTeamTask.setInvoicingType(teamTask.getInvoicingType());
-    nextTeamTask.setTeamTaskInvoicing(teamTask.getTeamTaskInvoicing());
     nextTeamTask.setCustomerReferral(teamTask.getCustomerReferral());
   }
 
@@ -294,13 +293,13 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
 
     } else {
-      ProjectCategory projectCategory = teamTask.getProjectCategory();
-      if (projectCategory == null) {
+      TeamTaskCategory teamTaskCategory = teamTask.getTeamTaskCategory();
+      if (teamTaskCategory == null) {
         return teamTask;
       }
 
-      teamTask.setInvoicingType(projectCategory.getDefaultInvoicingType());
-      teamTask.setProduct(projectCategory.getDefaultProduct());
+      teamTask.setInvoicingType(teamTaskCategory.getDefaultInvoicingType());
+      teamTask.setProduct(teamTaskCategory.getDefaultProduct());
       product = teamTask.getProduct();
       if (product == null) {
         return teamTask;

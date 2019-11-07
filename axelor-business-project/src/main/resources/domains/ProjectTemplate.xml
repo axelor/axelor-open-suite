@@ -6,7 +6,6 @@
 	<module name="project" package="com.axelor.apps.project.db"/>
 
 	<entity name="ProjectTemplate">
-		<boolean name="teamTaskInvoicing" title="Tasks Invoicing"/>
 		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
 		<integer name="invoicingTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type"/>

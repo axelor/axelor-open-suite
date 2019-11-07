@@ -6,6 +6,7 @@
 	<selection name="business.team.task.invoicing.type.select">
 		<option value="1">Time spent</option>
 		<option value="2">Package</option>
+		<option value="3">No invoicing</option>
 	</selection>
 	
 	<selection name="business.project.invoicing.sequence.select">

@@ -86,7 +86,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
             .all()
             .filter(
                 filter
-                    + " AND self.project.isInvoiceable = :invoiceable AND self.toInvoice = :toInvoice")
+                    + " AND self.project.toInvoice = :invoiceable AND self.toInvoice = :toInvoice")
             .bind("invoiceable", true)
             .bind("toInvoice", false)
             .order("id");

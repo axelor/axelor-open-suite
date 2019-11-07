@@ -18,7 +18,7 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
-import com.axelor.apps.project.db.ProjectCategory;
+import com.axelor.apps.project.db.TeamTaskCategory;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -82,16 +82,14 @@ public class TeamTaskController {
 
   public void onChangeCategory(ActionRequest request, ActionResponse response) {
     TeamTask task = request.getContext().asType(TeamTask.class);
-    ProjectCategory projectCategory = task.getProjectCategory();
-    if (projectCategory == null) {
+    TeamTaskCategory teamTaskCategory = task.getTeamTaskCategory();
+    if (teamTaskCategory == null) {
       return;
     }
 
-    task.setTeamTaskInvoicing(projectCategory.getTeamTaskInvoicing());
     task = Beans.get(TeamTaskBusinessProjectService.class).computeDefaultInformation(task);
 
-    if (task.getTeamTaskInvoicing()
-        && task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
+    if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
       task.setToInvoice(true);
     }
     response.setValues(task);

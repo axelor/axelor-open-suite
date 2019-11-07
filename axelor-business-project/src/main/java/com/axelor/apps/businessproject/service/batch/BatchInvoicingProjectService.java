@@ -61,7 +61,7 @@ public class BatchInvoicingProjectService extends AbstractBatch {
         projectRepo
             .all()
             .filter(
-                "self.isInvoiceable = ?1 AND self.statusSelect NOT IN (?2)",
+                "self.toInvoice = ?1 AND self.statusSelect NOT IN (?2)",
                 true,
                 ProjectRepository.STATE_CANCELED,
                 ProjectRepository.STATE_FINISHED)

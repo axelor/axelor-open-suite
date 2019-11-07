@@ -184,7 +184,7 @@ public class ProjectServiceImpl implements ProjectService {
       project.setTeam(projectTemplate.getTeam());
       project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
       project.setAssignedTo(projectTemplate.getAssignedTo());
-      project.setProjectCategorySet(new HashSet<>(projectTemplate.getProjectCategorySet()));
+      project.setTeamTaskCategorySet(new HashSet<>(projectTemplate.getTeamTaskCategorySet()));
       project.setSynchronize(projectTemplate.getSynchronize());
       project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
       project.setImputable(projectTemplate.getImputable());
