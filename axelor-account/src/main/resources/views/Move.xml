@@ -80,7 +80,7 @@
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
-				<button name="autoTaxLineGenerateBtn" title="Generate Taxlines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
+				<button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
             </panel>
 		</panel>
 		
