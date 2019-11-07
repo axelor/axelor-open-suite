@@ -197,4 +197,9 @@
         <option value="2">Hours</option>
     </selection>
 
+    <selection name="hr.employee.timesheet.report.type.select">
+        <option value="1">All</option>
+        <option value="2">Only missing</option>
+    </selection>
+
 </object-views>

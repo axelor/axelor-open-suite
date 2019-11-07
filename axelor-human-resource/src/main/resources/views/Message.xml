@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	
+    <grid name="message-timesheet-reminder-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
+        <field name="sentDateT"/>
+        <field name="senderUser" form-view="user-form" grid-view="user-grid"/>
+        <field name="subject"/>
+        <field name="toEmailAdressSet"/>
+    </grid>
+
+</object-views>

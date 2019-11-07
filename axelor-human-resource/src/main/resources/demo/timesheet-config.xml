@@ -14,7 +14,10 @@
         <bind to="user" search="self.importId = :user_importId"/>
 		<bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)" column="date"/>
 	</input>
-	
-	
+
+	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name">
+		<bind to="language" search="self.code = :languageCode"/>
+	</input>
+
 </csv-inputs>
 

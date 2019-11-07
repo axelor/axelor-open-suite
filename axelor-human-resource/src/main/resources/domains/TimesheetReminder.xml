@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="human-resource" package="com.axelor.apps.hr.db" />
+
+	<entity name="TimesheetReminder" cacheable="true">
+
+		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" />
+		<datetime name="emailSentDateT" title="Email sent date" />
+		<one-to-many name="timesheetReminderLineList" ref="com.axelor.apps.hr.db.TimesheetReminderLine" title="Reminder" mappedBy="timesheetReminder" />
+
+	</entity>
+
+</domain-models>

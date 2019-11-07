@@ -15,6 +15,7 @@
 			<field name="createLinesForHolidays" widget="boolean-switch" />
 			<field name="timesheetEditor" widget="boolean-switch" />
 			<field name="displayTimesheetLineNumber" widget="boolean-switch" />
+			<field name="timesheetReminderTemplate" domain="self.metaModel.name = 'TimesheetReminder'"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">

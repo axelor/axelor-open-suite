@@ -207,4 +207,7 @@ public interface IExceptionMessage {
 
   static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
       "Please configure the unit for this type of absence" /*)*/;
+
+  static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
+      "Please configure the template for email reminder" /*)*/;
 }
