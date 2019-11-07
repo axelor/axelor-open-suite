@@ -10,6 +10,7 @@
 - Expense : Modify report content.
 - Add name on menu and item menu.
 - ACCOUNTING : generate taxlines translation
+- AnalyticMoveLine : fix amount calculation
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
