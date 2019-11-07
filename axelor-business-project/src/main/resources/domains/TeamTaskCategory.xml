@@ -5,11 +5,10 @@
 
 	<module name="project" package="com.axelor.apps.project.db"/>
 	
-	<entity name="ProjectCategory">
+	<entity name="TeamTaskCategory">
 	
 		<many-to-one name="defaultProduct" ref="com.axelor.apps.base.db.Product" title="Default product"/>
-		<boolean name="teamTaskInvoicing" title="Tasks Invoicing"/>
-		<integer name="defaultInvoicingType" selection="business.team.task.invoicing.type.select" title="Default value invoicing sequence" />
+		<integer name="defaultInvoicingType" selection="business.team.task.invoicing.type.select" title="Default value invoicing type" />
 		
 	</entity>
 

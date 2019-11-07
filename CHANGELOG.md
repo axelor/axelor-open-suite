@@ -215,6 +215,8 @@
 - Financial Report : calculate Total costs (per line) in chart and totals
 - TIMETABLE : Reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
 - TeamTask : set status editable.
+- TEAMTASKS : removed teamTaskInvoicing field in teamtask and project category, added 'no invoicing' in invoicingType selection, renamed ProjectCategory to TeamTaskCategory and renamed isInvoiceable to toInvoice in project form
+- TEAMTASK : moved invoiced field outside of the package panel
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

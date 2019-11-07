@@ -44,7 +44,7 @@
 		
 		<boolean name="isBusinessProject" title="Business project" />
 
-		<boolean name="isInvoiceable" title="Invoiceable"/>
+		<boolean name="toInvoice" title="To invoice"/>
 		<boolean name="isInvoicingTimesheet" title="Invoicing timesheet"/>
 		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
