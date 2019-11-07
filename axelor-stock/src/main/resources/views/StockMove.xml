@@ -149,22 +149,20 @@
 			<button showIf="typeSelect == 2 &amp;&amp; !isReversion" name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-stock-move-method-refresh-net-mass"/>
 		</toolbar>
         <menubar>
-            <menu title="Reports" icon="fa-files-o">
-                <item title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
-                <item title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
-                <item title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
-                <item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
-							<item title="Print certificate of conformity"
-								action="save,action-method-print-conformity-certificate"
-								showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
+            <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
+                <item name="printInternalMoveItem" title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
+                <item name="printOutgoingMoveItem" title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
+                <item name="printIncomingMoveItem" title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
+                <item name="printPickingOrderItem" title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
+				<item name="printCertificateOfConformityItem" title="Print certificate of conformity" action="save,action-method-print-conformity-certificate" showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
             </menu>
 
-            <menu title="Tools" icon="fa-wrench">
-                <item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
-                <item title="Split into 2" action="save,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2"/>
-                <item title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
-                <item title="Special split" action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
-                <item title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
+            <menu name="stockMoveToolsMenu" title="Tools" icon="fa-wrench">
+                <item name="viewDirectionItem" title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
+                <item name="splitIntoItem" title="Split into 2" action="save,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2"/>
+                <item name="splitByUnitItem" title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
+                <item name="specialSplitItem" title="Special split" action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
+                <item name="shipReceiveAllProductsItem" title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
             </menu>
         </menubar>
 
