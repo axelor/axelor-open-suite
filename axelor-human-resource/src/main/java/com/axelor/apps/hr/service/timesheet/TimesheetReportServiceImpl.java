@@ -277,7 +277,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             lastDayNumber = -1;
             weekNumber++;
           }
-          BigDecimal weeklyWorkHours = employee.getWeeklyWorkHours().multiply(BigDecimal.valueOf((dayIndex)/6.0)).setScale(2,RoundingMode.HALF_EVEN);
+          BigDecimal weeklyWorkHours =
+              employee
+                  .getWeeklyWorkHours()
+                  .multiply(BigDecimal.valueOf((dayIndex) / 6.0))
+                  .setScale(2, RoundingMode.HALF_EVEN);
           Map<String, Object> map = getTimesheetMap(user, date, dailyWorkingHours, weekFields);
           map.put("weeklyWorkHours", weeklyWorkHours);
           map.put("weekNumber", weekNumber.toString());
