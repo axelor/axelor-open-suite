@@ -11,6 +11,7 @@
 - Add name on menu and item menu.
 - ACCOUNTING : generate taxlines translation
 - AnalyticMoveLine : fix amount calculation
+- PROJECT : Fix financial report to follow the Axelor report guidelines
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
