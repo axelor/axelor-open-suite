@@ -218,6 +218,7 @@
 - TeamTask : set status editable.
 - TEAMTASKS : removed teamTaskInvoicing field in teamtask and project category, added 'no invoicing' in invoicingType selection, renamed ProjectCategory to TeamTaskCategory and renamed isInvoiceable to toInvoice in project form
 - TEAMTASK : moved invoiced field outside of the package panel
+- QUALITY CONTROL : update the qualitycontrol report
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

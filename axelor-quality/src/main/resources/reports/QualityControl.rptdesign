@@ -486,6 +486,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?;]]></xml-prop
                     <text-property name="heading">coefficient</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">observations</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">observations</text-property>
+                    <text-property name="heading">observations</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">measuring_note</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">measuring_note</text-property>
@@ -523,11 +529,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?;]]></xml-prop
                     </structure>
                     <structure>
                         <property name="position">4</property>
+                        <property name="name">observations</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
                         <property name="name">measuring_note</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">coeffIntoNote</property>
                         <property name="dataType">float</property>
                     </structure>
@@ -558,6 +569,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?;]]></xml-prop
                 </structure>
                 <structure>
                     <property name="position">4</property>
+                    <property name="name">observations</property>
+                    <property name="nativeName">observations</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
                     <property name="name">measuring_note</property>
                     <property name="nativeName">measuring_note</property>
                     <property name="dataType">integer</property>
@@ -567,6 +585,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?;]]></xml-prop
             <xml-property name="queryText"><![CDATA[select ControlPoint.name as control_point_name,
 MeasuringPoint.name as measuring_point_name,
 MeasuringPoint.coefficient,
+MeasuringPoint.observations,
 MeasuringPoint.measuring_note
 from quality_quality_measuring_point as MeasuringPoint
 left outer join quality_control_point as ControlPoint on (MeasuringPoint.control_point = ControlPoint.id)
@@ -2514,7 +2533,7 @@ ORDER BY control_point_name;]]></xml-property>
                             </structure>
                         </list-property>
                         <column id="6044">
-                            <property name="width">10%</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="6045"/>
                         <column id="6046"/>
@@ -2640,7 +2659,7 @@ ORDER BY control_point_name;]]></xml-property>
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">'QualityControl.observation'</value>
+                                                        <value type="javascript">'QualityControl.generalObservation'</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
@@ -2720,6 +2739,107 @@ ORDER BY control_point_name;]]></xml-property>
                                             <property name="overflow">hidden</property>
                                             <property name="resultSetColumn">general_comment</property>
                                         </data>
+                                    </cell>
+                                </row>
+                                <row id="6397">
+                                    <cell id="6398">
+                                        <property name="colSpan">2</property>
+                                        <property name="rowSpan">1</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <table id="6429">
+                                            <property name="dataSet">QualityMeasuringPointDS</property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">measuring_point_name</property>
+                                                    <text-property name="displayName">measuring_point_name</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["measuring_point_name"]+' :'</expression>
+                                                    <property name="dataType">string</property>
+                                                    <property name="allowExport">true</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">observations</property>
+                                                    <text-property name="displayName">observations</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["observations"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <column id="6448">
+                                                <property name="width">17%</property>
+                                            </column>
+                                            <column id="6443">
+                                                <property name="width">20%</property>
+                                            </column>
+                                            <column id="6444"/>
+                                            <header>
+                                                <row id="6430">
+                                                    <cell id="6445"/>
+                                                    <cell id="6431"/>
+                                                    <cell id="6433"/>
+                                                </row>
+                                            </header>
+                                            <detail>
+                                                <row id="6435">
+                                                    <cell id="6446">
+                                                        <text id="6450">
+                                                            <property name="dataSet">TranslateDS</property>
+                                                            <list-property name="paramBindings">
+                                                                <structure>
+                                                                    <property name="paramName">param_1</property>
+                                                                    <simple-property-list name="expression">
+                                                                        <value type="javascript">'QualityControl.observation'</value>
+                                                                    </simple-property-list>
+                                                                </structure>
+                                                            </list-property>
+                                                            <list-property name="boundDataColumns">
+                                                                <structure>
+                                                                    <property name="name">message_key</property>
+                                                                    <text-property name="displayName">message_key</text-property>
+                                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                    <property name="dataType">string</property>
+                                                                </structure>
+                                                                <structure>
+                                                                    <property name="name">translation</property>
+                                                                    <text-property name="displayName">translation</text-property>
+                                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                    <property name="dataType">string</property>
+                                                                </structure>
+                                                            </list-property>
+                                                            <property name="contentType">html</property>
+                                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                        </text>
+                                                    </cell>
+                                                    <cell id="6436">
+                                                        <data id="6437">
+                                                            <property name="textAlign">left</property>
+                                                            <property name="resultSetColumn">measuring_point_name</property>
+                                                        </data>
+                                                    </cell>
+                                                    <cell id="6438">
+                                                        <data id="6439">
+                                                            <property name="fontWeight">bold</property>
+                                                            <property name="textAlign">left</property>
+                                                            <property name="resultSetColumn">observations</property>
+                                                        </data>
+                                                    </cell>
+                                                </row>
+                                            </detail>
+                                            <footer>
+                                                <row id="6440">
+                                                    <cell id="6447"/>
+                                                    <cell id="6441"/>
+                                                    <cell id="6442"/>
+                                                </row>
+                                            </footer>
+                                        </table>
+                                    </cell>
+                                    <cell id="6400">
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
                                     </cell>
                                 </row>
                             </header>
