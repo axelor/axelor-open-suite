@@ -16,6 +16,7 @@
 - Studio : removed includeInCost field from json field form view
 - STOCK : status and state
 - MOVE LINE : fix error in amount of reverse move line.
+- ImportProduct :fix 'image' null variable access
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
