@@ -16,7 +16,6 @@
 	      <field name="defaultValue" />
 	      <field name="help" />
 	      <field name="sequence" />
-	      <field name="includedInCost" widget="inline-checkbox" />
 	      <field name="model" hidden="true" />
 	      <field name="modelField" hidden="true" />
 	      <field name="jsonModel" hidden="true"/>

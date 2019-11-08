@@ -17,10 +17,10 @@
 		 onLoad="action-subrogation-release-onLoad">
 
 		<menubar>
-			<menu title="Print/Export" icon="fa-print">
-				<item action="action-subrogation-release-method-print-to-pdf" title="Print to PDF"
+			<menu name="subrogationReleasePrintExportMenu" title="Print/Export" icon="fa-print">
+				<item name="printToPDFItem" action="action-subrogation-release-method-print-to-pdf" title="Print to PDF"
 					readonlyIf="statusSelect &lt; 2" />
-				<item action="action-subrogation-release-method-export-to-csv" title="Export to CSV"
+				<item name="exportToCSVItem" action="action-subrogation-release-method-export-to-csv" title="Export to CSV"
 					readonlyIf="statusSelect &lt; 2" />
 			</menu>
 		</menubar>

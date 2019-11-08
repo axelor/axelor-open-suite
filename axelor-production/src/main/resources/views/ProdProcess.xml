@@ -66,6 +66,11 @@
             <field name="versionNumber" colSpan="3" />
             <field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
  		</panel>            
+    
+    	<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail> 
     </form>
 
   <action-group name="action-prod-process-group-on-new">
