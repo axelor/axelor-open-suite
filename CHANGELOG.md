@@ -1,5 +1,26 @@
 # Changelog
 
+## [Unreleased 5.1.12]
+## Features
+- AVAILABILITY REQUEST : Addition of button on grid-view to view sale order lines.
+- StockMove : Addition of button to view stockMoveLines on grid-view.
+
+## Improvements
+- STOCK : Changed type select french translation
+- Expense : Modify report content.
+- Add name on menu and item menu.
+- ACCOUNTING : generate taxlines translation
+- AnalyticMoveLine : fix amount calculation
+- PROJECT : Fix financial report to follow the Axelor report guidelines
+- ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accouting report for new message that appear before generation if the minimum of line is found.
+
+## Bug Fixes
+- Studio : removed includeInCost field from json field form view
+- STOCK : status and state
+- MOVE LINE : fix error in amount of reverse move line.
+- ImportProduct :fix 'image' null variable access
+- EXPORTOBJECT : changed a condition in updateMenuGraph method such that it does not always evaluate to 'true'
+- ACCOUNTING REPORT : corrected result of search button in function of the report.
 
 ## [Unreleased 5.1.11]
 ## Improvements

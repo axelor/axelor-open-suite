@@ -67,4 +67,6 @@ public interface AccountingReportService {
   public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter);
 
   public BigDecimal getCreditBalanceType4();
+
+  public boolean isToManyLine(AccountingReport accountingReport) throws AxelorException;
 }
