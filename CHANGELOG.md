@@ -20,6 +20,7 @@
 - MOVE LINE : fix error in amount of reverse move line.
 - ImportProduct :fix 'image' null variable access
 - EXPORTOBJECT : changed a condition in updateMenuGraph method such that it does not always evaluate to 'true'
+- INVOICE GENERATION : control when there is no address.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
