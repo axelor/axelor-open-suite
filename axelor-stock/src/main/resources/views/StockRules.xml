@@ -23,7 +23,7 @@
     	<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="minQty" aggregate="min"/>
         <field name="idealQty" aggregate="min"/>
-        <field name="useMaxQty"/>
+        <field name="maxQty"/>
         <field name="reOrderQty" aggregate="sum"/>
 		<field name="useCaseSelect"/>
         <field name="orderAlertSelect"/>
