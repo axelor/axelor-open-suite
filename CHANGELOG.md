@@ -12,6 +12,7 @@
 - ACCOUNTING : generate taxlines translation
 - AnalyticMoveLine : fix amount calculation
 - PROJECT : Fix financial report to follow the Axelor report guidelines
+- STOCK LOCATION PRINTING : new printing without financial data
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
