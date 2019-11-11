@@ -99,8 +99,9 @@
 		    </panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid"/>
         	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()" showIf="activeCompany.accountConfig.isManagePassedForPayment">
-				<field name="isPfpValidator" widget="boolean-switch"/>        
-        		<field name="isSuperPfpUser" widget="boolean-switch"/>
+				<field name="isPfpValidator" widget="boolean-switch" colSpan="4"/>        
+        		<field name="isSuperPfpUser" widget="boolean-switch" colSpan="4"/>
+				<button name="pfpSupplierListBtn" title="Supplier list" onClick="action-view-user-pfp-supplier-list" colSpan="4"/>
 				<button name="delegateRightsOfPfpValidatorBtn" title="Delegate Rights of Pfp Validator" onClick="action-user-view-delegate-rights-pfp-validator" colSpan="6"/>	
         		<panel-related field="substitutePfpValidatorList" name="substitutePfpValidatorListPanel" title="Substitute PFP Validator" showIf="isPfpValidator" colSpan="12"/>
         		<field name="activeCompany.accountConfig" hidden="true"/>
