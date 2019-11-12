@@ -136,6 +136,7 @@
 - PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
 - Distance travelled calculation of kilometricExpenseLine with Open street map
 - Timesheet: Add Timesheet reporting.
+- ADDRESS : when one address on partner please treat it as a default address
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
