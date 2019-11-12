@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="wap-history-grid" title="WAP history" model="com.axelor.apps.stock.db.WapHistory">
+    <field name="date"/>
+    <field name="wap"/>
+    <field name="qty"/>
+    <field name="unit"/>
+  </grid>
+
+  <form name="wap-history-form" title="WAP history" model="com.axelor.apps.stock.db.WapHistory">
+    <panel name="main">
+      <field name="date"/>
+      <field name="wap"/>
+      <field name="qty"/>
+      <field name="unit"/>
+      <field name="stockMoveLine" showIf="stockMoveLine" form-view="stock-move-line-all-form" grid-view="stock-move-line-grid"/>
+    </panel>
+  </form>
+</object-views>

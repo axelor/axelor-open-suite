@@ -42,6 +42,7 @@
         </panel>
         <panel-dashlet name="productQtyPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
         <panel-dashlet name="stockRulesPanel" action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
+        <panel-dashlet name="wapHistoryPanel" action="action-stock-location-line-view-wap-history" title="WAP history"/>
         <panel-mail name="mailsPanel">
           <mail-messages />
         </panel-mail>
@@ -212,6 +213,12 @@
     	<context name="productId" expr="eval: product?.id"/> 
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
+
+  <action-view name="action-stock-location-line-view-wap-history" title="WAP History" model="com.axelor.apps.stock.db.WapHistory">
+    <view type="grid" name="wap-history-grid"/>
+    <view type="form" name="wap-history-form"/>
+    <domain>self.stockLocationLine.id = :id</domain>
+  </action-view>
 
   <action-method name="action-stock-location-line-allocate-all">
     <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="allocateAll"/>
