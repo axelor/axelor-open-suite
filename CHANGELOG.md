@@ -136,6 +136,7 @@
 - PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
 - Distance travelled calculation of kilometricExpenseLine with Open street map
 - Timesheet: Add Timesheet reporting.
+- AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
