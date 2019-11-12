@@ -148,7 +148,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     String queryStr =
-        "(self.invoice is null or self.invoice.statusSelect != :invoiceStatusVentilated or (self.invoice.statusSelect = :invoiceStatusVentilated and self.invoice.invoiceDate > :moveDate)) "
+        "(self.invoiceSet is empty or self.invoiceSet.statusSelect != :invoiceStatusVentilated or (self.invoiceSet.statusSelect = :invoiceStatusVentilated and self.invoiceSet.invoiceDate > :moveDate)) "
             + "AND self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
             + "AND self.typeSelect = :stockMoveType ";
 

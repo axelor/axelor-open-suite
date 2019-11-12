@@ -294,5 +294,6 @@
 - INVOICE : fix for NPE when printing from grid view
 - Advance Import : Resolve ArrayIndexOurOfBound exception.
 - ACCOUNTING : reversion and analytic distribution
+- BATCH ACCOUNTING CUT-OFF : corrected from invoice to invoiceSet in query
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
