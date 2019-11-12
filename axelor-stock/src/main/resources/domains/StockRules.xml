@@ -47,7 +47,7 @@
 		<field name="orderAlertSelect"/>
 		<field name="minQty"/>
 		<field name="useIdealQty"/>
-		<field name="idealQty" if="userIdealQty"/>
+		<field name="idealQty" if="useIdealQty"/>
 		<field name="useMaxQty"/>
 		<field name="maxQty" if="useMaxQty"/>
 		<field name="reOrderQty"/>
