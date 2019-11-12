@@ -83,6 +83,7 @@ public class StockLocationController {
             : null;
     String locationIds = "";
 
+    String printType = (String) context.get("printingType");
     String exportType = (String) context.get("exportTypeSelect");
 
     @SuppressWarnings("unchecked")
@@ -125,6 +126,7 @@ public class StockLocationController {
               .addParam("StockLocationId", locationIds)
               .addParam("Locale", language)
               .addFormat(exportType)
+              .addParam("PrintType", printType)
               .generate()
               .getFileLink();
 

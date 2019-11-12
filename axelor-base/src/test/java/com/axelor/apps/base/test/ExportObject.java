@@ -83,7 +83,7 @@ public class ExportObject {
 
       for (File module : modules) {
         String modulePath = module.getAbsolutePath();
-        File menuFile = new File(modulePath + "/src/main/resources/views/menu.xml");
+        File menuFile = new File(modulePath + "/src/main/resources/views/Menu.xml");
 
         if (menuFile.exists()) {
           log.debug("Parsing menu: {}", menuFile.getAbsolutePath());
@@ -123,7 +123,7 @@ public class ExportObject {
         continue;
       }
 
-      if (parent != null && parent.equals(parentName)) {
+      if (parent.equals(parentName)) {
         xmlHandler.menuMap.remove(menuName);
         menuGraph.put("children", updateMenuGraph(xmlHandler, menuName));
         children.add(menuGraph);

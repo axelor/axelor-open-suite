@@ -44,5 +44,26 @@
     	public static final int STATUS_OBSOLETE = 4;
 
     ]]></extra-code>
+    
+    <track>
+    	<field name="name"/>
+    	<field name="product"/>
+    	<field name="qty"/>
+    	<field name="priority"/>
+    	<field name="defineSubBillOfMaterial"/>
+    	<field name="unit"/>
+    	<field name="prodProcess"/>
+    	<field name="costPrice"/>
+    	<field name="company"/>
+    	<field name="hasNoManageStock"/>
+    	<field name="personalized"/>
+    	<field name="wasteRate"/>
+    	<field name="statusSelect"/>
+    	<field name="workshopStockLocation"/>
+    	<field name="fullName"/>
+    	<field name="versionNumber"/>
+    	<field name="originalBillOfMaterial"/>
+    	<field name="note"/>
+    </track>
   </entity>
 </domain-models>

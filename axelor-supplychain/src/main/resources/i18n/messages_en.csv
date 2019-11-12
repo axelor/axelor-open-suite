@@ -497,6 +497,7 @@
 "Usable on sale order",,,
 "Used Credit",,,
 "Verify product stock before availabity request",,,
+"You cannot request reservation with a negative quantity.",,,
 "You have to choose at least one incoming stock move",,,
 "You have to choose at least one outgoing stock move",,,
 "You must configure a Supply chain module for the company %s",,,

@@ -40,7 +40,7 @@
 
         <toolbar>
             <button name="printBtn" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
-            <button name="reverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-method-generate-reverse-move" showIf="id != null"/>
+            <button name="reverseBtn" title="Reverse" icon="fa-exchange" onClick="save,action-move-method-generate-reverse-move" showIf="id != null"/>
             <button name="deleteMoveBtn" title="delete" icon="fa-trash" onClick="action-move-method-delete-move" showIf="id != null"/>
         </toolbar>
 
@@ -91,7 +91,7 @@
                 <field name="validationDate" readonly="true" showIf="statusSelect == 3"/>
 
                 <button name="validateBtn" title="Validate" onClick="action-group-account-move-validate-click" colSpan="12" hideIf="statusSelect >= 3"/>
-				<button name="autoTaxLineGenerateBtn" title="Generate Taxlines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
+				<button name="autoTaxLineGenerateBtn" title="Generate tax lines" onClick="action-account-move-method-automatic-taxline-generation,action-account-move-method-compute-totals" colSpan="12" hideIf="statusSelect > 1"/>
             </panel>
 		</panel>
 		
