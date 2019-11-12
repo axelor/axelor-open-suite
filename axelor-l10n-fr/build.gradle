@@ -2,7 +2,7 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-l10n-fr"
-	version "3.0.3"
+	version "3.0.4"
 	title "Axelor :: l10n FR"
 	
 	removable true

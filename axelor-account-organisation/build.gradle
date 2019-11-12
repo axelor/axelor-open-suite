@@ -2,7 +2,7 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-account-organisation"
-	version "3.0.3"
+	version "3.0.4"
 	title "Axelor :: Account-Organisation"
 
 	removable true

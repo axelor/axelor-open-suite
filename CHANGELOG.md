@@ -1,3 +1,9 @@
+# 3.0.4 (2019-11-12)
+## Bug Fixes
+	
+- USER: improve full name computation.
+- Invoice: fix filter problem on invoice operation type selection.
+
 # 3.0.3 (2017-02-28)
 ## Bug Fixes
 	
@@ -9,7 +15,6 @@
 - CRM Calls dashboard fix
 - Unused actions removed
 - Sequence onNew fix: nextNum removed
-
 
 # 3.0.2 (2015-09-09)
 ## Bug Fixes

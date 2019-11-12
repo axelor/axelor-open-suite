@@ -2,7 +2,7 @@ apply plugin: 'axelor-module'
 
 module {
 	name "axelor-message"
-	version "3.0.3"
+	version "3.0.4"
 	title "Axelor :: Message"
 	
 	removable false
