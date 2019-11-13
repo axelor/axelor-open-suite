@@ -2446,28 +2446,28 @@ WHERE ExpenseLine.kilometric_expense = ?
                 </structure>
             </list-property>
             <column id="3446">
-                <property name="width">6%</property>
+                <property name="width">4.5%</property>
             </column>
             <column id="3447">
                 <property name="width">22%</property>
             </column>
             <column id="3448">
-                <property name="width">15%</property>
+                <property name="width">12%</property>
             </column>
             <column id="4528">
-                <property name="width">4%</property>
+                <property name="width">0.3541666666666667in</property>
             </column>
             <column id="3450">
-                <property name="width">1.65625in</property>
+                <property name="width">2.28125in</property>
             </column>
             <column id="4073">
-                <property name="width">1.3645833333333333in</property>
+                <property name="width">0.7395833333333334in</property>
             </column>
             <column id="4532">
-                <property name="width">0.3958333333333333in</property>
+                <property name="width">0.20833333333333334in</property>
             </column>
             <column id="3962">
-                <property name="width">1.0208333333333333in</property>
+                <property name="width">0.7395833333333334in</property>
             </column>
             <column id="4536">
                 <property name="width">0.20833333333333334in</property>
@@ -2476,7 +2476,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <property name="width">0.7395833333333334in</property>
             </column>
             <column id="4540">
-                <property name="width">3%</property>
+                <property name="width">0.20833333333333334in</property>
             </column>
             <header>
                 <row id="4969">
@@ -3236,7 +3236,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                 </structure>
             </list-property>
             <column id="4101">
-                <property name="width">7%</property>
+                <property name="width">5.3%</property>
             </column>
             <column id="4954">
                 <property name="width">20%</property>
@@ -3251,7 +3251,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <property name="width">10%</property>
             </column>
             <column id="4105">
-                <property name="width">7%</property>
+                <property name="width">10%</property>
             </column>
             <column id="4106">
                 <property name="width">7%</property>
