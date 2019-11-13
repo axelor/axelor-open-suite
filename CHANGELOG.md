@@ -137,6 +137,7 @@
 - Distance travelled calculation of kilometricExpenseLine with Open street map
 - Timesheet: Add Timesheet reporting.
 - ADDRESS : when one address on partner please treat it as a default address
+- AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
