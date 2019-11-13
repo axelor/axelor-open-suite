@@ -22,6 +22,7 @@
 - EXPORTOBJECT : changed a condition in updateMenuGraph method such that it does not always evaluate to 'true'
 - INVOICE GENERATION : control when there is no address.
 - StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'
+- COPY OF PRODUCT : do not copy lastproductionprice value.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
