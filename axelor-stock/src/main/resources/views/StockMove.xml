@@ -528,7 +528,7 @@
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
 		<action name="action-supplychain-stock-move-record-set-invoice-status"/>
-		<action name="action-stock-move-attrs-check-delivery-address"/>
+		<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1" />
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
@@ -575,7 +575,7 @@
         <action name="action-stock-move-record-auto-mail"/>
 		<action name="action-stock-move-record-ispm-field"/>
 	   	<action name="action-stock-move-record-partner-shipment-informations"/>
-	   	<action name="action-stock-move-attrs-check-delivery-address"/>
+	   	<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1"/>
 	</action-group>
 
     <action-group name="action-stock-move-group-onchange-company">
