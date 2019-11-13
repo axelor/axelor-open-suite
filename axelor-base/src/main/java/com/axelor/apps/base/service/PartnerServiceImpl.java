@@ -426,11 +426,18 @@ public class PartnerServiceImpl implements PartnerService {
 
     if (partner != null) {
       PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
+
       List<PartnerAddress> partnerAddressList =
           partnerAddressRepo.all().filter(querySpecific, partner.getId()).fetch();
       if (partnerAddressList.isEmpty()) {
         partnerAddressList = partnerAddressRepo.all().filter(queryComman, partner.getId()).fetch();
+        
+        if (partnerAddressList.isEmpty()) {
+          partnerAddressList =
+              partnerAddressRepo.all().filter("self.partner.id = ?1", partner.getId()).fetch();
+        }
       }
+      
       if (partnerAddressList.size() == 1) {
         return partnerAddressList.get(0).getAddress();
       }

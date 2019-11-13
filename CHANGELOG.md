@@ -136,7 +136,8 @@
 - PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
 - Distance travelled calculation of kilometricExpenseLine with Open street map
 - Timesheet: Add Timesheet reporting.
-- AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true.
+- ADDRESS : when one address on partner please treat it as a default address
+- AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -294,5 +295,6 @@
 - INVOICE : fix for NPE when printing from grid view
 - Advance Import : Resolve ArrayIndexOurOfBound exception.
 - ACCOUNTING : reversion and analytic distribution
+- BATCH ACCOUNTING CUT-OFF : corrected from invoice to invoiceSet in query
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
