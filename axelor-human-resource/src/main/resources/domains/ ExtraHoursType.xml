@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="ExtraHoursType" cacheable="true">
+      <string name="name" title="Extra hours type"/>
+      <decimal name="increase" title="Increase %" min="0" max="100"/>
+      <boolean name="payrollPreprationExport" title="Export for payroll preparation"/>
+      <string name="exportCode" title="Export code"/>
+      <one-to-many name="extraHoursLine" ref="com.axelor.apps.hr.db.ExtraHoursLine" mappedBy="extraHoursType"/>
+  </entity>
+
+</domain-models>
