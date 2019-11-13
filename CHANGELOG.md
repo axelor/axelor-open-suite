@@ -24,6 +24,7 @@
 - StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'
 - COPY OF PRODUCT : do not copy lastproductionprice value.
 - Invoice : add header and footer height parameter on PrintSetting object
+- STUDIO : Disabling  XML external entity processing in BPM.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements

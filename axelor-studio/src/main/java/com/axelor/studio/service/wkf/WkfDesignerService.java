@@ -19,6 +19,7 @@ package com.axelor.studio.service.wkf;
 
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.studio.db.Wkf;
@@ -39,6 +40,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -225,7 +227,37 @@ public class WkfDesignerService {
     this.instance = instance;
     String bpmnXml = instance.getBpmnXml();
     if (bpmnXml != null) {
-      DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+      DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+      domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+      String feature = null;
+      try {
+        feature = "http://apache.org/xml/features/disallow-doctype-decl";
+        domFactory.setFeature(feature, true);
+
+        // Disable #external-general-entities
+        feature = "http://xml.org/sax/features/external-general-entities";
+        domFactory.setFeature(feature, false);
+
+        // Disable #external-parameter-entities
+        feature = "http://xml.org/sax/features/external-parameter-entities";
+        domFactory.setFeature(feature, false);
+
+        // Disable external DTDs as well
+        feature = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+        domFactory.setFeature(feature, false);
+
+        // and these as well
+        domFactory.setXIncludeAware(false);
+        domFactory.setExpandEntityReferences(false);
+      } catch (ParserConfigurationException e) {
+        // This should catch a failed setFeature feature
+        TraceBackService.trace(e);
+      }
+
+      DocumentBuilder db = domFactory.newDocumentBuilder();
+
       InputSource is = new InputSource();
       is.setCharacterStream(new StringReader(bpmnXml));
 
