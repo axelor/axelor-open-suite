@@ -18,10 +18,17 @@
 package com.axelor.studio.service;
 
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
+import com.axelor.mail.MailConstants;
+import com.axelor.mail.db.MailMessage;
+import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonModel;
@@ -342,18 +349,31 @@ public class StudioMetaService {
   }
 
   @Transactional
+  public void trackingFields(
+      AuditableModel auditableModel, String messageBody, String messageSubject) {
+
+    User user = AuthUtils.getUser();
+    MailMessage message = new MailMessage();
+    Mapper mapper = Mapper.of(auditableModel.getClass());
+
+    message.setSubject(messageSubject);
+    message.setAuthor(user);
+    message.setBody(messageBody);
+    message.setRelatedId(auditableModel.getId());
+    message.setRelatedModel(EntityHelper.getEntityClass(auditableModel).getName());
+    message.setType(MailConstants.MESSAGE_TYPE_NOTIFICATION);
+    message.setRelatedName(mapper.getNameField().get(auditableModel).toString());
+
+    Beans.get(MailMessageRepository.class).save(message);
+  }
+
+  @Transactional
   public void trackJsonField(MetaJsonField metaJsonField) {
 
     MetaModel metaModel =
         metaModelRepo.all().filter("self.fullName = ?1", metaJsonField.getModel()).fetchOne();
 
-    String trackingField = this.createTracking(metaJsonField, "Added:");
-
-    trackingField +=
-        metaModel.getJsonFieldTracking() != null ? metaModel.getJsonFieldTracking() : "";
-
-    metaModel.setJsonFieldTracking(trackingField);
-    metaModelRepo.save(metaModel);
+    trackingFields(metaModel, metaJsonField.getName(), "Field added");
   }
 
   public String createTracking(MetaJsonField metaJsonField, String actionType) {
