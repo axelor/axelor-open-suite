@@ -49,14 +49,8 @@ public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
       MetaModel metaModel =
           metaModelRepo.all().filter("self.fullName = ?1", metajsonField.getModel()).fetchOne();
 
-      String trackingField =
-          Beans.get(StudioMetaService.class).createTracking(metajsonField, "Removed:");
-
-      trackingField +=
-          metaModel.getJsonFieldTracking() != null ? metaModel.getJsonFieldTracking() : "";
-
-      metaModel.setJsonFieldTracking(trackingField);
-      metaModelRepo.save(metaModel);
+      Beans.get(StudioMetaService.class)
+          .trackingFields(metaModel, metajsonField.getName(), "Field removed");
     }
 
     super.remove(metajsonField);

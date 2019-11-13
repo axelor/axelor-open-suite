@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
 	<form model="com.axelor.meta.db.MetaModel" title="Model" name="meta-model-form" id="studio-meta-model-form" extension="true">
-      <extend target="//panel-related[@field='metaFields']">
-      	<insert position="after">
-      		<panel title="Field tracking" showIf="jsonFieldTracking" colSpan="12">
-      			<field name="jsonFieldTracking" showTitle="false" colSpan="12"/>
-      		</panel>
-      	</insert>
-      </extend>	
+		<extend target="panel-related[@field='metaFields']">
+			<insert position="after">
+				<panel-mail name="mailPanel">
+					<mail-messages limit="4"/>
+				</panel-mail>
+			</insert>
+		</extend>
 	</form>
 
 </object-views>	
