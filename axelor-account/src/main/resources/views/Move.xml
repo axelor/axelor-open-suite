@@ -285,10 +285,6 @@
 		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
 	
-	<action-method name="action-account-move-method-filter-partner">
-		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
-	</action-method>
-	
 	<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
 		<call class="com.axelor.apps.account.web.MoveController" method="isHiddenMoveLineListViewer"/>
 	</action-method>
