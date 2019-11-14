@@ -15,6 +15,7 @@
 - STOCK LOCATION PRINTING : new printing without financial data
 - STOCK MOVE LINE : Design improvement of Stock Move panel
 - TOOL,STUDIO : Disable XML external entity (XXE) processing.
+- HRBatch : stopped generation of payrollPreparation with employmentContract having status 'closed'
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
