@@ -272,7 +272,7 @@ public class MoveController {
       }
       response.setAttr("$viewerTags", "hidden", isHidden);
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      TraceBackService.trace(response, e);
     }
   }
 }
