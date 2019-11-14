@@ -25,6 +25,7 @@
 - StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'
 - COPY OF PRODUCT : do not copy lastproductionprice value.
 - Invoice : add header and footer height parameter on PrintSetting object
+- Tools : use try-with-resources for resource management in download file from ftp server
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
