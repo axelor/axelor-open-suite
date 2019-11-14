@@ -489,20 +489,20 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && lineMinBeforeLongReportGenerationMessageNumber > 0) {
       Integer typeSelect = accountingReport.getTypeSelect();
       long count = 0;
-      if (typeSelect > 0 && typeSelect <= 14) {
+      if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
         count =
             Beans.get(MoveLineRepository.class)
                 .all()
                 .filter(this.getMoveLineList(accountingReport))
                 .count();
-      } else if (typeSelect == 15) {
+      } else if (typeSelect == AccountingReportRepository.REPORT_VAT_STATEMENT_RECEIVED) {
         count =
             Beans.get(TaxPaymentMoveLineRepository.class)
                 .all()
                 .filter(this.getTaxPaymentMoveLineList(accountingReport))
                 .count();
 
-      } else if (typeSelect == 16) {
+      } else if (typeSelect == AccountingReportRepository.REPORT_ACQUISITIONS) {
         count =
             Beans.get(FixedAssetRepository.class)
                 .all()
@@ -514,13 +514,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
                     "Select invoiceLine FROM InvoiceLine invoiceLine LEFT JOIN FixedAsset fixedAsset on fixedAsset.invoiceLine = invoiceLine.id WHERE invoiceLine.fixedAssets = true and fixedAsset.invoiceLine is null ")
                 .getResultList()
                 .size();
-      } else if (typeSelect == 17) {
+      } else if (typeSelect == AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION) {
         count =
             Beans.get(FixedAssetRepository.class)
                 .all()
                 .filter(this.getFixedAssetList(accountingReport))
                 .count();
-      } else if (typeSelect == 2000) {
+      } else if (typeSelect == AccountingReportRepository.REPORT_ANALYTIC_BALANCE) {
         count =
             Beans.get(AnalyticMoveLineRepository.class)
                 .all()
