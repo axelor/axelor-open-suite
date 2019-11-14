@@ -275,8 +275,6 @@
             <field name="nbrEmployees" hideIf="partnerTypeSelect== 2"/>
             <field name="registrationCode" hideIf="partnerTypeSelect== 2"/>
             <field name="mainActivityCode" hideIf="partnerTypeSelect== 2"/>
-            <field name="healthService" hideIf="partnerTypeSelect== 2"/>
-            <field name="healthServiceAddress" hideIf="partnerTypeSelect== 2"/>
             <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
 						<field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
             <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-form" grid-view="partner-grid"/>

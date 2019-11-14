@@ -70,6 +70,8 @@
 
     <!-- DPAE -->
     <boolean name="enableDPAE" title="Enable DPAE" default="false"/>
+    <string name="healthService" title="Health service"/>
+    <many-to-one name="healthServiceAddress" title="Health service address" ref="com.axelor.apps.base.db.Address"/>
   </entity>
   
 </domain-models>
