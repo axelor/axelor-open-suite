@@ -11,9 +11,11 @@
 			<field name="colorCode" />
 			<panel name="companyHeaderPanel" title="Company Header" colSpan="12">
 				<field name="pdfHeader" colSpan="12" widget="html" showTitle="false"/>
+                <field name="pdfHeaderHeight"/>
 			</panel>
 			<panel name="companyFooterPanel" title="Company Footer" colSpan="12">
 				<field name="pdfFooter" colSpan="12" widget="html" showTitle="false"/>
+                <field name="pdfFooterHeight"/>
 			</panel>
        	</panel>
     </form>

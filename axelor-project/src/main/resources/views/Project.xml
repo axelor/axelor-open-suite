@@ -8,7 +8,7 @@
 			<button name="projectPlanningBtn" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
+			<menu name="projectToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
 					<item name="ganttWithUserItem" title="Gantt with user" action="action-project-open-popup-select-users"/>
 					<item name="ganttWithProjectItem"  title="Gantt with project" action="action-project-open-popup-select-projects"/>
 			</menu>
@@ -39,14 +39,14 @@
 		model="com.axelor.apps.project.db.Project" onLoad="action-project-on-load-group"
 		onNew="action-project-group-on-new-project">
 		<menubar>
-			<menu title="Reports" showTitle="true" icon="fa-files-o">
+			<menu name="projectReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
 				<item if-module="axelor-business-project" name="planificationAndCostsItem" title="Planification and costs"
 					action="save,action-project-method-print-planif-and-cost" />
 				<item if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 				name="financialReportItem" title="Financial Report" showIf="isBusinessProject"
 					action="save,action-project-method-print-project" />
 			</menu>
-			<menu title="Tools" showTitle="true" icon="fa-wrench">
+			<menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
 				<item name="ganttItem" title="Gantt" showIf="isProject" action="action-project-open-gantt" />
 				<item name="bookResourceItem" title="Book resource" showIf="isProject" if=" __config__.app.getApp('project')?.resourceManagement"
 					action="save,action-project-book-resource" />
