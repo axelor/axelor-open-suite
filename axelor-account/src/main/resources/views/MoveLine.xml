@@ -467,10 +467,6 @@
 	<action-method name="action-account-move-line-method-filter-partner">
 		<call class="com.axelor.apps.account.web.MoveLineController" method="filterPartner"/>
 	</action-method>
-	
-	<action-method name="action-move-line-readOnly-debit-credit-method">
-		<call class="com.axelor.apps.account.web.MoveLineController" method="readOnlyDebitCredit"/>
-	</action-method>
 
 	<search-filters name="move-line-filters" model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
 		<field name="move.period" title="Period"/>

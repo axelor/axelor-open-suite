@@ -95,11 +95,7 @@
                             </h4>
                         ]]>
                     </viewer>
-                    <editor>
-                        <field name="statusSelect"/>
-                        <field name="adjustingMove" showIf="adjustingMove" readonly="true"/>
-                    </editor>
-                </field>
+            </field>
 			<field name="$totalLines" title="Total lines" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
