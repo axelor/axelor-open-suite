@@ -240,7 +240,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
     TeamTask task = super.createTask(taskTemplate, project);
-    task.setTeamTaskInvoicing(taskTemplate.getTeamTaskInvoicing());
     return task;
   }
 }

@@ -18,7 +18,6 @@
     <many-to-one name="team" ref="com.axelor.team.db.Team"/>
     <boolean name="isUniqueTaskForMultipleQuantity"/>
     <string name="description" title="Description" large="true"/>
-    <boolean name="teamTaskInvoicing" title="Task Invoicing"/>
   </entity>
 
 </domain-models>

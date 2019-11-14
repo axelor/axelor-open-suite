@@ -220,6 +220,8 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a reconciliation sequence for the company %s" /*)*/;
   static final String RECONCILE_7 = /*$$(*/
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
+  static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
+      "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
 
   /** Reimbursement service and controller */
   static final String REIMBURSEMENT_1 = /*$$(*/

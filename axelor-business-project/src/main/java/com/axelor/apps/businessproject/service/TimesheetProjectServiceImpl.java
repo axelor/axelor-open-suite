@@ -164,13 +164,9 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
     TimesheetLine timesheetLine = super.generateTimesheetLine(timesheet, projectPlanningTime);
     if (timesheetLine != null && timesheetLine.getTeamTask() != null) {
-      if (timesheetLine.getTeamTask().getTeamTaskInvoicing()
-          && timesheetLine.getTeamTask().getInvoicingType()
-              == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-        timesheetLine.setToInvoice(true);
-      } else {
-        timesheetLine.setToInvoice(false);
-      }
+      timesheetLine.setToInvoice(
+          timesheetLine.getTeamTask().getInvoicingType()
+              == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT);
       return timesheetLine;
     }
     return null;

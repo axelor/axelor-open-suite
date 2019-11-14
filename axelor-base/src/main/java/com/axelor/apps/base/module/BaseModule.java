@@ -85,6 +85,8 @@ import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
+import com.axelor.apps.base.service.YearService;
+import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
@@ -148,6 +150,7 @@ public class BaseModule extends AxelorModule {
     bind(MailServiceMessageImpl.class).to(MailServiceBaseImpl.class);
     bind(AddressRepository.class).to(AddressBaseRepository.class);
     bind(YearRepository.class).to(YearBaseRepository.class);
+    bind(YearService.class).to(YearServiceImpl.class);
     bind(AppServiceImpl.class).to(AppBaseServiceImpl.class);
     bind(AppService.class).to(AppServiceImpl.class);
     bind(BankService.class).to(BankServiceImpl.class);

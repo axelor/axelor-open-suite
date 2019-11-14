@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="human-resource" package="com.axelor.apps.hr.db"/>
+
+  <entity name="TimesheetReport" cacheable="true">
+
+      <date name="fromDate" title="From Date"/>
+      <date name="toDate" title="To Date"/>
+      <many-to-many name="userSet" ref="com.axelor.auth.db.User" title="Users"/>
+      <integer name="typeSelect" title="Type" selection="hr.employee.timesheet.report.type.select"/>
+	  <many-to-many name="reminderUserSet" ref="com.axelor.auth.db.User" title="User to be reminded"/>
+
+  </entity>
+
+</domain-models>

@@ -5,7 +5,7 @@
 
 	<module name="project" package="com.axelor.apps.project.db"/>
 	
-	<entity name="ProjectCategory">
+	<entity name="TeamTaskCategory">
 		<string name="name" title="Name" required="true"/>
 	</entity>
 

@@ -41,11 +41,10 @@
 				<field name="membersUserSet" colSpan="12" widget="TagSelect" canNew="false" form-view="user-form" grid-view="user-grid" hideIf="synchronize" />
 			</panel>
 
-			<panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-				<field name="teamTaskInvoicing" colSpan="4" onChange="action-project-record-set-invoicing-type"/>
+			<panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">				
 				<field name="isInvoicingExpenses" colSpan="4" />
 				<field name="isInvoicingPurchases" colSpan="4" />
-				<field name="invoicingTypeSelect" showIf="teamTaskInvoicing" colSpan="6"/>
+				<field name="invoicingTypeSelect"  colSpan="6"/>
 				<field name="invoicingComment" colSpan="12" />
 			</panel>
 
@@ -55,7 +54,7 @@
 
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" canEdit="false" domain="self.isActivity = true" form-view="product-activity-form" grid-view="product-activity-grid" />
-				<field name="projectCategorySet" colSpan="12" widget="TagSelect" />
+				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
 				<field name="imputable" colSpan="4" widget="boolean-switch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
 				<field name="excludePlanning" if-module="axelor-business-project"/>

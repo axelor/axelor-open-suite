@@ -265,6 +265,13 @@ public class ExpenseController {
     response.setValues(expense);
   }
 
+  public void updateMoveDateAndPeriod(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseService.class).updateMoveDateAndPeriod(expense);
+    response.setValue("moveDate", expense.getMoveDate());
+    response.setValue("period", expense.getPeriod());
+  }
+
   public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Expense expense = request.getContext().asType(Expense.class);
@@ -632,6 +639,7 @@ public class ExpenseController {
       throws AxelorException {
 
     // Compute distance.
+    try {
 
     if (!Beans.get(AppHumanResourceService.class)
         .getAppExpense()
@@ -678,5 +686,9 @@ public class ExpenseController {
     BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
     response.setValue("totalAmount", amount);
     response.setValue("untaxedAmount", amount);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
