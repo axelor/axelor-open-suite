@@ -14,6 +14,7 @@
 - PROJECT : Fix financial report to follow the Axelor report guidelines
 - STOCK LOCATION PRINTING : new printing without financial data
 - STOCK MOVE LINE : Design improvement of Stock Move panel
+- TOOL,STUDIO : Disable XML external entity (XXE) processing.
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
