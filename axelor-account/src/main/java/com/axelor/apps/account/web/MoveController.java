@@ -261,7 +261,7 @@ public class MoveController {
     Move move = request.getContext().asType(Move.class);
     boolean isHidden = true;
     try {
-      if (move.getMoveLineList() != null && move.getStatusSelect() < 3) {
+      if (move.getMoveLineList() != null && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
         for (MoveLine moveLine : move.getMoveLineList()) {
           if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
               || moveLine.getReconcileGroup() != null) {
