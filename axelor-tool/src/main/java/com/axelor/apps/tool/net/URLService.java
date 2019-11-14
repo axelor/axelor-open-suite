@@ -66,27 +66,26 @@ public final class URLService {
 
   public static void fileUrl(
       File file, String fAddress, String localFileName, String destinationDir) throws IOException {
-    int ByteRead, ByteWritten = 0;
-    byte[] buf = new byte[size];
 
-    URL Url = new URL(fAddress);
-    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file));
-    URLConnection urlConnection = Url.openConnection();
-    InputStream inputStream = urlConnection.getInputStream();
+    try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
+      int byteRead;
+      int byteWritten = 0;
+      byte[] buf = new byte[size];
+      URL url = new URL(fAddress);
+      URLConnection urlConnection = url.openConnection();
+      InputStream inputStream = urlConnection.getInputStream();
 
-    while ((ByteRead = inputStream.read(buf)) != -1) {
-      outputStream.write(buf, 0, ByteRead);
-      ByteWritten += ByteRead;
-    }
+      while ((byteRead = inputStream.read(buf)) != -1) {
+        outputStream.write(buf, 0, byteRead);
+        byteWritten += byteRead;
+      }
 
-    LOG.info("Downloaded Successfully.");
-    LOG.debug("No of bytes :" + ByteWritten);
+      LOG.info("Downloaded Successfully.");
+      LOG.debug("No of bytes", byteWritten);
 
-    if (inputStream != null) {
-      inputStream.close();
-    }
-    if (outputStream != null) {
-      outputStream.close();
+    } catch (IOException ex) {
+
+      LOG.error(ex.getMessage());
     }
   }
 

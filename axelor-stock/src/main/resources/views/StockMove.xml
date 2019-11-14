@@ -75,7 +75,7 @@
     	<toolbar>
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
-			<button name="seeSaleOrderLinesBtn" title="See sale orders lines" onClick="action-stock-move-view-show-sale-order-lines"/>
+			<button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line"/>
     	</toolbar>
         <field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
@@ -901,17 +901,10 @@
 	<action-validate name="action-validate-stock-move-validate-cancel">
 	  <error if="statusSelect == 2 &amp;&amp; pickingIsEdited &amp;&amp; availabilityRequest" message="Picking order has been edited for this stock move, it can not be canceled."/>
 	</action-validate>
-	
-	<action-view name="action-stock-move-view-show-sale-order-lines" title="Sale Order Lines" model="com.axelor.apps.sale.db.SaleOrderLine">
-		<view name="sale-order-line-menu-grid" type="grid"/>
-  		<view name="sale-order-line-all-form" type="form"/>
-  		<domain>self.saleOrder IN (SELECT _stockMove.originId FROM StockMove _stockMove WHERE _stockMove.typeSelect = :_typeSelect AND _stockMove.isReversion = FALSE)</domain>
-		<context name="_typeSelect" expr="eval: _typeSelect"/>
-	</action-view>
-	
+
 	<action-view name="action-stock-move-view-stock-move-line" title="See stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-grid"/>
-		<view type="form" name="stock-move-line-form"/>
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
 		<domain>self.stockMove.typeSelect = :_typeSelect AND self.stockMove.isReversion = :_isReversion</domain>
 		<context name="_typeSelect" expr="eval:_typeSelect"/>
 		<context name="_isReversion" expr="eval:_isReversion"/>

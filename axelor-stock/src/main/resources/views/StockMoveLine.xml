@@ -228,15 +228,21 @@
     	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-all-onload" width="large"
     	canNew="false" canDelete="false">
         <panel name="stockMovePanel" title="Stock move" readonlyIf="stockMove.statusSelect == 3">
-	    	<field name="stockMove.stockMoveSeq" width="120"/>
-	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
-	    	<field name="stockMove.estimatedDate"/>
-            <field name="stockMove.reservationDateTime" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
-	    	<field name="stockMove.realDate"/>
-   			<field name="stockMove.typeSelect"/>
-			<field name="stockMove.origin"/>
-	        <field name="stockMove.fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	        <field name="stockMove.toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	    	<panel colSpan="12">
+    			<field name="stockMove.stockMoveSeq" width="120" colSpan="4"/>
+    			<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid" colSpan="4"/>
+    			<field name="stockMove.origin" colSpan="4"/>
+    		</panel>
+   	 		<panel colSpan="12">
+    			<field name="stockMove.estimatedDate" colSpan="4"/>
+    			<field name="stockMove.realDate" colSpan="4"/>
+    			<field name="stockMove.reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())" />
+    		</panel>
+    		<panel colSpan="12">
+				<field name="stockMove.typeSelect" colSpan="4"/>
+    			<field name="stockMove.fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4"/>
+    			<field name="stockMove.toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4"/>    
+  			 </panel>
         </panel>
         <panel name="moveDetailsPanel" title="Move details">
 	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
