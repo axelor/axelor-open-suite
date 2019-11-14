@@ -68,5 +68,5 @@ public interface AccountingReportService {
 
   public BigDecimal getCreditBalanceType4();
 
-  public boolean isToManyLine(AccountingReport accountingReport) throws AxelorException;
+  public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 }

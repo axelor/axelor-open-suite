@@ -472,7 +472,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   }
 
   @Override
-  public boolean isToManyLine(AccountingReport accountingReport) throws AxelorException {
+  public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
 
     AccountConfig accountConfig =
         Beans.get(AccountConfigService.class).getAccountConfig(accountingReport.getCompany());
