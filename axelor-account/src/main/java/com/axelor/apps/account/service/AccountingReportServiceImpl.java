@@ -26,8 +26,10 @@ import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
+import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -206,12 +208,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (accountingReport.getTypeSelect()
         == AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE) {
       this.addParams("self.taxLine is not null");
-      this.addParams("self.taxLine.tax.typeSelect = 2");
+      this.addParams("self.taxLine.tax.typeSelect = ?%d",TaxRepository.TAX_TYPE_DEBIT);
     }
 
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
-    this.addParams("self.move.statusSelect = 2 OR self.move.statusSelect = 3");
+    this.addParams("(self.moveLine.move.statusSelect = "+ MoveRepository.STATUS_DAYBOOK + " OR self.moveLine.move.statusSelect = "+MoveRepository.STATUS_VALIDATED+")");
 
     // FOR EXPORT ONLY :
 
@@ -556,11 +558,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.analyticJournal = ?%d", accountingReport.getAnalyticJournal());
     }
 
-    this.addParams("self.typeSelect = 3");
+    this.addParams("self.typeSelect = ?%d",AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 
     this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
 
-    this.addParams("self.moveLine.move.statusSelect = 2 OR self.moveLine.move.statusSelect = 3");
+    this.addParams("(self.moveLine.move.statusSelect = "+ MoveRepository.STATUS_DAYBOOK + " OR self.moveLine.move.statusSelect = "+MoveRepository.STATUS_VALIDATED+")");
 
     log.debug("Query : {}", this.query);
   }
@@ -572,9 +574,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   protected void buildFixedAssetQuery(AccountingReport accountingReport) {
     this.initQuery();
-    this.addParams("self.statusSelect in (2,3)");
+    this.addParams("(self.statusSelect = "+ FixedAssetRepository.STATUS_VALIDATED + " OR self.statusSelect = "+FixedAssetRepository.STATUS_DEPRECIATED+")");
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_ACQUISITIONS) {
-      this.addParams("self.statusSelect in (2,3)");
       if (accountingReport.getDateFrom() != null) {
         this.addParams("self.acquisitionDate >= ?%d", accountingReport.getDateFrom());
       }
@@ -585,7 +586,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
     if (accountingReport.getTypeSelect()
         == AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION) {
-      this.query += " OR ( self.statusSelect = 4 ";
+      this.query += " OR ( self.statusSelect = "+FixedAssetRepository.STATUS_TRANSFERRED +" ";
       if (accountingReport.getDateFrom() != null) {
         this.addParams("self.disposalDate >= ?%d", accountingReport.getDateFrom());
       }
@@ -626,9 +627,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
 
-    this.addParams("self.moveLine.move.statusSelect = 2 OR self.moveLine.move.statusSelect = 3");
+    this.addParams("(self.moveLine.move.statusSelect = "+ MoveRepository.STATUS_DAYBOOK + " OR self.moveLine.move.statusSelect = "+MoveRepository.STATUS_VALIDATED+")");
 
-    this.addParams("self.originTaxLine.tax.typeSelect = 1");
+    this.addParams("self.originTaxLine.tax.typeSelect = ?%d",TaxRepository.TAX_TYPE_COLLECTION);
 
     log.debug("Query : {}", this.query);
     return this.query;
