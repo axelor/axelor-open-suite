@@ -26,6 +26,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.axelor.exception.service.TraceBackService;
 
 public final class MyFtp {
 
@@ -52,21 +53,7 @@ public final class MyFtp {
       // List the files in the directory
       ftp.changeWorkingDirectory(folder);
       FTPFile[] files = ftp.listFiles();
-
-      for (int i = 0; i < files.length; i++) {
-
-        Date fileDate = files[i].getTimestamp().getTime();
-        if (fileDate.compareTo(start.getTime()) >= 0 && fileDate.compareTo(end.getTime()) <= 0) {
-
-          // Download a file from the FTP Server
-          File file = new File(destinationFolder + File.separator + files[i].getName());
-          FileOutputStream fos = new FileOutputStream(file);
-          ftp.retrieveFile(files[i].getName(), fos);
-          fos.close();
-          file.setLastModified(fileDate.getTime());
-        }
-      }
-
+      getDataFile(files, destinationFolder, start, end, ftp);
       // Logout from the FTP Server and disconnect
       ftp.logout();
       ftp.disconnect();
@@ -74,6 +61,26 @@ public final class MyFtp {
     } catch (Exception e) {
 
       LOG.error(e.getMessage());
+    }
+  }
+
+  public static void getDataFile(
+      FTPFile[] files, String destinationFolder, Calendar start, Calendar end, FTPClient ftp) {
+    for (int i = 0; i < files.length; i++) {
+
+      Date fileDate = files[i].getTimestamp().getTime();
+      if (fileDate.compareTo(start.getTime()) >= 0 && fileDate.compareTo(end.getTime()) <= 0) {
+
+        // Download a file from the FTP Server
+        File file = new File(destinationFolder + File.separator + files[i].getName());
+        try (FileOutputStream fos = new FileOutputStream(file); ) {
+          ftp.retrieveFile(files[i].getName(), fos);
+          file.setLastModified(fileDate.getTime());
+        } catch (Exception e) {
+          LOG.error(e.getMessage());
+          TraceBackService.trace(e);
+        }
+      }
     }
   }
 }
