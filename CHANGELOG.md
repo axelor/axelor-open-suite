@@ -16,6 +16,7 @@
 - STOCK MOVE LINE : Design improvement of Stock Move panel
 - TOOL,STUDIO : Disable XML external entity (XXE) processing.
 - HRBatch : stopped generation of payrollPreparation with employmentContract having status 'closed'
+- ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accouting report for new message that appears before generation if the minimum of line is found.
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
@@ -29,6 +30,7 @@
 - Invoice : add header and footer height parameter on PrintSetting object
 - URLService : Use try-with-resources for "BufferedOutputStream"
 - Tools : use try-with-resources for resource management in download file from ftp server
+- ACCOUNTING REPORT : corrected result of search button in function of the report.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
