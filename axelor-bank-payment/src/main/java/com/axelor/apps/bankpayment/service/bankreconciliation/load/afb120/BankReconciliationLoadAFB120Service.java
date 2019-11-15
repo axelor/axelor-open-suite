@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
@@ -71,8 +72,8 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
   public void loadBankStatementLines(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
-    List<BankStatementLine> bankStatementLineList =
-        getBankStatementLines(bankReconciliation, includeBankStatement);
+    List<BankStatementLineAFB120> bankStatementLineList =
+        getBankStatementLinesAFB120(bankReconciliation, includeBankStatement);
 
     if (bankStatementLineList != null) {
       for (BankStatementLine bankStatementLine : bankStatementLineList) {
@@ -99,12 +100,12 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
         + " and self.lineTypeSelect = :lineTypeSelect";
   }
 
-  protected List<BankStatementLine> getBankStatementLines(
+  protected List<BankStatementLineAFB120> getBankStatementLinesAFB120(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
 
-    return JPA.all(BankStatementLine.class)
+    return JPA.all(BankStatementLineAFB120.class)
         .filter(
             getBankStatementLinesFilter(
                 bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
@@ -114,7 +115,8 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
         .bind("bankStatement", bankStatement)
         .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
         .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT)
-        .order("valueDate, sequence")
+        .order("valueDate")
+        .order("sequence")
         .fetch();
   }
 
@@ -123,7 +125,7 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
 
-    return JPA.all(BankStatementLine.class)
+    return JPA.all(BankStatementLineAFB120.class)
         .filter(
             getBankStatementLinesFilter(
                 bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
@@ -133,7 +135,8 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
         .bind("bankStatement", bankStatement)
         .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
         .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE)
-        .order("operationDate, sequence")
+        .order("operationDate")
+        .order("sequence")
         .fetchOne();
   }
 
@@ -142,7 +145,7 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
 
-    return JPA.all(BankStatementLine.class)
+    return JPA.all(BankStatementLineAFB120.class)
         .filter(
             getBankStatementLinesFilter(
                 bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
@@ -152,7 +155,8 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
         .bind("bankStatement", bankStatement)
         .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
         .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE)
-        .order("-operationDate, -sequence")
+        .order("-operationDate")
+        .order("-sequence")
         .fetchOne();
   }
 }

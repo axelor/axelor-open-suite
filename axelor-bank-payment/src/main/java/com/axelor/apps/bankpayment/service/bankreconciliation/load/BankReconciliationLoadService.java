@@ -117,7 +117,8 @@ public class BankReconciliationLoadService {
         .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
         .bind("bankStatement", bankStatement)
         .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
-        .order("valueDate, sequence")
+        .order("valueDate")
+        .order("sequence")
         .fetch();
   }
 }

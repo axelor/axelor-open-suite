@@ -64,4 +64,6 @@ public interface StockLocationService {
 
   public List<Long> getAllLocationAndSubLocationId(
       StockLocation stockLocation, boolean isVirtualInclude);
+
+  public boolean isConfigMissing(StockLocation stockLocation, int printType);
 }

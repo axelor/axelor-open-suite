@@ -21,7 +21,7 @@
         <field name="invoice"  form-view="invoice-form" grid-view="invoice-grid" width="140"/>
         <field name="statusSelect" width="90"/>
     </grid>
-    
+
 	<grid name="move-grid-period" orderBy="date,id" title="Account moves to validate" model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
         <field name="date" width="90"/>
         <field name="reference" width="200"/>
@@ -98,6 +98,15 @@
 		<panel>
 			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
 			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<field name="$viewerTags" colSpan="12" readonly="true" showTitle="false">
+                    <viewer depends="moveLineList">
+                        <![CDATA[
+                            <h4 class="text-right">
+						 		<span class="label label-info" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;"  x-translate>It is not possible to edit the amount of a reconciled and/or lettered accounting move line.</span>
+                            </h4>
+                        ]]>
+                    </viewer>
+            </field>
 			<field name="$totalLines" title="Total lines" colSpan="3" readonly="true">
 				<viewer>
 					<![CDATA[
@@ -174,6 +183,7 @@
 		<action name="action-move-attrs-adjusting-move"/>
 		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
 		<action name="action-move-attrs-validate-button-title"/>
+		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
 	</action-group>
 	
 	<action-group name="action-account-move-group-onload">
@@ -181,6 +191,7 @@
 		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
 		<action name="action-move-attrs-validate-button-title"/>
 		<action name="action-account-move-method-compute-totals"/>
+		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
 	</action-group>
 
     <action-group name="action-group-account-move-validate-click">
@@ -284,7 +295,11 @@
 	<action-method name="action-account-move-method-filter-partner">
 		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
-	
+
+	<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
+		<call class="com.axelor.apps.account.web.MoveController" method="isHiddenMoveLineListViewer"/>
+	</action-method>
+
 	<!--ACTION VIEW-->
 	<action-view name="action-move-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
 		<view type="grid" name="move-grid-period"/>
@@ -292,7 +307,7 @@
 		<view-param name="showArchived" value="true"/>
 		<domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR  (self.statusSelect = 1 AND (self.archived = false OR self.archived is null) ))</domain>
 	</action-view>
-	
+
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>

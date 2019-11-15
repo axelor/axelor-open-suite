@@ -13,6 +13,10 @@
 - AnalyticMoveLine : fix amount calculation
 - PROJECT : Fix financial report to follow the Axelor report guidelines
 - STOCK LOCATION PRINTING : new printing without financial data
+- STOCK MOVE LINE : Design improvement of Stock Move panel
+- TOOL,STUDIO : Disable XML external entity (XXE) processing.
+- HRBatch : stopped generation of payrollPreparation with employmentContract having status 'closed'
+- ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accouting report for new message that appears before generation if the minimum of line is found.
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
@@ -21,6 +25,16 @@
 - ImportProduct :fix 'image' null variable access
 - EXPORTOBJECT : changed a condition in updateMenuGraph method such that it does not always evaluate to 'true'
 - INVOICE GENERATION : control when there is no address.
+- StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'
+- COPY OF PRODUCT : do not copy lastproductionprice value.
+- Invoice : add header and footer height parameter on PrintSetting object
+- URLService : Use try-with-resources for "BufferedOutputStream"
+- Tools : use try-with-resources for resource management in download file from ftp server
+- ACCOUNTING REPORT : corrected result of search button in function of the report.
+- MOVE LINE : reconciled or lettered move lines are now read only.
+- MOVE : if a move line is reconciled or lettered display message.
+- STOCK : email alert on stock rules should not block the process of validation of the stock move
+- BankReconciliation: Fix query error when loading bank statement in bank reconciliation form.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
