@@ -12,6 +12,7 @@
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
       <date name="date" column="date_val" title="From" required="true"/>
 	  <decimal name="qty" title="Hours"/>
+	  <many-to-one name="extraHoursType" ref="com.axelor.apps.hr.db.ExtraHoursType" title="Extra hours type"/>
 	  <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 	  <string name="description" title="Description" large="true"/>
 	  

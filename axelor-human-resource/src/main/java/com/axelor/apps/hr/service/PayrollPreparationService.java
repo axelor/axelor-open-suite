@@ -28,6 +28,7 @@ import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExtraHoursLine;
+import com.axelor.apps.hr.db.ExtraHoursType;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
@@ -65,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PayrollPreparationService {
 
@@ -414,10 +416,30 @@ public class PayrollPreparationService {
 
     // EXTRA HOURS
     if (payrollPreparation.getExtraHoursNumber().compareTo(BigDecimal.ZERO) > 0) {
-      String[] extraHourLine = createExportFileLine(payrollPreparation);
-      extraHourLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
-      extraHourLine[6] = payrollPreparation.getExtraHoursNumber().toString();
-      list.add(extraHourLine);
+      List<ExtraHoursLine> extraHourLineList =
+          Beans.get(ExtraHoursLineRepository.class)
+              .all()
+              .filter(
+                  "self.payrollPreparation.id = ?1"
+                      + " AND self.extraHoursType.payrollPreprationExport = ?2",
+                  payrollPreparation.getId(),
+                  true)
+              .fetch();
+      Map<ExtraHoursType, BigDecimal> extraHourLineExportMap =
+          extraHourLineList
+              .stream()
+              .collect(
+                  Collectors.groupingBy(
+                      ExtraHoursLine::getExtraHoursType,
+                      Collectors.reducing(
+                          BigDecimal.ZERO, ExtraHoursLine::getQty, BigDecimal::add)));
+      extraHourLineExportMap.forEach(
+          (extraHoursTypeGroup, totalHours) -> {
+            String[] extraHourLine = createExportFileLine(payrollPreparation);
+            extraHourLine[3] = extraHoursTypeGroup.getExportCode();
+            extraHourLine[6] = totalHours.toString();
+            list.add(extraHourLine);
+          });
     }
 
     payrollPreparation.setExported(true);
