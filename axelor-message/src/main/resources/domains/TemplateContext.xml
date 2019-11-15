@@ -8,7 +8,7 @@
   <entity name="TemplateContext" lang="java">
   
  	<string name="name" title="Name"/>
- 	<string name="value" title="Expr. value"/>
+ 	<string name="value" title="Expr. value" large="true"/>
   	<many-to-one name="template" ref="com.axelor.apps.message.db.Template"/>
     
   </entity>
