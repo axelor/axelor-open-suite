@@ -27,8 +27,6 @@ public interface IExceptionMessage {
   static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template" /*)*/;
   static final String INVOICING_PROJECT_EMPTY = /*$$(*/
       "You haven't select any element to invoice" /*)*/;
-  static final String INVOICING_PROJECT_USER = /*$$(*/
-      "The project/task selected doesn't have any responsible" /*)*/;
   static final String INVOICING_PROJECT_PROJECT = /*$$(*/ "You must select a project/task" /*)*/;
   static final String INVOICING_PROJECT_PROJECT_PARTNER = /*$$(*/
       "There is no customer for this project/task" /*)*/;

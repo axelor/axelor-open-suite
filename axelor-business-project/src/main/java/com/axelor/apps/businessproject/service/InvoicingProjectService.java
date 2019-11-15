@@ -109,7 +109,6 @@ public class InvoicingProjectService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_COMPANY));
     }
-    project.getAssignedTo();
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
             InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
