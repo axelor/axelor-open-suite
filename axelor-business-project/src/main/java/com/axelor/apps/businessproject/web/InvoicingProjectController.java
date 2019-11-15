@@ -66,13 +66,6 @@ public class InvoicingProjectController {
           I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
     }
 
-    if (invoicingProject.getProject().getAssignedTo() == null) {
-      throw new AxelorException(
-          invoicingProject,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICING_PROJECT_USER));
-    }
-
     Invoice invoice = Beans.get(InvoicingProjectService.class).generateInvoice(invoicingProject);
     try {
       if (invoice != null) {
