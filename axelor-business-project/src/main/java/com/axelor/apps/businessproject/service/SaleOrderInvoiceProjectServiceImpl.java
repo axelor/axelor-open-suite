@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -54,14 +55,16 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
       InvoiceService invoiceService,
       AppBusinessProjectService appBusinessProjectService,
       StockMoveRepository stockMoveRepository,
-      SaleOrderLineService saleOrderLineService) {
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl) {
     super(
         appSupplychainService,
         saleOrderRepo,
         invoiceRepo,
         invoiceService,
         saleOrderLineService,
-        stockMoveRepository);
+        stockMoveRepository,
+        saleOrderWorkflowServiceImpl);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
