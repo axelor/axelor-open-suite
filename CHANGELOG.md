@@ -22,6 +22,7 @@
 - Invoice and SaleOrder : Invoice and SaleOrder report updated based on ticket #20927
 - CITY : Import automatically from Geonames files
 - MRP : Freeze proposals after manually modifying them.
+- ExtraHoursLine : Add new field 'Type' referencing new domain ExtraHoursType.
 
 ## Improvements
 - Remove Pack Feature from Product.
