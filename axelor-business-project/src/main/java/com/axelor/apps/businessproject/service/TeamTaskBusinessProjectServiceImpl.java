@@ -343,4 +343,17 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     }
     return unitPrice;
   }
+
+  @Override
+  public TeamTask resetTeamTaskValues(TeamTask teamTask) {
+    teamTask.setProduct(null);
+    teamTask.setInvoicingType(null);
+    teamTask.setToInvoice(null);
+    teamTask.setQuantity(null);
+    teamTask.setUnit(null);
+    teamTask.setUnitPrice(null);
+    teamTask.setCurrency(null);
+    teamTask.setExTaxTotal(null);
+    return teamTask;
+  }
 }
