@@ -28,8 +28,8 @@
 			<button name="stopBtn" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
 		</toolbar>
 		<menubar>
-	        <menu title="Tools">   
-	            <item title="Book resource" action="save,action-task-book-resource"/>
+	        <menu name="teamTaskMenu" title="Tools">   
+	            <item name="bookResourceItem" title="Book resource" action="save,action-task-book-resource"/>
 	        </menu>
 	    </menubar>
 

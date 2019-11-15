@@ -21,6 +21,7 @@
 			<field name="allowRemovalValidatedMove"/>
 			<field name="generateMoveForAdvancePayment"/>
 			<field name="accountingDaybook"/>
+			<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
 			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
 

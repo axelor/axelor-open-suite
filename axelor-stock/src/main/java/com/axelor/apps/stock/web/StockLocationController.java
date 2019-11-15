@@ -70,7 +70,12 @@ public class StockLocationController {
         stockLocationId != null ? stockLocationRepository.find(new Long(stockLocationId)) : null;
     String locationIds = "";
 
+    String printType = (String) context.get("printingType");
     String exportType = (String) context.get("exportTypeSelect");
+
+    if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
+      response.setFlash(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
+    }
 
     @SuppressWarnings("unchecked")
     List<Integer> lstSelectedLocations = (List<Integer>) context.get("_ids");
@@ -113,6 +118,7 @@ public class StockLocationController {
               .addParam("StockLocationId", locationIds)
               .addParam("Locale", language)
               .addFormat(exportType)
+              .addParam("PrintType", printType)
               .generate()
               .getFileLink();
 

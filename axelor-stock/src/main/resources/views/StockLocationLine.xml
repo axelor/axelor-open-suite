@@ -43,6 +43,7 @@
         </panel>
         <panel-dashlet name="productQtyPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
         <panel-dashlet name="stockRulesPanel" action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
+        <panel-dashlet name="wapHistoryPanel" action="action-stock-location-line-view-wap-history" title="WAP history"/>
         <panel name="stockCorrectionPanel" sidebar="true">
 			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
         </panel>
@@ -220,7 +221,13 @@
     	<context name="productId" expr="eval: product?.id"/> 
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
-    
+
+  <action-view name="action-stock-location-line-view-wap-history" title="WAP History" model="com.axelor.apps.stock.db.WapHistory">
+    <view type="grid" name="wap-history-grid"/>
+    <view type="form" name="wap-history-form"/>
+    <domain>self.stockLocationLine.id = :id</domain>
+  </action-view>
+
     <action-view name="action-stock-location-line-view-open-stock-correction-form" title="Stock Correction" model="com.axelor.apps.stock.db.StockCorrection">
 		<view type="form" name="stock_correction-form"/>
 		<context name="_stockLocationLineId" expr="eval: id"/>
@@ -229,7 +236,7 @@
 	<action-method name="action-stock-location-line-allocate-all">
 	  <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="allocateAll"/>
 	</action-method>
-	
+
 	<action-method name="action-stock-location-line-deallocate-all">
 	  <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="deallocateAll"/>
 	</action-method>

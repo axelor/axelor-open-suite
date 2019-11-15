@@ -85,8 +85,8 @@
 	
     <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
         <menubar>
-            <menu title="Tools" showTitle="true" icon="fa-wrench">
-                <item if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Create a quotation" action="action-sale-group-generate-sale-order"/>
+            <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+                <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Create a quotation" action="action-sale-group-generate-sale-order"/>
                 <item title="Schedule Event" action="save,action-opportunity-view-schedule-event"/>
             </menu>
         </menubar>

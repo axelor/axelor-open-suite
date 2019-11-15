@@ -16,7 +16,7 @@
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onNew="action-inventory-record-new">
         <menubar>
 	        <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-	        	<item action="action-inventory-method-show-stockmoves" title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
+	        	<item name="showStockMoveItem" action="action-inventory-method-show-stockmoves" title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
 	        </menu>
         </menubar>
         <panel name="mainPanel">

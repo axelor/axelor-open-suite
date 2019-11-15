@@ -34,9 +34,12 @@ public class ITranslation {
   public static final String EXPENSE_ADVANCE_AMOUNT = /*$$(*/ "Expense.advanceAmount"; /*)*/
   public static final String EXPENSE_MULTIPLE_USERS = /*$$(*/ "Expense.multipleUsers"; /*)*/
   public static final String EXPENSE_TOTAL_LABEL = /*$$(*/ "Expense.total"; /*)*/
+  public static final String EXPENSE_CURRENCY = /*$$(*/ "Expense.currency"; /*)*/
+  public static final String EXPENSE_GENERAL_EXPENSES = /*$$(*/ "General Expenses"; /*)*/
 
   public static final String EXPENSE_LINE_EXPENSE_DATE = /*$$(*/ "ExpenseLine.expenseDate"; /*)*/
   public static final String EXPENSE_LINE_CLIENT = /*$$(*/ "ExpenseLine.client"; /*)*/
+  public static final String EXPENSE_LINE_PROJECT = /*$$(*/ "ExpenseLine.project"; /*)*/
   public static final String EXPENSE_LINE_EXPENSE_TYPE = /*$$(*/ "ExpenseLine.expenseType"; /*)*/
   public static final String EXPENSE_LINE_AMOUNT = /*$$(*/ "ExpenseLine.amount"; /*)*/
   public static final String EXPENSE_LINE_UNTAXED_AMOUNT = /*$$(*/

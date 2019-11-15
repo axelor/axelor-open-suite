@@ -51,7 +51,7 @@
 
     </form>
     
-    <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine"  >
+    <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onNew="action-analytic-move-line-attrs-set-original-piece-amount">
         <panel name="mainPanel" >
    	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
@@ -90,5 +90,9 @@
     <action-attrs if-module="axelor-business-project"  name="action-analytic-move-line-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
+  
+    <action-attrs if-module="axelor-supplychain" name="action-analytic-move-line-attrs-set-original-piece-amount">
+         <attribute for="originalPieceAmount" name="value" expr="eval: __parent__.exTaxTotal" if="__parent__ &amp;&amp; (__parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__._model == 'com.axelor.apps.sale.db.SaleOrderLine' || __parent__._model == 'com.axelor.apps.account.db.InvoiceLine')"/>
+    </action-attrs>
 	
 </object-views>

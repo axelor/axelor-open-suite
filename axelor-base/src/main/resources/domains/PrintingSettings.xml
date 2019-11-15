@@ -13,6 +13,8 @@
 		<integer name="logoPositionSelect" title="Logo position" selection="printing.setting.logo.position"/>
 		<string name="colorCode" title="Color code (hex)" />
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+        <decimal name="pdfHeaderHeight" title="Company Header Height(in cm)"/>
+        <decimal name="pdfFooterHeight" title="Company Footer Height(in cm)"/>
  	</entity>
 
 </domain-models>

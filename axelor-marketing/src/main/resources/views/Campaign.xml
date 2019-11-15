@@ -12,8 +12,8 @@
 	<form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large"
 		onNew="action-campaign-attrs-on-new-on-load" onLoad="action-campaign-attrs-on-new-on-load">
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
+			<menu name="campaignToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="launchEmailingItem" title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel" >

@@ -26,6 +26,10 @@
 		public static final int TYPE_INTERNAL = 1;
 		public static final int TYPE_EXTERNAL = 2;
 		public static final int TYPE_VIRTUAL = 3;
+    
+        // PRINT TYPE SELECT
+        public static final int PRINT_TYPE_LOCATION_FINANCIAL_DATA = 1;
+        public static final int PRINT_TYPE_STOCK_LOCATION_CONTENT = 2;
 
 	
 	]]></extra-code>

@@ -170,8 +170,9 @@
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
 		    <panel-related name="projectSetPanel" field="projectSet" canEdit="false" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
         	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()" showIf="activeCompany.accountConfig.isManagePassedForPayment">
-				<field name="isPfpValidator" widget="boolean-switch"/>
-        		<field name="isSuperPfpUser" widget="boolean-switch"/>
+				<field name="isPfpValidator" widget="boolean-switch" colSpan="4"/>
+        		<field name="isSuperPfpUser" widget="boolean-switch" colSpan="4"/>
+				<button name="pfpSupplierListBtn" title="Supplier list" onClick="action-view-user-pfp-supplier-list" colSpan="4"/>
 				<button name="delegateRightsOfPfpValidatorBtn" title="Delegate Rights of Pfp Validator" onClick="action-user-view-delegate-rights-pfp-validator" colSpan="6"/>
         		<panel-related field="substitutePfpValidatorList" name="substitutePfpValidatorListPanel" title="Substitute PFP Validator" showIf="isPfpValidator" colSpan="12"/>
         		<field name="activeCompany.accountConfig" hidden="true"/>
@@ -224,7 +225,7 @@
           <field name="transientPassword"/>
         </panel>
 	</form>
-	
+
 	<form name="generate-random-passwords-wizard" title="Generate random passwords" model="com.axelor.apps.base.db.Wizard">
 		<panel name="mainPanel">
 			<field name="currentUserPassword" title="Your Password" widget="password"/>
@@ -261,7 +262,7 @@
     <action-attrs name="action-attrs-select-in-step-status-select">
       <attribute name="selection-in" for="stepStatusSelect" expr="eval: __config__.app.isApp('employee') ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
     </action-attrs>
-    
+
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>
     </action-record>
@@ -325,11 +326,11 @@
     <action-method name="action-user-method-open-generate-random-passwords-wizard">
     	<call class="com.axelor.apps.base.web.UserController" method="openGenerateRandomPasswordsWizard"/>
     </action-method>
-    
+
     <action-method name="action-user-method-generate-random-passwords">
     	<call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
     </action-method>
-    
+
     <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
     	<filter title="Active users">
     		<domain>self.blocked = false AND (self.activateOn IS NULL OR self.activateOn &lt;= :_today) AND (self.expiresOn IS NULL OR self.expiresOn &gt;= :_today)</domain>
