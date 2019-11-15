@@ -33,6 +33,7 @@
 - ACCOUNTING REPORT : corrected result of search button in function of the report.
 - MOVE LINE : reconciled or lettered move lines are now read only.
 - MOVE : if a move line is reconciled or lettered display message.
+- STOCK : email alert on stock rules should not block the process of validation of the stock move
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
