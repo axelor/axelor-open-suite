@@ -8,6 +8,7 @@
 			<field name="custStockMoveMgtOnSO" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
 			<field name="customerStockMoveGenerationAuto" readonlyIf="isSaleOrderWithoutOutgoingStockMove" showIf="custStockMoveMgtOnSO"  widget="boolean-switch" colSpan="4"/>
 			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
+			<field name="completeSaleOrderOnInvoicing" widget="boolean-switch" colSpan="4" help="When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'"/>
 			<field name="cancelReasonOnChangingSaleOrder" domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'" if="__config__.app.getApp('sale').allowPendingOrderModification" colSpan="4"/>
 			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>

@@ -46,6 +46,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -92,6 +93,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected StockMoveRepository stockMoveRepository;
 
+  protected SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl;
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppSupplychainService appSupplychainService,
@@ -99,15 +102,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceRepository invoiceRepo,
       InvoiceService invoiceService,
       SaleOrderLineService saleOrderLineService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl) {
 
     this.appSupplychainService = appSupplychainService;
-
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
     this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
+    this.saleOrderWorkflowServiceImpl = saleOrderWorkflowServiceImpl;
   }
 
   @Override
@@ -674,6 +678,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           saleOrder.getSaleOrderSeq());
     }
     saleOrder.setAmountInvoiced(amountInvoiced);
+
+    if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
+        && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0) {
+      saleOrderWorkflowServiceImpl.completeSaleOrder(saleOrder);
+    }
   }
 
   @Override

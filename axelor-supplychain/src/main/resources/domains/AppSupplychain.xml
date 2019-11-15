@@ -14,6 +14,7 @@
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
 		
 		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false"/>
+		<boolean name="completeSaleOrderOnInvoicing" title="Complete sale order when all has been invoiced"/>
 		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false"/>
 		
         <boolean name="allowCompleteManuallySaleOrder" title="Allow complete manually sale order"/>
