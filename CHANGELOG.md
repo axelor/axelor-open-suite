@@ -139,6 +139,7 @@
 - ADDRESS : when one address on partner please treat it as a default address
 - AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
 - SUPPLYCHAIN : Auto-complete sale order when it has been all invoiced
+- Stock: Add stock history view for a given product, company and stock location.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
