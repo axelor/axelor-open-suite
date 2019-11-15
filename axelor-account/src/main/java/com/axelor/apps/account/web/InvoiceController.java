@@ -137,6 +137,7 @@ public class InvoiceController {
     invoice = invoiceRepo.find(invoice.getId());
 
     try {
+      response.setAttr("cancelBtn", "hidden", true);
       invoiceService.ventilate(invoice);
       response.setReload(true);
     } catch (Exception e) {
