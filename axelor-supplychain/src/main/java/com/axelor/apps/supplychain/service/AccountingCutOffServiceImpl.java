@@ -67,7 +67,11 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
@@ -148,8 +152,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     String queryStr =
-        "(self.invoiceSet is empty or self.invoiceSet.statusSelect != :invoiceStatusVentilated or (self.invoiceSet.statusSelect = :invoiceStatusVentilated and self.invoiceSet.invoiceDate > :moveDate)) "
-            + "AND self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
+        " self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
             + "AND self.typeSelect = :stockMoveType ";
 
     if (company != null) {
@@ -362,12 +365,12 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected boolean checkStockMoveLine(
       StockMoveLine stockMoveLine, Product product, boolean includeNotStockManagedProduct) {
-    if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
-        || product == null
-        || (!includeNotStockManagedProduct && !product.getStockManaged())) {
+    if ((stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
+            || product == null
+            || (!includeNotStockManagedProduct && !product.getStockManaged()))
+        || (stockMoveLine.getQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0)) {
       return true;
     }
-
     return false;
   }
 
