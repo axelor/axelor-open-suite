@@ -25,9 +25,12 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TeamTaskController {
+
+  @Inject private TeamTaskBusinessProjectService businessProjectService;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -83,11 +86,10 @@ public class TeamTaskController {
   public void onChangeCategory(ActionRequest request, ActionResponse response) {
     TeamTask task = request.getContext().asType(TeamTask.class);
     TeamTaskCategory teamTaskCategory = task.getTeamTaskCategory();
-    if (teamTaskCategory == null) {
-      return;
+    task = businessProjectService.resetTeamTaskValues(task);
+    if (teamTaskCategory != null) {
+      task = businessProjectService.computeDefaultInformation(task);
     }
-
-    task = Beans.get(TeamTaskBusinessProjectService.class).computeDefaultInformation(task);
 
     if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
       task.setToInvoice(true);
