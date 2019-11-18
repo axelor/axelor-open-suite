@@ -255,6 +255,18 @@
                     <text-property name="displayName">multiple_users</text-property>
                     <text-property name="heading">multiple_users</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">sent_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">sent_date</text-property>
+                    <text-property name="heading">sent_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency</text-property>
+                    <text-property name="heading">currency</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -345,6 +357,16 @@
                         <property name="position">15</property>
                         <property name="name">multiple_users</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">sent_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">currency</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -455,6 +477,20 @@
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">sent_date</property>
+                    <property name="nativeName">sent_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Expense.id, 
 	MetaFile.file_path AS logo_path,
@@ -470,10 +506,13 @@
 	Expense.withdrawn_cash,
 	Expense.personal_expense_amount,
 	select_item.title  AS company_cb_select,
-	Expense.multiple_users
+	Expense.multiple_users,
+	Expense.sent_date,
+	Currency.code AS currency
 FROM hr_expense AS Expense
 LEFT JOIN auth_user AS AuthUser ON (Expense.user_id = AuthUser.id)
 LEFT JOIN base_company AS Company ON (Expense.company = Company.id)
+LEFT JOIN base_currency AS Currency ON Company.currency = Currency.id
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN base_period AS PaymentPeriod ON (Expense.period = PaymentPeriod.id)
 LEFT JOIN auth_user AS ValidatedUser ON (Expense.validated_by = ValidatedUser.id)
@@ -481,6 +520,7 @@ LEFT JOIN public.base_printing_settings AS PrintingSetting ON (Company.printing_
 LEFT JOIN meta_select AS selection ON selection.name = 'hr.expense.company.cb.payment'
 LEFT JOIN meta_select_item AS select_item ON (select_item.value = CAST( Expense.company_cb_select AS text ) AND select_item.select_id = selection.id)
 WHERE Expense.id = ?
+
 
 
 ]]></xml-property>
@@ -739,6 +779,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">project</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">project</text-property>
+                    <text-property name="heading">project</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">comments</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">comments</text-property>
@@ -817,31 +863,36 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">comments</property>
+                        <property name="name">project</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">currencyCode</property>
+                        <property name="name">comments</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">currencyCode</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">total_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">untaxed_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">total_tax</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">kilometric_expense</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -879,48 +930,55 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">5</property>
+                    <property name="name">project</property>
+                    <property name="nativeName">project</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
                     <property name="name">comments</property>
                     <property name="nativeName">comments</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">currencyCode</property>
                     <property name="nativeName">currencyCode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">total_amount</property>
                     <property name="nativeName">total_amount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">untaxed_amount</property>
                     <property name="nativeName">untaxed_amount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">total_tax</property>
                     <property name="nativeName">total_tax</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">kilometric_expense</property>
                     <property name="nativeName">kilometric_expense</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select ExpenseLine.id, ExpenseLine.expense_date,ClientPartner.full_name as cust_full_name, Product.name as product_name,
+            <xml-property name="queryText"><![CDATA[select ExpenseLine.id, ExpenseLine.expense_date,ClientPartner.full_name as cust_full_name, Product.name as product_name,Task.full_name AS project,
 ExpenseLine.comments, Currency.code as "currencyCode", ExpenseLine.total_amount, ExpenseLine.untaxed_amount, ExpenseLine.total_tax, ExpenseLine.kilometric_expense
 from hr_expense as Expense
 inner join hr_expense_line as ExpenseLine on (ExpenseLine.expense = Expense.id)
@@ -1056,6 +1114,12 @@ where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property
                     <text-property name="displayName">kilometric_expense_type</text-property>
                     <text-property name="heading">kilometric_expense_type</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">project</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">project</text-property>
+                    <text-property name="heading">project</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1110,6 +1174,11 @@ where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property
                     <structure>
                         <property name="position">8</property>
                         <property name="name">kilometric_expense_type</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">project</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -1172,6 +1241,13 @@ where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">project</property>
+                    <property name="nativeName">project</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT ExpenseLine.expense_date,
 	ExpenseLine.untaxed_amount,
@@ -1180,9 +1256,10 @@ where Expense.id = ? AND ExpenseLine.kilometric_expense IS NULL]]></xml-property
 	Currency.code as "currencyCode",
 	ExpenseLine.distance,
 	param.name AS kilometric_allow_param,
-	select_item.title  AS kilometric_expense_type
-
+	select_item.title  AS kilometric_expense_type,
+	Task.full_name AS project
 FROM hr_expense_line AS ExpenseLine
+LEFT JOIN project_project as Task on (ExpenseLine.project = Task.id)
 LEFT JOIN meta_select AS selection ON selection.name = 'hr.kilometric.allowance.type.select'
 LEFT JOIN meta_select_item AS select_item ON (select_item.value = CAST( ExpenseLine.kilometric_type_select AS text ) AND select_item.select_id = selection.id)
 LEFT JOIN hr_kilometric_allow_param AS param ON ExpenseLine.kilometric_allow_param = param.id
@@ -1522,39 +1599,320 @@ WHERE ExpenseLine.kilometric_expense = ?
             <property name="headerHeight">0in</property>
             <property name="footerHeight">25pt</property>
             <page-footer>
-                <grid id="4508">
-                    <column id="4509">
-                        <property name="width">24.4475cm</property>
+                <grid id="3681">
+                    <property name="height">0.5104166666666666in</property>
+                    <property name="width">11.052083333333334in</property>
+                    <property name="dataSet">ExpenseDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">id</property>
+                            <text-property name="displayName">id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_path</property>
+                            <text-property name="displayName">logo_path</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">pdf_header</property>
+                            <text-property name="displayName">pdf_header</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">user_name</property>
+                            <text-property name="displayName">user_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">payment_period_name</property>
+                            <text-property name="displayName">payment_period_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["payment_period_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">total_amount</property>
+                            <text-property name="displayName">total_amount</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["total_amount"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">validated_user_name</property>
+                            <text-property name="displayName">validated_user_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["validated_user_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">validation_date</property>
+                            <text-property name="displayName">validation_date</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">advance_amount</property>
+                            <text-property name="displayName">advance_amount</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["advance_amount"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">withdrawn_cash</property>
+                            <text-property name="displayName">withdrawn_cash</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["withdrawn_cash"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">personal_expense_amount</property>
+                            <text-property name="displayName">personal_expense_amount</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["personal_expense_amount"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
+                        <structure>
+                            <property name="name">company_cb_select</property>
+                            <text-property name="displayName">company_cb_select</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">multiple_users</property>
+                            <text-property name="displayName">multiple_users</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["multiple_users"]</expression>
+                            <property name="dataType">integer</property>
+                        </structure>
+                        <structure>
+                            <property name="name">sent_date</property>
+                            <text-property name="displayName">sent_date</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["sent_date"]</expression>
+                            <property name="dataType">date</property>
+                        </structure>
+                        <structure>
+                            <property name="name">currency</property>
+                            <text-property name="displayName">currency</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
+                    <column id="4643">
+                        <property name="width">27.5%</property>
                     </column>
-                    <column id="4510">
-                        <property name="width">3.4395833333333337cm</property>
+                    <column id="4804">
+                        <property name="width">45%</property>
                     </column>
-                    <row id="4511">
-                        <cell id="4512"/>
-                        <cell id="4513">
-                            <grid id="4514">
-                                <column id="4515"/>
-                                <column id="4516"/>
-                                <column id="4517"/>
-                                <row id="4518">
-                                    <cell id="4519">
-                                        <auto-text id="4520">
-                                            <property name="type">page-number</property>
-                                        </auto-text>
-                                    </cell>
-                                    <cell id="4521">
-                                        <text id="4522">
-                                            <property name="contentType">plain</property>
-                                            <text-property name="content"><![CDATA[/]]></text-property>
-                                        </text>
-                                    </cell>
-                                    <cell id="4523">
-                                        <auto-text id="4524">
-                                            <property name="type">total-page</property>
-                                        </auto-text>
-                                    </cell>
-                                </row>
-                            </grid>
+                    <column id="4805">
+                        <property name="width">20%</property>
+                    </column>
+                    <column id="3682">
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="3683">
+                        <property name="width">1.5%</property>
+                    </column>
+                    <column id="3684">
+                        <property name="width">3%</property>
+                    </column>
+                    <row id="3685">
+                        <property name="height">0.5104166666666666in</property>
+                        <cell id="4641">
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="verticalAlign">middle</property>
+                            <image id="3419">
+                                <property name="height">1.5cm</property>
+                                <property name="width">4cm</property>
+                                <property name="dataSet">ExpenseDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">id</property>
+                                        <text-property name="displayName">id</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                                        <property name="dataType">decimal</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">pdf_header</property>
+                                        <text-property name="displayName">pdf_header</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">user_name</property>
+                                        <text-property name="displayName">user_name</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">payment_period_name</property>
+                                        <text-property name="displayName">payment_period_name</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["payment_period_name"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">total_amount</property>
+                                        <text-property name="displayName">total_amount</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["total_amount"]</expression>
+                                        <property name="dataType">decimal</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">validated_user_name</property>
+                                        <text-property name="displayName">validated_user_name</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["validated_user_name"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">validation_date</property>
+                                        <text-property name="displayName">validation_date</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
+                                        <property name="dataType">date</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">advance_amount</property>
+                                        <text-property name="displayName">advance_amount</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["advance_amount"]</expression>
+                                        <property name="dataType">decimal</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">withdrawn_cash</property>
+                                        <text-property name="displayName">withdrawn_cash</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["withdrawn_cash"]</expression>
+                                        <property name="dataType">decimal</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">personal_expense_amount</property>
+                                        <text-property name="displayName">personal_expense_amount</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["personal_expense_amount"]</expression>
+                                        <property name="dataType">decimal</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">company_cb_select</property>
+                                        <text-property name="displayName">company_cb_select</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">multiple_users</property>
+                                        <text-property name="displayName">multiple_users</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["multiple_users"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">sent_date</property>
+                                        <text-property name="displayName">sent_date</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["sent_date"]</expression>
+                                        <property name="dataType">date</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">currency</property>
+                                        <text-property name="displayName">currency</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row._outer["logo_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="4803">
+                            <property name="fontSize">8.5pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="verticalAlign">middle</property>
+                            <text id="4982">
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'Expense.expenseOf'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["user_name"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="3798">
+                            <property name="fontSize">8.5pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="verticalAlign">middle</property>
+                            <text id="3800">
+                                <property name="textAlign">center</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">new Date()</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="3686">
+                            <property name="fontSize">8.5pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3687">
+                                <property name="textAlign">center</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="3688">
+                            <property name="fontSize">8.5pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="verticalAlign">middle</property>
+                            <text id="3689">
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="3690">
+                            <property name="fontSize">8.5pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="3691">
+                                <property name="textAlign">center</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
                         </cell>
                     </row>
                 </grid>
@@ -1645,166 +2003,56 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <expression name="expression" type="javascript">dataSetRow["multiple_users"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">sent_date</property>
+                    <text-property name="displayName">sent_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["sent_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="3343">
-                <property name="width">2in</property>
+                <property name="width">16.66%</property>
             </column>
             <column id="3344">
-                <property name="width">1.1979166666666667in</property>
+                <property name="width">8.33%</property>
             </column>
             <column id="3345">
-                <property name="width">0.6041666666666666in</property>
+                <property name="width">8.33%</property>
+            </column>
+            <column id="4584">
+                <property name="width">16.66%</property>
             </column>
             <column id="3346">
-                <property name="width">12.276666666666666cm</property>
+                <property name="width">16.66%</property>
             </column>
             <column id="3347">
-                <property name="width">0.9479166666666666in</property>
+                <property name="width">16.66%</property>
             </column>
             <column id="3348">
-                <property name="width">1.4791666666666667in</property>
+                <property name="width">16.66%</property>
             </column>
-            <row id="3349">
-                <property name="height">0.9583333333333334in</property>
-                <cell id="3350">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4577">
-                        <property name="fontSize">8pt</property>
-                        <property name="dataSet">ExpenseDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">id</property>
-                                <text-property name="displayName">id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">logo_height</property>
-                                <text-property name="displayName">logo_height</text-property>
-                                <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">logo_width</property>
-                                <text-property name="displayName">logo_width</text-property>
-                                <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pdf_header</property>
-                                <text-property name="displayName">pdf_header</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">user_name</property>
-                                <text-property name="displayName">user_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">payment_period_name</property>
-                                <text-property name="displayName">payment_period_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["payment_period_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_amount</property>
-                                <text-property name="displayName">total_amount</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_amount"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">validated_user_name</property>
-                                <text-property name="displayName">validated_user_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["validated_user_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">validation_date</property>
-                                <text-property name="displayName">validation_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">advance_amount</property>
-                                <text-property name="displayName">advance_amount</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["advance_amount"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">withdrawn_cash</property>
-                                <text-property name="displayName">withdrawn_cash</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["withdrawn_cash"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">personal_expense_amount</property>
-                                <text-property name="displayName">personal_expense_amount</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["personal_expense_amount"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">company_cb_select</property>
-                                <text-property name="displayName">company_cb_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">multiple_users</property>
-                                <text-property name="displayName">multiple_users</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["multiple_users"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="3352">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="textAlign">right</property>
-                </cell>
-                <cell id="4034">
-                    <property name="textAlign">right</property>
-                </cell>
-                <cell id="4035">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <property name="textAlign">right</property>
-                    <text id="3804">
-                        <property name="textAlign">left</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["pdf_header"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
             <row id="3836">
                 <property name="height">0.5729166666666666in</property>
                 <cell id="3837">
-                    <property name="colSpan">6</property>
+                    <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
                     <text id="3426">
                         <property name="fontSize">14pt</property>
@@ -1846,7 +2094,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="rowSpan">1</property>
                     <text id="3425">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1885,7 +2133,46 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <text-property name="content"><![CDATA[<VALUE-OF>row["user_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="3374"/>
+                <cell id="4580">
+                    <text id="3830">
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">right</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Expense.expenseDate'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="3374">
+                    <text id="3935">
+                        <property name="marginTop">1pt</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["sent_date"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
                 <cell id="3375">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
@@ -1929,107 +2216,11 @@ WHERE ExpenseLine.kilometric_expense = ?
                     </text>
                 </cell>
             </row>
-            <row id="3377">
-                <cell id="3833">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <text id="3830">
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Expense.expenseDate'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="3928">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <text id="3935">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">new Date()</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="3381">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                </cell>
-                <cell id="4021">
-                    <text id="4059">
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["personal_expense_amount"] == 0</expression>
-                            </structure>
-                        </list-property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Expense.personalExpenseAmount'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="3936">
-                    <text id="4058">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}"> if( row["personal_expense_amount"] >0) {row["personal_expense_amount"]} </VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
             <row id="4037">
                 <cell id="4038">
                     <text id="4051">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2091,61 +2282,10 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["company_cb_select"] }</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4041"/>
-                <cell id="4042">
-                    <text id="4054">
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["withdrawn_cash"] == 0</expression>
-                            </structure>
-                        </list-property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Expense.withdrawnCash'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="4043">
-                    <text id="4055">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}"> if( row["withdrawn_cash"] >0) {row["withdrawn_cash"]} </VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="4044">
-                <property name="verticalAlign">top</property>
-                <property name="height">1cm</property>
-                <cell id="4045">
+                <cell id="4582">
                     <text id="4056">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2173,9 +2313,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4046">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
+                <cell id="4041">
                     <text id="4057">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
@@ -2208,23 +2346,16 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["multiple_users"] }</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4048"/>
-                <cell id="4049">
-                    <text id="4064">
+                <cell id="4042">
+                    <text id="4585">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">right</property>
                         <property name="dataSet">TranslateDS</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["advance_amount"] == 0</expression>
-                            </structure>
-                        </list-property>
                         <list-property name="paramBindings">
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'Expense.advanceAmount'</value>
+                                    <value type="javascript">'Expense.currency'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -2246,15 +2377,28 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
                 </cell>
-                <cell id="4050">
-                    <text id="4065">
+                <cell id="4043">
+                    <text id="4586">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">left</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}"> if( row["advance_amount"] >0) {row["advance_amount"]} </VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+            </row>
+            <row id="4044">
+                <property name="verticalAlign">top</property>
+                <property name="height">1cm</property>
+                <cell id="4045"/>
+                <cell id="4046">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                </cell>
+                <cell id="4583"/>
+                <cell id="4048"/>
+                <cell id="4049"/>
+                <cell id="4050"/>
             </row>
         </grid>
         <table id="3427">
@@ -2363,6 +2507,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <expression name="expression" type="javascript">dataSetRow["currencyCode"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">project</property>
+                    <text-property name="displayName">project</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -2372,60 +2522,102 @@ WHERE ExpenseLine.kilometric_expense = ?
                 </structure>
             </list-property>
             <column id="3446">
-                <property name="width">2.5cm</property>
+                <property name="width">6%</property>
             </column>
             <column id="3447">
-                <property name="width">2.5cm</property>
+                <property name="width">17%</property>
             </column>
             <column id="3448">
-                <property name="width">2.5cm</property>
+                <property name="width">14%</property>
             </column>
-            <column id="4528"/>
+            <column id="4528">
+                <property name="width">5%</property>
+            </column>
             <column id="3450">
-                <property name="width">4.1275cm</property>
+                <property name="width">30%</property>
             </column>
             <column id="4073">
-                <property name="width">1.3020833333333333in</property>
+                <property name="width">5%</property>
             </column>
             <column id="4532">
-                <property name="width">0.3in</property>
+                <property name="width">2%</property>
             </column>
             <column id="3962">
-                <property name="width">1.302in</property>
+                <property name="width">5%</property>
             </column>
             <column id="4536">
-                <property name="width">0.3in</property>
+                <property name="width">2%</property>
             </column>
             <column id="3972">
-                <property name="width">1.2916666666666667in</property>
+                <property name="width">5%</property>
             </column>
             <column id="4540">
-                <property name="width">0.3in</property>
+                <property name="width">2%</property>
             </column>
             <header>
+                <row id="4983">
+                    <property name="height">0.7672916666666666cm</property>
+                    <cell id="4984">
+                        <property name="colSpan">11</property>
+                        <property name="rowSpan">1</property>
+                        <text id="4949">
+                            <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="marginTop">10pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">5pt</property>
+                            <property name="textAlign">left</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'General Expenses'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"]){ row["translation"]} else { 'General Expenses' }</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                </row>
                 <row id="3428">
                     <property name="height">0.7672916666666666cm</property>
                     <cell id="3429">
                         <property name="colSpan">1</property>
                         <property name="rowSpan">1</property>
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="3452">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2455,31 +2647,31 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="3430">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="3454">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'ExpenseLine.client'</value>
+                                        <value type="javascript">'ExpenseLine.project'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2502,24 +2694,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="3431">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="3453">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2551,24 +2743,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <cell id="4525">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="3456">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2600,24 +2792,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <cell id="4070">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="3965">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2649,24 +2841,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <cell id="3956">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4074">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2698,24 +2890,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <cell id="3966">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="3973">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2750,18 +2942,14 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <row id="3846">
                     <property name="height">0.5820833333333333cm</property>
                     <cell id="3847">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="3982">
                             <property name="fontSize">8pt</property>
                             <property name="marginLeft">2pt</property>
@@ -2771,38 +2959,31 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="3848">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="3822">
                             <property name="fontSize">8pt</property>
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["cust_full_name"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["project"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="3849">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">left</property>
                         <text id="4496">
                             <property name="fontSize">8pt</property>
                             <property name="textAlign">center</property>
@@ -2837,18 +3018,14 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <cell id="4526">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="3460">
                             <property name="fontSize">8pt</property>
                             <property name="marginRight">0pt</property>
@@ -2858,15 +3035,16 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4071">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="3985">
                             <property name="fontSize">8pt</property>
                             <property name="marginRight">2pt</property>
@@ -2875,32 +3053,17 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,###0.00">row["untaxed_amount"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4530">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4541">
-                            <property name="fontSize">8pt</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
                     <cell id="3957">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4075">
                             <property name="fontSize">8pt</property>
                             <property name="marginRight">2pt</property>
@@ -2909,32 +3072,17 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,###0.00">row["total_tax"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4534">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4549">
-                            <property name="fontSize">8pt</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
                     <cell id="3967">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="3986">
                             <property name="fontSize">8pt</property>
                             <property name="marginRight">2pt</property>
@@ -2943,90 +3091,47 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">new Number(row["total_amount"])</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4538">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4551">
-                            <property name="fontSize">8pt</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
                 </row>
             </detail>
             <footer>
                 <row id="3866">
+                    <property name="borderTopColor">#000000</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
                     <property name="height">0.582cm</property>
                     <cell id="3867">
                         <property name="colSpan">3</property>
                         <property name="rowSpan">1</property>
                         <property name="backgroundColor">#FFFFFF</property>
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
                     </cell>
                     <cell id="4527">
-                        <property name="backgroundColor">#FAFAFA</property>
-                        <property name="borderBottomColor">#606062</property>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                    </cell>
-                    <cell id="4137">
-                        <property name="backgroundColor">#606062</property>
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
+                        <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="3874">
-                            <property name="backgroundColor">#606062</property>
                             <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginRight">3pt</property>
                             <property name="textAlign">right</property>
                             <property name="dataSet">TranslateDS</property>
@@ -3057,13 +3162,18 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4072">
-                        <property name="borderBottomColor">#606062</property>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="4139">
@@ -3075,31 +3185,19 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,###0.00">row["untaxSum"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4531">
-                        <property name="fontWeight">bold</property>
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4548">
-                            <property name="fontSize">8pt</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
                     <cell id="4032">
-                        <property name="borderBottomColor">#606062</property>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="4140">
@@ -3111,23 +3209,9 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,###0.00">row["taxSum"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4535">
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderRightColor">#606062</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4552">
-                            <property name="fontSize">8pt</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
                     <cell id="4033">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <property name="backgroundAttachment">scroll</property>
                         <property name="backgroundColor">#FFFFFF</property>
                         <property name="backgroundImageType">url</property>
@@ -3145,13 +3229,16 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="textLineThrough">none</property>
                         <property name="textOverline">none</property>
                         <property name="textUnderline">none</property>
-                        <property name="borderBottomColor">#606062</property>
+                        <property name="borderBottomColor">#000000</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">#606062</property>
+                        <property name="borderLeftColor">#000000</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="marginTop">0pt</property>
@@ -3184,65 +3271,6 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,###0.00">row["totalSum"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4539">
-                        <property name="backgroundAttachment">scroll</property>
-                        <property name="backgroundColor">#FFFFFF</property>
-                        <property name="backgroundImageType">url</property>
-                        <property name="backgroundPositionX">0%</property>
-                        <property name="backgroundPositionY">0%</property>
-                        <property name="backgroundRepeat">repeat</property>
-                        <property name="backgroundSizeHeight">auto</property>
-                        <property name="backgroundSizeWidth">auto</property>
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="fontStyle">normal</property>
-                        <property name="fontVariant">normal</property>
-                        <property name="color">black</property>
-                        <property name="textLineThrough">none</property>
-                        <property name="textOverline">none</property>
-                        <property name="textUnderline">none</property>
-                        <property name="borderBottomColor">#606062</property>
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftColor">black</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderLeftWidth">medium</property>
-                        <property name="borderRightColor">#000000</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopColor">#606062</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="marginTop">0pt</property>
-                        <property name="marginLeft">0pt</property>
-                        <property name="marginBottom">0pt</property>
-                        <property name="marginRight">0pt</property>
-                        <property name="paddingTop">1pt</property>
-                        <property name="paddingLeft">1pt</property>
-                        <property name="paddingBottom">1pt</property>
-                        <property name="paddingRight">1pt</property>
-                        <property name="textIndent">0em</property>
-                        <property name="letterSpacing">normal</property>
-                        <property name="lineHeight">normal</property>
-                        <property name="orphans">2</property>
-                        <property name="textTransform">none</property>
-                        <property name="whiteSpace">normal</property>
-                        <property name="widows">2</property>
-                        <property name="wordSpacing">normal</property>
-                        <property name="display">block</property>
-                        <property name="pageBreakAfter">auto</property>
-                        <property name="pageBreakBefore">auto</property>
-                        <property name="pageBreakInside">auto</property>
-                        <property name="showIfBlank">false</property>
-                        <property name="canShrink">false</property>
-                        <property name="overflow">hidden</property>
-                        <text id="4553">
-                            <property name="fontSize">8pt</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
@@ -3342,6 +3370,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <expression name="expression" type="javascript">dataSetRow["currencyCode"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">project</property>
+                    <text-property name="displayName">project</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="sort">
                 <structure>
@@ -3350,28 +3384,88 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="strength">-1</property>
                 </structure>
             </list-property>
-            <column id="4101"/>
-            <column id="4102"/>
-            <column id="4103"/>
-            <column id="4104"/>
-            <column id="4105"/>
+            <column id="4101">
+                <property name="width">6%</property>
+            </column>
+            <column id="4999">
+                <property name="width">17%</property>
+            </column>
+            <column id="4102">
+                <property name="width">14%</property>
+            </column>
+            <column id="4103">
+                <property name="width">15%</property>
+            </column>
+            <column id="4104">
+                <property name="width">15%</property>
+            </column>
+            <column id="4105">
+                <property name="width">12%</property>
+            </column>
             <column id="4106">
-                <property name="width">3.96875cm</property>
+                <property name="width">7%</property>
             </column>
             <column id="4107">
-                <property name="width">3.65125cm</property>
+                <property name="width">5%</property>
             </column>
             <column id="4572">
-                <property name="width">0.3in</property>
+                <property name="width">2%</property>
             </column>
             <header>
                 <row id="4127">
                     <cell id="4128">
-                        <property name="colSpan">7</property>
+                        <property name="colSpan">8</property>
                         <property name="rowSpan">1</property>
                         <text id="4119">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">12pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">10pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">5pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">left</property>
+                            <property name="textIndent">0em</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
                                 <structure>
@@ -3396,31 +3490,31 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { 'Kilometric Allowances' }</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"]){ row["translation"]} else { 'Kilometric Allowances' }</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4568"/>
                 </row>
                 <row id="4077">
                     <cell id="4078">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4116">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3449,25 +3543,72 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4079">
-                        <property name="backgroundColor">#606062</property>
-                        <text id="4110">
-                            <property name="backgroundColor">#606062</property>
+                    <cell id="4996">
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="5000">
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="marginTop">2pt</property>
+                            <property name="dataSet">TranslateDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'ExpenseLine.project'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4079">
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4110">
+                            <property name="backgroundColor">#E5E5E5</property>
+                            <property name="fontSize">9pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3497,24 +3638,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4080">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4111">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3544,24 +3685,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4081">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4112">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3591,24 +3732,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4082">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4115">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3638,24 +3779,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4083">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4113">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3687,24 +3828,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <cell id="4084">
                         <property name="colSpan">2</property>
                         <property name="rowSpan">1</property>
-                        <property name="backgroundColor">#606062</property>
+                        <property name="backgroundColor">#E5E5E5</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4114">
-                            <property name="backgroundColor">#606062</property>
+                            <property name="backgroundColor">#E5E5E5</property>
                             <property name="fontSize">9pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginTop">2pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3738,14 +3879,12 @@ WHERE ExpenseLine.kilometric_expense = ?
             <detail>
                 <row id="4085">
                     <cell id="4086">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4108">
                             <property name="fontSize">8pt</property>
                             <property name="marginLeft">2pt</property>
@@ -3754,15 +3893,27 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["expense_date"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4087">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                    <cell id="4997">
+                        <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="5001">
+                            <property name="fontSize">8pt</property>
+                            <property name="textAlign">center</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["project"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4087">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4120">
                             <property name="fontSize">8pt</property>
                             <property name="textAlign">center</property>
@@ -3771,14 +3922,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4088">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4121">
                             <property name="fontSize">8pt</property>
                             <property name="textAlign">center</property>
@@ -3787,14 +3936,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4089">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4122">
                             <property name="fontSize">8pt</property>
                             <property name="marginTop">1pt</property>
@@ -3828,14 +3975,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4090">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4123">
                             <property name="fontSize">8pt</property>
                             <property name="marginTop">1pt</property>
@@ -3869,14 +4014,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4091">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4124">
                             <property name="fontSize">8pt</property>
                             <property name="marginRight">2pt</property>
@@ -3886,12 +4029,14 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4092">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
+                        <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
                         <text id="4125">
                             <property name="fontSize">8pt</property>
                             <property name="marginRight">2pt</property>
@@ -3900,46 +4045,39 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,###0.00">row["untaxed_amount"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
-                    <cell id="4570">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4576">
-                            <property name="fontSize">8pt</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
                 </row>
             </detail>
             <footer>
                 <row id="4093">
+                    <property name="borderTopColor">#000000</property>
+                    <property name="borderTopStyle">solid</property>
+                    <property name="borderTopWidth">thin</property>
                     <cell id="4094"/>
+                    <cell id="4998"/>
                     <cell id="4095"/>
                     <cell id="4096"/>
                     <cell id="4097"/>
                     <cell id="4098">
-                        <property name="backgroundColor">#606062</property>
+                        <property name="borderBottomColor">#000000</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftColor">#000000</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightColor">#000000</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopColor">#000000</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
                         <text id="4142">
-                            <property name="backgroundColor">#606062</property>
                             <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="color">#FFFFFF</property>
-                            <property name="borderBottomColor">#606062</property>
-                            <property name="borderBottomStyle">solid</property>
-                            <property name="borderBottomWidth">thin</property>
-                            <property name="borderLeftColor">#606062</property>
-                            <property name="borderLeftStyle">solid</property>
-                            <property name="borderLeftWidth">thin</property>
-                            <property name="borderRightColor">#606062</property>
-                            <property name="borderRightStyle">solid</property>
-                            <property name="borderRightWidth">thin</property>
-                            <property name="borderTopColor">#606062</property>
-                            <property name="borderTopStyle">solid</property>
-                            <property name="borderTopWidth">thin</property>
+                            <property name="color">#000000</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="marginRight">3pt</property>
                             <property name="textAlign">right</property>
                             <property name="dataSet">TranslateDS</property>
@@ -3988,10 +4126,14 @@ WHERE ExpenseLine.kilometric_expense = ?
                         </text>
                     </cell>
                     <cell id="4100">
+                        <property name="colSpan">2</property>
+                        <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="4144">
@@ -4001,20 +4143,6 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF format="#,###0.00">row["untaxedSum"]</VALUE-OF>]]></text-property>
-                        </text>
-                    </cell>
-                    <cell id="4571">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <text id="4575">
-                            <property name="fontSize">8pt</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>
