@@ -31,6 +31,10 @@
 - URLService : Use try-with-resources for "BufferedOutputStream"
 - Tools : use try-with-resources for resource management in download file from ftp server
 - ACCOUNTING REPORT : corrected result of search button in function of the report.
+- MOVE LINE : reconciled or lettered move lines are now read only.
+- MOVE : if a move line is reconciled or lettered display message.
+- STOCK : email alert on stock rules should not block the process of validation of the stock move
+- BankReconciliation: Fix query error when loading bank statement in bank reconciliation form.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements

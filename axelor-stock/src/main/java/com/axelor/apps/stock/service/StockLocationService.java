@@ -58,4 +58,6 @@ public interface StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude);
 
   public BigDecimal getStockLocationValue(StockLocation stockLocation);
+
+  public boolean isConfigMissing(StockLocation stockLocation, int printType);
 }
