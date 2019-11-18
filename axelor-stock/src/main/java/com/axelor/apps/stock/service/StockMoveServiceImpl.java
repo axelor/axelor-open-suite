@@ -628,7 +628,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLines = MoreObjects.firstNonNull(stockMoveLines, Collections.emptyList());
     StockMove newStockMove = stockMoveRepo.copy(stockMove, false);
-
+    // In copy OriginTypeSelect set null.
+    newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
       if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0) {
