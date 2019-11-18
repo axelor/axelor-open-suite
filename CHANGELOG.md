@@ -302,5 +302,6 @@
 - BATCH ACCOUNTING CUT-OFF : corrected by adding condition to checkStockMoveLine
 - TEAMTASKS : make empty packagePanel when package is select in financial data
 - TEMPLATE CONTEXT : Fix limit for field 'value'
+- STOCK : Link back order with saleOrder or purchaseOrder
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
