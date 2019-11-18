@@ -57,7 +57,9 @@ public class ImportProduct {
           final MetaFile metaFile = metaFiles.upload(image);
           product.setPicture(metaFile);
         } else {
-          LOG.debug("No image file found: {}", image.getAbsolutePath());
+          LOG.debug(
+              "No image file found: {}",
+              image == null ? path.toAbsolutePath() : image.getAbsolutePath());
         }
 
       } catch (Exception e) {

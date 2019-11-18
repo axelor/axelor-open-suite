@@ -25,6 +25,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.JpaSupport;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -52,20 +53,22 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageServiceImpl implements MessageService {
+public class MessageServiceImpl extends JpaSupport implements MessageService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private MetaAttachmentRepository metaAttachmentRepository;
   protected MessageRepository messageRepository;
 
   private ExecutorService executor = Executors.newCachedThreadPool();
+  private static final int ENTITY_FIND_TIMEOUT = 10000;
+  private static final int ENTITY_FIND_INTERVAL = 200;
 
   @Inject
   public MessageServiceImpl(
@@ -317,32 +320,43 @@ public class MessageServiceImpl implements MessageService {
       mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
     }
 
-    // Make sure message can be found in sending thread below.
-    JPA.flush();
+    getEntityManager().flush();
 
     // send email using a separate process to avoid thread blocking
     executor.submit(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() {
-            try {
-              mailBuilder.send();
-              Message updateMessage = messageRepository.find(message.getId());
-              JPA.em().getTransaction().begin();
-              updateMessage.setSentByEmail(true);
-              updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
-              updateMessage.setSentDateT(LocalDateTime.now());
-              updateMessage.setSenderUser(AuthUtils.getUser());
-              messageRepository.save(updateMessage);
-              JPA.em().getTransaction().commit();
-            } catch (Exception e) {
-              TraceBackService.trace(e);
-            }
-            return true;
+        () -> {
+          try {
+            final Message updateMessage = findMessage(message);
+            mailBuilder.send();
+            inTransaction(
+                () -> {
+                  updateMessage.setSentByEmail(true);
+                  updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
+                  updateMessage.setSentDateT(LocalDateTime.now());
+                  updateMessage.setSenderUser(AuthUtils.getUser());
+                  messageRepository.save(updateMessage);
+                });
+          } catch (Exception e) {
+            TraceBackService.trace(e);
           }
+          return true;
         });
 
     return message;
+  }
+
+  private Message findMessage(Message message) throws InterruptedException, TimeoutException {
+    Message foundMessage;
+    final long startTime = System.currentTimeMillis();
+
+    while ((foundMessage = messageRepository.find(message.getId())) == null) {
+      if (System.currentTimeMillis() - startTime > ENTITY_FIND_TIMEOUT) {
+        throw new TimeoutException(String.format("Cannot find message: %s", message));
+      }
+      Thread.sleep(ENTITY_FIND_INTERVAL);
+    }
+
+    return foundMessage;
   }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {

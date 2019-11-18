@@ -30,5 +30,21 @@
     
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
     
+    <track>
+    	<field name="name"/>
+    	<field name="code"/>
+    	<field name="machine"/>
+    	<field name="workCenterTypeSelect"/>
+    	<field name="minCapacityPerCycle"/>
+    	<field name="maxCapacityPerCycle"/>
+    	<field name="durationPerCycle"/>
+    	<field name="isRevaluationAtActualPrices"/>
+    	<field name="product"/>
+    	<field name="costTypeSelect"/>
+    	<field name="costAmount"/>
+    	<field name="parentWorkCenter"/>
+    	<field name="operationOrder"/>
+    	<field name="costSheetGroup"/>
+    </track>
   </entity>
 </domain-models>
