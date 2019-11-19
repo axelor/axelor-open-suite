@@ -56,7 +56,7 @@ public interface InvoiceLineService {
 
   BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
 
-  PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList);
+  PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList,BigDecimal price);
 
   BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
 
@@ -68,7 +68,7 @@ public interface InvoiceLineService {
   Map<String, Object> getDiscountsFromPriceLists(
       Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
-  int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine);
+  int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine,BigDecimal price);
 
   Unit getUnit(Product product, boolean isPurchase);
 
