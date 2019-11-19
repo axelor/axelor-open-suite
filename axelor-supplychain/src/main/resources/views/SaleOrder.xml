@@ -3,12 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
-	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form"
-	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-supplychain-saleorder-onload"
-	onSave="action-supplychain-saleorder-onsave">
-		
-		<panel-include view="sale-order-form" from="axelor-sale"/>
+	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form" extension="true">
+		<extend target="/">
+			<attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
+      <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
+      <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
+		</extend>
 	</form>
 
 	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
@@ -32,12 +32,12 @@
 		<panel-include view="sale-order-form-client" from="axelor-sale"/>
 	</form>
 	
-	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template"
-		onLoad="action-group-sale-saleorder-onload">
-		<panel-include view="sale-order-template-form" from="axelor-sale"/>
+	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-template-form" extension="true">
+		<extend target="/">
+			<attribute name="onNew" value="action-group-sale-saleorder-onnew,action-saleorder-record-template"/>
+		</extend>
 	</form>
-	
+
 	<form model="com.axelor.apps.sale.db.SaleOrder" title="Sales order" name="incl-sale-order-subscrption-form">
 		<panel name="subscriptionPanel" title="Contract/Subscription" showIf="saleOrderTypeSelect == 2" >
 			<field name="contractStartDate" onChange="action-sale-order-attrs-subscription-contract-start-date-change" />

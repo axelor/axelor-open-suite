@@ -3,17 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 	
-	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form"
-	onNew="action-group-supplychain-saleorder-onnew"
-	onLoad="action-group-business-project-saleorder-onload"
-	onSave="action-supplychain-saleorder-onsave">
-		<panel-include view="sale-order-form" from="axelor-sale"/>
+	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-form" extension="true">
+		<extend target="/">
+			<attribute name="onLoad" value="action-group-business-project-saleorder-onload"/>
+		</extend>
 	</form>
 	
-	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-template-form"
-		onNew="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"
-		onLoad="action-group-business-project-saleorder-onload">
-		<panel-include view="sale-order-template-form" from="axelor-sale"/>
+	<form name="sale-order-template-form" title="Template" model="com.axelor.apps.sale.db.SaleOrder" id="business-project-sale-order-template-form" extension="true">
+		<extend target="/">
+			<attribute name="onNew" value="action-group-sale-saleorder-onnew,action-saleorder-record-template,action-sale-order-method-create-template"/>
+		</extend>
 	</form>
 	
 	<action-group name="action-group-business-project-saleorder-onload">
