@@ -65,6 +65,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     copy.setValidatedDate(null);
     copy.setVentilatedByUser(null);
     copy.setVentilatedDate(null);
+    copy.setPfpValidateStatusSelect(PFP_STATUS_AWAITING);
+    copy.setDecisionPfpTakenDate(null);
     return copy;
   }
 
