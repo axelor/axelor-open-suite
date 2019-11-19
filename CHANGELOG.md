@@ -17,6 +17,7 @@
 - TOOL,STUDIO : Disable XML external entity (XXE) processing.
 - HRBatch : stopped generation of payrollPreparation with employmentContract having status 'closed'
 - ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accouting report for new message that appears before generation if the minimum of line is found.
+- PRICE LIST : same configuration for same product in priceListLineList
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view

@@ -461,10 +461,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList) {
+  public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList,BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        purchaseOrderLine.getProduct(), purchaseOrderLine.getQty(), priceList);
+        purchaseOrderLine.getProduct(), purchaseOrderLine.getQty(), priceList, price);
   }
 
   @Override
@@ -650,7 +650,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     PriceList priceList = purchaseOrder.getPriceList();
 
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList, price);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
     }
 
@@ -659,10 +659,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Override
   public int getDiscountTypeSelect(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BigDecimal price) {
     PriceList priceList = purchaseOrder.getPriceList();
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(purchaseOrderLine, priceList, price);
 
       return priceListLine.getTypeSelect();
     }
