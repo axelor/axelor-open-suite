@@ -46,7 +46,8 @@ public class PriceListService {
 
   @Inject protected AppBaseService appBaseService;
 
-  public PriceListLine getPriceListLine(Product product, BigDecimal qty, PriceList priceList, BigDecimal price) {
+  public PriceListLine getPriceListLine(
+      Product product, BigDecimal qty, PriceList priceList, BigDecimal price) {
 
     PriceListLine priceListLine = null;
     List<PriceListLine> priceListLineList = null;

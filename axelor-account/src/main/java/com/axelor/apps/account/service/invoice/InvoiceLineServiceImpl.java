@@ -224,10 +224,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList,BigDecimal price) {
+  public PriceListLine getPriceListLine(
+      InvoiceLine invoiceLine, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        invoiceLine.getProduct(), invoiceLine.getQty(), priceList,price);
+        invoiceLine.getProduct(), invoiceLine.getQty(), priceList, price);
   }
 
   @Override
@@ -309,7 +310,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     PriceList priceList = invoice.getPriceList();
 
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList,price);
+      PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList, price);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
     }
 
@@ -317,10 +318,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   }
 
   @Override
-  public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine,BigDecimal price) {
+  public int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price) {
     PriceList priceList = invoice.getPriceList();
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList,price);
+      PriceListLine priceListLine = this.getPriceListLine(invoiceLine, priceList, price);
 
       return priceListLine.getTypeSelect();
     }

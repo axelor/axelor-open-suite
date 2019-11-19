@@ -101,7 +101,8 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
       return teamTask;
     }
 
-    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList, teamTask.getUnitPrice());
+    PriceListLine priceListLine =
+        this.getPriceListLine(teamTask, priceList, teamTask.getUnitPrice());
     Map<String, Object> discounts =
         priceListService.getReplacedPriceAndDiscounts(
             priceList, priceListLine, teamTask.getUnitPrice());
@@ -127,7 +128,7 @@ public class TeamTaskBusinessServiceImpl extends TeamTaskServiceImpl
   private PriceListLine getPriceListLine(TeamTask teamTask, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        teamTask.getProduct(), teamTask.getQuantity(), priceList,  price);
+        teamTask.getProduct(), teamTask.getQuantity(), priceList, price);
   }
 
   @Override

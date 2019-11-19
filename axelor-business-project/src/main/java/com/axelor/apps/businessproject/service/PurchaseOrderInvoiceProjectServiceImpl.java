@@ -73,7 +73,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               .getDefaultPriceList(invoice.getPartner(), PriceListRepository.TYPE_SALE);
       if (priceList != null) {
         PriceListLine priceListLine =
-            purchaseOrderLineServiceImpl.getPriceListLine(purchaseOrderLine, priceList,price);
+            purchaseOrderLineServiceImpl.getPriceListLine(purchaseOrderLine, priceList, price);
         if (priceListLine != null) {
           discountTypeSelect = priceListLine.getTypeSelect();
         }

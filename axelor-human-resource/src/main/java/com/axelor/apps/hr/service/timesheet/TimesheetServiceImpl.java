@@ -598,7 +598,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     if (priceList != null) {
       PriceListLine priceListLine =
-          priceListService.getPriceListLine(product, qtyConverted, priceList,price);
+          priceListService.getPriceListLine(product, qtyConverted, priceList, price);
       if (priceListLine != null) {
         discountMethodTypeSelect = priceListLine.getTypeSelect();
       }

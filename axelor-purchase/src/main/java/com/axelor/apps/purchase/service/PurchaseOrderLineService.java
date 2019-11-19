@@ -66,7 +66,8 @@ public interface PurchaseOrderLineService {
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder)
       throws AxelorException;
 
-  public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList, BigDecimal price);
+  public PriceListLine getPriceListLine(
+      PurchaseOrderLine purchaseOrderLine, PriceList priceList, BigDecimal price);
 
   public Map<String, BigDecimal> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;

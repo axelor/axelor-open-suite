@@ -86,7 +86,8 @@ public interface SaleOrderLineService {
   public BigDecimal getCompanyCostPrice(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException;
 
-  public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList, BigDecimal price);
+  public PriceListLine getPriceListLine(
+      SaleOrderLine saleOrderLine, PriceList priceList, BigDecimal price);
 
   /**
    * Compute and return the discounted price of a sale order line.
@@ -113,7 +114,8 @@ public interface SaleOrderLineService {
   public Map<String, Object> getDiscountsFromPriceLists(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
-  public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine,BigDecimal price);
+  public int getDiscountTypeSelect(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price);
 
   public Unit getSaleUnit(SaleOrderLine saleOrderLine);
 

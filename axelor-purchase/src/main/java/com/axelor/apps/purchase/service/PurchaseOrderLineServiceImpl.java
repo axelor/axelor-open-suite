@@ -461,7 +461,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList,BigDecimal price) {
+  public PriceListLine getPriceListLine(
+      PurchaseOrderLine purchaseOrderLine, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
         purchaseOrderLine.getProduct(), purchaseOrderLine.getQty(), priceList, price);
