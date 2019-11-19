@@ -2029,25 +2029,25 @@ WHERE ExpenseLine.kilometric_expense = ?
                 </structure>
             </list-property>
             <column id="3343">
-                <property name="width">16.66%</property>
+                <property name="width">17%</property>
             </column>
             <column id="3344">
-                <property name="width">8.33%</property>
+                <property name="width">9%</property>
             </column>
             <column id="3345">
-                <property name="width">8.33%</property>
+                <property name="width">10.33%</property>
             </column>
             <column id="4584">
-                <property name="width">16.66%</property>
+                <property name="width">14%</property>
             </column>
             <column id="3346">
-                <property name="width">16.66%</property>
+                <property name="width">19.33%</property>
             </column>
             <column id="3347">
-                <property name="width">16.66%</property>
+                <property name="width">11%</property>
             </column>
             <column id="3348">
-                <property name="width">16.66%</property>
+                <property name="width">19.33%</property>
             </column>
             <row id="3836">
                 <property name="height">0.5729166666666666in</property>
@@ -2094,7 +2094,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="rowSpan">1</property>
                     <text id="3425">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2136,7 +2136,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <cell id="4580">
                     <text id="3830">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2178,7 +2178,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="rowSpan">1</property>
                     <text id="3845">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2220,7 +2220,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <cell id="4038">
                     <text id="4051">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2285,7 +2285,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <cell id="4582">
                     <text id="4056">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2349,7 +2349,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <cell id="4042">
                     <text id="4585">
                         <property name="marginLeft">2pt</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2983,10 +2983,10 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">center</property>
                         <text id="4496">
                             <property name="fontSize">8pt</property>
-                            <property name="textAlign">center</property>
+                            <property name="textAlign">left</property>
                             <property name="display">inline</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
