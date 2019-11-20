@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.13]
 ## Improvements
+- Importer : Use try-with-resources with "ZipFile"
+
 ## Bug Fixes
 
 ## [5.1.12] - 2019-11-19
