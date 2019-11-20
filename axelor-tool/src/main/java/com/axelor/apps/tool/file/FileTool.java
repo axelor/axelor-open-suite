@@ -50,16 +50,16 @@ public final class FileTool {
    */
   public static List<String> reader(String fileName) throws IOException {
 
-    List<String> content = new ArrayList<String>();
-    BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
-    String ligne = "";
+    List<String> content = new ArrayList<>();
 
-    while ((ligne = br.readLine()) != null) {
-      content.add(ligne);
+    try (BufferedReader br = new BufferedReader(new FileReader(new File(fileName)))) {
+      String ligne = "";
+      while ((ligne = br.readLine()) != null) {
+        content.add(ligne);
+      }
+    } catch (IOException ex) {
+      LOG.error(ex.getMessage());
     }
-
-    br.close();
-
     return content;
   }
 
@@ -73,23 +73,15 @@ public final class FileTool {
    */
   public static void writer(String destinationFolder, String fileName, String line)
       throws IOException {
+
     System.setProperty("line.separator", "\r\n");
-    FileWriter writer = null;
 
-    try {
-
-      File file = create(destinationFolder, fileName);
-      writer = new FileWriter(file);
+    File file = create(destinationFolder, fileName);
+    try (FileWriter writer = new FileWriter(file)) {
       writer.write(line);
-
     } catch (IOException ex) {
 
       LOG.error(ex.getMessage());
-    } finally {
-
-      if (writer != null) {
-        writer.close();
-      }
     }
   }
 
@@ -104,12 +96,11 @@ public final class FileTool {
   public static File writer(String destinationFolder, String fileName, List<String> multiLine)
       throws IOException {
     System.setProperty("line.separator", "\r\n");
-    BufferedWriter output = null;
+
     File file = null;
-    try {
+    try (BufferedWriter output = new BufferedWriter(new FileWriter(file))) {
 
       file = create(destinationFolder, fileName);
-      output = new BufferedWriter(new FileWriter(file));
       int i = 0;
 
       for (String line : multiLine) {
@@ -125,12 +116,6 @@ public final class FileTool {
     } catch (IOException ex) {
 
       LOG.error(ex.getMessage());
-
-    } finally {
-
-      if (output != null) {
-        output.close();
-      }
     }
 
     return file;
@@ -143,7 +128,7 @@ public final class FileTool {
    * @return
    * @throws IOException
    */
-  public static File create(String fileName) throws IOException {
+  public static File create(String fileName) {
 
     String[] filePath = fileName.split(Pattern.quote(File.separator));
     String name = filePath[filePath.length - 1];
@@ -158,7 +143,7 @@ public final class FileTool {
    * @return
    * @throws IOException
    */
-  public static File create(String destinationFolder, String fileName) throws IOException {
+  public static File create(String destinationFolder, String fileName) {
 
     File folder = new File(destinationFolder);
     if (!folder.exists()) {

@@ -74,7 +74,7 @@ public class StockLocationController {
     String exportType = (String) context.get("exportTypeSelect");
 
     if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
-      response.setFlash(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
+      response.setNotify(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
     }
 
     @SuppressWarnings("unchecked")

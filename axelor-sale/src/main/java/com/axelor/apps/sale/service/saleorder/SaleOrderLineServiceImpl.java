@@ -426,10 +426,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList) {
+  public PriceListLine getPriceListLine(
+      SaleOrderLine saleOrderLine, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList);
+        saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList, price);
   }
 
   @Override
@@ -465,7 +466,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     PriceList priceList = saleOrder.getPriceList();
 
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 
       if (saleOrder.getTemplate()) {
@@ -501,10 +502,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  public int getDiscountTypeSelect(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price) {
     PriceList priceList = saleOrder.getPriceList();
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
 
       return priceListLine.getTypeSelect();
     }
