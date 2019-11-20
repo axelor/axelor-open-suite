@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.13]
 ## Improvements
+- Importer : Use try-with-resources with "ZipFile"
+
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query
 - Sale Order: allocate a full sale order does not try to allocate already delivered lines.
