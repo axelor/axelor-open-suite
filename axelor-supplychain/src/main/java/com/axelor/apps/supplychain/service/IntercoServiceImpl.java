@@ -249,9 +249,6 @@ public class IntercoServiceImpl implements IntercoService {
             .computeDiscount(purchaseOrderLine, purchaseOrder.getInAti());
     purchaseOrderLine.setPriceDiscounted(priceDiscounted);
 
-    // tax
-    purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
-
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;
   }
