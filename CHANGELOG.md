@@ -19,6 +19,7 @@
 - HRBatch: stopped generation of payrollPreparation with employmentContract having status 'closed'
 - ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accounting report for new message that appears before generation if the minimum of lines is found.
 - PRICE LIST: get lower price for same qty for same product.
+- Check Duplicate : make case-insensitive query
 
 ## Bug Fixes
 - STOCK : Changed type select french translation
