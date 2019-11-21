@@ -10,6 +10,7 @@
 - Project : Fix computation of 'timeSpent' field on removal of validated timesheet.
 - ADDRESS : reduced space between addresses in partner-form
 - ConvertDemoDataFileServiceImpl : Use try-with-resources for "ZipOutputStream" and "FileInputStream"
+- Code Refactor for TemplateRuleService file
 
 ## [5.1.12] - 2019-11-19
 ## Features
