@@ -6,12 +6,12 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockHistoryLine" persistable="false">
-    <integer name="countIncMvtStockPeriod" readonly="true" title="Nb inc. moves period"/>
-    <decimal name="sumIncQtyPeriod" readonly="true" title="Qty inc. moves period"/>
-    <decimal name="priceIncStockMovePeriod" readonly="true" title="Amount inc. moves period"/>
-    <integer name="countOutMvtStockPeriod" readonly="true" title="Nb out. moves period"/>
-    <decimal name="sumOutQtyPeriod" readonly="true" title="Qty out. moves period"/>
-    <decimal name="priceOutStockMovePeriod" readonly="true" title="Amount out. moves period"/>
+    <integer name="countIncMvtStockPeriod" readonly="true" title="Nbr of incoming moves"/>
+    <decimal name="sumIncQtyPeriod" readonly="true" title="Incoming quantity"/>
+    <decimal name="priceIncStockMovePeriod" readonly="true" title="Incoming amount"/>
+    <integer name="countOutMvtStockPeriod" readonly="true" title="Nbr of outgoing moves"/>
+    <decimal name="sumOutQtyPeriod" readonly="true" title="Outgoing quantity"/>
+    <decimal name="priceOutStockMovePeriod" readonly="true" title="Outgoing amount"/>
     <string name="label" readonly="true"/>
   </entity>
 </domain-models>
