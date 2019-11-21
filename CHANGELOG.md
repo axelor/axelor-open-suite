@@ -305,5 +305,6 @@
 - STOCK : Link back order with saleOrder or purchaseOrder
 - InvoiceLine : fixed null pointer exception by adding null safe operator on 'analyticDistributionAuthorized' 
 - BASE : Fix menu title and action-view name typo error
+- Production : Add else in switch case to remove unconditional break in CostSheetLineServiceImpl class .
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

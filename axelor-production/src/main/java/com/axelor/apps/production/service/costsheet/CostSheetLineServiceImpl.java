@@ -196,7 +196,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     Product parentProduct = parentCostSheetLine.getProduct();
 
-    BigDecimal costPrice = null;
+    BigDecimal costPrice = BigDecimal.ZERO;
     switch (origin) {
       case CostSheetService.ORIGIN_MANUF_ORDER:
         costPrice =
@@ -212,9 +212,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
               unitCostCalcLineServiceImpl.getUnitCostCalcLine(unitCostCalculation, product);
           if (unitCostCalcLine != null) {
             costPrice = unitCostCalcLine.getComputedCost();
-            break;
           }
         }
+        break;
         // If we didn't have a computed price in cost calculation session, so we compute the price
         // from its bill of material
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
@@ -296,7 +296,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
           shippingCoefService.getShippingCoef(
               product, product.getDefaultSupplierPartner(), company, new BigDecimal(9999999));
 
-      price = product.getPurchasePrice().multiply(shippingCoef);
+      price = price.multiply(shippingCoef);
 
       price =
           currencyService.getAmountCurrencyConvertedAtDate(
@@ -364,9 +364,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
               unitCostCalcLineServiceImpl.getUnitCostCalcLine(unitCostCalculation, product);
           if (unitCostCalcLine != null) {
             costPrice = unitCostCalcLine.getComputedCost();
-            break;
           }
         }
+        break;
 
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
         costPrice =
@@ -535,7 +535,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
   protected BigDecimal getIndirectCostPrice(CostSheetGroup costSheetGroup, BigDecimal costPrice) {
 
-    BigDecimal indirectCostPrice = BigDecimal.ZERO;
+    BigDecimal indirectCostPrice;
 
     indirectCostPrice =
         costPrice
