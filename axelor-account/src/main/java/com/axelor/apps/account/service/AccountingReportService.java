@@ -70,4 +70,6 @@ public interface AccountingReportService {
 
   public String getReportFileLink(AccountingReport accountingReport, String name)
       throws AxelorException;
+
+  public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 }
