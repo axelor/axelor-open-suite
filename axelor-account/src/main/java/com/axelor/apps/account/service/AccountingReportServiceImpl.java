@@ -214,9 +214,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
 
     this.addParams(
-        "(self.moveLine.move.statusSelect = "
+        "(self.move.statusSelect = "
             + MoveRepository.STATUS_DAYBOOK
-            + " OR self.moveLine.move.statusSelect = "
+            + " OR self.move.statusSelect = "
             + MoveRepository.STATUS_VALIDATED
             + ")");
 

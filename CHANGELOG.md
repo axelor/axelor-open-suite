@@ -140,6 +140,7 @@
 - AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
 - SUPPLYCHAIN : Auto-complete sale order when it has been all invoiced
 - Stock: Add stock history view for a given product, company and stock location.
+- Production : Provide menu for Machine Planning.
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -304,6 +305,7 @@
 - TEMPLATE CONTEXT : Fix limit for field 'value'
 - STOCK : Link back order with saleOrder or purchaseOrder
 - InvoiceLine : fixed null pointer exception by adding null safe operator on 'analyticDistributionAuthorized' 
+- BASE : Fix menu title and action-view name typo error
 - CSVReaderService : Use try-with-resources for "FileInputStream"
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
