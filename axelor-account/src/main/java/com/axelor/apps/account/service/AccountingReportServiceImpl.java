@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
@@ -24,12 +25,14 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -423,5 +426,19 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public BigDecimal getCreditBalanceType4() {
 
     return this.getDebitBalance().subtract(this.getDebitBalanceType4());
+  }
+
+  @Override
+  public String getReportFileLink(AccountingReport accountingReport, String name)
+      throws AxelorException {
+    return ReportFactory.createReport(
+            String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()),
+            name + "-${date}")
+        .addParam("AccountingReportId", accountingReport.getId())
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addFormat(accountingReport.getExportTypeSelect())
+        .toAttach(accountingReport)
+        .generate()
+        .getFileLink();
   }
 }

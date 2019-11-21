@@ -13,6 +13,7 @@
 - AnalyticMoveLine : fix amount calculation
 - PROJECT : Fix financial report to follow the Axelor report guidelines
 - STOCK LOCATION PRINTING : new printing without financial data
+- ACCOUNTING REPORT : add new report, bank reconciliation statement.
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
