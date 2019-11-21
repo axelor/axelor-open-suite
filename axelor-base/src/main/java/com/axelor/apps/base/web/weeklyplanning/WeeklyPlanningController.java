@@ -30,6 +30,9 @@ public class WeeklyPlanningController {
   public void initPlanning(ActionRequest request, ActionResponse response) {
     WeeklyPlanning planning = request.getContext().asType(WeeklyPlanning.class);
     planning = Beans.get(WeeklyPlanningService.class).initPlanning(planning);
+    if (request.getContext().containsKey("_typeSelect")) {
+      response.setValue("typeSelect", request.getContext().get("_typeSelect"));
+    }
     response.setValue("weekDays", planning.getWeekDays());
   }
 
