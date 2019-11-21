@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.1.13]
 ## Improvements
+- Stock Rule: Generate PO for Componet of product and product in ManufOrder
+
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query
 - Sale Order: allocate a full sale order does not try to allocate already delivered lines.

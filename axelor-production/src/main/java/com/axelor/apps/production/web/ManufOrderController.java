@@ -30,6 +30,9 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -109,6 +112,12 @@ public class ManufOrderController {
     try {
       Long manufOrderId = (Long) request.getContext().get("id");
       ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
+      StockMove stockMoveComp =
+          Beans.get(StockMoveRepository.class)
+              .all()
+              .filter("self.inManufOrder = ?1", manufOrderId)
+              .fetchOne();
+      Beans.get(StockMoveService.class).realize(stockMoveComp);
 
       if (!manufOrderWorkflowService.finish(manufOrder)) {
         response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
