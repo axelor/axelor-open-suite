@@ -72,7 +72,10 @@ public class ValidateState extends WorkflowInvoice {
   @Override
   public void process() throws AxelorException {
 
-    if (invoice.getAddress() == null) {
+    if (invoice.getAddress() == null
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+            || invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_5),
