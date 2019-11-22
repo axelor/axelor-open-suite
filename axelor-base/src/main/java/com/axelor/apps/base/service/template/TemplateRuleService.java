@@ -31,7 +31,6 @@ import com.axelor.meta.schema.actions.Action;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Resource;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,8 +42,6 @@ import org.slf4j.LoggerFactory;
 public class TemplateRuleService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject private TemplateBaseService ts;
 
   public Map<String, Object> getContext(TemplateRule templateRule, Model bean) {
     Template template = this.getTemplate(bean, templateRule);
