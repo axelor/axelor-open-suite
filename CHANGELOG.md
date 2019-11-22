@@ -6,6 +6,7 @@
 
 ## Improvements
 - Importer : Use try-with-resources with "ZipFile"
+- MOVE : in remove function improved bank reconciliation amount error message. 
 
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query
