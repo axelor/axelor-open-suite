@@ -17,8 +17,25 @@
 		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-timesheet-line-method-update-to-invoice" />
 	</grid>
 	
+	<grid name="timesheet-line-teamtask-grid" title="Log Times" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
+	onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project" orderBy="-date">
+		<field name="user" form-view="user-form" grid-view="user-grid"/>
+		<field name="date" />
+		<field name="product" requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="hoursDuration" width="62%" min="0.01"/>
+		<field name="durationForCustomer" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+		<field name="toInvoice" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
+		<field name="enableEditor" hidden="true" />
+		<field name="invoiced" />
+		<field name="project" hidden="true" />
+		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-timesheet-line-method-update-to-invoice" />
+	</grid>
+	
 	<grid name="timesheet-line-timesheet-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
+		<hilite color="danger" if="$moment(date).diff($get('timesheet.fromDate'),'days') &lt; 0 || $moment(date).diff($get('timesheet.toDate'), 'days') &gt; 0"/>
+		<field name="timesheet.fromDate" hidden="true" />
+		<field name="timesheet.toDate" hidden="true" />
 	    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber" width="90"/>
 		<field name="project" width="200" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="teamTask" width="200" form-view="team-task-form" grid-view="team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task" onChange="action-timesheet-line-method-set-default-to-invoice"/>
@@ -65,6 +82,9 @@
 
 	<grid name="timesheet-line-timesheet-readonly-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" 
 	onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
+		<hilite color="danger" if="$moment(date).diff($get('timesheet.fromDate'),'days') &lt; 0 || $moment(date).diff($get('timesheet.toDate'), 'days') &gt; 0"/>
+		<field name="timesheet.fromDate" hidden="true" />
+		<field name="timesheet.toDate" hidden="true" />
 	    <field name="sequence" if="__config__.app.getApp('timesheet').displayTimesheetLineNumber" width="90"/>
 		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="teamTask" width="200" form-view="team-task-form" grid-view="team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task" onChange="action-timesheet-line-method-set-default-to-invoice"/>
@@ -149,6 +169,25 @@
 			<field name="user"  form-view="user-form" grid-view="user-grid" hidden="true" canNew="false" canEdit="false" canView="false"/>
 		</panel>
 	</form>
+	
+	<form model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line" name="timesheet-line-timesheet-teamtask-form" onNew="action-team-task-attrs-default-timesheet-line,action-timesheet-line-method-set-timesheet" onSave="action-team-task-validate-check-timesheet-line-date">
+		<panel name="overviewPanel" title="Overview">
+			<field name="project" readonly="true" form-view="project-form" grid-view="project-grid"/>
+			<field name="teamTask" form-view="team-task-form" grid-view="team-task-grid" readonly="true"/>
+			<field name="date" onChange="action-timesheet-line-method-set-timesheet"/>
+			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
+			<label name="durationLabel" colSpan="3"/>	
+			<field name="durationForCustomer" colSpan="5" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
+    		<label name="durationLabel" colSpan="1" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>	
+    		<field name="user" readonly="false" onSelect="action-timesheet-line-attrs-domain-user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>	
+			<field name="toInvoice" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
+			<field name="timesheet" form-view="timesheet-form" />
+			<field name="enableEditor" />
+			<field name="comments" />
+			<field name="hoursDuration" hidden="true" />
+		</panel>
+	</form>
 
 	<action-group name="action-timesheet-line-group-project-onchange">
 		<action name="action-timesheet-line-method-set-default-to-invoice" if="__config__.app.isApp('business-project')"/>
@@ -162,6 +201,17 @@
 		<action name="action-timesheet-line-atts-overview-readonly"/>
 	</action-group>
 	
+	<action-attrs name="action-team-task-attrs-default-timesheet-line">
+		<attribute name="value" expr="#{__date__}" for="date"/>
+		<attribute name="value" for="teamTask" expr="eval: _teamTask" if="_teamTask != null"/>
+		<attribute name="value" for="project" expr="eval: _project" if="_project != null"/>
+		<attribute name="value" for="user" expr="eval: _user" if="_user != null"/>
+		<attribute name="value" for="product" expr="eval:__user__.employee?.product"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="_teamTaskInvoicing == false"/>
+		<attribute name="value" for="toInvoice" expr="eval: true" if="_teamTaskInvoicing == true &amp;&amp; _invoicingType == 1"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="_teamTaskInvoicing == true &amp;&amp; _invoicingType == 2"/>
+	</action-attrs>
+	
 	<action-attrs name="action-timesheet-line-atts-overview-readonly">
 		<attribute name="readonly" for="overviewPanel" expr="_projectIds != null"/>
 	</action-attrs>
@@ -172,6 +222,10 @@
 	
 	<action-attrs name="action-timesheet-line-attrs-domain-project">
 		<attribute name="domain" for="project" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id} &quot;"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-line-attrs-domain-user">
+		<attribute name="domain" expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;" for="user"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-attrs-domain-team-task">
@@ -218,6 +272,10 @@
 		<error message="This date is invalid. It must be included in the timesheet's period." if="date != null &amp;&amp; (date &lt; __parent__.fromDate || ( __parent__.toDate != null &amp;&amp; date &gt; __parent__.toDate))" action="action-timesheet-line-null-date"/>
 	</action-validate>
 	
+	<action-validate name="action-team-task-validate-check-timesheet-line-date">
+		<alert message="Line will be attached to a subsequent timesheet" if="date &lt; timesheet.fromDate"/>
+	</action-validate>
+	
 	<action-record name="action-timesheet-line-null-date" model="com.axelor.apps.hr.db.TimesheetLine">
 		<field name="date" expr="eval: null"/>
 	</action-record>
@@ -225,6 +283,10 @@
 	<action-record name="action-timesheet-line-default-project" model="com.axelor.apps.hr.db.TimesheetLine">
 		<field name="project" expr="eval: __parent__"/>
 	</action-record>
+	
+	<action-method name="action-timesheet-line-method-set-timesheet">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setTimesheet"/>
+	</action-method>
 	
 	<action-method name="action-timesheet-line-method-update-to-invoice">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="updateToInvoice"/>
@@ -237,6 +299,20 @@
 	<action-method name="action-timesheet-line-method-set-duration" model="com.axelor.apps.hr.db.TimesheetLine">
         <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setDuration"/>
 	</action-method>
+	
+	<action-view name="action-team-task-view-time-spent" model="com.axelor.apps.hr.db.TimesheetLine" title="Timesheet Line Form">
+  		<view name="timesheet-line-timesheet-teamtask-form" type="form"/>
+  		<view-param name="popup" value="reload"/>
+  		<view-param name="show-toolbar" value="false"/>
+  		<view-param name="forceEdit" value="true"/>
+  		<view-param name="forceTitle" value="true"/>
+  		<context name="_teamTask" expr="eval: __self__"/>
+  		<context name="_project" expr="eval: project"/>
+  		<context name="_user" expr="eval: assignedTo"/>
+  		<context name="_company" expr="eval: project.company"/>
+  		<context name="_teamTaskInvoicing" expr="eval: teamTaskInvoicing"/>
+		<context name="_invoicingType" expr="eval: invoicingType"/>
+	</action-view>
 	
 	<action-view name="action-project-dashlet-validated-timeshet-lines" model="com.axelor.apps.hr.db.TimesheetLine" title="Validated Timesheet lines">
 		<view type="grid" name="timesheet-line-project-grid"/>
@@ -256,6 +332,20 @@
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+	</action-view>
+	
+	<action-view name="action-teamtask-dashlet-validated-timeshet-lines" model="com.axelor.apps.hr.db.TimesheetLine" title="Validated Timesheet lines">
+		<view type="grid" name="timesheet-line-teamtask-grid"/>
+		<view type="form" name="timesheet-line-timesheet-teamtask-form"/>
+		<view-param name="popup" value="true"/>
+		<domain>self.timesheet.statusSelect = 3 and self.teamTask = :id</domain>
+	</action-view>
+	
+	<action-view name="action-teamtask-dashlet-waiting-timeshet-lines" model="com.axelor.apps.hr.db.TimesheetLine" title="Waiting Timesheet lines">
+		<view type="grid" name="timesheet-line-teamtask-grid"/>
+		<view type="form" name="timesheet-line-timesheet-teamtask-form"/>
+		<view-param name="popup" value="true"/>
+		<domain>self.timesheet.statusSelect &lt; 3 and self.teamTask = :id</domain>
 	</action-view>
 
 </object-views>

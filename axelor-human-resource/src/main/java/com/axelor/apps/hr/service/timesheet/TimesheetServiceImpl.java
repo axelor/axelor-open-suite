@@ -69,6 +69,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -99,8 +101,8 @@ public class TimesheetServiceImpl implements TimesheetService {
   protected UserRepository userRepo;
   protected UserHrService userHrService;
   protected TimesheetLineService timesheetLineService;
-
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
+  protected TeamTaskRepository teamTaskRepository;
 
   @Inject
   public TimesheetServiceImpl(
@@ -112,7 +114,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       UserRepository userRepo,
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
-      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      TeamTaskRepository teamTaskRepository) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -122,6 +125,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     this.userHrService = userHrService;
     this.timesheetLineService = timesheetLineService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
+    this.teamTaskRepository = teamTaskRepository;
   }
 
   @Override
@@ -694,6 +698,7 @@ public class TimesheetServiceImpl implements TimesheetService {
         this.computeParentTimeSpent(project);
       }
     }
+    this.setTeamTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
   @Override
@@ -1052,12 +1057,10 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
                       + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.task != null "
-                      + "AND self.typeSelect = ?4",
+                      + "AND self.task != null ",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
-                  timesheet,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
+                  timesheet)
               .fetch();
     } else {
       planningList =
@@ -1070,90 +1073,11 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
                       + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.task != null "
-                      + "AND self.typeSelect = ?5",
+                      + "AND self.task != null ",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
-                  timesheet,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
-              .fetch();
-    }
-    return planningList;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException {
-    List<ProjectPlanningTime> planningList = getRealisedProjectPlanningTimeList(timesheet);
-    for (ProjectPlanningTime projectPlanningTime : planningList) {
-      TimesheetLine timesheetLine = generateTimesheetLine(timesheet, projectPlanningTime);
-      if (timesheetLine != null) {
-        timesheet.addTimesheetLineListItem(timesheetLine);
-      }
-    }
-  }
-
-  @Override
-  public TimesheetLine generateTimesheetLine(
-      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
-    if (projectPlanningTime != null) {
-      TimesheetLine timesheetLine = new TimesheetLine();
-      timesheetLine.setHoursDuration(projectPlanningTime.getRealHours());
-      timesheetLine.setDuration(
-          timesheetLineService.computeHoursDuration(
-              timesheet, projectPlanningTime.getRealHours(), false));
-      timesheetLine.setTimesheet(timesheet);
-      timesheetLine.setUser(timesheet.getUser());
-      timesheetLine.setProduct(projectPlanningTime.getProduct());
-      timesheetLine.setProject(projectPlanningTime.getProject());
-      timesheetLine.setDate(projectPlanningTime.getDate());
-      timesheetLine.setProjectPlanningTime(projectPlanningTime);
-      timesheetLine.setTeamTask(projectPlanningTime.getTask());
-      return timesheetLine;
-    }
-    return null;
-  }
-
-  private List<ProjectPlanningTime> getRealisedProjectPlanningTimeList(Timesheet timesheet) {
-    List<ProjectPlanningTime> planningList;
-
-    if (timesheet.getToDate() == null) {
-      planningList =
-          projectPlanningTimeRepository
-              .all()
-              .filter(
-                  "self.user.id = ?1 "
-                      + "AND self.date >= ?2 "
-                      + "AND self.id NOT IN "
-                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
-                      + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3) "
-                      + "AND self.task != null "
-                      + "AND self.typeSelect = ?4",
-                  timesheet.getUser().getId(),
-                  timesheet.getFromDate(),
-                  timesheet,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
-              .fetch();
-    } else {
-      planningList =
-          projectPlanningTimeRepository
-              .all()
-              .filter(
-                  "self.user.id = ?1 "
-                      + "AND self.date BETWEEN ?2 AND ?3 "
-                      + "AND self.id NOT IN "
-                      + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
-                      + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4) "
-                      + "AND self.task != null "
-                      + "AND self.typeSelect = ?5",
-                  timesheet.getUser().getId(),
-                  timesheet.getFromDate(),
-                  timesheet.getToDate(),
-                  timesheet,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
+                  timesheet)
               .fetch();
     }
     return planningList;
@@ -1200,6 +1124,23 @@ public class TimesheetServiceImpl implements TimesheetService {
           timesheetLineService.createTimesheetLine(
               user, date, timesheet, hours, I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
         }
+      }
+    }
+  }
+
+  @Override
+  @Transactional
+  public void setTeamTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
+    for (TimesheetLine timesheetLine : timesheetLines) {
+      TeamTask teamTask = timesheetLine.getTeamTask();
+      if (teamTask != null) {
+        teamTask = teamTaskRepository.find(teamTask.getId());
+        BigDecimal totalrealhrs =
+            isAdd
+                ? teamTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
+                : teamTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
+        teamTask.setTotalRealHrs(totalrealhrs);
+        teamTaskRepository.save(teamTask);
       }
     }
   }
