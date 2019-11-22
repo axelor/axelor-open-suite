@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
  	
    <input file="ebics-user.xml" root="ebics-users" >
 	<bind node="ebics-user" type="com.axelor.apps.bankpayment.db.EbicsUser"  call="com.axelor.apps.bankpayment.ebics.script.EbicsUserImport:importEbicsUser">

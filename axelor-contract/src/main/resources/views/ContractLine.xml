@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <grid name="contract-line-grid" title="Contract Lines"
           model="com.axelor.apps.contract.db.ContractLine" canMove="true"

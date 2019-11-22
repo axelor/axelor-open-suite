@@ -268,7 +268,7 @@
 - REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 - PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
-- Update xsd to Axelor Open Platform 5.1
+- Update xsd to Axelor Open Platform 5.2
 - Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
 - SaleOrder : Fix NPE on click of generate customer deliveries
