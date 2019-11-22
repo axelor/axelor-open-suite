@@ -11,7 +11,7 @@
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" readonly="true" required="true"/>
     <date name="date" column="date_val" title="Date"/> <!--  Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true"/>
-    <one-to-many name="moveLineList" ref="MoveLine" title="Move lines" mappedBy="move"/>
+    <one-to-many name="moveLineList" orphanRemoval="false" ref="MoveLine" title="Move lines" mappedBy="move"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
