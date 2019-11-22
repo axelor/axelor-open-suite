@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.1.13]
+## Features
+- OPPORTUNITY : Display of description on popup in kanban-view.
+
 ## Improvements
 - Importer : Use try-with-resources with "ZipFile"
 
@@ -8,6 +11,10 @@
 - Check Duplicate : make case-insensitive query
 - Sale Order: allocate a full sale order does not try to allocate already delivered lines.
 - Project : Fix computation of 'timeSpent' field on removal of validated timesheet.
+- ADDRESS : reduced space between addresses in partner-form
+- ConvertDemoDataFileServiceImpl : Use try-with-resources for "ZipOutputStream" and "FileInputStream"
+- Code Refactor for TemplateRuleService file
+- Fix NPE in bank order file upload.
 
 ## [5.1.12] - 2019-11-19
 ## Features

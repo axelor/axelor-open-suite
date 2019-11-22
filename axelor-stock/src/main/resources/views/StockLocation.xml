@@ -73,7 +73,7 @@
 		
 	</form>
     
-	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form">
+	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form" onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
 		<panel name="mainPanel">
             <field name="$printingType" title="Printing Type" selection="stock.stock.location.printing.type"/>
 			<field name="$exportTypeSelect" title="Export Type" selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
@@ -125,5 +125,10 @@
     	<view type="form" name="stock-location-form"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+    
+    <action-attrs name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
+        <attribute name="value" for="$printingType" expr="1"/>
+        <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
+    </action-attrs>
 
 </object-views>
