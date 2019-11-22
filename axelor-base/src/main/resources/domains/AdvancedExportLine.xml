@@ -13,6 +13,7 @@
   	 <many-to-one name="advancedExport" ref="com.axelor.apps.base.db.AdvancedExport" title="Advanced export"/>
   	 <string name="currentDomain"/>
   	 <boolean name="orderBy" title="Order by"/>
+  	 <string name="orderByType" selection="order.by.type" title="Order by type" default="asc"/>
   </entity>
   
 </domain-models>

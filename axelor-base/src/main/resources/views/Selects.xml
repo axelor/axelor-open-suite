@@ -482,4 +482,9 @@
       <option value="3">Finished</option>
   </selection>
 
+	<selection name="order.by.type">
+		<option value="asc">Ascending</option>
+		<option value="desc">Descending</option>
+	</selection>	
+
 </object-views>

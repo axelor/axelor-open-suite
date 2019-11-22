@@ -8,6 +8,7 @@
    		<field name="title"/>
    		<field name="targetField"/>
         <field name="orderBy"/>
+        <field name="orderByType" hideIf="!orderBy"/>
   	</grid>
   
   	<form name="advanced-export-line-form" title="Advanced export line" model="com.axelor.apps.base.db.AdvancedExportLine" onNew="action-advanced-export-line-record-set-current-domain"
@@ -17,6 +18,7 @@
      		<field name="title" required="true"/>
      		<field name="targetField"/>
 	        <field name="orderBy" colSpan="2"/>
+	         <field name="orderByType" hideIf="!orderBy" colSpan="4"/>
 	        <field name="$isValidate" type="boolean" title="Validate" hidden="true" required="true" readonly="true" colSpan="2"/>
 	        <field name="currentDomain" hidden="true"/>
 	        <field name="$viewerMessage" showTitle="false" readonly="true" hidden="true">

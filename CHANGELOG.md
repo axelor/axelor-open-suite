@@ -142,6 +142,7 @@
 - Stock: Add stock history view for a given product, company and stock location.
 - Production : Provide menu for Machine Planning.
 - Teamtask : Removing real hours management from project planning time
+-  Base : Addition of orderByType for OrderBy in AdvancedExportLine for sorting .
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
