@@ -929,10 +929,16 @@ public class InvoiceController {
 
     String domain =
         String.format(
-            "self.id != %d AND self.isContact = false AND self.isCustomer = true", companyId);
+            "self.id != %d AND self.isContact = false ", companyId);
     domain += " AND :company member of self.companySet";
 
     int invoiceTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
+
+    if (invoiceTypeSelect == 1) {
+      domain += " AND self.isCustomer = true ";
+    } else {
+      domain += " AND self.isSupplier = true ";
+    }
 
     try {
 

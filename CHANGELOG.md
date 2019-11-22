@@ -310,5 +310,6 @@
 - BASE : Fix menu title and action-view name typo error
 - CSVReaderService : Use try-with-resources for "FileInputStream"
 - Production : Add else in switch case to remove unconditional break in CostSheetLineServiceImpl class 
+- Invoice : Modify partner domain.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
