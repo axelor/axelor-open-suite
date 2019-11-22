@@ -24,12 +24,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CSVReaderService implements DataReaderService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private CSVReader csvReader = null;
   private List<String[]> totalRows = new ArrayList<>();
@@ -48,8 +53,8 @@ public class CSVReaderService implements DataReaderService {
       return false;
     }
 
-    try {
-      FileInputStream inSteam = new FileInputStream(inFile);
+    try (FileInputStream inSteam = new FileInputStream(inFile)) {
+
       csvReader =
           new CSVReader(
               new InputStreamReader(inSteam, StandardCharsets.UTF_8), separator.charAt(0));
@@ -58,7 +63,7 @@ public class CSVReaderService implements DataReaderService {
         return false;
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage());
       return false;
     }
     return true;
@@ -68,7 +73,7 @@ public class CSVReaderService implements DataReaderService {
   public String[] read(String sheetName, int index, int headerSize) {
 
     if (csvReader == null || CollectionUtils.isEmpty(totalRows)) {
-      return null;
+      return new String[0];
     }
 
     return totalRows.get(index);
@@ -87,7 +92,7 @@ public class CSVReaderService implements DataReaderService {
   public String[] getSheetNames() {
 
     if (csvReader == null || CollectionUtils.isEmpty(totalRows)) {
-      return null;
+      return new String[0];
     }
 
     String[] sheets = new String[1];

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="StockHistoryLine" persistable="false">
+    <integer name="countIncMvtStockPeriod" readonly="true" title="Nbr of incoming moves"/>
+    <decimal name="sumIncQtyPeriod" readonly="true" title="Incoming quantity"/>
+    <decimal name="priceIncStockMovePeriod" readonly="true" title="Incoming amount"/>
+    <integer name="countOutMvtStockPeriod" readonly="true" title="Nbr of outgoing moves"/>
+    <decimal name="sumOutQtyPeriod" readonly="true" title="Outgoing quantity"/>
+    <decimal name="priceOutStockMovePeriod" readonly="true" title="Outgoing amount"/>
+    <string name="label" readonly="true"/>
+  </entity>
+</domain-models>

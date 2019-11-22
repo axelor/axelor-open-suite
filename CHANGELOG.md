@@ -132,6 +132,17 @@
 - Inventory : Added calendar-view
 - change term "Description" to "Comment" in english and "Commentaire" in french
 - Project Folder : Add a two Birt reports to display all project elements linked to the folder.
+- WEEKLY PLANNING: Days can be reordered and create an util method to get first day of week.
+- PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
+- Distance travelled calculation of kilometricExpenseLine with Open street map
+- Timesheet: Add Timesheet reporting.
+- ADDRESS : when one address on partner please treat it as a default address
+- AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
+- SUPPLYCHAIN : Auto-complete sale order when it has been all invoiced
+- Stock: Add stock history view for a given product, company and stock location.
+- Production : Provide menu for Machine Planning.
+- Teamtask : Removing real hours management from project planning time
+-  Base : Addition of orderByType for OrderBy in AdvancedExportLine for sorting .
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -208,6 +219,14 @@
 - Contract : change filter on project field
 - TEAMTASKS : Creation from Same Order
 - PROJECT : show sub-menu project list when projectTypeSelect value = null
+- TEAMTASK : add buttons in team-task-form and removed from toolbar
+- Financial Report : calculate Total costs (per line) in chart and totals
+- ACCOUNTING REPORT : add Analytic general ledger.
+- TIMETABLE : Reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
+- TeamTask : set status editable.
+- TEAMTASKS : removed teamTaskInvoicing field in teamtask and project category, added 'no invoicing' in invoicingType selection, renamed ProjectCategory to TeamTaskCategory and renamed isInvoiceable to toInvoice in project form
+- TEAMTASK : moved invoiced field outside of the package panel
+- HRconfig : moved fields 'Health service' and 'Health service address' to HR module
 - STOCKMOVE : Update stock move form view
 
 ## Bug Fixes
@@ -252,7 +271,7 @@
 - REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 - PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
-- Update xsd to Axelor Open Platform 5.1
+- Update xsd to Axelor Open Platform 5.2
 - Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
 - SaleOrder : Fix NPE on click of generate customer deliveries
@@ -280,5 +299,19 @@
 - SALEORDERLINE : Issue when Production module isn't installed
 - Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect"
 - SALE ORDER : fix error generating project without salemanUser
+- ACCOUNTING MOVE : fix NPE when reverse the move
+- INVOICE : fix for NPE when printing from grid view
+- Advance Import : Resolve ArrayIndexOurOfBound exception.
+- ACCOUNTING : reversion and analytic distribution
+- BATCH ACCOUNTING CUT-OFF : corrected by adding condition to checkStockMoveLine
+- TEAMTASKS : make empty packagePanel when package is select in financial data
+- TEMPLATE CONTEXT : Fix limit for field 'value'
+- STOCK : Link back order with saleOrder or purchaseOrder
+- InvoiceLine : fixed null pointer exception by adding null safe operator on 'analyticDistributionAuthorized' 
+- BASE : Fix menu title and action-view name typo error
+- CSVReaderService : Use try-with-resources for "FileInputStream"
+- Production : Add else in switch case to remove unconditional break in CostSheetLineServiceImpl class 
+- Invoice : Modify partner domain.
+- Timesheet: Fix exception happening on opening form view.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

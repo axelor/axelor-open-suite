@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -91,7 +91,7 @@
 
     <many-to-one name="reversionOriginStockMove" title="Origin stock move" ref="com.axelor.apps.stock.db.StockMove"/>
     
-    <string name="pickingOrderComments" title="Description to display on picking order" large="true"/>
+    <string name="pickingOrderComments" title="Comment to display on picking order" large="true"/>
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
 		<hilite if="status == 'closed'" color="success"/>
@@ -13,7 +13,7 @@
 		<field name="taskEndDate" hidden="true"/>
 		<field name="status"/>
 		<field name="priority"/>
-		<field name="projectCategory"/>
+		<field name="teamTaskCategory"/>
 		<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
         <button name="timeSpentBtn" title="Enter Time spent" icon="fa-clock-o" onClick="action-team-task-view-time-spent" />
 	</grid>
@@ -28,8 +28,8 @@
 			<button name="stopBtn" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
 		</toolbar>
 		<menubar>
-	        <menu title="Tools">   
-	            <item title="Book resource" action="save,action-task-book-resource"/>
+	        <menu name="teamTaskMenu" title="Tools">   
+	            <item name="bookResourceItem" title="Book resource" action="save,action-task-book-resource"/>
 	        </menu>
 	    </menubar>
 
@@ -38,7 +38,7 @@
 		</panel>
 
 		<panel name="mainPanel" colSpan="12">
-			<field name="status" colSpan="6" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			<field name="status" colSpan="6" required="true" widget="NavSelect" showTitle="false"/>
 			<panel name="viewerTagsPanel" colSpan="4">
 				<field name="$viewerTags" showTitle="false" readonly="true" showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" hidden="true">
 					<viewer>
@@ -81,13 +81,13 @@
 					<field name="isOrderProposed" hidden="true" colSpan="3" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 				</panel>
 				<panel name="actionPanel" colSpan="4">
-					<button name="acceptOrderBtn" title="Accept Order" hidden="true" hideIf="!teamTaskInvoicing || isOrderAccepted || typeSelect != 'ticket'" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+					<button name="acceptOrderBtn" title="Accept Order" hidden="true" hideIf="invoicingType != 1  || isOrderAccepted || typeSelect != 'ticket'" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" hidden="true" onClick="action-team-task-attrs-assginment-provider,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
 					<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" hidden="true" onClick="action-team-task-attrs-assginment-customer,save" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
 				</panel>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
-				<field name="projectCategory" colSpan="4" onSelect="action-task-attrs-project-category-configurations" onChange="action-team-task-group-project-category-onchange"/>
+				<field name="teamTaskCategory" colSpan="4" onSelect="action-task-attrs-team-task-category-configurations" onChange="action-team-task-group-project-category-onchange"/>
 				<field name="priority" colSpan="4" required="true"/>
 				<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
 				<field name="assignment" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" colSpan="4"/>
@@ -114,17 +114,12 @@
                    	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
-				<field name="totalRealHrs" readonly="true" colSpan="4">
-				<viewer><![CDATA[
-                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
-       			]]></viewer>
-				</field>
 				<field name="budgetedTime" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.budgetedTime}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
-				
+				<spacer name="budgetedTimeSpacer" colSpan="4" />
 				<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3"  hideIf="$popup()"/>
 				<button name="projectPlanningTimeLineBtn" title="New line" colSpan="3" css="btn-custom text-left" onClick="save,action-team-task-view-time-planned,save"/>
 				<button name="removeProjectPlanningTimeLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-team-task-attrs-project-planning-time-remove,save" />
@@ -134,17 +129,6 @@
 				<button name="cancelRemovePlanningTimeBtn" colSpan="3" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
 				<panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning" action="action-team-task-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
 				
-				<spacer name="timeSpentSpacer" colSpan="6"/>
-				
-				<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-spent-time" colSpan="3"  hideIf="$popup()"/>
-				<button name="projectPlanningSpentTimeLineBtn" title="New line" colSpan="3" css="btn-custom text-left" onClick="save,action-team-task-view-time-spent,save"/>
-				<button name="removeProjectPlanningTimeSpentLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-team-task-attrs-project-planning-time-spent-remove,save" />
-				<field name="$projectPlanningTimeSpentSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time Spent"
-				colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false" grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
-				<button name="removeSelectedPlanningTimeSpentBtn" colSpan="3" hidden="true"  title="Remove selected lines" onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time-spent"/>
-				<button name="cancelRemovePlanningTimeSpentBtn" colSpan="3" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-spent-cancel-remove" />
-				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-dashlet-project-planning-time-spent" colSpan="12" canSearch="true"/>
-				
 				<field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
 			</panel>
 			<panel name="treeViewPanel" title="Tree view" colSpan="12">
@@ -153,29 +137,28 @@
 					<field name="name"/>
 				</panel-related>
 			</panel>
-			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="teamTaskInvoicing" colSpan="3" onChange="action-team-task-record-set-invoicing-type" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" showIf="teamTaskInvoicing" onChange="action-team-task-attrs-to-invoice"/>
-				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="3"/>
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12">				
+				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" onChange="action-team-task-attrs-invoice-type-on-change"/>
+				<field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>				
+				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="2"/>
+				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoiced" showIf="id &amp;&amp; !($readonly())" colSpan="1"/>
+      			<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project" name="invoiced" showIf="id &amp;&amp; $readonly()" showTitle="false" colSpan="1" >
+        			<viewer><![CDATA[
+                     <h4 class="text-right">
+                         <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
+                         <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
+                     </h4>
+					]]></viewer>
+				</field>	
 				<field name="project.invoicingSequenceSelect" hidden="true"/>
 				<field name="saleOrderLine" readonly="true" showIf="saleOrderLine" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
 				<field name="invoiceLine" readonly="true" showIf="invoiceLine" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 				<panel name="packagePanel" title="Package" colSpan="12" showIf="invoicingType == 2">
-					<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>
-					<field name="invoiced" showTitle="false" showIf="id &amp;&amp; $readonly()" colSpan="6" readonly="true" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-						<viewer><![CDATA[
-	                        <h4 class="text-right">
-	                            <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
-	                            <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-	                        </h4>
-	                    ]]>
-						</viewer>
-					</field>					
+					<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>								
 					<field name="quantity" colSpan="3" onChange="action-team-task-group-qty-onchange"/>
 					<field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 					<field name="unitPrice" colSpan="3" onChange="action-team-task-group-unit-price-onchange"/>
-					<field name="currency" colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false"/>
-					<field name="toInvoice" hidden="true" colSpan="3" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+					<field name="currency" colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false"/>	
 					<panel name="discountPanel" readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
 						<field name="discountTypeSelect" colSpan="3" onChange="action-sale-order-line-attrs-discountamount-title"/>
 						<field name="discountAmount" colSpan="3"/>
@@ -192,6 +175,16 @@
 				<field name="isFirst" hidden="true"/>
 				<field name="doUpdateNextTasks" hidden="true"/>
 				<field name="hasDateOrFrequencyChanged" hidden="true"/>
+			</panel>
+			
+			<panel name="timeSpentPanel" title="Time Spent">
+				<field name="totalRealHrs" readonly="true" colSpan="4">
+				<viewer><![CDATA[
+                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
+       			]]></viewer>
+				</field>
+				<panel-dashlet name="validatedTimesheetLinesPanel" action="action-teamtask-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-teamtask-dashlet-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 
 			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
@@ -363,17 +356,6 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
     
-    <action-view name="action-team-task-view-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
-      <view type="form" name="project-planning-time-form"/>
-      <view-param name="popup" value="reload"/>
-      <view-param name="show-toolbar" value="false"/>
-      <view-param name="forceEdit" value="true" />
-      <view-param name="forceTitle" value="true"/>
-       <context name="_timeSpentPopup" expr="eval: true"/>
-      <context name="_task" expr="eval: __self__"/>
-      <context name="_project" expr="eval: project"/>
-    </action-view>
-    
     <action-view name="action-team-task-view-time-planned" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
       <view type="form" name="project-planning-time-form"/>
       <view-param name="popup" value="reload"/>
@@ -386,7 +368,7 @@
     </action-view>
 	
 	<action-record name="action-task-record-project-configurations" model="com.axelor.team.db.TeamTask">
-		<field name="projectCategory" expr="eval: null"/>
+		<field name="teamTaskCategory" expr="eval: null"/>
 		<field name="assignedTo" expr="eval:(project?.membersUserSet ? project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) : __repo__(Project).find(project?.id).membersUserSet?.collect{it.id}.contains(assignedTo.id)) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
 		<field name="membersUserSet" expr="eval: null"/>
 		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
@@ -413,8 +395,8 @@
 		<field name="plannedProgress" expr="eval: progressSelect"/>
 	</action-record>
 	
-	<action-attrs name="action-task-attrs-project-category-configurations" model="com.axelor.team.db.TeamTask">
-		<attribute name="domain" for="projectCategory" expr="eval: (project?.projectCategorySet !=  null &amp;&amp; project?.projectCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+	<action-attrs name="action-task-attrs-team-task-category-configurations" model="com.axelor.team.db.TeamTask">
+		<attribute name="domain" for="teamTaskCategory" expr="eval: (project?.teamTaskCategorySet !=  null &amp;&amp; project?.teamTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.teamTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-project-assigned-to-configurations" model="com.axelor.team.db.TeamTask">
@@ -493,7 +475,6 @@
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
 		<action name="action-team-task-business-support-provider" if="__config__.app.isApp('business-support')"/>
 		<action name="action-project-attrs-project-planning-time-cancel-remove"/>
-		<action name="action-project-attrs-project-planning-time-spent-cancel-remove"/>
 	</action-group>
 	
 	<action-group name="action-team-task-group-project-category-onchange">
@@ -516,9 +497,17 @@
 		<call class="com.axelor.apps.businessproject.web.TeamTaskController" method="onChangeCategory"/>
 	</action-method>
 	
-	<action-attrs name="action-team-task-attrs-to-invoice">
-		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 2 &amp;&amp; teamTaskInvoicing"/>
-		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 2 &amp;&amp; teamTaskInvoicing"/>
+	<action-attrs name="action-team-task-attrs-invoice-type-on-change">
+		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 1"/>
+		<attribute name="value" for="isOrderProposed" expr="eval: true" if="invoicingType == 1"/>
+		<attribute name="value" for="isOrderProposed" expr="eval: false" if="invoicingType != 1"/>
+		<attribute name="value" for="product" expr="eval: null" if="invoicingType == 2"/>
+		<attribute name="value" for="quantity" expr="eval: null" if="invoicingType == 2"/>
+		<attribute name="value" for="unit" expr="eval: null" if="invoicingType == 2"/>
+		<attribute name="value" for="unitPrice" expr="eval: null" if="invoicingType == 2"/>
+		<attribute name="value" for="currency" expr="eval: null" if="invoicingType == 2"/>
+		<attribute name="value" for="exTaxTotal" expr="eval: null" if="invoicingType == 2"/>
 	</action-attrs>
 	
 	<action-attrs name="action-team-task-attrs-assginment-customer">
@@ -533,14 +522,7 @@
 		<view type="grid" name="project-planning-time-grid"/>
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="true"/>
-		<domain>self.task.id = :id AND self.typeSelect = 1</domain>
-	</action-view>
-	
-	<action-view name="action-team-task-dashlet-project-planning-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
-		<view type="grid" name="project-planning-time-spent-grid"/>
-		<view type="form" name="project-planning-time-form"/>
-		<view-param name="popup" value="true"/>
-		<domain>self.task.id = :id AND self.typeSelect = 2</domain>
+		<domain>self.task.id = :id</domain>
 	</action-view>
 	
 	<action-attrs name="action-team-task-attrs-project-planning-time-remove">
@@ -550,16 +532,6 @@
 		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
 		<attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
 		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.typeSelect = 1 AND self.task.id = :id&quot;"/>
+		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.task.id = :id&quot;"/>
 	</action-attrs>
-	
-	<action-attrs name="action-team-task-attrs-project-planning-time-spent-remove">
-		<attribute name="readonly" for="removeProjectPlanningTimeSpentLineBtn" expr="eval:true"/>
-		<attribute name="hidden" for="cancelRemovePlanningTimeSpentBtn" expr="eval:false"/>
-		<attribute name="hidden" for="removeSelectedPlanningTimeSpentBtn" expr="eval:false"/>
-		<attribute name="hidden" for="$projectPlanningTimeSpentSet" expr="eval:false"/>
-		<attribute name="value" for="$projectPlanningTimeSpentSet" expr="eval:null"/>
-		<attribute name="title" for="$projectPlanningTimeSpentSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-		<attribute name="domain" for="$projectPlanningTimeSpentSet" expr="eval:&quot;self.typeSelect = 2 AND self.task.id = :id&quot;"/>
-	</action-attrs>	
 </object-views>

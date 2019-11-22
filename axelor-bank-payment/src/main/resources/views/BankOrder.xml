@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
         <toolbar>
@@ -19,6 +19,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
+        <field name="senderBankDetails.bank.bankName"/>
         <field name="signatoryEbicsUser" if-module="axelor-bank-payment" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
         <field name="statusSelect"/>
     </grid>
@@ -60,6 +61,7 @@
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
         <field name="nbOfLines"/>
+        <field name="senderBankDetails.bank.bankName"/>
         <field name="signatoryEbicsUser"/>
         <field name="statusSelect"/>
     </grid>
@@ -78,6 +80,7 @@
         <field name="bankOrderTotalAmount"/>
         <field name="bankOrderCurrency"/>
         <field name="senderReference"/>
+        <field name="senderBankDetails.bank.bankName"/>
         <field name="signatoryEbicsUser" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
         <field name="statusSelect"/>
     </grid>
@@ -104,14 +107,14 @@
             </field>
 		</panel>
   		<panel name="mainPanel" colSpan="12">
-  			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1">
-	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12"/>
+  			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
+	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12" readonly="true"/>
 	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
-	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true"/>
-	    		<field name="paymentMode" css="label-bold bold" colSpan="6" canView="false" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-	    		<field name="bankOrderFileFormat" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid" canView="false" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter"/>
-	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-group-partner-type-select-change" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true"/>
-		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2"/>
+	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true" readonlyIf="technicalOriginSelect == 1"/>
+	    		<field name="paymentMode" css="label-bold bold" colSpan="6" canView="false" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter" readonlyIf="technicalOriginSelect == 1"/>
+	    		<field name="bankOrderFileFormat" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid" canView="false" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter" readonlyIf="technicalOriginSelect == 1"/>
+	    		<field name="partnerTypeSelect" css="label-bold bold" colSpan="6" onChange="action-bank-order-group-partner-type-select-change" hideIf="orderTypeSelect == 5 || orderTypeSelect == 6" required="true" readonlyIf="technicalOriginSelect == 1"/>
+		        <field name="generatedMetaFile" widget="binary-link" showIf="statusSelect &gt;= 2" readonlyIf="technicalOriginSelect == 1"/>
 	        </panel>
 	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3" >  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
@@ -270,7 +273,7 @@
 		</panel>
   		<panel name="mainPanel" colSpan="12">
 			<panel name="detailPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1">
-				<field name="bankOrderSeq" css="label-bold bold" colSpan="6"/>
+				<field name="bankOrderSeq" css="label-bold bold" colSpan="6" readonly="true"/>
 				<field name="generatedMetaFile" required="true" widget="binary-link" title="File to send"/>
 				<field name="paymentMode" css="label-bold bold" colSpan="6" onChange="action-bank-order-record-payment-mode-change,action-bank-order-record-update-bankorder-currency"/>
 		    	<field name="bankOrderFileFormat" colSpan="6" onChange="action-bank-order-record-update-bankorder-currency"/>

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="app-employee-config-form" title="Employees management" model="com.axelor.apps.base.db.AppEmployee" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
-			<field name="dailyWorkHours" colSpan="12"/>
-			<field name="advanceManagement" />
-			<field name="payrollPreparation" colSpan="4" widget="boolean-switch" />
-			<field name="lunchVoucher" colSpan="4" widget="boolean-switch" />
-			<field name="employeeBonus" colSpan="4" widget="boolean-switch" />
+			<field name="advanceManagement" colSpan="3" widget="boolean-switch"/>
+			<field name="payrollPreparation" colSpan="3" widget="boolean-switch" />
+			<field name="lunchVoucher" colSpan="3" widget="boolean-switch" />
+			<field name="employeeBonus" colSpan="3" widget="boolean-switch" />
+		    <field name="dailyWorkHours" colSpan="3"/>
 		</panel>
 		<panel name="configPanel">
 			<button name="generateHrConfigurationsBtn" colSpan="4" title="Generate human resource configurations" onClick="save,com.axelor.apps.hr.web.AppHumanResourceController:generateHrConfigurations"/>

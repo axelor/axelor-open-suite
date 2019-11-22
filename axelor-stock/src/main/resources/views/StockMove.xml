@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="statusSelect,-estimatedDate">
     <toolbar>
@@ -20,7 +20,7 @@
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="statusSelect"/>
     <field name="origin" width="120"/>
-    <field name="availableStatusSelect">
+    <field name="availableStatusSelect" showIf="statusSelect == 2">
 	   	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
 	   	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
 	   	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
@@ -39,7 +39,8 @@
     <toolbar>
       <button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
-    </toolbar>
+    <button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
+    	</toolbar>
 		<field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="pickingIsEdited"/>
 		</field>
@@ -80,7 +81,8 @@
     <toolbar>
 			<button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
-    </toolbar>
+    <button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line"/>
+    	</toolbar>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
 		</field>
@@ -109,7 +111,8 @@
   <grid name="stock-move-in-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
       <button name="printStockMoveGridBtn" title="Print StockMove(s)" onClick="action-print-stock-move" icon="fa-print"/>
-    </toolbar>
+    <button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
+    	</toolbar>
 		<field name="stockMoveSeq" width="120"/>
 		<field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
 		<field name="estimatedDate"/>
@@ -153,21 +156,21 @@
 			<button showIf="typeSelect == 2 &amp;&amp; !isReversion" name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-stock-move-method-refresh-net-mass"/>
 		</toolbar>
 		<menubar>
-			<menu title="Reports" icon="fa-files-o">
-				<item title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
-				<item title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
-				<item title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
-				<item title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
-				<item title="Print certificate of conformity" action="save,action-method-print-conformity-certificate" showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
-			</menu>
+			 <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
+                <item name="printInternalMoveItem" title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
+                <item name="printOutgoingMoveItem" title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
+                <item name="printIncomingMoveItem" title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
+                <item name="printPickingOrderItem" title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
+				<item name="printCertificateOfConformityItem" title="Print certificate of conformity" action="save,action-method-print-conformity-certificate" showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
+            </menu>
 
-			<menu title="Tools" icon="fa-wrench">
-				<item title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
-				<item title="Split into 2" action="save,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2" />
-				<item title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
-				<item title="Special split" action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
-				<item title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
-			</menu>
+			<menu name="stockMoveToolsMenu" title="Tools" icon="fa-wrench">
+                <item name="viewDirectionItem" title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
+                <item name="splitIntoItem" title="Split into 2" action="save,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2"/>
+                <item name="splitByUnitItem" title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
+                <item name="specialSplitItem" title="Special split" action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
+                <item name="shipReceiveAllProductsItem" title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
+            </menu>
 		</menubar>
 
 		<panel name="mainPanel">
@@ -229,7 +232,7 @@
 	              
 								]]></viewer>
 							</field>
-							<field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
+							<field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
 								<viewer depends="$invoiceStatus"><![CDATA[
 								
 									<h4 class="text-left">
@@ -274,6 +277,8 @@
                 <field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
                 <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
                 <field name="toAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+                <static name="deliveryAddressText" hidden="true" colSpan="12">
+                	<![CDATA[<span class='label label-warning'>Warning : Delivery address is missing.</span>]]></static>
                 <field name="exTaxTotal" css="order-subtotal" showIf="statusSelect &gt; 1" readonly="true" showTitle="false">
 	                <viewer><![CDATA[
 	                
@@ -298,6 +303,8 @@
 				<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
 				<field name="fromStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
 				<field name="toAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
+				 <static name="deliveryAddressText" hidden="true" colSpan="12">
+                	<![CDATA[<span class='label label-warning'>Warning : Delivery address is missing.</span>]]></static>
 				<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
                 <panel stacked="true">
                 <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
@@ -395,10 +402,10 @@
 	            </panel>
             </panel>
             <panel name="notePanel" title="Note" colSpan="12">
-				<panel name="stockMoveCommentsPanel" title="Description to display on stock move" colSpan="12">
+				<panel name="stockMoveCommentsPanel" title="Comment to display on stock move" colSpan="12">
 					<field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
 				</panel>
-				<panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+				<panel name="pickingOrderCommentsPanel" title="Comment to display on picking order" colSpan="12">
 					<field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
@@ -582,7 +589,7 @@
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
 		<action name="action-supplychain-stock-move-record-set-invoice-status"/>
-		<action name="action-stock-move-attrs-check-delivery-address"/>
+		<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1" />
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
@@ -629,7 +636,7 @@
         <action name="action-stock-move-record-auto-mail"/>
 		<action name="action-stock-move-record-ispm-field"/>
 	   	<action name="action-stock-move-record-partner-shipment-informations"/>
-	   	<action name="action-stock-move-attrs-check-delivery-address"/>
+	   	<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1"/>
 	</action-group>
 
     <action-group name="action-stock-move-group-onchange-company">
@@ -981,9 +988,9 @@
 	</action-record>
 	
 	<action-attrs name="action-stock-move-attrs-check-delivery-address">
-		<attribute name="hidden" for="deliveryAddressText" expr="eval: partner?.partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0 " /> 
+		<attribute name="hidden" for="deliveryAddressText" expr="eval: partner?.partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0 " />
     </action-attrs>
-    
+
 	<action-group name="action-group-stock-stockmove-cancel-click">
 		<action name="save"/>
 		<action name="action-validate-stock-move-validate-cancel"/>
@@ -993,5 +1000,13 @@
 	<action-validate name="action-validate-stock-move-validate-cancel">
 	  <error if="statusSelect == 2 &amp;&amp; pickingIsEdited &amp;&amp; availabilityRequest" message="Picking order has been edited for this stock move, it can not be canceled."/>
 	</action-validate>
-	
+
+	<action-view name="action-stock-move-view-stock-move-line" title="See stock move lines" model="com.axelor.apps.stock.db.StockMoveLine">
+		<view type="grid" name="stock-move-line-all-grid"/>
+		<view type="form" name="stock-move-line-all-form"/>
+		<domain>self.stockMove.typeSelect = :_typeSelect AND self.stockMove.isReversion = :_isReversion</domain>
+		<context name="_typeSelect" expr="eval:_typeSelect"/>
+		<context name="_isReversion" expr="eval:_isReversion"/>
+	</action-view>
+
 </object-views>

@@ -1,7 +1,7 @@
 "name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
 "perm.project.teamTask.all";"com.axelor.team.db.TeamTask";"x";"x";"x";"x";"x";"self.project IN (SELECT p FROM Project p WHERE ? MEMBER OF p.membersUserSet)";"__user__";"role.customer"
 "perm.project.project.r";"com.axelor.apps.project.db.Project";"x";;;;;"(?) MEMBER OF self.membersUserSet";"__user__";"role.customer"
-"perm.project.projectCategory.r";"com.axelor.apps.project.db.ProjectCategory";"x";;;;;;;"role.customer"
+"perm.project.teamTaskCategory.r";"com.axelor.apps.project.db.TeamTaskCategory";"x";;;;;;;"role.customer"
 "perm.base.unit.r";"com.axelor.apps.base.db.Unit";"x";;;;;;;"role.customer"
 "perm.businesssupport.projectVersion.r";"com.axelor.apps.businesssupport.db.ProjectVersion";"x";;;;;;;"role.customer"
 "perm.base.currency.r";"com.axelor.apps.base.db.Currency";"x";;;;;;;"role.customer"

@@ -534,6 +534,12 @@ Move.company = AccountingReport.company AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 Account.reconcile_ok = true  
 AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 group by MoveLine.name,MoveLine.partner_full_name,partner_name,MoveLine.partner_seq,AccountingReport.ref,MoveLine.credit,MoveLine.debit,
 Invoice.invoice_id,invoice_name,InvoiceReconciled.invoice_id,InvoiceReconciled.invoice_date,ReportedBalanceLine.amount,YYear.reported_balance_date,
 AccountingReport.date_to,Reconcile.amount,MoveLine.amount_remaining,MoveLine.date_val]]></xml-property>

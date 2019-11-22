@@ -187,6 +187,8 @@ public interface IExceptionMessage {
   /** Kilometric allowance */
   String KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR = /*$$(*/ "Google Maps error: %s" /*)*/;
 
+  String KILOMETRIC_ALLOWANCE_OSM_ERROR = /*$$(*/ "Open Street Maps error: %s" /*)*/;
+
   static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/
       "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
 
@@ -205,4 +207,7 @@ public interface IExceptionMessage {
 
   static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
       "Please configure the unit for this type of absence" /*)*/;
+
+  static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
+      "Please configure the template for email reminder" /*)*/;
 }

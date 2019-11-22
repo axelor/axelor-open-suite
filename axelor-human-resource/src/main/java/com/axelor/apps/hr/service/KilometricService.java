@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -32,6 +34,7 @@ import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -48,11 +51,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import javax.net.ssl.HttpsURLConnection;
 import org.apache.http.client.utils.URIBuilder;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
@@ -228,33 +232,66 @@ public class KilometricService {
    * @throws AxelorException
    */
   private BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException {
+    BigDecimal distance = BigDecimal.ZERO;
+    AppBase appBase = appBaseService.getAppBase();
     try {
-      User user = AuthUtils.getUser();
-      JSONObject json = getGoogleMapsDistanceMatrixResponse(fromCity, toCity, user.getLanguage());
-      String status = json.getString("status");
+      switch (appBase.getMapApiSelect()) {
+        case AppBaseRepository.MAP_API_GOOGLE:
+          distance = this.getDistanceUsingGoogle(fromCity, toCity);
+          break;
 
-      if (status.equals("OK")) {
-        JSONObject response =
-            json.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0);
-        status = response.getString("status");
-        if (status.equals("OK")) {
-          return BigDecimal.valueOf(response.getJSONObject("distance").getDouble("value") / 1000.);
-        }
+        case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
+          distance = this.getDistanceUsingOSRM(fromCity, toCity);
+          break;
       }
-
-      String msg =
-          json.has("error_message")
-              ? String.format("%s / %s", status, json.getString("error_message"))
-              : status;
-
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR,
-          msg);
-
+      return distance;
     } catch (URISyntaxException | IOException | JSONException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
+  }
+
+  protected BigDecimal getDistanceUsingGoogle(String fromCity, String toCity)
+      throws JSONException, AxelorException, URISyntaxException, IOException {
+    User user = AuthUtils.getUser();
+    JSONObject json = getGoogleMapsDistanceMatrixResponse(fromCity, toCity, user.getLanguage());
+    String status = json.getString("status");
+
+    if (status.equals("OK")) {
+      JSONObject response =
+          json.getJSONArray("rows").getJSONObject(0).getJSONArray("elements").getJSONObject(0);
+      status = response.getString("status");
+      if (status.equals("OK")) {
+        return BigDecimal.valueOf(response.getJSONObject("distance").getDouble("value") / 1000.);
+      }
+    }
+
+    String msg =
+        json.has("error_message")
+            ? String.format("%s / %s", status, json.getString("error_message"))
+            : status;
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR,
+        msg);
+  }
+
+  protected BigDecimal getDistanceUsingOSRM(String fromCity, String toCity)
+      throws JSONException, AxelorException, URISyntaxException, IOException {
+    JSONObject json = getOsmRouteServiceResponse(fromCity, toCity);
+    String status = json.getString("code");
+
+    if (status.equals("Ok")) {
+      return BigDecimal.valueOf(
+          json.getJSONArray("routes").getJSONObject(0).getDouble("distance") / 1000);
+    }
+
+    String msg = json.has("message") ? String.format("%s", json.getString("message")) : status;
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR,
+        msg);
   }
 
   /**
@@ -267,10 +304,11 @@ public class KilometricService {
    * @throws URISyntaxException
    * @throws IOException
    * @throws JSONException
+   * @throws AxelorException
    */
   private JSONObject getGoogleMapsDistanceMatrixResponse(
       String origins, String destinations, String language)
-      throws URISyntaxException, IOException, JSONException {
+      throws URISyntaxException, IOException, JSONException, AxelorException {
 
     URIBuilder ub = new URIBuilder("https://maps.googleapis.com/maps/api/distancematrix/json");
     ub.addParameter("origins", origins);
@@ -278,10 +316,49 @@ public class KilometricService {
     ub.addParameter("language", language);
     ub.addParameter("key", mapService.getGoogleMapsApiKey());
 
-    URL url = new URL(ub.toString());
-    URLConnection connection = url.openConnection();
-    StringBuilder sb = new StringBuilder();
+    return this.getApiResponse(
+        ub.toString(), IExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR);
+  }
 
+  /**
+   * Get JSON response from Open Street Route Machine API.
+   *
+   * @param origins
+   * @param destinations
+   * @return
+   * @throws AxelorException
+   * @throws JSONException
+   * @throws URISyntaxException
+   * @throws IOException
+   */
+  protected JSONObject getOsmRouteServiceResponse(String origins, String destinations)
+      throws AxelorException, JSONException, URISyntaxException, IOException {
+    Map<String, Object> originMap = mapService.getMap(origins);
+    String originCoordinates = originMap.get("longitude") + "," + originMap.get("latitude");
+    Map<String, Object> destinationMap = mapService.getMap(destinations);
+    String destinationCoordinates =
+        destinationMap.get("longitude") + "," + destinationMap.get("latitude");
+    String uri =
+        String.format(
+            "https://router.project-osrm.org/route/v1/driving/%s;%s",
+            originCoordinates, destinationCoordinates);
+
+    return this.getApiResponse(uri, IExceptionMessage.KILOMETRIC_ALLOWANCE_OSM_ERROR);
+  }
+
+  protected JSONObject getApiResponse(String urlString, String exceptionMessage)
+      throws IOException, JSONException, AxelorException {
+
+    URL url = new URL(urlString);
+    HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+    if (connection.getResponseCode() == 429) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          exceptionMessage,
+          ITranslation.REQUEST_OVERFLOW);
+    }
+
+    StringBuilder sb = new StringBuilder();
     try (BufferedReader in =
         new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
       String inputLine;
@@ -289,7 +366,6 @@ public class KilometricService {
         sb.append(inputLine + "\n");
       }
     }
-
     return new JSONObject(sb.toString());
   }
 }

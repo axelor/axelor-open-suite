@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="task-template-grid" title="Task template" model="com.axelor.apps.project.db.TaskTemplate">
 		<field name="name"/>
@@ -28,10 +28,7 @@
 		</panel>
 		<panel if="__config__.app.isApp('business-support')" if-module="axelor-business-support" name="internalDescriptionPanel" title="Internal Description">
 			<field name="internalDescription" colSpan="12" widget="html"/>
-		</panel>
-		<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="teamTaskInvoicing" colSpan="4" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-		</panel>
+		</panel>		
 	</form>
 
 </object-views>

@@ -69,6 +69,8 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
+import com.axelor.apps.hr.service.timesheet.TimesheetReportServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
@@ -114,5 +116,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(UserBaseRepository.class).to(UserHRRepository.class);
     bind(PartnerAccountRepository.class).to(PartnerHRRepository.class);
     bind(BankOrderMergeServiceImpl.class).to(BankOrderMergeHRServiceImpl.class);
+    bind(TimesheetReportService.class).to(TimesheetReportServiceImpl.class);
   }
 }

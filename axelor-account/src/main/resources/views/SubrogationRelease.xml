@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease" orderBy="-sequenceNumber">
 		<field name="sequenceNumber" width="120"/>
@@ -12,13 +12,14 @@
 	</grid>
 
 	<form name="subrogation-release-form" title="Subrogation release" model="com.axelor.apps.account.db.SubrogationRelease"
-		 onNew="action-subrogation-release-onnew">
+		 onNew="action-subrogation-release-onnew"
+		 onLoad="action-subrogation-release-onLoad">
 
 		<menubar>
-			<menu title="Print/Export" icon="fa-print">
-				<item action="action-subrogation-release-method-print-to-pdf" title="Print to PDF"
+			<menu name="subrogationReleasePrintExportMenu" title="Print/Export" icon="fa-print">
+				<item name="printToPDFItem" action="action-subrogation-release-method-print-to-pdf" title="Print to PDF"
 					readonlyIf="statusSelect &lt; 2" />
-				<item action="action-subrogation-release-method-export-to-csv" title="Export to CSV"
+				<item name="exportToCSVItem" action="action-subrogation-release-method-export-to-csv" title="Export to CSV"
 					readonlyIf="statusSelect &lt; 2" />
 			</menu>
 		</menubar>
@@ -48,6 +49,7 @@
 				onClick="save,action-subrogation-release-method-enter-release-in-the-accounts" showIf="statusSelect == 2" />
 			<button name="cancelReleaseBtn" title="Cancel release"
 				onClick="action-subrogation-release-record-cancel-release,save" showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 3" />
+			<button name="displayMoveLines" title="See Move Lines" onClick="action-subrogation-release-display-move-lines-view" showIf="statusSelect == 3 || statusSelect == 4"/>
 		</panel>
 		
 		<panel sidebar="true">
@@ -55,6 +57,7 @@
 			<field name="accountingDate" readonlyIf="statusSelect >= 3"/>
 			<field name="comments"/>
 			<field name="cancelReason" showIf="statusSelect == 5"/>
+			<field name="$totalAmountRemaining" title="Total Amount Remaining" readonly="true"/>
 		</panel>
 		
 		<panel-mail>
@@ -89,9 +92,19 @@
 			method="enterReleaseInTheAccounts" />
 	</action-method>
 	
+	<action-method name="action-subrogation-release-display-move-lines-view">
+		<call class="com.axelor.apps.account.web.SubrogationReleaseController"
+			method="displayMoveLines" />
+	</action-method>
+	
 	<action-record name="action-subrogation-release-onnew"
 		model="com.axelor.apps.account.db.SubrogationRelease">
 		<field name="company" expr="eval: __user__.getActiveCompany()" />
+	</action-record>
+	
+	<action-record name="action-subrogation-release-onLoad"
+		model="com.axelor.apps.account.db.SubrogationRelease">
+		<field name="$totalAmountRemaining" expr="eval: invoiceSet?.collect{it->it.amountRemaining}.sum()" />
 	</action-record>
 	
 	<action-record name="action-subrogation-release-record-cancel-release"

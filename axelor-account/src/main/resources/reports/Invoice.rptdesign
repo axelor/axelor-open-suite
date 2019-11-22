@@ -24,6 +24,12 @@
         </structure>
     </list-property>
     <property name="units">cm</property>
+    <method name="beforeFactory"><![CDATA[if(params["HeaderHeight"].value != 0 ) {
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("headerHeight",params["HeaderHeight"].value+"cm");
+}
+if(params["FooterHeight"].value != 0) {
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("footerHeight",params["FooterHeight"].value+"cm");
+}]]></method>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -128,6 +134,28 @@
             <simple-property-list name="defaultValue">
                 <value type="constant">org.postgresql.Driver</value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="HeaderHeight" id="5372">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="FooterHeight" id="5373">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -2749,12 +2777,12 @@ $func$ LANGUAGE plpgsql;
             <xml-property name="queryText"><![CDATA[select InvoicePayment.payment_date,
 PaymentMode.name as payment_mode,InvoicePayment.amount,
 Currency.symbol,
-(CASE WHEN InvoicePayment.type_select = 1 THEN 'Advance Payment' 
+(CASE WHEN InvoicePayment.type_select = 1 THEN 'Advance Payment'
 WHEN InvoicePayment.type_select = 2 THEN 'Payment'
 WHEN InvoicePayment.type_select = 3 THEN 'Refund invoice'
 WHEN InvoicePayment.type_select = 4 THEN 'Invoice'
 WHEN InvoicePayment.type_select = 5 THEN 'Other'
-WHEN InvoicePayment.type_select = 6 THEN 'Advance Payment Imputation' END) AS type_select 
+WHEN InvoicePayment.type_select = 6 THEN 'Advance Payment Imputation' END) AS type_select
 from account_invoice_payment as InvoicePayment
 left join account_invoice as Invoice on Invoice.id = InvoicePayment.invoice
 left join base_currency as Currency on Currency.id = InvoicePayment.currency
@@ -4842,12 +4870,12 @@ row["partnerFirstName"]
                                                     <property name="textAlign">right</property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">
-if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) 
+if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"])
 {row["qty"]}
 </VALUE-OF>
 
 <I><FONT size="9pt"><VALUE-OF format="#,##0.00">
-if(row["is_sub_line"]) 
+if(row["is_sub_line"])
 {row["qty"]}
 </VALUE-OF>
 </FONT></I>
@@ -4886,7 +4914,7 @@ if(row["is_pack_line"]) {row["qty"]}
                                                     </list-property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF>
-if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; row["translation"] != null) 
+if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; row["translation"] != null)
 {row["translation"]} else if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; row["translation"] == null) {row._outer["unitName"]}</VALUE-OF>
 
 <I><FONT size="9pt">
@@ -4894,7 +4922,7 @@ if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; row["translati
 </VALUE-OF></FONT></I>
 
 </B><VALUE-OF>
-if(row["is_pack_line"] &amp;&amp; row["translation"] != null) 
+if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
 {row["translation"]} else if(row["is_pack_line"] &amp;&amp; row["translation"] == null) {row._outer["unitName"]}</VALUE-OF></B>]]></text-property>
                                                 </text>
                                             </cell>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
@@ -199,6 +199,7 @@
 				        <panel-dashlet name="productStockPanel" colSpan="12" action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"  />
 				        <panel-dashlet name="stockReportPanel" colSpan="12" action="action-stock-report-for-product" showIf="id &amp;&amp; stockManaged"  />
 				        <panel-dashlet name="stockHistoryReportPanel" colSpan="12" action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"  />
+				        <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel" colSpan="12"/>
 	      			</panel>
 	    		</panel>
                 <panel name="productionInformationsPanel"

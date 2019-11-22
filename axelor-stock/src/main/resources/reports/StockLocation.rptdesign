@@ -130,6 +130,20 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="PrintType" id="5360">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -1086,7 +1100,10 @@ order by Product.code
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'StockLocation.title'</value>
+                                    <value type="javascript">if(params["PrintType"].value.equals('1'))
+'StockLocation.locationFinancialData'
+if(params["PrintType"].value.equals('2'))
+'StockLocation.stockLocationContent'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1299,7 +1316,91 @@ order by Product.code
                         <column id="5308">
                             <property name="width">50%</property>
                         </column>
+                        <row id="5361">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">params["PrintType"].value.equals('1')</expression>
+                                </structure>
+                            </list-property>
+                            <cell id="5362">
+                                <text id="5364">
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'StockLocation.date'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy kk:mm">new Date()</VALUE-OF> ]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="5363">
+                                <text id="5365">
+                                    <property name="marginTop">0pt</property>
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="marginRight">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">if( row._outer["raw_count"] ==  1){
+'StockLocation.location'
+}else{
+'StockLocation.locations'
+}</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer._outer["Locations"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
                         <row id="5292">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">params["PrintType"].value.equals('2')</expression>
+                                </structure>
+                            </list-property>
                             <cell id="5293">
                                 <text id="5298">
                                     <property name="marginTop">0pt</property>
@@ -1456,6 +1557,12 @@ order by Product.code
                             </cell>
                         </row>
                         <row id="5294">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">params["PrintType"].value.equals('2')</expression>
+                                </structure>
+                            </list-property>
                             <cell id="5295">
                                 <text id="5299">
                                     <property name="marginTop">0pt</property>
@@ -1495,6 +1602,12 @@ order by Product.code
                             </cell>
                         </row>
                         <row id="5296">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">params["PrintType"].value.equals('2')</expression>
+                                </structure>
+                            </list-property>
                             <cell id="5297">
                                 <text id="5300">
                                     <property name="color">black</property>

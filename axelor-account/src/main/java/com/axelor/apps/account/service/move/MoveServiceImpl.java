@@ -19,13 +19,16 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -468,6 +471,19 @@ public class MoveServiceImpl implements MoveService {
 
       MoveLine newMoveLine = generateReverseMoveLine(newMove, moveLine, dateOfReversion, isDebit);
 
+      if (moveLine.getAnalyticDistributionTemplate() != null) {
+        newMoveLine.setAnalyticDistributionTemplate(moveLine.getAnalyticDistributionTemplate());
+
+        List<AnalyticMoveLine> analyticMoveLineList =
+            Beans.get(AnalyticMoveLineService.class)
+                .generateLines(
+                    newMoveLine.getAnalyticDistributionTemplate(),
+                    newMoveLine.getDebit().add(newMoveLine.getCredit()),
+                    AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
+                    move.getDate());
+        newMoveLine.setAnalyticMoveLineList(analyticMoveLineList);
+      }
+
       newMove.addMoveLineListItem(newMoveLine);
 
       if (isUnreconcileOriginalMove) {
@@ -566,7 +582,11 @@ public class MoveServiceImpl implements MoveService {
             orgineMoveLine.getPartner(),
             orgineMoveLine.getAccount(),
             orgineMoveLine.getCurrencyAmount(),
+            orgineMoveLine.getDebit().add(orgineMoveLine.getCredit()),
+            orgineMoveLine.getCurrencyRate(),
             !isDebit,
+            dateOfReversion,
+            dateOfReversion,
             dateOfReversion,
             orgineMoveLine.getCounter(),
             orgineMoveLine.getName(),

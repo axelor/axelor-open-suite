@@ -294,4 +294,15 @@ public class StockLocationServiceImpl implements StockLocationService {
     }
     return stockLocationListId;
   }
+
+  @Override
+  public boolean isConfigMissing(StockLocation stockLocation, int printType) {
+
+    StockConfig stockConfig = stockLocation.getCompany().getStockConfig();
+    return printType == StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA
+        && (stockConfig == null
+            || (!stockConfig.getIsDisplayAccountingValueInPrinting()
+                && !stockConfig.getIsDisplayAgPriceInPrinting()
+                && !stockConfig.getIsDisplaySaleValueInPrinting()));
+  }
 }

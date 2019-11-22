@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem name="menu-project-root" order="-103" title="Projects" icon="fa-tasks"  if="__config__.app.isApp('project')"
 	     icon-background="#3f6bb9"/> 	
@@ -87,6 +87,11 @@
 	<action-view name="project.my.projects" title="My projects">
 		<view type="dashboard" name="project-my-projects"/>
 	</action-view>
+	
+	<menuitem name="project-reporting-planned-charge" parent="project-reporting" order="32" title="Planned charge" action="project.planned.charge"/>
+	<action-view name="project.planned.charge" title="Planned charge">
+		<view type="dashboard" name="project-planned-charge"/>
+	</action-view>
 
 	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" if="__config__.app.getApp('project').getResourceManagement()" />
 	<action-view name="project.resource.booking" title="Resource bookings" model="com.axelor.apps.project.db.ResourceBooking">
@@ -98,10 +103,10 @@
     <!-- PROJECT CONFIGURATION -->
 	<menuitem name="project-configurations" parent="menu-project-root" title="Configuration" order="41" icon="fa-cog"/>
 	
-	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
-	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">
-		<view type="grid" name="category-grid"/>
-		<view type="form" name="category-form"/>
+	<menuitem name="team-task-category" parent="project-configurations" title="Category" action="team.task.category"/>
+	<action-view name="team.task.category" title="Team Task Category" model="com.axelor.apps.project.db.TeamTaskCategory">
+		<view type="grid" name="team-task-category-grid"/>
+		<view type="form" name="team-task-category-form"/>
 	</action-view>
 	
 	<menuitem name="project-resource-type" parent="project-configurations" title="Resource types" action="project.resource.types" if="__config__.app.getApp('project').getResourceManagement()" />

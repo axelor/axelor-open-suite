@@ -150,6 +150,9 @@ public interface IExceptionMessage {
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
       "Please configure mass units for this product packing : %s" /*)*/;
 
+  static final String STOCK_CONFIGURATION_MISSING = /*$$(*/
+      "Configuration is missing in stock configuration to see financial data" /*)*/;
+
   /** Partner Product Quality Rating Service */
   String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
 
