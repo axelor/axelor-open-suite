@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	
 	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
@@ -266,7 +266,19 @@
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.production.db.ManufOrder"/>
 	</action-view>
-	 
+
+	<menuitem name="manufacturing-conf-machine-planning" parent="manufacturing-conf"
+		title="Machine Planning" action="manufacturing.conf.machine.planning" />
+
+	<action-view name="manufacturing.conf.machine.planning"
+		title="Machine Planning" model="com.axelor.apps.base.db.WeeklyPlanning" >
+		<view type="grid" name="weekly-planning-grid" />
+		<view type="form" name="weekly-planning-form" />
+		<view-param name="forceTitle" value="true"/>
+		<domain>self.typeSelect = :_typeSelect</domain>
+		<context name="_typeSelect" expr="eval: 2"/>
+	</action-view>
+
 	<menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf" action="manufacturing.conf.workshop" if="__config__.app.getApp('production').manageWorkshop" />
 	
 	<action-view name="manufacturing.conf.workshop" title="Workshop" model="com.axelor.apps.stock.db.StockLocation">

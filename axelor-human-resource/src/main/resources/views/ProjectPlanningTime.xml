@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="project-planning-time-grid" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<field name="plannedHours" />
@@ -14,38 +14,25 @@
         <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
     </grid>
     
-    <grid model="com.axelor.apps.project.db.ProjectPlanningTime" title="Time spent" name="project-planning-time-spent-grid">
-		<field name="realHours"/>	
-    	<field name="project"/>
-        <field name="task"/>
-		<field name="user"/> 
-		<field name="date"/>
-        <field name="isIncludeInTurnoverForecast"/>
-        <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
-    </grid>
-    
     <grid name="project-planning-db-grid" title="Project Plannings" model="com.axelor.apps.project.db.ProjectPlanningTime">
 	    <field name="project"/>
 	    <field name="task"/>
 	    <field name="plannedHours" />
-	    <field name="realHours"/>
     </grid>
     
     <form name="project-planning-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default" onSave="action-project-planning-time-validate-check-start-time-end-time">
 		<panel name="mainPanel">
-			<field name="plannedHours" showIf="typeSelect == 1" onChange="action-project-planning-time-record-planned-hours-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
-			<field name="realHours" showIf="typeSelect == 2"/>
+			<field name="plannedHours" onChange="action-project-planning-time-record-planned-hours-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="project" readonly="true"/>
 			<field name="task" domain="self.project = :project" canEdit="false" />
 			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>
 			<field name="date" />
 			<spacer name="dateSpacer" colSpan="6"/>
-			<field name="startTime" showIf="typeSelect == 1" requiredIf="endTime" onChange="action-project-planning-time-record-start-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
-			<field name="endTime" showIf="typeSelect == 1" requiredIf="startTime" onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
+			<field name="startTime" requiredIf="endTime" onChange="action-project-planning-time-record-start-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
+			<field name="endTime" requiredIf="startTime" onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
 			<field name="isIncludeInTurnoverForecast"/>
             <field name="description" colSpan="12" widget="html"/>
-			<field name="typeSelect" hidden="true"/>
 		</panel>
 	</form>
 	
@@ -80,37 +67,13 @@
 		<context name="_task" expr="eval:__self__" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__.project" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
-		<context name="_typeSelect" expr="eval:1"/>
-	</action-view>
-	
-	<action-view name="action-project-view-add-multiple-project-planning-spent-time" title="Project Planning Time Spent" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="project-planning-time-wizard-form"/>
-		<view-param name="show-confirm" value="false"/>
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="popup" value="reload"/>
-		<view-param name="forceTitle" value="true"/>
-		<context name="_task" expr="eval:__self__" if="_model == 'com.axelor.team.db.TeamTask'"/>
-		<context name="_project" expr="eval:__self__.project" if="_model == 'com.axelor.team.db.TeamTask'"/>
-		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
-		<context name="_timeSpent" expr="eval:true"/>
-		<context name="_typeSelect" expr="eval:2"/>
 	</action-view>
 	
 	<action-view name="action-project-dashlet-project-planning-time" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-grid"/>
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="true"/>
-		<domain>self.project.id in (:_projectIds) AND self.typeSelect = 1</domain>
-		<context if="id == null" name="_projectIds" expr="eval:[0]" />
-  		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
-  		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
-	</action-view>
-	
-	<action-view name="action-project-dashlet-project-planning-time-spent" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
-		<view type="grid" name="project-planning-time-spent-grid"/>
-		<view type="form" name="project-planning-time-form"/>
-		<view-param name="popup" value="true"/>
-		<domain>self.project.id in (:_projectIds) AND self.typeSelect = 2</domain>
+		<domain>self.project.id in (:_projectIds)</domain>
 		<context if="id == null" name="_projectIds" expr="eval:[0]" />
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
@@ -123,15 +86,6 @@
 		<view-param name="forceTitle" value="true"/>
 		<context name="_project" expr="eval:__self__"/>
 		<context name="_timePlannedPopup" expr="eval: true"/>
-	</action-view>
-	
-	<action-view name="action-project-view-project-planning-time-spent-add-new" title="Project Planning Time Spent" model="com.axelor.apps.project.db.ProjectPlanningTime">
-		<view type="form" name="project-planning-time-form"/>
-		<view-param name="popup" value="reload"/>
-		<view-param name="show-toolbar" value="false"/>
-		<view-param name="forceTitle" value="true"/>
-		<context name="_project" expr="eval:__self__"/>
-		<context name="_timeSpentPopup" expr="eval: true"/>
 	</action-view>
   
 	<action-attrs name="action-project-planning-time-attrs-domain-product">
@@ -150,8 +104,6 @@
 	</action-attrs>
 	
 	<action-attrs name="action-project-planning-time-attrs-default">
-		<attribute name="value" for="typeSelect" expr="eval:1" if="_timePlannedPopup"/>
-		<attribute name="value" for="typeSelect" expr="eval:2" if="_timeSpentPopup"/>		
 		<attribute name="value" for="task" expr="eval:_task"/>
 		<attribute name="value" for="project" expr="eval:_project"/>
 		<attribute name="value" for="userSet" expr="eval:_project.membersUserSet" if="_project != null"/>
@@ -173,19 +125,8 @@
 		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:false"/>
 		<attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
 		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.typeSelect = 1 AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
-		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.typeSelect = 1 AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
-	</action-attrs>
-	
-	<action-attrs name="action-project-attrs-project-planning-time-spent-remove">
-		<attribute name="readonly" for="removeProjectPlanningTimeSpentLineBtn" expr="eval:true"/>
-		<attribute name="hidden" for="cancelRemovePlanningTimeSpentBtn" expr="eval:false"/>
-		<attribute name="hidden" for="removeSelectedPlanningTimeSpentBtn" expr="eval:false"/>
-		<attribute name="hidden" for="$projectPlanningTimeSpentSet" expr="eval:false"/>
-		<attribute name="value" for="$projectPlanningTimeSpentSet" expr="eval:null"/>
-		<attribute name="title" for="$projectPlanningTimeSpentSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
-		<attribute name="domain" for="$projectPlanningTimeSpentSet" expr="eval:&quot;self.typeSelect = 2 AND self.project.id = :id&quot;" if="!isShowPhasesElements"/>
-		<attribute name="domain" for="$projectPlanningTimeSpentSet" expr="eval:&quot;self.typeSelect = 2 AND (self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
+		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.project.id = :id&quot;" if="!isShowPhasesElements"/>
+		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;(self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-cancel-remove">
@@ -193,13 +134,6 @@
 		<attribute name="hidden" for="cancelRemovePlanningTimeBtn" expr="eval:true"/>
 		<attribute name="hidden" for="removeSelectedPlanningTimeBtn" expr="eval:true"/>
 		<attribute name="hidden" for="$projectPlanningTimeSet" expr="eval:true"/>
-	</action-attrs>
-	
-	<action-attrs name="action-project-attrs-project-planning-time-spent-cancel-remove">
-		<attribute name="readonly" for="removeProjectPlanningTimeSpentLineBtn" expr="eval:false"/>
-		<attribute name="hidden" for="cancelRemovePlanningTimeSpentBtn" expr="eval:true"/>
-		<attribute name="hidden" for="removeSelectedPlanningTimeSpentBtn" expr="eval:true"/>
-		<attribute name="hidden" for="$projectPlanningTimeSpentSet" expr="eval:true"/>
 	</action-attrs>
 	
 	<action-method name="action-project-planning-time-method-show-planning">
@@ -216,10 +150,6 @@
 	
 	<action-method name="action-project-planning-time-method-remove-project-planning-time">
 		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="removeProjectPlanningTime"/>
-	</action-method>
-	
-	<action-method name="action-project-planning-time-method-remove-project-planning-time-spent">
-		<call class="com.axelor.apps.hr.web.project.ProjectPlanningTimeController" method="removeProjectPlanningTimeSpent"/>
 	</action-method>
 	
 	<action-validate name="action-project-validate-remove-project-planning-time">

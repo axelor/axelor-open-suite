@@ -140,6 +140,9 @@
 - AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
 - SUPPLYCHAIN : Auto-complete sale order when it has been all invoiced
 - Stock: Add stock history view for a given product, company and stock location.
+- Production : Provide menu for Machine Planning.
+- Teamtask : Removing real hours management from project planning time
+-  Base : Addition of orderByType for OrderBy in AdvancedExportLine for sorting .
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -267,7 +270,7 @@
 - REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 - PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
-- Update xsd to Axelor Open Platform 5.1
+- Update xsd to Axelor Open Platform 5.2
 - Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
 - SaleOrder : Fix NPE on click of generate customer deliveries
@@ -305,6 +308,7 @@
 - STOCK : Link back order with saleOrder or purchaseOrder
 - InvoiceLine : fixed null pointer exception by adding null safe operator on 'analyticDistributionAuthorized' 
 - BASE : Fix menu title and action-view name typo error
-- Production : Add else in switch case to remove unconditional break in CostSheetLineServiceImpl class .
+- CSVReaderService : Use try-with-resources for "FileInputStream"
+- Production : Add else in switch case to remove unconditional break in CostSheetLineServiceImpl class 
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

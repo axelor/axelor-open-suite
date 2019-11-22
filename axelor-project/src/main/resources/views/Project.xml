@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
@@ -162,12 +162,7 @@
 		                   	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
 		       			]]></viewer>
 					</field>
-					<field name="totalRealHrs" readonly="true">
-						<viewer><![CDATA[
-		                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
-		       			]]></viewer>
-					</field>
-
+					<spacer name="totalPlannedHrsSpacer" colSpan="6" />
 					<button name="planPlanningBtn" title="Plan project" css="btn-custom text-left" onClick="save,action-project-view-project-planning-wizard"  hideIf="$popup()" colSpan="3"/>
 					<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-time" colSpan="3" hideIf="$popup()"/>
 					<button name="addProjectPlanningTimeLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-add-new,save" />
@@ -178,18 +173,6 @@
 					<button name="removeSelectedPlanningTimeBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 					<button name="cancelRemovePlanningTimeBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
 					<panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning" action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
-
-					<spacer name="timeSpentSpacer" colSpan="4"/>
-
-					<button name="addMultipleLinesBtn" title="Add multiple lines" css="btn-custom text-left" onClick="save,action-project-view-add-multiple-project-planning-spent-time" colSpan="3" hideIf="$popup()"/>
-					<button name="addProjectPlanningTimeSpentLineBtn" title="New line"  css="btn-custom text-left" colSpan="3" onClick="save,action-project-view-project-planning-time-spent-add-new,save" />
-					<button name="removeProjectPlanningTimeSpentLineBtn" title="Remove lines" css="btn-custom text-left" colSpan="3" onClick="save,action-project-attrs-project-planning-time-spent-remove,save" />
-					<field name="$projectPlanningTimeSpentSet" hidden="true" type="many-to-many" widget="TagSelect" title="Project Planning Time Spent"
-					colSpan="12" target="com.axelor.apps.project.db.ProjectPlanningTime" canEdit="false" canNew="false"
-					grid-view="project-planning-time-spent-grid" form-view="project-planning-time-form"/>
-					<button name="removeSelectedPlanningTimeSpentBtn" colSpan="4" hidden="true"  title="Remove selected lines"  onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time-spent"/>
-					<button name="cancelRemovePlanningTimeSpentBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-spent-cancel-remove" />
-					<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-project-dashlet-project-planning-time-spent" colSpan="12" canSearch="true"/>
 				</panel>
 			</panel>
 			
@@ -559,7 +542,6 @@
 		<action name="action-attrs-project-set-project-type"  if="__config__.app.isApp('business-project')" />
 		<action name="action-project-method-count-to-invoice" if="__config__.app.isApp('business-project')"/>
 		<action name="action-project-attrs-project-planning-time-cancel-remove" />
-		<action name="action-project-attrs-project-planning-time-spent-cancel-remove"/>
 	</action-group>
 	
 	<action-attrs name="action-task-attrs-assigned-to-domain">
