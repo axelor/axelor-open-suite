@@ -596,17 +596,6 @@ public class TimesheetController {
     }
   }
 
-  public void generateLinesFromRealisePlanning(ActionRequest request, ActionResponse response) {
-    try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-      Beans.get(TimesheetService.class).generateLinesFromRealisedProjectPlanning(timesheet);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void generateLinesFromExpectedPlanning(ActionRequest request, ActionResponse response) {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);

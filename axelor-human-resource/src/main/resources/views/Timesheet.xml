@@ -81,7 +81,6 @@
 			<menu title="Tools" icon="fa-wrench">
 				<item title="Lines Generation Wizard" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generate-lines-panel-hidden-false"/>
 				<item title="Generate Lines From Expected Planning" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-expected-planning" />
-				<item title="Generate Lines From Realise Planning Project / Task" showIf="statusSelect == 1" action="save,action-timesheet-method-generate-lines-from-realise-planning" />
 			</menu>
 		</menubar>
 		<panel name="mainPanel">
@@ -244,10 +243,6 @@
 
 	<action-method name="action-timesheet-method-update-time-logging-preference" model="com.axelor.apps.hr.db.Timesheet">
         <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="updateTimeLoggingPreference"/>
-	</action-method>
-
-	<action-method name="action-timesheet-method-generate-lines-from-realise-planning">
-		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="generateLinesFromRealisePlanning"/>
 	</action-method>
 	
 	<action-method name="action-timesheet-method-generate-lines-from-expected-planning">
