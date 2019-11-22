@@ -311,5 +311,6 @@
 - CSVReaderService : Use try-with-resources for "FileInputStream"
 - Production : Add else in switch case to remove unconditional break in CostSheetLineServiceImpl class 
 - Invoice : Modify partner domain.
+- Timesheet: Fix exception happening on opening form view.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

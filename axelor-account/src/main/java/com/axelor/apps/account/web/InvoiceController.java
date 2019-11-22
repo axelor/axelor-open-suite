@@ -927,9 +927,7 @@ public class InvoiceController {
 
     long companyId = company.getPartner() == null ? 0 : company.getPartner().getId();
 
-    String domain =
-        String.format(
-            "self.id != %d AND self.isContact = false ", companyId);
+    String domain = String.format("self.id != %d AND self.isContact = false ", companyId);
     domain += " AND :company member of self.companySet";
 
     int invoiceTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);

@@ -418,7 +418,7 @@
 
 	<action-view name="action-timesheet-view-total-hours-per-day" title="">
   		<view name="chart.total.hours.per.day" type="chart"/>
-    	<context name="timesheet_id" expr="eval: __self__.id"/>
+    	<context name="timesheet_id" expr="eval: id"/>
 	</action-view>
 	
 	<action-view name="action-timesheet-refusal-popup-form" title="Ground for refusal" model="com.axelor.apps.hr.db.Timesheet">
