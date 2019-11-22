@@ -196,7 +196,7 @@ public abstract class Importer {
         } catch (IOException ioException) {
           log.error(ioException.getMessage());
           continue;
-        } 
+        }
       }
     }
   }
