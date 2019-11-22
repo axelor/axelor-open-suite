@@ -227,6 +227,7 @@
 - TEAMTASKS : removed teamTaskInvoicing field in teamtask and project category, added 'no invoicing' in invoicingType selection, renamed ProjectCategory to TeamTaskCategory and renamed isInvoiceable to toInvoice in project form
 - TEAMTASK : moved invoiced field outside of the package panel
 - HRconfig : moved fields 'Health service' and 'Health service address' to HR module
+- STOCKMOVE : Update stock move form view
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
