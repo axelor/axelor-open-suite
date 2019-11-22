@@ -195,6 +195,11 @@
             <div class="card-footer">
                 <i class='fa fa-clock-o'></i> <span>{{record.expectedCloseDate|date:'dd/MM/yyyy'}}</span>
             </div>
+						<div class="card-summary popover">
+							<p style="margin:2px;">
+                <span style="word-break:break-all;max-width:250px;">{{description.length>250?description.substring(0,250)+'...':description}}</span>
+              </p>
+						</div>
             ]]>
         </template>
 	</kanban>

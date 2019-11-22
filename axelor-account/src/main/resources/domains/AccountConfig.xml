@@ -155,6 +155,7 @@
 		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 		
 		<boolean name="isManagePassedForPayment" title="Passed for payment"/>
+		<boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
 
 		<!-- Account Report -->
 		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of line minimum before long report generation message appear" min="0" help="value 0 is equal to no message"  default="10000"/>
