@@ -5,8 +5,33 @@
 - AVAILABILITY REQUEST : Addition of button on grid-view to view sale order lines.
 
 ## Improvements
-- STOCK : Changed type select french translation
-- Expense : Modify report content.
+- Importer : Use try-with-resources with "ZipFile"
+- MOVE : in remove function improved bank reconciliation amount error message. 
+
+## Bug Fixes
+- Check Duplicate : make case-insensitive query
+- Sale Order: allocate a full sale order does not try to allocate already delivered lines.
+- Project : Fix computation of 'timeSpent' field on removal of validated timesheet.
+- ADDRESS : reduced space between addresses in partner-form
+- ConvertDemoDataFileServiceImpl : Use try-with-resources for "ZipOutputStream" and "FileInputStream"
+- Code Refactor for TemplateRuleService file
+- Fix NPE in bank order file upload.
+
+## [5.1.12] - 2019-11-19
+## Features
+- AVAILABILITY REQUEST: Addition of button on grid-view to view stock move lines.
+- Stock Move: Addition of button to view stockMoveLines on grid-view.
+
+## Improvements
+- Expense: New design for expense report.
+- Add name attributes on all menus and menu items.
+- PROJECT: Fix financial report to follow the Axelor report guidelines.
+- STOCK LOCATION PRINTING: new printing without financial data.
+- STOCK MOVE LINE: Design improvement of Stock Move panel.
+- TOOL,STUDIO: Disable XML external entity (XXE) processing.
+- HRBatch: stopped generation of payrollPreparation with employmentContract having status 'closed'
+- ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accounting report for new message that appears before generation if the minimum of lines is found.
+- PRICE LIST: get lower price for same qty for same product.
 
 ## Bug Fixes
 - Studio : removed includeInCost field from json field form view
