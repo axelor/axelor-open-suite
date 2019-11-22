@@ -15,6 +15,7 @@
 - ConvertDemoDataFileServiceImpl : Use try-with-resources for "ZipOutputStream" and "FileInputStream"
 - Code Refactor for TemplateRuleService file
 - Fix NPE in bank order file upload.
+- Invoice Generation : Allow to validate supplier invoice without address
 
 ## [5.1.12] - 2019-11-19
 ## Features
