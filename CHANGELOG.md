@@ -6,6 +6,7 @@
 
 ## Improvements
 - Importer : Use try-with-resources with "ZipFile"
+- DEBT RECOVERY : set canNew for 'debt-recovery-form' and 'debt-recovery-grid'
 
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query
