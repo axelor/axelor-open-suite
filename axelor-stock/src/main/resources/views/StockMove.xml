@@ -582,7 +582,8 @@
     </action-attrs>
 
     <action-attrs name="action-stock-move-attrs-domain-address">
-		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
+		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll().collect{it.address.id}+[null]).join(',')})&quot;" if="typeSelect == 3 &amp;&amp; isReversion == false"/>
+		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" if="!(typeSelect == 3 &amp;&amp; isReversion == false)"/>
 		<attribute name="domain" for="toAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
     

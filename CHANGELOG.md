@@ -9,6 +9,7 @@
 - Address: New address creation from saleorder with proper type
 - Base : Disable XML external entity (XXE) processing.
 - DEBT RECOVERY : set canNew for 'debt-recovery-form' and 'debt-recovery-grid'
+- STOCK MOVE : filter on 'fromAddress' in stockMove is updated for supplier arrivals (typeSelect = 3) and isReversion = false
 
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query
