@@ -182,6 +182,7 @@ public class ProjectedStockController {
                 .model(MrpLine.class.getName())
                 .add("form", "projected-stock-form")
                 .param("popup", "true")
+                .param("popup.maximized", "true")
                 .param("popup-save", "false")
                 .context("_mrpLineList", mrpLineList)
                 .map());
