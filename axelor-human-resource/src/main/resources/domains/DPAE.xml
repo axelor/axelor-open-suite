@@ -21,7 +21,7 @@
     <!-- 2) Employee -->
     <string name="lastName" title="Last name"/>
     <string name="firstName" title="First name"/>
-    <string name="socialSecurityNumber" title="Social security number" min="15" max="15"/>
+    <string name="socialSecurityNumber" title="Social security number" min="12" max="15"/>
     <string name="sexSelect" title="Sex" selection="employee.hr.sex.select"/>
     <date name="dateOfBirth" title="Date of birth"/>
     <many-to-one name="departmentOfBirth" title="Department of birth" ref="com.axelor.apps.base.db.Department"/>
