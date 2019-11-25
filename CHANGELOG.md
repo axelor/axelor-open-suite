@@ -6,6 +6,7 @@
 
 ## Improvements
 - Importer : Use try-with-resources with "ZipFile"
+- Base : Disable XML external entity (XXE) processing.
 
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query
