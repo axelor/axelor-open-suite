@@ -6,6 +6,7 @@
 
 ## Improvements
 - Importer : Use try-with-resources with "ZipFile"
+- Address: New address creation from saleorder with proper type
 
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query
