@@ -306,7 +306,7 @@
 "AccountingReportType17.company","Société",,
 "AccountingReportType17.computation_method","Mode",,
 "AccountingReportType17.currency","Devise",,
-"AccountingReportType17.depreciation","DÉPRÉCIATIONS",,
+"AccountingReportType17.depreciation","Amortissement",,
 "AccountingReportType17.depreciation_charge","Dotation de l'exercice",,
 "AccountingReportType17.duration","Durée",,
 "AccountingReportType17.endDate","Date de fin",,
