@@ -18,6 +18,9 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -29,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.Comparator;
@@ -113,5 +117,33 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrder.getSaleOrderLineList() != null) {
       saleOrder.getSaleOrderLineList().sort(Comparator.comparing(SaleOrderLine::getSequence));
     }
+  }
+
+  @Transactional
+  public void createSaleOrderPartnerAddress(Context context) {
+    PartnerAddress PartAddress =
+        Beans.get(PartnerAddressRepository.class)
+            .find(Long.parseLong((context.get("id").toString())));
+
+    Address address = PartAddress.getAddress();
+    address.setFullName(Beans.get(AddressService.class).computeFullName(address));
+
+    SaleOrder saleOrder =
+        Beans.get(SaleOrderRepository.class)
+            .find(Long.parseLong(context.get("_saleOrderId").toString()));
+
+    Boolean isInvoicing = (Boolean) context.get("isInvoicingAddr");
+
+    if (isInvoicing) {
+      saleOrder.setMainInvoicingAddress(address);
+      saleOrder.setMainInvoicingAddressStr(
+          Beans.get(AddressService.class).computeAddressStr(address));
+
+    } else {
+      saleOrder.setDeliveryAddress(address);
+      saleOrder.setDeliveryAddressStr(Beans.get(AddressService.class).computeAddressStr(address));
+    }
+
+    Beans.get(SaleOrderRepository.class).save(saleOrder);
   }
 }
