@@ -60,10 +60,11 @@ public class PrepareCsv {
         File xDir = new File(xmlDir);
         File cDir = new File(csvDir);
         List<String[]> blankData = new ArrayList<String[]>();
-        DocumentBuilder dBuilder = Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
+        DocumentBuilder dBuilder =
+            Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
         if (xDir.isDirectory() && cDir.isDirectory()) {
           for (File xf : xDir.listFiles()) {
-            LOG.info("Processing XML: {} " , xf.getName());
+            LOG.info("Processing XML: {} ", xf.getName());
             List<String> fieldList = new ArrayList<String>();
             Document doc = dBuilder.parse(xf);
             NodeList nList = doc.getElementsByTagName("module");
@@ -100,7 +101,7 @@ public class PrepareCsv {
               }
               CsvTool.csvWriter(
                   csvDir, csvFileName, ';', StringUtils.join(fieldList, ",").split(","), blankData);
-              LOG.info("CSV file prepared: {} " , csvFileName);
+              LOG.info("CSV file prepared: {} ", csvFileName);
             }
           }
 
@@ -122,7 +123,8 @@ public class PrepareCsv {
    */
   private String getNameColumn(String fileName)
       throws SAXException, IOException, ParserConfigurationException {
-    DocumentBuilder dBuilder = Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
+    DocumentBuilder dBuilder =
+        Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
     File domainFile = new File(fileName);
     if (!domainFile.exists()) return null;
     Document doc = dBuilder.parse(domainFile);
