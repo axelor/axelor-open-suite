@@ -145,6 +145,7 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false" />
     <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
     <context name="_product" expr="eval: product"/>
     <context name="_company" expr="eval: company"/>
     <context name="_stockLocation" expr="eval: stockLocation"/>
