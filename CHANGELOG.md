@@ -7,6 +7,7 @@
 ## Improvements
 - Importer : Use try-with-resources with "ZipFile"
 - Address: New address creation from saleorder with proper type
+- Base : Disable XML external entity (XXE) processing.
 
 ## Bug Fixes
 - Check Duplicate : make case-insensitive query

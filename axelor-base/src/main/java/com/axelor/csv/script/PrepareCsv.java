@@ -18,6 +18,8 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.apps.tool.xml.XPathParse;
+import com.axelor.inject.Beans;
 import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -59,11 +60,10 @@ public class PrepareCsv {
         File xDir = new File(xmlDir);
         File cDir = new File(csvDir);
         List<String[]> blankData = new ArrayList<String[]>();
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        DocumentBuilder dBuilder = Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
         if (xDir.isDirectory() && cDir.isDirectory()) {
           for (File xf : xDir.listFiles()) {
-            LOG.info("Processing XML: " + xf.getName());
+            LOG.info("Processing XML: {} " , xf.getName());
             List<String> fieldList = new ArrayList<String>();
             Document doc = dBuilder.parse(xf);
             NodeList nList = doc.getElementsByTagName("module");
@@ -92,12 +92,6 @@ public class PrepareCsv {
                     if (nameColumn != null) fieldList.add(fieldName + "." + nameColumn);
                     else {
                       fieldList.add(fieldName);
-                      LOG.error(
-                          "No name column found for "
-                              + refName
-                              + ", field '"
-                              + attrs.getNamedItem("name").getNodeValue()
-                              + "'");
                     }
                   } else fieldList.add(fieldName);
                 }
@@ -106,7 +100,7 @@ public class PrepareCsv {
               }
               CsvTool.csvWriter(
                   csvDir, csvFileName, ';', StringUtils.join(fieldList, ",").split(","), blankData);
-              LOG.info("CSV file prepared: " + csvFileName);
+              LOG.info("CSV file prepared: {} " , csvFileName);
             }
           }
 
@@ -128,8 +122,7 @@ public class PrepareCsv {
    */
   private String getNameColumn(String fileName)
       throws SAXException, IOException, ParserConfigurationException {
-    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    DocumentBuilder dBuilder = Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
     File domainFile = new File(fileName);
     if (!domainFile.exists()) return null;
     Document doc = dBuilder.parse(domainFile);
