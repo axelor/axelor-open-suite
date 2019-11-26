@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="portal" package="com.axelor.apps.portal.db" />
+
+	<entity name="ValueMapping" lang="java">
+
+		<string name="gooveeSelectValue" title="Select value in goovee"/>
+		<string name="osSelectValue" title="Select value in OS"/>
+		
+		<many-to-one name="dynamicFieldSync" ref="com.axelor.apps.portal.db.DynamicFieldSync"/>
+
+	</entity>
+
+</domain-models>

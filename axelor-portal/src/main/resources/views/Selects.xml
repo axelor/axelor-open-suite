@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<selection name="portal.sync.select">
+		<option value="1">None</option>
+		<option value="2">On create</option>
+		<option value="3">Rule</option>
+	</selection>
+
+	<selection name="portal.type.select">
+		<option value="1">M2O</option>
+		<option value="2">Select</option>
+	</selection>
+
+	<selection name="portal.mapping.direction.select">
+		<option value="1">Both side</option>
+		<option value="2">Goovee to OS</option>
+		<option value="3">OS to goovee</option>
+	</selection>
+
+</object-views>

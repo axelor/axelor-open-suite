@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="portal" package="com.axelor.apps.portal.db" />
+
+	<entity name="DynamicFieldSync" lang="java">
+
+		<string name="osFieldName" title="Field name in OS"/>
+		<string name="gooveeFieldName" title="Field name in goovee"/>
+		<string name="osDefaultValue" title="Default OS value"/>
+		<integer name="sequence" title="Sequence"/>
+		
+		<boolean name="isSelectField" title="Select field"/>
+		<integer name="osTypeSelect" title="Type select in OS" selection="portal.type.select"/>
+		<string name="osTypeSelectFieldName" title="Field name in OS that has the goovee select value"/>
+		<integer name="mappingSelect" title="Field mapping direction" selection="portal.mapping.direction.select" default="1"/>
+		<one-to-many name="valueMappingList" ref="com.axelor.apps.portal.db.ValueMapping" title="value mapping" mappedBy="dynamicFieldSync"/>
+		
+		<many-to-one name="openSuiteGooveeSync" ref="com.axelor.apps.portal.db.OpenSuiteGooveeSync"/>
+
+		<extra-code>
+	   		<![CDATA[
+	            // TYPE   
+				public static final int TYPE_M2O = 1;
+				public static final int TYPE_SELECTION = 2;
+
+				// SYNC   
+				public static final int SYNC_NONE = 1;
+				public static final int SYNC_ON_CREATE = 2;
+				public static final int SYNC_RULE = 3;
+				
+				// MAPPING_DIRECTION   
+				public static final int MAP_BOTH_SIDE = 1;
+				public static final int MAP_GOOVEE_TO_OS = 2;
+				public static final int MAP_OS_TO_GOOVEE = 3;
+	   		]]>
+   		</extra-code>
+
+	</entity>
+
+</domain-models>

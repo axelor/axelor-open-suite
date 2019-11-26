@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<grid name="portal-batch-grid" title="Portal batches" model="com.axelor.apps.portal.db.PortalBatch">
+		<field name="createdOn" />
+		<field name="createdBy" form-view="user-form" grid-view="user-grid" />
+	</grid>
+
+	<form name="portal-batch-form" title="Portal batch" model="com.axelor.apps.portal.db.PortalBatch" onNew="action-portal-batch-record-on-new" width="large">
+		<panel name="actionPanel" title="Actions" sidebar="true">
+			<panel colSpan="12">
+				<button name="syncBtn" title="Sync" onClick="save,action-portal-batch-method-sync,save" colSpan="12" />
+			</panel>
+		</panel>
+		<panel name="information" title="Information">
+			<field name="createdOn" title="Created on" />
+			<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid" />
+			<panel-related field="batchList" colSpan="12" form-view="batch-form" grid-view="batch-grid" readonly="true" />
+		</panel>
+	</form>
+
+	<!-- ACTIONS -->
+
+	<!-- ACTION RECORD -->
+	<action-record name="action-portal-batch-record-on-new"
+		model="com.axelor.apps.portal.db.PortalBatch">
+		<field name="createdOn" expr="eval:__config__.app.getTodayDate()" />
+		<field name="createdBy" expr="eval:__user__" />
+		<field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany != null" />
+		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1" />
+	</action-record>
+
+	<!-- ACTION METHOD -->
+	<action-method name="action-portal-batch-method-sync">
+		<call class="com.axelor.apps.portal.web.PortalBatchController" method="run" />
+	</action-method>
+
+</object-views>

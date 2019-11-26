@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppClientPortal" lang="java" extends="App">
+
+		<boolean name="manageSaleOrders" title="Manage sale orders" default="true"/>
+		<boolean name="manageInvoices" title="Manage invoices" default="true"/>
+		<boolean name="manageTickets" title="Manage tickets" default="true"/>
+		<boolean name="manageProjects" title="Manage projects" default="true"/>
+		<boolean name="manageDelivery" title="Manage delivery" default="true"/>
+		<boolean name="canConfirmOnline" title="Can confirm online" default="true"/>
+		<boolean name="showCatalog" title="Display product catalog" default="true"/>
+		
+		<boolean name="canPayOnline" title="Can pay online" default="false"/>
+		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
+   		<integer name="portalSelect" title="Portal" selection="clientportal.extern.or.intern" default="1"/>
+		
+		<extra-code><![CDATA[
+	
+	   	// STATUS SELECT
+		public static final int ABS_PORTAL = 1;
+		public static final int EXTERNAL_PORTAL = 2;
+		
+	]]></extra-code>
+		<track>
+			<field name="manageSaleOrders" on="UPDATE"/>
+			<field name="manageInvoices" on="UPDATE"/>
+			<field name="manageTickets" on="UPDATE"/>
+			<field name="manageProjects" on="UPDATE"/>
+			<field name="manageDelivery" on="UPDATE"/>
+			<field name="canConfirmOnline" on="UPDATE"/>
+			<field name="canPayOnline" on="UPDATE"/>
+			<field name="portalSelect" on="UPDATE"/>
+		</track>
+   	</entity>
+
+</domain-models>

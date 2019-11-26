@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="portal" package="com.axelor.apps.portal.db" />
+
+	<entity name="PortalBatch" lang="java">
+
+		<one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="portalBatch" title="Batches" />
+
+		<extra-code><![CDATA[
+		   	// ACTION TYPE
+			public static final int ACTION_IMPORT = 1;
+			public static final int ACTION_EXPORT = 2;
+		]]></extra-code>
+
+	</entity>
+
+</domain-models>

@@ -1,0 +1,12 @@
+"importId";"sequence";"osToGooveeSyncSelect";"gooveeToOsSyncSelect";"osObject.name";"gooveeObjectName";"osToGooveeFilter"
+"1";"1";"2";"2";"Unit";"units";
+"2";"2";"2";"2";"ProductCategory";"categories";
+"3";"3";"2";"2";"Product";"products";
+"4";"4";"1";"2";"EmailAddress";"partners";
+"5";"5";"1";"2";"City";"addresses";
+"6";"6";"2";"2";"Address";"addresses";
+"7";"7";"2";"2";"Partner";"partners";"self.isContact = false"
+"8";"8";"2";"1";"Partner";"contacts";"self.isContact = true"
+"9";"9";"1";"2";"PartnerAddress";"addresses";
+"10";"10";"2";"2";"SaleOrder";"orders";
+"11";"11";"2";"2";"SaleOrderLine";"order-lines";

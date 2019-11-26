@@ -15,9 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.portal.translation;
+package com.axelor.apps.portal.exceptions;
 
-public interface ITranslation {
+public class IExceptionMessages {
 
-  public static final String PORTAL_APP_NAME = /*$$(*/ "value:Portal"; /*)*/
+  public static final String CONFIGURATION_ERROR = /*$$(*/ "Goovee configuration is missing" /*)*/;
+
+  public static final String AUTHENTICATION_ERROR = /*$$(*/ "Authentication Failed"; /*)*/
+
+  public static final String SYNC_BINDING_ERROR = /*$$(*/ "Sync bindings are missing" /*)*/;
 }

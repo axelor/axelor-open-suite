@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+
+	<menuitem title="Portal" name="portal-root" if="__config__.app.isApp('portal')"/>
+	
+	<menuitem title="Open suite goovee sync" name="open-suite-goovee-sync" parent="portal-root" action="open.suite.goovee.sync"/>
+
+	<action-view name="open.suite.goovee.sync" title="Open suite goovee sync"
+		model="com.axelor.apps.portal.db.OpenSuiteGooveeSync">
+		<view type="grid" name="open-suite-goovee-sync-grid" />
+		<view type="form" name="open-suite-goovee-sync-form" />
+	</action-view>
+
+	<menuitem name="admin-root-batch-portal" parent="admin-root-batch"
+		title="Portal batches" action="admin.root.batch.portal" if="__config__.app.isApp('portal')" />
+
+	<action-view name="admin.root.batch.portal" title="Portal batches"
+		model="com.axelor.apps.portal.db.PortalBatch">
+		<view type="grid" name="portal-batch-grid" />
+		<view type="form" name="portal-batch-form" />
+	</action-view>
+
+</object-views>

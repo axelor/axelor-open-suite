@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<grid name="dynamic-field-sync-grid" title="Dynamic fields sync"
+		model="com.axelor.apps.portal.db.DynamicFieldSync" canMove="true" orderBy="sequence">
+		<field name="osFieldName" />
+		<field name="gooveeFieldName" />
+		<field name="osDefaultValue" />
+		<field name="isSelectField" />
+		<field name="osTypeSelect" />
+		<field name="osTypeSelectFieldName" />
+		<field name="mappingSelect" />
+	</grid>
+
+	<form name="dynamic-field-sync-form" title="Dynamic field sync"
+		model="com.axelor.apps.portal.db.DynamicFieldSync" width="large">
+		<panel name="mainPanel">
+			<field name="osFieldName" />
+			<field name="gooveeFieldName" />
+			<field name="osDefaultValue" />
+			<field name="mappingSelect" />
+			<field name="isSelectField" />
+			<field name="osTypeSelect" showIf="isSelectField" />
+			<field name="osTypeSelectFieldName" showIf="isSelectField &amp;&amp; osTypeSelect == 1" />
+			<field name="valueMappingList" colSpan="12"
+				showIf="isSelectField &amp;&amp; osTypeSelect == 2" />
+		</panel>
+	</form>
+
+</object-views>
