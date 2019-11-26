@@ -8,6 +8,8 @@
     	<hilite if="typeSelect == 2" color="info"/>
     	<hilite if="typeSelect == 3" color="success"/>
     	<hilite if="typeSelect == 4" color="primary"/>
+    	<field name="id" title="ID" hidden="false"/>
+    	<field name="moveLine"/>
         <field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
         <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>

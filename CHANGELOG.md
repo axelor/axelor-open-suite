@@ -212,6 +212,7 @@
 - TEAMTASK : add buttons in team-task-form and removed from toolbar
 - Financial Report : calculate Total costs (per line) in chart and totals
 - ACCOUNTING REPORT : add Analytic general ledger.
+- ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
