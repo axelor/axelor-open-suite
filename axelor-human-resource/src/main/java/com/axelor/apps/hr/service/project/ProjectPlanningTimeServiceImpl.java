@@ -79,13 +79,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (task != null) {
       List<ProjectPlanningTime> plannings =
-          planningTimeRepo
-              .all()
-              .filter(
-                  "self.task = ?1 AND self.typeSelect = ?2",
-                  task,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
-              .fetch();
+          planningTimeRepo.all().filter("self.task = ?1", task).fetch();
       if (plannings != null) {
         totalPlanned =
             plannings
@@ -96,31 +90,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
 
     return totalPlanned;
-  }
-
-  @Override
-  public BigDecimal getTaskRealHrs(TeamTask task) {
-
-    BigDecimal totalRealHrs = BigDecimal.ZERO;
-    if (task != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo
-              .all()
-              .filter(
-                  "self.task = ?1 AND self.typeSelect = ?2",
-                  task,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
-              .fetch();
-      if (plannings != null) {
-        totalRealHrs =
-            plannings
-                .stream()
-                .map(ProjectPlanningTime::getRealHours)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-      }
-    }
-
-    return totalRealHrs;
   }
 
   @Override
@@ -132,10 +101,9 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
           planningTimeRepo
               .all()
               .filter(
-                  "(self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)) AND self.typeSelect = ?3",
+                  "self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)",
                   project,
-                  true,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
+                  true)
               .fetch();
       if (plannings != null) {
         totalPlanned =
@@ -147,32 +115,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
 
     return totalPlanned;
-  }
-
-  @Override
-  public BigDecimal getProjectRealHrs(Project project) {
-
-    BigDecimal totalRealHrs = BigDecimal.ZERO;
-    if (project != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo
-              .all()
-              .filter(
-                  "(self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)) AND self.typeSelect = ?3",
-                  project,
-                  true,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
-              .fetch();
-      if (plannings != null) {
-        totalRealHrs =
-            plannings
-                .stream()
-                .map(ProjectPlanningTime::getRealHours)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-      }
-    }
-
-    return totalRealHrs;
   }
 
   @Override
@@ -186,10 +128,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return;
     }
 
-    boolean isTimeSpent = false;
-    if (datas.get("_timeSpent") != null) {
-      isTimeSpent = (boolean) datas.get("_timeSpent");
-    }
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
@@ -249,18 +187,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setProject(project);
         planningTime.setIsIncludeInTurnoverForecast(
             (Boolean) datas.get("isIncludeInTurnoverForecast"));
-        planningTime.setTypeSelect((Integer) datas.get("_typeSelect"));
 
         BigDecimal totalHours = BigDecimal.ZERO;
         if (timePercent > 0) {
           totalHours =
               dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
         }
-        if (isTimeSpent) {
-          planningTime.setRealHours(totalHours);
-        } else {
-          planningTime.setPlannedHours(totalHours);
-        }
+        planningTime.setPlannedHours(totalHours);
         planningTimeRepo.save(planningTime);
       }
 

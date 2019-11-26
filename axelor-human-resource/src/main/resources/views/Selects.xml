@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<selection name="hrs.expenses.status.select">
 		<option value="1">Draft</option>
@@ -172,11 +172,6 @@
 	
 	<selection id="hr.object.data.config.model.select" name="object.data.config.model.select">
 		<option value="com.axelor.apps.hr.db.Employee">Employee</option>
-	</selection>
-	
-	<selection name="hr.project.planning.time.type">
-		<option value="1">Planned time</option>
-		<option value="2">Spent time</option>
 	</selection>
 
 	  <selection name="hr.employee.form.step.by.step.select">

@@ -119,7 +119,8 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       return teamTask;
     }
 
-    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList);
+    PriceListLine priceListLine =
+        this.getPriceListLine(teamTask, priceList, teamTask.getUnitPrice());
     Map<String, Object> discounts =
         priceListService.getReplacedPriceAndDiscounts(
             priceList, priceListLine, teamTask.getUnitPrice());
@@ -142,10 +143,10 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     teamTask.setPriceDiscounted(BigDecimal.ZERO);
   }
 
-  private PriceListLine getPriceListLine(TeamTask teamTask, PriceList priceList) {
+  private PriceListLine getPriceListLine(TeamTask teamTask, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        teamTask.getProduct(), teamTask.getQuantity(), priceList);
+        teamTask.getProduct(), teamTask.getQuantity(), priceList, price);
   }
 
   @Override
@@ -327,7 +328,8 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       return unitPrice;
     }
 
-    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList);
+    PriceListLine priceListLine =
+        this.getPriceListLine(teamTask, priceList, teamTask.getUnitPrice());
     Map<String, Object> discounts =
         priceListService.getReplacedPriceAndDiscounts(
             priceList, priceListLine, teamTask.getProduct().getSalePrice());
@@ -342,5 +344,18 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
               (BigDecimal) discounts.get("discountAmount"));
     }
     return unitPrice;
+  }
+
+  @Override
+  public TeamTask resetTeamTaskValues(TeamTask teamTask) {
+    teamTask.setProduct(null);
+    teamTask.setInvoicingType(null);
+    teamTask.setToInvoice(null);
+    teamTask.setQuantity(null);
+    teamTask.setUnit(null);
+    teamTask.setUnitPrice(null);
+    teamTask.setCurrency(null);
+    teamTask.setExTaxTotal(null);
+    return teamTask;
   }
 }

@@ -19,7 +19,10 @@ package com.axelor.apps.stock.report;
 
 public interface ITranslation {
 
-  public static final String STOCK_LOCATION_TITLE = /*$$(*/ "StockLocation.title"; /*)*/
+  public static final String STOCK_LOCATION_FINACIALDATA = /*$$(*/
+      "StockLocation.locationFinancialData"; /*)*/
+  public static final String STOCK_STOCK_LOCATION_CONTENT = /*$$(*/
+      "StockLocation.stockLocationContent"; /*)*/
   public static final String STOCK_LOCATION_DATE = /*$$(*/ "StockLocation.date"; /*)*/
   public static final String STOCK_LOCATION_LOCATIONS = /*$$(*/ "StockLocation.locations"; /*)*/
   public static final String STOCK_LOCATION_LOCATION = /*$$(*/ "StockLocation.location"; /*)*/

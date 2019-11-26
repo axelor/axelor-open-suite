@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="subrogation-release-grid" title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease" orderBy="-sequenceNumber">
 		<field name="sequenceNumber" width="120"/>
@@ -16,10 +16,10 @@
 		 onLoad="action-subrogation-release-onLoad">
 
 		<menubar>
-			<menu title="Print/Export" icon="fa-print">
-				<item action="action-subrogation-release-method-print-to-pdf" title="Print to PDF"
+			<menu name="subrogationReleasePrintExportMenu" title="Print/Export" icon="fa-print">
+				<item name="printToPDFItem" action="action-subrogation-release-method-print-to-pdf" title="Print to PDF"
 					readonlyIf="statusSelect &lt; 2" />
-				<item action="action-subrogation-release-method-export-to-csv" title="Export to CSV"
+				<item name="exportToCSVItem" action="action-subrogation-release-method-export-to-csv" title="Export to CSV"
 					readonlyIf="statusSelect &lt; 2" />
 			</menu>
 		</menubar>

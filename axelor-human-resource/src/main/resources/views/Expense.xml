@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<hilite color="danger" if="statusSelect == 5"/>
@@ -40,8 +40,8 @@
 		  onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
 		  onSave="action-expense-method-validate-and-compute" canCopy="false">
 		<menubar>
-            <menu title="Reports" icon="fa-files-o">
-				<item name="printExpense" title="Print" action="save,action-print-expense"/>
+            <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
+				<item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel">

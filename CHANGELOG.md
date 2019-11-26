@@ -138,6 +138,11 @@
 - Timesheet: Add Timesheet reporting.
 - ADDRESS : when one address on partner please treat it as a default address
 - AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
+- SUPPLYCHAIN : Auto-complete sale order when it has been all invoiced
+- Stock: Add stock history view for a given product, company and stock location.
+- Production : Provide menu for Machine Planning.
+- Teamtask : Removing real hours management from project planning time
+-  Base : Addition of orderByType for OrderBy in AdvancedExportLine for sorting .
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -221,7 +226,11 @@
 - TeamTask : set status editable.
 - TEAMTASKS : removed teamTaskInvoicing field in teamtask and project category, added 'no invoicing' in invoicingType selection, renamed ProjectCategory to TeamTaskCategory and renamed isInvoiceable to toInvoice in project form
 - TEAMTASK : moved invoiced field outside of the package panel
+- HRconfig : moved fields 'Health service' and 'Health service address' to HR module
+- STOCKMOVE : Update stock move form view
+- STOCKMOVE: display enlarged popup when showing projected stock.
 - ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
+
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
@@ -265,7 +274,7 @@
 - REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
 - REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
 - PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
-- Update xsd to Axelor Open Platform 5.1
+- Update xsd to Axelor Open Platform 5.2
 - Advanced Data import :  fix issue of not generating info in log file when error occurred on import
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
 - SaleOrder : Fix NPE on click of generate customer deliveries
@@ -297,6 +306,14 @@
 - INVOICE : fix for NPE when printing from grid view
 - Advance Import : Resolve ArrayIndexOurOfBound exception.
 - ACCOUNTING : reversion and analytic distribution
-- BATCH ACCOUNTING CUT-OFF : corrected from invoice to invoiceSet in query
+- BATCH ACCOUNTING CUT-OFF : corrected by adding condition to checkStockMoveLine
+- TEAMTASKS : make empty packagePanel when package is select in financial data
+- TEMPLATE CONTEXT : Fix limit for field 'value'
+- STOCK : Link back order with saleOrder or purchaseOrder
+- InvoiceLine : fixed null pointer exception by adding null safe operator on 'analyticDistributionAuthorized' 
+- BASE : Fix menu title and action-view name typo error
+- CSVReaderService : Use try-with-resources for "FileInputStream"
+- Invoice : Modify partner domain.
+- Timesheet: Fix exception happening on opening form view.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

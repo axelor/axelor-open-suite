@@ -39,6 +39,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -260,6 +261,26 @@ public class MoveController {
     if (move != null) {
       String domain = Beans.get(MoveService.class).filterPartner(move);
       response.setAttr("partner", "domain", domain);
+    }
+  }
+
+  public void isHiddenMoveLineListViewer(ActionRequest request, ActionResponse response) {
+
+    Move move = request.getContext().asType(Move.class);
+    boolean isHidden = true;
+    try {
+      if (move.getMoveLineList() != null
+          && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
+              || moveLine.getReconcileGroup() != null) {
+            isHidden = false;
+          }
+        }
+      }
+      response.setAttr("$viewerTags", "hidden", isHidden);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     <menubar>
-      <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+      <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+        <item name="printItem" title="Print" action="action-purchase-order-method-show-purchase-order"/>
       </menu>
-      <menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item title="Merge quotations"  action="purchase.order.merge"/>
-				<item title="See quotation lines" action="purchase-order-see-quotation-lines" />
+      <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations"  action="purchase.order.merge"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="purchase-order-see-quotation-lines" />
       </menu>
     </menubar>
 		<field name="purchaseOrderSeq" width="120"/>
@@ -28,11 +28,11 @@
 
     <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
         <menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-                <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+            <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+                <item name="printItem" title="Print" action="action-purchase-order-method-show-purchase-order"/>
             </menu>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+            <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+                <item name="seePurchaseOrderLinesItem" title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
                 <item title="See budget distribution lines" action="action-purchase-order-see-budget-distribution-lines"/>
             </menu>
 		</menubar>
@@ -79,12 +79,12 @@
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-group-purchase-order-on-load-actions"
 	  onNew="action-group-purchase-order-on-new-actions" >
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-			  <item title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
+            <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+			  <item name="printItem" title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
 			</menu>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-			  <item name="sendEmailBtn"  title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
-			  <item name="cancelReceiptBtn" title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
+			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+			  <item name="sendEmailItem"  title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
+			  <item name="cancelReceiptItem" title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
 			</menu>
 		</menubar>
 		<panel name="overviewPanel">

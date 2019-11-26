@@ -96,13 +96,13 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
     while (!(taskList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
-
+      offset += taskList.size();
       for (TeamTask teamTask : taskList) {
-        ++offset;
         try {
           teamTask = teamTaskBusinessProjectService.updateTask(teamTask, appBusinessProject);
 
           if (teamTask.getToInvoice()) {
+            offset--;
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("id", teamTask.getId());
             updatedTaskList.add(map);

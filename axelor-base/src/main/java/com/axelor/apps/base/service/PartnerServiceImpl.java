@@ -431,13 +431,13 @@ public class PartnerServiceImpl implements PartnerService {
           partnerAddressRepo.all().filter(querySpecific, partner.getId()).fetch();
       if (partnerAddressList.isEmpty()) {
         partnerAddressList = partnerAddressRepo.all().filter(queryComman, partner.getId()).fetch();
-        
+
         if (partnerAddressList.isEmpty()) {
           partnerAddressList =
               partnerAddressRepo.all().filter("self.partner.id = ?1", partner.getId()).fetch();
         }
       }
-      
+
       if (partnerAddressList.size() == 1) {
         return partnerAddressList.get(0).getAddress();
       }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -126,6 +126,11 @@
 	<selection name="base.app.base.map.api.select">
 		<option value="1">Google</option>
 		<option value="2">Open street map</option>
+	</selection>
+	
+	<selection name="base.app.base.osm.routing.api.select">
+		<option value="1">YOUR navigation</option>
+		<option value="2">OSRM</option>
 	</selection>
 	
 	<selection name="base.app.base.currency.api.select">
@@ -481,5 +486,10 @@
 	  <option value="2">Analyzing</option>
       <option value="3">Finished</option>
   </selection>
+
+	<selection name="order.by.type">
+		<option value="asc">Ascending</option>
+		<option value="desc">Descending</option>
+	</selection>	
 
 </object-views>

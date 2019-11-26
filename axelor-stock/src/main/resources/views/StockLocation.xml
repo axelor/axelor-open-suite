@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<grid name="stock-location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
@@ -73,8 +73,9 @@
 		
 	</form>
     
-	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form">
+	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form" onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
 		<panel name="mainPanel">
+            <field name="$printingType" title="Printing Type" selection="stock.stock.location.printing.type"/>
 			<field name="$exportTypeSelect" title="Export Type" selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
 			<button name="printBtn" title="Print" onClick="action-stock-location-method-print" readonlyIf="$exportTypeSelect == null" colSpan="3"/>
 		</panel>
@@ -124,5 +125,10 @@
     	<view type="form" name="stock-location-form"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+    
+    <action-attrs name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
+        <attribute name="value" for="$printingType" expr="1"/>
+        <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
+    </action-attrs>
 
 </object-views>
