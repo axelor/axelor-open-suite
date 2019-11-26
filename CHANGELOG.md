@@ -18,12 +18,12 @@
 - Sale Order: allocate a full sale order does not try to allocate already delivered lines.
 - Project : Fix computation of 'timeSpent' field on removal of validated timesheet.
 - ADDRESS : reduced space between addresses in partner-form
-- ConvertDemoDataFileServiceImpl : Use try-with-resources for "ZipOutputStream" and "FileInputStream"
 - Code Refactor for TemplateRuleService file
 - Fix NPE in bank order file upload.
 - Invoice Generation : Allow to validate supplier invoice without address
 - StockRule : Fix error when product onchange call with delete
 - Lead: fix issue when generating partner without required fields.
+- StockLocation: fix always dirty form view.
 
 ## [5.1.12] - 2019-11-19
 ## Features
