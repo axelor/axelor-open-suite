@@ -18,6 +18,9 @@
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
 		
+		<!-- Routing service API for Open Street Map> -->
+		<integer name="osmRoutingServiceApiSelect" title="Routing service provider for Open Street Map" selection="base.app.base.osm.routing.api.select" default="1" />
+		
 		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
@@ -76,6 +79,9 @@
 	   			
 	   			public static final int MAP_API_GOOGLE = 1;
 	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
+	   			
+	   			public static final int ROUTING_API_YOURS = 1;
+	   			public static final int ROUTING_API_OSRM = 2;
 	   		]]>
 	   	</extra-code>
 	   	

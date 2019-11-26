@@ -128,6 +128,11 @@
 		<option value="2">Open street map</option>
 	</selection>
 	
+	<selection name="base.app.base.osm.routing.api.select">
+		<option value="1">YOUR navigation</option>
+		<option value="2">OSRM</option>
+	</selection>
+	
 	<selection name="base.app.base.currency.api.select">
 		<option value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
 	</selection>
