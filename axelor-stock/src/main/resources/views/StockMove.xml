@@ -179,7 +179,7 @@
                 </panel>
 
                 <panel name="subTypeSelectPanel">
-                	<field name="availableStatusSelect" colSpan="4" showTitle="false" readonly="true">
+                	<field name="availableStatusSelect" showIf="statusSelect == 2" colSpan="4" showTitle="false" readonly="true">
 						<viewer><![CDATA[
                             <h4 class="text-left">
                             	<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
@@ -206,7 +206,7 @@
                             ]]>
                         </viewer>
                     </field>
-                    <field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
+                    <field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
                     	<viewer depends="$invoiceStatus">
 							<![CDATA[
 								<h4 class="text-left">
@@ -348,10 +348,10 @@
               <field name="modeOfTransport" />
             </panel>
             <panel name="notePanel" title="Note" colSpan="12">
-                <panel name="stockMoveCommentsPanel" title="Description to display on stock move" colSpan="12">
+                <panel name="stockMoveCommentsPanel" title="Comment to display on stock move" colSpan="12">
                   <field name="note" widget="Html" x-lite="true" colSpan="12" showTitle="false"/>
 	            </panel>
-        		<panel name="pickingOrderCommentsPanel" title="Description to display on picking order" colSpan="12">
+        		<panel name="pickingOrderCommentsPanel" title="Comment to display on picking order" colSpan="12">
                   <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
 	            </panel>
             </panel>
@@ -528,7 +528,7 @@
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
 		<action name="action-supplychain-stock-move-record-set-invoice-status"/>
-		<action name="action-stock-move-attrs-check-delivery-address"/>
+		<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1" />
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
@@ -575,7 +575,7 @@
         <action name="action-stock-move-record-auto-mail"/>
 		<action name="action-stock-move-record-ispm-field"/>
 	   	<action name="action-stock-move-record-partner-shipment-informations"/>
-	   	<action name="action-stock-move-attrs-check-delivery-address"/>
+	   	<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1"/>
 	</action-group>
 
     <action-group name="action-stock-move-group-onchange-company">

@@ -1235,8 +1235,8 @@ order by po_seq]]></xml-property>
             <xml-property name="queryText"><![CDATA[select invoice.invoice_id as inv_no,
        invoice.invoice_date as inv_date,
        invoice.operation_type_select as inv_oper_type_select,
-       sum(CASE WHEN invoice.operation_type_select = 1 OR invoice.operation_type_select = 3 THEN  
-       invl.company_ex_tax_total ELSE -invl.company_ex_tax_total END ) as inv_total
+       sum(CASE WHEN invoice.operation_type_select = 4 THEN
+       -invl.company_ex_tax_total ELSE invl.company_ex_tax_total END ) as inv_total
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
@@ -2692,7 +2692,8 @@ group by month,me.currency,project.currency) CostData group by month)) ChartData
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select month,sum(costs) as costs,sum(turnover) as turnover 
-from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(invl.company_ex_tax_total) as turnover
+from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(CASE WHEN invoice.operation_type_select = 4 THEN
+       -invl.company_ex_tax_total ELSE invl.company_ex_tax_total END ) as turnover
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)

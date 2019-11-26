@@ -334,6 +334,22 @@
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>
 	</action-method>
 
+	<menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root" action="action.timesheet.view.timesheet.report"
+		if="__config__.app.isApp('timesheet')" order="6"/>
+
+	<action-view name="action.timesheet.view.timesheet.report" model="com.axelor.apps.hr.db.TimesheetReport" title="Timesheet report">
+		<view name="timesheet-report-grid" type="grid" />
+		<view name="timesheet-report-form" type="form" />
+	</action-view>
+
+	<menuitem title="Timesheet reminder" name="time-sheet-reminder" parent="timesheet-root" action="action.timesheet.view.timesheet.reminder"
+		if="__config__.app.isApp('timesheet')" order="6"/>
+
+	<action-view name="action.timesheet.view.timesheet.reminder" model="com.axelor.apps.hr.db.TimesheetReminder" title="Timesheet reminder">
+		<view name="timesheet-reminder-grid" type="grid" />
+		<view name="timesheet-reminder-form" type="form" />
+	</action-view>
+
 	<!-- Extra hours app -->
 	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f" order="20"/>
 

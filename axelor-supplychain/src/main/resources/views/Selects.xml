@@ -68,6 +68,7 @@
 		<option value="1">Invoice all</option>
 		<option value="2">Invoice selected lines</option>
 		<option value="3">Invoice an advance payment</option>
+		<option value="4">Invoice on timetable</option>
 	</selection>
 
 	<selection name="supplychain.sale.order.type.select">

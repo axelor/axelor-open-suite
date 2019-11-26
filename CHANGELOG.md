@@ -133,6 +133,11 @@
 - change term "Description" to "Comment" in english and "Commentaire" in french
 - Project Folder : Add a two Birt reports to display all project elements linked to the folder.
 - WEEKLY PLANNING: Days can be reordered and create an util method to get first day of week.
+- PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
+- Distance travelled calculation of kilometricExpenseLine with Open street map
+- Timesheet: Add Timesheet reporting.
+- ADDRESS : when one address on partner please treat it as a default address
+- AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
 
 ## Improvements
 - Contract: added button to manually close contract if termination date was set in the future
@@ -212,6 +217,10 @@
 - TEAMTASK : add buttons in team-task-form and removed from toolbar
 - Financial Report : calculate Total costs (per line) in chart and totals
 - ACCOUNTING REPORT : add Analytic general ledger.
+- TIMETABLE : Reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
+- TeamTask : set status editable.
+- TEAMTASKS : removed teamTaskInvoicing field in teamtask and project category, added 'no invoicing' in invoicingType selection, renamed ProjectCategory to TeamTaskCategory and renamed isInvoiceable to toInvoice in project form
+- TEAMTASK : moved invoiced field outside of the package panel
 - ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
 
 ## Bug Fixes
@@ -284,5 +293,10 @@
 - SALEORDERLINE : Issue when Production module isn't installed
 - Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect"
 - SALE ORDER : fix error generating project without salemanUser
+- ACCOUNTING MOVE : fix NPE when reverse the move
+- INVOICE : fix for NPE when printing from grid view
+- Advance Import : Resolve ArrayIndexOurOfBound exception.
+- ACCOUNTING : reversion and analytic distribution
+- BATCH ACCOUNTING CUT-OFF : corrected from invoice to invoiceSet in query
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip

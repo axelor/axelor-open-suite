@@ -201,6 +201,10 @@
 		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
 		<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
     </action-record>
+    
+    <action-record name="action-sale-order-record-update-timetable-amounts" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="timetableList" expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base').nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}" if="timetableList != null"/>
+	</action-record>
 
     <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
     	<attribute name="value" for="isIspmRequired" expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
@@ -224,6 +228,10 @@
 	
 	<action-method name="action-sale-order-method-generate-invoice">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="showPopUpInvoicingWizard"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-apply-timetable-template">
+		<call class="com.axelor.apps.supplychain.web.TimetableController" method="applyTemplate"/>
 	</action-method>
 
 </object-views>

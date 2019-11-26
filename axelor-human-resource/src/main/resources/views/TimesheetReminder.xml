@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<grid name="timesheet-reminder-grid" title="Timesheet reminders" model="com.axelor.apps.hr.db.TimesheetReminder" canNew="false" canEdit="false" canSave="false">
+		<field name="employee"/>
+  		<field name="emailSentDateT"/>
+	</grid>
+
+	<form name="timesheet-reminder-form" title="Timesheet reminder" model="com.axelor.apps.hr.db.TimesheetReminder" canNew="false" canEdit="false" canCopy="false" canSave="false">
+	  <panel title="Overview"  readonly="true">
+	    <field name="employee"/>
+	    <field name="emailSentDateT"/>
+	    <field name="timesheetReminderLineList" form-view="timesheet-reminder-line-form" grid-view="timesheet-reminder-line-grid" colSpan="12"/>
+	  </panel>
+	</form>
+
+</object-views>

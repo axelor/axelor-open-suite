@@ -12,7 +12,7 @@
         <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
 	  	
 	  	<many-to-one name="parentTask" ref="com.axelor.team.db.TeamTask" title="Parent task"/>
-	 	<many-to-one name="projectCategory" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
+	 	<many-to-one name="teamTaskCategory" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Category"/>
     	<integer name="progressSelect" title="Progress" selection="project.task.progress.select"/>
     	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
     	<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" mappedBy="parentTask"/>
@@ -41,7 +41,7 @@
 
 	 <track replace="true">
 	 	<field name="status"/>
-	 	<field name="projectCategory"/>
+	 	<field name="teamTaskCategory"/>
 	 	<field name="progressSelect"/>
 	 	<field name="assignedTo"/>
 	 	<message if="true" on="UPDATE">Task updated</message>

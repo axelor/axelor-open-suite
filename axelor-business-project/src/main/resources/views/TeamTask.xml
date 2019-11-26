@@ -32,10 +32,4 @@
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
-	<action-record name="action-team-task-record-set-invoicing-type" model="com.axelor.team.db.TeamTask">
-		<field name="invoicingType" expr="eval: null"/>
-		<field name="toInvoice" expr="eval: false"/>
-		<field name="isOrderProposed" expr="eval: teamTaskInvoicing"/>
-	</action-record>
-	
 </object-views>

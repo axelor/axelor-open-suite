@@ -104,6 +104,11 @@
 				<field name="note" showTitle="false" colSpan="12"/>
 			</panel>
 		</panel-tabs>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
     
     

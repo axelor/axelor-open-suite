@@ -22,8 +22,13 @@
 		<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" hideIf="operationSelect != 2" canNew="false"
 					   grid-view="invoicing-wizard-sale-order-line-grid"
 					   editable="true"/>
+		<panel name="timetablePanel" colSpan="12" showTitle="false" hidden="true" showIf="operationSelect == 4">
+			<field name="$uninvoicedTimetablesList" title="Select the lines to invoice" type="one-to-many" target="com.axelor.apps.supplychain.db.Timetable" 
+				   colSpan="12" canNew="false" canRemove="false" 
+				   grid-view="invoicing-wizard-timetable-grid" form-view="invoicing-wizard-timetable-form"/>		
+		</panel>
 
-		<panel name="actionPanel" showIf="operationSelect &lt; 4">
+		<panel name="actionPanel" showIf="operationSelect &lt; 5">
 			<button name="createInvoiceBtn" title="Generate the invoice"
 					onClick="action-group-sale-order-invoicing-wizard-generate"/>
 		</panel>
@@ -48,13 +53,41 @@
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
 		<field name="isSubline" hidden="true" />
 	</grid>
+	
+	<grid name="invoicing-wizard-timetable-grid" title="Select timetables to invoice" edit-icon="false"
+		  model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
+		<field name="toInvoice" type="boolean" title=" "/>
+		<field name="estimatedDate" readonly="true"/>
+		<field name="amount" readonly="true"/>
+		<field name="percentage" readonly="true"/>
+		<field name="comments" readonly="true" width="300%"/>
+	</grid>
+	
+	<form name="invoicing-wizard-timetable-form" title="Timetable" model="com.axelor.apps.supplychain.db.Timetable">
+		<panel name="mainPanel" readonlyIf="invoice">
+			<field name="estimatedDate" colSpan="4" readonly="true"/>
+			<field name="amount" colSpan="4" readonly="true"/>
+			<field name="percentage" colSpan="4" readonly="true"/>
+			<field name="invoice" hideIf="!invoice" readonly="true"/>
+			<field name="comments" colSpan="12" readonly="true"/>
+		</panel>
+	</form>
 
 	<action-group name="action-group-sale-order-invoicing-wizard-onload">
 		<action name="action-method-sale-order-invoicing-wizard-default"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
 		<action name="action-method-sale-order-invoicing-wizard-operation-select-domain"/>
+		<action name="action-attrs-sale-order-invoicing-wizard-operation-select-in"/>
+		<action name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list"/>
 	</action-group>
+	
+	<action-attrs name="action-attrs-sale-order-invoicing-wizard-operation-select-in">
+		<attribute name="selection-in" for="operationSelect" expr="eval: [1,2,3]"
+			if="!__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+		<attribute name="selection-in" for="operationSelect" expr="eval: [1,2,3,4]"
+			if="__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
 		<attribute for="qtyToInvoice" name="value" if="invoiceAll &amp;&amp; !__parent__?.isPercent"
@@ -69,6 +102,10 @@
 		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
 				   expr="eval: exTaxTotal - amountInvoiced"/>
 	</action-attrs>
+	
+	<action-record name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="$uninvoicedTimetablesList" expr="eval: timetableList.findAll{it.invoiced == false}.sort{it.estimatedDate}"/>
+	</action-record>
 	
 	<action-method name="action-method-sale-order-invoicing-wizard-operation-select-domain">
         <call class="com.axelor.apps.supplychain.web.SaleOrderController"

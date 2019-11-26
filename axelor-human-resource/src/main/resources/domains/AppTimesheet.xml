@@ -21,6 +21,8 @@
 		<boolean name="timesheetEditor" title="Timesheet editor"/>
 		<boolean name="displayTimesheetLineNumber" title="Display timesheet line number"/>
 		
+		<many-to-one name="timesheetReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Timesheet reminder template"/>
+
 		<track>
 			<field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
 			<field name="consolidateTSLine" on="UPDATE"/>

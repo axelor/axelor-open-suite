@@ -48,6 +48,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
@@ -115,7 +117,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       int operationSelect,
       BigDecimal amount,
       boolean isPercent,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
       throws AxelorException {
 
     Invoice invoice;
@@ -130,6 +133,34 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
       case SaleOrderRepository.INVOICE_ADVANCE_PAYMENT:
         invoice = generateAdvancePayment(saleOrder, amount, isPercent);
+        break;
+
+      case SaleOrderRepository.INVOICE_TIMETABLES:
+        BigDecimal percentSum = BigDecimal.ZERO;
+        TimetableRepository timetableRepo = Beans.get(TimetableRepository.class);
+        List<Timetable> timetableList = new ArrayList<>();
+        if (timetableIdList == null || timetableIdList.isEmpty()) {
+          throw new AxelorException(
+              saleOrder,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
+        }
+        for (Long timetableId : timetableIdList) {
+          Timetable timetable = timetableRepo.find(timetableId);
+          timetableList.add(timetable);
+          percentSum = percentSum.add(timetable.getPercentage());
+        }
+        invoice =
+            generateInvoiceFromLines(
+                saleOrder, this.generateQtyToInvoiceMap(saleOrder, percentSum), true);
+
+        if (!timetableList.isEmpty()) {
+          for (Timetable timetable : timetableList) {
+            timetable.setInvoice(invoice);
+            timetableRepo.save(timetable);
+          }
+        }
+
         break;
 
       default:
@@ -149,6 +180,38 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice = invoiceRepo.save(invoice);
 
     return invoice;
+  }
+
+  private Map<Long, BigDecimal> generateQtyToInvoiceMap(
+      SaleOrder saleOrder, BigDecimal percentage) {
+    Map<Long, BigDecimal> map = new HashMap<>();
+
+    for (SaleOrderLine soLine : saleOrder.getSaleOrderLineList()) {
+      this.addSubLineQty(map, percentage, soLine.getId());
+      map.put(soLine.getId(), percentage);
+    }
+    return map;
+  }
+
+  @Override
+  public void addSubLineQty(
+      Map<Long, BigDecimal> qtyToInvoiceMap, BigDecimal qtyToInvoiceItem, Long soLineId) {
+
+    SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(soLineId);
+
+    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_PACK) {
+      for (SaleOrderLine subLine : saleOrderLine.getSubLineList()) {
+        BigDecimal qty = BigDecimal.ZERO;
+        if (saleOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
+          qty =
+              qtyToInvoiceItem
+                  .multiply(subLine.getQty())
+                  .divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_EVEN);
+        }
+        qty = qty.setScale(2, RoundingMode.HALF_EVEN);
+        qtyToInvoiceMap.put(subLine.getId(), qty);
+      }
+    }
   }
 
   @Override

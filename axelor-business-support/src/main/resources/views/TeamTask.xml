@@ -20,7 +20,7 @@
 		<field name="taskDate"/>
 		<field name="taskEndDate" hidden="true"/>
 		<field name="status"/>
-		<field name="projectCategory"/>
+		<field name="teamTaskCategory"/>
 		<field name="customerReferral"/>
 		<field name="targetVersion"/>
 	</grid>
@@ -78,7 +78,7 @@
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
 				<field name="taskDate" title="Task date" onChange="action-task-attrs-set-task-duration" required="true" readonlyIf="id"/>
-				<field name="projectCategory" onSelect="action-task-attrs-project-category-configurations" readonlyIf="id"/>
+				<field name="teamTaskCategory" onSelect="action-task-attrs-team-task-category-configurations" readonlyIf="id"/>
 				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="project-version-form" grid-view="project-version-grid" readonlyIf="id"/>
 				<field name="customerReferral" hidden="true" showIf="typeSelect == 'ticket'" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
 				<field name="progressSelect" colSpan="6" widget="SelectProgress" onChange="action-task-update-planned-progress" readonlyIf="id"/>
@@ -95,16 +95,15 @@
 				<field name="name"/>
 				</panel-related>
 			</panel>
-			<panel name="financialDataPanel" title="Financial Data" colSpan="12">
-				<field name="teamTaskInvoicing" widget="inline-checkbox" onChange="action-team-task-record-set-invoicing-type" readonly="true" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" readonly="true" showIf="teamTaskInvoicing"/>
-				<panel name="pricingPanel" showIf="teamTaskInvoicing &amp;&amp; invoicingType == 2" colSpan="12">
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12">				
+				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" />
+				<panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
 					<field name="quantity" colSpan="4" onChange="action-team-task-group-qty-onchange"/>
 					<field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
 					<field name="exTaxTotal" readonly="true" colSpan="4"/>
 				</panel>
-				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-client-dashlet-project-planning-time-spent" showIf="teamTaskInvoicing &amp;&amp; invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
+				<panel-dashlet name="projectPlanningTimeSpentPanel" title="Project Planning Time Spent" action="action-team-task-client-dashlet-project-planning-time-spent" showIf="invoicingType == 1" colSpan="12" canSearch="true" readonly="true"/>
 			</panel>
 		</panel-tabs>
 		<panel-mail name="mailPanel">
