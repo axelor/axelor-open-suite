@@ -311,7 +311,6 @@
 - InvoiceLine : fixed null pointer exception by adding null safe operator on 'analyticDistributionAuthorized' 
 - BASE : Fix menu title and action-view name typo error
 - CSVReaderService : Use try-with-resources for "FileInputStream"
-- Production : Add else in switch case to remove unconditional break in CostSheetLineServiceImpl class 
 - Invoice : Modify partner domain.
 - Timesheet: Fix exception happening on opening form view.
 
