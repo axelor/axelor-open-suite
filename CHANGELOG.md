@@ -23,6 +23,7 @@
 - Fix NPE in bank order file upload.
 - Invoice Generation : Allow to validate supplier invoice without address
 - FileTool : Use try-with-resources for "FileWriter"
+- StockRule : Fix error when product onchange call with delete
 
 ## [5.1.12] - 2019-11-19
 ## Features
