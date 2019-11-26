@@ -22,8 +22,8 @@
 - Code Refactor for TemplateRuleService file
 - Fix NPE in bank order file upload.
 - Invoice Generation : Allow to validate supplier invoice without address
-- FileTool : Use try-with-resources for "FileWriter"
 - StockRule : Fix error when product onchange call with delete
+- Lead: fix issue when generating partner without required fields.
 
 ## [5.1.12] - 2019-11-19
 ## Features

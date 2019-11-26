@@ -448,9 +448,9 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_16_GROSS_VALUE =
       /*$$(*/ "AccountingReportType16.gross_value"; /*)*/
   public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_LINEAR =
-	      /*$$(*/ "linear"; /*)*/
+      /*$$(*/ "linear"; /*)*/
   public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_DIGRESSIVE =
-	      /*$$(*/ "degressive"; /*)*/
+      /*$$(*/ "degressive"; /*)*/
 
   public static final String ACCOUNTING_REPORT_17_TITLE =
       /*$$(*/ "AccountingReportType17.title"; /*)*/
