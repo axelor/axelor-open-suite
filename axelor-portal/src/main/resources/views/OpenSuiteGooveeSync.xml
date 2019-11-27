@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<grid name="open-suite-goovee-sync-grid" title="Open suite goovee sync"
+		model="com.axelor.apps.portal.db.OpenSuiteGooveeSync">
+		<field name="sequence" />
+		<field name="osObject" />
+		<field name="gooveeObjectName" />
+		<field name="osToGooveeSyncSelect" />
+		<field name="gooveeToOsSyncSelect" />
+		<field name="osToGooveeFilter" />
+		<field name="gooveeToOsFilter" />
+	</grid>
+
+	<form name="open-suite-goovee-sync-form" title="Open suite goovee sync"
+		model="com.axelor.apps.portal.db.OpenSuiteGooveeSync" width="large">
+		<panel name="mainPanel">
+			<field name="sequence" />
+			<spacer />
+			<field name="osObject" domain="self in (SELECT metaModel FROM MetaField mf WHERE mf.name = 'gooveeId')"/>
+			<field name="gooveeObjectName" />
+			<field name="osToGooveeSyncSelect" />
+			<field name="gooveeToOsSyncSelect" />
+			<field name="osToGooveeFilter" />
+			<field name="gooveeToOsFilter" />
+			<field name="dynamicFieldSyncList" colSpan="12" />
+		</panel>
+	</form>
+
+</object-views>

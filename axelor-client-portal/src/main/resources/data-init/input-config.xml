@@ -11,7 +11,7 @@
         <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
     </input>
     
-  	<input file="base_appPortal.csv" separator=";" type="com.axelor.apps.base.db.AppPortal" call="com.axelor.csv.script.ImportApp:importApp">
+  	<input file="base_appClientPortal.csv" separator=";" type="com.axelor.apps.base.db.AppClientPortal" call="com.axelor.csv.script.ImportApp:importApp">
   		<bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn" eval="dependsOn.split(',') as List"/>
   	</input>
   	

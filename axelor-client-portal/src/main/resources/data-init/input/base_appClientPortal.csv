@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Client Portal";"clientportal";27;"Client Portal configuration";"app-client-portal.png";"axelor-client-portal";"base";31

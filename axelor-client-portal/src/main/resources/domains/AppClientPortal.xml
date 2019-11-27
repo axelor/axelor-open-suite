@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppPortal" lang="java" extends="App">
+	<entity name="AppClientPortal" lang="java" extends="App">
 
 		<boolean name="manageSaleOrders" title="Manage sale orders" default="true"/>
 		<boolean name="manageInvoices" title="Manage invoices" default="true"/>

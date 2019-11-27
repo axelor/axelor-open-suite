@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
-	<form name="app-portal-config-form" title="App Portal" model="com.axelor.apps.base.db.AppPortal" canDelete="false" canNew="false" width="large">
+	<form name="app-client-portal-config-form" title="App Portal" model="com.axelor.apps.base.db.AppClientPortal" canDelete="false" canNew="false" width="large">
 		<panel name="appPortalConfigPanel" colSpan="12">
 			<panel name="moduleManager" colSpan="12" title="Modules">
 		    	<field name="manageSaleOrders" widget="boolean-switch"/>

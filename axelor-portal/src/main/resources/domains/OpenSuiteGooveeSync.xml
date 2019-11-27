@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+	<module name="portal" package="com.axelor.apps.portal.db" />
+
+	<entity name="OpenSuiteGooveeSync" lang="java">
+
+		<integer name="sequence" title="Sequence" />
+		<integer name="osToGooveeSyncSelect" title="OS to goovee sync" selection="portal.sync.select"/>
+		<integer name="gooveeToOsSyncSelect" title="Goovee to OS sync" selection="portal.sync.select"/>
+		<one-to-one name="osObject" title="Object in OS"  ref="com.axelor.meta.db.MetaModel"/>
+		<string name="gooveeObjectName" title="Object name in goovee"/>
+		<string name="osToGooveeFilter" title="Filter OS to goovee" />
+		<string name="gooveeToOsFilter" title="Filter goovee to OS" />
+		<one-to-many name="dynamicFieldSyncList" ref="com.axelor.apps.portal.db.DynamicFieldSync" title="Dynamic fields sync" mappedBy="openSuiteGooveeSync"/>
+
+	</entity>
+
+</domain-models>
