@@ -18,6 +18,7 @@
 package com.axelor.apps.portal.service.batch;
 
 import com.axelor.apps.base.db.AppPortal;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AppPortalRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -43,10 +44,16 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -74,6 +81,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.hibernate.Hibernate;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
@@ -84,12 +94,18 @@ public class BatchSync extends AbstractBatch {
   private static final Integer LIMIT = 100;
   private int add = 0, update = 0;
   List<String> errorList = null;
+  Map<String, List<String>> errorMapOsToG = null;
+  Map<String, List<String>> errorMapGToOs = null;
+  @Inject private MetaFiles metaFiles;
 
   @Override
   protected void process() {
     errorList = new ArrayList<>();
     StringBuffer osToGooveeBuffer = new StringBuffer();
     StringBuffer gooveeToOsBuffer = new StringBuffer();
+    MetaModel metaModel = null;
+    errorMapOsToG = new HashMap<String, List<String>>();
+    errorMapGToOs = new HashMap<String, List<String>>();
 
     try {
       List<OpenSuiteGooveeSync> openSuiteGooveeSyncList =
@@ -120,7 +136,7 @@ public class BatchSync extends AbstractBatch {
             || StringUtils.isBlank(openSuiteGooveeSync.getGooveeObjectName())) {
           continue;
         }
-        MetaModel metaModel = ((MetaModel) Hibernate.unproxy(openSuiteGooveeSync.getOsObject()));
+        metaModel = ((MetaModel) Hibernate.unproxy(openSuiteGooveeSync.getOsObject()));
         @SuppressWarnings("unchecked")
         Class<AuditableModel> klass =
             (Class<AuditableModel>) Class.forName(metaModel.getFullName());
@@ -130,6 +146,7 @@ public class BatchSync extends AbstractBatch {
             JpaRepository.of((Class<AuditableModel>) mapper.getBeanClass());
         String url = portalUrl + "api/" + openSuiteGooveeSync.getGooveeObjectName().toLowerCase();
         if (openSuiteGooveeSync.getOsToGooveeSyncSelect() != 1) {
+          errorList = new ArrayList<>();
           osToGooveeSync(openSuiteGooveeSync, url, lastSyncDateTime, headers, mapper, repo);
           osToGooveeBuffer.append(
               String.format(
@@ -138,6 +155,7 @@ public class BatchSync extends AbstractBatch {
           add = update = 0;
         }
         if (openSuiteGooveeSync.getGooveeToOsSyncSelect() != 1) {
+          errorList = new ArrayList<>();
           gooveeToOsSync(
               openSuiteGooveeSync, url, lastSyncDateTime, headers, mapper, repo, gooveeSpaceIds);
           gooveeToOsBuffer.append(
@@ -160,21 +178,46 @@ public class BatchSync extends AbstractBatch {
   @Transactional
   public void setLog(StringBuffer osToGooveeLog, StringBuffer gooveeToOsLog) {
     PortalBatch portalBatch = batch.getPortalBatch();
-
+    List<Batch> batchList = portalBatch.getBatchList();
     if (!StringUtils.isEmpty(gooveeToOsLog.toString())) {
       osToGooveeLog.append(
           String.format("%n%n%nGoovee To Opensuite Sync : %n%s", gooveeToOsLog.toString()));
     }
-    if (!StringUtils.isEmpty(osToGooveeLog.toString())) {
-      portalBatch.setSyncLog(
-          String.format("%n%nOpensuite To Goovee Sync :%n%s", osToGooveeLog.toString()).trim());
-    } else {
-      portalBatch.setSyncLog(null);
+    for (Batch batch : batchList) {
+      if (!StringUtils.isEmpty(osToGooveeLog.toString())) {
+        batch.setSyncLog(
+            String.format("%n%nOpensuite To Goovee Sync :%n%s", osToGooveeLog.toString()).trim());
+      } else {
+        batch.setSyncLog(null);
+      }
     }
-    if (errorList.size() > 0) {
-      portalBatch.setErrorLog(String.format("Sync Error : %n%s", String.join("\n", errorList)));
-    } else {
-      portalBatch.setErrorLog(null);
+    HSSFWorkbook workBook = new HSSFWorkbook();
+    HSSFSheet osToGooveSheet = workBook.createSheet("OS to Goovee");
+    HSSFSheet gooveeToOsSheet = workBook.createSheet("Goovee to OS");
+    HSSFRow rowHeadOsToG = osToGooveSheet.createRow((short) 0);
+    rowHeadOsToG.createCell(0).setCellValue("Model");
+    rowHeadOsToG.createCell(1).setCellValue("Error");
+    HSSFRow rowHeadGToOs = gooveeToOsSheet.createRow((short) 0);
+    rowHeadGToOs.createCell(0).setCellValue("Model");
+    rowHeadGToOs.createCell(1).setCellValue("Error");
+    if (!errorMapOsToG.isEmpty()) {
+      getRow(osToGooveSheet, errorMapOsToG);
+    }
+    if (!errorMapGToOs.isEmpty()) {
+      getRow(gooveeToOsSheet, errorMapGToOs);
+    }
+    try {
+      Path path = MetaFiles.createTempFile("BatchError", ".xlsx");
+      File file = path.toFile();
+      FileOutputStream fout = new FileOutputStream(file);
+      workBook.write(fout);
+      fout.close();
+      MetaFile errorLogFile = metaFiles.upload(file);
+      for (Batch batch : batchList) {
+        batch.setMetaFile(errorLogFile);
+      }
+    } catch (IOException e1) {
+      e1.printStackTrace();
     }
   }
 
@@ -296,8 +339,15 @@ public class BatchSync extends AbstractBatch {
       AxelorException e =
           new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY, jsonObject.getString("message"));
-      if (!errorList.contains(e.getMessage())) {
+      if (errorMapOsToG == null || !errorMapOsToG.containsKey(mapper.getBeanClass().getName())) {
+        errorList = new ArrayList<String>();
         errorList.add(e.getMessage());
+        errorMapOsToG.put(mapper.getBeanClass().getName(), errorList);
+
+      } else if (errorMapOsToG.containsKey(mapper.getBeanClass().getName())) {
+        if (!errorList.contains(e.getMessage())) {
+          errorList.add(e.getMessage());
+        }
       }
       incrementAnomaly();
       TraceBackService.trace(e, obj.getClass().getName(), batch.getId());
@@ -532,6 +582,9 @@ public class BatchSync extends AbstractBatch {
             mapper,
             repo,
             lastSyncDateTime);
+      }
+      if (!errorList.isEmpty()) {
+        errorMapGToOs.put(mapper.getBeanClass().getName(), errorList);
       }
     } catch (Exception e) {
       if (!errorList.contains(e.getMessage())) {
@@ -778,5 +831,17 @@ public class BatchSync extends AbstractBatch {
       return JPA.all(fieldClass).filter("self." + fieldName + " = ?", defaultValue).fetchOne();
     }
     return defaultValue;
+  }
+
+  private void getRow(HSSFSheet sheet, Map<String, List<String>> mapList) {
+    int i = 1;
+    for (Map.Entry<String, List<String>> line1 : mapList.entrySet()) {
+      HSSFRow row = sheet.createRow((short) i);
+      row.createCell(0).setCellValue(line1.getKey());
+      for (String line : line1.getValue()) {
+        row.createCell(1).setCellValue(line);
+      }
+      i++;
+    }
   }
 }

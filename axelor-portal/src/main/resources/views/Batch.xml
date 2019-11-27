@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+    
+    <form id="portal-batchList-form" name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" onNew="action-batch-attrs" onLoad="action-batch-attrs" 
+    canEdit="false" canDelete="false" canNew="false" canCopy="false" canSave="false" width="large">
+		<panel name="mainPanel">
+		    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+		    <field name="duration" widget="duration" x-big="true"/>
+		    <field name="startDate" required="true"/>
+		    <field name="endDate"/>
+		    <field name="done"/>
+		    <field name="anomaly"/>
+		    <field name="metaFile" hidden="true" showIf="metaFile != null" widget="binary-link"  />
+		    <field name="syncLog" readonly="true" colSpan="12"  hideIf="syncLog == null"/>
+		    <field name="comments" showTitle="false" colSpan="12"/>
+		    <button name="showTraceBackBtn" title="Anomalies" colSpan="4" onClick="action-batch-show-trace-back,close"/>
+		    <button name="showInvoiceBtn" title="Invoices" hidden="true" colSpan="4" onClick="action-batch-show-invoice" if-module="axelor-account,close"/>
+		    <button name="showReimbursementBtn" title="Reimbursements" hidden="true" colSpan="4" onClick="action-batch-show-reimbursement,close" if-module="axelor-account"/>
+		    <button name="showPaymentScheduleLineBtn" title="Schedule lines" hidden="true" colSpan="4" onClick="action-batch-show-payment-schedule-line,close" if-module="axelor-account"/>
+		    <button name="showPartnerBtn" title="Partners" hidden="true" colSpan="4" onClick="action-batch-show-partner,close"/>
+		    <button name="showAccountingSituationBtn" title="Accounting situations" hidden="true" colSpan="4" onClick="action-batch-show-accounting-situation,close" if-module="axelor-account"/>
+		    <button name="showPaymentVoucherBtn" title="Payment vouchers" hidden="true" colSpan="4" onClick="action-batch-show-payment-voucher,close" if-module="axelor-account"/>
+        	<button name="showAccountingReportBtn" title="Accounting Exports" hidden="true" colSpan="4" onClick="action-batch-show-accounting-report,close" if-module="axelor-account"/>
+        	<button name="showStockMoveBtn" title="Stock moves" hidden="true" colSpan="4" onClick="action-batch-show-stock-move,close" if-module="axelor-supplychain"/>
+        	<button name="showStockMoveLinesBtn" title="Stock move lines" hidden="true" colSpan="4" onClick="action-batch-show-stock-move-lines,close" if-module="axelor-supplychain"/>
+        	<button name="showAccountMoveBtn" title="Account moves" hidden="true" colSpan="4" onClick="action-batch-show-move,close" if-module="axelor-supplychain"/>
+            <button name="showBankOrderBtn" title="Show bank order" hidden="true" colSpan="4" onClick="action-batch-show-bank-order,close" if-module="axelor-bank-payment"/>
+  		    <button name="showEbicsCertificatesBtn" title="Ebics certificates" hidden="true" colSpan="4" onClick="action-batch-show-ebics-certificates,close" if-module="axelor-bank-payment"/>
+            <button name="createBankOrderBtn" title="Create bank order" hidden="true" colSpan="4" onClick="action-batch-create-bank-order,action-batch-show-bank-order,close" if-module="axelor-bank-payment" />
+            <field name="bankOrder" hidden="true" if-module="axelor-bank-payment" />
+		</panel>
+    </form>
+</object-views>

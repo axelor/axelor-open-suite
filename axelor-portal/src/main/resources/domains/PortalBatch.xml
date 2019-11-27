@@ -8,8 +8,6 @@
 	<entity name="PortalBatch" lang="java">
 
 		<one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="portalBatch" title="Batches" />
-		<string name="syncLog" title="Log" large="true"/>
-		<string name="errorLog" title="Error" large="true"/>
 
 		<extra-code><![CDATA[
 		   	// ACTION TYPE

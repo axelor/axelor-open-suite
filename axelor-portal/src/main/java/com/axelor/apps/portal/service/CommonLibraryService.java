@@ -123,7 +123,9 @@ public class CommonLibraryService {
     try {
       jsonObject = new JSONObject(body);
     } catch (Exception e) {
-      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, body);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessages.AUTHENTICATION_ERROR));
     }
     response.close();
     client.close();

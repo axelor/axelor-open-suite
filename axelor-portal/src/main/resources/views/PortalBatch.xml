@@ -9,10 +9,6 @@
 	</grid>
 
 	<form name="portal-batch-form" title="Portal batch" model="com.axelor.apps.portal.db.PortalBatch" onNew="action-portal-batch-record-on-new" width="large">
-		<panel name="logPanel" hideIf="syncLog == null &amp;&amp; errorLog == null">
-			<field name="syncLog" readonly="true" colSpan="12"  hideIf="syncLog == null"/>
-			<field name="errorLog" readonly="true" colSpan="12" hideIf="errorLog == null"/>
-		</panel>
 		<panel name="actionPanel" title="Actions" sidebar="true">
 			<panel colSpan="12">
 				<button name="syncBtn" title="Sync" onClick="save,action-portal-batch-method-sync,save" colSpan="12" />
