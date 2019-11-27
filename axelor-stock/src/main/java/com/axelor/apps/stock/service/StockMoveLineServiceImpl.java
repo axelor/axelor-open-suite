@@ -654,8 +654,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING))
           && stockMoveLine.getTrackingNumber() == null
           && stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) != 0) {
-
-        productsWithErrors.add(stockMoveLine.getProduct().getName());
+        if (!productsWithErrors.contains(stockMoveLine.getProduct().getName())) {
+          productsWithErrors.add(stockMoveLine.getProduct().getName());
+        }
       }
     }
 
