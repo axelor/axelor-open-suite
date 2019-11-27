@@ -18,55 +18,5 @@
 			<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" />							
 		</panel>
 	</form>
-	
-	<form name="partner-address-sale-order-form" title="Address" model="com.axelor.apps.base.db.PartnerAddress" onNew="action-sale-order-partner-address-record" onSave="save,action-partner-address-method-set-sale-order-address">
-		<panel name="mainPanel" >
-			<field name="address" canNew="true" canSelect="false" colSpan="12">
-			    <editor >
-			       <field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
-			       <field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
-			       <field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-			       <field name="addressL4" x-bind="{{addressL4|uppercase}}" required="true"/>
-			       <field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-                   <field name="zip" />
-			       <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
-			       <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
-			       <label colSpan="12" title="Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change."/>
-			    </editor>
-			</field>
-		</panel>
-	</form>
-	
-	<action-record name="action-sale-order-partner-address-record" model="com.axelor.apps.base.db.PartnerAddress">
-	    <field name="isInvoicingAddr" expr="eval: _addressType.equals('invoicing')"/>
-	    <field name="isDeliveryAddr" expr="eval: _addressType.equals('delivery')"/>
-	    <field name="partner" expr="eval: _partner"/>
-	</action-record>
-	
-	<action-method name="action-partner-address-method-set-sale-order-address">
-	    <call class="com.axelor.apps.sale.web.SaleOrderController" method="setSaleOrderAddress"/>
-	</action-method>
-	
-	<action-view name="action-partner-sale-order-delivery-address-view" title="Address" model="com.axelor.apps.base.db.PartnerAddress">
-	  	<view type="form" name="partner-address-sale-order-form"/>
-	  	<view-param name="popup" value="reload"/>
-	  	<view-param name="show-toolbar" value="false"/>
-	  	<view-param name="show-confirm" value="false" />
-  	  	<view-param name="popup-save" value="true"/>
-	  	<context name="_addressType" expr="delivery" />
-        <context name="_partner" expr="eval: __this__.clientPartner"/>
-        <context name="_saleOrderId" expr="eval: __this__.id"/>
-	</action-view>
-	
-	<action-view name="action-partner-sale-order-invoicing-address-view" title="Address" model="com.axelor.apps.base.db.PartnerAddress">
-	  	<view type="form" name="partner-address-sale-order-form"/>
-	  	<view-param name="popup" value="reload"/>
-	  	<view-param name="show-toolbar" value="false"/>
-	  	<view-param name="show-confirm" value="false" />
-  	  	<view-param name="popup-save" value="true"/>
-	  	<context name="_addressType" expr="invoicing" />
-        <context name="_partner" expr="eval: __this__.clientPartner"/>
-        <context name="_saleOrderId" expr="eval: __this__.id"/>
-	</action-view>
 		
 </object-views>

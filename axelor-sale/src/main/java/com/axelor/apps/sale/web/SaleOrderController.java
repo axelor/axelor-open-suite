@@ -38,7 +38,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
@@ -637,9 +636,5 @@ public class SaleOrderController {
       TraceBackService.trace(response, e);
       response.setReload(true);
     }
-  }
-
-  public void setSaleOrderAddress(ActionRequest request, ActionResponse response) {
-    Beans.get(SaleOrderServiceImpl.class).createSaleOrderPartnerAddress(request.getContext());
   }
 }

@@ -284,19 +284,13 @@
 	    </panel>
 	    <panel name="addressPanel" colSpan="12" hideIf="company == null">
 	      <panel name="mainInvoicingAddressPanel" stacked="true">
-	         <panel css="field-append">
-	            <field name="mainInvoicingAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="false" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
-		        <button name="createInvoicingAddressBtn" hideIf="$readonly()" onClick="save,action-partner-sale-order-invoicing-address-view" title="New"/>
-		    </panel>
+	        <field name="mainInvoicingAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str" onSelect="action-sale-order-attrs-domain-main-invoicing-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	        <field name="mainInvoicingAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.mainInvoicingAddressStr}}]]></viewer>
 	        </field>
 	      </panel>
 	      <panel name="deliveryAddressPanel" stacked="true">
-	        <panel css="field-append">
-	            <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="false" onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
-		        <button name="createDeliveryAddressBtn" hideIf="$readonly()" onClick="save,action-partner-sale-order-delivery-address-view" title="New"/>
-		    </panel>
+	        <field name="deliveryAddress" hideIf="$readonly() || (statusSelect > 1 &amp;&amp; !orderBeingEdited)" canNew="true" onChange="action-sale-order-method-address-str,action-sale-order-attrs-set-is-ispm-required" onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-partner-address-form" grid-view="address-grid"/>
 	        <field name="deliveryAddressStr" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
 	          <viewer><![CDATA[{{record.deliveryAddressStr}}]]></viewer>
 	        </field>
@@ -1298,7 +1292,7 @@
 		<field name="template" expr="true"/>
 		<field name="templateUser" expr="eval: __user__"/>
 	</action-record>
-	
+
 	<action-method name="action-sale-order-method-generate-template">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="generateViewTemplate"/>
 	</action-method>
