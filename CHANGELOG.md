@@ -24,6 +24,7 @@
 - Lead: fix issue when generating partner without required fields.
 - StockLocation: fix always dirty form view.
 - INVOICE LINE : fixed hidden budget panel in invoiceline
+- StockMove : display product name one time in error message
 
 ## [5.1.12] - 2019-11-19
 ## Features
