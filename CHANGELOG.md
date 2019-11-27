@@ -1,6 +1,6 @@
 # Changelog
 
-## [5.0.10] - unreleased
+## [5.0.10] - 2019-11-27
 ## Improvements
 - YEAR : disable canEdit on company field in year-form.
 - MRP : add a try catch block in generateAllProposals method.
@@ -11,11 +11,10 @@
 ## Bug Fixes
 - STOCK MOVE : fixed issue on printing where origin sale order's reference number wouldn't be displayed
 - STOCK MOVE : fixed invoicing of stock moves containing several lines with the same product
-- SALE ORDER : Fix NPE while changing contactPartner
-- EMPLOYEE : Fixed timesheet dashlet domain
-- INVOICE REPORT / INVOICE : invoice identifier are now correctly manage in function of the status , the type and the sub type of the invoice.
-- Move various fields and actions to convenient modules.
-- Move 'wizard-client-form-open-my-tickets' action to helpdesk module.
+- SALE ORDER : fixed an error happening when changing contactPartner
+- EMPLOYEE : fixed timesheet dashlet domain
+- INVOICE REPORT / INVOICE : invoice identifiers are now correctly managed based on the status, the type and the sub type of the invoice.
+- Moved various fields and actions to convenient modules.
 - TaxLine: tax field is now readonly and cannot be edited when selected.
 
 ## [5.0.9] - 2019-06-19
@@ -1122,6 +1121,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[5.0.10]: https://github.com/axelor/axelor-business-suite/compare/v5.0.9...v5.0.10
 [5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...v5.0.9
 [5.0.8]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.0.8
 [5.0.7]: https://github.com/axelor/axelor-business-suite/compare/v5.0.6...v5.0.7
