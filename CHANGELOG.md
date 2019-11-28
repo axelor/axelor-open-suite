@@ -229,6 +229,7 @@
 - HRconfig : moved fields 'Health service' and 'Health service address' to HR module
 - STOCKMOVE : Update stock move form view
 - STOCKMOVE: display enlarged popup when showing projected stock.
+- MetaScheduler: Fix MetaScheduler form-view in axelor-base module
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.
