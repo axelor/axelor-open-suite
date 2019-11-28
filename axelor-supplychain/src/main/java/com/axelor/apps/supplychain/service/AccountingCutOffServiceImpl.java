@@ -363,13 +363,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected boolean checkStockMoveLine(
       StockMoveLine stockMoveLine, Product product, boolean includeNotStockManagedProduct) {
-    if ((stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
+    return (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
             || product == null
             || (!includeNotStockManagedProduct && !product.getStockManaged()))
-        || (stockMoveLine.getQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0)) {
-      return true;
-    }
-    return false;
+        || (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0);
   }
 
   protected MoveLine generateProductMoveLine(
