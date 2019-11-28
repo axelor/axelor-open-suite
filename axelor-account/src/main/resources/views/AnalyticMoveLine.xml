@@ -8,15 +8,15 @@
     	<hilite if="typeSelect == 2" color="info"/>
     	<hilite if="typeSelect == 3" color="success"/>
     	<hilite if="typeSelect == 4" color="primary"/>
-    	<field name="id" title="ID" hidden="false"/>
-    	<field name="moveLine"/>
+    	<field name="id" title="ID" hidden="false" width="60"/>
+    	<field name="moveLine" width="160"/>
         <field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
-        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" width="150"/>
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="accountType" />
-        <field name="date"/>
+        <field name="date" width="120"/>
         <field name="originalPieceAmount" aggregate="sum"/>
-        <field name="amount" aggregate="sum"/>
+        <field name="amount" aggregate="sum" width="120"/>
         <field name="typeSelect"/>
     </grid>
     
@@ -28,7 +28,7 @@
         <field name="percentage"/>
         <field name="originalPieceAmount" aggregate="sum"/>
         <field name="amount"/>
-        <field name="date"/>
+        <field name="date" />
         <field name="project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
         <field name="typeSelect"/>
     </grid>

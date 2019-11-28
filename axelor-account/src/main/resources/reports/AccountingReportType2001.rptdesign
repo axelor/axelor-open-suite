@@ -44,7 +44,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/abs_business_suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor_business_suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -1617,22 +1617,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="width">1%</property>
                         </column>
                         <column id="4426">
-                            <property name="width">8%</property>
+                            <property name="width">3%</property>
                         </column>
                         <column id="4448">
-                            <property name="width">15%</property>
+                            <property name="width">10%</property>
                         </column>
                         <column id="4092">
-                            <property name="width">17%</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4280">
-                            <property name="width">15%</property>
+                            <property name="width">20%</property>
                         </column>
                         <column id="4321">
-                            <property name="width">7%</property>
+                            <property name="width">5%</property>
                         </column>
                         <column id="4096">
-                            <property name="width">7%</property>
+                            <property name="width">5%</property>
                         </column>
                         <header>
                             <row id="4211">
@@ -2231,6 +2231,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <cell id="4316">
                                     <data id="4388">
                                         <property name="fontSize">9pt</property>
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">analyticmovelinedate</property>
                                     </data>
