@@ -25,6 +25,7 @@
 - StockLocation: fix always dirty form view.
 - INVOICE LINE : fixed hidden budget panel in invoiceline
 - StockMove : display product name one time in error message
+- INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
 
 ## [5.1.12] - 2019-11-19
 ## Features
