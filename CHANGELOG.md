@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.13]
 ## Features
 - OPPORTUNITY : Display of description on popup in kanban-view.
+- Reports: In all reports set header and footer heights parameters according to printsettings.
 
 ## Improvements
 - Importer : Use try-with-resources with "ZipFile"
