@@ -181,7 +181,6 @@
 - SALE/PURCHASE ORDER : Addtion of boolean field 'isAnalyticDistributionRequired' in app's configuration.
 - Wkf : Add an option to display 'Track flow' button.
 - HR : Enable Tracking Feature for 'statusSelect' field.
-- PURCHASE REQUEST : Allow to make a request for more than one product on Purchase Request form
 - BUDGET: Added 2 dashlets with the budget distribution lines information related to PO and invoices.
 - MOVE : Addition of thousand separator on total credit, total debit, difference viewer fields
 - EBICS USER : add the possibility to print ebics request log.
@@ -193,6 +192,8 @@
 - JOURNALS : add new configuration to filter partners (with their types) on Accounting move lines.
 - Availability request: new config to allocate automatically a stock move during availability request.
 - ACCOUNTING SITUATION : show 'dueDate' in moveLinesPanel.
+
+## Improvements
 - DEMO DATA : Reduce padding in sequence for all modules.
 - PURCHASE REQUEST : fill stockLocation automatically
 - Employee : Change wrong fields names on service method respectively from 'fromDate' , 'toDate' to 'fromDateT' , 'toDateT'.
