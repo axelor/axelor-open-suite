@@ -195,24 +195,6 @@
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
-                <structure>
-                    <property name="columnName">header</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">header</text-property>
-                    <text-property name="heading">header</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">footer</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">footer</text-property>
-                    <text-property name="heading">footer</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">logoPosition</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">logoPosition</text-property>
-                    <text-property name="heading">logoPosition</text-property>
-                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -248,21 +230,6 @@
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">header</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">footer</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">logoPosition</property>
-                        <property name="dataType">integer</property>
-                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -291,39 +258,17 @@
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                 </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">header</property>
-                    <property name="nativeName">header</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">footer</property>
-                    <property name="nativeName">footer</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">logoPosition</property>
-                    <property name="nativeName">logoPosition</property>
-                    <property name="dataType">integer</property>
-                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT  
 	MetaFile.file_path as logo_path,
 	Project.name as project_name, 
 	Partner.name  as customer, 
-	Currency.name as currency,
-	PrintingSettings.pdf_header as "header", 
-	PrintingSettings.pdf_footer as "footer",
-	PrintingSettings.logo_position_select as "logoPosition"
+	Currency.name as currency
 FROM project_project Project
 LEFT JOIN base_company Company on (Company.id = Project.company)
 LEFT JOIN meta_file MetaFile on (MetaFile.id = Company.logo)
 LEFT JOIN base_currency Currency on (Currency.id = Company.currency)
 LEFT JOIN base_partner Partner on (Partner.id = Project.client_partner)
-LEFT OUTER JOIN base_printing_settings as PrintingSettings on (PrintingSettings.id = Company.printing_settings)
 WHERE Project.id = ?]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
@@ -3580,24 +3525,6 @@ order by task_end_date]]></xml-property>
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">header</property>
-                    <text-property name="displayName">header</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["header"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">footer</property>
-                    <text-property name="displayName">footer</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">logoPosition</property>
-                    <text-property name="displayName">logoPosition</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logoPosition"]</expression>
-                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="name">project_name</property>
