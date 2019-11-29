@@ -6,9 +6,11 @@ buildscript {
 		maven { url 'https://plugins.gradle.org/m2/' }
 		maven { url 'https://repository.axelor.com/nexus/public/' }
 	}
+	ext.openPlatformVersion = '5.2.2'
+	ext.appVersion = '5.2.5-SNAPSHOT'
 	repositories repos
 	dependencies {
-		classpath "com.axelor:axelor-gradle:5.0.+"
+		classpath "com.axelor:axelor-gradle:${openPlatformVersion}"
 	}
 }
 
@@ -18,8 +20,6 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: "com.axelor.app"
 
-apply from: "modules/abs/version.gradle"
-
 apply from: './gradle/style.gradle'
 
 allprojects {
@@ -27,16 +27,20 @@ allprojects {
 	configurations {
    		runtime.exclude group:"org.eclipse.birt.runtime.3_7_1", module:"org.apache.commons.codec"
 	}
-	
+
 	apply plugin: 'idea'
 	apply plugin: 'eclipse'
 
 	group = "com.axelor"
-	version = absVersion
+	version = "${appVersion}"
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 
+}
+
+subprojects {
+  group = "com.axelor.apps"
 }
 
 axelor {
@@ -44,15 +48,8 @@ axelor {
 	description "Axelor Entreprise Application"
 }
 
-def modules = []
-file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { it ->
-	if(new File(it, "build.gradle").exists()) {
-		modules.add(it)
-	}
-}
-
 dependencies {
-	modules.each { dir ->
+	gradle.appModules.each { dir ->
 		compile project(":modules:$dir.name")
 	}
 }
@@ -67,27 +64,18 @@ task("dataImport", type: JavaExec) {
 	}
 }
 
-task archiveReports(type: Zip){
-	from 'modules/abs'
-	include '*/src/main/resources/reports/*'
+task archiveReports(type: Zip) {
+	file("modules").traverse(type: groovy.io.FileType.DIRECTORIES, maxDepth: 1) { dir ->
+		if(new File(dir, "build.gradle").exists() && new File(dir, "/src/main/resources/reports").exists()) {
+			new File(dir, "/src/main/resources/reports/").listFiles().each { report ->
+				from report.getPath()
+			}
+		}
+	}
+
 	classifier 'reports'
-	eachFile { fileCopyDetails ->
-		fileCopyDetails.path = fileCopyDetails.path.replaceAll(".*/src/main/resources/reports/", '')
-	}
 	includeEmptyDirs = false
-	destinationDir = new File("$buildDir/libs")
+	destinationDir = file("$buildDir/libs")
 }
 
-task archiveImages(type: Zip){
-	from 'modules/abs'
-	include '*/src/main/resources/data-demo/img/**'
-	include '*/src/main/resources/data-init/img/**'
-	classifier 'img'
-	eachFile { fileCopyDetails ->
-		fileCopyDetails.path = fileCopyDetails.path.replaceAll(".*/src/main/resources/data-demo/img/", '').replaceAll(".*/src/main/resources/data-init/img/", "")
-	}
-	destinationDir = new File("$buildDir/libs")
-	includeEmptyDirs = false
-}
-
-build.finalizedBy archiveReports, archiveImages
+build.finalizedBy archiveReports

@@ -1,9 +1,9 @@
-Axelor Business Suite
+Axelor Open Suite
 ================================
 
-Axelor Business Suite reduces the complexity and improve responsiveness of business processes. Thanks to its modularity, you can start with few features and  then activate other modules when needed.
+Axelor Open Suite reduces the complexity and improve responsiveness of business processes. Thanks to its modularity, you can start with few features and  then activate other modules when needed.
 
-Axelor Business Suite includes the following modules :
+Axelor Open Suite includes the following modules :
 
 * Customer Relationship Management
 * Sales management
@@ -14,13 +14,13 @@ Axelor Business Suite includes the following modules :
 * Production Management
 * Multi-company, multi-currency and multi-lingual
 
-Axelor Business Suite is built on top of [Axelor Development Kit](https://github.com/axelor/axelor-development-kit)
+Axelor Open Suite is built on top of [Axelor Open Platform](https://github.com/axelor/axelor-open-platform)
 
 Download
 -------------------------
 ```bash
-$ git clone git@github.com:axelor/abs-webapp.git
-$ cd abs-webapp
+$ git clone git@github.com:axelor/open-suite-webapp.git
+$ cd open-suite-webapp
 $ git checkout master
 $ git submodule init
 $ git submodule update
