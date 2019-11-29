@@ -92,6 +92,8 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       return;
     }
 
+    checkConditionBeforeValidate(invoicePayment);
+
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     int typeSelect = paymentMode.getTypeSelect();
     int inOutSelect = paymentMode.getInOutSelect();

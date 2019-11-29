@@ -26,6 +26,7 @@
 - StockLocation: fix always dirty form view.
 - INVOICE LINE : fixed hidden budget panel in invoiceline
 - StockMove : display product name one time in error message
+- INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.1.12] - 2019-11-19
 ## Features

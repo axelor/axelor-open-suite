@@ -1736,6 +1736,7 @@
 "The partner is blocked for invoicing.","Le tiers est bloqué pour la facturation.",,
 "The partner is required and must be the same for all invoices","Le tiers est obligatoire et doit être le même pour l'ensemble des factures",,
 "The payer doesn't have email attached. Please input/provide the email to use.","Le tiers payeur ne possède pas d'email. Veuillez préciser l'email à utiliser",,
+"The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0.","Le paiement ne peut pas être réalisé car le montant restant sur la facture %s est inférieur ou égale à 0.",,
 "The payment mode is not in adequacy with the invoice type",,,
 "The project must be the same for all invoices","Le projet doit être le même pour tout les factures",,
 "The reconcile %s cannot be removed, please select draft reconcile(s)","La réconciliation %s ne peut pas être supprimée, veuillez sélectionner des réconciliations au status brouillon",,
