@@ -315,5 +315,6 @@
 - CSVReaderService : Use try-with-resources for "FileInputStream"
 - Invoice : Modify partner domain.
 - Timesheet: Fix exception happening on opening form view.
+- ANALYTIC : analytic journal in analytic line is now required.
 
 [Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
