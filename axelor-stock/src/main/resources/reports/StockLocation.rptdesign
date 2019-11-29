@@ -1912,7 +1912,7 @@ if(params["PrintType"].value.equals('2'))
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row["is_display_sale_value_in_printing"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["is_display_sale_value_in_printing"] || params["PrintType"].value.equals('2')</expression>
                     </structure>
                 </list-property>
                 <property name="width">3.1cm</property>
@@ -1921,7 +1921,7 @@ if(params["PrintType"].value.equals('2'))
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"] || params["PrintType"].value.equals('2')</expression>
                     </structure>
                 </list-property>
                 <property name="width">3.1cm</property>
@@ -1930,7 +1930,7 @@ if(params["PrintType"].value.equals('2'))
                 <list-property name="visibility">
                     <structure>
                         <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">!row["is_display_ag_price_in_printing"]</expression>
+                        <expression name="valueExpr" type="javascript">!row["is_display_ag_price_in_printing"] || params["PrintType"].value.equals('2')</expression>
                     </structure>
                 </list-property>
                 <property name="width">3.1cm</property>
@@ -2488,6 +2488,12 @@ if(params["PrintType"].value.equals('2'))
                 <footer>
                     <row id="4571">
                         <property name="height">0.6879166666666666cm</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"] &amp;&amp; !row["is_display_sale_value_in_printing"] &amp;&amp; !row["is_display_ag_price_in_printing"]</expression>
+                            </structure>
+                        </list-property>
                         <cell id="4572"/>
                         <cell id="4573"/>
                         <cell id="4574">

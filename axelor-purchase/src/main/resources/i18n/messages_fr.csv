@@ -166,6 +166,8 @@
 "Purchase","Acheter",,
 "Purchase Buyer","Acheteur",,
 "Purchase Manager","Manager",,
+"Purchase Request Line",,,
+"Purchase Request Lines",,,
 "Purchase blocking","Blocage cmde fournisseur",,
 "Purchase config","Config. Achats",,
 "Purchase config (${ name })",,,

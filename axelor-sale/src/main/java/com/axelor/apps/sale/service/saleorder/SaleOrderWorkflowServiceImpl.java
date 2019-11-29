@@ -190,9 +190,25 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getPrintingSettings() == null) {
+      if (saleOrder.getCompany().getPrintingSettings() != null) {
+        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            String.format(
+                I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                saleOrder.getSaleOrderSeq()),
+            saleOrder);
+      }
+    }
+
     ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder) + "-${date}")
         .addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
         .addParam("SaleOrderId", saleOrder.getId())
+        .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .toAttach(saleOrder)
         .generate()
         .getFileLink();

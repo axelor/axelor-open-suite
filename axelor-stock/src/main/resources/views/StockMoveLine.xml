@@ -190,7 +190,7 @@
     
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
     	canNew="false" canDelete="false">
-    	<field name="stockMove.stockMoveSeq" width="120"/>
+    	<field name="name" width="120"/>
     	<field name="stockMove.realDate"/>
     	<field name="stockMove.estimatedDate"/>
     	<field name="stockMove.reservationDateTime" if-module="axelor-supplychain"  if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
@@ -218,7 +218,7 @@
 
 	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
 		canNew="false" canDelete="false">
-		<field name="stockMove.stockMoveSeq" width="120"/>
+		<field name="name" width="120"/>
 		<field name="stockMove.estimatedDate" />
 		<field name="stockMove.typeSelect"/>
 		<field name="stockMove.fromStockLocation" />
@@ -248,7 +248,7 @@
     	canNew="false" canDelete="false">
         <panel name="stockMovePanel" title="Stock move" readonlyIf="stockMove.statusSelect == 3">
 	    	<panel colSpan="12">
-    			<field name="stockMove.stockMoveSeq" width="120" colSpan="4"/>
+    			<field name="name" width="120" colSpan="4"/>
     			<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid" colSpan="4"/>
     			<field name="stockMove.origin" colSpan="4"/>
     		</panel>

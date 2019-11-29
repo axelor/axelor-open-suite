@@ -44,16 +44,16 @@
 		<field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="pickingIsEdited"/>
 		</field>
-    <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-    <field name="estimatedDate"/>
-    <field name="realDate"/>
-    <field name="fromAddressStr" hidden="true"/>
-    <field name="toAddressStr"/>
-    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="statusSelect"/>
+        <field name="toAddressStr"/>
+        <field name="estimatedDate"/>
+    <field name="realDate"/>
     <field name="origin" width="120"/>
+    <field name="statusSelect"/>
+    <field name="fromAddressStr" hidden="true" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="availableStatusSelect">
 	  	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
 	  	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
@@ -114,17 +114,17 @@
     <button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
     	</toolbar>
 		<field name="stockMoveSeq" width="120"/>
-		<field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid"/>
+        <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
+        <field name="fromAddressStr"/>
 		<field name="estimatedDate"/>
 		<field name="realDate"/>
-		<field name="fromAddressStr"/>
-		<field name="toAddressStr" hidden="true"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="supplierShipmentRef"/>
+		<field name="origin" width="120"/>
+		<field name="statusSelect"/>
+        <field name="toAddressStr" hidden="true" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
-    <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
-    <field name="statusSelect"/>
-    <field name="supplierShipmentRef"/>
-    <field name="origin" width="120"/>
     <field name="typeSelect" hidden="true" />
     <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -149,7 +149,7 @@
     </calendar>
     
 
-   
+
    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
                onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
 		<toolbar>
@@ -204,13 +204,13 @@
 								<span class="label label-warning" style="margin: 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.pickingIsEdited && record.statusSelect == 2" x-translate>Picking printed</span>
 								<span class="label label-success" style="margin: 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.availabilityRequest && record.statusSelect == 2" x-translate>Availability request</span>
 							</h4>
-              
+
 						]]></viewer>
 						</field>
 						<panel name="tagsPanel" colSpan="5">
 							<field name="availableStatusSelect" showTitle="false" readonly="true" colSpan="3">
 								<viewer><![CDATA[
-								
+
 									<h4 class="text-left">
 										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
 										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 2" x-translate>Partially available</span>
@@ -220,21 +220,21 @@
 							</field>
 							<field name="$tags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="6">
 								<viewer depends="typeSelect,conformitySelect,pickingIsEdited,availabilityRequest,statusSelect "><![CDATA[
-	              
+
 									<h4 class="text-left">
 										<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
 										<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
 										<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
-		              
+
 										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
 										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
 									</h4>
-	              
+
 								]]></viewer>
 							</field>
 							<field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
 								<viewer depends="$invoiceStatus"><![CDATA[
-								
+
 									<h4 class="text-left">
 										<span class="label label-important" ng-show="record.$invoiceStatus == 0"  x-translate>Not invoiced</span>
 										<span class="label label-warning" ng-show="record.$invoiceStatus == 1" x-translate>Partially invoiced</span>
@@ -246,7 +246,7 @@
 							<field name="$invoiceStatus" hidden="true" colSpan="12"/>
 							<field name="$pfpValidationTags" showTitle="false" colSpan="2" readonly="true" showIf="$readonly()" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 								<viewer depends="pfpValidateStatusSelect"><![CDATA[
-								
+
 	                               	<h4 class="text-left">
 										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.typeSelect == 3 && !record.isReversion)  && record.pfpValidateStatusSelect == 2" x-translate>Authorized</span>
 										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.typeSelect == 3 && !record.isReversion)  && record.pfpValidateStatusSelect == 3"  x-translate>Litigation</span>
@@ -281,7 +281,7 @@
                 	<![CDATA[<span class='label label-warning'>Warning : Delivery address is missing.</span>]]></static>
                 <field name="exTaxTotal" css="order-subtotal" showIf="statusSelect &gt; 1" readonly="true" showTitle="false">
 	                <viewer><![CDATA[
-	                
+
 						<dl class="dl-horizontal" style="float: none;">
 							<dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
 							<dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{record.exTaxTotal}}</dd>
@@ -289,7 +289,7 @@
 	                    ]]>
 	                </viewer>
 				</field>
-            
+
 				<field name="fromAddressStr" hideIf="statusSelect &gt; 2" colOffset="3" readonlyIf="statusSelect &gt; 2" height="3">
 					<viewer>{{record.fromAddressStr}}</viewer>
 				</field>
@@ -297,7 +297,7 @@
 					<viewer>{{record.toAddressStr}}</viewer>
 				</field>
 			</panel>
-            
+
 			<panel name="outgoingMove" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
 				<field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
 				<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
@@ -312,12 +312,12 @@
 			</panel>
             <field name="pickingIsNotEditedSpacer" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
             <field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
-               
-            <panel stacked="true" itemSpan="12">    
+
+            <panel stacked="true" itemSpan="12">
 				<field name="toAddressStr" height="3" hideIf="statusSelect &gt; 2" >
 					<viewer>{{record.toAddressStr}}</viewer>
 				</field>
-            
+
 				<field name="exTaxTotal" css="order-subtotal" showIf="statusSelect &gt; 1" readonly="true" showTitle="false">
                       <viewer>
                           <![CDATA[
@@ -330,7 +330,7 @@
                   </field>
 				</panel>
 			</panel>
-            
+
             <panel name="incomingMove" showIf="typeSelect == 3" itemSpan="3" colSpan="12">
 				<field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
 				<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
@@ -339,7 +339,7 @@
             	<field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited" />
             	<field name="supplierShipmentDate" showIf="!isReversion" />
            		<field name="supplierShipmentRef" showIf="!isReversion" />
-            	<panel stacked="true" itemSpan="12">    
+            	<panel stacked="true" itemSpan="12">
 					<field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2" >
                        <viewer>{{record.fromAddressStr}}</viewer>
 					</field>
@@ -368,14 +368,14 @@
                     <field name="carrierPartner" domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)" form-view="partner-form" grid-view="partner-grid" canEdit="false"/>
                     <field name="forwarderPartner" domain=":company MEMBER OF self.companySet" form-view="partner-form" grid-view="partner-grid" canEdit="false" />
 				</panel>
-               
+
                <panel itemSpan="3">
 					<field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid" canEdit="false" />
 					<field name="trackingNumber" />
                     <field name="modeOfTransport" />
                     <field name="deliveryCondition" height="3" showIf="typeSelect == 2 &amp;&amp; originTypeSelect &amp;&amp; originTypeSelect=='com.axelor.apps.sale.db.SaleOrder'"/>
 				</panel>
-               
+
                <panel itemSpan="3">
 					<field name="numOfPackages" readonlyIf="statusSelect == 3 || statusSelect == 4" />
                     <field name="numOfPalettes" readonlyIf="statusSelect == 3 || statusSelect == 4" />
@@ -393,7 +393,7 @@
                         </field>
                     </panel>
                </panel>
-               
+
                <panel itemSpan="3">
 	               <field name="isNeedingConformityCertificate" onChange="action-stock-move-record-unset-certificate-signed"/>
 	               <field name="signatoryUser" canEdit="false" />
@@ -428,7 +428,7 @@
                 <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
                 <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
 			</panel>
-            
+
             <panel name="configPanel" title="Configuration" itemSpan="6">
 				<field name="isWithBackorder"/>
                 <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
@@ -452,7 +452,7 @@
 			<mail-followers/>
 		</panel-mail>
     </form>
-   
+
 
 	<form name="popup-stock-move-backorder-form" title="Manage backorder?" model="com.axelor.apps.stock.db.StockMove" width="large">
 		<panel name="mainPanel" colSpan="12">
@@ -676,7 +676,8 @@
     </action-attrs>
 
     <action-attrs name="action-stock-move-attrs-domain-address">
-		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
+		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll().collect{it.address.id}+[null]).join(',')})&quot;" if="typeSelect == 3 &amp;&amp; isReversion == false"/>
+		<attribute name="domain" for="fromAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" if="!(typeSelect == 3 &amp;&amp; isReversion == false)"/>
 		<attribute name="domain" for="toAddress" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
     
