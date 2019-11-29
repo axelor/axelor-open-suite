@@ -16,6 +16,7 @@
 - Manuf Order: fix real quantity not updating when a new line in consumed products is created.
 - INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
 - INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
+- INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
