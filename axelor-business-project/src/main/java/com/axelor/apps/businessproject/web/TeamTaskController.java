@@ -91,7 +91,7 @@ public class TeamTaskController {
       task = businessProjectService.computeDefaultInformation(task);
     }
 
-    if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
+    if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
       task.setToInvoice(true);
     }
     response.setValues(task);
