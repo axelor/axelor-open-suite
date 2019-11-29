@@ -1,319 +1,211 @@
 # Changelog
 
-## [Unreleased 5.2.0]
+## [5.2.0] - 2019-11-29
 ## Features
-- Employee: added DPAE
-- TeamTask: added Frequency
-- Employee: added wizard when creating new employee
-- LogisticalForm: if config enabled, send an email on first save
-- SaleOrder: added boolean to invoice via generated task
-- Project : Addition of two new boolean fields 'isInvoicingExpenses' and 'isInvoicingPurchases'
-- TeamTask : Adding new field 'projInvTypeSelect' and updates in selection list.
-- Add new object 'Version' in business support module.
-- TeamTask : New fields 'timeToCharge' and 'budgetedTime' added. Also filled default values for new items created from 'projectPlanningTimeList'.
-- SaleOrder/Partner : Adding new fields for comments on invoices, sale orders , purchase orders and deliveries.
-- Project : Add new object 'Annoucement'.
-- Project : Onchange on Project.isInvoicingExpenses and Project.isInvoicingPurchases
-- TeamTask : Added new fields "Private","internalDesription" and "orderAccepted".
-- Axelor-Business-Support : Addition of new module 'axelor-business-support'.
-- TeamTask : Addition of new field 'assignment' in bussiness-support module.
-- TeamTask : Added 'Private','internalDesription' and 'orderAccepted' in bussiness-support module.
-- Business Project module : Two new fileds in TeamTask and Project (TimeInvoicing / InvoicingType)
-- TeamTask : Add new o2m 'projectPlanningTimeSpentList' field.
-- Timesheet : Assign Task to lines when generating from Realise Planning.
-- Project : Added new O2M field 'announcementList' in bussiness-support module.
-- TeamTask : Addition of new boolean 'isOrderProposed' in business-support module and label on isOrderAccepted.
-- TeamTask : Make 'toInvoice' field hidden and set its value automatically from invoiceType.
-- Timesheet : Assign toInvoice while generating timesheetLine from Realise Planning.
-- TeamTask : Add button to enter spent time.
-- TeamTask : Added action onClick of 'acceptOrderBtn' to set value for assignment
-- Business Support Module : assigningProvider / assigningCustomer button and label added in TeamTask.
-- Business support model : ProjectCategory / TeamTask objects - Adding defaultInvoicing field - Onchange TeamTask.projectCategory
-- TeamTask : Setting panel-mail mail-messages.
-- Business Project module : Default value of TimesheetLine.toInvoice At the creation from Timesheet.timesheetLineList
-- APP for axelor-business-support with a field 'providerCompany'.
-- Stock Correction
-- Business support module : New form/grid views of TeamTask for customers.
-- Business Support module / Objet TeamTask : Menu entries for customers.Added new role(role.customer) in data-init.
-- Employee:Company(Employee) Phonebook
-- User Form : Provide step wise view.
-- TeamTask : Update teamtask client view.
-- Project : Default value for project on Wiki/Version/Announcement.
-- Project : Divide planned and spent time project planning lines in seprate dashlets.
-- Team Task : Add new field 'customerReferral'.
-- TeamTask : Assign default value to fields and change in track of object.
-- MANUF. APP : new boolean manageCostSheetGroup
-- Business Project : new InvoicingProject menu and separate project-task-customer from menu-project-root
-- Project : Addition of M2M 'projectSet' in User object.
-- Purchase Request : Addition of M2M 'purchaseOrderSet'
-- Production : Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
-- Invoicing project : Menu organisation
-- Business Project : Addition of required contion on parentTaskTemplate.
-- TeamTask : Added relation with saleOrderLine and InvoiceLine.
-- Project module : ProjectPlanningTime ( Start time / End time )
-- TeamTask : Addition of o2m 'projectPlanningTimeList' field.
-- MOVE : improve reversion process.
-- SaleOrder : Task By product and Task_By_Line Invoicing
-- SALE ORDER : Update in 'Quotations template' working process and view.
-- Business Project : Addition of new m2o field 'customerAddress'.
-- Base : Additon of new object 'MailingListMessage' along with views, parent menu and sub-menus.
-- DataBackup : Relative date
-- BUSINESS PROJECT : Connect Contract to Project
-- PURCHASE ORDER LINES / INVOICE LINES : New fields related to budget
-- WEEKLY PLANNING : Add a type and minor changes
-- TeamTask : Business Project module / TeamTask.toInvoice (Package)
-- BULK UNIT COST CALCULATION : new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence.
-- InvoicingProject : Added new report 'InvoicingProjectAnnex.rptdesign' and attach to object on generating invoice
-- HR : Add CSV export support for Employment Contracts from its view and HR batch
-- MRP : Generate new sequence on save
-- TeamTask : Separate tasks and tickets
-- DataBackup : update importId when its null with format IDDDMMYYHHMM
-- Project : Added dashlet view of contract invoices
-- Quality : Major updates in axelor-quality module
-- Business Project : Addition of new field statusSelect in InvoicingProject.
-- Generating supplier order from partner form.
-- Mobile App : Add configuration for quality app on mobile app
-- INVOICE : new process to print
-- QUALITY CONTROL : New report to print
-- PERMISSIONS : Display dashlets for groups/roles/users using the permission in permission and meta permission form views.
-- AppBase : Addition of new boolean 'enableMultiCompany' also show/hide company column in all grid-view base on it.
-- Quality module : Changes in views.
-- OPPORTUNITY : Changes on opportunityType field.
-- INVOICE : Change form view's organization to fit the SaleOrder view.
-- OPPORTUNITY : Create event from opportunity.
-- PARTNER : Link to employee form and changed domain
-- PRICE LIST : Add dashlets to display partner
-- SALE ORDER : Recompute unit price when hideDiscount is true.
-- OPPORTUNITY : Auto fill sale-order form and cancel linked sale orders on 'closed lost' status
-- PROJECT : Add an analytic tab.
-- OBJECT DATA CONFIG : UX improvements  and Translations and Change in Export Type
-- ANALYTIC MOVE LINE : project field title changed and domain filter added.
-- CONTRACT : Set Invoice date with newly added options for invoicing Moment
-- Inventory : Added new field 'typeSelect' and change in product doman filter.
-- Address: Street have now a dedicated object.
-- SALE ORDER / PURCHASE ORDER / INVOICES : Lines o2m height set to 30.
-- ACCOUNT MOVE REVERSE: New option in a dropdown dateOfReversionSelect
-- PROJECT : Add new feature 'Project template'
-- Contract : Add analytic information to contract lines.
-- MESSAGE TEMPLATE : help to suggest use of separator between email addresses.
-- PRODUCTION ORDER : user can define manuf order's planned end date while creating production order from product form
-- Invoice & PurchaseOrder : Added a budget overview.
-- Advanced Import : Add feature to import data with advanced configurations.
+- Migration to Axelor Open Platform 5.2.
+- Axelor-Business-Support: Addition of new module and app 'axelor-business-support'.
+- Employee: added DPAE.
+- TeamTask: added Frequency to be able to repeat tasks on given points in time.
+- Employee: added wizard to create a new employee.
+- SaleOrder: added possibility to invoice via generated task.
+- Project: add support for project version.
+- Project: add new form to create announcement for a given project.
+- New menu and form stock correction allowing to fix a quantity in stock.
+- User Form: Provide step wise view to create a user.
+- TeamTask: Complete rework of team task model and views.
+- Project: Complete rework of project model and views.
+- Base: Addition of new object 'MailingListMessage' along with views, parent menu and sub-menus.
+- InvoicingProject: Added new report 'InvoicingProjectAnnex.rptdesign' and attach to object on generating invoice.
+- HR: Add CSV export support for Employment Contracts from its view and HR batch.
+- Quality: Major improvements in axelor-quality module.
+- QUALITY CONTROL: New report to print.
+- AppBase: Add new configuration allowing to disable multi company support.
+- OPPORTUNITY: Create event from opportunity.
+- PROJECT: Add new feature allowing to create a template for a project.
+- Invoice & PurchaseOrder: Added a budget overview.
+- Advanced Import: Add feature to import data with advanced configurations.
 - BPM: More than one workflow support for a same object.
-- MRP : boolean to exclude product without proposal in the result dashlet
-- HR : TRAINING - Optimization of the menu by adding filters
-- MRP : Group proposals per supplier
-- Sale Order / Sale Invoice : Enable to change customer with the same currency, fiscalPosition and priceList
-- MESSAGE TEMPLATE : added the management of additional contexts (groovy evaluation) in order to allow the use of Json fields.
-- HR : APPRAISALS - Optimization of the menu by adding filters
-- HR : RECRUITMENT - optimization of the menu by adding filters
-- Base : Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
-- Data import : manage forSelectUse in the file directly.
-- Action Builder : Add feature to create templates for json models to send email
-- FORECAST RECAP : sequence feature added for ForeCastRecap
-- Advance data import : Add new boolean 'isFileTabConfigAdded' , to check new configuration is added on file and do import according to file.
-- FORECAST RECAP : Add support of printing report in 'xls' and 'ods' format.
+- Sale Order/Sale Invoice: allow to change customer in existing invoice or order.
+- MESSAGE TEMPLATE: added the management of additional contexts (groovy evaluation) in order to allow the use of Json fields.
+- FORECAST RECAP: Add support of printing report in 'xls' and 'ods' format.
 - PERIOD: Add a new popup when closing period to allow user to check and validate move lines.
-- UNIT : add translatable on name and labelToPrinting on unit-form and on every birt that display labelToPrinting unit will be automatically translate in partner's language
-- Stock Move : Partial Invoice.
-- STOCK RULE : new M2O stockRuleMessageTemplate on StockRule and StockConfig
-- ABC ANALYSIS : Add support for printing report in 'xls' type.
-- EBICSUSER : replace the O2M ebicsRequestLogList per a dashlet
-- TEAMTASK : Addition of field 'project' in grid and kanban view
-- CONFORMITY CERTIFICATE : new field on printing
-- TIMESHEET : new config to display line numbers
-- Advanced Import : Add support of remove imported records.
-- Business Project : Add 'Project invoicing assistant' batch to update tasks and generate invoicing projects.
-- PARTNER : new HTML field on partner for proforma
-- COMPANY : autocomplete companySet when enableMultiCompany = false
-- FUNCTION : new object function on Sales and CRM and new M2O on partner
-- CITIZENSHIP : Add new object citizenship on base and new M2O in country and employee
-- EMPLOYEE : Files management added domains and demo data
-- Inventory : Added calendar-view
-- change term "Description" to "Comment" in english and "Commentaire" in french
-- Project Folder : Add a two Birt reports to display all project elements linked to the folder.
-- WEEKLY PLANNING: Days can be reordered and create an util method to get first day of week.
-- PROJECT / REPORTINGS : Addition of new dashboard - "Planned charge"
-- Distance travelled calculation of kilometricExpenseLine with Open street map
-- Timesheet: Add Timesheet reporting.
-- ADDRESS : when one address on partner please treat it as a default address
-- AccountingReport: Set boolean 'displayOpeningAccountingMoves' default value to true
-- SUPPLYCHAIN : Auto-complete sale order when it has been all invoiced
+- Stock Move: Add support for partial invoicing.
+- ABC ANALYSIS: Add support for printing report in 'xls' type.
+- Business Project: Add 'Project invoicing assistant' batch to update tasks and generate invoicing projects.
+- Project Folder: Add two printings to display all project elements linked to the folder.
+- Distance travelled calculation of kilometric expense line with Open street map.
+- Timesheet: add timesheet reporting.
 - Stock: Add stock history view for a given product, company and stock location.
-- Production : Provide menu for Machine Planning.
-- Teamtask : Removing real hours management from project planning time
--  Base : Addition of orderByType for OrderBy in AdvancedExportLine for sorting .
+- Production: Provide menu for Machine Planning.
+- Company: Add employee Phonebook.
+- Base: Addition of fields 'height' and 'width' in Company to change logo's dimension in Reports.
+- Add a payment validator in supplier invoices.
 
 ## Improvements
-- Contract: added button to manually close contract if termination date was set in the future
-- ContractLine: hide `isConsumptionLine` if not activated in Contract config
-- Employee: refactored view (Add a creation workflow and allow to automatically create or link a user)
-- SaleOrder: refactored 'Business Project' panel
-- TimesheetLine: Adding M2O field TeamTask and integer field timeToCharge.
-- Project : adding new O2M field Roadmap and panel Tab Roadmap.
-- HR Module : Timesheet - Rename Action Title in "timesheet-form".
-- Studio : Allowing to export all data without selecting any app builder.
+- SaleOrder/Partner: adding new fields for comments on invoices, sale orders, purchase orders and deliveries.
+- Timesheet: assign Task to lines when generating from Realise Planning.
+- Timesheet: mark timesheet line as to be invoiced while generating it from Realise Planning.
+- TeamTask: Add button to enter spent time.
+- LogisticalForm: if config enabled, send an email on first save.
+- MANUF. APP: new config to hide cost sheet group.
+- Purchase Request: Add the possibility to select purchase orders.
+- Production: Addition of two dummy fields to calculate sum of planned and real duration of operation orders.
+- MOVE: improve reversion process.
+- SaleOrder: task by product and task by line invoicing.
+- SALE ORDER: Update in 'Quotations template' working process and view.
+- DataBackup: Add possibility to restore date fields from a given relative date.
+- PURCHASE ORDER LINES/INVOICE LINES: New fields related to budget.
+- WEEKLY PLANNING: Add a type and minor changes.
+- BULK UNIT COST CALCULATION: new way to compute all unit costs using BOM. Allow to compute cost using BOM level sequence.
+- MRP: Generate new sequence on save.
+- DataBackup: update importId when its null with format IDDDMMYYHHMM.
+- Generating supplier order from partner form.
+- Mobile App: Add configuration for quality app on mobile app.
+- INVOICE: new process to print.
+- PERMISSIONS: Display dashlets for groups/roles/users using the permission in permission and meta permission form views.
+- OPPORTUNITY: Rename "opportunity type" to "type of need".
+- INVOICE: Change form view's organization to match the SaleOrder view.
+- PARTNER: Add link to employee form.
+- PRICE LIST: Add dashlets to display partner.
+- MRP: add boolean to exclude product without proposal in the result dashlet.
+- HR: TRAINING - Optimization of the menu by adding filters
+- MRP: Group proposals per supplier
+- HR: rework training and recruitment menus.
+- Data import: in the import file, add the possibility to fill selects either by values, title or translated titles.
+- Action Builder: Add feature to create templates using json models to send email.
+- FORECAST RECAP: sequence feature added for ForeCastRecap.
+- Advance data import: Add new config to check if new configuration is added on file and do import according to file.
+- UNIT: allows to translate name and label.
+- STOCK RULE: Add template on StockRule and StockConfig used for mail notifications.
+- CONFORMITY CERTIFICATE: display external reference on printing.
+- TIMESHEET: new config to display line numbers.
+- Advanced Import: Add support of imported records removal.
+- SALE ORDER: Recompute unit price when hideDiscount is true.
+- OPPORTUNITY: Auto fill sale-order form and cancel linked sale orders on 'closed lost' status.
+- OBJECT DATA CONFIG: UX improvements and translations and change in export type.
+- ANALYTIC MOVE LINE: project field title changed and domain filter added.
+- CONTRACT: Set invoice date with newly added options for invoicing moment.
+- Inventory: Manage different type of inventory: yearly or cycle turning.
+- Address: Street have now a dedicated object.
+- SALE ORDER / PURCHASE ORDER / INVOICES: Lines panel height set to 30.
+- MOVE: add the possibility to choose a date while generating reverse move.
+- Contract: Add analytic information to contract lines.
+- MESSAGE TEMPLATE: help to suggest use of separator between email addresses.
+- PRODUCTION ORDER: user can define manuf order's planned end date while creating production order from product form.
+- PARTNER: new HTML field on partner for proforma.
+- Contract: added button to manually close contract if termination date was set in the future.
+- ContractLine: hide `isConsumptionLine` if not activated in Contract config.
+- Employee: Add a creation workflow and allow to automatically create or link a user.
+- TimesheetLine: Add reference to TeamTask and add time to charge field.
+- Timesheet: Change tab title.
+- Studio: Allowing to export all data without selecting any app builder.
 - Studio: Custom model editor - Added title property for model and removed required condition for AppBuilder.
-- Project : Display task field on logTimesPanel.
-- Project : Default value set for ProjectPlanningTime.product.
-- TeamTask : Change in team-task-form view.
-- TeamTask object : Change label "Task assigned to the provider".
-- MENUS : new organisation in CRM and Sales modules
-- Team Task : Change in team-task-form view
-- Moible: Add new app setting for 'Task'
-- JobPosition : Hide statusOpenBtn on statusSelect = 2.
-- Purchase Order : remove IPurchaseOrder deprecated class
-- Project module : Add metaFile field on TeamTask
-- Event : Allowing to suppress unsynchronized events.
-- Employee : Add new fields 'birthDepartment' and 'cityofBirth'
-- Employment Contract : Add buttons to "Tools" in menubar and set form width to large
-- TeamsTask : New menu titles
-- Contract : partner / project filters improved
-- TeamTask : Set default typeSelect = 'task'
-- APP BUILDER : Remove JsonCreator object
-- TeamTask : copy object with empty fields
+- MENUS: new organisation in CRM and Sales modules.
+- Mobile: Add new app setting for 'Task'.
+- JobPosition: Cannot open a position when status in on hold.
+- Purchase Order: remove IPurchaseOrder deprecated class.
+- Event: Allowing to suppress unsynchronized events.
+- Employee: Add birth department and city of birth in employee.
+- Employment Contract: Set form width to large.
+- Contract: partner/project filters improved.
+- APP BUILDER: Remove JsonCreator object.
 - ContractBatch: Set default bankDetails of partner to created invoice bankDetails.
-- PRICE LIST : hide O2M historized price lists in pop-up view
-- MARKETING : Precise domain for model in message template
+- PRICE LIST: hide historized price lists in pop-up view.
+- MARKETING: Precise domain for model in message template.
 - Change titles for productFamily.
-- CONTRACT : Set project on generated invoices
-- LEAVE REQUEST : Set message for leave reason has no unit
-- LEAVE REQUEST : Set duration value 0 if day planning of selected weekly planning is empty
+- CONTRACT: Set project on generated invoices.
 - ACCOUNT MOVE REVERSE: Selected reverse move date must not be after the date of the day
-- ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation  
+- ACCOUNT MOVE REVERSE: add the possibility to choose to hide or not the move lines (origin and reverse) in bank reconciliation
 - Change google-plus icon by google one.
 - Sale Order Line: Replacing 'price' with 'priceDiscounted' in a Grid View along with PurchaseOrderLine and InvoiceLine
-- SUPPLY CHAIN : delete boolean manageInvoicedAmountByLine.
-- EMPLOYEE : Fix issue with full name view
-- INVENTORY : adding ODS file format in report selection type.
-- Quality Control : Set default printing setting and update translation
-- INVOICE : Configure BIRT to generate an Excel and a Word file
-- KEYWORD : remove Keyword model.
-- Advanced Import : trim data before import.
-- USER : don't display the step "Employee" in the workflow when axelor-human-resource module is not installed
-- ACCOUNTING : year and accountSet fields are set empty when company is changed
-- ACCOUNTING CONFIGURATION AND REPORTED BALANCE : add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
+- SUPPLY CHAIN: delete boolean manageInvoicedAmountByLine.
+- FUNCTION: new object function on Sales and CRM and new M2O on partner
+- CITIZENSHIP: Add new object citizenship on base and new M2O in country and employee
+- EMPLOYEE: Files management added domains and demo data
+- Inventory: Added calendar-view
+- change term "Description" to "Comment" in english and "Commentaire" in french
+- WEEKLY PLANNING: Days can be reordered and created.
+- PROJECT / REPORTINGS: Addition of new dashboard - "Planned charge".
+- INVENTORY: adding ODS file format in report selection type.
+- Quality Control: Set default printing setting and update translation.
+- INVOICE: Configure BIRT to generate an Excel and a Word file
+- KEYWORD: remove Keyword model.
+- Advanced Import: trim data before import.
+- ACCOUNTING: year and accountSet fields are set empty when company is changed.
+- ACCOUNTING CONFIGURATION AND REPORTED BALANCE: add a new journal parameter in accounting configuration named reported balance journal and this new parameter defines the journal used in the reported balance move line creation.
 - PARTNER: Checks the consistency of the address list of a partner.
-- EXCEPTION : Removing deprecated interface IException
-- PORTAL CLIENT : Add config to choose the type of connection (from ABS or external)
-- DEMO DATA : Rename field data.
-- SALE ORDER/ PURCHASE ORDER : Removal of spacer.
-- ACCOUNTING BATCH : alert when the closing annual accounts batch already ran
-- CLIENT PORTAL : update the client form view
-- MESSAGE MODULE: Refactor code.
-- USER : Mass generation of random passwords
-- Advance data import: Set sequence of filetab and removed temporary file at the end which is created during the process
-- QUALITY: removed translation for "Close"
-- BIRT TEMPLATE PARAMETER: new paratmeter "ReportType" is added.
-- ACCOUNTING REPORT : add ODS file formate in report export type
-- FORECAST RECAP : reset fields while creating duplicate record
-- PICKING ORDER : new comment field 'pickingOrderComments' on partner
-- INVOCIE : Add field 'language' to change report language in company
-- PROJECT : remove unused action and method
-- QUALITY CONTROL : Add send email option when status is finished.
-- Timesheet : replace private method to protected in TimesheetServiceImpl.
-- Deleting deprecated interfaces
-- EMPLOYEE : add emergency contact relationship
-- INVOICE PAYMENT : additionnal informations
-- ACCOUNT CONFIG : update demo data for account config and 'is print invoices in company language' boolean is now at true by default.
-- Contract : change filter on project field
-- TEAMTASKS : Creation from Same Order
-- PROJECT : show sub-menu project list when projectTypeSelect value = null
-- TEAMTASK : add buttons in team-task-form and removed from toolbar
-- Financial Report : calculate Total costs (per line) in chart and totals
-- ACCOUNTING REPORT : add Analytic general ledger.
-- TIMETABLE : Reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
-- TeamTask : set status editable.
-- TEAMTASKS : removed teamTaskInvoicing field in teamtask and project category, added 'no invoicing' in invoicingType selection, renamed ProjectCategory to TeamTaskCategory and renamed isInvoiceable to toInvoice in project form
-- TEAMTASK : moved invoiced field outside of the package panel
-- HRconfig : moved fields 'Health service' and 'Health service address' to HR module
-- STOCKMOVE : Update stock move form view
-- STOCKMOVE: display enlarged popup when showing projected stock.
-- MetaScheduler: Fix MetaScheduler form-view in axelor-base module
-- SaleOrderInvoiceService: unused method updateAndCheckInvoicedAmount removed
+- EXCEPTION: Removing deprecated interface IException.
+- PORTAL CLIENT: Add config to choose the type of connection (from ABS or external).
+- DEMO DATA: Rename field data.
+- ACCOUNTING BATCH: alert when the closing annual accounts batch already ran.
+- CLIENT PORTAL: update the client form view.
+- USER: Mass generation of random passwords.
+- Advance data import: Set sequence of filetab and removed temporary file at the end which is created during the process.
+- ACCOUNTING REPORT: add ODS file formate in report export type.
+- FORECAST RECAP: reset fields while creating duplicate record.
+- PICKING ORDER: new comment field for picking order on partner.
+- INVOICE: Add field 'language' to change report language in company.
+- QUALITY CONTROL: Add send email option when status is finished.
+- EMPLOYEE: add emergency contact relationship.
+- INVOICE PAYMENT: additionnal informations
+- ACCOUNT CONFIG: update demo data for account config and 'is print invoices in company language' boolean is now at true by default.
+- Contract: change filter on project field.
+- TEAMTASKS: Creation from Same Order.
+- PROJECT: show sub-menu project list when project type is empty.
+- Financial Report: calculate total costs (per line) in chart and totals.
+- ACCOUNTING REPORT: add Analytic general ledger.
+- TIMETABLE: reworked timetables to have them work based on percentage of the order rather than on a per product basis. So far only for sale orders. Purchases to come.
+- HRconfig: moved fields 'Health service' and 'Health service address' to HR module.
+- STOCKMOVE: update stock move form view.
+- MetaScheduler: fix MetaScheduler form-view in axelor-base module.
+- AccountingReport: set configuration to display opening accounting moves default value to true.
+- SUPPLYCHAIN: auto-complete sale order when it has been completely invoiced.
+- Accounting situation: added two fields to manage the credit insurance.
+- BoM: added a menu showing personalized bills of materials.
 
 ## Bug Fixes
-- TeamTask : Resolve NPE on save of new team task.
 - Studio: Fix import app without image.
-- TeamTask : Resolve NPE by updating action of HR module.
-- Generation of Project/Phase from SaleOrder
-- Busines project module : TeamTask / Project rename timeInvoicing to teamTaskInvoicing.
-- Contract : Fix issue of not saving currentContractVersion fields in form view
-- ProductTaskTemplate : Fix button display issue for Edit,Remove button on tree view.
-- Accounting situation : added two fields (insurCreditDate and description) to manage the Credit Insurance.
-- Employee : Fix issue of not saving each phase of creation process
-- TeamTask : Fix issue of creating new record from calendar view
-- Marketing : Fix error when trying to generate an event per target
-- Contract : Fix import error in data-init.
-- Sale Quotation : Move menu from CRM to Sale module.
-- BoM:  added a menu showing personalized bills of materials
-- BUSINESS PROJECT : Report printing Division by zero
-- UnitCostCalculation : Fixed the date format in the csv export name file.
-- BONUS MGT : Fix Formula Variable Error of Human Resource when computing amounts.
-- INVOICE :  Hide Due amount in report while printing "Original invoice / Updated copy"
-- PurchaseOrder : Fill Order Date with SaleOrder creation date when generating puchase order from sale order with Interco.
-- Purchase Order : Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
-- INVOICE : Reduce font size of tax table in Invoice printing
-- PURCHASE ORDER PRINTING : display buyer email and phone as in sale order printing
-- ACCOUNT MOVE REVERSE: add translation
-- SALEORDER : fix action with obsolete name
-- ABC ANALSYS : Fixed logo, sequence number and page number alignment in birt report.
-- Transactionnal : correction and standardisation of rollback.
-- CONFIGURATOR BOM : product, qty and unit are displayed in the grid-view.
-- Upgraded to Axelor Open Platform 5.1.
-- SALE ORDER LINE : Fixed Error when selecting a product
-- Studio : Fix readonly fields are enabled when imported an application.
-- Studio : Fix error when click on wkf buttons.
-- Studio : Fix export app.
-- Advance Data Import : Fix indexOutOfBound Exception.
-- Advanced Data Import : Specify truncated value to sampleLines for large string.
-- MetaSelect : Update view and domain with latest version.
-- ERROR : Fixed NPE on product selection on invoiceLine
-- QUALITY PROCESS : Fix save issue of controlPointModelList and optionalControlPointModelList
-- EMPLOYMENTCONTRACT : fix issue auto-generated field 'employee' of Employee Contract Form.
-- REPORTED BALANCE : corrected abnormal amount in reported balance move lines if there was no partner associated to it
-- REPORTED BALANCE BATCH : the case where reported balance date on fiscal year is missing is now correctly managed.
-- PURCHASE ORDER : fix issue in 'discountTypeSelect' of Purchase Order Line Form.
-- Update xsd to Axelor Open Platform 5.2
-- Advanced Data import :  fix issue of not generating info in log file when error occurred on import
+- Generation of Project/Phase from SaleOrder.
+- Contract: Fix issue of not saving currentContractVersion fields in form view.
+- ProductTaskTemplate: fix button display issue for edit and remove buttons on tree view.
+- Employee: Fix issue of not saving each phase of creation process.
+- Marketing: Fix error when trying to generate an event per target.
+- Contract: Fix import error in data-init.
+- BUSINESS PROJECT: Report printing Division by zero.
+- UnitCostCalculation: Fixed the date format in the csv export name file.
+- BONUS MGT: Fix formula variable error of human resource when computing amounts.
+- INVOICE: Hide Due amount in report while printing "Original invoice / Updated copy".
+- PurchaseOrder: Fill order date with sale order creation date when generating puchase order from sale order with interco.
+- Purchase Order: Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
+- INVOICE: Reduce font size of tax table in Invoice printing.
+- PURCHASE ORDER PRINTING: display buyer email and phone as in sale order printing.
+- ACCOUNT MOVE REVERSE: add translation.
+- Transactionnal: correction and standardisation of rollback.
+- CONFIGURATOR BOM: product, qty and unit are displayed in the grid-view.
+- SALE ORDER LINE: fixed error when selecting a product.
+- Studio: Fix readonly fields are enabled when imported an application.
+- Studio: Fix error when click on wkf buttons.
+- Studio: Fix export app.
+- Advance Data Import: Fix indexOutOfBound Exception.
+- Advanced Data Import: Specify truncated value to sampleLines for large string.
+- REPORTED BALANCE: corrected abnormal amount in reported balance move lines if there was no partner associated to it.
+- REPORTED BALANCE BATCH: the case where reported balance date on fiscal year is missing is now correctly managed.
+- PURCHASE ORDER: fix issue in 'discountTypeSelect' of Purchase Order Line Form.
+- Advanced Data import:  fix issue of not generating info in log file when error occurred on import.
 - Studio: fix m2o to metafile's widget property, display image,binarylink option.
-- SaleOrder : Fix NPE on click of generate customer deliveries
-- Advance data import:fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
-- MOVE : Fix NPE while creating new accounting move.
-- INVOICE : only pdf file format for report when status is ventilated.
-- USER : Fix for login with a user account that is not valid.
+- Advance data import: fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
 - Advance data import: Fix Data import error when there is same object in two different sheets.
-- SALE ORDER : Fix issue of getting name null.
-- Fix nonexistent views
-- INVOICE : fix issue of invoice copy
+- INVOICE: fix issue of invoice copy.
 - TEAMTASK: Add fullname in demo data.
-- Timesheet line : Duration label issue when created from mobile app
-- EXPENSE : fix NPE on validate Expense.
-- Controller: Use Beans.get instead of Inject
-- PROJECT : Kanban view doesn't change status
-- Partner : Remove NPE and persistence exception on contact form  .
-- BankDetails : Fix error when bank details form opens
-- INVOICE : Remove NPE from getInvoicePartnerDomain
-- Purchase : Corrected translation of purchase not configured
-- QualityControl : status selection order and other translation changes
-- Frequency: Error on clear of Frequency type fix
-- RH : NPE on ventilation of expense fixed
-- TEAMTASKS : paid field appears in all related teamTasks if project.invoicingSequenceSelect is "Invoice pre task"
-- SALEORDERLINE : Issue when Production module isn't installed
-- Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect"
-- SALE ORDER : fix error generating project without salemanUser
-- ACCOUNTING MOVE : fix NPE when reverse the move
-- INVOICE : fix for NPE when printing from grid view
-- Advance Import : Resolve ArrayIndexOurOfBound exception.
-- ACCOUNTING : reversion and analytic distribution
-- BATCH ACCOUNTING CUT-OFF : corrected by adding condition to checkStockMoveLine
-- TEAMTASKS : make empty packagePanel when package is select in financial data
-- TEMPLATE CONTEXT : Fix limit for field 'value'
-- STOCK : Link back order with saleOrder or purchaseOrder
-- InvoiceLine : fixed null pointer exception by adding null safe operator on 'analyticDistributionAuthorized' 
-- BASE : Fix menu title and action-view name typo error
-- CSVReaderService : Use try-with-resources for "FileInputStream"
-- Invoice : Modify partner domain.
-- Timesheet: Fix exception happening on opening form view.
+- Timesheet line: Duration label issue when created from mobile app.
+- Purchase: Corrected translation of purchase not configured.
+- SALEORDERLINE: Issue when Production module isn't installed.
+- Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect".
+- SALE ORDER: fix error generating project without salemanUser.
+- Advance Import: Resolve ArrayIndexOutOfBound exception.
+- STOCK: Link back order with saleOrder or purchaseOrder.
+- ADDRESS: when there is one address on partner it is treated as a default address.
+- LEAVE REQUEST: Add error when leave reason has no unit.
+- LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.0]: https://github.com/axelor/axelor-open-suite/compare/dev...wip
+[5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
