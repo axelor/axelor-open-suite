@@ -265,22 +265,23 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
 
     teamTask = computeDefaultInformation(teamTask);
 
-    switch (teamTask.getProject().getInvoicingSequenceSelect()) {
-      case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-        teamTask.setToInvoice(
-            appBusinessProject.getPreTaskStatusSet() != null
-                && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
-        if (teamTask.getToInvoice()
-            && teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-          teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
-        }
-        break;
+    if (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
+      switch (teamTask.getProject().getInvoicingSequenceSelect()) {
+        case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
+          teamTask.setToInvoice(
+              appBusinessProject.getPreTaskStatusSet() != null
+                  && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
+          break;
 
-      case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-        teamTask.setToInvoice(
-            appBusinessProject.getPostTaskStatusSet() != null
-                && appBusinessProject.getPostTaskStatusSet().contains(teamTask.getStatus()));
-        break;
+        case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
+          teamTask.setToInvoice(
+              appBusinessProject.getPostTaskStatusSet() != null
+                  && appBusinessProject.getPostTaskStatusSet().contains(teamTask.getStatus()));
+          break;
+      }
+    } else {
+      teamTask.setToInvoice(
+          teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT);
     }
 
     return teamTaskRepo.save(teamTask);

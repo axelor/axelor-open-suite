@@ -18,6 +18,7 @@
 		<many-to-one name="customerReferral" ref="com.axelor.auth.db.User" title="Customer referral"/>
 		<many-to-one name="saleOrderLine" title="Related sale order line" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
 		<many-to-one name="invoiceLine" title="Related Invoice line" ref="com.axelor.apps.account.db.InvoiceLine"/>
+		<boolean name="isTaskRefused" title="Refused"/>
 		
 		<extra-code>
 			<![CDATA[
