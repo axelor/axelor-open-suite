@@ -87,6 +87,9 @@
     	<field name="intercoInvoiceCreateValidated" on="UPDATE"/>
     	<field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
     	<field name="isVerifyProductStock" on="UPDATE"/>
+    	<field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
+    	<field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
+    	<field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
     </track>
 	</entity>
 

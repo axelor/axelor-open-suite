@@ -1,20 +1,31 @@
 # Changelog
 
-## [Unreleased 5.1.13]
-## Features
-- OPPORTUNITY : Display of description on popup in kanban-view.
-
+## [Unreleased 5.1.14]
 ## Improvements
-- Importer : Use try-with-resources with "ZipFile"
+## Bug Fixes
+
+## [5.1.13] - 2019-11-29
+## Improvements
+- DEBT RECOVERY: disable canNew for debt recovery.
+- STOCK MOVE: remove filter.
+- Stock Location: hide stock location valuation in stock location report if disabled in form view.
+- STOCK MOVE GRID: change column order.
+- OPPORTUNITY: Display description on popup in kanban-view.
+- Reports: In all reports set header and footer heights parameters according to print settings.
 
 ## Bug Fixes
-- Check Duplicate : make case-insensitive query
+- Check duplicate: make case-insensitive query.
 - Sale Order: allocate a full sale order does not try to allocate already delivered lines.
-- Project : Fix computation of 'timeSpent' field on removal of validated timesheet.
-- ADDRESS : reduced space between addresses in partner-form
-- ConvertDemoDataFileServiceImpl : Use try-with-resources for "ZipOutputStream" and "FileInputStream"
-- Code Refactor for TemplateRuleService file
+- Project: Fix computation of time spent on removal of validated timesheet.
+- ADDRESS: reduced space between addresses in partner-form.
+- Code Refactor for TemplateRuleService file.
 - Fix NPE in bank order file upload.
+- Invoice Generation: allow to validate supplier invoice without address.
+- StockRule: Fix script error on deleting product.
+- Lead: fix issue when generating partner without required fields.
+- StockLocation: fix always dirty form view.
+- INVOICE LINE: fixed hidden budget panel in invoice line.
+- StockMove: In error message prevent showing multiple times the same product name.
 
 ## [5.1.12] - 2019-11-19
 ## Features
@@ -49,7 +60,6 @@
 - MOVE: displays if a move line is reconciled or lettered.
 - STOCK: email alert on stock rules should not block the process of validation of the stock move.
 - BankReconciliation: Fix query error when loading bank statement in bank reconciliation form.
-- ExcelToCSV : Use try-with-resources for "FileWriter"
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
@@ -1481,7 +1491,8 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...dev
+[Unreleased 5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...dev
+[5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
 [5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
 [5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
 [5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10

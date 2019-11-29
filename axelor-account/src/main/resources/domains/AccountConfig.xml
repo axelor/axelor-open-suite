@@ -298,6 +298,8 @@
 
 		<field name="invoiceAutomaticMail" on="UPDATE"/>
 		<field name="invoiceMessageTemplate" on="UPDATE"/>
+		
+		<field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
 	</track>
 
 	</entity>

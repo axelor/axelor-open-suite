@@ -590,6 +590,12 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <text-property name="displayName">display_name_account</text-property>
                     <text-property name="heading">display_name_account</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">display_cumulative_balance</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_cumulative_balance</text-property>
+                    <text-property name="heading">display_cumulative_balance</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -684,6 +690,11 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <structure>
                         <property name="position">16</property>
                         <property name="name">display_name_account</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">display_cumulative_balance</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -802,6 +813,13 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">display_cumulative_balance</property>
+                    <property name="nativeName">display_cumulative_balance</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Company.name as company_name, 
@@ -819,7 +837,8 @@ Currency.code as currency,
 AccountingReport.type_select as report_type,
 AccountingReport.display_code_account_column_on_printing as display_code_account,
 AccountingReport.display_move_line_sequence_on_printing as display_move_line_sequence,
-AccountingReport.display_name_account_column_on_printing as display_name_account
+AccountingReport.display_name_account_column_on_printing as display_name_account,
+AccountingReport.display_cumulative_balance
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1239,6 +1258,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">display_code_account</property>
                     <text-property name="displayName">display_code_account</text-property>
                     <expression name="expression" type="javascript">dataSetRow["display_code_account"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_cumulative_balance</property>
+                    <text-property name="displayName">display_cumulative_balance</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_cumulative_balance"]</expression>
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
@@ -1746,7 +1772,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                             <structure>
                                 <property name="name">balance</property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]-dataSetRow["credit"]</expression>
+                                <expression name="expression" type="javascript">if(row._outer["display_cumulative_balance"] == 1){
+	vars["PreviousBalance"]+(dataSetRow["debit"]-dataSetRow["credit"])
+}
+else{
+	dataSetRow["debit"]-dataSetRow["credit"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -2361,6 +2392,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </group>
                         <detail>
                             <row id="4067">
+                                <method name="onCreate"><![CDATA[vars["PreviousBalance"]=row["balance"]]]></method>
                                 <cell id="4144"/>
                                 <cell id="4068">
                                     <data id="4269">
@@ -2510,4 +2542,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="PreviousBalance">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

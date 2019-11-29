@@ -84,6 +84,8 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     return reportSetting
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam("Locale", locale)
+        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(formatPdf);
   }
 
