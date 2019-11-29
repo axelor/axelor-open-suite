@@ -1,5 +1,28 @@
 # Changelog
 
+## [5.1.13] - 2019-11-29
+## Improvements
+- DEBT RECOVERY: disable canNew for debt recovery.
+- STOCK MOVE: remove filter.
+- Stock Location: hide stock location valuation in stock location report if disabled in form view.
+- STOCK MOVE GRID: change column order.
+- OPPORTUNITY: Display description on popup in kanban-view.
+- Reports: In all reports set header and footer heights parameters according to print settings.
+
+## Bug Fixes
+- Check duplicate: make case-insensitive query.
+- Sale Order: allocate a full sale order does not try to allocate already delivered lines.
+- Project: Fix computation of time spent on removal of validated timesheet.
+- ADDRESS: reduced space between addresses in partner-form.
+- Code Refactor for TemplateRuleService file.
+- Fix NPE in bank order file upload.
+- Invoice Generation: allow to validate supplier invoice without address.
+- StockRule: Fix script error on deleting product.
+- Lead: fix issue when generating partner without required fields.
+- StockLocation: fix always dirty form view.
+- INVOICE LINE: fixed hidden budget panel in invoice line.
+- StockMove: In error message prevent showing multiple times the same product name.
+
 ## [5.1.12] - 2019-11-19
 ## Features
 - AVAILABILITY REQUEST: Addition of button on grid-view to view stock move lines.
@@ -1463,6 +1486,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
+[5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
 [5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
 [5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
 [5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
