@@ -230,6 +230,7 @@
 - STOCKMOVE : Update stock move form view
 - STOCKMOVE: display enlarged popup when showing projected stock.
 - MetaScheduler: Fix MetaScheduler form-view in axelor-base module
+- SaleOrderInvoiceService: unused method updateAndCheckInvoicedAmount removed
 
 ## Bug Fixes
 - TeamTask : Resolve NPE on save of new team task.

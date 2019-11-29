@@ -699,14 +699,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public void updateAndCheckInvoicedAmount(
-      SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
-      throws AxelorException {
-
-    update(saleOrder, currentInvoiceId, excludeCurrentInvoice, true);
-  }
-
-  @Override
   public void update(SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
       throws AxelorException {
 
