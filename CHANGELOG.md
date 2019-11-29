@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased 5.2.1]
+## Improvements
+## Bug Fixes
+
 ## [5.2.0] - 2019-11-29
 ## Features
 - Migration to Axelor Open Platform 5.2.
@@ -208,4 +212,5 @@
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[Unreleased 5.2.1]: https://github.com/axelor/axelor-business-suite/compare/v5.2.0...dev
 [5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
