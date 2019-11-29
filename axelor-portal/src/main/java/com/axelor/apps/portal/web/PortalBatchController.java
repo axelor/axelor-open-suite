@@ -21,7 +21,9 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.portal.db.PortalBatch;
 import com.axelor.apps.portal.db.repo.PortalBatchRepository;
 import com.axelor.apps.portal.service.batch.PortalBatchService;
+import com.axelor.apps.portal.translations.ITranslation;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,7 +38,7 @@ public class PortalBatchController {
     portalBatch = Beans.get(PortalBatchRepository.class).find(portalBatch.getId());
     Batch batch = portalBatchService.run(portalBatch);
     if (batch != null) {
-      response.setFlash(batch.getComments());
+      response.setFlash(I18n.get(ITranslation.SYNC_MESSAGE));
     }
     response.setReload(true);
   }

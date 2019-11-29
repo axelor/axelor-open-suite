@@ -18,14 +18,12 @@
 package com.axelor.apps.portal.service.batch;
 
 import com.axelor.apps.base.db.AppPortal;
-import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AppPortalRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.portal.db.DynamicFieldSync;
 import com.axelor.apps.portal.db.OpenSuiteGooveeSync;
-import com.axelor.apps.portal.db.PortalBatch;
 import com.axelor.apps.portal.db.ValueMapping;
 import com.axelor.apps.portal.db.repo.DynamicFieldSyncRepository;
 import com.axelor.apps.portal.db.repo.OpenSuiteGooveeSyncRepository;
@@ -47,13 +45,11 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -96,7 +92,6 @@ public class BatchSync extends AbstractBatch {
   List<String> errorList = null;
   Map<String, List<String>> errorMapOsToG = null;
   Map<String, List<String>> errorMapGToOs = null;
-  @Inject private MetaFiles metaFiles;
 
   @Override
   protected void process() {
@@ -177,29 +172,21 @@ public class BatchSync extends AbstractBatch {
 
   @Transactional
   public void setLog(StringBuffer osToGooveeLog, StringBuffer gooveeToOsLog) {
-    PortalBatch portalBatch = batch.getPortalBatch();
-    List<Batch> batchList = portalBatch.getBatchList();
     if (!StringUtils.isEmpty(gooveeToOsLog.toString())) {
       osToGooveeLog.append(
           String.format("%n%n%nGoovee To Opensuite Sync : %n%s", gooveeToOsLog.toString()));
     }
-    for (Batch batch : batchList) {
-      if (!StringUtils.isEmpty(osToGooveeLog.toString())) {
-        batch.setSyncLog(
-            String.format("%n%nOpensuite To Goovee Sync :%n%s", osToGooveeLog.toString()).trim());
-      } else {
-        batch.setSyncLog(null);
-      }
+    if (!StringUtils.isEmpty(osToGooveeLog.toString())) {
+      batch.setComments(
+          String.format("%n%nOpensuite To Goovee Sync :%n%s", osToGooveeLog.toString()).trim());
+    }
+
+    if (errorMapOsToG.isEmpty() && errorMapGToOs.isEmpty()) {
+      return;
     }
     HSSFWorkbook workBook = new HSSFWorkbook();
     HSSFSheet osToGooveSheet = workBook.createSheet("OS to Goovee");
     HSSFSheet gooveeToOsSheet = workBook.createSheet("Goovee to OS");
-    HSSFRow rowHeadOsToG = osToGooveSheet.createRow((short) 0);
-    rowHeadOsToG.createCell(0).setCellValue("Model");
-    rowHeadOsToG.createCell(1).setCellValue("Error");
-    HSSFRow rowHeadGToOs = gooveeToOsSheet.createRow((short) 0);
-    rowHeadGToOs.createCell(0).setCellValue("Model");
-    rowHeadGToOs.createCell(1).setCellValue("Error");
     if (!errorMapOsToG.isEmpty()) {
       getRow(osToGooveSheet, errorMapOsToG);
     }
@@ -207,17 +194,16 @@ public class BatchSync extends AbstractBatch {
       getRow(gooveeToOsSheet, errorMapGToOs);
     }
     try {
-      Path path = MetaFiles.createTempFile("BatchError", ".xlsx");
-      File file = path.toFile();
-      FileOutputStream fout = new FileOutputStream(file);
-      workBook.write(fout);
-      fout.close();
-      MetaFile errorLogFile = metaFiles.upload(file);
-      for (Batch batch : batchList) {
+      if (workBook.getNumberOfSheets() > 0) {
+        File file = MetaFiles.createTempFile("BatchError", ".xlsx").toFile();
+        FileOutputStream fout = new FileOutputStream(file);
+        workBook.write(fout);
+        fout.close();
+        MetaFile errorLogFile = Beans.get(MetaFiles.class).upload(file);
         batch.setMetaFile(errorLogFile);
       }
-    } catch (IOException e1) {
-      e1.printStackTrace();
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 
@@ -354,7 +340,10 @@ public class BatchSync extends AbstractBatch {
       return;
     }
     setGooveeId(jsonObject, mapper, obj);
-    saveObject(obj);
+    Boolean isSaved = saveObject(obj, mapper);
+    if (!isSaved) {
+      return;
+    }
     if (isExist) {
       update++;
     } else {
@@ -404,10 +393,14 @@ public class BatchSync extends AbstractBatch {
   }
 
   @Transactional
-  public void saveObject(AuditableModel obj) {
+  public Boolean saveObject(AuditableModel obj, Mapper mapper) {
     try {
-      JPA.save(obj);
+      @SuppressWarnings("unchecked")
+      JpaRepository<AuditableModel> repo =
+          JpaRepository.of((Class<AuditableModel>) mapper.getBeanClass());
+      repo.save(obj);
       incrementDone();
+      return true;
     } catch (Exception e) {
       if (JPA.em().getTransaction().isActive()) {
         JPA.em().getTransaction().rollback();
@@ -418,6 +411,7 @@ public class BatchSync extends AbstractBatch {
       }
       incrementAnomaly();
       TraceBackService.trace(e, obj.getClass().getName(), batch.getId());
+      return false;
     }
   }
 
@@ -661,9 +655,10 @@ public class BatchSync extends AbstractBatch {
       Mapper mapper,
       JpaRepository<AuditableModel> repo,
       LocalDateTime lastSyncDateTime) {
-    try {
-      Integer total = 0, skip = 0;
-      do {
+
+    Integer total = 0, skip = 0;
+    do {
+      try {
         skipQuery = new BasicNameValuePair("$skip", skip.toString());
         queryParams.set(1, skipQuery);
         JSONObject jsonObject = CommonLibraryService.executeHTTPGet(url, headers, queryParams);
@@ -676,10 +671,10 @@ public class BatchSync extends AbstractBatch {
           total = jsonObject.getInt("total");
           skip = skip + dataList.size();
         }
-      } while (skip < total);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-    }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+    } while (skip < total);
   }
 
   private void importObject(
@@ -748,7 +743,10 @@ public class BatchSync extends AbstractBatch {
           getFieldValueFromJsonObj(dynamicFieldSync, mapper, dataObj, obj, property);
       property.set(obj, propertyValue);
     }
-    saveObject(obj);
+    Boolean isSaved = saveObject(obj, mapper);
+    if (!isSaved) {
+      return;
+    }
     if (isExist) {
       update++;
     } else {
@@ -834,6 +832,9 @@ public class BatchSync extends AbstractBatch {
   }
 
   private void getRow(HSSFSheet sheet, Map<String, List<String>> mapList) {
+    HSSFRow rowHead = sheet.createRow((short) 0);
+    rowHead.createCell(0).setCellValue("Model");
+    rowHead.createCell(1).setCellValue("Error");
     int i = 1;
     for (Map.Entry<String, List<String>> line1 : mapList.entrySet()) {
       HSSFRow row = sheet.createRow((short) i);

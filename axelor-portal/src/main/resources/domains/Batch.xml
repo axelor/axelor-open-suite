@@ -7,7 +7,6 @@
 
 	<entity name="Batch" lang="java" sequential="true">
 
-		<string name="syncLog" title="Log" large="true"/>
 		<many-to-one name="portalBatch" ref="com.axelor.apps.portal.db.PortalBatch" />
 
 	</entity>
