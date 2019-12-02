@@ -105,8 +105,9 @@
 			</panel>
 		</panel>
 		<panel name="resourcesPanel" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
-			<field name="workCenter" readonly="true" grid-view="work-center-grid" form-view="work-center-form"/>
-			<field name="machineWorkCenter" domain="self.machineType = (SELECT machineType FROM Machine WHERE id = :machineWorkCenter)" hidden="true" readonlyIf="statusSelect &gt; 3" onChange="save,action-operation-order-method-machine-change" grid-view="machine-grid" form-view="machine-form"/>
+			<field name="workCenter" readonly="true" grid-view="work-center-grid" form-view="work-center-form" colSpan="4"/>
+			<field name="machineWorkCenter" domain="self.machineType = (SELECT machineType FROM Machine WHERE id = :machineWorkCenter)" hidden="true" readonlyIf="statusSelect &gt; 3" onChange="save,action-operation-order-method-machine-change" grid-view="machine-grid" form-view="machine-form" colSpan="4"/>
+			<field name="machineTool" domain="self.machine = :machineWorkCenter" form-view="machine-tool-form" grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 			<panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
 		</panel>
 

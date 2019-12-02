@@ -13,6 +13,7 @@
 			</panel>
 			<panel name="configuratorPanel" title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
+				<field name="enableToolManagement"/>
 			</panel>
 			<panel name="billOfMaterialPanel" title="Bill of materials">
 				<field name="manageBillOfMaterialVersion" widget="boolean-switch"/>

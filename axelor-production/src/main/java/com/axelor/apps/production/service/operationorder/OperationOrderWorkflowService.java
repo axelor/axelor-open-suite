@@ -18,11 +18,13 @@
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.production.db.Machine;
+import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.MachineToolRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -55,17 +57,20 @@ public class OperationOrderWorkflowService {
   protected OperationOrderRepository operationOrderRepo;
   protected OperationOrderDurationRepository operationOrderDurationRepo;
   protected AppProductionService appProductionService;
+  protected MachineToolRepository machineToolRepo;
 
   @Inject
   public OperationOrderWorkflowService(
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepo,
       OperationOrderDurationRepository operationOrderDurationRepo,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      MachineToolRepository machineToolRepo) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
     this.appProductionService = appProductionService;
+    this.machineToolRepo = machineToolRepo;
   }
 
   /**
@@ -267,6 +272,7 @@ public class OperationOrderWorkflowService {
 
     operationOrderStockMoveService.finish(operationOrder);
     operationOrderRepo.save(operationOrder);
+    calculateHoursOfUse(operationOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -488,5 +494,25 @@ public class OperationOrderWorkflowService {
     duration += nbCycles.multiply(durationPerCycle).longValue();
 
     return duration;
+  }
+
+  private void calculateHoursOfUse(OperationOrder operationOrder) {
+
+    if (operationOrder.getMachineTool() == null) {
+      return;
+    }
+
+    Double hoursOfUse =
+        operationOrderRepo
+            .all()
+            .filter("self.machineTool.id = :id AND self.statusSelect = 6")
+            .bind("id", operationOrder.getMachineTool().getId())
+            .fetchStream()
+            .mapToDouble(list -> list.getRealDuration())
+            .sum();
+
+    MachineTool machineTool = machineToolRepo.find(operationOrder.getMachineTool().getId());
+    machineTool.setHoursOfUse(Double.valueOf(hoursOfUse).longValue());
+    machineToolRepo.save(machineTool);
   }
 }

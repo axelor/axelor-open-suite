@@ -20,6 +20,8 @@ package com.axelor.apps.production.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.production.db.repo.BillOfMaterialManagementRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.db.repo.MachineRepository;
+import com.axelor.apps.production.db.repo.MachineToolManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
@@ -141,5 +143,6 @@ public class ProductionModule extends AxelorModule {
     bind(MrpForecastProductionService.class).to(MrpForecastProductionServiceImpl.class);
     bind(MpsWeeklyScheduleService.class).to(MpsWeeklyScheduleServiceImpl.class);
     bind(MpsChargeService.class).to(MpsChargeServiceImpl.class);
+    bind(MachineRepository.class).to(MachineToolManagementRepository.class);
   }
 }

@@ -16,7 +16,8 @@
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
 	    <field name="workCenterTypeSelect" required="true"/>
 		<field name="machine" requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
-	  </panel>  
+		<field name="machineTool" domain="self.machine = :machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-tool-form" grid-view="machine-tool-grid" if="__config__.app.getApp('production').getEnableToolManagement()"/>
+	  </panel>
 	  <panel-tabs name="mainPanelTab">
 	    <panel name="defaultMachineSettingsPanel" title="Default Machine settings" readonlyIf="!machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3">
 	        <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">

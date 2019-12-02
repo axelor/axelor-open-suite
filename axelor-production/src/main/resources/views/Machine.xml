@@ -17,26 +17,41 @@
 				<field name="picture" showTitle="false" widget="Image" colSpan="12"/>
 				<field name="$fullName" showTitle="false" css="label-bold bold large" colSpan="12">
 					<editor x-show-titles="false" x-viewer="true">
-						<field name="serialNumber" colSpan="3" placeholder="Serial Number"/>
-						<field name="name" colSpan="9" placeholder="Name"/>
+						<field name="serialNumber" colSpan="6" placeholder="Serial Number"/>
+						<field name="name" colSpan="6" placeholder="Name"/>
 					</editor>
 				</field>
 			</panel>
 			<panel name="actionPanel" colSpan="3">
 				<button name="$operatingDurationBtn" title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button"/>
 			</panel>
+		</panel>
+		<panel name="machineInformationPanel" title="Machine Information">
 			<field name="brand"/>
 			<field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form"/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+			<field name="manufReference"/>
+			<field name="buyingPrice"/>
+			<field name="buyingCurrency"/>
+			<field name="maintenanceCost"/>
+			<field name="buyingDate"/>
+			<field name="manufDate"/>
+			<field name="disposalDate"/>
+			<field name="numberOfStations"/>
 			<field name="machineType" grid-view="machine-type-grid" form-view="machine-type-form"/>
-			<field name="startingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
-			<field name="setupDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
-			<field name="endingDuration" colSpan="4" widget="duration" x-big="true" x-seconds="true"/>
 			<field name="weeklyPlanning" canNew="true"/>
-			<field name="description" colSpan="12"/>
+			<field name="startingDuration" widget="duration" x-big="true" x-seconds="true"/>
+			<field name="setupDuration" widget="duration" x-big="true" x-seconds="true"/>
+			<field name="endingDuration" widget="duration" x-big="true" x-seconds="true"/>
+		</panel>
+		<panel-related field="machineToolLineList" name="machineToolLineListPanel" if="__config__.app.getApp('production').getEnableToolManagement()" showIf="code || name" form-view="machine-tool-form" grid-view="machine-tool-machine-grid"/>
+		<panel name="descriptionPanel" title="Description">
+			<field name="description" colSpan="12" showTitle="false"/>
 		</panel>
 	</form>
 
 	<action-record name="action-record-machine-set-operating-duration" model="com.axelor.apps.production.db.Machine">
 		<field name="$operatingDurationBtn" if="operatingDuration != null" expr="eval: String.format('%d:%02d:%02d', (int)(operatingDuration / 3600), (int)((operatingDuration % 3600) / 60), (int)((operatingDuration % 60)))"/>
 	</action-record>
+
 </object-views>
