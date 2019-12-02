@@ -267,6 +267,16 @@
 		<view type="form" name="machine-form" />
 	</action-view>
 	
+	<menuitem name="manufacturing-conf-machine-tool" parent="manufacturing-conf"
+		title="Tool" action="manufacturing.conf.machine.tool" if="__config__.app.getApp('production').getEnableToolManagement()"/>
+
+	<action-view name="manufacturing.conf.machine.tool" title="Tool"
+		model="com.axelor.apps.production.db.MachineTool" >
+		<view type="grid" name="machine-tool-grid"/>
+		<view type="form" name="machine-tool-form"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+
 	<menuitem name="manufacturing-conf-machine-type" parent="manufacturing-conf"
 		title="Machine Types" action="manufacturing.conf.machine.type" />
 

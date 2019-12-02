@@ -7,6 +7,7 @@
 - MANUFACTURING : New object S&OP (PIC)
 - Partner : Added a new partner type 'Subcontractor' and added field related to outsourcing in manufacturing
 - PRODUCTION : Creation of a new object MPS Charge
+- MACHINE : Tool management
 
 
 ## Improvements

@@ -21,6 +21,7 @@
 			<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
 			<field name="outsourcing"/>
 			<field name="optional"/>
+			<field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 			<field name="stockLocation"/>
 			<panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
 				<field name="minCapacityPerCycle" colSpan="3"/>
@@ -71,5 +72,9 @@
 		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
     </action-attrs>
     
+   <action-attrs name="action-prod-process-line-attrs-machine-tool-domain">
+		<attribute name="domain" expr="eval: &quot; self.machine.id in (SELECT machine.id FROM WorkCenter where id = ${workCenter?.id}) &quot;" for="machineTool"/>
+   </action-attrs>
+
 </object-views>
 

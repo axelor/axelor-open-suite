@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.production.db.Machine;
+import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -48,6 +49,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             manufOrder.getIsToInvoice(),
             prodProcessLine.getWorkCenter(),
             prodProcessLine.getWorkCenter().getMachine(),
+            prodProcessLine.getMachineTool(),
             prodProcessLine);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -60,6 +62,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       boolean isToInvoice,
       WorkCenter workCenter,
       Machine machineWorkCenter,
+      MachineTool machineTool,
       ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -77,7 +80,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             workCenter,
             machineWorkCenter,
             OperationOrderRepository.STATUS_DRAFT,
-            prodProcessLine);
+            prodProcessLine,
+            machineTool);
 
     operationOrder.setIsToInvoice(isToInvoice);
 

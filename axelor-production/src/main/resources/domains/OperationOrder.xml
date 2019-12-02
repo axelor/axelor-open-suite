@@ -54,6 +54,8 @@
     
     <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
 
+    <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools" initParam="true"/>
+
 	<extra-code><![CDATA[
 		// STATUS SELECT
         public static final int STATUS_DRAFT = 1;
