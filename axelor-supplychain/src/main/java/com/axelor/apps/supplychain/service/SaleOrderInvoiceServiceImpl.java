@@ -806,11 +806,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       boolean excludeCurrentInvoice,
       int invoiceOperationTypeSelect) {
 
-    String query = "SELECT SUM(self.companyExTaxTotal)" + " FROM InvoiceLine as self";
-    query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
+    String query = "SELECT SUM(self.companyExTaxTotal) FROM InvoiceLine self";
+    query += " LEFT JOIN self.saleOrderLine LEFT JOIN self.invoice";
+    query += " WHERE self.invoice.operationTypeSelect = :invoiceOperationTypeSelect AND (";
     query +=
-        " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
-            + " AND self.invoice.statusSelect = :statusVentilated";
+        "(self.saleOrderLine.saleOrder.id = :saleOrderId AND self.invoice.statusSelect = :statusVentilated)";
 
     // exclude invoices that are advance payments
     boolean invoiceIsNotAdvancePayment =
@@ -823,9 +823,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         query += " AND self.invoice.id <> :invoiceId";
       } else {
         query +=
-            " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect) ";
+            " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect)";
       }
     }
+    query += ")";
 
     javax.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
 

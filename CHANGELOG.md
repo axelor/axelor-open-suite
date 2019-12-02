@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.1]
 ## Improvements
 ## Bug Fixes
+- SaleOrder: fix ventilated amount computation.
 
 ## [5.2.0] - 2019-11-29
 ## Features
