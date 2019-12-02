@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="timesheet-report-grid" title="Timesheet report" model="com.axelor.apps.hr.db.TimesheetReport">
+		<field name="fromDate" />
+		<field name="toDate" />
+		<field name="typeSelect" />
+	</grid>
+
+	<form name="timesheet-report-form" title="Timesheet report" model="com.axelor.apps.hr.db.TimesheetReport" cols="12" width="large" onNew="action-human-resource-record-timesheet-report-onnew">
+		<panel name="mainPanel">
+			<field name="typeSelect" />
+			<spacer />
+			<field name="fromDate" onChange="action-human-resource-group-date"/>
+			<field name="toDate" onChange="action-human-resource-group-date"/>
+			<field name="userSet" form-view="user-form" grid-view="user-grid" colSpan="12" canNew="false" canEdit="false" 
+				help="Please, provide weeklyPlanning , publicHolidaysPlanning and mainContract information for selected employees"/>
+			<field name="reminderUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" readonly="true" showIf="typeSelect == 1"/>
+		</panel>
+		<panel name="buttonPanel" sidebar="true">
+			<button name="setMissingUsersBtn" title="Set users to be reminded" onClick="save,action-human-resource-method-set-user-to-be-reminded,save" showIf="typeSelect == 1"/>
+			<button name="sendReminderBtn" title="Send reminder" onClick="save,action-human-resource-method-send-timesheet-reminder" showIf="typeSelect == 1"/>
+			<button name="printBtn" title="Print" onClick="save,action-human-resource-method-print-timesheet-report" />
+		</panel>
+	</form>
+
+	<action-method name="action-human-resource-method-print-timesheet-report">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetReportController" method="printEmployeeTimesheetReport"/>
+	</action-method>
+
+	<action-method name="action-human-resource-method-set-user-to-be-reminded">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetReportController" method="fillTimesheetReportReminderUsers"/>
+	</action-method>
+
+	<action-method name="action-human-resource-method-send-timesheet-reminder">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetReportController" method="sendTimesheetReminder"/>
+	</action-method>
+
+	<action-condition name="action-human-resource-condition-valid-date">
+		<check error="Date difference should be maximam 31 days." field="fromDate,toDate" if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate.until(toDate).getMonths() &gt; 0"/>
+	</action-condition>
+
+	<action-condition name="action-human-resource-condition-valid-period">
+		<check error="Invalid date periods" field="fromDate,toDate" if="fromDate != null &amp;&amp; toDate != null &amp;&amp; fromDate.until(toDate).getDays() &lt; 0"/>
+	</action-condition>
+
+	<action-group name="action-human-resource-group-date">
+		<action name="action-human-resource-condition-valid-date"/>
+		<action name="action-human-resource-condition-valid-period"/>
+	</action-group>
+
+	<action-record name="action-human-resource-record-timesheet-report-onnew" model="com.axelor.apps.hr.db.TimesheetReport">
+		<field name="fromDate" expr="eval: __config__.app.getTodayDate().withDayOfMonth(1)" />
+		<field name="toDate" expr="eval:__config__.app.getTodayDate()" />
+		<field name="typeSelect" expr="eval: 1"/>
+	</action-record>
+
+</object-views>

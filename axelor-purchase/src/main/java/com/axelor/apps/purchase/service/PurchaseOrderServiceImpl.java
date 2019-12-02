@@ -273,6 +273,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam("Locale", language)
+        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .toAttach(purchaseOrder)
         .generate()
         .getFileLink();

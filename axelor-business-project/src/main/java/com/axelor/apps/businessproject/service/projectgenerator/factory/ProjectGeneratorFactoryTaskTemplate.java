@@ -158,10 +158,9 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
     childTask.setUnitPrice(product != null ? product.getSalePrice() : null);
     childTask.setUnit(product != null ? product.getUnit() : null);
+    childTask.setSaleOrderLine(orderLine);
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
-      childTask.setTeamTaskInvoicing(true);
-      childTask.setSaleOrderLine(orderLine);
       childTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
     }
   }

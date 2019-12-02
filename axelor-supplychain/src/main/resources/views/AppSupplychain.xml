@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="app-supplychain-config-form" title="App Supplychain" model="com.axelor.apps.base.db.AppSupplychain" canDelete="false" canNew="false" width="large">
 		<panel name="saleOrderPanel" title="Sale order">
 			<field name="custStockMoveMgtOnSO" readonlyIf="customerStockMoveGenerationAuto || terminateSaleOrderOnDelivery" widget="boolean-switch" colSpan="4"/>
 			<field name="customerStockMoveGenerationAuto" readonlyIf="isSaleOrderWithoutOutgoingStockMove" showIf="custStockMoveMgtOnSO"  widget="boolean-switch" colSpan="4"/>
 			<field name="terminateSaleOrderOnDelivery"  showIf="custStockMoveMgtOnSO" widget="boolean-switch" colSpan="4"/>
+			<field name="completeSaleOrderOnInvoicing" widget="boolean-switch" colSpan="4" help="When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'"/>
 			<field name="cancelReasonOnChangingSaleOrder" domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'" if="__config__.app.getApp('sale').allowPendingOrderModification" colSpan="4"/>
 			<field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
 			<field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>

@@ -226,11 +226,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     move.addMoveLineListItem(customerMoveLine);
 
-    Beans.get(MoveRepository.class).save(move);
-
-    customerMoveLine =
-        moveLineService.generateTaxPaymentMoveLineList(invoicePayment, customerMoveLine);
-
     moveService.getMoveValidateService().validate(move);
 
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {

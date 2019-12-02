@@ -38,8 +38,8 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -130,29 +130,35 @@ public class MoveController {
     } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
   }
 
-  // change move status to Archived=true
   public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveRepository moveRepository = Beans.get(MoveRepository.class);
+      move = moveRepository.find(move.getId());
 
-    Move move = request.getContext().asType(Move.class);
-    MoveRepository moveRepository = Beans.get(MoveRepository.class);
-    move = moveRepository.find(move.getId());
+      MoveService moveService = Beans.get(MoveService.class);
 
-    if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-      moveRepository.remove(move);
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-      response.setView(
-          ActionView.define("Moves")
-              .model(Move.class.getName())
-              .add("grid", "move-grid")
-              .add("form", "move-grid")
-              .map());
-      response.setCanClose(true);
-    } else {
-      try {
-        moveRepository.remove(move);
-      } catch (Exception e) {
-        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+        moveService.getMoveRemoveService().deleteMove(move);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
+      } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+        moveService.getMoveRemoveService().archiveDaybookMove(move);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+      } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
+        moveService.getMoveRemoveService().archiveMove(move);
+        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
       }
+      if (!move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+        response.setView(
+            ActionView.define("Moves")
+                .model(Move.class.getName())
+                .add("grid", "move-grid")
+                .add("form", "move-form")
+                .map());
+        response.setCanClose(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -165,16 +171,23 @@ public class MoveController {
           Beans.get(MoveRepository.class)
               .all()
               .filter(
-                  "self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)",
+                  "self.id in ?1 AND self.statusSelect in (?2,?3,?4) AND (self.archived = false or self.archived = null)",
                   moveIds,
-                  MoveRepository.STATUS_NEW)
+                  MoveRepository.STATUS_NEW,
+                  MoveRepository.STATUS_DAYBOOK,
+                  MoveRepository.STATUS_CANCELED)
               .fetch();
       if (!moveList.isEmpty()) {
-        Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-        response.setReload(true);
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
-    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
+        boolean error =
+            Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
+        if (error) {
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK));
+        } else {
+          response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+          response.setReload(true);
+        }
+      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
   }
 
   public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -245,20 +258,29 @@ public class MoveController {
 
   public void filterPartner(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
-    String domain = "self.isContact = false AND :company member of self.companySet";
-    if (move.getJournal() != null
-        && !Strings.isNullOrEmpty(move.getJournal().getCompatiblePartnerTypeSelect())) {
-      domain += " AND (";
-      String[] partnerSet = move.getJournal().getCompatiblePartnerTypeSelect().split(", ");
-      String lastPartner = partnerSet[partnerSet.length - 1];
-      for (String partner : partnerSet) {
-        domain += "self." + partner + " = true";
-        if (!partner.equals(lastPartner)) {
-          domain += " OR ";
+    if (move != null) {
+      String domain = Beans.get(MoveService.class).filterPartner(move);
+      response.setAttr("partner", "domain", domain);
+    }
+  }
+
+  public void isHiddenMoveLineListViewer(ActionRequest request, ActionResponse response) {
+
+    Move move = request.getContext().asType(Move.class);
+    boolean isHidden = true;
+    try {
+      if (move.getMoveLineList() != null
+          && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
+              || moveLine.getReconcileGroup() != null) {
+            isHidden = false;
+          }
         }
       }
-      domain += ")";
+      response.setAttr("$viewerTags", "hidden", isHidden);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("partner", "domain", domain);
   }
 }

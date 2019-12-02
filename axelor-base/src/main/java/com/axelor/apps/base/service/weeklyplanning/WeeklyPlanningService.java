@@ -21,10 +21,19 @@ import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface WeeklyPlanningService {
+
+  /**
+   * Gets the first day of the week, according to the weekly planning of the active company of the
+   * user. If no day can be found, default value is MONDAY.
+   *
+   * @return
+   */
+  DayOfWeek getFirstDayOfWeek();
 
   public WeeklyPlanning initPlanning(WeeklyPlanning planning);
 

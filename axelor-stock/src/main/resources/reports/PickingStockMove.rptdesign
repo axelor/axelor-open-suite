@@ -24,6 +24,12 @@
         </structure>
     </list-property>
     <property name="units">cm</property>
+    <method name="beforeFactory"><![CDATA[if(params["HeaderHeight"].value != 0 ) {
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("headerHeight",params["HeaderHeight"].value+"cm");
+}
+if(params["FooterHeight"].value != 0) {
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("footerHeight",params["FooterHeight"].value+"cm");
+}]]></method>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -125,6 +131,28 @@
             <simple-property-list name="defaultValue">
                 <value type="constant">org.postgresql.Driver</value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="HeaderHeight" id="5372">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="FooterHeight" id="5373">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -294,6 +322,10 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">picking_comment</property>
+                    <property name="analysis">dimension</property>
+                </structure>
+                <structure>
                     <property name="columnName">from_address_str</property>
                     <property name="alias">from_address_str</property>
                     <property name="analysis">dimension</property>
@@ -411,6 +443,12 @@ else row["last_modified_by"]</expression>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">origin</text-property>
                     <text-property name="heading">origin</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">picking_order_comments</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">picking_order_comments</text-property>
+                    <text-property name="heading">picking_order_comments</text-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -610,6 +648,11 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">37</property>
+                        <property name="name">picking_order_comments</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">38</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -833,6 +876,12 @@ else row["last_modified_by"]</expression>
                     <property name="nativeName">origin</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">37</property>
+                    <property name="name">picking_order_comments</property>
+                    <property name="nativeName">picking_order_comments</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 StockMove.id,
@@ -874,7 +923,8 @@ CASE
 	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.sale_order_seq 
 	WHEN StockMove.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.purchase_order_seq
 END
-as "origin"
+as "origin",
+StockMove.picking_order_comments
 from stock_stock_move as StockMove
 left outer join base_company as Company on (StockMove.company = Company.id)
 left outer join stock_stock_config as StockConfig on (StockConfig.company = Company.id) 
@@ -1699,6 +1749,12 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="name">picking_comment</property>
                     <text-property name="displayName">picking_comment</text-property>
                     <expression name="expression" type="javascript">dataSetRow["picking_comment"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">picking_order_comments</property>
+                    <text-property name="displayName">picking_order_comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["picking_order_comments"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -4790,7 +4846,7 @@ rowNumD=0;]]></method>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["picking_comment"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["picking_comment"] == null &amp;&amp; row._outer["picking_order_comments"] == null</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -4822,11 +4878,17 @@ rowNumD=0;]]></method>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["picking_comment"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["picking_comment"] == null &amp;&amp; row["picking_order_comments"] == null</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["picking_comment"] != null) row["picking_comment"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
+if(row["picking_order_comments"] != null){ 
+row["picking_order_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+}else {
+row["picking_comment"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>"
+}</VALUE-OF>
+]]></text-property>
                     </text>
                 </cell>
             </row>

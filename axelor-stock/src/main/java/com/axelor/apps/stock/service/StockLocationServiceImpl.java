@@ -277,7 +277,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     query.setParameter("id", stockLocation.getId());
 
     List<?> result = query.getResultList();
-    return result.get(0) == null
+    return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
         : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
   }
@@ -293,5 +293,16 @@ public class StockLocationServiceImpl implements StockLocationService {
           stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList());
     }
     return stockLocationListId;
+  }
+
+  @Override
+  public boolean isConfigMissing(StockLocation stockLocation, int printType) {
+
+    StockConfig stockConfig = stockLocation.getCompany().getStockConfig();
+    return printType == StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA
+        && (stockConfig == null
+            || (!stockConfig.getIsDisplayAccountingValueInPrinting()
+                && !stockConfig.getIsDisplayAgPriceInPrinting()
+                && !stockConfig.getIsDisplaySaleValueInPrinting()));
   }
 }

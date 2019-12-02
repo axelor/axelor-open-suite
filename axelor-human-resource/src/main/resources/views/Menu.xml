@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
 	     icon-background="#84429f"/>
@@ -333,6 +333,22 @@
 	<action-method name="time.sheet.timer">
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>
 	</action-method>
+
+	<menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root" action="action.timesheet.view.timesheet.report"
+		if="__config__.app.isApp('timesheet')" order="6"/>
+
+	<action-view name="action.timesheet.view.timesheet.report" model="com.axelor.apps.hr.db.TimesheetReport" title="Timesheet report">
+		<view name="timesheet-report-grid" type="grid" />
+		<view name="timesheet-report-form" type="form" />
+	</action-view>
+
+	<menuitem title="Timesheet reminder" name="time-sheet-reminder" parent="timesheet-root" action="action.timesheet.view.timesheet.reminder"
+		if="__config__.app.isApp('timesheet')" order="6"/>
+
+	<action-view name="action.timesheet.view.timesheet.reminder" model="com.axelor.apps.hr.db.TimesheetReminder" title="Timesheet reminder">
+		<view name="timesheet-reminder-grid" type="grid" />
+		<view name="timesheet-reminder-form" type="form" />
+	</action-view>
 
 	<!-- Extra hours app -->
 	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f" order="20"/>

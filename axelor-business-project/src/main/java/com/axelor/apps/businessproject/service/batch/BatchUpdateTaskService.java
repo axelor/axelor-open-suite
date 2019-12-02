@@ -25,6 +25,8 @@ import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -70,7 +72,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
       TraceBackService.trace(e);
     }
 
-    List<Map<String, Object>> updatedTaskList = new ArrayList<Map<String, Object>>();
+    List<Object> updatedTaskList = new ArrayList<Object>();
 
     String filter =
         !Strings.isNullOrEmpty(appBusinessProject.getExculdeTaskInvoicing())
@@ -79,37 +81,52 @@ public class BatchUpdateTaskService extends AbstractBatch {
                 + ")"
             : "self.id NOT IN (0)";
 
-    List<TeamTask> taskList =
+    Query<TeamTask> query =
         teamTaskRepo
             .all()
             .filter(
-                filter + " AND self.project.isInvoiceable = ?1 AND self.toInvoice = ?2",
-                true,
-                false)
-            .fetch();
+                filter
+                    + " AND self.project.toInvoice = :invoiceable "
+                    + "AND self.toInvoice = :toInvoice "
+                    + "AND self.isTaskRefused = :refused")
+            .bind("invoiceable", true)
+            .bind("toInvoice", false)
+            .bind("refused", false)
+            .order("id");
 
-    for (TeamTask teamTask : taskList) {
-      try {
-        teamTask = teamTaskBusinessProjectService.updateTask(teamTask, appBusinessProject);
+    int offset = 0;
+    List<TeamTask> taskList;
 
-        if (teamTask.getToInvoice()) {
-          Map<String, Object> map = new HashMap<String, Object>();
-          map.put("id", teamTask.getId());
-          updatedTaskList.add(map);
+    while (!(taskList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      findBatch();
+      offset += taskList.size();
+      for (TeamTask teamTask : taskList) {
+        try {
+          teamTask = teamTaskBusinessProjectService.updateTask(teamTask, appBusinessProject);
+
+          if (teamTask.getToInvoice()) {
+            offset--;
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", teamTask.getId());
+            updatedTaskList.add(map);
+          }
+
+          this.updateTimesheetLines(teamTask, contextValues);
+
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), teamTask.getId()),
+                  e),
+              ExceptionOriginRepository.INVOICE_ORIGIN,
+              batch.getId());
         }
-
-        this.updateTimesheetLines(teamTask, contextValues);
-
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(
-            new Exception(
-                String.format(I18n.get(IExceptionMessage.BATCH_TASK_UPDATION_1), teamTask.getId()),
-                e),
-            ExceptionOriginRepository.INVOICE_ORIGIN,
-            batch.getId());
       }
+      JPA.clear();
     }
+    findBatch();
     ProjectInvoicingAssistantBatchService.updateJsonObject(
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
@@ -120,12 +137,15 @@ public class BatchUpdateTaskService extends AbstractBatch {
         || teamTask.getInvoicingType() != TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
       return;
     }
-    List<Map<String, Object>> updatedTimesheetLineList = new ArrayList<Map<String, Object>>();
+    List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 
     List<TimesheetLine> timesheetLineList =
         timesheetLineRepo
             .all()
-            .filter("self.teamTask.id = ? AND self.toInvoice = ?2", teamTask.getId(), false)
+            .filter("self.teamTask.id = :taskId AND self.toInvoice = :toInvoice")
+            .bind("taskId", teamTask.getId())
+            .bind("toInvoice", false)
+            .order("id")
             .fetch();
 
     for (TimesheetLine timesheetLine : timesheetLineList) {

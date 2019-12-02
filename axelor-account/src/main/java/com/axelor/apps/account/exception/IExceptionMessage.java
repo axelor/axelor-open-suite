@@ -41,10 +41,20 @@ public interface IExceptionMessage {
   static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
-  static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/
-      "You can't remove this record, because the move %s has already been validated" /*)*/;
+  static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
+  static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
+  static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
-  static final String NO_MOVE_TO_ARCHIVE = /*$$(*/ "Please select 'Draft' moves" /*)*/;
+  static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
+      "Please select 'Draft' or 'Daybook' or 'Canceled' moves" /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
+      "Move(s) has been removed or archived successfully" /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
+      "Error in move deleting or archiving, please check the log" /*)*/;
+  static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move %s can not be archive because it is linked to another piece named %s." /*)*/;
+  static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move line %s can not be archive because it is linked to another piece named %s." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
@@ -159,18 +169,21 @@ public interface IExceptionMessage {
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
-  static final String MOVE_2 = /*$$(*/ "You must select a journal for the move" /*)*/;
-  static final String MOVE_3 = /*$$(*/ "You must select a company for the move" /*)*/;
-  static final String MOVE_4 = /*$$(*/ "You must select a period for the move" /*)*/;
+  static final String MOVE_2 = /*$$(*/ "You must select a journal for the move %s" /*)*/;
+  static final String MOVE_3 = /*$$(*/ "You must select a company for the move %s" /*)*/;
+  static final String MOVE_4 = /*$$(*/ "You must select a period for the move %s" /*)*/;
   static final String MOVE_5 = /*$$(*/
       "Journal %s does not have any account move sequence configured" /*)*/;
   static final String MOVE_6 = /*$$(*/ "Move account sens %s can't be determined" /*)*/;
   static final String MOVE_7 = /*$$(*/
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
-  static final String MOVE_8 = /*$$(*/ "A move cannot be empty" /*)*/;
-  static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
+  static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
+  static final String MOVE_9 = /*$$(*/
+      "Tax is mandatory for the account %s on the move line %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
-      "Analytic distribution template is mandatory for the account %s." /*)*/;
+      "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
+  static final String MOVE_11 = /*$$(*/
+      "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
@@ -207,6 +220,8 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a reconciliation sequence for the company %s" /*)*/;
   static final String RECONCILE_7 = /*$$(*/
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
+  static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
+      "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
 
   /** Reimbursement service and controller */
   static final String REIMBURSEMENT_1 = /*$$(*/

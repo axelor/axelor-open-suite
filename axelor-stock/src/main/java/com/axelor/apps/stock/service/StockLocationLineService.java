@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
@@ -228,4 +229,21 @@ public interface StockLocationLineService {
    */
   public String getRequestedReservedQtyForAProduct(
       Long productId, Long companyId, Long stockLocationId);
+
+  /**
+   * Update avgPrice in stock location line and save wap history in the line.
+   *
+   * @param stockLocationLine stock location line to updated.
+   * @param wap weighted average price which will update the field avgPrice.
+   */
+  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap);
+
+  /**
+   * Update avgPrice in stock location line and save wap history in the line.
+   *
+   * @param stockLocationLine stock location line to updated.
+   * @param wap weighted average price which will update the field avgPrice.
+   * @param stockMoveLine the move line responsible for the WAP change.
+   */
+  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine);
 }

@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <list-property name="userProperties">
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.width</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube - TimesheetLineDS.TimesheetLineDS.height</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.TimesheetLineDS.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">Data Cube.TimesheetLineDS.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+    </list-property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.x">216</property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.y">58</property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.width">150</property>
+    <property name="Data Cube - TimesheetLineDS.TimesheetLineDS.height">200</property>
+    <property name="Data Cube.TimesheetLineDS.x">135</property>
+    <property name="Data Cube.TimesheetLineDS.y">80</property>
+    <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[var width = params["Days"].value;
+if(width > 10){
+	reportContext.getDesignHandle().findMasterPage("TSMasterPage").setProperty("width", width+"in");
+	reportContext.getDesignHandle().findMasterPage("TSMasterPage").pageType="custom";
+}]]></method>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="layoutPreference">auto layout</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="TimesheetReportId" id="3265">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DBName" id="3946">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-test</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="3947">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="4030">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="4031">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="FromDate" id="5658">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ToDate" id="5659">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <script-data-source name="SrcDataSource" id="4748"/>
+    </data-sources>
+    <data-sets>
+        <script-data-set name="SrcTimesheetDS" id="4749">
+            <list-property name="resultSetHints">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">userName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">date</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">workedHour</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">workingHour</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">weekNumber</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">weeklyWorkHours</property>
+                    <property name="dataType">float</property>
+                </structure>
+            </list-property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">userName</property>
+                </structure>
+                <structure>
+                    <property name="columnName">date</property>
+                </structure>
+                <structure>
+                    <property name="columnName">workedHour</property>
+                </structure>
+                <structure>
+                    <property name="columnName">workingHour</property>
+                </structure>
+                <structure>
+                    <property name="columnName">weekNumber</property>
+                </structure>
+                <structure>
+                    <property name="columnName">weeklyWorkHours</property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">TimesheetReportId</property>
+                    <property name="dataType">string</property>
+                    <property name="position">1</property>
+                    <expression name="defaultValue" type="javascript">params["TimesheetReportId"].value</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">userName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">date</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">workedHour</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">workingHour</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">weekNumber</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">weeklyWorkHours</property>
+                        <property name="dataType">float</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">SrcDataSource</property>
+            <method name="open"><![CDATA[importPackage(Packages.com.axelor.apps.hr.service.timesheet);
+packageClass = new Packages.com.axelor.apps.hr.service.timesheet.TimesheetReportServiceImpl();
+timesheetList = packageClass.getTimesheetReportList(reportContext.getParameterValue("TimesheetReportId")).iterator();]]></method>
+            <method name="fetch"><![CDATA[if(timesheetList.hasNext()){
+node = timesheetList.next();
+	row["date"] = node.get("date").toString();
+	row["userName"] = node.get("userName").toString();
+	row["workedHour"] = node.get("workedHour");
+	row["workingHour"] = node.get("workingHour");
+	row["weekNumber"] = node.get("weekNumber");
+	row["weeklyWorkHours"] = node.get("weeklyWorkHours");
+	return true;
+}
+
+return false;]]></method>
+        </script-data-set>
+    </data-sets>
+    <cubes>
+        <tabular-cube name="Data Cube" id="5571">
+            <property name="dimensions">
+                <tabular-dimension name="Date" id="5572">
+                    <property name="defaultHierarchy">NewTabularHierarchy</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy" id="5573">
+                            <property name="levels">
+                                <tabular-level name="date" id="5574">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">date</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="user" id="5575">
+                    <property name="defaultHierarchy">NewTabularHierarchy1</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy1" id="5576">
+                            <property name="levels">
+                                <tabular-level name="userName" id="5577">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">userName</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="week" id="5580">
+                    <property name="defaultHierarchy">NewTabularHierarchy2</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy2" id="5581">
+                            <property name="levels">
+                                <tabular-level name="weekNumber" id="5582">
+                                    <property name="dataType">string</property>
+                                    <property name="columnName">weekNumber</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+            </property>
+            <property name="measureGroups">
+                <tabular-measure-group name="weeklyHours" id="5583">
+                    <property name="measures">
+                        <tabular-measure name="weeklyWorkHours" id="5584">
+                            <expression name="measureExpression" type="javascript">dataSetRow["weeklyWorkHours"]</expression>
+                            <property name="dataType">float</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+                <tabular-measure-group name="workedHours" id="5585">
+                    <property name="measures">
+                        <tabular-measure name="workedHour" id="5586">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["workedHour"]</expression>
+                            <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+                <tabular-measure-group name="workingHours" id="5587">
+                    <property name="measures">
+                        <tabular-measure name="workingHour" id="5588">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["workingHour"]</expression>
+                            <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+            </property>
+            <property name="dataSet">SrcTimesheetDS</property>
+        </tabular-cube>
+    </cubes>
+    <page-setup>
+        <simple-master-page name="TSMasterPage" id="2">
+            <property name="type">a4</property>
+            <property name="orientation">landscape</property>
+            <property name="height">11in</property>
+            <property name="width">10in</property>
+            <method name="onPageStart"><![CDATA[
+]]></method>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <text id="4747">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">16pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="marginLeft">2pt</property>
+            <property name="textAlign">center</property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('TimesheetReport');</VALUE-OF>
+]]></text-property>
+        </text>
+        <grid id="4707">
+            <property name="marginTop">5pt</property>
+            <property name="dataSet">SrcTimesheetDS</property>
+            <list-property name="paramBindings">
+                <structure>
+                    <property name="paramName">TimesheetReportId</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">params["TimesheetReportId"].value</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">userName</property>
+                    <text-property name="displayName">userName</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["userName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">date</property>
+                    <text-property name="displayName">date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["date"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour</property>
+                    <text-property name="displayName">workedHour</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["workedHour"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour</property>
+                    <text-property name="displayName">workingHour</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["workingHour"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">yearWeekNumber</property>
+                    <text-property name="displayName">yearWeekNumber</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["yearWeekNumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorksHour</property>
+                    <text-property name="displayName">totalWorksHour</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalWorksHour"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorkedHour</property>
+                    <text-property name="displayName">totalWorkedHour</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["totalWorkedHour"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="4708"/>
+            <column id="4709"/>
+            <column id="4710"/>
+            <column id="4711"/>
+            <row id="4712">
+                <cell id="4713">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="3425">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">12pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('EmployeeTimesheet.fromDate')</VALUE-OF> : <VALUE-OF>params["FromDate"].value</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="4715">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="4744">
+                        <property name="backgroundAttachment">scroll</property>
+                        <property name="backgroundPositionX">0%</property>
+                        <property name="backgroundPositionY">0%</property>
+                        <property name="backgroundRepeat">repeat</property>
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">12pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="fontVariant">normal</property>
+                        <property name="color">black</property>
+                        <property name="textLineThrough">none</property>
+                        <property name="textOverline">none</property>
+                        <property name="textUnderline">none</property>
+                        <property name="borderBottomColor">black</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderBottomWidth">medium</property>
+                        <property name="borderLeftColor">black</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderLeftWidth">medium</property>
+                        <property name="borderRightColor">black</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderRightWidth">medium</property>
+                        <property name="borderTopColor">black</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="borderTopWidth">medium</property>
+                        <property name="marginTop">0pt</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="marginBottom">0pt</property>
+                        <property name="marginRight">0pt</property>
+                        <property name="paddingTop">1pt</property>
+                        <property name="paddingLeft">1pt</property>
+                        <property name="paddingBottom">1pt</property>
+                        <property name="paddingRight">1pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="textIndent">0em</property>
+                        <property name="letterSpacing">normal</property>
+                        <property name="lineHeight">normal</property>
+                        <property name="orphans">2</property>
+                        <property name="textTransform">none</property>
+                        <property name="whiteSpace">normal</property>
+                        <property name="widows">2</property>
+                        <property name="wordSpacing">normal</property>
+                        <property name="display">block</property>
+                        <property name="pageBreakAfter">auto</property>
+                        <property name="pageBreakBefore">auto</property>
+                        <property name="pageBreakInside">auto</property>
+                        <property name="showIfBlank">false</property>
+                        <property name="canShrink">false</property>
+                        <property name="overflow">hidden</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('EmployeeTimesheet.toDate');</VALUE-OF> : <VALUE-OF>params["ToDate"].value</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+        <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="5589">
+            <property name="cube">Data Cube</property>
+            <property name="measures">
+                <extended-item extensionName="MeasureView" id="5630">
+                    <property name="measure">workedHour</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="5631">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">Date/date</property>
+                            <property name="textAlign">right</property>
+                            <property name="verticalAlign">middle</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="paddingTop">0pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="content">
+                                <data id="5632">
+                                    <property name="fontSize">x-small</property>
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">none</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <property name="paddingTop">1pt</property>
+                                    <property name="paddingLeft">1pt</property>
+                                    <property name="paddingBottom">1pt</property>
+                                    <property name="paddingRight">1pt</property>
+                                    <structure name="numberFormat">
+                                        <property name="category">General Number</property>
+                                        <property name="pattern">General Number</property>
+                                    </structure>
+                                    <property name="textAlign">right</property>
+                                    <property name="resultSetColumn">workedHour_user/userName_Date/date</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="aggregations">
+                        <extended-item extensionName="AggregationCell" id="5637">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">week/weekNumber</property>
+                            <property name="textAlign">right</property>
+                            <property name="verticalAlign">middle</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="paddingTop">0pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="content">
+                                <data id="5638">
+                                    <property name="fontSize">x-small</property>
+                                    <structure name="numberFormat">
+                                        <property name="category">General Number</property>
+                                        <property name="pattern">General Number</property>
+                                    </structure>
+                                    <property name="textAlign">right</property>
+                                    <property name="resultSetColumn">workedHour_user/userName_week/weekNumber</property>
+                                </data>
+                            </property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="5633">
+                            <property name="content">
+                                <label id="5634">
+                                    <text-property name="text">workedHour</text-property>
+                                </label>
+                            </property>
+                        </extended-item>
+                        <extended-item extensionName="CrosstabCell" id="5639">
+                            <property name="content">
+                                <label id="5640">
+                                    <text-property name="text">workedHour</text-property>
+                                </label>
+                            </property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+                <extended-item extensionName="MeasureView" id="5644">
+                    <property name="measure">weeklyWorkHours</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="5645">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">Date/date</property>
+                            <property name="fontFamily">"Cantarell"</property>
+                            <property name="textAlign">right</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="paddingTop">0pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="width">0%</property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="5647">
+                            <property name="content">
+                                <label id="5648">
+                                    <text-property name="text">weeklyWorkHours</text-property>
+                                </label>
+                            </property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+                <extended-item extensionName="MeasureView" id="5652">
+                    <property name="measure">workingHour</property>
+                    <property name="detail">
+                        <extended-item extensionName="AggregationCell" id="5653">
+                            <property name="aggregationOnRow">user/userName</property>
+                            <property name="aggregationOnColumn">Date/date</property>
+                            <property name="textAlign">right</property>
+                            <property name="borderTopStyle">solid</property>
+                            <property name="borderTopWidth">thin</property>
+                            <property name="borderLeftStyle">solid</property>
+                            <property name="borderLeftWidth">thin</property>
+                            <property name="borderBottomStyle">solid</property>
+                            <property name="borderBottomWidth">thin</property>
+                            <property name="borderRightStyle">solid</property>
+                            <property name="borderRightWidth">thin</property>
+                            <property name="paddingTop">0pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="width">0%</property>
+                        </extended-item>
+                    </property>
+                    <property name="header">
+                        <extended-item extensionName="CrosstabCell" id="5655">
+                            <property name="content">
+                                <label id="5656">
+                                    <text-property name="text">workingHour</text-property>
+                                </label>
+                            </property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+            </property>
+            <property name="rows">
+                <extended-item extensionName="CrosstabView" id="5597">
+                    <property name="views">
+                        <extended-item extensionName="DimensionView" id="5598">
+                            <property name="dimension">user</property>
+                            <property name="levels">
+                                <extended-item extensionName="LevelView" name="NewLevel View" id="5599">
+                                    <property name="level">user/userName</property>
+                                    <property name="member">
+                                        <extended-item extensionName="CrosstabCell" id="5600">
+                                            <property name="content">
+                                                <data name="userName" id="5601">
+                                                    <property name="textAlign">left</property>
+                                                    <property name="resultSetColumn">userName</property>
+                                                </data>
+                                            </property>
+                                            <property name="fontSize">x-small</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="verticalAlign">middle</property>
+                                            <property name="borderTopStyle">solid</property>
+                                            <property name="borderTopWidth">thin</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderBottomStyle">solid</property>
+                                            <property name="borderBottomWidth">thin</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                            <property name="paddingTop">0pt</property>
+                                            <property name="paddingLeft">1pt</property>
+                                            <property name="paddingBottom">0pt</property>
+                                            <property name="paddingRight">1pt</property>
+                                            <property name="width">7%</property>
+                                        </extended-item>
+                                    </property>
+                                </extended-item>
+                            </property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+            </property>
+            <property name="columns">
+                <extended-item extensionName="CrosstabView" id="5619">
+                    <property name="views">
+                        <extended-item extensionName="DimensionView" id="5620">
+                            <property name="dimension">week</property>
+                            <property name="levels">
+                                <extended-item extensionName="LevelView" name="NewLevel View1" id="5621">
+                                    <property name="level">week/weekNumber</property>
+                                    <property name="member">
+                                        <extended-item extensionName="CrosstabCell" id="5622">
+                                            <property name="whiteSpace">nowrap</property>
+                                            <property name="borderTopStyle">none</property>
+                                            <property name="borderLeftStyle">none</property>
+                                            <property name="borderBottomStyle">none</property>
+                                            <property name="borderRightStyle">none</property>
+                                            <property name="paddingTop">0pt</property>
+                                            <property name="paddingLeft">0pt</property>
+                                            <property name="paddingBottom">0pt</property>
+                                            <property name="paddingRight">0pt</property>
+                                            <property name="height">0%</property>
+                                        </extended-item>
+                                    </property>
+                                    <property name="aggregationHeader">
+                                        <extended-item extensionName="CrosstabCell" id="5636">
+                                            <property name="content">
+                                                <text id="5751">
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Packages.com.axelor.i18n.I18n.get('EmployeeTimesheet.weekTotal')</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">center</property>
+                                            <property name="verticalAlign">middle</property>
+                                        </extended-item>
+                                    </property>
+                                </extended-item>
+                            </property>
+                        </extended-item>
+                        <extended-item extensionName="DimensionView" id="5624">
+                            <property name="dimension">Date</property>
+                            <property name="levels">
+                                <extended-item extensionName="LevelView" name="NewLevel View2" id="5625">
+                                    <property name="level">Date/date</property>
+                                    <property name="member">
+                                        <extended-item extensionName="CrosstabCell" id="5626">
+                                            <property name="content">
+                                                <data name="date" id="5628">
+                                                    <property name="textAlign">center</property>
+                                                    <property name="resultSetColumn">date</property>
+                                                </data>
+                                            </property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="verticalAlign">middle</property>
+                                            <property name="borderLeftStyle">solid</property>
+                                            <property name="borderLeftWidth">thin</property>
+                                            <property name="borderRightStyle">solid</property>
+                                            <property name="borderRightWidth">thin</property>
+                                        </extended-item>
+                                    </property>
+                                </extended-item>
+                            </property>
+                        </extended-item>
+                    </property>
+                </extended-item>
+            </property>
+            <property name="header">
+                <extended-item extensionName="CrosstabCell" id="5627">
+                    <property name="paddingTop">0pt</property>
+                    <property name="paddingLeft">0pt</property>
+                    <property name="paddingBottom">0pt</property>
+                    <property name="paddingRight">0pt</property>
+                </extended-item>
+                <extended-item extensionName="CrosstabCell" id="5590"/>
+            </property>
+            <property name="hideMeasureHeader">true</property>
+            <method name="onCreate"><![CDATA[
+/**
+ * Called when crosstab cell is being created.
+ *
+ * @param cellInst
+ *            ICrosstabCellInstance
+ * @param reportContext
+ *            IReportContext
+ */
+
+function onCreateCell( cellInst, reportContext )
+{
+
+	if(cellInst.getCellID() == 5637){
+		var color = null;
+		
+		var totalWorkingHours = cellInst.getDataValue('totalWorkingHours');
+		var totalWorkedHours = cellInst.getDataValue('workedHour_user/userName_week/weekNumber');
+		var weekleyWorkHours = cellInst.getDataValue('weeklyWorkHours_user/userName_Date/date');
+		
+		if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours != weekleyWorkHours) {
+			color = 'blue';
+ 		}else if(totalWorkingHours != totalWorkedHours &amp;&amp; totalWorkedHours != weekleyWorkHours &amp;&amp; weekleyWorkHours!= totalWorkingHours) {
+ 			color = 'red';
+ 		}else if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours == weekleyWorkHours) {
+ 			color = 'black';
+ 		}
+		
+		if(color!=null){
+			cellInst.getStyle().setColor(color);
+		}
+ 	} 
+}
+]]></method>
+            <property name="fontSize">xx-small</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">thin</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">thin</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">thin</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">thin</property>
+            <property name="marginTop">10pt</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">userName</property>
+                    <expression name="expression">dimension["user"]["userName"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">weekNumber</property>
+                    <expression name="expression">dimension["week"]["weekNumber"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">date</property>
+                    <expression name="expression">dimension["Date"]["date"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour_user/userName_Date/date</property>
+                    <expression name="expression">measure["workedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>Date/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">workedHour_user/userName_week/weekNumber</property>
+                    <expression name="expression">measure["workedHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>week/weekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">sum</property>
+                </structure>
+                <structure>
+                    <property name="name">weekNumber_TOTAL</property>
+                    <expression name="expression">dimension["week"]["weekNumber"]+" TOTAL"</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">weeklyWorkHours_user/userName_Date/date</property>
+                    <expression name="expression">measure["weeklyWorkHours"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>Date/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">workingHour_user/userName_Date/date</property>
+                    <expression name="expression">measure["workingHour"]</expression>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>Date/date</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                </structure>
+                <structure>
+                    <property name="name">totalWorkingHours</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>user/userName</value>
+                        <value>week/weekNumber</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">measure["workingHour"]</expression>
+                        </structure>
+                    </list-property>
+                </structure>
+            </list-property>
+        </extended-item>
+    </body>
+</report>

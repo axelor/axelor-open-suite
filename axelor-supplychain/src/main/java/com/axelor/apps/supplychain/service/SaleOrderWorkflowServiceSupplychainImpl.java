@@ -29,12 +29,18 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,5 +143,28 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     if (purchaseOrder != null) {
       purchaseOrder.setExternalReference(saleOrder.getSaleOrderSeq());
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    List<StockMove> stockMoves =
+        Beans.get(StockMoveRepository.class)
+            .all()
+            .filter(
+                "self.originId = ? AND self.originTypeSelect = ?",
+                saleOrder.getId(),
+                "com.axelor.apps.sale.db.SaleOrder")
+            .fetch();
+    if (!stockMoves.isEmpty()) {
+      for (StockMove stockMove : stockMoves) {
+        if (stockMove.getStatusSelect() == 1 || stockMove.getStatusSelect() == 2) {
+          throw new AxelorException(
+              TraceBackRepository.TYPE_FUNCTIONNAL,
+              I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
+        }
+      }
+    }
+    super.completeSaleOrder(saleOrder);
   }
 }

@@ -224,6 +224,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
         .addParam("ReportType", reportType == null ? 0 : reportType)
+        .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
   }
 

@@ -15,23 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.web;
+package com.axelor.apps.base.web;
 
-import com.axelor.apps.account.db.TaxPaymentMoveLine;
-import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.service.YearService;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
-public class TaxPaymentMoveLineController {
+public class YearController {
 
-  public void computeTaxAmount(ActionRequest request, ActionResponse response) {
+  public void generatePeriods(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
     try {
-      TaxPaymentMoveLine taxPaymentMoveLine = request.getContext().asType(TaxPaymentMoveLine.class);
-      taxPaymentMoveLine =
-          Beans.get(TaxPaymentMoveLineService.class).computeTaxAmount(taxPaymentMoveLine);
-      response.setValue("taxAmount", taxPaymentMoveLine.getTaxAmount());
+      Year year = request.getContext().asType(Year.class);
+      response.setValue("periodList", Beans.get(YearService.class).generatePeriods(year));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

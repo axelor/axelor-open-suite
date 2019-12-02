@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
@@ -68,8 +70,6 @@
 	<integer name="saleTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code"/>
     <string name="mainActivityCode" title="Main activity code"/>
-    <string name="healthService" title="Health service"/>
-    <many-to-one name="healthServiceAddress" title="Health service address" ref="com.axelor.apps.base.db.Address"/>
 	<string name="taxNbr" title="Tax N°"/>
 	
  	<string name="fullName" title="Name" namecolumn="true"/>

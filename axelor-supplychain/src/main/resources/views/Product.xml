@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Wizard" canSave="false" width="large" canNew="false" canCopy="false" onNew="action-group-stock-details-by-product-on-new">	
+	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Wizard" canSave="false" width="large" canNew="false" canCopy="false" onNew="action-group-stock-details-by-product-on-new">
       <panel name="MainFilters" itemSpan="4" colSpan="12">
           <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators" domain="self.stockManaged = true"/>
           <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-record-empty-company-and-stock-location, action-group-supplychain-update-indicators"/>
@@ -27,56 +27,57 @@
                <button name="$consumeManufOrderQty" title="Consume manuf order quantity" icon="fa-cogs" widget="info-button" onClick="action-method-production-consume-product" />
                <button name="$missingManufOrderQty" title="Missing manuf order quantity" icon="fa-cogs" widget="info-button" onClick="action-method-production-missing-product" />
             </panel>
-            <panel name="projectedStockPanel" colSpan="12" itemSpan="4" >
-               <button name="$projectedStock" title="See projected stock" onClick="action-supplychain-method-projected-stock" showIf="$product"/>
+            <panel name="buttonPanel" colSpan="12" itemSpan="4" >
+               <button name="projectedStockButton" title="See projected stock" onClick="action-supplychain-method-projected-stock" showIf="$product"/>
+               <button name="stockHistoryButton" title="See stock history" showIf="$product &amp;&amp; $company &amp;&amp; $stockLocation" onClick="action-supplychain-view-projected-stock"/>
             </panel>
        </panel>
        <panel-dashlet name="dashlet-views-stock-location-line-view-by-product" colSpan="12"  action="action-stock-location-line-view-by-product" height="150" showIf="$product" readonly="true" />
      </panel>
 	</form>
-  
+
   <action-group name="action-group-supplychain-update-indicators">
      <action name="action-method-find-all-sublocation" if="product"/>
      <action name="action-method-update-indicators" if="product"/>
      <action name="action-attrs-reload-panel-dashlet"/>
   </action-group>
-  
+
   <action-group name="action-group-stock-details-by-product-on-new">
      <action name="action-record-stock-details-by-product-init-product"/>
      <action name="action-method-find-all-sublocation"/>
      <action name="action-method-update-indicators" />
      <action name="action-attrs-reload-panel-dashlet"/>
   </action-group>
-  
+
   <action-record name="action-record-empty-company-and-stock-location" model="com.axelor.apps.base.db.Product">
      <field name="$stockLocation" expr="eval: null" if="!$company"/>
   </action-record>
-  
+
   <action-record name="action-record-stock-details-by-product-init-product" model="com.axelor.apps.base.db.Product">
      <field name="$product" expr="eval: _product"/>
      <field name="$company" expr="eval: _company"/>
      <field name="$stockLocation" expr="eval: _stockLocation"/>
   </action-record>
-  
+
   <action-attrs name="action-attrs-reload-panel-dashlet">
      <attribute name="refresh" for="dashlet-views-stock-location-line-view-by-product" expr="eval: true"/>
   </action-attrs>
-  
+
   <action-method name="action-method-update-indicators" >
      <call class="com.axelor.apps.supplychain.web.ProductController" method="setIndicatorsOfProduct"/>
   </action-method>
-  
+
   <action-method name="action-method-find-all-sublocation" >
      <call class="com.axelor.apps.supplychain.web.ProductController" method="findAllSubLocation"/>
   </action-method>
-  
+
   <action-view name="action-stock-location-line-view-for-a-product-from-product-view" title="Stock location lines by product" model="com.axelor.apps.base.db.Wizard">
      <view type="form" name="supplychain-stock-details-by-product-form"/>
      <view-param name="popup" value="true"/>
      <view-param name="popup-save" value="false"/>
      <context name="_product" expr="eval:__self__"/>
   </action-view>
-  
+
   <action-view name="action-stock-location-line-view-for-a-product-from-saleorderline-view" title="Stock location lines by product" model="com.axelor.apps.base.db.Wizard">
      <view type="form" name="supplychain-stock-details-by-product-form"/>
      <view-param name="popup" value="true"/>
@@ -85,11 +86,11 @@
      <context name="_stockLocation" expr="eval:saleOrder?.stockLocation"/>
      <context name="_company" expr="eval:saleOrder?.company"/>
   </action-view>
-  
+
   <action-method name="action-method-suppplychain-stock-location-line-view-requested-reserved">
      <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showStockRequestedReservedQuantityOfProduct"/>
   </action-method>
-    
+
   <action-view name="action-supplychain-stock-move-line-product-reserved" title="${product.fullName} reserved"
      model="com.axelor.apps.stock.db.StockMoveLine">
      <view type="grid" name="stock-move-line-all-grid-planned"/>
@@ -97,7 +98,7 @@
      <view-param name="popup" value="true"/>
      <view-param name="popup-save" value="false"/>
      <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
-      AND self.product.id = :productId 
+      AND self.product.id = :productId
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
       AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
      <context name="productId" expr="eval:product?.id"/>
@@ -105,7 +106,7 @@
      <context name="companyId" expr="eval: company?.id "/>
      <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
   </action-view>
-  
+
   <action-view name="action-supplychain-stock-move-line-product-future-quantity" title="${product.fullName} plan. st. move"
     model="com.axelor.apps.stock.db.StockMoveLine" >
     <view type="grid" name="stock-move-line-all-grid-planned"/>
@@ -113,15 +114,15 @@
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
     <domain>self.stockMove.statusSelect = :statusSelectList
-      AND self.product.id = :productId  
+      AND self.product.id = :productId
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
       AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
     <context name="location" expr="eval: __stockLocationIdList"/>
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelectList" expr="eval: __repo__(StockMove).STATUS_PLANNED" />
-  </action-view>  
-  
+  </action-view>
+
   <action-view name="action-supplychain-stock-move-line-product-real-quantity" title="${product.fullName} real st. move"
     model="com.axelor.apps.stock.db.StockMoveLine" >
     <view type="grid" name="stock-move-line-all-grid"/>
@@ -129,7 +130,7 @@
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
     <domain>self.stockMove.statusSelect = :statusSelect
-      AND self.product.id = :productId 
+      AND self.product.id = :productId
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
       AND (self.stockMove.company.id = :companyId OR :companyId IS NULL)</domain>
     <context name="productId" expr="eval:product?.id"/>
@@ -137,22 +138,34 @@
     <context name="companyId" expr="eval: company?.id "/>
     <context name="statusSelect" expr="eval: __repo__(StockMove).STATUS_REALIZED" />
   </action-view>
- 
+
+  <action-view name="action-supplychain-view-projected-stock" title="Stock history" model="com.axelor.apps.base.db.Wizard">
+    <view type="form" name="stock-history-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false" />
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <context name="_product" expr="eval: product"/>
+    <context name="_company" expr="eval: company"/>
+    <context name="_stockLocation" expr="eval: stockLocation"/>
+  </action-view>
+
   <action-method name="action-method-supplychain-purchase-order-product-planned">
 	<call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showPurchaseOrderOfProduct"/>
   </action-method>
- 
+
   <action-method name="action-method-supplychain-sale-order-product-planned">
      <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showSaleOrderOfProduct"/>
   </action-method>
-   
+
   <action-method name="action-method-supplychain-stock-available-product">
      <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showStockAvailableProduct"/>
   </action-method>
-  
+
   <action-method name="action-supplychain-method-projected-stock">
      <call class="com.axelor.apps.supplychain.web.ProjectedStockController" method="showProjectedStock"/>
   </action-method>
-  
-  
+
+
 </object-views>

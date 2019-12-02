@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<form name="printing-setting-form" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings" width="large">
 		<panel name="mainPanel" >
@@ -11,9 +11,11 @@
 			<field name="colorCode" />
 			<panel name="companyHeaderPanel" title="Company Header" colSpan="12">
 				<field name="pdfHeader" colSpan="12" widget="html" showTitle="false"/>
+                <field name="pdfHeaderHeight"/>
 			</panel>
 			<panel name="companyFooterPanel" title="Company Footer" colSpan="12">
 				<field name="pdfFooter" colSpan="12" widget="html" showTitle="false"/>
+                <field name="pdfFooterHeight"/>
 			</panel>
        	</panel>
     </form>

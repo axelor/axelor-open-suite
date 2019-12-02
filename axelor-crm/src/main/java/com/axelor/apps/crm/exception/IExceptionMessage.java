@@ -47,6 +47,11 @@ public interface IExceptionMessage {
   static final String CONVERT_LEAD_MISSING = /*$$(*/ "Parent lead is missing." /*)*/;
   static final String CONVERT_LEAD_ERROR = /*$$(*/ "Error in lead conversion" /*)*/;
 
+  static final String LEAD_PARTNER_MISSING_ADDRESS = /*$$(*/
+      "Please complete the partner address." /*)*/;
+  static final String LEAD_CONTACT_MISSING_ADDRESS = /*$$(*/
+      "Please complete the contact address." /*)*/;
+
   /** Event controller */
   static final String EVENT_1 = /*$$(*/ "Input location please" /*)*/;
 

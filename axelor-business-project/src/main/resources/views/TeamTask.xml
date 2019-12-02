@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
               
     <grid model="com.axelor.team.db.TeamTask" title="Tasks" name="business-project-team-task-grid" orderBy="-taskDate">
     	<field name="project"/>
@@ -31,11 +31,5 @@
 		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
-	
-	<action-record name="action-team-task-record-set-invoicing-type" model="com.axelor.team.db.TeamTask">
-		<field name="invoicingType" expr="eval: null"/>
-		<field name="toInvoice" expr="eval: false"/>
-		<field name="isOrderProposed" expr="eval: teamTaskInvoicing"/>
-	</action-record>
 	
 </object-views>

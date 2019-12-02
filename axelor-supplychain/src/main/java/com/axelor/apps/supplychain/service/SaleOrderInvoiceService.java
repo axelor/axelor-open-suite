@@ -95,7 +95,8 @@ public interface SaleOrderInvoiceService {
       int operationSelect,
       BigDecimal amount,
       boolean isPercent,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
       throws AxelorException;
 
   SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
@@ -221,18 +222,6 @@ public interface SaleOrderInvoiceService {
    */
   BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException;
-
-  /**
-   * Try to set the updated sale order amount invoiced.
-   *
-   * @param saleOrder
-   * @param currentInvoiceId
-   * @param excludeCurrentInvoice
-   * @throws AxelorException if the invoiced amount would be greater than the exTaxTotal
-   */
-  void updateAndCheckInvoicedAmount(
-      SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
-      throws AxelorException;
 
   /**
    * Set the updated sale order amount invoiced without checking.

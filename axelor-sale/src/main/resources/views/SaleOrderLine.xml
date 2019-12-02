@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
    		<hilite strong="true" color="default" if="typeSelect != 0"/>
@@ -147,7 +147,7 @@
 					<field name="inTaxPrice" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<panel name="discountPanel" colSpan="12" readonlyIf="$isReadOnly !== false || deliveryState == 3">
 						<field name="discountTypeSelect" colSpan="3" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
-						<field name="discountAmount" colSpan="3" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
+						<field name="discountAmount" colSpan="3" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 0"/>
 						<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 					</panel>
 					<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
@@ -178,7 +178,6 @@
           <button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested" onClick="save,action-method-sale-order-line-cancel-reservation"/>
         </panel>
         </panel>
-				<spacer/>
 				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$allocatedStock" colSpan="3" readonly="true" type="decimal" title="Allocated stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$totalStock" colSpan="3" readonly="true" type="decimal" title="Total stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
@@ -258,7 +257,7 @@
 				<field name="inTaxPrice" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 				<panel name="discountPanel" title="Discount">
 					<field name="discountTypeSelect" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
-					<field name="discountAmount" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
+					<field name="discountAmount" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 0"/>
 					<field name="priceDiscounted" colSpan="4" hidden="true"/>
 				</panel>
 			</panel>
@@ -498,10 +497,10 @@
 
 <!--     TODO : should be splited per module -->
     <action-record name="action-sale-order-line-get-production-information" model="com.axelor.apps.sale.db.SaleOrderLine">
-    	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
-    	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
-    	<field name="standardDelay" expr="eval: product?.standardDelay" if="saleSupplySelect == 2 || saleSupplySelect == 3" />
-    	<field name="standardDelay" expr="eval: 0" if="saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3" />
+    	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
+    	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
+    	<field name="standardDelay" expr="eval: product?.standardDelay" if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect == 2 || saleSupplySelect == 3" />
+    	<field name="standardDelay" expr="eval: 0" if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3" />
     </action-record>
     
     <action-record name="action-sale-order-line-record-progress" model="com.axelor.apps.sale.db.SaleOrderLine">

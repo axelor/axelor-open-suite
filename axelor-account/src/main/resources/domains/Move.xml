@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -11,7 +11,7 @@
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" readonly="true" required="true"/>
     <date name="date" column="date_val" title="Date"/> <!--  Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true"/>
-      <one-to-many name="moveLineList" ref="MoveLine" title="Move lines" mappedBy="move"/>
+    <one-to-many name="moveLineList" ref="MoveLine" title="Move lines" mappedBy="move"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
@@ -35,7 +35,8 @@
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
     <boolean name="autoYearClosureMove" title="Year closure move"/>
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-    
+    <integer name="functionalOriginSelect" title="Functional origin" readonly="true" selection="iaccount.move.functional.origin.select"/>
+
     <unique-constraint columns="reference,company"/>
     
     <extra-code><![CDATA[
@@ -51,11 +52,15 @@
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
 		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
-		
+
 		// REVERSE DATE OF REVERSION
 		public static final int DATE_OF_REVERSION_TODAY = 1;
 		public static final int DATE_OF_REVERSION_ORIGINAL_MOVE_DATE = 2;
 		public static final int DATE_OF_REVERSION_CHOOSE_DATE = 3;
+
+		// FUNCTIONAL ORIGIN SELECT
+		public static final int FUNCTIONAL_ORIGIN_OPENING = 1;
+		public static final int FUNCTIONAL_ORIGIN_CLOSURE = 2;
 	]]></extra-code>
     
     <track>

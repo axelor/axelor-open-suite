@@ -92,7 +92,6 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
             teamTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
         if (saleOrder.getToInvoiceViaTask()) {
-          task.setTeamTaskInvoicing(true);
           task.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
         }
 
