@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.1.14]
+## Features
+- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
+
 ## Improvements
 ## Bug Fixes
 
