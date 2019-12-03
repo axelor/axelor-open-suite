@@ -6,6 +6,7 @@
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
+- REFUND : avoid blocking message when ventilation of the invoice
 
 ## [5.2.0] - 2019-11-29
 ## Features
