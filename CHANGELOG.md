@@ -6,6 +6,7 @@
 
 ## Improvements
 ## Bug Fixes
+-REFUND : avoid blocking message when ventilation of the invoice
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
