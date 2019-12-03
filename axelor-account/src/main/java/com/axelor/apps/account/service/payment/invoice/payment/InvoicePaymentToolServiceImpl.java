@@ -58,7 +58,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateAmountPaid(Invoice invoice) throws AxelorException {
 
     invoice.setAmountPaid(computeAmountPaid(invoice));
@@ -69,7 +69,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void updateHasPendingPayments(Invoice invoice) {
     invoice.setHasPendingPayments(checkPendingPayments(invoice));
   }

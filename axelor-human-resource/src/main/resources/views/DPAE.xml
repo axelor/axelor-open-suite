@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <grid name="dpae-grid" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
+    <field name="employee"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="contractType"/>
+  </grid>
+
+  <form name="dpae-form" title="DPAE" model="com.axelor.apps.hr.db.DPAE" width="large">
+    <panel name="employerPanel" title="Establishment of the employer">
+      <field name="registrationCode" colSpan="9"/>
+      <field name="mainActivityCode" colSpan="3"/>
+      <field name="company"/>
+      <field name="companyAddress"/>
+      <field name="companyFixedPhone"/>
+      <field name="healthService"/>
+      <field name="healthServiceAddress"/>
+    </panel>
+
+    <panel name="employeePanel" title="Employee">
+      <field name="lastName"/>
+      <field name="firstName"/>
+      <field name="socialSecurityNumber"/>
+      <field name="sexSelect"/>
+      <field name="dateOfBirth"/>
+      <field name="departmentOfBirth"/>
+      <field name="cityOfBirth"/>
+      <field name="countryOfBirth"/>
+    </panel>
+
+    <panel name="contractPanel" title="Contract">
+      <field name="dateOfHire"/>
+      <field name="timeOfHire"/>
+      <field name="trialPeriodDuration"/>
+      <field name="contractType"/>
+      <field name="endDateOfContract"/>
+    </panel>
+  </form>
+
+</object-views>

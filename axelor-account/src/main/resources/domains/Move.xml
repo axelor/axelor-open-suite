@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -33,8 +33,10 @@
     <date name="validationDate" title="Validation date"/>
     <integer name="technicalOriginSelect" title="Technical origin" required="true" readonly="true" selection="iaccount.move.technical.origin.select"/>
     <boolean name="adjustingMove" title="Adjusting Move" default="false"/>
+    <boolean name="autoYearClosureMove" title="Year closure move"/>
    	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
-    
+    <integer name="functionalOriginSelect" title="Functional origin" readonly="true" selection="iaccount.move.functional.origin.select"/>
+
     <unique-constraint columns="reference,company"/>
     
     <extra-code><![CDATA[
@@ -50,7 +52,15 @@
 		public static final int TECHNICAL_ORIGIN_AUTOMATIC = 2;
 		public static final int TECHNICAL_ORIGIN_TEMPLATE = 3;
 		public static final int TECHNICAL_ORIGIN_IMPORT = 4;
-	
+
+		// REVERSE DATE OF REVERSION
+		public static final int DATE_OF_REVERSION_TODAY = 1;
+		public static final int DATE_OF_REVERSION_ORIGINAL_MOVE_DATE = 2;
+		public static final int DATE_OF_REVERSION_CHOOSE_DATE = 3;
+
+		// FUNCTIONAL ORIGIN SELECT
+		public static final int FUNCTIONAL_ORIGIN_OPENING = 1;
+		public static final int FUNCTIONAL_ORIGIN_CLOSURE = 2;
 	]]></extra-code>
     
     <track>

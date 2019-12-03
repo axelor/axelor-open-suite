@@ -26,10 +26,12 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
@@ -118,7 +120,7 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException;
 
   /**
@@ -141,7 +143,7 @@ public interface InvoiceService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException;
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
@@ -273,4 +275,12 @@ public interface InvoiceService {
   public Boolean checkPartnerBankDetailsList(Invoice invoice);
 
   public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void refusalToPay(
+      Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
+
+  public User getPfpValidatorUser(Invoice invoice);
+
+  public String getPfpValidatorUserDomain(Invoice invoice);
 }

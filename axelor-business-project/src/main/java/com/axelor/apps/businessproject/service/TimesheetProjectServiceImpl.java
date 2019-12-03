@@ -35,6 +35,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -55,7 +56,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       UserRepository userRepo,
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
-      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      TeamTaskRepository teamTaskRepository) {
     super(
         priceListService,
         appHumanResourceService,
@@ -65,7 +67,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
         userRepo,
         userHrService,
         timesheetLineService,
-        projectPlanningTimeRepository);
+        projectPlanningTimeRepository,
+        teamTaskRepository);
   }
 
   @Override
@@ -87,7 +90,10 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       tabInformations[2] = timesheetLine.getDate();
       // End date, useful only for consolidation
       tabInformations[3] = timesheetLine.getDate();
-      tabInformations[4] = timesheetLine.getHoursDuration();
+      tabInformations[4] =
+          timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+              ? timesheetLine.getDurationForCustomer()
+              : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
 
       String key = null;
@@ -109,7 +115,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
             tabInformations[3] = timesheetLine.getDate();
           }
           tabInformations[4] =
-              ((BigDecimal) tabInformations[4]).add(timesheetLine.getHoursDuration());
+              ((BigDecimal) tabInformations[4])
+                  .add(
+                      timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+                          ? timesheetLine.getDurationForCustomer()
+                          : timesheetLine.getHoursDuration());
         } else {
           timeSheetInformationsMap.put(key, tabInformations);
         }
@@ -130,9 +140,13 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       Project project = (Project) timesheetInformations[5];
       PriceList priceList = project.getPriceList();
       if (consolidate) {
-        strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
+        if (startDate != null && endDate != null) {
+          strDate = startDate.format(ddmmFormat) + " - " + endDate.format(ddmmFormat);
+        }
       } else {
-        strDate = startDate.format(ddmmFormat);
+        if (startDate != null) {
+          strDate = startDate.format(ddmmFormat);
+        }
       }
 
       invoiceLineList.addAll(

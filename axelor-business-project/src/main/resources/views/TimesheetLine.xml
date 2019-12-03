@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <action-attrs name="action-timesheet-line-attrs-domain-project" id="business-project-action-timesheet-line-attrs-domain-project">
 		<attribute name="domain" for="project" expr="eval: &quot; self.imputable = true AND (${__user__.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${__user__.id}) &quot;"/>
 	</action-attrs>
+	
+	<action-method name="action-timesheet-line-method-set-default-to-invoice">
+		<call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController" method="setDefaultToInvoice"/>
+	</action-method>
 	
 </object-views>

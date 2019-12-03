@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<action-view name="wizard-supplier-view" title="My space" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="wizard-supplier-form"/>
@@ -52,16 +52,15 @@
 		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
 	</action-view>	
 	
-	
 	<grid name="stock-move-supplier-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate"  canNew="false" canDelete="false">
-        <field name="stockMoveSeq"/>
-        <field name="estimatedDate"/>
-        <field name="realDate"/>
-        <field name="toAddress"/>
-        <field name="company"/>
-        <field name="partner"/>
-        <field name="statusSelect"/>
-    </grid>
+	  <field name="stockMoveSeq"/>
+	  <field name="estimatedDate"/>
+	  <field name="realDate"/>
+	  <field name="toAddress"/>
+	  <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	  <field name="partner"/>
+	  <field name="statusSelect"/>
+  </grid>
     
 	<form name="stock-move-supplier-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" canNew="false" canDelete="false" canCopy="false">
 	  <panel name="statusPanel" >

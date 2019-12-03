@@ -123,7 +123,7 @@ public class DoubtfulCustomerService {
    * @param debtPassReason Un motif de passage en client douteux
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createDoubtFulCustomerMove(
       Move move, Account doubtfulCustomerAccount, String debtPassReason) throws AxelorException {
 
@@ -218,7 +218,7 @@ public class DoubtfulCustomerService {
    * @param debtPassReason Un motif de passage en client douteux
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createDoubtFulCustomerRejectMove(
       MoveLine moveLine, Account doubtfulCustomerAccount, String debtPassReason)
       throws AxelorException {

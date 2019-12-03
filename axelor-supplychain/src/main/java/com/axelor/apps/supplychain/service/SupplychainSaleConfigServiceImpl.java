@@ -21,7 +21,6 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -31,7 +30,7 @@ public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
 
   @Inject private AccountingSituationRepository accountingSituationRepo;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void updateCustomerCredit(SaleConfig saleConfig) {
 
     List<AccountingSituation> accountingSituationList =

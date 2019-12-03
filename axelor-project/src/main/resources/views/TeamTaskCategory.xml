@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	
+	<grid name="team-task-category-grid" title="Category" model="com.axelor.apps.project.db.TeamTaskCategory">
+		<field name="name"/>
+		<field name="defaultInvoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+	</grid>
+	
+	<form title="Category" name="team-task-category-form" model="com.axelor.apps.project.db.TeamTaskCategory">
+		<panel name="mainPanel">
+			<field name="name"/>
+			<field name="defaultProduct" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>			
+			<field name="defaultInvoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+		</panel>
+	</form>
+	
+</object-views>

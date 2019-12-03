@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
 		name="data-create-backup-grid">
@@ -18,6 +18,9 @@
 				selection-in="[0,1,2]" colSpan="12" />
 			<field name="fetchLimit" widget="Integer" required="true" min="1"
 				colSpan="4" />
+			<field name="isRelativeDate" widget="boolean-switch"  onChange="action-data-backup-attrs-onchange-relativedate" colSpan="2"/>
+			<field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate"  colSpan="2"/>
+			<spacer colSpan="4"/>
 			<button-group name="mainBtnGroup" colSpan="3">
 			<button name="backToDraftBtn" title="Return to draft status"
 				showIf="backupMetaFile != null &amp;&amp; statusSelect == 1"
@@ -84,5 +87,9 @@
 		<call class="com.axelor.apps.base.web.DataBackupController"
 			method="RestoreBackUp" />
 	</action-method>
+	
+	<action-attrs name="action-data-backup-attrs-onchange-relativedate">
+		<attribute name="value" for="updateImportId" expr="false" if="!isRelativeDate"/>
+	</action-attrs>
 
 </object-views>

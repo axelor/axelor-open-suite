@@ -622,7 +622,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
       throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
@@ -668,7 +668,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateRequestedReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
       throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
@@ -919,7 +919,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void requestQty(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
       return;
@@ -934,7 +934,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelReservation(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
       return;

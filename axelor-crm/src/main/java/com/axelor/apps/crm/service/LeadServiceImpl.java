@@ -64,14 +64,14 @@ public class LeadServiceImpl implements LeadService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Lead convertLead(Lead lead, Partner partner, Partner contactPartner)
       throws AxelorException {
 
     if (partner != null && contactPartner != null) {
       contactPartner = partnerRepo.save(contactPartner);
       if (partner.getContactPartnerSet() == null) {
-        partner.setContactPartnerSet(new HashSet<Partner>());
+        partner.setContactPartnerSet(new HashSet<>());
       }
       partner.getContactPartnerSet().add(contactPartner);
       contactPartner.setMainPartner(partner);
@@ -162,7 +162,7 @@ public class LeadServiceImpl implements LeadService {
               + "' target='_blank' />");
       urlMap.put(
           "google",
-          "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
               + companyName
               + "+"
               + searchName
@@ -175,7 +175,7 @@ public class LeadServiceImpl implements LeadService {
               + "' target='_blank' />");
       urlMap.put(
           "google",
-          "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
+          "<a class='fa fa-google' href='https://www.google.com/?gws_rd=cr#q="
               + searchName
               + "' target='_blank' />");
     }
@@ -230,7 +230,7 @@ public class LeadServiceImpl implements LeadService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void loseLead(Lead lead, LostReason lostReason) {
     lead.setStatusSelect(LeadRepository.LEAD_STATUS_LOST);
     lead.setLostReason(lostReason);

@@ -18,14 +18,21 @@
 package com.axelor.apps.production.service.costsheet;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.UnitCostCalcLine;
+import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
@@ -33,7 +40,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.AxelorException;
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -52,6 +59,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   protected UnitConversionService unitConversionService;
   protected UnitRepository unitRepo;
   protected WeightedAveragePriceService weightedAveragePriceService;
+  protected UnitCostCalcLineServiceImpl unitCostCalcLineServiceImpl;
+  protected CurrencyService currencyService;
+  protected ShippingCoefService shippingCoefService;
 
   @Inject
   public CostSheetLineServiceImpl(
@@ -59,12 +69,18 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       CostSheetGroupRepository costSheetGroupRepository,
       UnitConversionService unitConversionService,
       UnitRepository unitRepo,
-      WeightedAveragePriceService weightedAveragePriceService) {
+      WeightedAveragePriceService weightedAveragePriceService,
+      UnitCostCalcLineServiceImpl unitCostCalcLineServiceImpl,
+      CurrencyService currencyService,
+      ShippingCoefService shippingCoefService) {
     this.appProductionService = appProductionService;
     this.costSheetGroupRepository = costSheetGroupRepository;
     this.unitConversionService = unitConversionService;
     this.unitRepo = unitRepo;
     this.weightedAveragePriceService = weightedAveragePriceService;
+    this.unitCostCalcLineServiceImpl = unitCostCalcLineServiceImpl;
+    this.currencyService = currencyService;
+    this.shippingCoefService = shippingCoefService;
   }
 
   public CostSheetLine createCostSheetLine(
@@ -174,38 +190,51 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
-      int origin)
+      int origin,
+      UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
     Product parentProduct = parentCostSheetLine.getProduct();
 
     BigDecimal costPrice = null;
     switch (origin) {
-      case ORIGIN_BILL_OF_MATERIAL:
-        costPrice =
-            this.getComponentCostPrice(
-                product, parentProduct.getBomCompValuMethodSelect(), company);
-        break;
-
-      case ORIGIN_MANUF_ORDER:
+      case CostSheetService.ORIGIN_MANUF_ORDER:
         costPrice =
             this.getComponentCostPrice(
                 product, parentProduct.getManufOrderCompValuMethodSelect(), company);
+        break;
+
+      case CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION:
+        BillOfMaterial componentDefaultBillOfMaterial = product.getDefaultBillOfMaterial();
+        if (componentDefaultBillOfMaterial != null) {
+
+          UnitCostCalcLine unitCostCalcLine =
+              unitCostCalcLineServiceImpl.getUnitCostCalcLine(unitCostCalculation, product);
+          if (unitCostCalcLine != null) {
+            costPrice = unitCostCalcLine.getComputedCost();
+            break;
+          }
+        }
+        // If we didn't have a computed price in cost calculation session, so we compute the price
+        // from its bill of material
+      case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getBomCompValuMethodSelect(), company);
         break;
 
       default:
         costPrice = BigDecimal.ZERO;
     }
 
+    costPrice = costPrice.multiply(consumptionQty);
     costPrice =
-        unitConversionService
-            .convert(
-                unit,
-                product.getUnit(),
-                costPrice,
-                appProductionService.getNbDecimalDigitForUnitPrice(),
-                product)
-            .multiply(consumptionQty);
+        unitConversionService.convert(
+            unit,
+            product.getUnit(),
+            costPrice,
+            appProductionService.getNbDecimalDigitForUnitPrice(),
+            product);
 
     List<CostSheetLine> costSheetLineList =
         parentCostSheetLine.getCostSheetLineList() != null
@@ -241,29 +270,61 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   protected BigDecimal getComponentCostPrice(
-      Product product, int componentsValuationMethod, Company company) {
+      Product product, int componentsValuationMethod, Company company) throws AxelorException {
 
     BigDecimal price = null;
+    Currency companyCurrency = company.getCurrency();
 
     if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE) {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
+
+      if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+        price = product.getCostPrice();
+      }
     } else if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_COST) {
       price = product.getCostPrice();
+
+      if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+        price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
+      }
     }
-    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getCostPrice();
-    }
-    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
-    }
+
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       price = product.getPurchasePrice();
-    }
-    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
-        if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
-          price = supplierCatalog.getPrice();
-          break;
+
+      BigDecimal shippingCoef =
+          shippingCoefService.getShippingCoef(
+              product, product.getDefaultSupplierPartner(), company, new BigDecimal(9999999));
+
+      price = product.getPurchasePrice().multiply(shippingCoef);
+
+      price =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              product.getPurchaseCurrency(),
+              companyCurrency,
+              price,
+              appProductionService.getTodayDate());
+
+      if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+        for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+          if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
+            price = supplierCatalog.getPrice();
+            Partner supplierPartner = supplierCatalog.getSupplierPartner();
+            if (supplierPartner != null) {
+              shippingCoef =
+                  shippingCoefService.getShippingCoef(
+                      product, supplierPartner, company, new BigDecimal(9999999));
+              price = price.multiply(shippingCoef);
+
+              price =
+                  currencyService.getAmountCurrencyConvertedAtDate(
+                      supplierPartner.getCurrency(),
+                      companyCurrency,
+                      price,
+                      appProductionService.getTodayDate());
+            }
+            break;
+          }
         }
       }
     }
@@ -278,7 +339,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
-      BigDecimal wasteRate)
+      BigDecimal wasteRate,
+      int origin,
+      UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
     Product parentProduct = parentCostSheetLine.getProduct();
@@ -291,12 +354,36 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 appProductionService.getNbDecimalDigitForBomQty(),
                 BigDecimal.ROUND_HALF_EVEN);
 
-    BigDecimal costPrice =
+    BigDecimal costPrice = null;
+    switch (origin) {
+      case CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION:
+        BillOfMaterial componentDefaultBillOfMaterial = product.getDefaultBillOfMaterial();
+        if (componentDefaultBillOfMaterial != null) {
+
+          UnitCostCalcLine unitCostCalcLine =
+              unitCostCalcLineServiceImpl.getUnitCostCalcLine(unitCostCalculation, product);
+          if (unitCostCalcLine != null) {
+            costPrice = unitCostCalcLine.getComputedCost();
+            break;
+          }
+        }
+
+      case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getBomCompValuMethodSelect(), company);
+        break;
+
+      default:
+        costPrice = BigDecimal.ZERO;
+    }
+
+    costPrice =
         unitConversionService
             .convert(
                 unit,
                 product.getUnit(),
-                getComponentCostPrice(product, parentProduct.getBomCompValuMethodSelect(), company),
+                costPrice,
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(qty);

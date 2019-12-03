@@ -31,11 +31,11 @@ import java.util.Map;
 
 public interface OperationOrderService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,

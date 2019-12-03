@@ -74,7 +74,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     super.confirmSaleOrder(saleOrder);

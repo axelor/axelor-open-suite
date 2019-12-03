@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 
@@ -37,7 +36,7 @@ public abstract class BatchDirectDebit extends com.axelor.apps.account.service.b
   @Inject PaymentScheduleLineRepository paymentScheduleLineRepo;
 
   @Override
-  protected void start() throws IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
     super.start();
     PaymentMode directDebitPaymentMode = batch.getAccountingBatch().getPaymentMode();
     generateBankOrderFlag =

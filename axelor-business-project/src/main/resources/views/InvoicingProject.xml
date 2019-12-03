@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="invoicing-project-grid" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+    <field name="invoice" width="120"/>
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
-		<field name="invoice" width="120"/>
 		<field name="deadlineDate"/>
 		<field name="createdOn"/>
+		<field name="comments"/>
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject"
@@ -16,8 +17,10 @@
   		</toolbar>
 
 		<panel name="mainPanel">
-			<field name="project" form-view="project-form" grid-view="project-grid" onChange="save,action-invoicing-project-method-fill-in" readonly="true"/>
-			<field name="deadlineDate" readonlyIf="invoice" onChange="save,action-invoicing-project-method-fill-in"/>
+		  <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12" readonly="true"/>
+			<field name="project" form-view="project-form" grid-view="project-grid" onChange="action-invoicing-project-method-fill-in"/>
+			<field name="deadlineDate" readonlyIf="invoice" onChange="action-invoicing-project-method-fill-in"/>
+			<field name="attachAnnexToInvoice" widget="boolean-switch"  readonlyIf="invoice"/>
 			<button name="generateInvoiceBtn" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
 			<button name="seeLinkedTimesheetLinesBtn" title="See Linked Timesheet Lines" onClick="action-invoicing-project-show-timesheet-lines" hidden="true" showIf="invoice != null"/>

@@ -23,9 +23,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 
 public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
@@ -117,19 +115,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
     if (saleOrder != null) {
       invoice.setPrintingSettings(saleOrder.getPrintingSettings());
 
-      if (!Beans.get(AppSupplychainService.class)
-          .getAppSupplychain()
-          .getManageInvoicedAmountByLine()) {
-        invoice.setSaleOrder(saleOrder);
-      }
     } else if (purchaseOrder != null) {
       invoice.setPrintingSettings(purchaseOrder.getPrintingSettings());
-
-      if (!Beans.get(AppSupplychainService.class)
-          .getAppSupplychain()
-          .getManageInvoicedAmountByLine()) {
-        invoice.setPurchaseOrder(purchaseOrder);
-      }
     }
 
     return invoice;

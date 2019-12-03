@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -243,7 +244,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails) {
     InvoicePayment invoicePayment =
         createInvoicePayment(
@@ -257,7 +258,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     return invoicePaymentRepository.save(invoicePayment);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public InvoicePayment createInvoicePayment(
       Invoice invoice,
       PaymentMode paymentMode,
@@ -280,7 +281,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<InvoicePayment> createMassInvoicePayment(
       List<Long> invoiceList,
       PaymentMode paymentMode,
@@ -314,6 +315,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     Company company = null;
     Currency currency = null;
     List<Long> invoiceToPay = new ArrayList<>();
+    Boolean isActivatePassedForPayment =
+        Beans.get(AppAccountService.class).getAppAccount().getActivatePassedForPayment();
+
     for (Long invoiceId : invoiceIdList) {
       Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
 
@@ -351,6 +355,12 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
+      }
+      if (isActivatePassedForPayment
+          && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION));
       }
       invoiceToPay.add(invoiceId);
     }

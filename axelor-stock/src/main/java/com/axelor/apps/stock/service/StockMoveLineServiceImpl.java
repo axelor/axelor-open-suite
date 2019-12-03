@@ -452,9 +452,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           qty = stockMoveLine.getQty();
         }
 
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
-        }
         this.updateLocations(
             stockMoveLine,
             fromStockLocation,
@@ -465,6 +462,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
+        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+        }
         weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
@@ -541,7 +541,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     } else {
       newAvgPrice = oldAvgPrice;
     }
-    stockLocationLine.setAvgPrice(newAvgPrice);
+    stockLocationLineService.updateWap(stockLocationLine, newAvgPrice, stockMoveLine);
   }
 
   @Override
@@ -654,8 +654,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING))
           && stockMoveLine.getTrackingNumber() == null
           && stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) != 0) {
-
-        productsWithErrors.add(stockMoveLine.getProduct().getName());
+        if (!productsWithErrors.contains(stockMoveLine.getProduct().getName())) {
+          productsWithErrors.add(stockMoveLine.getProduct().getName());
+        }
       }
     }
 

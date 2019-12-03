@@ -20,4 +20,7 @@ package com.axelor.apps.sale.translation;
 public interface ITranslation {
 
   public static final String SALE_APP_NAME = /*$$(*/ "value:Sale"; /*)*/
+
+  public static final String ABC_ANALYSIS_START_DATE = /*$$(*/ "AbcAnalysis.startDate"; /*)*/
+  public static final String ABC_ANALYSIS_END_DATE = /*$$(*/ "AbcAnalysis.endDate"; /*)*/
 }

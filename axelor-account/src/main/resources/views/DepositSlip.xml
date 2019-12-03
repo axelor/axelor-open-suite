@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-    <grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips"
-        orderBy="-depositDate,-depositNumber">
-        <field name="depositNumber" width="120"/>
-        <field name="company" />
-        <field name="companyBankDetails" />
-        <field name="depositDate" />
-        <field name="totalAmount" />
-        <field name="chequeCount" />
-        <field name="publicationDate" />
-    </grid>
+	<grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips"
+	    orderBy="-depositDate,-depositNumber">
+	  <field name="depositNumber" width="120"/>
+	  <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	  <field name="companyBankDetails" />
+	  <field name="depositDate" />
+	  <field name="totalAmount" />
+	  <field name="chequeCount" />
+	  <field name="publicationDate"/>
+	</grid>
 
     <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip"
         onNew="action-group-deposit-slip-onnew"

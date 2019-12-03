@@ -42,13 +42,14 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
     super(manufOrderService, sequenceService, productionOrderRepo);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder generateProductionOrder(
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       Project project,
       LocalDateTime startDate,
+      LocalDateTime endDate,
       SaleOrder saleOrder)
       throws AxelorException {
 
@@ -61,6 +62,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
         billOfMaterial,
         qtyRequested,
         startDate,
+        endDate,
         saleOrder,
         ManufOrderService.ORIGIN_TYPE_OTHER);
 

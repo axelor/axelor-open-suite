@@ -85,7 +85,7 @@ public class HumanResourceMobileController {
    * @param response
    * @throws AxelorException
    *     <p>POST
-   *     /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
+   *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
    *     Content-Type: application/json
    *     <p>URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses fields:
    *     kmNumber, locationFrom, locationTo, allowanceTypeSelect, comments, date, projectTask,
@@ -95,7 +95,7 @@ public class HumanResourceMobileController {
    *     350.00, "locationFrom": "Paris", "locationTo": "Marseille", "allowanceTypeSelect": 1,
    *     "comments": "no", "date": "2018-02-22", "expenseProduct": 43 } }
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void insertKMExpenses(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -149,7 +149,7 @@ public class HumanResourceMobileController {
    * @param response
    * @throws AxelorException
    *     <p>POST
-   *     /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
+   *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
    *     Content-Type: application/json
    *     <p>URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines no field
    *     <p>payload: { "data": { "action":
@@ -207,7 +207,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
@@ -313,7 +313,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
@@ -349,7 +349,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
@@ -444,7 +444,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
@@ -461,7 +461,7 @@ public class HumanResourceMobileController {
    * 		"comment": "no"
    * } }
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException {
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
     User user = AuthUtils.getUser();
@@ -532,7 +532,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
@@ -597,7 +597,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
@@ -637,7 +637,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam

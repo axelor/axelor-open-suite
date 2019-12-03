@@ -26,7 +26,7 @@ import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
@@ -54,7 +54,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       try {
         resetLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
         if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
           noValueAnomaly++;
@@ -69,7 +69,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void resetLeaveManagement(Employee employee) throws AxelorException {
     LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
     for (LeaveLine leaveLine : employee.getLeaveLineList()) {

@@ -94,7 +94,7 @@ public class AlarmEngineBatchService extends AbstractBatch {
     addComment(comment);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected <T extends Model> void persistAlarm(Map<T, Alarm> alarms)
       throws IllegalArgumentException, IllegalAccessException {
 

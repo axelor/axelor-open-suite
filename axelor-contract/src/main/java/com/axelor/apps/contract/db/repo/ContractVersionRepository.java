@@ -66,6 +66,7 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
     newVersion.setIsVersionProratedInvoice(currentVersion.getIsVersionProratedInvoice());
 
     newVersion.setIsConsumptionBeforeEndDate(currentVersion.getIsConsumptionBeforeEndDate());
+    newVersion.setIsConsumptionManagement(currentVersion.getIsConsumptionManagement());
 
     return newVersion;
   }

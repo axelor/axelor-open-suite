@@ -24,21 +24,17 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AdvancePaymentController {
 
-  @Inject private AdvancePaymentService advancePaymentService;
-
   public void cancelAdvancePayment(ActionRequest request, ActionResponse response)
       throws AxelorException {
     AdvancePayment advancePayment = request.getContext().asType(AdvancePayment.class);
-
     advancePayment = Beans.get(AdvancePaymentRepository.class).find(advancePayment.getId());
 
-    advancePaymentService.cancelAdvancePayment(advancePayment);
+    Beans.get(AdvancePaymentService.class).cancelAdvancePayment(advancePayment);
 
     response.setReload(true);
   }

@@ -33,7 +33,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -64,7 +64,7 @@ public class BatchDebtRecovery extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -77,7 +77,9 @@ public class BatchDebtRecovery extends BatchStrategy {
     } catch (AxelorException e) {
 
       TraceBackService.trace(
-          new AxelorException(e, e.getCategory(), ""), IException.DEBT_RECOVERY, batch.getId());
+          new AxelorException(e, e.getCategory(), ""),
+          ExceptionOriginRepository.DEBT_RECOVERY,
+          batch.getId());
       incrementAnomaly();
       stopping = true;
     }
@@ -131,14 +133,14 @@ public class BatchDebtRecovery extends BatchStrategy {
           TraceBackService.trace(
               new AxelorException(
                   e, e.getCategory(), I18n.get("Partner") + " %s", partner.getName()),
-              IException.DEBT_RECOVERY,
+              ExceptionOriginRepository.DEBT_RECOVERY,
               batch.getId());
           incrementAnomaly(partner);
           break;
         } catch (Exception e) {
           TraceBackService.trace(
               new Exception(String.format(I18n.get("Partner") + " %s", partner.getName()), e),
-              IException.DEBT_RECOVERY,
+              ExceptionOriginRepository.DEBT_RECOVERY,
               batch.getId());
           incrementAnomaly(partner);
           break;

@@ -21,6 +21,7 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
@@ -35,7 +36,10 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.rpc.Context;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -65,10 +69,13 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
   protected MessageService messageService;
+  protected TemplateContextService templateContextService;
 
   @Inject
-  public TemplateMessageServiceImpl(MessageService messageService) {
+  public TemplateMessageServiceImpl(
+      MessageService messageService, TemplateContextService templateContextService) {
     this.messageService = messageService;
+    this.templateContextService = templateContextService;
   }
 
   @Override
@@ -81,22 +88,28 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message generateMessage(Long objectId, String model, String tag, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
-    MetaModel metaModel = template.getMetaModel();
-    if (metaModel != null) {
-      if (!model.equals(metaModel.getFullName())) {
+    Object modelObj = template.getIsJson() ? template.getMetaJsonModel() : template.getMetaModel();
+
+    if (modelObj != null) {
+      String modelName =
+          template.getIsJson()
+              ? ((MetaJsonModel) modelObj).getName()
+              : ((MetaModel) modelObj).getFullName();
+
+      if (!model.equals(modelName)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             String.format(
-                I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL),
-                metaModel.getFullName(),
-                model));
+                I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), modelName, model));
       }
-      initMaker(objectId, model, tag);
+      initMaker(objectId, model, tag, template.getIsJson());
+      computeTemplateContexts(
+          template.getTemplateContextList(), objectId, model, template.getIsJson());
     }
 
     log.debug("model : {}", model);
@@ -104,14 +117,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     log.debug("object id : {}", objectId);
     log.debug("template : {}", template);
 
-    String content = "",
-        subject = "",
-        from = "",
-        replyToRecipients = "",
-        toRecipients = "",
-        ccRecipients = "",
-        bccRecipients = "",
-        addressBlock = "";
+    String content = "";
+    String subject = "";
+    String from = "";
+    String replyToRecipients = "";
+    String toRecipients = "";
+    String ccRecipients = "";
+    String bccRecipients = "";
+    String addressBlock = "";
     int mediaTypeSelect;
 
     if (!Strings.isNullOrEmpty(template.getContent())) {
@@ -169,7 +182,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     Message message =
         messageService.createMessage(
             model,
-            Long.valueOf(objectId).intValue(),
+            Math.toIntExact(objectId),
             subject,
             content,
             getEmailAddress(from),
@@ -223,11 +236,40 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
   @Override
   @SuppressWarnings("unchecked")
-  public TemplateMaker initMaker(long objectId, String model, String tag)
-      throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+  public TemplateMaker initMaker(long objectId, String model, String tag, boolean isJson)
+      throws ClassNotFoundException {
 
-    Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
-    maker.setContext(JPA.find(myClass, objectId), tag);
+    if (isJson) {
+      maker.setContext(JPA.find(MetaJsonRecord.class, objectId), tag);
+    } else {
+      Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
+      maker.setContext(JPA.find(myClass, objectId), tag);
+    }
+
+    return maker;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected TemplateMaker computeTemplateContexts(
+      List<TemplateContext> templateContextList, long objectId, String model, boolean isJson)
+      throws ClassNotFoundException {
+
+    if (templateContextList == null) {
+      return maker;
+    }
+
+    Context context = null;
+    if (isJson) {
+      context = new com.axelor.rpc.Context(objectId, MetaJsonRecord.class);
+    } else {
+      Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
+      context = new com.axelor.rpc.Context(objectId, myClass);
+    }
+
+    for (TemplateContext templateContext : templateContextList) {
+      Object result = templateContextService.computeTemplateContext(templateContext, context);
+      maker.addContext(templateContext.getName(), result);
+    }
 
     return maker;
   }
@@ -260,7 +302,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     EmailAddress emailAddress = emailAddressRepo.findByAddress(recipient);
 
     if (emailAddress == null) {
-      Map<String, Object> values = new HashMap<String, Object>();
+      Map<String, Object> values = new HashMap<>();
       values.put("address", recipient);
       emailAddress = emailAddressRepo.create(values);
     }

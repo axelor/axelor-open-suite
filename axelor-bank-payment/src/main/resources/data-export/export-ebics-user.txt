@@ -1,34 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ebics-users>
 <% __ids__.each({ u = com.axelor.inject.Beans.get('com.axelor.apps.bankpayment.db.repo.EbicsUserRepository' as Class).find(it)
-	
+
+   allEbicsRequestLog = com.axelor.inject.Beans.get('com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository' as Class).all()
+
 	bankCerts = "" 
 	u.ebicsPartner?.ebicsBank?.ebicsCertificateList.each( {c->
 	    bankCerts += "<ebicsCertificate>"
 		bankCerts += "<typeSelect>${c.typeSelect}</typeSelect>"
 		bankCerts += "<pem>${c.pemString}</pem>"
 		bankCerts += "</ebicsCertificate>"
-	})
-	
-	requestLog = ""
-	u.ebicsRequestLogList?.each( { log ->
-		requestLog +="<requestLog>"
-		requestLog +="<requestType>${log.requestType}</requestType>"
-		requestLog +="<requestTime>${log.requestTime}</requestTime>"
-		requestLog +="<responseCode>${log.responseCode}</responseCode>"
-		requestLog +="<requestTraceText>${log.requestTraceText}</requestTraceText>"
-		requestLog +="<responseTraceText>${log.responseTraceText}</responseTraceText>"
-		requestLog +="</requestLog>"
-	})
-	
-	bankStatementFileFormat = ""
-	u.ebicsPartner?.bankStatementFileFormatSet.each( {b->
-	    bankStatementFileFormat += "<bankStatementFileFormat>"
-		bankStatementFileFormat += "<importId>${b.importId}</importId>"
-		bankStatementFileFormat += "<statementFileFormatSelect>${b.statementFileFormatSelect}</statementFileFormatSelect>"
-		bankStatementFileFormat += "<name>${b.name}</name>"
-		bankStatementFileFormat += "<description>${b.description}</description>"
-		bankStatementFileFormat += "</bankStatementFileFormat>"
 	})
 	
 	receiverBankDetails = ""
@@ -76,6 +57,20 @@
 		bankDetails += "</bankDetails>"
 	})
 	
+
+	allEbicsRequestLog = allEbicsRequestLog.filter('self.ebicsUser.id in ?1',it)
+
+	ebicsRequestLog = ""
+	allEbicsRequestLog.fetch().each( { log ->
+		ebicsRequestLog +="<ebicsRequestLog>"
+		ebicsRequestLog +="<ebicsUser>${log.ebicsUser?.userId}</ebicsUser>"
+		ebicsRequestLog +="<requestType>${log.requestType}</requestType>"
+		ebicsRequestLog +="<requestTime>${log.requestTime}</requestTime>"
+		ebicsRequestLog +="<responseCode>${log.responseCode}</responseCode>"
+		ebicsRequestLog +="<requestTraceText>${log.requestTraceText}</requestTraceText>"
+		ebicsRequestLog +="<responseTraceText>${log.responseTraceText}</responseTraceText>"
+		ebicsRequestLog +="</ebicsRequestLog>"
+		 })
 	out << 
 	"""
 	<ebics-user>
@@ -88,9 +83,6 @@
 			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
 			<ebicsTypeSelect>${u.ebicsPartner?.ebicsTypeSelect}</ebicsTypeSelect>
 			<testMode>${u.ebicsPartner?.testMode}</testMode>
-			<bankStatementFileFormatSet>
-					$bankStatementFileFormat
-			</bankStatementFileFormatSet>
 			<pSRBankStatementFileFormat>
 				<importId>${u.ebicsPartner?.pSRBankStatementFileFormat?.importId}</importId>
 				<statementFileFormatSelect>${u.ebicsPartner?.pSRBankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>
@@ -122,6 +114,7 @@
 				<bank>
 					<bankName>${u.ebicsPartner?.ebicsBank?.bank.bankName}</bankName>
 					<code>${u.ebicsPartner?.ebicsBank?.bank.code}</code>
+					<bankDetailsTypeSelect>${u.ebicsPartner?.ebicsBank?.bank.bankDetailsTypeSelect}</bankDetailsTypeSelect>
 				</bank>
 				<ebicsCertificateList>
 				 $bankCerts
@@ -144,10 +137,11 @@
 			<pem>${u.x002Certificate?.pemString}</pem>
 			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.x002Certificate?.privateKey)}</privateKey>
 		</x002Certificate>
-		<ebicsRequestLogList>
-		 $requestLog
-		</ebicsRequestLogList>
 	</ebics-user>
+
+	<ebicsRequestLogList>
+		 $ebicsRequestLog
+	</ebicsRequestLogList>
 	"""
 }) %>
 

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="forecast-generator-grid" title="Forecast Assistants" model="com.axelor.apps.cash.management.db.ForecastGenerator">
-       <field name="company"/>
-       <field name="bankDetails"/>
-       <field name="typeSelect"/>
-       <field name="amount" aggregate="sum"/>
-       <field name="fromDate"/>
-       <field name="toDate"/>
-       <field name="periodicitySelect"/>
-    </grid>
+	<grid name="forecast-generator-grid" title="Forecast Assistants" model="com.axelor.apps.cash.management.db.ForecastGenerator">
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="bankDetails"/>
+		<field name="typeSelect"/>
+		<field name="amount" aggregate="sum"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="periodicitySelect"/>
+	</grid>
  
 	 <form name="forecast-generator-form" title="Forecast Assistant" model="com.axelor.apps.cash.management.db.ForecastGenerator"
 	 	onNew="action-forecast-generator-record-default-on-new">

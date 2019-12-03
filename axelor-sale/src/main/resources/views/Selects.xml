@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -78,5 +78,9 @@
 	<selection name="sale.order.fill.saleman.select">
 		<option value="1">Current Login user</option>
 		<option value="2">User assigned to customer</option>
+	</selection>
+
+	<selection name="abc.analysis.type.select" id="sale.abc.analysis.type.select">
+		<option value="com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl">Sale</option>
 	</selection>
 </object-views>

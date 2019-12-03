@@ -34,7 +34,7 @@ public class ImportInvoice {
 
   @Inject private InvoiceRepository invoiceRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importInvoice(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof Invoice;
     Invoice invoice = (Invoice) bean;

@@ -1,15 +1,15 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LeaveReason" cachable="true">
+  <entity name="LeaveReason" cacheable="true">
 
       <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
       <boolean name="manageAccumulation" title="Manage Accumulation"/>
-      <boolean name="allowNegativeValue" title="Allow Negative Value for leaves"/>
+      <boolean name="allowNegativeValue" title="Allow negative value for leaves"/>
       <boolean name="allowInjection" title="Allow Injection"/>
       <string name="instruction"  title="Instruction" multiline="true" large="true"/>
       

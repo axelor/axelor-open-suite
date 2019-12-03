@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="UnitCostCalculation" lang="java">
+  
+	<string name="unitCostCalcSeq" title="Calculation number"/>
+	<integer name="statusSelect" selection="production.cost.calculations.status.select"/>
+	<string name="name" title="Name"/>
+	<string name="description" title="Description" large="true" multiline="true"/>
+	<boolean name="allBomLevels" title="Calculate all BOM levels" default="true"/>
+	<date name="calculationDate" title="Calculation date"/>
+	<date name="updateCostDate" title="Update costs date"/>
+	<many-to-many name="companySet" ref="com.axelor.apps.base.db.Company" title="Companies"/>
+	<string name="productSubTypeSelect" title="Product sub-types" selection="product.sub.type.product.select"/>
+	<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+	<many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
+	<many-to-many name="productFamilySet" ref="com.axelor.apps.base.db.ProductFamily" title="Product families"/>
+	<one-to-many name="unitCostCalcLineList" ref="com.axelor.apps.production.db.UnitCostCalcLine" title="Results" mappedBy="unitCostCalculation"/>
+	
+	<extra-code><![CDATA[
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_COSTS_COMPUTED = 2;
+		public static final int STATUS_COSTS_UPDATED = 3;
+	]]></extra-code>
+	
+	<track>
+      <field name="unitCostCalcSeq"/>
+      <field name="statusSelect" />
+      <field name="calculationDate"/>
+      <field name="updateCostDate"/>
+      <field name="name"/>
+      <field name="allBomLevels"/>
+    </track>
+
+  </entity>
+</domain-models>

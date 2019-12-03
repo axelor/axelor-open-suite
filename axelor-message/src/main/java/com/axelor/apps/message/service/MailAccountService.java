@@ -32,7 +32,7 @@ public interface MailAccountService {
   public EmailAccount getDefaultReader();
 
   public void checkMailAccountConfiguration(EmailAccount mailAccount)
-      throws AxelorException, Exception;
+      throws AxelorException, MessagingException;
 
   public String getSecurity(EmailAccount mailAccount);
 

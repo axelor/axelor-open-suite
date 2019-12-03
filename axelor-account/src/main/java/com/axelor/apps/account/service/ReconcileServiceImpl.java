@@ -39,7 +39,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -96,7 +96,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param canBeZeroBalanceOk Peut être soldé?
    * @return Une reconciliation
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Reconcile createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
@@ -141,7 +141,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @return L'etat de la reconciliation
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
       throws AxelorException {
 
@@ -389,7 +389,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @return L'etat de la réconciliation
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException {
 
     log.debug("unreconcile : reconcile : {}", reconcile);
@@ -450,7 +450,7 @@ public class ReconcileServiceImpl implements ReconcileService {
    * @param reconcile Une reconciliation
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void canBeZeroBalance(Reconcile reconcile) throws AxelorException {
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();

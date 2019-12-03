@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+    <grid name="cost-calculations-grid" title="Cost price calculation" model="com.axelor.apps.production.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
+		<field name="unitCostCalcSeq"/>
+		<field name="name"/>
+		<field name="calculationDate"/>
+		<field name="updateCostDate"/>
+		<field name="allBomLevels"/>
+		<field name="statusSelect"/>
+    </grid>
+
+	<form name="cost-calculations-form" title="Cost price calculation" model="com.axelor.apps.production.db.UnitCostCalculation" width="large" onNew="action-unit-cost-calculation-record-default">
+		<panel name="mainPanel">
+			<field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false" colSpan="12"/>
+			<field name="unitCostCalcSeq" readonly="true" colSpan="4"/>
+			<field name="name" colSpan="8" required="true"/>
+		</panel>
+		<panel name="startFilterPanel" colSpan="12" showIf="statusSelect == 1">
+			<field name="companySet" widget="TagSelect" required="true"/>
+			<field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2" required="true"/>
+			<field name="allBomLevels"/>
+			<field name="productSet" widget="TagSelect" onSelect="action-unit-cost-calculation-attrs-domain-on-product" colSpan="12"/>
+			<field name="productCategorySet" widget="TagSelect" colSpan="12"/>
+			<field name="productFamilySet" widget="TagSelect" colSpan="12"/>
+		</panel>
+		<panel-tabs name="mainPanelTabs" colSpan="12">
+			<panel name="descriptionPanel" title="Description">
+			 	<field name="description" widget="html" colSpan="12" showTitle="false"/>
+			</panel>
+			<panel name="filtersPanel" title="Filters" showIf="statusSelect != 1" readonlyIf="statusSelect == 3">
+				<field name="companySet" widget="TagSelect" required="true"/>
+				<field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2" required="true" />
+				<field name="allBomLevels"/>
+				<field name="productSet" widget="TagSelect" onSelect="action-unit-cost-calculation-attrs-domain-on-product" colSpan="12"/>
+				<field name="productCategorySet" widget="TagSelect" colSpan="12"/>
+				<field name="productFamilySet" widget="TagSelect" colSpan="12"/>
+			</panel>
+			<panel-related name="resultPanel" field="unitCostCalcLineList" grid-view="unit-cost-calc-line-grid" form-view="unit-cost-calc-line-form" height="20" colSpan="12" canNew="false" showIf="statusSelect != 1" readonlyIf="statusSelect == 3"/>
+		</panel-tabs>
+		<panel name="actionPanel" sidebar="true">
+			<button name="runCalculationBtn" title="Run calculation" onClick="save,action-unit-cost-calculation-method-run-calculation" hideIf="statusSelect == 3"/>
+			<button name="updateUnitCostBtn" title="Update costs" onClick="save,action-unit-cost-calculation-method-update-unit-costs" showIf="statusSelect == 2"/>
+			<button name="exportBtn" title="Export" onClick="save,action-unit-cost-calculation-method-export-csv" hideIf="statusSelect == 1"/>
+			<button name="importBtn" title="Import" onClick="save,action-unit-cost-calculation-view-import-csv" showIf="statusSelect == 2"/>
+		</panel>
+		<panel name="datePanel" sidebar="true" showIf="statusSelect != 1">
+			<field name="calculationDate" readonly="true"/>
+			<field name="updateCostDate" readonly="true"/>
+		</panel>
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+	</form>
+
+	<form name="wizard-unit-cost-calc-import-form" title="Import CSV" model="com.axelor.apps.base.db.Wizard" >
+		<panel name="wizardPanel">
+			<field name="metaFile" title="Input file" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
+			<button name="importBtn" colSpan="4" title="Import" readonlyIf="metaFile == null" onClick="action-unit-cost-calculation-method-import-csv"/>
+		</panel>
+	</form>
+
+	<action-record name="action-unit-cost-calculation-record-default" model="com.axelor.apps.production.db.UnitCostCalculation">
+		<field name="statusSelect" expr="eval:1"/>
+	</action-record>
+
+	<action-attrs name="action-unit-cost-calculation-attrs-domain-on-product">
+	  <attribute name="domain" for="productSet" expr="eval: &quot;self.productTypeSelect = 'storable' and self.productSubTypeSelect in (&quot;+productSubTypeSelect+&quot;) 
+	  and self.defaultBillOfMaterial.company in (&quot;+com.axelor.apps.tool.StringTool.getIdListString(companySet)+&quot;) 
+	  and self.procurementMethodSelect in ('produce', 'buyAndProduce')&quot;"/>
+	</action-attrs>
+
+	<action-method name="action-unit-cost-calculation-method-run-calculation">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="runUnitCostCalc"/>
+	</action-method>
+
+	<action-method name="action-unit-cost-calculation-method-update-unit-costs">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="updateUnitCosts"/>
+	</action-method>
+
+	<action-method name="action-unit-cost-calculation-method-export-csv">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="exportUnitCostCalc"/>
+	</action-method>
+	
+	<action-method name="action-unit-cost-calculation-method-import-csv">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="importUnitCostCalc"/>
+	</action-method>
+	
+	<action-view name="action-unit-cost-calculation-view-import-csv" title="Import" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-unit-cost-calc-import-form"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="width" value="800"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+	</action-view>
+
+</object-views>
