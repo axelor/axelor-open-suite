@@ -434,6 +434,7 @@ AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
+AND AccountingReport.company = Move.company 
 order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -833,6 +834,7 @@ AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
+AND AccountingReport.company = Move.company 
 GROUP BY Tax.id ,TaxPaymentMoveLine.tax_rate
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>

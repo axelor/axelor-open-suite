@@ -40,8 +40,8 @@
 		  onLoad="action-expense-attrs-hide-button-readonly-field,action-expense-attrs-expense-company-cb,action-expense-attrs-multiple-users"
 		  onSave="action-expense-method-validate-and-compute" canCopy="false">
 		<menubar>
-            <menu title="Reports" icon="fa-files-o">
-				<item name="printExpense" title="Print" action="save,action-print-expense"/>
+            <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
+				<item name="printExpenseItem" title="Print" action="save,action-print-expense"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel">

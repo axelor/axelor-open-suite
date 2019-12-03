@@ -97,6 +97,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
+        .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
   }
 

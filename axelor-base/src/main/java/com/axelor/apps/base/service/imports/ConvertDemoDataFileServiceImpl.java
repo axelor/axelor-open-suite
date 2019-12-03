@@ -70,14 +70,13 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
     Workbook workBook = new XSSFWorkbook(new FileInputStream(excelFile));
 
     File zipFile = File.createTempFile("demo", ".zip");
-    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile));
     List<String> entries = new ArrayList<>();
 
     for (int i = 0; i < workBook.getNumberOfSheets(); i++) {
       Sheet sheet = workBook.getSheetAt(i);
       File csvFile =
           new File(excelFile.getParent() + File.separator + this.getFileNameFromSheet(sheet));
-      try {
+      try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile)); ) {
 
         excelToCSV.writeTOCSV(csvFile, sheet, 3, 1);
 
@@ -94,23 +93,23 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
         csvFile.delete();
       }
     }
-    zos.close();
+
     entries.clear();
 
     return zipFile;
   }
 
   private void writeToZip(File csvFile, ZipOutputStream zos) throws IOException {
-    zos.putNextEntry(new ZipEntry(csvFile.getName()));
-    byte[] buffer = new byte[1024];
-    FileInputStream fis = new FileInputStream(csvFile);
-    int length;
-    while ((length = fis.read(buffer)) > 0) {
-      zos.write(buffer, 0, length);
-    }
+    try (FileInputStream fis = new FileInputStream(csvFile)) {
+      zos.putNextEntry(new ZipEntry(csvFile.getName()));
+      byte[] buffer = new byte[1024];
 
-    fis.close();
-    zos.closeEntry();
+      int length;
+      while ((length = fis.read(buffer)) > 0) {
+        zos.write(buffer, 0, length);
+      }
+      zos.closeEntry();
+    }
   }
 
   private String getFileNameFromSheet(Sheet sheet) throws AxelorException {

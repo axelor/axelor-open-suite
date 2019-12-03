@@ -8,6 +8,7 @@
 - MOVE : changed position of reconciliation tag in move form.
 - MOVE : in remove function improved messages. 
 
+
 ## Bug Fixes
 - REFUND : avoid blocking message when ventilation of the invoice
 - MOVE : corrected display of status tag in move form.
@@ -1498,7 +1499,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...dev
+[5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...5.1-dev
+[5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
+[5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
 [5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
 [5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
 [5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9
