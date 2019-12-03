@@ -71,7 +71,7 @@ public class LeadServiceImpl implements LeadService {
     if (partner != null && contactPartner != null) {
       contactPartner = partnerRepo.save(contactPartner);
       if (partner.getContactPartnerSet() == null) {
-        partner.setContactPartnerSet(new HashSet<Partner>());
+        partner.setContactPartnerSet(new HashSet<>());
       }
       partner.getContactPartnerSet().add(contactPartner);
       contactPartner.setMainPartner(partner);

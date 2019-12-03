@@ -1,41 +1,69 @@
 # Changelog
 
-## [Unreleased 5.1.12]
+## [Unreleased 5.1.14]
 ## Features
-- AVAILABILITY REQUEST : Addition of button on grid-view to view stock move lines.
-- StockMove : Addition of button to view stockMoveLines on grid-view.
+- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
 
 ## Improvements
-- STOCK : Changed type select french translation
-- Expense : Modify report content.
-- Add name on menu and item menu.
-- ACCOUNTING : generate taxlines translation
-- AnalyticMoveLine : fix amount calculation
-- PROJECT : Fix financial report to follow the Axelor report guidelines
-- STOCK LOCATION PRINTING : new printing without financial data
-- STOCK MOVE LINE : Design improvement of Stock Move panel
-- TOOL,STUDIO : Disable XML external entity (XXE) processing.
-- HRBatch : stopped generation of payrollPreparation with employmentContract having status 'closed'
-- ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accouting report for new message that appears before generation if the minimum of line is found.
+## Bug Fixes
+-REFUND : avoid blocking message when ventilation of the invoice
+
+## [5.1.13] - 2019-11-29
+## Improvements
+- DEBT RECOVERY: disable canNew for debt recovery.
+- STOCK MOVE: remove filter.
+- Stock Location: hide stock location valuation in stock location report if disabled in form view.
+- STOCK MOVE GRID: change column order.
+- OPPORTUNITY: Display description on popup in kanban-view.
+- Reports: In all reports set header and footer heights parameters according to print settings.
 
 ## Bug Fixes
-- Studio : removed includeInCost field from json field form view
-- STOCK : status and state
-- MOVE LINE : fix error in amount of reverse move line.
-- ImportProduct :fix 'image' null variable access
-- EXPORTOBJECT : changed a condition in updateMenuGraph method such that it does not always evaluate to 'true'
-- INVOICE GENERATION : control when there is no address.
-- StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'
-- COPY OF PRODUCT : do not copy lastproductionprice value.
-- Invoice : add header and footer height parameter on PrintSetting object
-- URLService : Use try-with-resources for "BufferedOutputStream"
-- Tools : use try-with-resources for resource management in download file from ftp server
-- ACCOUNTING REPORT : corrected result of search button in function of the report.
-- MOVE LINE : reconciled or lettered move lines are now read only.
-- MOVE : if a move line is reconciled or lettered display message.
-- STOCK : email alert on stock rules should not block the process of validation of the stock move
+- Check duplicate: make case-insensitive query.
+- Sale Order: allocate a full sale order does not try to allocate already delivered lines.
+- Project: Fix computation of time spent on removal of validated timesheet.
+- ADDRESS: reduced space between addresses in partner-form.
+- Code Refactor for TemplateRuleService file.
+- Fix NPE in bank order file upload.
+- Invoice Generation: allow to validate supplier invoice without address.
+- StockRule: Fix script error on deleting product.
+- Lead: fix issue when generating partner without required fields.
+- StockLocation: fix always dirty form view.
+- INVOICE LINE: fixed hidden budget panel in invoice line.
+- StockMove: In error message prevent showing multiple times the same product name.
+
+## [5.1.12] - 2019-11-19
+## Features
+- AVAILABILITY REQUEST: Addition of button on grid-view to view stock move lines.
+- Stock Move: Addition of button to view stockMoveLines on grid-view.
+
+## Improvements
+- Expense: New design for expense report.
+- Add name attributes on all menus and menu items.
+- PROJECT: Fix financial report to follow the Axelor report guidelines.
+- STOCK LOCATION PRINTING: new printing without financial data.
+- STOCK MOVE LINE: Design improvement of Stock Move panel.
+- TOOL,STUDIO: Disable XML external entity (XXE) processing.
+- HRBatch: stopped generation of payrollPreparation with employmentContract having status 'closed'
+- ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accounting report for new message that appears before generation if the minimum of lines is found.
+- PRICE LIST: get lower price for same qty for same product.
+
+## Bug Fixes
+- STOCK : Changed type select french translation
+- ACCOUNTING: generate taxlines translation.
+- AnalyticMoveLine: fix amount calculation.
+- Studio: removed includeInCost field from json field form view.
+- STOCK MOVE LINE: Change title for available status to avoid having the same label as stock move status.
+- MOVE LINE: fix error in amount of reverse move line.
+- ImportProduct: fix 'image' null variable access.
+- INVOICE GENERATION: add control when there is no address.
+- StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'.
+- COPY OF PRODUCT: do not copy lastproductionprice value.
+- Invoice: add header and footer height parameter on PrintSetting object.
+- ACCOUNTING REPORT: corrected result of search button in function of the report.
+- MOVE LINE: reconciled or lettered move lines are now read only.
+- MOVE: displays if a move line is reconciled or lettered.
+- STOCK: email alert on stock rules should not block the process of validation of the stock move.
 - BankReconciliation: Fix query error when loading bank statement in bank reconciliation form.
-- FileTool : Use try-with-resources for "BufferedReader"
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
@@ -1466,7 +1494,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...dev
+[5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...5.1-dev
+[5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
+[5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
 [5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
 [5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
 [5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9

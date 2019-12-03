@@ -62,7 +62,7 @@
 				<field name="displayCodeAccountColumnOnPrinting" showIf="typeSelect == 1"/>
 				<field name="displayNameAccountColumnOnPrinting" showIf="typeSelect == 1"/>
 				<field name="displayMoveLineSequenceOnPrinting" showIf="typeSelect == 1"/>
-				<field name="displayCumulativeBalance" showIf="typeSelect==7"/>
+				<field name="displayCumulativeBalance" showIf="typeSelect==7 || typeSelect==1"/>
 			</panel>
 		</panel-tabs>
 		

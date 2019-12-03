@@ -82,6 +82,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -598,7 +599,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     if (priceList != null) {
       PriceListLine priceListLine =
-          priceListService.getPriceListLine(product, qtyConverted, priceList);
+          priceListService.getPriceListLine(product, qtyConverted, priceList, price);
       if (priceListLine != null) {
         discountMethodTypeSelect = priceListLine.getTypeSelect();
       }
@@ -666,11 +667,20 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Transactional
   public void computeTimeSpent(Timesheet timesheet) {
     List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      Project project = timesheetLine.getProject();
-      if (project != null) {
-        project.setTimeSpent(
-            timesheetLine.getHoursDuration().add(this.computeSubTimeSpent(project)));
+
+    if (timesheetLineList != null) {
+      Map<Project, BigDecimal> projectTimeSpentMap =
+          timesheetLineService.getProjectTimeSpentMap(timesheetLineList);
+
+      Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
+
+      while (projectIterator.hasNext()) {
+        Project project = projectIterator.next();
+
+        BigDecimal timeSpent =
+            projectTimeSpentMap.get(project).add(this.computeSubTimeSpent(project));
+        project.setTimeSpent(timeSpent);
+
         this.computeParentTimeSpent(project);
       }
     }
@@ -682,7 +692,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     List<Project> subProjectList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
     if (subProjectList == null || subProjectList.isEmpty()) {
-      return project.getTimeSpent();
+      return this.computeTimeSpent(project);
     }
     for (Project projectIt : subProjectList) {
       sum = sum.add(this.computeSubTimeSpent(projectIt));
