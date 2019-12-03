@@ -5,6 +5,7 @@
 "%d anomaly.","%d anomalie.",,
 "%d invoice treated successfully,","%d facture traitée avec succès.",,
 "%d invoices treated successfully,","%d factures traitées avec succès.",,
+"%d moves couldn't be deleted or archived, please check the logs.","%d écritures n'ont pas pu être supprimées ou archivées, veuillez vérifier les logs.",,
 "%d reimbursement created successfully,","%d remboursement créé avec succès,",,
 "%d reimbursements created successfully,","%d remboursements créés avec succès.",,
 "%s : A customer account is missing for the company %s","%s : Compte comptable Client manquant pour la société %s",,

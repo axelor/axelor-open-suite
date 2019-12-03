@@ -167,10 +167,10 @@ public class MoveRemoveService {
     return move;
   }
 
-  public boolean deleteMultiple(List<? extends Move> moveList) {
-    boolean error = false;
+  public int deleteMultiple(List<? extends Move> moveList) {
+    int errorNB = 0;
     if (moveList == null) {
-      return error;
+      return errorNB;
     }
     for (Move move : moveList) {
       try {
@@ -184,12 +184,12 @@ public class MoveRemoveService {
         }
       } catch (Exception e) {
         TraceBackService.trace(e);
-        error = true;
+        errorNB +=1;
       } finally {
         JPA.clear();
       }
     }
-    return error;
+    return errorNB;
   }
 
   @Transactional(rollbackOn = {Exception.class})

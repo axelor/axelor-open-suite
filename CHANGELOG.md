@@ -1,21 +1,39 @@
 # Changelog
 
-## [Unreleased 5.1.12]
+## [Unreleased 5.1.14]
 ## Features
-- AVAILABILITY REQUEST : Addition of button on grid-view to view sale order lines.
+- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
 
 ## Improvements
-- Importer : Use try-with-resources with "ZipFile"
-- MOVE : in remove function improved bank reconciliation amount error message. 
+- MOVE : changed position of reconciliation tag in move form.
+- MOVE : in remove function improved messages. 
 
 ## Bug Fixes
-- Check Duplicate : make case-insensitive query
+- REFUND : avoid blocking message when ventilation of the invoice
+- MOVE : corrected display of status tag in move form.
+
+## [5.1.13] - 2019-11-29
+## Improvements
+- DEBT RECOVERY: disable canNew for debt recovery.
+- STOCK MOVE: remove filter.
+- Stock Location: hide stock location valuation in stock location report if disabled in form view.
+- STOCK MOVE GRID: change column order.
+- OPPORTUNITY: Display description on popup in kanban-view.
+- Reports: In all reports set header and footer heights parameters according to print settings.
+
+## Bug Fixes
+- Check duplicate: make case-insensitive query.
 - Sale Order: allocate a full sale order does not try to allocate already delivered lines.
-- Project : Fix computation of 'timeSpent' field on removal of validated timesheet.
-- ADDRESS : reduced space between addresses in partner-form
-- ConvertDemoDataFileServiceImpl : Use try-with-resources for "ZipOutputStream" and "FileInputStream"
-- Code Refactor for TemplateRuleService file
+- Project: Fix computation of time spent on removal of validated timesheet.
+- ADDRESS: reduced space between addresses in partner-form.
+- Code Refactor for TemplateRuleService file.
 - Fix NPE in bank order file upload.
+- Invoice Generation: allow to validate supplier invoice without address.
+- StockRule: Fix script error on deleting product.
+- Lead: fix issue when generating partner without required fields.
+- StockLocation: fix always dirty form view.
+- INVOICE LINE: fixed hidden budget panel in invoice line.
+- StockMove: In error message prevent showing multiple times the same product name.
 
 ## [5.1.12] - 2019-11-19
 ## Features
@@ -34,9 +52,22 @@
 - PRICE LIST: get lower price for same qty for same product.
 
 ## Bug Fixes
-- Studio : removed includeInCost field from json field form view
-- STOCK : status and state
-- MOVE LINE : fix error in amount of reverse move line.
+- STOCK : Changed type select french translation
+- ACCOUNTING: generate taxlines translation.
+- AnalyticMoveLine: fix amount calculation.
+- Studio: removed includeInCost field from json field form view.
+- STOCK MOVE LINE: Change title for available status to avoid having the same label as stock move status.
+- MOVE LINE: fix error in amount of reverse move line.
+- ImportProduct: fix 'image' null variable access.
+- INVOICE GENERATION: add control when there is no address.
+- StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'.
+- COPY OF PRODUCT: do not copy lastproductionprice value.
+- Invoice: add header and footer height parameter on PrintSetting object.
+- ACCOUNTING REPORT: corrected result of search button in function of the report.
+- MOVE LINE: reconciled or lettered move lines are now read only.
+- MOVE: displays if a move line is reconciled or lettered.
+- STOCK: email alert on stock rules should not block the process of validation of the stock move.
+- BankReconciliation: Fix query error when loading bank statement in bank reconciliation form.
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
