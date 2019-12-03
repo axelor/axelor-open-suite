@@ -25,6 +25,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
+import com.axelor.apps.report.engine.EmbeddedReportSettings;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -168,6 +169,45 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
     reportSettings.generate();
     return reportSettings;
+  }
+
+  public String generateReportTemplateLink(
+      TemplateMaker maker,
+      String fileName,
+      String modelPath,
+      String format,
+      List<BirtTemplateParameter> birtTemplateParameterList)
+      throws AxelorException {
+
+    String birtTemplateFileLink = null;
+
+    if (modelPath == null || modelPath.isEmpty()) {
+      return null;
+    }
+
+    ReportSettings reportSettings = new EmbeddedReportSettings(modelPath, fileName);
+
+    for (BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList) {
+      maker.setTemplate(birtTemplateParameter.getValue());
+
+      try {
+        reportSettings.addParam(
+            birtTemplateParameter.getName(),
+            convertValue(birtTemplateParameter.getType(), maker.make()));
+      } catch (BirtException e) {
+        throw new AxelorException(
+            e.getCause(),
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.TEMPLATE_MESSAGE_BASE_2));
+      }
+    }
+
+    reportSettings.generate();
+    if (reportSettings != null) {
+      birtTemplateFileLink = reportSettings.getFileLink();
+    }
+
+    return birtTemplateFileLink;
   }
 
   private Object convertValue(String type, String value) throws BirtException {

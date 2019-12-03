@@ -387,4 +387,12 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
   public static final String SERVER_CONNECTION_ERROR = /*$$(*/
       "Unable to connect to Geonames server" /*)*/;
+  public static final String REPORT_FIELD_FROM_REPORT_WIZARD = /*$$(*/
+      "Please select Birt Teplate." /*)*/;
+  public static final String INVOICE_FIELD_FROM_BIRT_TEMPLATE = /*$$(*/
+      "please select invoice Field on BirtTemplate." /*)*/;
+  public static final String META_MODEL_NOT_FOUND = /*$$(*/
+      "please select metaModel on BirtTemplate" /*)*/;
+  public static final String EMBEDDED_REPORT_ENGINE_NOT_TRUE = /*$$(*/
+      "Embedded engine is not enabled" /*)*/;
 }

@@ -11,27 +11,46 @@
 	<form name="birt-template-form" title="Birt Template" model="com.axelor.apps.base.db.BirtTemplate" onNew="action-birt-template-record-default" width="large">
 		<panel name="mainPanel">
 			<field name="name" colSpan="5" />
-			<field name="templateLink" colSpan="5" />
+			<field name="templateLink" colSpan="5" required="true" />
 			<field name="format" colSpan="2" />
+			<field name="embeddedReport" onChange="action-birt-template-validate-report-engine"/>
+			<field name="birtFile" widget="binary-link" hideIf="embeddedReport"/>
+			<field name="metaModel" required="true"/>
+		</panel>
+		
+		<panel name="reportPanal">
 			<panel name="parametersPanel" title="Parameters" colSpan="12">
-				<field name="birtTemplateParameterList" showTitle="false" colSpan="12">
-					<viewer depends="name,value">
-						<![CDATA[                                         
-	        				<birtTemplateParameterList>{{record.name}} : {{record.value}}</birtTemplateParameterList>
-	        			]]>
-	        		</viewer>
-					<editor x-show-titles="false" itemSpan="4">
-						<field name="name" />
-						<field name="value" />
-						<field name="type" />
-					</editor>
-				</field>
-			</panel>
+					<field name="birtTemplateParameterList" showTitle="false" colSpan="12">
+						<viewer depends="name,value">
+							<![CDATA[                                         
+		        				<birtTemplateParameterList>{{record.name}} : {{record.value}}</birtTemplateParameterList>
+		        			]]>
+		        		</viewer>
+						<editor x-show-titles="false" itemSpan="4">
+							<field name="name" />
+							<field name="value" />
+							<field name="type" />
+						</editor>
+					</field>
+				</panel>
 		</panel>
 	</form>
 
 	<action-record name="action-birt-template-record-default" model="com.axelor.apps.base.db.BirtTemplate">
 		<field name="format" expr="pdf" />
 	</action-record>
-
+	
+	<action-validate name="action-birt-template-validate-report-engine" >
+		 <error if="  !com.google.common.base.Strings.isNullOrEmpty(com.axelor.app.AppSettings.get().get('axelor.report.use.embedded.engine'))  
+		 			 &amp;&amp; !com.axelor.app.AppSettings.get().get('axelor.report.use.embedded.engine').equals('true')  
+		 			 &amp;&amp;  embeddedReport == false"
+		 			  message="Embedded engine is not enabled" 
+		 			  action="action-birt-template-attrs-hide-metafile"/>
+	</action-validate>
+	
+	<action-attrs name="action-birt-template-attrs-hide-metafile">
+		<attribute name="hidden" for="birtFile" expr="eval: true"/>
+		<attribute name="value" for="embeddedReport" expr="eval: true"/>
+	</action-attrs>
+	
 </object-views>
