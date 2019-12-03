@@ -2049,11 +2049,12 @@ WHERE ExpenseLine.kilometric_expense = ?
             </row>
             <row id="3370">
                 <cell id="3371">
-                    <property name="colSpan">1</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="3425">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2080,22 +2081,23 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
-                </cell>
-                <cell id="3931">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
                     <text id="3933">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["user_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4580">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="3830">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2122,22 +2124,24 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
-                </cell>
-                <cell id="3374">
                     <text id="3935">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["sent_date"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3375">
-                    <property name="colSpan">1</property>
+                    <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="3845">
+                        <property name="fontSize">10pt</property>
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2164,12 +2168,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
-                </cell>
-                <cell id="3934">
                     <text id="3930">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["payment_period_name"]</VALUE-OF>]]></text-property>
                     </text>
@@ -2177,9 +2181,12 @@ WHERE ExpenseLine.kilometric_expense = ?
             </row>
             <row id="4037">
                 <cell id="4038">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
                     <text id="4051">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2206,14 +2213,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
-                </cell>
-                <cell id="4039">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
                     <text id="4053">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2242,9 +2247,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                     </text>
                 </cell>
                 <cell id="4582">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4056">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2271,12 +2279,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
-                </cell>
-                <cell id="4041">
                     <text id="4057">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2306,9 +2314,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                     </text>
                 </cell>
                 <cell id="4042">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4585">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2335,12 +2346,12 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
-                </cell>
-                <cell id="4043">
                     <text id="4586">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
