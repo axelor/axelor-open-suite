@@ -132,9 +132,8 @@ public class MoveRemoveService {
     }
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-    	
-      errorMessage += checkDaybookMoveLine(moveLine);
 
+      errorMessage += checkDaybookMoveLine(moveLine);
     }
     if (errorMessage != null && !errorMessage.isEmpty()) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
@@ -184,7 +183,7 @@ public class MoveRemoveService {
         }
       } catch (Exception e) {
         TraceBackService.trace(e);
-        errorNB +=1;
+        errorNB += 1;
       } finally {
         JPA.clear();
       }
