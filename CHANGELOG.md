@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.1]
 ## Improvements
 - AdvancedExportLine : Add translation for field orderByType.
+- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
 
