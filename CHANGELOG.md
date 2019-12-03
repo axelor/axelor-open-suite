@@ -5,8 +5,11 @@
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'
 
 ## Improvements
+- MOVE : changed position of reconciliation tag in move form.
+
 ## Bug Fixes
--REFUND : avoid blocking message when ventilation of the invoice
+- REFUND : avoid blocking message when ventilation of the invoice
+- MOVE : corrected display of status tag in move form.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
