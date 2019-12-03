@@ -886,7 +886,7 @@ where AccountingReport.id = ?
             <property name="headerHeight">0in</property>
             <page-footer>
                 <grid id="4631">
-                    <property name="width">27.887083333333333cm</property>
+                    <property name="width">100%</property>
                     <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -962,7 +962,7 @@ where AccountingReport.id = ?
                         <property name="width">1.6in</property>
                     </column>
                     <column id="4632">
-                        <property name="width">15.531041666666667cm</property>
+                        <property name="width">17.531cm</property>
                     </column>
                     <column id="4633">
                         <property name="verticalAlign">middle</property>
@@ -2057,9 +2057,9 @@ where AccountingReport.id = ?
                                     <property name="borderTopStyle">none</property>
                                     <text id="5570">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="fontWeight">bold</property>
-                                        <property name="marginTop">2pt</property>
-                                        <property name="marginBottom">2pt</property>
+                                        <property name="fontWeight">normal</property>
+                                        <property name="marginTop">0pt</property>
+                                        <property name="marginBottom">0pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
