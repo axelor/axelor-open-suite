@@ -17,7 +17,7 @@
     <decimal name="originalPieceAmount" title="Original piece amount" hidden="true"/>
     <decimal name="amount" title="Amount"/>
     <date name="date" title="Date" column="date_val"/>
-    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal" required="true"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account"/>
     <many-to-one name="accountType" ref="com.axelor.apps.account.db.AccountType" title="Account Type"/>
 
