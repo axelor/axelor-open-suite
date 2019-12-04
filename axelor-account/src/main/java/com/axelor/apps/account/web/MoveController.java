@@ -270,7 +270,7 @@ public class MoveController {
           }
         }
       }
-      response.setAttr("$viewerTags", "hidden", isHidden);
+      response.setAttr("$reconcileTags", "hidden", isHidden);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

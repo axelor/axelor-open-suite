@@ -170,14 +170,6 @@
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">pdf_header</property>
-                    <property name="alias">pdf_header</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">pdf_header</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">pdf_header</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">user_name</property>
                     <property name="alias">user_name</property>
                     <property name="analysis">dimension</property>
@@ -294,66 +286,61 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">pdf_header</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">4</property>
                         <property name="name">payment_period_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">5</property>
                         <property name="name">total_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">validated_user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">validation_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">advance_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">withdrawn_cash</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">personal_expense_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">company_cb_select</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">multiple_users</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">sent_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -375,78 +362,72 @@
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">pdf_header</property>
-                    <property name="nativeName">pdf_header</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
                     <property name="name">user_name</property>
                     <property name="nativeName">user_name</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">4</property>
                     <property name="name">payment_period_name</property>
                     <property name="nativeName">payment_period_name</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">5</property>
                     <property name="name">total_amount</property>
                     <property name="nativeName">total_amount</property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">validated_user_name</property>
                     <property name="nativeName">validated_user_name</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">validation_date</property>
                     <property name="nativeName">validation_date</property>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">advance_amount</property>
                     <property name="nativeName">advance_amount</property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">withdrawn_cash</property>
                     <property name="nativeName">withdrawn_cash</property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">personal_expense_amount</property>
                     <property name="nativeName">personal_expense_amount</property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">company_cb_select</property>
                     <property name="nativeName">company_cb_select</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">multiple_users</property>
                     <property name="nativeName">multiple_users</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">sent_date</property>
                     <property name="nativeName">sent_date</property>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
@@ -454,7 +435,6 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Expense.id, 
 	MetaFile.file_path AS logo_path, 
-	PrintingSetting.pdf_header, 
 	AuthUser.full_name AS user_name, 
 	PaymentPeriod.name AS payment_period_name, 
 	Expense.in_tax_total AS total_amount, 
@@ -474,7 +454,6 @@ LEFT JOIN base_currency AS Currency ON Company.currency = Currency.id
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN base_period AS PaymentPeriod ON (Expense.period = PaymentPeriod.id)
 LEFT JOIN auth_user AS ValidatedUser ON (Expense.validated_by = ValidatedUser.id)
-LEFT JOIN public.base_printing_settings AS PrintingSetting ON (Company.printing_settings = PrintingSetting.id)
 LEFT JOIN meta_select AS selection ON selection.name = 'hr.expense.company.cb.payment'
 LEFT JOIN meta_select_item AS select_item ON (select_item.value = CAST( Expense.company_cb_select AS text ) AND select_item.select_id = selection.id)
 WHERE Expense.id = ?
@@ -1278,27 +1257,6 @@ WHERE ExpenseLine.kilometric_expense = ?
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>pdf_header</design:name>
-              <design:position>3</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>2147483647</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>pdf_header</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>pdf_header</design:label>
-            <design:formattingHints>
-              <design:displaySize>2147483647</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
               <design:name>user_name</design:name>
               <design:position>4</design:position>
             </design:identifier>
@@ -1575,12 +1533,6 @@ WHERE ExpenseLine.kilometric_expense = ?
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">pdf_header</property>
-                            <text-property name="displayName">pdf_header</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">user_name</property>
                             <text-property name="displayName">user_name</text-property>
                             <expression name="expression" type="javascript">dataSetRow["user_name"]</expression>
@@ -1700,12 +1652,6 @@ WHERE ExpenseLine.kilometric_expense = ?
                                         <property name="name">logo_path</property>
                                         <text-property name="displayName">logo_path</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">pdf_header</property>
-                                        <text-property name="displayName">pdf_header</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
                                         <property name="dataType">string</property>
                                     </structure>
                                     <structure>
@@ -1899,12 +1845,6 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="name">logo_path</property>
                     <text-property name="displayName">logo_path</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">pdf_header</property>
-                    <text-property name="displayName">pdf_header</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3877,12 +3817,6 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <property name="name">logo_path</property>
                     <text-property name="displayName">logo_path</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">pdf_header</property>
-                    <text-property name="displayName">pdf_header</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["pdf_header"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
