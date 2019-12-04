@@ -13,6 +13,7 @@
 - MOVE : corrected display of status tag in move form.
 - Manuf Order: fix real quantity not updating when a new line in consumed products is created.
 - INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
+- INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
 
 ## [5.2.0] - 2019-11-29
 ## Features
