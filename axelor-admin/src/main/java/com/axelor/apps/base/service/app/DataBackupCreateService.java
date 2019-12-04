@@ -205,8 +205,7 @@ public class DataBackupCreateService {
   private List<MetaModel> getMetaModels() {
     String filterStr =
         "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup'";
-    List<MetaModel> metaModels =
-        metaModelRepo.all().filter(filterStr).order("fullName ASC").fetch();
+    List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;

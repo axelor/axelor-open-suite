@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  order="-85"  if="__config__.app.isApp('stock')"
 	icon="fa-cubes"  icon-background="#b6473f" />
@@ -16,10 +16,12 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-out-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-customer-deliveries-form"/>
+		<view type="form" name="stock-move-form"/>
+ 		<view-param name="forceTitle" value="true"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_isReversion" expr="eval: false"/>
 	</action-view>
 
     <menuitem name="stock-root-custreturns" parent="stock-root-stock-moves"
@@ -29,7 +31,8 @@
         model="com.axelor.apps.stock.db.StockMove" >
         <view type="grid" name="stock-move-in-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-customer-returns-form"/>
+        <view type="form" name="stock-move-form"/>
+ 		<view-param name="forceTitle" value="true"/>
         <view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
@@ -43,11 +46,13 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-in-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-supplier-arrivals-form"/>
+		<view type="form" name="stock-move-form"/>
+ 		<view-param name="forceTitle" value="true"/>
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+		<context name="_isReversion" expr="eval: false"/>
 	</action-view>
 
     <menuitem name="stock-root-supreturns" parent="stock-root-stock-moves"
@@ -57,7 +62,8 @@
         model="com.axelor.apps.stock.db.StockMove" >
         <view type="grid" name="stock-move-out-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-        <view type="form" name="stock-move-supplier-returns-form"/>
+        <view type="form" name="stock-move-form"/>
+        <view-param name="forceTitle" value="true"/>
         <view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
@@ -72,7 +78,8 @@
 		model="com.axelor.apps.stock.db.StockMove" >
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-internal-move-form"/>
+		<view type="form" name="stock-move-form"/>
+        <view-param name="forceTitle" value="true"/>
 		<view-param name="search-filters" value="internal-stock-move-filters"/>
 		<domain>self.typeSelect = :_typeSelect</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
@@ -180,6 +187,7 @@
 	<action-view name="stock.root.inventories.draft" title="Inventories"
 		model="com.axelor.apps.stock.db.Inventory" >
 		<view type="grid" name="inventory-grid" />
+		<view type="calendar" name="inventory-calendar"/>
 		<view type="form" name="inventory-form"/>
 		<view-param name="search-filters" value="inventories-filters"/>
 	</action-view>	

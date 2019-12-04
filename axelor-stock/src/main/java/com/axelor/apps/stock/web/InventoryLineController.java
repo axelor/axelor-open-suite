@@ -50,7 +50,6 @@ public class InventoryLineController {
             ? request.getContext().getParent().asType(Inventory.class)
             : inventoryLine.getInventory();
     inventoryLine = Beans.get(InventoryLineService.class).compute(inventoryLine, inventory);
-    response.setValue("gap", inventoryLine.getGap());
-    response.setValue("gapValue", inventoryLine.getGapValue());
+    response.setValues(inventoryLine);
   }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 
-  <chart name="chart.client.portal.sum.invoices.three.months" title="Sum of last 3 months invoices">
+  <chart name="chart.client.portal.sum.invoices.four.months" title="Sum of last 4 months invoices">
     <dataset type="jpql">
     <![CDATA[
   SELECT
@@ -25,8 +25,8 @@
   </chart>
 	
 	
-  <action-view name="dashlet.client.portal.sum.invoices.three.months" title="chart">
-    <view type="chart" name="chart.client.portal.sum.invoices.three.months"/>
+  <action-view name="dashlet.client.portal.sum.invoices.four.months" title="chart">
+    <view type="chart" name="chart.client.portal.sum.invoices.four.months"/>
     <context name="fromDate" expr="eval: java.time.LocalDate.now().minusMonths(3)"/>
   </action-view>
 	

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="wizard-client-form" title="My space" model="com.axelor.apps.base.db.Wizard" onNew="action-group-client-view-onnew" width="large" editable="false" canDelete="false" canEdit="false" canNew="false" canSave="false" canCopy="false" canArchive="false" canAttach="false">
 		<panel name="moduleIconPanel" colSpan="12">
@@ -11,48 +11,49 @@
 				<button name="myInvoicesBtn" title="Invoicing" onClick="wizard-client-form-open-my-invoices" css="img-button client-img-menu btn-default" icon="img/128px/app-invoice.png" if-module="axelor-account" />
 			    <button name="myDeliveriesBtn" title="Delivery" onClick="wizard-client-form-open-my-deliveries" css="img-button client-img-menu btn-default" icon="img/128px/app-stock.png" if-module="axelor-stock" />
 			    <button name="myTicketsBtn" title="Helpdesk" onClick="wizard-client-form-open-my-tickets" css="img-button client-img-menu btn-default" icon="img/128px/app-helpdesk.png" if-module="axelor-helpdesk" />
+			    <button name="myCatalogBtn" title="Catalog" onClick="wizard-client-form-open-my-catalog" css="img-button client-img-menu btn-default" icon="img/128px/product-default_100.png" />
 			</panel>
 		</panel>
 		<panel name="indicatorsPanel" colSpan="12">
 			<panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
-				<panel name="projectPanel"  title="Project" if-module="axelor-project" itemSpan="12">
+				<panel name="projectPanel"  title="Project" if-module="axelor-project" itemSpan="12" hidden="true">
 					<button name="$totalProjects" title="Projects" width="190px" widget="info-button" onClick="action-method-show-client-view-total-projects" />
 	                <button name="$newTasks" title="New tasks" width="190px" widget="info-button" onClick="action-method-show-client-view-new-tasks"/>
 					<button name="$tasksInProgress" title="Tasks in progress" width="190px" widget="info-button" onClick="action-method-show-client-view-tasks-progress"/>
 					<button name="$tasksDue" title="Tasks due" width="190px" widget="info-button" onClick="action-method-show-client-view-tasks-due"/>
 					</panel>
-				<panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12">
+				<panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12" hidden="true">
 				    <button name="$myQuotation" title="My quotations" width="190px" widget="info-button" onClick="action-method-show-client-view-my-quotation"/>
 					<button name="$ordersInProgress" title="Orders in progress" width="190px" widget="info-button" onClick="action-method-show-client-view-orders-in-progress" />
 	                <button name="$lastOrder" title="Last order" width="190px" widget="info-button" onClick="action-method-show-client-view-last-order"/>
 				</panel>
-				<panel name="invoicePanel"  title="Invoicing" if-module="axelor-account" itemSpan="12">
+				<panel name="invoicePanel"  title="Invoicing" if-module="axelor-account" itemSpan="12" hidden="true">
 					<button name="$overdueInvoices" title="Overdue invoices" width="190px" widget="info-button" onClick="action-method-show-client-view-overdue-invoices"/>
 					<button name="$awaitingInvoices" title="Awaiting invoices" width="190px" widget="info-button" onClick="action-method-show-client-view-awaiting-invoices"/>
 					<button name="$totalRemaining" title="Total remaining" width="190px" widget="info-button" onClick="action-method-show-client-view-total-remaining"/>
 					<button name="$myRefund" title="My refund" width="190px" widget="info-button" onClick="action-method-show-client-view-refund"/>
 					
 				</panel>
-				<panel name="deliveryPanel" title="Delivery" if-module="axelor-stock" itemSpan="12">
+				<panel name="deliveryPanel" title="Delivery" if-module="axelor-stock" itemSpan="12" hidden="true">
 					<button name="$lastDelivery" title="Last delivery" width="190px" widget="info-button" onClick="action-method-show-client-view-last-delivery"/>
 	                <button name="$nextDelivery" title="Next delivery" width="190px" widget="info-button" onClick="action-method-show-client-view-next-delivery"/>
 	                <button name="$plannedDeliveries" title="Planned deliveries" width="190px" widget="info-button" onClick="action-method-show-client-view-planned-deliveries"/>
 	                <button name="$myReversions" title="My reversions" width="190px" widget="info-button" onClick="action-method-show-client-view-reversions"/>
 				</panel>
-				<panel name="ticketPanel"  title="Customer helpdesk" if-module="axelor-helpdesk" itemSpan="12">
+				<panel name="ticketPanel"  title="Customer helpdesk" if-module="axelor-helpdesk" itemSpan="12" hidden="true">
 					<button name="$customerTickets" title="Assign to customer" width="190px" widget="info-button" onClick="action-method-show-client-view-customer-tickets"/>
 	                <button name="$companyTickets" title="Assign to supplier" width="190px" widget="info-button" onClick="action-method-show-client-view-company-tickets"/>
 	                <button name="$resolvedTickets" title="Resolved tickets" width="190px" height="100px" widget="info-button" onClick="action-method-show-client-view-resolved-tickets" />
 					<button name="$lateTickets" title="Late tickets" width="190px" height="100px" widget="info-button" onClick="action-method-show-client-view-late-tickets" />
 				</panel>
 			</panel>
-			<panel-dashlet colSpan="12" name="dashletSumInvoices" action="dashlet.client.portal.sum.invoices.four.months"/>
+			<panel-dashlet colSpan="12" name="dashletSumInvoices" action="dashlet.client.portal.sum.invoices.four.months" hidden="true"/>
 		</panel>
 	</form>
 	
 	 <action-group name="action-group-client-view-onnew">
         <action name="action-method-complete-client-view-indicators"/>
-        <action name="action-attrs-hide-modules"/>
+        <action name="action-attrs-client-view-hide-modules"/>
     </action-group>
 	
 	<action-attrs name="action-attrs-client-view-hide-modules">
@@ -60,13 +61,23 @@
 		<attribute name="hidden" for="saleOrderPanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageSaleOrders())"/>
 		<attribute name="hidden" for="myInvoicesBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
 		<attribute name="hidden" for="invoicePanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
+		<attribute name="hidden" for="dashletSumInvoices" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageInvoices())"/>
 		<attribute name="hidden" for="myTicketsBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
 		<attribute name="hidden" for="ticketPanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageTickets())"/>
 		<attribute name="hidden" for="myProjectsBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
 		<attribute name="hidden" for="projectPanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageProjects())"/>
 		<attribute name="hidden" for="myDeliveriesBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
 		<attribute name="hidden" for="deliveryPanel" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getManageDelivery())"/>
+		<attribute name="hidden" for="myCatalogBtn" expr="eval: !(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getShowCatalog())"/>
 	</action-attrs>
+	
+	<action-view name="wizard-client-form-open-my-catalog" title="Catalog"
+               model="com.axelor.apps.base.db.Product" >
+               <view type="cards" name="product-cards" />
+               <view type="grid" name="product-grid" />
+               <view type="form" name="product-form" />
+               <domain>self.sellable = true</domain>
+       </action-view>
 	
 	<action-view name="wizard-client-form-open-my-tickets" title="My tickets"
 		model="com.axelor.apps.helpdesk.db.Ticket" >

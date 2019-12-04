@@ -79,6 +79,8 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
     return reportSetting
         .addParam("StockMoveId", stockMove.getId())
         .addParam("Locale", locale)
+        .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
   }
 

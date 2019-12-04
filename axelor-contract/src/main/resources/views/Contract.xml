@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
 		<field name="contractId" width="120"/>
@@ -43,7 +43,7 @@
                 <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner" showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-contract-attrs-partner-payment-config" required="true" form-view="partner-form"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight" hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
-                <field name="project" colSpan="8" domain="(select id from User where partner = :partner) member of self.membersUserSet"/>
+                <field name="project" colSpan="8" domain="self.clientPartner=:partner"/>
                 <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id" colSpan="12">
                     <field name="createdOn" colSpan="3"/>
                     <field name="createdBy" colSpan="3"/>

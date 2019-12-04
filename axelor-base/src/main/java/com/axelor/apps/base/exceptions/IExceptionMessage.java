@@ -178,9 +178,6 @@ public interface IExceptionMessage {
       "You can select only one default invoicing address." /*)*/;
   public static final String ADDRESS_9 = /*$$(*/
       "You can select only one default delivery address." /*)*/;
-  public static final String ADDRESS_10 = /*$$(*/
-      "You must specify a default invoicing address." /*)*/;
-
   public static final String ADDRESS_CANNOT_BE_NULL = "Address cannot be null.";
 
   /** Bank details controller */
@@ -277,7 +274,7 @@ public interface IExceptionMessage {
 
   public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
   public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/
-      "Google Maps API key is missing in configuration." /*)*/;;
+      "Google Maps API key is missing in configuration." /*)*/;
 
   /** Weekly planning service */
   public static final String WEEKLY_PLANNING_1 = /*$$(*/ "Invalid times %s morning" /*)*/;
@@ -388,4 +385,6 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_RESET = /*$$(*/
       "Reset imported data successfully" /*)*/;
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
+  public static final String SERVER_CONNECTION_ERROR = /*$$(*/
+      "Unable to connect to Geonames server" /*)*/;
 }

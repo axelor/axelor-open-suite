@@ -63,7 +63,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -1235,8 +1235,8 @@ order by po_seq]]></xml-property>
             <xml-property name="queryText"><![CDATA[select invoice.invoice_id as inv_no,
        invoice.invoice_date as inv_date,
        invoice.operation_type_select as inv_oper_type_select,
-       sum(CASE WHEN invoice.operation_type_select = 1 OR invoice.operation_type_select = 3 THEN  
-       invl.company_ex_tax_total ELSE -invl.company_ex_tax_total END ) as inv_total
+       sum(CASE WHEN invoice.operation_type_select = 4 THEN
+       -invl.company_ex_tax_total ELSE invl.company_ex_tax_total END ) as inv_total
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
@@ -1678,6 +1678,12 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
                     <text-property name="displayName">emp_cost</text-property>
                     <text-property name="heading">emp_cost</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">total_cost</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">total_cost</text-property>
+                    <text-property name="heading">total_cost</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1728,6 +1734,11 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
                         <property name="name">emp_cost</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">total_cost</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1767,18 +1778,27 @@ group by emp.id,emp.name,exp_validation_date]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">total_cost</property>
+                    <property name="nativeName">total_cost</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.id as emp_id,
        emp.name as emp_name,
        tm.validation_date as tm_validation_date,
        sum(tml.hours_duration) as total_hours,
-       sum(tml.hours_duration) * emp.hourly_rate as emp_cost
+       sum(tml.hours_duration) * emp.hourly_rate as emp_cost,
+       sum(tml.hours_duration) * sum(prod.cost_price) as total_cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = tml.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_product prod on (prod.id = tml.product)
 where tm.status_select = 3 
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by emp.id,emp.name,tm_validation_date,emp.hourly_rate]]></xml-property>
@@ -2372,12 +2392,13 @@ where (PO.status_select = 3 or PO.status_select = 4)
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
 union
-select to_char(ppt.date_val, 'YYYY-MM') as month, sum(planned_hours) * emp.hourly_rate as costs
+select to_char(ppt.date_val, 'YYYY-MM') as month, sum(planned_hours) * sum(prod.cost_price) as costs
 from project_project_planning_time as ppt
 left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_product as prod on (prod.id = ppt.product)
 where 
 case 
 	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
@@ -2671,7 +2692,8 @@ group by month,me.currency,project.currency) CostData group by month)) ChartData
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select month,sum(costs) as costs,sum(turnover) as turnover 
-from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(invl.company_ex_tax_total) as turnover
+from (select to_char(invoice.invoice_date,'YYYY-MM') as month,0 as costs, sum(CASE WHEN invoice.operation_type_select = 4 THEN
+       -invl.company_ex_tax_total ELSE invl.company_ex_tax_total END ) as turnover
 from account_invoice_line invl
 left join account_invoice invoice on (invoice.id = invl.invoice)
 left join project_project project on (project.id = invl.project)
@@ -2706,13 +2728,14 @@ and invoice.status_select = 3
 and invoice.operation_type_select in (1,2)
 group by month
 union
-select to_char(tm.validation_date,'YYYY-MM') as month,sum(tml.hours_duration*emp.hourly_rate) as cost
+select to_char(tm.validation_date,'YYYY-MM') as month, sum(tml.hours_duration) * sum(prod.cost_price) as cost
 from hr_timesheet_line tml
 left join hr_timesheet tm on (tm.id = tml.timesheet)
 left join auth_user usr on (usr.id = tm.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = tml.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_product as prod on (prod.id = tml.product)
 where tm.status_select = 3 
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
 group by month
@@ -3041,6 +3064,12 @@ order by po_seq]]></xml-property>
                     <text-property name="displayName">emp_cost</text-property>
                     <text-property name="heading">emp_cost</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">total_remaining_cost</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">total_remaining_cost</text-property>
+                    <text-property name="heading">total_remaining_cost</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -3081,6 +3110,11 @@ order by po_seq]]></xml-property>
                         <property name="name">emp_cost</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">total_remaining_cost</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -3106,15 +3140,24 @@ order by po_seq]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">total_remaining_cost</property>
+                    <property name="nativeName">total_remaining_cost</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select emp.name as emp_name,
        sum(planned_hours) as total_hours,
-	   sum(planned_hours) * emp.hourly_rate as emp_cost
+	   sum(planned_hours) * emp.hourly_rate as emp_cost,
+	   sum(planned_hours) * sum(prod.cost_price) as total_remaining_cost
 from project_project_planning_time as ppt
 left join auth_user usr on (usr.id = ppt.user_id)
 left join hr_employee emp on (emp.id = usr.employee)
 left join project_project project on (project.id = ppt.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
+left join base_product prod on (prod.id = ppt.product)
 where
 case 
 	when ppt.date_val > (select to_date from hr_timesheet where status_select = 3 and user_id = ppt.user_id order by id desc LIMIT 1) then 
@@ -5845,7 +5888,6 @@ order by task_end_date]]></xml-property>
                                     <text id="5517">
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
-                                        <method name="onCreate"><![CDATA[vars["TotalCost"] = vars["TotalCost"]+row["TotalSalesInvoice"]]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["TotalSalesInvoice"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -5925,6 +5967,12 @@ order by task_end_date]]></xml-property>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_cost</property>
+                                <text-property name="displayName">total_cost</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["total_cost"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <column id="4805">
@@ -6742,7 +6790,7 @@ order by task_end_date]]></xml-property>
                                     <text id="5518">
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
-                                        <method name="onCreate"><![CDATA[vars["TotalCost"] = vars["TotalCost"]+row["TotalTimesheetCost"]]]></method>
+                                        <method name="onCreate"><![CDATA[vars["TotalCost"] = vars["TotalCost"]+row["total_cost"]]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["TotalTimesheetCost"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -16756,8 +16804,6 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalManu
                                     <text id="5390">
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
-                                        <method name="onCreate"><![CDATA[vars["TotalCost"] = vars["TotalCost"]+row["TotalExpectedCosts"]
-vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"]]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["TotalExpectedCosts"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -16824,6 +16870,12 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_remaining_cost</property>
+                                <text-property name="displayName">total_remaining_cost</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["total_remaining_cost"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <column id="5778">
@@ -17535,8 +17587,8 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                                     <text id="5777">
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
-                                        <method name="onCreate"><![CDATA[vars["TotalCost"] = vars["TotalCost"]+row["TotalExpectedCosts"]
-vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"]]]></method>
+                                        <method name="onCreate"><![CDATA[vars["TotalCost"] = vars["TotalCost"]+row["total_remaining_cost"]
+vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["total_remaining_cost"]]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">row["TotalExpectedCosts"]</VALUE-OF>]]></text-property>
                                     </text>

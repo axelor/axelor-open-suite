@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
   	<grid name="advanced-export-line-grid" title="Advanced export lines" model="com.axelor.apps.base.db.AdvancedExportLine">
   		<field name="metaField" title="Select target field"/>
    		<field name="title"/>
    		<field name="targetField"/>
         <field name="orderBy"/>
+        <field name="orderByType" hideIf="!orderBy"/>
   	</grid>
   
   	<form name="advanced-export-line-form" title="Advanced export line" model="com.axelor.apps.base.db.AdvancedExportLine" onNew="action-advanced-export-line-record-set-current-domain"
@@ -17,6 +18,7 @@
      		<field name="title" required="true"/>
      		<field name="targetField"/>
 	        <field name="orderBy" colSpan="2"/>
+	         <field name="orderByType" hideIf="!orderBy" colSpan="4"/>
 	        <field name="$isValidate" type="boolean" title="Validate" hidden="true" required="true" readonly="true" colSpan="2"/>
 	        <field name="currentDomain" hidden="true"/>
 	        <field name="$viewerMessage" showTitle="false" readonly="true" hidden="true">

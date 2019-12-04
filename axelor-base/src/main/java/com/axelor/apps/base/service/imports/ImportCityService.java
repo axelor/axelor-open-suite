@@ -30,4 +30,6 @@ public interface ImportCityService {
    * @return
    */
   public ImportHistory importCity(String typeSelect, MetaFile dataFile);
+
+  public MetaFile downloadZip(String downloadFileName) throws Exception;
 }

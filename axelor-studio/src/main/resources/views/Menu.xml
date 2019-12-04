@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <menuitem name="app-builder-root" title="App builder" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
 
@@ -76,7 +76,7 @@
 	<menuitem title="Selections" name="app-builder-config-selections" parent="app-builder-config" action="action.studio.meta.select.view" order="46"/>
 	
 	<action-view name="action.studio.meta.select.view" title="Selections" model="com.axelor.meta.db.MetaSelect">
-		<view name="meta-select-grid" type="grid"/>
+		<view name="studio-meta-select-grid" type="grid"/>
   		<view name="meta-select-form" type="form"/>
   		<domain>self.isCustom = true</domain>
   		<context name="_fromStudio" expr="eval:true"/>
@@ -85,7 +85,7 @@
 	<menuitem title="Actions" name="app-builder-config-actions" parent="app-builder-config" action="action.studio.meta.action.view" order="47"/>
 
 	<action-view name="action.studio.meta.action.view" title="Actions" model="com.axelor.meta.db.MetaAction">
-		<view type="grid" name="meta-action-grid"/>
+		<view type="grid" name="studio-meta-action-grid"/>
 		<view type="form" name="meta-action-form"/>
 		<domain>self.isCustom = true</domain>
 		<context name="_fromStudio" expr="eval:true"/>

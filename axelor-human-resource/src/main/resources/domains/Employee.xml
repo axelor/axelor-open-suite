@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -54,8 +54,8 @@
       <string name="companyCbDetails" title="Company credit card details"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
-	       		if(contactPartner != null) { return contactPartner.getFullName(); }
-	       		return null;
+	       		if(contactPartner != null && contactPartner.getFullName() != null) { return contactPartner.getFullName(); }
+	       		return "";
 	       ]]>
 	       
       </string>

@@ -17,14 +17,28 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.inject.Beans;
+import com.axelor.mail.MailConstants;
+import com.axelor.mail.db.MailMessage;
+import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaActionRepository;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.views.AbstractView;
@@ -34,6 +48,9 @@ import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +73,8 @@ public class StudioMetaService {
   @Inject private MetaMenuRepository metaMenuRepo;
 
   @Inject private MenuBuilderRepository menuBuilderRepo;
+
+  @Inject private MetaModelRepository metaModelRepo;
 
   /**
    * Removes MetaActions from comma separated names in string.
@@ -286,5 +305,90 @@ public class StudioMetaService {
     } catch (NoResultException e) {
       return 0;
     }
+  }
+
+  public String trackJsonField(MetaJsonModel jsonModel) {
+
+    List<MetaJsonField> metaJsonFieldList = jsonModel.getFields();
+    String trackingFields = "";
+
+    if (jsonModel.getId() == null && metaJsonFieldList != null) {
+      for (MetaJsonField metaJsonField : metaJsonFieldList) {
+        trackingFields += this.createTracking(metaJsonField, "Added:");
+      }
+      return trackingFields;
+    }
+
+    List<MetaJsonField> jsonFieldList =
+        Beans.get(MetaJsonModelRepository.class).find(jsonModel.getId()).getFields();
+
+    if (metaJsonFieldList.equals(jsonFieldList)) {
+      return jsonModel.getJsonFieldTracking();
+    }
+
+    List<MetaJsonField> commonJsonFieldList = new ArrayList<>(jsonFieldList);
+    commonJsonFieldList.retainAll(metaJsonFieldList);
+
+    metaJsonFieldList.removeAll(jsonFieldList);
+    if (!metaJsonFieldList.isEmpty()) {
+      for (MetaJsonField metaJsonField : metaJsonFieldList) {
+        trackingFields += this.createTracking(metaJsonField, "Added:");
+      }
+    }
+    jsonFieldList.removeAll(commonJsonFieldList);
+    if (!jsonFieldList.isEmpty()) {
+      for (MetaJsonField metaJsonField : jsonFieldList) {
+        trackingFields += this.createTracking(metaJsonField, "Removed:");
+      }
+    }
+
+    trackingFields +=
+        jsonModel.getJsonFieldTracking() != null ? jsonModel.getJsonFieldTracking() : "";
+
+    return trackingFields;
+  }
+
+  @Transactional
+  public void trackingFields(
+      AuditableModel auditableModel, String messageBody, String messageSubject) {
+
+    User user = AuthUtils.getUser();
+    MailMessage message = new MailMessage();
+    Mapper mapper = Mapper.of(auditableModel.getClass());
+
+    message.setSubject(messageSubject);
+    message.setAuthor(user);
+    message.setBody(messageBody);
+    message.setRelatedId(auditableModel.getId());
+    message.setRelatedModel(EntityHelper.getEntityClass(auditableModel).getName());
+    message.setType(MailConstants.MESSAGE_TYPE_NOTIFICATION);
+    message.setRelatedName(mapper.getNameField().get(auditableModel).toString());
+
+    Beans.get(MailMessageRepository.class).save(message);
+  }
+
+  @Transactional
+  public void trackJsonField(MetaJsonField metaJsonField) {
+
+    MetaModel metaModel =
+        metaModelRepo.all().filter("self.fullName = ?1", metaJsonField.getModel()).fetchOne();
+
+    trackingFields(metaModel, metaJsonField.getName(), "Field added");
+  }
+
+  public String createTracking(MetaJsonField metaJsonField, String actionType) {
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    String dateTime = LocalDateTime.now().format(dtf);
+    String userName = AuthUtils.getUser().getName();
+
+    return dateTime
+        + ", "
+        + "User:"
+        + userName
+        + ", "
+        + actionType
+        + metaJsonField.getName()
+        + "\n";
   }
 }

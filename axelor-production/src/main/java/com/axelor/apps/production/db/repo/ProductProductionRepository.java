@@ -19,6 +19,7 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
+import java.math.BigDecimal;
 
 public class ProductProductionRepository extends ProductStockRepository {
 
@@ -26,6 +27,7 @@ public class ProductProductionRepository extends ProductStockRepository {
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
     copy.setDefaultBillOfMaterial(null);
+    copy.setLastProductionPrice(BigDecimal.ZERO);
     return copy;
   }
 }

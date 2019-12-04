@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="inventory-line-grid" title="Inventory lines" model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
         <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute" domain="self.stockManaged = true" grid-view="product-grid" form-view="product-form"/>
         <field name="currentQty" readonly="true" aggregate="sum" width="120"/>
         <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum" width="120"/>
+        <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
         <field name="description"/>
         <field name="rack" width="150"/>
         <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"/>
@@ -20,6 +21,7 @@
 	        	domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty" onChange="action-inventory-line-method-compute"/>
+	        <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 	        <field name="description"/>
             <field name="rack"/>
 		    <field name="trackingNumber" canNew="true" domain="self.product = :product"/>

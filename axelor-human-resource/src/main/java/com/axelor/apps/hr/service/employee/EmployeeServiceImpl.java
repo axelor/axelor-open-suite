@@ -223,8 +223,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setCompany(payCompany);
     newDPAE.setCompanyAddress(employer.getMainAddress());
     newDPAE.setCompanyFixedPhone(employer.getFixedPhone());
-    newDPAE.setHealthService(employer.getHealthService());
-    newDPAE.setHealthServiceAddress(employer.getHealthServiceAddress());
+    if (payCompany.getHrConfig() != null) {
+      newDPAE.setHealthService(payCompany.getHrConfig().getHealthService());
+      newDPAE.setHealthServiceAddress(payCompany.getHrConfig().getHealthServiceAddress());
+    }
 
     // Employee
     newDPAE.setLastName(employee.getContactPartner().getName());

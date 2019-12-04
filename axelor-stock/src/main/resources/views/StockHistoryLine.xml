@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <form title="Stock history" name="stock-history-form" model="com.axelor.apps.base.db.Wizard"
+    canSave="false" width="large" canNew="false" canCopy="false"
+    onNew="action-stock-history-line-group-onnew">
+    <panel name="parameterPanel">
+      <field name="$product" colSpan="4" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" readonly="true"/>
+      <field name="$company" colSpan="4" title="Company" type="many-to-one" target="com.axelor.apps.base.db.Company" readonly="true"/>
+      <field name="$stockLocation" colSpan="4" title="Stock location" type="many-to-one" readonly="true"
+        target="com.axelor.apps.stock.db.StockLocation"/>
+      <field name="$beginDate" colSpan="4" title="From date" type="date" onChange="action-stock-history-line-group-date-onchange"/>
+      <field name="$endDate" colSpan="4" title="End date" type="date" onChange="action-stock-history-line-group-date-onchange"/>
+      <field name="$nbOfPeriod" colSpan="4" title="Number of periods" readonly="true" type="integer"/>
+    </panel>
+    <panel name="stockHistoryLineListPanel" colSpan="12">
+      <field name="$stockHistoryLineList" type="one-to-many" target="com.axelor.apps.stock.db.StockHistoryLine" colSpan="12"
+        readonly="true" x-order="date" grid-view="stock-history-line-grid" form-view="stock-history-line-form"/>
+    </panel>
+  </form>
+
+  <form title="Stock history line" name="stock-history-line-form" model="com.axelor.apps.stock.db.StockHistoryLine">
+    <field name="label"/>
+    <field name="countIncMvtStockPeriod"/>
+    <field name="sumIncQtyPeriod"/>
+    <field name="priceIncStockMovePeriod"/>
+    <field name="countOutMvtStockPeriod"/>
+    <field name="sumOutQtyPeriod"/>
+    <field name="priceOutStockMovePeriod"/>
+  </form>
+
+  <grid title="Stock history line" name="stock-history-line-grid" width="large" model="com.axelor.apps.stock.db.StockHistoryLine">
+    <field name="label" colSpan="3" showTitle="false"/>
+    <field name="countIncMvtStockPeriod"/>
+    <field name="sumIncQtyPeriod"/>
+    <field name="priceIncStockMovePeriod"/>
+    <field name="countOutMvtStockPeriod"/>
+    <field name="sumOutQtyPeriod"/>
+    <field name="priceOutStockMovePeriod"/>
+  </grid>
+
+  <action-group name="action-stock-history-line-group-onnew">
+    <action name="action-stock-history-line-attrs-onnew"/>
+    <action name="action-stock-history-line-method-fill-stock-history-line-list"/>
+  </action-group>
+
+  <action-group name="action-stock-history-line-group-date-onchange">
+    <action name="action-stock-history-line-attrs-compute-nb-of-periods"/>
+    <action name="action-stock-history-line-method-fill-stock-history-line-list"/>
+  </action-group>
+
+  <action-attrs name="action-stock-history-line-attrs-onnew">
+    <attribute name="value" for="$product" expr="eval: _product"/>
+    <attribute name="value" for="$company" expr="eval: _company"/>
+    <attribute name="value" for="$stockLocation" expr="eval: _stockLocation"/>
+    <attribute name="value" for="$beginDate" expr="eval: __date__.minusMonths(6)"/>
+    <attribute name="value" for="$endDate" expr="eval: __date__"/>
+    <attribute name="value" for="$nbOfPeriod" expr="eval: 7"/>
+  </action-attrs>
+
+  <action-attrs name="action-stock-history-line-attrs-compute-nb-of-periods">
+    <attribute name="value" for="$nbOfPeriod" expr="eval: java.time.temporal.ChronoUnit.MONTHS.between(LocalDate.parse(beginDate).withDayOfMonth(1), LocalDate.parse(endDate).withDayOfMonth(1)) + 1"/>
+  </action-attrs>
+
+  <action-method name="action-stock-history-line-method-fill-stock-history-line-list">
+    <call class="com.axelor.apps.stock.web.StockHistoryController" method="fillStockHistoryLineList"/>
+  </action-method>
+
+</object-views>

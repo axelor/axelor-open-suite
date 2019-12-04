@@ -37,7 +37,7 @@ public class BusinessProjectMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.businessproject.mobile.BusinessProjectMobileController:getProjects

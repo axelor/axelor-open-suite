@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
@@ -31,7 +30,6 @@ import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
@@ -58,7 +56,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       UserRepository userRepo,
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
-      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      TeamTaskRepository teamTaskRepository) {
     super(
         priceListService,
         appHumanResourceService,
@@ -68,7 +67,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
         userRepo,
         userHrService,
         timesheetLineService,
-        projectPlanningTimeRepository);
+        projectPlanningTimeRepository,
+        teamTaskRepository);
   }
 
   @Override
@@ -157,22 +157,5 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
     }
 
     return invoiceLineList;
-  }
-
-  @Override
-  public TimesheetLine generateTimesheetLine(
-      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
-    TimesheetLine timesheetLine = super.generateTimesheetLine(timesheet, projectPlanningTime);
-    if (timesheetLine != null && timesheetLine.getTeamTask() != null) {
-      if (timesheetLine.getTeamTask().getTeamTaskInvoicing()
-          && timesheetLine.getTeamTask().getInvoicingType()
-              == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-        timesheetLine.setToInvoice(true);
-      } else {
-        timesheetLine.setToInvoice(false);
-      }
-      return timesheetLine;
-    }
-    return null;
   }
 }

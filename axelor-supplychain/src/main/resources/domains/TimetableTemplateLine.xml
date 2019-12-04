@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+  
+  <entity name="TimetableTemplateLine" lang="java">
+	
+	<many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Time limit" required="true"/>
+	<decimal name="percentage" scale="2" precision="5" max="100" min="0" required="true"/>
+	<many-to-one name="timetableTemplate" ref="com.axelor.apps.supplychain.db.TimetableTemplate"/>
+	
+  </entity>
+  
+</domain-models>

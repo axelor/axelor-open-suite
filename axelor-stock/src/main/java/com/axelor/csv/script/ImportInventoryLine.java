@@ -55,6 +55,8 @@ public class ImportInventoryLine {
 
     BigDecimal realQtyRemaning = inventoryLine.getRealQty();
 
+    inventoryLineService.compute(inventoryLine, inventoryLine.getInventory());
+
     TrackingNumber trackingNumber;
 
     if (trackingNumberConfig != null) {
@@ -90,6 +92,8 @@ public class ImportInventoryLine {
                 inventoryLine.getCurrentQty(),
                 inventoryLine.getRack(),
                 trackingNumber);
+
+        inventoryLineNew.setUnit(inventoryLine.getProduct().getUnit());
 
         if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
           inventoryLineNew.setRealQty(realQtyRemaning);

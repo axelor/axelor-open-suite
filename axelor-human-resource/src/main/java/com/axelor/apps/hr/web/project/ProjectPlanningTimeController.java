@@ -121,17 +121,4 @@ public class ProjectPlanningTimeController {
 
     response.setReload(true);
   }
-
-  public void removeProjectPlanningTimeSpent(ActionRequest request, ActionResponse response) {
-
-    List<Map<String, Object>> projectPlanningTimeSpentLines =
-        (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSpentSet");
-
-    if (projectPlanningTimeSpentLines != null) {
-      Beans.get(ProjectPlanningTimeService.class)
-          .removeProjectPlanningLines(projectPlanningTimeSpentLines);
-    }
-
-    response.setReload(true);
-  }
 }

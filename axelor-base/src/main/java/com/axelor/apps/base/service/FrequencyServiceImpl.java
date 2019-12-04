@@ -36,55 +36,58 @@ public class FrequencyServiceImpl implements FrequencyService {
     StringBuilder summary = new StringBuilder();
 
     // Frequency
-    if (frequency.getTypeSelect().equals(FrequencyRepository.TYPE_EVERY_N_WEEKS)) {
-      if (frequency.getEveryNWeeks() == 1) {
-        summary.append(I18n.get("Every week"));
-      } else {
-        summary
-            .append(I18n.get("Every"))
-            .append(" ")
-            .append(frequency.getEveryNWeeks())
-            .append(" ")
-            .append(I18n.get("weeks"));
-      }
-      summary.append("~ ");
-      summary.append(I18n.get("THE_SINGULAR", "THE_PLURAL", 2)); // force plural for other languages
-    } else if (frequency.getTypeSelect().equals(FrequencyRepository.TYPE_MONTH_DAYS)) {
-      summary.append(I18n.get("Every")).append(" ");
-      if (frequency.getFirst()) {
-        summary.append(I18n.get("first"));
-      }
-      if (frequency.getSecond()) {
+    if (frequency.getTypeSelect() != null) {
+      if (frequency.getTypeSelect().equals(FrequencyRepository.TYPE_EVERY_N_WEEKS)) {
+        if (frequency.getEveryNWeeks() == 1) {
+          summary.append(I18n.get("Every week"));
+        } else {
+          summary
+              .append(I18n.get("Every"))
+              .append(" ")
+              .append(frequency.getEveryNWeeks())
+              .append(" ")
+              .append(I18n.get("weeks"));
+        }
+        summary.append("~ ");
+        summary.append(
+            I18n.get("THE_SINGULAR", "THE_PLURAL", 2)); // force plural for other languages
+      } else if (frequency.getTypeSelect().equals(FrequencyRepository.TYPE_MONTH_DAYS)) {
+        summary.append(I18n.get("Every")).append(" ");
         if (frequency.getFirst()) {
-          summary.append(", ");
+          summary.append(I18n.get("first"));
         }
-        summary.append(I18n.get("second"));
-      }
-      if (frequency.getThird()) {
-        if (frequency.getFirst() || frequency.getSecond()) {
-          summary.append(", ");
+        if (frequency.getSecond()) {
+          if (frequency.getFirst()) {
+            summary.append(", ");
+          }
+          summary.append(I18n.get("second"));
         }
-        summary.append(I18n.get("third"));
-      }
-      if (frequency.getFourth()) {
-        if (frequency.getFirst() || frequency.getSecond() || frequency.getThird()) {
-          summary.append(", ");
+        if (frequency.getThird()) {
+          if (frequency.getFirst() || frequency.getSecond()) {
+            summary.append(", ");
+          }
+          summary.append(I18n.get("third"));
         }
-        summary.append(I18n.get("fourth"));
-      }
-      if (frequency.getLast()) {
-        if (frequency.getFirst()
-            || frequency.getSecond()
-            || frequency.getThird()
-            || frequency.getFourth()) {
-          summary.append(", ");
+        if (frequency.getFourth()) {
+          if (frequency.getFirst() || frequency.getSecond() || frequency.getThird()) {
+            summary.append(", ");
+          }
+          summary.append(I18n.get("fourth"));
         }
-        summary.append(I18n.get("last"));
-      }
+        if (frequency.getLast()) {
+          if (frequency.getFirst()
+              || frequency.getSecond()
+              || frequency.getThird()
+              || frequency.getFourth()) {
+            summary.append(", ");
+          }
+          summary.append(I18n.get("last"));
+        }
 
-      int lastCommaIndex = summary.lastIndexOf(",");
-      if (lastCommaIndex != -1) {
-        summary.replace(lastCommaIndex, lastCommaIndex + 1, " " + I18n.get("and"));
+        int lastCommaIndex = summary.lastIndexOf(",");
+        if (lastCommaIndex != -1) {
+          summary.replace(lastCommaIndex, lastCommaIndex + 1, " " + I18n.get("and"));
+        }
       }
     }
 

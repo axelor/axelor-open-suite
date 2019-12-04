@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid name="file-type-grid" title="File types"
-		model="com.axelor.apps.base.db.FileType">
+	<grid name="file-type-grid" title="File types" model="com.axelor.apps.base.db.FileType">
 		<field name="code" />
 		<field name="name" />
+		<field name="hasExpirationDate" />
 	</grid>
 
 	<form name="file-type-form" title="File type" model="com.axelor.apps.base.db.FileType" >
 		<panel name="mainPanel">		
-			<field name="code" />
-			<field name="name" />			
+			<field name="code" colSpan="3"/>
+			<field name="name" />	
+			<field name="hasExpirationDate" colSpan="3"/>		
 		</panel>
 	</form>
 

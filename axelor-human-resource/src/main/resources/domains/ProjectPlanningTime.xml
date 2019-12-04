@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -17,8 +17,6 @@
       <string name="description" title="Description" large="true" />
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
 	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
-	  <decimal name="realHours" title="Real hours"/>
-	  <integer name="typeSelect" title="Type" selection="hr.project.planning.time.type"/>
 	  <time name="startTime" title="Start time"/>
 	  <time name="endTime" title="End time"/>
 	  
@@ -46,13 +44,6 @@
 	  	]]>
 	  </string>
 	  
-      <extra-code>
-      	<![CDATA[
-	  		public static final int TYPE_PROJECT_PLANNING_TIME = 1;
-	  		public static final int TYPE_PROJECT_PLANNING_TIME_SPENT = 2;
-	  ]]>
-      </extra-code>
-		
   </entity>
   
 </domain-models>

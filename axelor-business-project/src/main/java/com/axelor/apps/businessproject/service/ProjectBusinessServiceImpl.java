@@ -183,7 +183,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       Partner clientPartner) {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
-    project.addMembersUserSetItem(assignedTo);
+    if (assignedTo != null) {
+      project.addMembersUserSetItem(assignedTo);
+    }
     project.setImputable(true);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
@@ -238,7 +240,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
     TeamTask task = super.createTask(taskTemplate, project);
-    task.setTeamTaskInvoicing(taskTemplate.getTeamTaskInvoicing());
     return task;
   }
 }

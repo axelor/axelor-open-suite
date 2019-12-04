@@ -74,8 +74,6 @@ public interface IExceptionMessage {
       "Please, enter the number of daily work hours per employee %s" /*)*/;
   static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
-  static final String TIMESHEET_DATE_CONFLICT = /*$$(*/
-      "There is a conflict between the timesheet input dates and the dates of the following lines: %s" /*)*/;
   static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
@@ -187,6 +185,8 @@ public interface IExceptionMessage {
   /** Kilometric allowance */
   String KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR = /*$$(*/ "Google Maps error: %s" /*)*/;
 
+  String KILOMETRIC_ALLOWANCE_OSM_ERROR = /*$$(*/ "Open Street Maps error: %s" /*)*/;
+
   static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/
       "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
 
@@ -205,4 +205,7 @@ public interface IExceptionMessage {
 
   static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
       "Please configure the unit for this type of absence" /*)*/;
+
+  static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
+      "Please configure the template for email reminder" /*)*/;
 }

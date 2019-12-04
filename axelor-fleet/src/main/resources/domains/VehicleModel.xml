@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="fleet" package="com.axelor.apps.fleet.db"/>
 
@@ -9,7 +9,10 @@
 		<string name="model" title="Model" required="true"/>
 		<string name="name" title="Name" required="true" namecolumn="true">
 			<![CDATA[
-				return vehicleMake != null ? vehicleMake.getName() + " " + model : model;
+                if(vehicleMake != null)
+				  return vehicleMake != null ? vehicleMake.getName() + " " + model : model;
+                else
+                   return model;
 			]]>
 		</string>
 	 	<many-to-many name="vehicleVendorsSet" ref="com.axelor.apps.base.db.Partner" title="Vendors" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
    
     <grid name="city-grid" title="Cities" model="com.axelor.apps.base.db.City">
        <toolbar>
@@ -32,9 +32,14 @@
     
     <form name="wizard-import-city-form" title="Import city" model="com.axelor.apps.base.db.Wizard" >
     	<panel name="wizardPanel">
-    		<field name="typeSelect" type="string" title="Type select" selection="iterritory.city.type.select"/>
+    	  <panel name="typeSelectPanel" colSpan="12">
+    		<field name="typeSelect" type="string" title="Type select" selection="iterritory.city.type.select" />
+		  </panel>
+		  
 			<field name="metaFile" title="Input file" type="many-to-one" target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
-			<button name="importBtn" colSpan="4" title="Import" readonlyIf="typeSelect == null || metaFile == null" onClick="action-base-method-import-city"/>
+			<field name="autoImportTypeSelect" title="Auto Import" selection="base.city.auto.import.type.select" showIf="typeSelect=='geonames'"/>
+			<button name="importBtn" colSpan="4" title="Import" readonlyIf=" (typeSelect == null || metaFile == null) &amp;&amp; autoImportTypeSelect == null" onClick="action-base-method-import-city"/>
+			<field name="$importHistoryList" type="one-to-many" target="com.axelor.apps.base.db.ImportHistory" hidden="true" title="Import Log" colSpan="12" canEdit="false" canNew="false" canRemove="false"/>
     	</panel>
     </form>
     

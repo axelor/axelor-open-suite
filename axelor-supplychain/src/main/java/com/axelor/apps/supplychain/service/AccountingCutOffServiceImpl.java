@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -67,7 +66,11 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
@@ -148,8 +151,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     String queryStr =
-        "(self.invoice is null or self.invoice.statusSelect != :invoiceStatusVentilated or (self.invoice.statusSelect = :invoiceStatusVentilated and self.invoice.invoiceDate > :moveDate)) "
-            + "AND self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
+        " self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
             + "AND self.typeSelect = :stockMoveType ";
 
     if (company != null) {
@@ -160,7 +162,6 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         stockMoverepository
             .all()
             .filter(queryStr)
-            .bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED)
             .bind("stockMoveStatusRealized", StockMoveRepository.STATUS_REALIZED)
             .bind("stockMoveType", stockMoveTypeSelect)
             .bind("moveDate", moveDate);
@@ -362,13 +363,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected boolean checkStockMoveLine(
       StockMoveLine stockMoveLine, Product product, boolean includeNotStockManagedProduct) {
-    if (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
-        || product == null
-        || (!includeNotStockManagedProduct && !product.getStockManaged())) {
-      return true;
-    }
-
-    return false;
+    return (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
+            || product == null
+            || (!includeNotStockManagedProduct && !product.getStockManaged()))
+        || (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0);
   }
 
   protected MoveLine generateProductMoveLine(
@@ -392,16 +390,16 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     boolean isFixedAssets = false;
     BigDecimal amountInCurrency = null;
     BigDecimal totalQty = null;
-    BigDecimal deliveredQty = null;
+    BigDecimal notInvoicedQty = null;
 
     if (isPurchase && purchaseOrderLine != null) {
       totalQty = purchaseOrderLine.getQty();
 
-      deliveredQty =
+      notInvoicedQty =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               purchaseOrderLine.getUnit(),
-              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
               stockMoveLine.getRealQty().scale(),
               purchaseOrderLine.getProduct());
 
@@ -415,11 +413,11 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     if (!isPurchase && saleOrderLine != null) {
       totalQty = saleOrderLine.getQty();
 
-      deliveredQty =
+      notInvoicedQty =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               saleOrderLine.getUnit(),
-              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
               stockMoveLine.getRealQty().scale(),
               saleOrderLine.getProduct());
       if (ati) {
@@ -432,7 +430,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       return null;
     }
 
-    BigDecimal qtyRate = deliveredQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
+    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
     amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_EVEN);
 
     if (amountInCurrency == null || amountInCurrency.compareTo(BigDecimal.ZERO) == 0) {

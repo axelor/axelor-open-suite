@@ -17,11 +17,18 @@
  */
 package com.axelor.studio.db.repo;
 
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.service.StudioMetaService;
+import com.google.inject.Inject;
 
 public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
+
+  @Inject MetaModelRepository metaModelRepo;
 
   @Override
   public MetaJsonField save(MetaJsonField metajsonField) {
@@ -32,5 +39,20 @@ public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
     }
 
     return super.save(metajsonField);
+  }
+
+  @Override
+  public void remove(MetaJsonField metajsonField) {
+
+    if (metajsonField.getJsonModel() == null) {
+
+      MetaModel metaModel =
+          metaModelRepo.all().filter("self.fullName = ?1", metajsonField.getModel()).fetchOne();
+
+      Beans.get(StudioMetaService.class)
+          .trackingFields(metaModel, metajsonField.getName(), "Field removed");
+    }
+
+    super.remove(metajsonField);
   }
 }

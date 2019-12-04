@@ -33,10 +33,13 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -67,6 +70,22 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
         partnerService,
         invoiceLineService,
         accountConfigService);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void ventilate(Invoice invoice) throws AxelorException {
+    super.ventilate(invoice);
+
+    TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
+
+    List<Timetable> timetableList =
+        timeTableRepo.all().filter("self.invoice.id = ?1", invoice.getId()).fetch();
+
+    for (Timetable timetable : timetableList) {
+      timetable.setInvoiced(true);
+      timeTableRepo.save(timetable);
+    }
   }
 
   @Override

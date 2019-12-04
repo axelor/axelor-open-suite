@@ -1,13 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
 	<entity name="FileType">
 		<string name="code" title="Code" />
 		<string name="name" title="Name" />
+		<boolean name="hasExpirationDate" title="Display an expiration date" />
 	</entity>
 
 </domain-models>

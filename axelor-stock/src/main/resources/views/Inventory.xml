@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
 		<field name="inventorySeq" width="120"/>
 		<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
 		<field name="typeSelect"/>
-		<field name="dateT"/>
+		<field name="plannedStartDateT"/>
+        <field name="plannedEndDateT"/>
 		<field name="statusSelect"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
   </grid>
@@ -15,7 +16,7 @@
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onNew="action-inventory-record-new">
         <menubar>
 	        <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-	        	<item action="action-inventory-method-show-stockmoves" title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
+	        	<item name="showStockMoveItem" action="action-inventory-method-show-stockmoves" title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
 	        </menu>
         </menubar>
         <panel name="mainPanel">
@@ -38,7 +39,9 @@
         	<panel title="Details">
 	        	<panel name="detailPanel"  colSpan="12">
               <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" canEdit="false"/>
-							<field name="dateT" readonlyIf="statusSelect >= 2"/>
+							<field name="plannedStartDateT" readonlyIf="statusSelect >= 3" required="true" colSpan="2"/>
+							<field name="plannedEndDateT" readonlyIf="statusSelect >= 5" required="true" colSpan="2" validIf="plannedStartDateT &lt; plannedEndDateT"/>
+							<field name="createdOn" readonly="true" colSpan="2"/>
 							<field name="stockLocation" canEdit="false" onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2" grid-view="stock-location-grid" form-view="stock-location-form"/>
 							<field name="typeSelect" validIf="typeSelect > 0"/>
 							<field name="completedBy" readonly="true" showIf="completedBy"/>
@@ -90,6 +93,10 @@
     </panel>
   </form>
     
+    <calendar name="inventory-calendar" model="com.axelor.apps.stock.db.Inventory" colorBy="statusSelect"  eventStart="plannedStartDateT" eventStop="plannedEndDateT"  title="Inventory Calendar">
+		<field name="inventoryTitle"/>
+    </calendar>
+
     <action-group name="action-group-stock-inventory-importfile-click">
     	<action name="save"/>
     	<action name="action-set-inventory-seq"/>
@@ -139,7 +146,6 @@
 
     <action-record name="action-inventory-record-new" model="com.axelor.apps.stock.db.Inventory">
 	    <field name="statusSelect" expr="1"/>
-	    <field name="dateT" expr="eval:__config__.app.getTodayDateTime()"/>
 	    <field name="formatSelect" expr="pdf"/>
 	    <field name="stockLocation" expr="eval:_location"/>
 	    <field name="company" expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>

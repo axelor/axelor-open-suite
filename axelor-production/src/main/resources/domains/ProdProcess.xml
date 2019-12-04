@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -41,5 +41,23 @@
 
     ]]></extra-code>
 
+	<track>
+		<field name="name"/>
+		<field name="code"/>
+		<field name="outsourcing"/>
+		<field name="company"/>
+		<field name="fullName"/>
+		<field name="statusSelect"/>
+		<field name="isConsProOnOperation"/>
+		<field name="stockLocation"/>
+		<field name="producedProductStockLocation"/>
+		<field name="product"/>
+		<field name="workshopStockLocation"/>
+		<field name="versionNumber"/>
+		<field name="originalProdProcess"/>
+		<field name="isEnabledForAllProducts"/>
+		<field name="launchQty"/>
+		<field name="stockMoveRealizeOrderSelect"/>
+	</track>
   </entity>
 </domain-models>

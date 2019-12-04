@@ -36,13 +36,13 @@ public class MoveLineManagementRepository extends MoveLineRepository {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK),
+            I18n.get(IExceptionMessage.MOVE_REMOVE_NOT_OK),
             entity.getMove().getReference());
       } catch (AxelorException e) {
         throw new PersistenceException(e);
       }
     } else {
-      entity.setArchived(true);
+      super.remove(entity);
     }
   }
 

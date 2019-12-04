@@ -324,7 +324,9 @@ public class InvoiceController {
                 : null;
 
         Map languageMap =
-            (reportType == 1 || reportType == 3) && context.get("language") != null
+            reportType != null
+                    && (reportType == 1 || reportType == 3)
+                    && context.get("language") != null
                 ? (Map<String, Object>) request.getContext().get("language")
                 : null;
         String locale =
@@ -923,14 +925,18 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     Company company = invoice.getCompany();
 
-    long companyId = company.getPartner().getId();
+    long companyId = company.getPartner() == null ? 0 : company.getPartner().getId();
 
-    String domain =
-        String.format(
-            "self.id != %d AND self.isContact = false AND self.isCustomer = true", companyId);
+    String domain = String.format("self.id != %d AND self.isContact = false ", companyId);
     domain += " AND :company member of self.companySet";
 
     int invoiceTypeSelect = Beans.get(InvoiceService.class).getPurchaseTypeOrSaleType(invoice);
+
+    if (invoiceTypeSelect == 1) {
+      domain += " AND self.isCustomer = true ";
+    } else {
+      domain += " AND self.isSupplier = true ";
+    }
 
     try {
 

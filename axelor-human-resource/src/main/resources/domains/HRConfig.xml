@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -70,6 +70,62 @@
 
     <!-- DPAE -->
     <boolean name="enableDPAE" title="Enable DPAE" default="false"/>
+    <string name="healthService" title="Health service"/>
+    <many-to-one name="healthServiceAddress" title="Health service address" ref="com.axelor.apps.base.db.Address"/>
+
+  	 <track>
+  	    <field name="company" on="UPDATE"/>
+	    <field name="kilometricExpenseProduct" on="UPDATE"/>
+	    <field name="lunchVoucherWageShare" on="UPDATE"/>
+	    <field name="lunchVoucherEmployersShare" on="UPDATE"/>
+	    <field name="toJustifyLeaveReason" on="UPDATE"/>
+	    <field name="exportCodeForExtraHours" on="UPDATE"/>
+
+	    <field name="minStockLunchVoucher" on="UPDATE"/>
+	    <field name="availableStockLunchVoucher" on="UPDATE"/>
+	    <field name="supplierLunchVoucher" on="UPDATE"/>
+	    <field name="lunchVoucherFormatSelect" on="UPDATE"/>
+
+	    <field name="exportCodeForLunchVoucherManagement" on="UPDATE"/>
+
+	    <field name="leaveMailNotification" on="UPDATE"/>
+	    <field name="sentLeaveTemplate" on="UPDATE"/>
+	    <field name="validatedLeaveTemplate" on="UPDATE"/>
+	    <field name="refusedLeaveTemplate" on="UPDATE"/>
+	    <field name="canceledLeaveTemplate" on="UPDATE"/>
+
+	    <field name="publicHolidayEventsPlanning" on="UPDATE"/>
+	    <field name="weeklyPlanning" on="UPDATE"/>
+
+	    <field name="timesheetMailNotification" on="UPDATE"/>
+	    <field name="sentTimesheetTemplate" on="UPDATE"/>
+	    <field name="validatedTimesheetTemplate" on="UPDATE"/>
+	    <field name="refusedTimesheetTemplate" on="UPDATE"/>
+	    <field name="canceledTimesheetTemplate" on="UPDATE"/>
+
+	    <field name="expenseMailNotification" on="UPDATE"/>
+	    <field name="sentExpenseTemplate" on="UPDATE"/>
+	    <field name="validatedExpenseTemplate" on="UPDATE"/>
+	    <field name="refusedExpenseTemplate" on="UPDATE"/>
+	    <field name="canceledExpenseTemplate" on="UPDATE"/>
+
+	    <field name="expenseSequence" on="UPDATE"/>
+
+	    <field name="extraHoursMailNotification" on="UPDATE"/>
+	    <field name="sentExtraHoursTemplate" on="UPDATE"/>
+	    <field name="validatedExtraHoursTemplate" on="UPDATE"/>
+	    <field name="refusedExtraHoursTemplate" on="UPDATE"/>
+	    <field name="canceledExtraHoursTemplate" on="UPDATE"/>
+
+	    <field name="seniorityVariableName" on="UPDATE"/>
+	    <field name="ageVariableName" on="UPDATE"/>
+
+	    <field name="workingDaysVariableName" on="UPDATE"/>
+	    <field name="totalWorkingDaysVariableName" on="UPDATE"/>
+
+	    <field name="useUniqueProductForTimesheet" on="UPDATE"/>
+	    <field name="uniqueTimesheetProduct" on="UPDATE"/>
+  	 </track>
   </entity>
   
 </domain-models>

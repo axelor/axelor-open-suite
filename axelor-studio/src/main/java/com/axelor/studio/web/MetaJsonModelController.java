@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.schema.actions.ActionView;
@@ -25,6 +26,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.WkfRepository;
+import com.axelor.studio.service.StudioMetaService;
 
 public class MetaJsonModelController {
 
@@ -48,5 +50,21 @@ public class MetaJsonModelController {
     }
 
     response.setView(builder.map());
+  }
+
+  public void trackJsonField(ActionRequest request, ActionResponse response) {
+    try {
+      MetaJsonModel jsonModel = request.getContext().asType(MetaJsonModel.class);
+
+      if (jsonModel.getId() == null && jsonModel.getFields() == null) {
+        return;
+      }
+
+      String jsonFieldTracking = Beans.get(StudioMetaService.class).trackJsonField(jsonModel);
+      response.setValue("jsonFieldTracking", jsonFieldTracking);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
