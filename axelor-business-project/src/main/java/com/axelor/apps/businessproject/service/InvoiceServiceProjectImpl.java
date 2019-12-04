@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -33,6 +34,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.Arrays;
@@ -66,6 +68,15 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)
       throws AxelorException {
 
+    if (invoice.getPrintingSettings() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          String.format(
+              I18n.get(IExceptionMessage.INVOICE_MISSING_PRINTING_SETTINGS),
+              invoice.getInvoiceId()),
+          invoice);
+    }
+
     if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting()
         && !AuthUtils.getUser()
             .getActiveCompany()
@@ -94,6 +105,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
         rS.addParam("InvoiceId", invoiceIds)
             .addParam("Locale", language)
             .addParam("InvoicesCopy", invoicesCopy)
+            .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
+            .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
             .generate()
             .getFileLink();
 
