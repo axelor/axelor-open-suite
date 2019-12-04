@@ -5,6 +5,8 @@
 - AdvancedExportLine : Add translation for field orderByType.
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'
 - MOVE : changed position of reconciliation tag in move form.
+- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
+
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
 - REFUND : avoid blocking message when ventilation of the invoice
