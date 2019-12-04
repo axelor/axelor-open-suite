@@ -30,6 +30,7 @@
   		<field name="displaySupplierCodeOnPrinting" on="UPDATE"/>
   		<field name="displayProductDetailOnPrinting" on="UPDATE"/>
   		<field name="priceRequest" on="UPDATE"/>
+  		<field name="isAnalyticDistributionRequired" on="UPDATE"/>
   	</track>
   </entity>
   

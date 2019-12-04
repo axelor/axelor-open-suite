@@ -293,7 +293,10 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     Product product = teamTask.getProduct();
     if (product != null) {
       teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
-
+      if (teamTask.getUnitPrice() == null
+          || teamTask.getUnitPrice().compareTo(BigDecimal.ZERO) == 0) {
+        teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
+      }
     } else {
       TeamTaskCategory teamTaskCategory = teamTask.getTeamTaskCategory();
       if (teamTaskCategory == null) {
@@ -306,9 +309,9 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       if (product == null) {
         return teamTask;
       }
+      teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
     }
     teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
-    teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
     teamTask.setCurrency(product.getSaleCurrency());
     teamTask.setQuantity(teamTask.getBudgetedTime());
 
@@ -329,18 +332,16 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       return unitPrice;
     }
 
-    PriceListLine priceListLine =
-        this.getPriceListLine(teamTask, priceList, teamTask.getUnitPrice());
+    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList, unitPrice);
     Map<String, Object> discounts =
-        priceListService.getReplacedPriceAndDiscounts(
-            priceList, priceListLine, teamTask.getProduct().getSalePrice());
+        priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, unitPrice);
 
     if (discounts == null) {
       return unitPrice;
     } else {
       unitPrice =
           priceListService.computeDiscount(
-              product.getSalePrice(),
+              unitPrice,
               (Integer) discounts.get("discountTypeSelect"),
               (BigDecimal) discounts.get("discountAmount"));
     }

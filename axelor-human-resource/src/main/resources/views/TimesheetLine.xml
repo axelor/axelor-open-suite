@@ -207,9 +207,7 @@
 		<attribute name="value" for="project" expr="eval: _project" if="_project != null"/>
 		<attribute name="value" for="user" expr="eval: _user" if="_user != null"/>
 		<attribute name="value" for="product" expr="eval:__user__.employee?.product"/>
-		<attribute name="value" for="toInvoice" expr="eval: false" if="_teamTaskInvoicing == false"/>
-		<attribute name="value" for="toInvoice" expr="eval: true" if="_teamTaskInvoicing == true &amp;&amp; _invoicingType == 1"/>
-		<attribute name="value" for="toInvoice" expr="eval: false" if="_teamTaskInvoicing == true &amp;&amp; _invoicingType == 2"/>
+		<attribute name="value" expr="eval: _invoicingType == 1 ? true : false" for="toInvoice"/>
 	</action-attrs>
 	
 	<action-attrs name="action-timesheet-line-atts-overview-readonly">
@@ -310,7 +308,6 @@
   		<context name="_project" expr="eval: project"/>
   		<context name="_user" expr="eval: assignedTo"/>
   		<context name="_company" expr="eval: project.company"/>
-  		<context name="_teamTaskInvoicing" expr="eval: teamTaskInvoicing"/>
 		<context name="_invoicingType" expr="eval: invoicingType"/>
 	</action-view>
 	

@@ -121,6 +121,7 @@
 		   	<field name="enableTradingNamesManagement" on="UPDATE"/>
 		   	<field name="enableCalendars" on="UPDATE"/>
 		   	<field name="passwordChangedTemplate" on="UPDATE"/>
+		   	<field name="generatePartnerSequence" on="UPDATE"/>
 <!-- 		   	31 fields -->
 	   	</track>
 	   	

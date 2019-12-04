@@ -74,8 +74,6 @@ public interface IExceptionMessage {
       "Please, enter the number of daily work hours per employee %s" /*)*/;
   static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
-  static final String TIMESHEET_DATE_CONFLICT = /*$$(*/
-      "There is a conflict between the timesheet input dates and the dates of the following lines: %s" /*)*/;
   static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
