@@ -11,6 +11,7 @@
 ## Bug Fixes
 - REFUND : avoid blocking message when ventilation of the invoice
 - MOVE : corrected display of status tag in move form.
+- Manuf Order: fix real quantity not updating when a new line in consumed products is created.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
