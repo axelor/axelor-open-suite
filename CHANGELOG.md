@@ -4,6 +4,7 @@
 ## Improvements
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
+- Purchase Order: fix view budgetDistributionListPanel of purchaseOrderLine
 
 ## [5.2.0] - 2019-11-29
 ## Features
