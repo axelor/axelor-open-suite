@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.1]
 ## Improvements
+- AdvancedExportLine : Add translation for field orderByType.
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
 
