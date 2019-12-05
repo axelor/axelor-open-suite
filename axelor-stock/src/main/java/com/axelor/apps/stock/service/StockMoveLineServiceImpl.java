@@ -264,8 +264,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal qtyByTracking)
       throws AxelorException {
 
-    int generateTrakingNumberCounter = 0;
-
     StockMove stockMove = stockMoveLine.getStockMove();
 
     if (qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
@@ -273,6 +271,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
+
+    if (stockMoveLine.getQty().divide(qtyByTracking).compareTo(BigDecimal.valueOf(1000))>=0) {
+      throw new AxelorException(
+          TraceBackRepository.TYPE_TECHNICAL,
+          I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
+    }
+
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
@@ -282,14 +287,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           minQty,
           trackingNumberService.getTrackingNumber(
               product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
-
-      generateTrakingNumberCounter++;
-
-      if (generateTrakingNumberCounter == 1000) {
-        throw new AxelorException(
-            TraceBackRepository.TYPE_TECHNICAL,
-            I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
-      }
     }
     if (stockMoveLine.getTrackingNumber() == null) {
 

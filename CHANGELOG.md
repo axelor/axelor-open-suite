@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.2.1]
 ## Improvements
+- Manufacturing Order: Taking very long time to plan higher qty
+
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
 

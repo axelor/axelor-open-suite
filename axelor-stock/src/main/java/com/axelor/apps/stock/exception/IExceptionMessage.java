@@ -99,7 +99,7 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_QTY_BY_TRACKING = /*$$(*/
       "The tracking number configuration quantity is equal to zero, it must be at least one." /*)*/;
   static final String STOCK_MOVE_TOO_MANY_ITERATION = /*$$(*/
-      "Too many iterations while trying to generate stock move line with tracking numbers." /*)*/;
+      "Too many iterations while trying to generate stock move line with tracking numbers. Update tracking number configuration quantity to avoid iterations. " /*)*/;
   static final String STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT = /*$$(*/
       "Cannot go back to draft status." /*)*/;
 
