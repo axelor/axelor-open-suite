@@ -13,6 +13,7 @@
 - STOCK MOVE : to and from stock location set on company change.
 
 ## Bug Fixes
+- INVOICE PARTIAL: take in consideration refund
 - REFUND : avoid blocking message when ventilation of the invoice
 - MOVE : corrected display of status tag in move form.
 - Manuf Order: fix real quantity not updating when a new line in consumed products is created.
