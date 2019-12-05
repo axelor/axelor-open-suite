@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.3]
 ## Improvements
 ## Bug Fixes
+- INVOICE PARTIAL: take in consideration refund
 
 ## [5.2.2] - 2020-01-09
 ## Features
