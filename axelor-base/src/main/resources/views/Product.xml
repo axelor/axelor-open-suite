@@ -199,6 +199,7 @@
 				        <panel-dashlet name="productStockPanel" colSpan="12" action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"  />
 				        <panel-dashlet name="stockReportPanel" colSpan="12" action="action-stock-report-for-product" showIf="id &amp;&amp; stockManaged"  />
 				        <panel-dashlet name="stockHistoryReportPanel" colSpan="12" action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"  />
+				        <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel" colSpan="12"/>
 	      			</panel>
 	    		</panel>
                 <panel name="productionInformationsPanel"

@@ -59,10 +59,10 @@
 				<field name="globalByPartner" hideIf="typeSelect != 3 &amp;&amp; typeSelect != 7" onChange="action-accounting-report-record-global-by-partner" />
 				<field name="detailed" hideIf="typeSelect != 4" onChange="action-accounting-report-record-detailed" />
 				<field name="displayOnlyNotCompletelyLetteredMoveLines" hideIf="typeSelect != 7"/>
-				<field name="displayCodeAccountOnPrinting" showIf="typeSelect == 1"/>
-				<field name="displayNameAccountOnPrinting" showIf="typeSelect == 1"/>
-				<field name="displayMoveSequenceOnPrinting" showIf="typeSelect == 1"/>
-				<field name="displayCumulativeBalance" showIf="typeSelect==7"/>
+				<field name="displayCodeAccountColumnOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayNameAccountColumnOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayMoveLineSequenceOnPrinting" showIf="typeSelect == 1"/>
+				<field name="displayCumulativeBalance" showIf="typeSelect==7 || typeSelect==1"/>
 			</panel>
 		</panel-tabs>
 		

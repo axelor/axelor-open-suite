@@ -175,7 +175,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
 
-    return reportSetting.addParam("InvoiceId", invoice.getId()).addParam("Locale", locale);
+    return reportSetting
+        .addParam("InvoiceId", invoice.getId())
+        .addParam("Locale", locale)
+        .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight());
   }
 
   /**

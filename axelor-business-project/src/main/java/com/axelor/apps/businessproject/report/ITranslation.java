@@ -45,6 +45,7 @@ public interface ITranslation {
   public static final String PROJECT_TURNOVER = /*$$(*/ "Project.turnover"; /*)*/
   public static final String PROJECT_SALES_INVOICE = /*$$(*/ "Project.salesInvoice"; /*)*/
   public static final String PROJECT_INVOICE_NUMBER = /*$$(*/ "Project.invoiceNumber"; /*)*/
+  public static final String PROJECT_SUB_TYPE = /*$$(*/ "Project.subType"; /*)*/
   public static final String PROJECT_AMOUNT = /*$$(*/ "Project.amount"; /*)*/
   public static final String PROJECT_PURCHASE = /*$$(*/ "Project.purchase"; /*)*/
   public static final String PROJECT_EXPENSE = /*$$(*/ "Project.expense"; /*)*/
@@ -80,6 +81,7 @@ public interface ITranslation {
   public static final String INVOICE_TIMESHEET_USER = /*$$(*/ "Invoice.timesheetUser"; /*)*/
   public static final String INVOICE_TIMESHEET_ACTIVITY = /*$$(*/ "Invoice.timesheetActivity"; /*)*/
   public static final String INVOICE_TIMESHEET_DURATION = /*$$(*/ "Invoice.timesheetDuration"; /*)*/
+  public static final String INVOICE_SUPPLIER_REFERENCE = /*$$(*/ "Invoice.supplierReference"; /*)*/
 
   public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/
       "Invoice.expenseTotalAmount"; /*)*/

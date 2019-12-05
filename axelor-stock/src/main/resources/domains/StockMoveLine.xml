@@ -17,7 +17,7 @@
 	<decimal name="oldQty" hidden="true"/>
 	<decimal name="availableQty" title="Available qty" transient="true"/>
 	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
-	<string name="availableStatus" title="Status" transient="true"/>
+	<string name="availableStatus" title="Availability" transient="true"/>
 	<integer name="availableStatusSelect" title="Status" transient="true" selection="stock.move.line.available.status.select"/>
 	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -47,7 +47,18 @@
 
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
-
+  
+    <string name="name" title="Ref.">
+    	<![CDATA[
+    	if (stockMove != null && stockMove.getStockMoveSeq() != null){
+    		return stockMove.getStockMoveSeq()+ "-" +Integer.toString(sequence);
+    	}
+		else {
+			return Integer.toString(sequence);
+		 }
+	    ]]>
+    </string>
+	
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
     <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />

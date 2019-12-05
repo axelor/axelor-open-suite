@@ -199,7 +199,7 @@ public class DuplicateObjectsService {
    */ private String concatFields(Class<?> modelClass, Set<String> fieldSet)
       throws AxelorException {
 
-    StringBuilder fields = new StringBuilder("concat(");
+    StringBuilder fields = new StringBuilder("LOWER(concat(");
     Mapper mapper = Mapper.of(modelClass);
 
     int count = 0;
@@ -230,7 +230,7 @@ public class DuplicateObjectsService {
       }
       fields.append(" as string)");
     }
-    fields.append(")");
+    fields.append("))");
 
     return fields.toString();
   }

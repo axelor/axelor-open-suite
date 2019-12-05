@@ -654,8 +654,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   && stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING))
           && stockMoveLine.getTrackingNumber() == null
           && stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) != 0) {
-
-        productsWithErrors.add(stockMoveLine.getProduct().getName());
+        if (!productsWithErrors.contains(stockMoveLine.getProduct().getName())) {
+          productsWithErrors.add(stockMoveLine.getProduct().getName());
+        }
       }
     }
 
@@ -1188,9 +1189,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {
     StockLocation stockLocation = stockMoveLine.getStockMove().getFromStockLocation();
-    StockLocationLine stockLocationLine =
-        stockLocationLineService.getStockLocationLine(stockLocation, stockMoveLine.getProduct());
+    Optional<StockLocationLine> stockLocationLineOpt =
+        Optional.ofNullable(
+            stockLocationLineService.getStockLocationLine(
+                stockLocation, stockMoveLine.getProduct()));
 
-    stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice());
+    stockLocationLineOpt.ifPresent(
+        stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
   }
 }
