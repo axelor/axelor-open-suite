@@ -1,4 +1,5 @@
 # Changelog
+
 ## [Unreleased 5.2.3]
 ## Features
 - Invoice : Removal of companyBankDetails comment in invoice form.
@@ -8,6 +9,7 @@
 - BANKSTATEMENT : import multiple records in a single line.
 - Opportunity : Set sale order defaults on new.
 - Typos on PurchaseRequestLine
+- Subrogation release : improved visibility of unpaid invoices.
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
@@ -23,6 +25,7 @@
 - SUBROGATION RELEASE / INVOICE : corrected npe.
 - FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
 - Invoice : Fix wrong attribute name used in grid views.
+- Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 
 ## [5.2.2] - 2020-01-09
 ## Features
