@@ -9,6 +9,7 @@
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
 
 ## Bug Fixes
+- INVOICE PARTIAL: take in consideration refund
 - REFUND : avoid blocking message when ventilation of the invoice
 - MOVE : corrected display of status tag in move form.
 - Manuf Order: fix real quantity not updating when a new line in consumed products is created.
