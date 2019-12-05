@@ -217,6 +217,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
         continue;
       }
 
+      boolean isRefund = false;
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        isRefund = true;
+      }
+
       LocalDate date = subrogationRelease.getAccountingDate();
       Move move =
           moveService
@@ -239,12 +244,12 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   invoice.getPartner(),
                   factorDebitAccount,
                   invoice.getCompanyInTaxTotalRemaining(),
-                  true,
+                  !isRefund,
                   date,
                   null,
                   1,
                   subrogationRelease.getSequenceNumber(),
-                  null);
+                  invoice.getInvoiceId());
 
       creditMoveLine =
           moveService
@@ -254,18 +259,23 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                   invoice.getPartner(),
                   factorCreditAccount,
                   invoice.getCompanyInTaxTotalRemaining(),
-                  false,
+                  isRefund,
                   date,
                   null,
                   2,
                   subrogationRelease.getSequenceNumber(),
-                  null);
+                  invoice.getInvoiceId());
 
       move.addMoveLineListItem(debitMoveLine);
       move.addMoveLineListItem(creditMoveLine);
 
       move = moveRepository.save(move);
       moveService.getMoveValidateService().validate(move);
+
+      invoice.setSubrogationRelease(subrogationRelease);
+      invoice.setSubrogationReleaseMove(move);
+
+      subrogationRelease.addMoveListItem(move);
     }
 
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_ACCOUNTED);

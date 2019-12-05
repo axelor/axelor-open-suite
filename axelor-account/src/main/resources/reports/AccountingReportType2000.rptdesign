@@ -361,6 +361,7 @@ left outer join public.base_company as Company on (AccountingReport.company = Co
 
 where
 (Move.company_currency = AccountingReport.currency) AND
+(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.date_from IS NULL OR AnalyticMoveLine.date_val >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR AnalyticMoveLine.date_val <= AccountingReport.date_to) AND
 AnalyticMoveLine.date_val <= AccountingReport.date_val AND 

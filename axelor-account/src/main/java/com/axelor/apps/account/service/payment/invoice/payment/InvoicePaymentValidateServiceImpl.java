@@ -205,7 +205,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             2,
             invoicePayment.getInvoicePaymentRef(),
             null);
-    customerMoveLine.setTaxAmount(invoice.getTaxTotal());
 
     move.addMoveLineListItem(customerMoveLine);
 

@@ -6,19 +6,19 @@
   <module name="studio" package="com.axelor.studio.db" />
 
   <entity name="ActionBuilderLine" cachable="true">
-     <many-to-one name="actionBuilder" ref="ActionBuilder" title="Action Builder" />
-     <many-to-one name="metaJsonField" ref="com.axelor.meta.db.MetaJsonField" title="Target Field" />
-     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Target Field" />
-     <many-to-one name="valueJson" ref="com.axelor.meta.db.MetaJsonField" title="Source Field" />
-     <many-to-one name="valueField" ref="com.axelor.meta.db.MetaField" title="Source Field" />
-     <string name="value" title="Value Expr"/>
+     <many-to-one name="actionBuilder" ref="ActionBuilder" title="Action builder" />
+     <many-to-one name="metaJsonField" ref="com.axelor.meta.db.MetaJsonField" title="Target field" />
+     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Target field" />
+     <many-to-one name="valueJson" ref="com.axelor.meta.db.MetaJsonField" title="Source field" />
+     <many-to-one name="valueField" ref="com.axelor.meta.db.MetaField" title="Source field" />
+     <string name="value" title="Value expr"/>
      <string name="conditionText" title="Condition" />
      <string name="filter" title="Filter" />
      <string name="validationTypeSelect" title="Validation type"/>
   	 <string name="validationMsg" title="Message" />
   	 <one-to-many name="subLines" ref="ActionBuilderLine" mappedBy="parent"/>
   	 <many-to-one name="parent" ref="ActionBuilderLine" />
-  	 <string name="name" title="Target Field" />
+  	 <string name="name" title="Target field" />
   	 <boolean name="dummy" title="Dummy" />
   </entity>
 

@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface TimesheetLineService {
 
@@ -57,7 +58,7 @@ public interface TimesheetLineService {
       throws AxelorException;
 
   /**
-   * Create a timesheet line.
+   * Creates a timesheet line.
    *
    * @param project
    * @param product
@@ -77,6 +78,20 @@ public interface TimesheetLineService {
       BigDecimal hours,
       String comments);
 
+  /**
+   * Creates a timesheet line without project and product. Used to generate timesheet lines for
+   * holidays or day leaves.
+   *
+   * @param user
+   * @param date
+   * @param timesheet
+   * @param hours
+   * @param comments
+   * @return the created timesheet line.
+   */
+  TimesheetLine createTimesheetLine(
+      User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments);
+
   TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,
       Project project,
@@ -95,4 +110,13 @@ public interface TimesheetLineService {
    * @return a {@link java.time.Duration}.
    */
   Duration computeTotalDuration(List<TimesheetLine> timesheetLineList);
+
+  /**
+   * Calculates time spent on the project base on timesheet lines for the validated {@link
+   * Timesheet}.
+   *
+   * @param timesheetLineList
+   * @return {@link Map}
+   */
+  Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList);
 }

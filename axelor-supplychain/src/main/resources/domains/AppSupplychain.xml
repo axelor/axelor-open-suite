@@ -42,10 +42,11 @@
         <boolean name="intercoSaleOrderCreateFinalized" title="Create interco sale quotation as finalized"/>
         <boolean name="intercoPurchaseOrderCreateRequested" title="Create interco purchase quotation as requested"/>
         <boolean name="intercoInvoiceCreateValidated" title="Create interco invoice as validated"/>
-    <boolean name="blockDeallocationOnAvailabilityRequest" title="Block deallocation on availability request"/>
+      <boolean name="blockDeallocationOnAvailabilityRequest" title="Block deallocation on availability request"/>
     	<boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
     	<boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
+    	<boolean name="manageAdvancePaymentsFromPaymentConditions" title="Manage advance payments from payment conditions" default="false"/>
     
     <track>
     	<field name="manageInvoicedAmountByLine" on="UPDATE"/>
@@ -83,6 +84,9 @@
     	<field name="intercoInvoiceCreateValidated" on="UPDATE"/>
     	<field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
     	<field name="isVerifyProductStock" on="UPDATE"/>
+    	<field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
+    	<field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
+    	<field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
     </track>
 	</entity>
 

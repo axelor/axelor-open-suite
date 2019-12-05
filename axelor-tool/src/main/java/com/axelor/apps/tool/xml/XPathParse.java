@@ -21,8 +21,10 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -46,9 +48,11 @@ public class XPathParse {
     this.doc = doc;
   }
 
+  public XPathParse() {}
+
   public XPathParse(String xml) {
 
-    DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory domFactory = getDocumentBuilderFactory();
     domFactory.setNamespaceAware(true); // never forget this!
     DocumentBuilder builder;
 
@@ -60,6 +64,36 @@ public class XPathParse {
 
       LOG.error(e.getMessage());
     }
+  }
+
+  public DocumentBuilderFactory getDocumentBuilderFactory() {
+    DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+
+    try {
+      String feature = "http://apache.org/xml/features/disallow-doctype-decl";
+      domFactory.setFeature(feature, true);
+
+      // Disable #external-general-entities
+      feature = "http://xml.org/sax/features/external-general-entities";
+      domFactory.setFeature(feature, false);
+
+      // Disable #external-parameter-entities
+      feature = "http://xml.org/sax/features/external-parameter-entities";
+      domFactory.setFeature(feature, false);
+
+      // Disable external DTDs as well
+      feature = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+      domFactory.setFeature(feature, false);
+
+      // and these as well
+      domFactory.setXIncludeAware(false);
+      domFactory.setExpandEntityReferences(false);
+      domFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    } catch (ParserConfigurationException e) {
+      LOG.error(e.getMessage());
+    }
+
+    return domFactory;
   }
 
   /**

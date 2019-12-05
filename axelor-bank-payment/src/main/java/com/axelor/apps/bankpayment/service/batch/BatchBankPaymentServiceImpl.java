@@ -259,7 +259,8 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
             senderBankDetails,
             currency,
             senderReference,
-            senderLabel);
+            senderLabel,
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC);
     bankOrder = JPA.save(bankOrder);
 
     List<PaymentScheduleLine> paymentScheduleLineList;

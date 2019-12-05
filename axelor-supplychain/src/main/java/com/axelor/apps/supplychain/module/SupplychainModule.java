@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
+import com.axelor.apps.account.service.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
@@ -30,7 +31,6 @@ import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidat
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseProductService;
@@ -70,6 +70,7 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.BudgetSupplychainService;
+import com.axelor.apps.supplychain.service.FixedAssetServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
@@ -143,7 +144,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockRulesServiceImpl.class).to(StockRulesServiceSupplychainImpl.class);
     bind(StockMoveService.class).to(StockMoveServiceImpl.class);
     bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
-    bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
     bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(SaleOrderCreateServiceImpl.class).to(SaleOrderCreateServiceSupplychainImpl.class);
     bind(SaleOrderComputeServiceImpl.class).to(SaleOrderComputeServiceSupplychainImpl.class);
@@ -205,5 +205,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockLocationLineReservationService.class)
         .to(StockLocationLineReservationServiceImpl.class);
     bind(PurchaseRequestServiceImpl.class).to(PurchaseRequestServiceSupplychainImpl.class);
+    bind(FixedAssetServiceImpl.class).to(FixedAssetServiceSupplyChainImpl.class);
   }
 }

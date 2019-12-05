@@ -129,4 +129,8 @@ public interface ExpenseService {
 
   public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(
       ExpenseLine expenseLine, Expense expense) throws AxelorException;
+
+  public Move createMoveForExpensePayment(Expense expense) throws AxelorException;
+
+  public Expense updateMoveDateAndPeriod(Expense expense);
 }

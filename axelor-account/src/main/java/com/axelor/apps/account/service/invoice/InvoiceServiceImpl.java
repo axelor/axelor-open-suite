@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -28,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -57,6 +57,7 @@ import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -91,6 +92,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -101,7 +103,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
-      InvoiceLineService invoiceLineService) {
+      InvoiceLineService invoiceLineService,
+      AccountConfigService accountConfigService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -111,6 +114,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
+    this.accountConfigService = accountConfigService;
   }
 
   // WKF
@@ -154,7 +158,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Company company = invoice.getCompany();
     if (company == null) return null;
 
-    AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     // Taken from legacy JournalService but negative cases seem rather strange
@@ -245,28 +248,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     compute(invoice);
 
     validateFactory.getValidator(invoice).process();
-    if (appAccountService.isApp("budget")
-        && !appAccountService.getAppBudget().getManageMultiBudget()) {
-      this.generateBudgetDistribution(invoice);
-    }
+
     // if the invoice is an advance payment invoice, we also "ventilate" it
     // without creating the move
     if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       ventilate(invoice);
-    }
-  }
-
-  @Override
-  public void generateBudgetDistribution(Invoice invoice) {
-    if (invoice.getInvoiceLineList() != null) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        if (invoiceLine.getBudget() != null && invoiceLine.getBudgetDistributionList().isEmpty()) {
-          BudgetDistribution budgetDistribution = new BudgetDistribution();
-          budgetDistribution.setBudget(invoiceLine.getBudget());
-          budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
-          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
-        }
-      }
     }
   }
 
@@ -372,8 +358,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
-    AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
     if (!accountConfig.getAutoReconcileOnInvoice()) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
@@ -523,7 +508,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     List<InvoiceLine> invoiceLines = this.getInvoiceLinesFromInvoiceList(invoiceList);
     invoiceGenerator.populate(invoiceMerged, invoiceLines);
     this.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-    Beans.get(InvoiceRepository.class).save(invoiceMerged);
+    invoiceRepo.save(invoiceMerged);
     return invoiceMerged;
   }
 
@@ -597,7 +582,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     advancePaymentInvoices =
         new HashSet<>(
-            Beans.get(InvoiceRepository.class)
+            invoiceRepo
                 .all()
                 .filter(filter)
                 .bind("_status", InvoiceRepository.STATUS_VALIDATED)
@@ -625,7 +610,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   protected boolean removeBecauseOfTotalAmount(Invoice invoice, Invoice candidateAdvancePayment)
       throws AxelorException {
-    if (Beans.get(AccountConfigService.class)
+    if (accountConfigService
         .getAccountConfig(invoice.getCompany())
         .getGenerateMoveForInvoicePayment()) {
       return false;
@@ -654,7 +639,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // if there is no move generated, we simply check if the payment was
     // imputed
-    if (!Beans.get(AccountConfigService.class)
+    if (!accountConfigService
         .getAccountConfig(invoice.getCompany())
         .getGenerateMoveForInvoicePayment()) {
       for (InvoicePayment invoicePayment : invoicePayments) {
@@ -687,7 +672,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
   @Override
   public List<MoveLine> getMoveLinesFromAdvancePayments(Invoice invoice) throws AxelorException {
-    if (Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice()) {
+    if (appAccountService.getAppAccount().getManageAdvancePaymentInvoice()) {
       return getMoveLinesFromInvoiceAdvancePayments(invoice);
     } else {
       return getMoveLinesFromSOAdvancePayments(invoice);
@@ -868,5 +853,42 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return true;
     }
     return false;
+  }
+
+  @Override
+  public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+      long supplierNotLetteredAdvancePaymentMoveLinesAmount =
+          getNotLetteredAdvancePaymentMoveLinesAmount(invoice.getPartner());
+
+      if (supplierNotLetteredAdvancePaymentMoveLinesAmount > 0) {
+        return I18n.get(IExceptionMessage.INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES);
+      }
+    }
+    return null;
+  }
+
+  protected long getNotLetteredAdvancePaymentMoveLinesAmount(Partner partner) {
+    return JPA.em()
+        .createQuery(
+            "Select moveLine.id "
+                + "FROM  MoveLine moveLine "
+                + "LEFT JOIN Move move on moveLine.move = move.id "
+                + "LEFT JOIN Invoice invoice on move.id = invoice.move "
+                + "LEFT JOIN Account account on moveLine.account = account.id "
+                + "LEFT JOIN AccountType accountType on account.accountType = accountType.id "
+                + "LEFT JOIN Partner partner on moveLine.partner = partner.id "
+                + "WHERE invoice.move = null "
+                + "AND moveLine.debit > 0 "
+                + "AND moveLine.amountRemaining > 0 "
+                + "AND accountType.technicalTypeSelect = ?1 "
+                + "AND move.statusSelect in (?2,?3) "
+                + "AND partner.id = ?4")
+        .setParameter(1, AccountTypeRepository.TYPE_PAYABLE)
+        .setParameter(2, MoveRepository.STATUS_DAYBOOK)
+        .setParameter(3, MoveRepository.STATUS_VALIDATED)
+        .setParameter(4, partner.getId())
+        .getResultList()
+        .size();
   }
 }

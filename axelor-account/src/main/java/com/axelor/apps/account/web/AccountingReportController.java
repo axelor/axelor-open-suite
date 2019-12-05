@@ -28,11 +28,13 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.base.db.App;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -169,20 +171,34 @@ public class AccountingReportController {
         return;
       }
 
+      if (accountingReportService.isThereTooManyLines(accountingReport)) {
+        response.setAlert(
+            I18n.get(
+                "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
+      }
+
       logger.debug("Type selected : {}", typeSelect);
 
       if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
           && typeSelect < AccountingReportRepository.REPORT_ANALYTIC_BALANCE)) {
-
         MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
-        moveLineExportService.exportMoveLine(accountingReport);
+        MetaFile accesssFile = moveLineExportService.exportMoveLine(accountingReport);
+        if (typeSelect == AccountingReportRepository.EXPORT_ADMINISTRATION && accesssFile != null) {
 
-      } else {
-
-        if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
-          typeSelect = AccountingReportRepository.REPORT_GENERAL_LEDGER;
+          response.setView(
+              ActionView.define(I18n.get("Export file"))
+                  .model(App.class.getName())
+                  .add(
+                      "html",
+                      "ws/rest/com.axelor.meta.db.MetaFile/"
+                          + accesssFile.getId()
+                          + "/content/download?v="
+                          + accesssFile.getVersion())
+                  .param("download", "true")
+                  .map());
         }
+      } else {
 
         accountingReportService.setPublicationDateTime(accountingReport);
 

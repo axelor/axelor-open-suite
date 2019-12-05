@@ -274,6 +274,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam("Locale", language)
+        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .toAttach(purchaseOrder)
         .generate()
         .getFileLink();
@@ -462,7 +464,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public void finishPurchaseOrder(PurchaseOrder purchaseOrder) {
-
     purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
     purchaseOrderRepo.save(purchaseOrder);
   }
@@ -470,7 +471,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
-
     purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_CANCELED);
     purchaseOrderRepo.save(purchaseOrder);
   }

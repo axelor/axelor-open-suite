@@ -81,6 +81,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppBaseService appBaseService;
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
+  protected ProductRepository productRepository;
   private StockMoveToolService stockMoveToolService;
   private StockMoveLineRepository stockMoveLineRepo;
 
@@ -91,13 +92,15 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       StockMoveRepository stockMoveRepository,
-      PartnerProductQualityRatingService partnerProductQualityRatingService) {
+      PartnerProductQualityRatingService partnerProductQualityRatingService,
+      ProductRepository productRepository) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.stockMoveRepo = stockMoveRepository;
     this.partnerProductQualityRatingService = partnerProductQualityRatingService;
+    this.productRepository = productRepository;
   }
 
   /**
@@ -234,7 +237,9 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT));
     }
-
+    stockMove.setAvailabilityRequest(false);
+    stockMove.setPickingEditDate(null);
+    stockMove.setPickingIsEdited(false);
     stockMove.setStatusSelect(StockMoveRepository.STATUS_DRAFT);
   }
 
@@ -290,9 +295,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setName(stockMoveToolService.computeName(stockMove));
     }
 
-    if (stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
-    }
     int initialStatus = stockMove.getStatusSelect();
 
     setPlannedStatus(stockMove);
@@ -379,6 +381,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     String newStockSeq = null;
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
+    if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
+    }
     checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);
@@ -407,28 +412,25 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setRealDate(appBaseService.getTodayDate());
     resetMasses(stockMove);
 
-    try {
-      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
-        if (newStockMove.isPresent()) {
+    if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
+      Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
+      if (newStockMove.isPresent()) {
+        newStockSeq = newStockMove.get().getStockMoveSeq();
+      }
+    }
+
+    if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
+      Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
+      if (newStockMove.isPresent()) {
+        if (newStockSeq != null) {
+          newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
+        } else {
           newStockSeq = newStockMove.get().getStockMoveSeq();
         }
       }
-
-      if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
-        if (newStockMove.isPresent()) {
-          if (newStockSeq != null) {
-            newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
-          } else {
-            newStockSeq = newStockMove.get().getStockMoveSeq();
-          }
-        }
-      }
-    } finally {
-      computeMasses(stockMove);
-      stockMoveRepo.save(stockMove);
     }
+    computeMasses(stockMove);
+    stockMoveRepo.save(stockMove);
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
       partnerProductQualityRatingService.calculate(stockMove);
@@ -465,8 +467,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     try {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
     } catch (Exception e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
+      //      throw new AxelorException(
+      //          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
+      LOG.error(e.getMessage());
     }
   }
 
@@ -1087,15 +1090,16 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(IExceptionMessage.STOCK_MOVE_11));
     }
+    Map<String, Object> result;
     if (appBaseService.getAppBase().getMapApiSelect()
         == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
-      throw new AxelorException(
-          stockMove,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_12));
+      result =
+          Beans.get(MapService.class).getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
+    } else {
+      result =
+          Beans.get(MapService.class)
+              .getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     }
-    Map<String, Object> result =
-        Beans.get(MapService.class).getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     if (result == null) {
       throw new AxelorException(
           stockMove,
@@ -1249,7 +1253,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (ids != null && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
       for (Long id : ids) {
         StockMove stockMove = stockMoveRepo.find(id);
-        setPickingStockMoveEditDate(stockMove, userType);
+        if (stockMove != null) {
+          setPickingStockMoveEditDate(stockMove, userType);
+        }
       }
     }
   }
@@ -1290,5 +1296,19 @@ public class StockMoveServiceImpl implements StockMoveService {
         stockMoveLine ->
             stockMove.addPlannedStockMoveLineListItem(
                 stockMoveLineRepo.copy(stockMoveLine, false)));
+  }
+
+  @Override
+  @Transactional
+  public void updateProductNetMass(StockMove stockMove) throws AxelorException {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        if (stockMoveLine.getProduct() != null) {
+          Product product = productRepository.find(stockMoveLine.getProduct().getId());
+          stockMoveLine.setNetMass(product.getNetMass());
+          stockMoveLineRepo.save(stockMoveLine);
+        }
+      }
+    }
   }
 }

@@ -65,14 +65,16 @@
 				<field name="usableOnPurchaseOrder" colSpan="3"/>
 				<field name="usableOnProduction" colSpan="3"/>
 				<field name="directOrderLocation" colSpan="3"/>
+				<field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
 				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
 			</panel>
 		</panel-tabs>
 		
 	</form>
     
-	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form">
+	<form model="com.axelor.apps.base.db.Wizard" title="Select format to Export" name="stock-location-print-wizard-form" onNew="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
 		<panel name="mainPanel">
+            <field name="$printingType" title="Printing Type" selection="stock.stock.location.printing.type"/>
 			<field name="$exportTypeSelect" title="Export Type" selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
 			<button name="printBtn" title="Print" onClick="action-stock-location-method-print" readonlyIf="$exportTypeSelect == null" colSpan="3"/>
 		</panel>
@@ -122,5 +124,10 @@
     	<view type="form" name="stock-location-form"/>
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
+    
+    <action-attrs name="action-stock-location-print-wizard-attrs-set-print-type-and-type-select">
+        <attribute name="value" for="$printingType" expr="1"/>
+        <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
+    </action-attrs>
 
 </object-views>

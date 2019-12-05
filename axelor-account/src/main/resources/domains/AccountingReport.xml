@@ -33,6 +33,18 @@
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
+
+    
+    <!--Report 7 : Partner genereal ledger  --> 
+    <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>
+    <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
+    
+    
+	<!--Report 1 : general ledger  --> 
+    <boolean name="displayCodeAccountColumnOnPrinting" title="Display column with accounting number"/>
+    <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
+    <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
+
 	<unique-constraint columns="ref,company"/>
     
     <extra-code><![CDATA[

@@ -78,6 +78,7 @@
 		<item name="BUSINESS_PROJECT" title="Business project"/>
 		<item name="PHASE_BY_LINE" title="Phase by line"/>
         <item name="TASK_BY_LINE" title="Task by line"/>
+        <item name="PROJECT_ALONE" title="Project alone"/>
 	</enum>
   
 </domain-models>
