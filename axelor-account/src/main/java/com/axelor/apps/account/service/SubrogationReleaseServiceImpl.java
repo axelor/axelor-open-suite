@@ -39,6 +39,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -119,10 +120,40 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
           I18n.get(IExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
           subrogationRelease.getCompany().getName());
     }
+    this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
 
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
     subrogationRelease.setTransmissionDate(appBaseService.getTodayDate());
+  }
+
+  protected void checkIfAnOtherSubrogationAlreadyExist(SubrogationRelease subrogationRelease)
+      throws AxelorException {
+
+    List<String> invoicesIDList =
+        JPA.em()
+            .createNativeQuery(
+                "SELECT invoice.invoice_id "
+                    + " FROM account_subrogation_release subrogationRelease "
+                    + " LEFT JOIN account_subrogation_release_invoice_set as subroInvoiceSet on subrogationRelease.id = subroInvoiceSet.account_subrogation_release "
+                    + " LEFT JOIN account_invoice invoice on subroInvoiceSet.invoice_set = invoice.id "
+                    + " LEFT JOIN account_subrogation_release_invoice_set as subroInvoiceSet2 on invoice.id = subroInvoiceSet2.invoice_set"
+                    + " LEFT JOIN account_subrogation_release subrogationRelease2 on subroInvoiceSet2.account_subrogation_release = subrogationRelease2.id "
+                    + " WHERE subrogationRelease.id = :subroID "
+                    + " AND subrogationRelease2.id != :subroID"
+                    + " AND subrogationRelease2.status_select IN (:statusTransmitted ,:statusAccounted,:statusCleared )")
+            .setParameter("subroID", subrogationRelease.getId())
+            .setParameter("statusTransmitted", SubrogationReleaseRepository.STATUS_TRANSMITTED)
+            .setParameter("statusAccounted", SubrogationReleaseRepository.STATUS_ACCOUNTED)
+            .setParameter("statusCleared", SubrogationReleaseRepository.STATUS_CLEARED)
+            .getResultList();
+    if (invoicesIDList != null && !invoicesIDList.isEmpty()) {
+      throw new AxelorException(
+          SubrogationRelease.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES),
+          invoicesIDList);
+    }
   }
 
   @Override
@@ -212,10 +243,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       subrogationRelease.setAccountingDate(appBaseService.getTodayDate());
     }
 
+    this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
+
     for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
-      if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
 
       boolean isRefund = false;
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {

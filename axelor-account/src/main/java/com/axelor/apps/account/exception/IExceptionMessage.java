@@ -786,6 +786,8 @@ public interface IExceptionMessage {
    */
   static final String SUBROGATION_RELEASE_MISSING_SEQUENCE = /*$$(*/
       "Missing subrogation release sequence for company %s" /*)*/;
+  static final String SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES = /*$$(*/
+      "A transmitted or a accounted subrogation release already exist for the invoices %s." /*)*/;
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;

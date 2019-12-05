@@ -6,10 +6,12 @@
 
 ## Improvements
 - MOVE : changed position of reconciliation tag in move form.
+- Subrogation release : improved visibility of unpaid invoices.
 
 ## Bug Fixes
 - REFUND : avoid blocking message when ventilation of the invoice
 - MOVE : corrected display of status tag in move form.
+- Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
