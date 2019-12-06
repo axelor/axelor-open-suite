@@ -1,21 +1,5 @@
 # Changelog
 
-## [Unreleased 5.2.1]
-## Improvements
-- AdvancedExportLine : Add translation for field orderByType.
-- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
-- MOVE : changed position of reconciliation tag in move form.
-- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
-
-## Bug Fixes
-- ANALYTIC : analytic journal in analytic line is now required.
-- REFUND : avoid blocking message when ventilation of the invoice
-- MOVE : corrected display of status tag in move form.
-- Manuf Order: fix real quantity not updating when a new line in consumed products is created.
-- INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
-- INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
-- User: find user by email using partner email address
-
 ## [5.2.0] - 2019-11-29
 ## Features
 - Migration to Axelor Open Platform 5.2.
@@ -224,5 +208,4 @@
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.1]: https://github.com/axelor/axelor-business-suite/compare/v5.2.0...dev
 [5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0

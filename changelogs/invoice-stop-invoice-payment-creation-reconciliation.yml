@@ -1,0 +1,3 @@
+---
+title: "Invoice: stop the creation of invoice payment when a reconciliation is made with accounts not used in partner balance"
+type: fix

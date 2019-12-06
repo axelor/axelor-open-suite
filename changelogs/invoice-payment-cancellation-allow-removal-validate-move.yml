@@ -1,0 +1,3 @@
+---
+title: "Invoice payment cancellation: correct error when boolean allow removal validate move in account configuration is true"
+type: fix
