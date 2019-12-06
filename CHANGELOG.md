@@ -15,6 +15,7 @@
 - INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
 - INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
 - User: find user by email using partner email address
+- Invoice: fix exception during passed for payment validation.
 
 ## [5.2.0] - 2019-11-29
 ## Features
