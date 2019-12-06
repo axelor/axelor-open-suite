@@ -1713,7 +1713,7 @@ AND Asset.company = AccountingReport.company]]></xml-property>
     </page-setup>
     <body>
         <grid id="491">
-            <property name="width">11.1in</property>
+            <property name="width">100%</property>
             <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility"/>
             <list-property name="boundDataColumns">
@@ -1844,6 +1844,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
             <row id="496">
                 <property name="height">0.2604166666666667in</property>
                 <cell id="497">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4192">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1852,7 +1854,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1879,15 +1882,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3063">
                     <text id="554">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["company_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4118">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4222">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1896,7 +1902,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1923,15 +1930,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="4129">
                     <text id="4223">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["year_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="499">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4196">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1940,7 +1950,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1967,10 +1978,11 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="500">
                     <text id="555">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["period_name"]</VALUE-OF>]]></text-property>
                     </text>
@@ -1979,6 +1991,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
             <row id="501">
                 <property name="height">0.26in</property>
                 <cell id="502">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4210">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1987,7 +2001,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2014,15 +2029,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3064">
                     <text id="4219">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4119">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4195">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -2031,7 +2049,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2058,15 +2077,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="4130">
                     <text id="556">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="504">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4197">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -2075,7 +2097,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2102,10 +2125,11 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="505">
                     <text id="557">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
                     </text>
