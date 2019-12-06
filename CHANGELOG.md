@@ -42,4 +42,5 @@
 - Exception on finalizing a sale order: could not extract ResultSet
 - Studio : Fixed display blank when you click on a field which is out of a panel.
 - Studio : Fixed selection filter issue and sequence issue.
+- StockMoveLine : Fixed empty popup issue while viewing stock move line record in form view
 

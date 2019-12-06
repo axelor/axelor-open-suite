@@ -78,8 +78,7 @@
     	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-onload" width="large"
     	canNew="false" canDelete="false">
         <panel name="mainPanel" >
-        	<field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1]" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="4"/>
-		     <field name="lineTypeSelect" hideIf="isSubLine" onChange="action-stock-move-line-method-empty-line" selection-in="[0,1,2]" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" colSpan="4"/>
+        	<field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line" />
             <field name="$invoiced" colSpan="12" showTitle="false" readonly="true" showIf="id" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
                 <viewer depends="qtyInvoiced,realQty"><![CDATA[
                         <h4>
