@@ -82,7 +82,7 @@
 		</panel>
 		<panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
 			<button name="validateDebtRecoveryBtn" title="Validate Debt Recovery" onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
-		</panel>
+	</panel>
 	</form>
 
     <action-attrs name="action-debt-recovery-attrs-set-debt-recovery-line-domain">
@@ -96,5 +96,6 @@
         <call class="com.axelor.apps.account.web.DebtRecoveryController"
               method="runDebtRecovery"/>
     </action-method>
+    
 
 </object-views>
