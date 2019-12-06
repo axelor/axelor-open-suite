@@ -18,15 +18,19 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -48,6 +52,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Inject FixedAssetRepository fixedAssetRepo;
 
   @Inject FixedAssetLineService fixedAssetLineService;
+
+  protected MoveLineService moveLineService;
+
+  @Inject
+  public FixedAssetServiceImpl(MoveLineService moveLineService) {
+    this.moveLineService = moveLineService;
+  }
 
   @Override
   public FixedAsset generateAndcomputeLines(FixedAsset fixedAsset) {
@@ -325,5 +336,18 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
     fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     return fixedAssetLine;
+  }
+
+  @Override
+  @Transactional
+  public void createAnalyticOnMoveLine(
+      AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null
+        && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
+      moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
+      JPA.save(moveLine);
+    }
   }
 }

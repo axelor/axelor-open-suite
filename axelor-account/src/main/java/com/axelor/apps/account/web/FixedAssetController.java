@@ -18,6 +18,8 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.exception.AxelorException;
@@ -67,5 +69,34 @@ public class FixedAssetController {
     Beans.get(FixedAssetService.class).disposal(disposalDate, disposalAmount, fixedAsset);
 
     response.setCanClose(true);
+  }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+      if (fixedAsset.getAnalyticDistributionTemplate() != null) {
+        if (fixedAsset.getDisposalMove() != null) {
+          for (MoveLine moveLine : fixedAsset.getDisposalMove().getMoveLineList()) {
+            fixedAssetService.createAnalyticOnMoveLine(
+                fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+          }
+        }
+        for (FixedAssetLine fixedAssetLine : fixedAsset.getFixedAssetLineList()) {
+          if (fixedAssetLine.getDepreciationAccountMove() != null) {
+            for (MoveLine moveLine :
+                fixedAssetLine.getDepreciationAccountMove().getMoveLineList()) {
+              fixedAssetService.createAnalyticOnMoveLine(
+                  fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+            }
+          }
+        }
+        fixedAsset = fixedAssetService.generateAndcomputeLines(fixedAsset);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

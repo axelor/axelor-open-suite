@@ -147,7 +147,9 @@ public class MoveLineService {
     } else {
       moveLine.getAnalyticMoveLineList().clear();
     }
-    moveLine.getAnalyticMoveLineList().addAll(analyticMoveLineList);
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
     return moveLine;
   }
 
