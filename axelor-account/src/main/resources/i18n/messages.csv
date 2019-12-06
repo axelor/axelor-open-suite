@@ -1335,6 +1335,8 @@
 "Payment notification",,,
 "Payment period (N days / Month)",,,
 "Payment realized",,,
+"Payment reminder",,,
+"Print payment reminder",,,
 "Payment schedule",,,
 "Payment schedule filters",,,
 "Payment schedule line",,,
