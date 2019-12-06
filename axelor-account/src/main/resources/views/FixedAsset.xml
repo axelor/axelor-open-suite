@@ -26,6 +26,7 @@
 	    		<field name="fixedAssetCategory" canEdit="false" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" onChange="action-fixed-asset-record-onchange-set-values" readonlyIf="statusSelect &gt; 1"/>
 	    		<field name="stockLocation" canEdit="false" canNew="false" domain="self.company = :company" if-module="axelor-supplychain" form-view="stock-location-form" grid-view="stock-location-grid" />
 	    		<field name="trackingNumber" canEdit="false" canNew="false" if-module="axelor-supplychain" form-view="trackink-number-form" grid-view="tracking-number-grid" />
+	    		<field name="analyticDistributionTemplate" domain="self.company = :company" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"  onChange="action-fixed-asset-method-create-analytic-distribution"/>
 	    	</panel>
 	    </panel>
     	<panel name="otherDetailsPanel">
@@ -93,6 +94,7 @@
     	<field name="periodicityInMonth" expr="eval: fixedAssetCategory?.periodicityInMonth"/>
     	<field name="numberOfDepreciation" expr="eval: fixedAssetCategory?.numberOfDepreciation"/>
     	<field name="durationInMonth" expr="eval: fixedAssetCategory?.durationInMonth"/>
+    	<field name="analyticDistributionTemplate" expr="eval: fixedAssetCategory?.analyticDistributionTemplate"/>
     </action-record>
     
     <action-record name="action-fixed-asset-record-set-residual-value" model="com.axelor.apps.account.db.FixedAsset">
@@ -141,5 +143,10 @@
     	<action name="action-fixed-asset-method-compute-depreciation"/>
     	<action name="save"/>
     </action-group>
+	
+	<action-method name="action-fixed-asset-method-create-analytic-distribution">
+		<call class="com.axelor.apps.account.web.FixedAssetController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
+    
 
 </object-views>

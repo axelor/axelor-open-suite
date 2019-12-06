@@ -40,6 +40,7 @@
 	<one-to-many name="fixedAssetLineList" ref="com.axelor.apps.account.db.FixedAssetLine" title="Depreciation board" mappedBy="fixedAsset"/>
 	<many-to-one name="disposalMove" ref="com.axelor.apps.account.db.Move" title="Disposal move"/>
 	
+	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT

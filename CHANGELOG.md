@@ -7,6 +7,8 @@
 ## Improvements
 - MOVE : changed position of reconciliation tag in move form.
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
+- FIXES ASSET : add analytic distribution template.
+- FIXES ASSET CATEGORY : add analytic distribution template.
 
 ## Bug Fixes
 - REFUND : avoid blocking message when ventilation of the invoice
