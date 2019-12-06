@@ -29,13 +29,23 @@ public class ImportInventory {
 
   @Inject InventoryService inventoryService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object validateInventory(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof InventoryLine;
 
     Inventory inventory = (Inventory) bean;
     inventoryService.validateInventory(inventory);
+
+    return inventory;
+  }
+
+  public Object importInventory(Object bean, Map<String, Object> values) throws AxelorException {
+
+    assert bean instanceof Inventory;
+
+    Inventory inventory = (Inventory) bean;
+    inventory.setInventoryTitle(inventoryService.computeTitle(inventory));
 
     return inventory;
   }

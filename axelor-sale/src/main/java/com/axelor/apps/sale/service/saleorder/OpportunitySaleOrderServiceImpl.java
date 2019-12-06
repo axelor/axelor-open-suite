@@ -39,7 +39,7 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
   @Inject protected AppBaseService appBaseService;
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException {
     Currency currency;
     if (opportunity.getCurrency() != null) {

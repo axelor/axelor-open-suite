@@ -253,7 +253,7 @@ public final class StringTool {
    * @return list of integers
    */
   public static List<Integer> getIntegerList(String string) {
-    return string != null
+    return string != null && !"".equals(string)
         ? Arrays.stream(string.split("\\D+")).map(Integer::valueOf).collect(Collectors.toList())
         : new ArrayList<>();
   }

@@ -27,11 +27,11 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
@@ -40,20 +40,13 @@ import java.util.Map;
 @Singleton
 public class BankReconciliationController {
 
-  @Inject BankReconciliationService bankReconciliationService;
-
-  @Inject BankReconciliationValidateService bankReconciliationValidateService;
-
-  @Inject BankReconciliationRepository bankReconciliationRepo;
-
-  @Inject BankReconciliationLineRepository bankReconciliationLineRepo;
-
   public void loadBankStatement(ActionRequest request, ActionResponse response) {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliationService.loadBankStatement(
-          bankReconciliationRepo.find(bankReconciliation.getId()));
+      Beans.get(BankReconciliationService.class)
+          .loadBankStatement(
+              Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -64,9 +57,10 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliation = bankReconciliationRepo.find(bankReconciliation.getId());
+      bankReconciliation =
+          Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId());
       bankReconciliation.setIncludeOtherBankStatements(true);
-      bankReconciliationService.loadBankStatement(bankReconciliation, false);
+      Beans.get(BankReconciliationService.class).loadBankStatement(bankReconciliation, false);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -77,7 +71,8 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliationService.compute(bankReconciliationRepo.find(bankReconciliation.getId()));
+      Beans.get(BankReconciliationService.class)
+          .compute(Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -88,8 +83,8 @@ public class BankReconciliationController {
 
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-      bankReconciliationValidateService.validate(
-          bankReconciliationRepo.find(bankReconciliation.getId()));
+      Beans.get(BankReconciliationValidateService.class)
+          .validate(Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -105,7 +100,8 @@ public class BankReconciliationController {
           (Map<String, Object>) context.get("_bankReconciliation");
 
       BankReconciliation bankReconciliation =
-          bankReconciliationRepo.find(((Integer) bankReconciliationContext.get("id")).longValue());
+          Beans.get(BankReconciliationRepository.class)
+              .find(((Integer) bankReconciliationContext.get("id")).longValue());
 
       List<HashMap<String, Object>> moveLinesToReconcileContext =
           (List<HashMap<String, Object>>) context.get("toReconcileMoveLineSet");
@@ -113,11 +109,12 @@ public class BankReconciliationController {
       Map<String, Object> selectedBankReconciliationLineContext =
           (Map<String, Object>) context.get("_selectedBankReconciliationLine");
       BankReconciliationLine bankReconciliationLine =
-          bankReconciliationLineRepo.find(
-              ((Integer) selectedBankReconciliationLineContext.get("id")).longValue());
+          Beans.get(BankReconciliationLineRepository.class)
+              .find(((Integer) selectedBankReconciliationLineContext.get("id")).longValue());
 
-      bankReconciliationValidateService.validateMultipleBankReconciles(
-          bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
+      Beans.get(BankReconciliationValidateService.class)
+          .validateMultipleBankReconciles(
+              bankReconciliation, bankReconciliationLine, moveLinesToReconcileContext);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -126,7 +123,8 @@ public class BankReconciliationController {
 
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
-    String domain = bankReconciliationService.createDomainForBankDetails(bankReconciliation);
+    String domain =
+        Beans.get(BankReconciliationService.class).createDomainForBankDetails(bankReconciliation);
     // if nothing was found for the domain, we set it at a default value.
     if (domain.equals("")) {
       response.setAttr("bankDetails", "domain", "self.id IN (0)");

@@ -107,7 +107,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void transmitRelease(SubrogationRelease subrogationRelease) throws AxelorException {
     SequenceService sequenceService = Beans.get(SequenceService.class);
     String sequenceNumber =
@@ -194,7 +194,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void enterReleaseInTheAccounts(SubrogationRelease subrogationRelease)
       throws AxelorException {
     MoveService moveService = Beans.get(MoveService.class);

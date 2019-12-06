@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.businessproject.service.TeamTaskBusinessService;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
+import com.axelor.apps.project.db.TeamTaskCategory;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
@@ -28,9 +30,7 @@ import com.google.inject.persist.Transactional;
 
 public class TeamTaskController {
 
-  @Inject private TeamTaskBusinessService teamTaskBusinessService;
-
-  @Inject private TeamTaskRepository teamTaskRepo;
+  @Inject private TeamTaskBusinessProjectService businessProjectService;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -41,7 +41,7 @@ public class TeamTaskController {
     }
 
     try {
-      teamTask = teamTaskBusinessService.updateDiscount(teamTask);
+      teamTask = Beans.get(TeamTaskBusinessProjectService.class).updateDiscount(teamTask);
 
       response.setValue("discountTypeSelect", teamTask.getDiscountTypeSelect());
       response.setValue("discountAmount", teamTask.getDiscountAmount());
@@ -55,7 +55,7 @@ public class TeamTaskController {
     TeamTask teamTask = request.getContext().asType(TeamTask.class);
 
     try {
-      teamTask = teamTaskBusinessService.compute(teamTask);
+      teamTask = Beans.get(TeamTaskBusinessProjectService.class).compute(teamTask);
       response.setValue("priceDiscounted", teamTask.getPriceDiscounted());
       response.setValue("exTaxTotal", teamTask.getExTaxTotal());
     } catch (Exception e) {
@@ -71,14 +71,29 @@ public class TeamTaskController {
    */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    TeamTaskRepository teamTaskRepository = Beans.get(TeamTaskRepository.class);
     try {
       TeamTask teamTask = request.getContext().asType(TeamTask.class);
-      teamTask = teamTaskRepo.find(teamTask.getId());
+      teamTask = teamTaskRepository.find(teamTask.getId());
       teamTask.setToInvoice(!teamTask.getToInvoice());
-      teamTaskRepo.save(teamTask);
+      teamTaskRepository.save(teamTask);
       response.setValue("toInvoice", teamTask.getToInvoice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void onChangeCategory(ActionRequest request, ActionResponse response) {
+    TeamTask task = request.getContext().asType(TeamTask.class);
+    TeamTaskCategory teamTaskCategory = task.getTeamTaskCategory();
+    task = businessProjectService.resetTeamTaskValues(task);
+    if (teamTaskCategory != null) {
+      task = businessProjectService.computeDefaultInformation(task);
+    }
+
+    if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
+      task.setToInvoice(true);
+    }
+    response.setValues(task);
   }
 }

@@ -19,7 +19,7 @@ package com.axelor.apps.sale.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
@@ -32,7 +32,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
-import com.axelor.apps.sale.service.PartnerSaleService;
+import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -67,7 +67,7 @@ public class SaleModule extends AxelorModule {
   @Override
   protected void configure() {
     bind(AddressServiceSaleImpl.class);
-    bind(PartnerService.class).to(PartnerSaleService.class);
+    bind(PartnerServiceImpl.class).to(PartnerSaleServiceImpl.class);
     bind(SaleOrderService.class).to(SaleOrderServiceImpl.class);
     bind(SaleOrderLineService.class).to(SaleOrderLineServiceImpl.class);
     bind(SaleOrderRepository.class).to(SaleOrderManagementRepository.class);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	
 	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.app.isApp('purchase')"
@@ -92,38 +92,29 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_status" expr="eval: 3"/>
 	</action-view>
-	
-	
-	<menuitem name="sc-root-purchase-historical" title="Historical" order="30" parent="sc-root-purchase"/>
-	
-	<menuitem name="purchase-historical-finished-orders" parent="sc-root-purchase-historical" 
-		title="Finished orders" action="purchase.historical.finished.orders"/>
 
-	<action-view name="purchase.historical.finished.orders" title="Finished orders"
+	<menuitem name="purchase-root-abc-analysis" title="ABC analysis" order="27"
+		action="purchase.root.abc.analysis" parent="sc-root-purchase"/>
+
+	<action-view name="purchase.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.typeSelect = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl"/>
+	</action-view>
+	
+	<menuitem name="sc-root-purchase-historical" title="Historical" order="30" parent="sc-root-purchase" 
+		action="purchase.historical.orders"/>
+
+	<action-view name="purchase.historical.orders" title="Historical"
 		model="com.axelor.apps.purchase.db.PurchaseOrder" >
 		<view type="cards" name="purchase-order-cards" />
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<view-param name="search-filters" value="purchase-order-filters"/>
-		<domain>self.statusSelect IN (4)</domain>
 		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_status" expr="eval: 4"/>
 	</action-view>
-	
-	<menuitem name="purchase-historical-canceled-orders" parent="sc-root-purchase-historical" 
-		title="Canceled orders" action="purchase.historical.canceled.orders"/>
-
-	<action-view name="purchase.historical.canceled.orders" title="Canceled orders"
-		model="com.axelor.apps.purchase.db.PurchaseOrder" >
-		<view type="cards" name="purchase-order-cards" />
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<view-param name="search-filters" value="purchase-order-filters"/>
-		<domain>self.statusSelect in (5)</domain>
-		<context name="_internalUser" expr="eval: __user__.id"/>
-		<context name="_status" expr="eval: 5"/>
-	</action-view>
-	
 	
 	<menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings" order="200" icon="fa-bar-chart"/>
 

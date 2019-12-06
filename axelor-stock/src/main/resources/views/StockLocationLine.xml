@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="stock-location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
@@ -13,6 +13,7 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
+        <button name="stockCorrectionBtn" icon="fa-pencil-square-o" onClick="action-stock-location-line-view-open-stock-correction-form"/>
     </grid>
     
     <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload">
@@ -42,6 +43,10 @@
         </panel>
         <panel-dashlet name="productQtyPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
         <panel-dashlet name="stockRulesPanel" action="action-stock-location-line-view-stock-rule" title="Stock Rules"/>
+        <panel-dashlet name="wapHistoryPanel" action="action-stock-location-line-view-wap-history" title="WAP history"/>
+        <panel name="stockCorrectionPanel" sidebar="true">
+			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
+        </panel>
         <panel-mail name="mailsPanel">
           <mail-messages />
         </panel-mail>
@@ -126,6 +131,7 @@
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
+        <button name="stockCorrectionBtn" icon="fa-pencil-square-o" onClick="action-stock-location-line-view-open-stock-correction-form"/>
     </grid>
     
     <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
@@ -143,6 +149,9 @@
 		<panel name="lastInventoryPanel" title="Last inventory">
 			<field name="lastInventoryRealQty" title="Real Qty"/>
 			<field name="lastInventoryDateT" title="Date"/>
+		</panel>
+		<panel name="stockCorrectionPanel" sidebar="true">
+			<button name="stockCorrectionBtn" title="Stock Correction" onClick="action-stock-location-line-view-open-stock-correction-form"/>
 		</panel>
   		<panel-mail name="mailsPanel">
     		<mail-messages />
@@ -200,9 +209,9 @@
     </action-record>
         
     <action-record name="action-stock-location-line-record-total-quantities" model="com.axelor.apps.stock.db.StockLocationLine">
-    	<field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id)"/>
-        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id)"/>
-        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id)" if="__config__.app.isApp('supplychain')" />
+    	<field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(product.id, stockLocation.id, null)"/>
+        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, stockLocation.id, null)"/>
+        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(product.id, stockLocation.id, null)" if="__config__.app.isApp('supplychain')" />
     </action-record>
     
     <action-view name="action-stock-location-line-view-stock-rule" title="Stock Rules" model="com.axelor.apps.stock.db.StockRules">
@@ -213,12 +222,23 @@
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
 
-  <action-method name="action-stock-location-line-allocate-all">
-    <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="allocateAll"/>
-  </action-method>
+  <action-view name="action-stock-location-line-view-wap-history" title="WAP History" model="com.axelor.apps.stock.db.WapHistory">
+    <view type="grid" name="wap-history-grid"/>
+    <view type="form" name="wap-history-form"/>
+    <domain>self.stockLocationLine.id = :id</domain>
+  </action-view>
 
-  <action-method name="action-stock-location-line-deallocate-all">
-    <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="deallocateAll"/>
-  </action-method>
+    <action-view name="action-stock-location-line-view-open-stock-correction-form" title="Stock Correction" model="com.axelor.apps.stock.db.StockCorrection">
+		<view type="form" name="stock_correction-form"/>
+		<context name="_stockLocationLineId" expr="eval: id"/>
+    </action-view>
+
+	<action-method name="action-stock-location-line-allocate-all">
+	  <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="allocateAll"/>
+	</action-method>
+
+	<action-method name="action-stock-location-line-deallocate-all">
+	  <call class="com.axelor.apps.supplychain.web.StockLocationLineController" method="deallocateAll"/>
+	</action-method>
 
 </object-views>

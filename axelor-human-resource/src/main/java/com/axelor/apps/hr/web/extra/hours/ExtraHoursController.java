@@ -40,18 +40,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 
 @Singleton
 public class ExtraHoursController {
-
-  @Inject private Provider<HRMenuTagService> hrMenuTagServiceProvider;
-  @Inject private Provider<ExtraHoursRepository> extraHoursRepositoryProvider;
-  @Inject private Provider<ExtraHoursService> extraHoursServiceProvider;
 
   public void editExtraHours(ActionRequest request, ActionResponse response) {
     List<ExtraHours> extraHoursList =
@@ -184,8 +178,7 @@ public class ExtraHoursController {
 
   public String extraHoursValidateMenuTag() {
 
-    return hrMenuTagServiceProvider
-        .get()
+    return Beans.get(HRMenuTagService.class)
         .countRecordsTag(ExtraHours.class, ExtraHoursRepository.STATUS_CONFIRMED);
   }
 
@@ -194,12 +187,10 @@ public class ExtraHoursController {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-      extraHours = extraHoursRepositoryProvider.get().find(extraHours.getId());
-      ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
+      extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
+      Beans.get(ExtraHoursService.class).confirm(extraHours);
 
-      extraHoursService.confirm(extraHours);
-
-      Message message = extraHoursService.sendConfirmationEmail(extraHours);
+      Message message = Beans.get(ExtraHoursService.class).sendConfirmationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -225,12 +216,10 @@ public class ExtraHoursController {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-      extraHours = extraHoursRepositoryProvider.get().find(extraHours.getId());
-      ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
+      extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
+      Beans.get(ExtraHoursService.class).validate(extraHours);
 
-      extraHoursService.validate(extraHours);
-
-      Message message = extraHoursService.sendValidationEmail(extraHours);
+      Message message = Beans.get(ExtraHoursService.class).sendValidationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -252,12 +241,10 @@ public class ExtraHoursController {
 
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-      extraHours = extraHoursRepositoryProvider.get().find(extraHours.getId());
-      ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
+      extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
+      Beans.get(ExtraHoursService.class).refuse(extraHours);
 
-      extraHoursService.refuse(extraHours);
-
-      Message message = extraHoursService.sendRefusalEmail(extraHours);
+      Message message = Beans.get(ExtraHoursService.class).sendRefusalEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -276,12 +263,10 @@ public class ExtraHoursController {
   public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-      extraHours = extraHoursRepositoryProvider.get().find(extraHours.getId());
-      ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
+      extraHours = Beans.get(ExtraHoursRepository.class).find(extraHours.getId());
+      Beans.get(ExtraHoursService.class).cancel(extraHours);
 
-      extraHoursService.cancel(extraHours);
-
-      Message message = extraHoursService.sendCancellationEmail(extraHours);
+      Message message = Beans.get(ExtraHoursService.class).sendCancellationEmail(extraHours);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -299,8 +284,7 @@ public class ExtraHoursController {
   public void compute(ActionRequest request, ActionResponse response) {
     try {
       ExtraHours extraHours = request.getContext().asType(ExtraHours.class);
-      ExtraHoursService extraHoursService = extraHoursServiceProvider.get();
-      extraHoursService.compute(extraHours);
+      Beans.get(ExtraHoursService.class).compute(extraHours);
       response.setValue("totalQty", extraHours.getTotalQty());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

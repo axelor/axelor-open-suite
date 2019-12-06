@@ -72,7 +72,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
 
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();

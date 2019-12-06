@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	
 	<grid name="project-folder-grid" title="Projects Folder" model="com.axelor.apps.project.db.ProjectFolder">
@@ -9,11 +9,25 @@
 	</grid>
 
 	<form title="Project Folder" name="project-folder-form"  model="com.axelor.apps.project.db.ProjectFolder" width="large">
+		<menubar>
+			<menu title="Reports" showTitle="true" icon="fa-files-o">
+				<item title="Projects Planification and costs" action="action-project-folder-method-print-projects-planification-and-costs-report"/>
+				<item title="Projects Financial Report" action="action-project-folder-method-print-projects-financial-report"/>
+			</menu>
+		</menubar>
 		<panel name="mainPanel">
 			<field name="name" showTitle="false" colSpan="12" css="label-bold bold large"/>
 			<field name="description" colSpan="12" widget="html"/>
 			<field name="projectSet" colSpan="12" edit-window="blank" form-view="project-form" grid-view="folder-project-grid" canNew="false" canEdit="false"/>
 		</panel>
 	</form>
+	
+	<action-method name="action-project-folder-method-print-projects-planification-and-costs-report">
+		<call class="com.axelor.apps.businessproject.web.ProjectFolderController" method="printProjectsPlanificationAndCost"/>
+	</action-method>
+	
+	<action-method name="action-project-folder-method-print-projects-financial-report">
+		<call class="com.axelor.apps.businessproject.web.ProjectFolderController" method="printProjectsFinancialReport"/>
+	</action-method>
 	
 </object-views>

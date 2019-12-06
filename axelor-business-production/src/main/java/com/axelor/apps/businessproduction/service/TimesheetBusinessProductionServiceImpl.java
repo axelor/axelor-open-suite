@@ -30,6 +30,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -45,7 +46,8 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
       UserRepository userRepo,
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
-      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      TeamTaskRepository teamTaskRepository) {
     super(
         priceListService,
         appHumanResourceService,
@@ -55,11 +57,12 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
         userRepo,
         userHrService,
         timesheetLineService,
-        projectPlanningTimeRepository);
+        projectPlanningTimeRepository,
+        teamTaskRepository);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
     super.confirm(timesheet);
     Beans.get(OperationOrderTimesheetServiceImpl.class)

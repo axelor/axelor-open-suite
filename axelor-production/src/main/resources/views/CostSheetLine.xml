@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="cost-sheet-line-grid" title="Cost sheet lines" model="com.axelor.apps.production.db.CostSheetLine" orderBy="bomLevel,code">
         <field name="typeSelect"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="name"/>
 		<field name="bomLevel"/>
-		<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"/>
+		<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
 		<field name="consumptionQty" aggregate="sum" x-scale="2"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
 		<field name="costPrice"/>
@@ -20,19 +20,19 @@
 			<field name="product" domain="self.productTypeSelect = 'storable'" canEdit="false" form-view="product-form" grid-view="product-grid" showIf="typeSelect == 1 || typeSelect == 2"/>
 			<field name="workCenter" form-view="work-center-form" grid-view="work-center-grid" showIf="typeSelect == 3"/>
 			<field name="bomLevel"/>
-			<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"/>
+			<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
 			<field name="consumptionQty"/>
 			<field name="unit" form-view="unit-form" grid-view="unit-grid" showIf="typeSelect != 4"/>
 			<field name="costPrice"/>
 	  	</panel>
 	</form>
 	
-    <tree name="cost-sheet-line-tree" title="Cost sheets tree">
+    <tree name="cost-sheet-line-tree-with-costsheetgroup" title="Cost sheets tree">
         <column name="typeSelect" type="integer" widget="ImageSelect" x-labels="false"/>
         <column name="code" type="string"/>
         <column name="name" type="string"/>
         <column name="bomLevel" type="integer"/>
-        <column name="costSheetGroup" type="reference"/>
+        <column name="costSheetGroup" type="reference" />
         <column name="consumptionQty" type="decimal" x-scale="2"/>
         <column name="unit" type="reference"/>
         <column name="costPrice" type="decimal"/>
@@ -44,7 +44,7 @@
             <field name="code"/>
             <field name="name"/>
             <field name="bomLevel"/>
-            <field name="costSheetGroup" as="costSheetGroup"/>
+            <field name="costSheetGroup" as="costSheetGroup" />
             <field name="consumptionQty"/>
             <field name="unit"/>
             <field name="costPrice"/> 
@@ -65,9 +65,39 @@
                         <field name="ratio"/> 
         </node>
     </tree>
+    
+     <tree name="cost-sheet-line-tree-without-costsheetgroup" title="Cost sheets tree">
+        <column name="typeSelect" type="integer" widget="ImageSelect" x-labels="false"/>
+        <column name="code" type="string"/>
+        <column name="name" type="string"/>
+        <column name="bomLevel" type="integer"/>
+        <column name="consumptionQty" type="decimal" x-scale="2"/>
+        <column name="unit" type="reference"/>
+        <column name="costPrice" type="decimal"/>
+        <node model="com.axelor.apps.production.db.CostSheetLine" orderBy="bomLevel,code" domain="self.parentCostSheetLine is null AND self.costSheet.id = :_costSheetId" onClick="action-cost-sheet-line-view-form">
+            <field name="typeSelect"/>
+            <field name="code"/>
+            <field name="name"/>
+            <field name="bomLevel"/>
+            <field name="consumptionQty"/>
+            <field name="unit"/>
+            <field name="costPrice"/>
+        </node>
+        <node model="com.axelor.apps.production.db.CostSheetLine" orderBy="bomLevel,code" parent="parentCostSheetLine" onClick="action-cost-sheet-line-view-form">
+            <field name="typeSelect"/>
+            <field name="code"/>
+            <field name="name"/>
+            <field name="bomLevel"/>
+            <field name="consumptionQty"/>
+            <field name="unit"/>
+            <field name="costPrice"/>
+        </node>
+    </tree>
+    
 	
     <action-view name="action-cost-sheet-line-view-tree" title="Cost sheet line detail" model="com.axelor.apps.production.db.CostSheetLine">
-       	<view type="tree" name="cost-sheet-line-tree"/>
+       	<view type="tree" name="cost-sheet-line-tree-with-costsheetgroup" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+       	<view type="tree" name="cost-sheet-line-tree-without-costsheetgroup" if="!__config__.app.getApp('production').getManageCostSheetGroup()"/>
        	<context name="_costSheetId" expr="eval: id"/>
     </action-view>
     

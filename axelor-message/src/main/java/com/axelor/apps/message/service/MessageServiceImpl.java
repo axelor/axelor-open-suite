@@ -47,10 +47,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -78,7 +76,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Message createMessage(
       String model,
       int id,
@@ -106,7 +104,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             id,
             null,
             0,
-            ZonedDateTime.now().toLocalDateTime(),
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -127,7 +124,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles) {
 
     Preconditions.checkNotNull(message.getId());
@@ -150,7 +147,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       long relatedTo1SelectId,
       String relatedTo2Select,
       long relatedTo2SelectId,
-      LocalDateTime sentDate,
       boolean sentByEmail,
       int statusSelect,
       String subject,
@@ -163,10 +159,10 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount) {
 
-    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet(),
-        bccEmailAddressSet = Sets.newHashSet(),
-        toEmailAddressSet = Sets.newHashSet(),
-        ccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
 
     if (mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL) {
       if (replyToEmailAddressList != null) {
@@ -221,13 +217,13 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
         return sendToUser(message);
       }
-    } catch (MessagingException | IOException e) {
+    } catch (MessagingException e) {
       TraceBackService.trace(e);
     }
     return message;
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendToUser(Message message) {
 
     if (message.getRecipientUser() == null) {
@@ -243,7 +239,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendByMail(Message message) {
 
     log.debug("Sent mail");
@@ -253,9 +249,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
-  public Message sendByEmail(Message message)
-      throws MessagingException, IOException, AxelorException {
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
     EmailAccount mailAccount = message.getMailAccount();
 
@@ -273,10 +268,10 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             mailAccountService.getDecryptPassword(mailAccount.getPassword()),
             mailAccountService.getSecurity(mailAccount));
 
-    List<String> replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
-        toRecipients = this.getEmailAddresses(message.getToEmailAddressSet()),
-        ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
-        bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+    List<String> replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet());
+    List<String> toRecipients = this.getEmailAddresses(message.getToEmailAddressSet());
+    List<String> ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet());
+    List<String> bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
 
     if (toRecipients.isEmpty() && ccRecipients.isEmpty() && bccRecipients.isEmpty()) {
       throw new AxelorException(
@@ -393,7 +388,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional(rollbackOn = {Exception.class})
   public Message regenerateMessage(Message message) throws Exception {
     Preconditions.checkNotNull(
         message.getTemplate(),

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="stock-location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.StockLocation">
-        <toolbar>
-    		<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-stock-location-method-open-print-wizard"/>
-    	</toolbar>
-        <field name="name"/>
-        <field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="address" form-view="address-form" grid-view="address-grid"/>
-        <field name="typeSelect"/>
-        <field name="stockLocationValue"/>
-    </grid>
+	<grid name="stock-location-grid" title="Stock Locations" model="com.axelor.apps.stock.db.StockLocation">
+    <toolbar>
+		  <button name="printBtn" title="Print" icon="fa-print" onClick="save,action-stock-location-method-open-print-wizard"/>
+    </toolbar>
+		<field name="name"/>
+		<field name="parentStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="address" form-view="address-form" grid-view="address-grid"/>
+		<field name="typeSelect"/>
+		<field name="stockLocationValue"/>
+	</grid>
     
     <tree name="stock-location-tree" title="Stock Locations">
     	<column name="name" type="string" />
@@ -66,8 +66,9 @@
 				<field name="usableOnProduction" colSpan="3"/>
 				<field name="directOrderLocation" colSpan="3"/>
 				<field name="isNotInMrp" colSpan="3" if="__config__.app.isApp('supplychain')"/>
+                <field name="isNotInCalculStock" colSpan="3"/>
 				<field name="isWorkshop" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
-			</panel>
+            </panel>
 		</panel-tabs>
 		
 	</form>

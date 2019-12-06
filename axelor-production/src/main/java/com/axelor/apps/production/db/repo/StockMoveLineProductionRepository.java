@@ -18,9 +18,9 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
+import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 
-public class StockMoveLineProductionRepository extends StockMoveLineStockRepository {
+public class StockMoveLineProductionRepository extends StockMoveLineSupplychainRepository {
 
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {

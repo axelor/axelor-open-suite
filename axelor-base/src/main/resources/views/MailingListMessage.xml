@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid model="com.axelor.apps.base.db.MailingListMessage" title="Mailing list message" name="mailing-list-message-grid">
+		<field name="subject"/>
+		<field name="description"/>
+	</grid>
+
+	<form model="com.axelor.apps.base.db.MailingListMessage" width="large" title="Mailing list message" name="mailing-list-message-form">
+		<panel name="mainPanel" colSpan="12">
+			<panel name="imagePanel" colSpan="4">
+				<field name="image" widget="Image" colSpan="12"/>
+			</panel>
+			<panel name="generalPanel" colSpan="8">
+				<field name="subject" required="true" css="label-bold bold large" colSpan="12"/>
+				<field name="description" showTitle="false" colSpan="12"/>
+			</panel>
+		</panel>
+		<panel-mail>
+			<mail-messages/>
+			<mail-followers/>
+		</panel-mail>
+	</form>
+
+	<cards name="mailing-list-message-cards" model="com.axelor.apps.base.db.MailingListMessage" title="Mailing list message">
+		<field name="subject"/>
+		<field name="description"/>
+		<template><![CDATA[
+			<div>
+				<div class="span4 card-image">
+					<img ng-src="{{$image(null, 'image')}}">
+					<strong>{{subject}}</strong>
+				</div>
+				<div class="span8">
+					<strong>{{subject}}</strong>
+					<p class="muted">{{description}}</p>
+					<div class="buttons">
+						<a class="btn btn-small btn-success" href="" ng-show="!_following" ui-action-click="com.axelor.mail.web.MailController:follow" x-translate>Subscribe</a>
+						<a class="btn btn-small btn-danger" href="" ng-show="_following" ui-action-click="com.axelor.mail.web.MailController:unfollow" x-translate>Unsubscribe</a>
+					</div>
+				</div>
+			</div>
+		]]>
+		</template>
+	</cards>
+
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
   
   	<grid name="ebics-partner-grid" title="Ebics partner" model="com.axelor.apps.bankpayment.db.EbicsPartner" >
@@ -46,7 +46,7 @@
 		<panel-related name="bankDetailsSetPanel" field="bankDetailsSet" colSpan="12" canNew="true" showIf="ebicsBank" hidden="true" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-ebics-partner-method-bank-details-set-domain"/>
 
         <panel-related name="boEbicsPartnerServiceListPanel" field="boEbicsPartnerServiceList" colSpan="12" canNew="true" grid-view="bo-ebics-partner-service-grid"
-            form-view="bo-ebics-partner-service-form" editable="true" />
+            form-view="ebics-partner-service-form" editable="true" />
 
 		<panel-dashlet name="ebicsUsersPanel" action="action-ebics-partner-view-ebics-users"/>
 

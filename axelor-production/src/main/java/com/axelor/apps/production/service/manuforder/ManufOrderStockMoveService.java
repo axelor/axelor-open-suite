@@ -217,7 +217,7 @@ public class ManufOrderStockMoveService {
    * @param manufOrder
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
       finishStockMove(stockMove);
@@ -358,7 +358,7 @@ public class ManufOrderStockMoveService {
    *
    * @param manufOrder
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {

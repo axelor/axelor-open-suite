@@ -41,7 +41,7 @@ public class TrackingNumberService {
 
   @Inject private TrackingNumberRepository trackingNumberRepo;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
       Product product, BigDecimal sizeOfLot, Company company, LocalDate date)
       throws AxelorException {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+    <module name="base" package="com.axelor.apps.base.db"/>
+
+    <entity name="ABCAnalysis" lang="java">
+
+        <string name="name" title="Name"/>
+        <string name="abcAnalysisSeq" namecolumn="true" title="ABC Analysis N°" readonly="true"/>
+        <string name="description" title="Description" large="true"/>
+        <string name="typeSelect" title="Type" selection="abc.analysis.type.select" default="com.axelor.apps.base.service.ABCAnalysisServiceImpl"/>
+        <integer name="statusSelect" title="Status" selection="abc.analysis.status.select" default="1"/>
+        <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+        <one-to-many name="abcAnalysisClassList" ref="com.axelor.apps.base.db.ABCAnalysisClass" mappedBy="abcAnalysis" title="ABC Classes"/>
+        <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Products"/>
+        <many-to-many name="productCategorySet" ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
+        <many-to-many name="productFamilySet" ref="com.axelor.apps.base.db.ProductFamily" title="Product families"/>
+
+        <extra-code><![CDATA[
+
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_ANALYZING = 2;
+		public static final int STATUS_FINISHED = 3;
+
+	]]></extra-code>
+
+    </entity>
+
+</domain-models>

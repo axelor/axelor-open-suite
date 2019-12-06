@@ -104,7 +104,7 @@ public class PaymentVoucherConfirmService {
    *
    * @param paymentVoucher
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirmPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException {
     log.debug("In confirmPaymentVoucherService ....");
     paymentVoucherSequenceService.setReference(paymentVoucher);
@@ -126,12 +126,8 @@ public class PaymentVoucherConfirmService {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PAYBOX_3),
+          I18n.get(IExceptionMessage.PAYMENT_AMOUNT_EXCEEDING),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
-    }
-
-    if (paymentVoucher.getPayboxPaidOk()) {
-      paymentVoucherControlService.checkPayboxAmount(paymentVoucher);
     }
 
     // TODO VEIRIFER QUE LES ELEMENTS A PAYER NE CONCERNE QU'UNE SEULE DEVISE
@@ -170,7 +166,7 @@ public class PaymentVoucherConfirmService {
    * @param paymentVoucher
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createMoveAndConfirm(PaymentVoucher paymentVoucher) throws AxelorException {
     Partner payerPartner = paymentVoucher.getPartner();
     PaymentMode paymentMode = paymentVoucher.getPaymentMode();

@@ -18,37 +18,32 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.apps.base.db.repo.ObjectDataConfigRepository;
 import com.axelor.apps.base.service.ObjectDataAnonymizeService;
 import com.axelor.apps.base.service.ObjectDataExportService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 
 public class ObjectDataExportController {
 
-  @Inject private ObjectDataExportService objectDataExportService;
-
-  @Inject private ObjectDataConfigRepository objectDataConfigRepo;
-
-  @Inject private ObjectDataAnonymizeService objectDataAnonymizeService;
-
   public void export(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    Context context = request.getContext();
-    Long recordId = Long.parseLong(context.get("modelSelectId").toString());
-    Long objectDataconfigId = Long.parseLong(context.get("objectDataConfigId").toString());
-    String language = (String) context.get("langSelect");
-    String format = (String) context.get("exportFormatSelect");
+    ObjectDataConfigExport objDataConfigExport =
+        request.getContext().asType(ObjectDataConfigExport.class);
 
-    ObjectDataConfig objectDataConfig = objectDataConfigRepo.find(objectDataconfigId);
+    Long objectDataconfigId = objDataConfigExport.getObjectDataConfig().getId();
+
+    ObjectDataConfig objectDataConfig =
+        Beans.get(ObjectDataConfigRepository.class).find(objectDataconfigId);
     MetaFile dataFile =
-        objectDataExportService.export(objectDataConfig, recordId, language, format);
+        Beans.get(ObjectDataExportService.class).export(objectDataConfig, objDataConfigExport);
 
     if (dataFile != null) {
       response.setView(
@@ -71,9 +66,10 @@ public class ObjectDataExportController {
     Context context = request.getContext();
     Long recordId = Long.parseLong(context.get("modelSelectId").toString());
     Long objectDataconfigId = Long.parseLong(context.get("objectDataConfigId").toString());
-    ObjectDataConfig objectDataConfig = objectDataConfigRepo.find(objectDataconfigId);
+    ObjectDataConfig objectDataConfig =
+        Beans.get(ObjectDataConfigRepository.class).find(objectDataconfigId);
 
-    objectDataAnonymizeService.anonymize(objectDataConfig, recordId);
+    Beans.get(ObjectDataAnonymizeService.class).anonymize(objectDataConfig, recordId);
 
     response.setFlash("Data anonymized successfully");
 

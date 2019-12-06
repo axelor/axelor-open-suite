@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<grid name="hr-batch-grid" title="HR batches" model="com.axelor.apps.hr.db.HrBatch">
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 		<field name="actionSelect"/>
-		<field name="company"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="description"/>
     </grid>
  
@@ -63,6 +63,18 @@
                 <panel-related name="planningSetPanel" field="planningSet" target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid" form-view="weekly-planning-form" widget="TagSelect" colSpan="12"/>
                 <panel-related name="employeeSetPanel" field="employeeSet" target="com.axelor.apps.hr.db.Employee" grid-view="employee-lite-grid" form-view="employee-form" canNew="false" colSpan="12"/>
                 <button name="leaveManagementBatchBtn" title="Leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
+            </panel>
+            
+            <panel title="Export des salariés" hidden="true" showIf="actionSelect == 6">
+            	<field name="employmentContractExportTypeSelect" colSpan="4"/>
+            	<spacer name="employmentContractExportSpacer" colSpan="8"/>
+            	<button name="employmentContractExportBatchBtn" readonlyIf="employmentContractExportTypeSelect == null" title="Employment contract export batch" onClick="save,action-hrbatch-method-hr-batch" colSpan="4"/>
+            </panel>
+            
+            <panel title="Email reminder for timesheets" hidden="true" showIf="actionSelect == 7">
+                <field name="daysBeforeReminder" />
+                <field name="template" widget="SuggestBox" form-view="template-form" grid-view="template-grid" />
+                <button name="emailReminderForTimesheetsBatchBtn" title="Email reminder for timesheet filling batch" onClick="save, action-hrbatch-method-hr-batch" />
             </panel>
 
 			<panel name="informationsPanel" title="Informations">

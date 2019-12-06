@@ -84,7 +84,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
    * @throws IOException
    * @throws JAXBException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(InvoicePayment invoicePayment, boolean force)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
@@ -130,7 +130,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     invoicePaymentRepository.save(invoicePayment);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
       throws AxelorException {
 
@@ -158,7 +158,7 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
    * @throws IOException
    * @throws JAXBException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createBankOrder(InvoicePayment invoicePayment)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 

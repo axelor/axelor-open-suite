@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
-        <field name="company"/>
-        <field name="payPeriod" canEdit="false" canView="false"/>
-        <field name="leavePeriod" canEdit="false" canView="false"/>
-        <field name="statusSelect"/>
-        <field name="requestedLunchVouchers"/>
-        <field name="lunchVoucherWageShare"/>
-        <field name="lunchVoucherEmployersShare"/>
-    </grid>
+	<grid name="lunch-voucher-mgt-grid" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="payPeriod" canEdit="false" canView="false"/>
+		<field name="leavePeriod" canEdit="false" canView="false"/>
+		<field name="statusSelect"/>
+		<field name="requestedLunchVouchers"/>
+		<field name="lunchVoucherWageShare"/>
+		<field name="lunchVoucherEmployersShare"/>
+  </grid>
 
 	<form name="lunch-voucher-mgt-form" title="Lunch Voucher Management"
 		  model="com.axelor.apps.hr.db.LunchVoucherMgt" width="large"

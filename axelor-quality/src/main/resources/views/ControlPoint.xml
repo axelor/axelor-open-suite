@@ -1,96 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid name="control-point-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-control-point-attrs-hide-quality-control">
-		<field name="statusSelect"/>
-		<field name="qualityControl" readonly="true"/>
-		<field name="name"/>
-		<field name="priority"/>
-		<field name="product"/>
-		<field name="team"/>
-		<field name="responsible"/>
-		<field name="controlTypeSelect"/>
-		<field name="testTypeSelect"/>
-		<field name="controlPointDate"/>
+	<grid name="control-point-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-control-point-attrs-hide-quality-control" edit-icon="true">
+		<field name="name" width="700"/>
+		<field name="controlPointType" width="150"/>
+		<field name="statusSelect" width="130"/>
 	</grid>
 	
 	<form name="control-point-form" title="Control points" model="com.axelor.apps.quality.db.ControlPoint" onNew="action-quality-control-point-record-default">
 		<panel name="mainPanel">
-			<field name="statusSelect" widget="NavSelect" showTitle="false" readonly="true"/>
-			<field name="qualityControl" readonly="true" hideIf="$popup() || qualityControl == null"/>
+			<field name="statusSelect" widget="NavSelect" showTitle="false" readonly="true" colSpan="12"/>
 			<field name="name"/>
-			<field name="priority"/>
-			<field name="product"  readonly="true"/>
-			<field name="team" domain="self.typeSelect = 'quality'"/>
-			<field name="responsible"/>
-			<field name="controlTypeSelect" readonly="true"/>
-			<field name="testTypeSelect" readonly="true"/>
-			<field name="controlPointDate"/>
+			<field name="controlPointType"/>
+			<field name="qualityControl" readonly="true" hideIf="$popup() || qualityControl == null"/>
 		</panel>
-		<panel name="ControlFrequencyPanel" showIf="controlTypeSelect == 2 || controlTypeSelect == 3" title="Control Frequency" readonly="true">
-			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 2" showTitle="false">
-				<viewer>
-				<![CDATA[
-		             <span>Every  <b>{{record.controlFrequency}}%</b> of the operation</span>
-		        ]]>
-		        </viewer>
-				<editor x-show-titles="false">
-					<label name="every1Label" type="string" title="Every" readonly="true" colSpan="1" />
-					<field name="controlFrequency" showTitle="false" colSpan="3" />
-					<label name="operationLabel" type="string" readonly="true" title="% of the operation" />
-				</editor>
-			</field>
-            <field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 3" showTitle="false">
-            	<viewer>
-                <![CDATA[
-                	<span>Every  <b>{{record.controlFrequency}}</b></span>
-                ]]>
-                </viewer>
-                <editor x-show-titles="false">
-                	<label name="every2Label" type="string" title="Every" readonly="true"  colSpan="1" />
-                    <field name="controlFrequency" showTitle="false"  colSpan="3"/>
-                    <field name="period" showTitle="false" colSpan="3"  selection="quality.control.point.model.period"/>
-                </editor>
-            </field>
-		</panel>
-		<panel name="instructionsPanel" title="Control Instructions">
-			<field name="instructions" colSpan="12" height="6" widget="html" showTitle="false"/>
+		<panel name="measuringPointPanel">
+			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-grid" form-view="quality-measuring-point-form"/>
 		</panel>
 		<panel name="notesPanel" title="Control comment">
 			<field name="notes" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>
-		<panel name="messageIfFailurePanel" title="Failure reasons">
-			<field name="messageIfFailure" colSpan="12" height="6" widget="html" showTitle="false"/>
-		</panel>
 		<panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">
-			<button name="passBtn" title="Pass" showIf="statusSelect == 1" onClick="save,action-quality-control-point-record-status-pass,save"/>
-			<button name="failBtn" title="Fail" showIf="statusSelect == 1" onClick="save,action-quality-control-point-record-status-fail,save"/>
-		</panel>
-		<panel name="qualityAlertPanel" sidebar="true">
-			<button name="createAQualityAlertBtn" title="Create a quality alert" onClick="action-quality-control-point-create-quality-alert"/>
+			<button name="closeBtn" title="Close" onClick="save,action-quality-control-point-record-status-close,save"/>
 		</panel>
 		<panel-mail name="mailPanel">
 		  <mail-messages />
 	  	</panel-mail>	  
 	</form>
-	
+
 	<action-record name="action-quality-control-point-record-default" model="com.axelor.apps.quality.db.ControlPoint">
 		<field name="statusSelect" expr="eval: 1"/>
 	</action-record>
-	
-	<action-record name="action-quality-control-point-record-status-pass" model="com.axelor.apps.quality.db.ControlPoint">
+
+	<action-record name="action-quality-control-point-record-status-close" model="com.axelor.apps.quality.db.ControlPoint">
 		<field name="statusSelect" expr="eval: 2"/>
 	</action-record>
-	
-	<action-record name="action-quality-control-point-record-status-fail" model="com.axelor.apps.quality.db.ControlPoint">
-		<field name="statusSelect" expr="eval: 3"/>
-	</action-record>
-	
-	<action-view name="action-quality-control-point-create-quality-alert" title="Quality alert" model="com.axelor.apps.quality.db.QualityAlert">
-		<view  type="form" name="quality-alert-form"/>
-		<context name="_product" expr="eval: product"/>
-		<context name="_team" expr="eval: team"/>
-	</action-view>
 	
 </object-views>

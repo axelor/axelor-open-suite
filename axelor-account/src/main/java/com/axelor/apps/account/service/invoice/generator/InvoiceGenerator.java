@@ -200,6 +200,7 @@ public abstract class InvoiceGenerator {
     if (accountingSituation != null) {
       invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
       invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+      invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
 
     if (paymentCondition == null) {
@@ -278,13 +279,13 @@ public abstract class InvoiceGenerator {
           companyBankDetails = accountingSituation.getCompanyInBankDetails();
         }
       }
-      if (companyBankDetails == null) {
-        companyBankDetails = company.getDefaultBankDetails();
-        List<BankDetails> allowedBDs =
-            Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-        if (!allowedBDs.contains(companyBankDetails)) {
-          companyBankDetails = null;
-        }
+    }
+    if (companyBankDetails == null) {
+      companyBankDetails = company.getDefaultBankDetails();
+      List<BankDetails> allowedBDs =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (!allowedBDs.contains(companyBankDetails)) {
+        companyBankDetails = null;
       }
     }
     invoice.setCompanyBankDetails(companyBankDetails);

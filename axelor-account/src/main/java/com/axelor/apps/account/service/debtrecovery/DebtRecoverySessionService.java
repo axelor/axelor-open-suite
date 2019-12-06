@@ -179,7 +179,7 @@ public class DebtRecoverySessionService {
    * @throws AxelorException
    * @param relance
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void debtRecoveryInitialization(DebtRecovery debtRecovery) throws AxelorException {
 
     if (debtRecovery != null) {

@@ -20,16 +20,31 @@ package com.axelor.apps.production.service.costsheet;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 
 public interface CostSheetService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
+  public static final int ORIGIN_BILL_OF_MATERIAL = 0;
+  public static final int ORIGIN_MANUF_ORDER = 1;
+  public static final int ORIGIN_BULK_UNIT_COST_CALCULATION = 2;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  /**
+   * @param billOfMaterial
+   * @param origin 0 : ORIGIN_BILL_OF_MATERIAL 1 : ORIGIN_MANUF_ORDER 2 :
+   *     ORIGIN_BULK_UNIT_COST_CALCULATION
+   * @param unitCostCalculation Required if origin = ORIGIN_BULK_UNIT_COST_CALCULATION
+   * @return
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  public CostSheet computeCostPrice(
+      BillOfMaterial billOfMaterial, int origin, UnitCostCalculation unitCostCalculation)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
   public CostSheet computeCostPrice(
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException;

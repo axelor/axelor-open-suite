@@ -218,7 +218,7 @@ public class WkfDesignerService {
    * @throws SAXException
    * @throws Exception
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Wkf processXml(Wkf instance)
       throws ParserConfigurationException, SAXException, IOException {
 

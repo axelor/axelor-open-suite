@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<selection name="project.type.select">
 		<option value="1">Project</option>
@@ -40,6 +40,10 @@
 	<selection name="project.project.project.type.select">
 		<option value="1">Project</option>
 		<option value="2">Project phase</option>
+	</selection>
+
+	<selection name="sequence.generic.code.select" id="project.sequence.generic.code.select">
+		<option value="project">Project</option>
 	</selection>
 
 </object-views>

@@ -55,7 +55,7 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public TimerHistory start(Model model, Timer timer, LocalDateTime dateTime)
       throws AxelorException {
     TeamTask task = (TeamTask) model;

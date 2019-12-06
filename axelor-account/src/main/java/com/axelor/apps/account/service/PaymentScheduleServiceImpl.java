@@ -347,7 +347,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePaymentSchedule(PaymentSchedule paymentSchedule) throws AxelorException {
 
     log.debug("Validation de l'échéancier {}", paymentSchedule.getPaymentScheduleSeq());
@@ -563,7 +563,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void toCancelPaymentSchedule(PaymentSchedule paymentSchedule) {
     this.cancelPaymentSchedule(paymentSchedule);
     paymentScheduleRepo.save(paymentSchedule);

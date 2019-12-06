@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<form  name="employee-user-form" model="com.axelor.auth.db.User" title="User creation" onSave="action-employee-view-create-user" onNew="action-employee-record-user-creation-onnew">
+		<panel name="userPanel">
+			<field name="group" placeholder="user group"/>
+			<field name="code" placeholder="login name" onChange="action-condition-user-validCode" validIf="code.length >= 2" readonlyIf="id &amp;&amp; code == 'admin'" title="Login"/>
+		    <field name="activateOn" validIf="!activateOn || (activateOn &amp;&amp; !expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
+		  	<field name="expiresOn" validIf="!expiresOn || (!activateOn &amp;&amp; expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/> 
+		  	<field name="$generateRandomPassword" hidden="true" />
+		  	<button name="okBtn" title="OK" onClick="action-employee-view-create-user"/>
+	  	</panel>
+	</form>
+	
+	<action-view name="action-employee-view-open-user-creation-wizard" title="User creation" model="com.axelor.auth.db.User">
+		<view type="form" name="employee-user-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="forceEdit" value="true" />
+        <view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+ 	  	<view-param name="popup-save" value="false"/>
+ 	</action-view>
+	
+	<action-method name="action-employee-view-create-user">
+		<call class="com.axelor.apps.hr.web.UserHrController" method="createUser"/>
+	</action-method>
+	
+	<action-record name="action-employee-record-user-creation-onnew" model="com.axelor.auth.db.User">
+		<field name="$generateRandomPassword" expr="true"/>
+	</action-record>
+</object-views>

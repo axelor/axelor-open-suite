@@ -32,7 +32,7 @@ public class StockLocationLineReservationServiceImpl
     implements StockLocationLineReservationService {
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void allocateAll(StockLocationLine stockLocationLine) throws AxelorException {
     // qty to allocate is the minimum value between requested and current qty subtracted by reserved
     // qty
@@ -52,7 +52,7 @@ public class StockLocationLineReservationServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void deallocateAll(StockLocationLine stockLocationLine) throws AxelorException {
     List<StockMoveLine> stockMoveLineList =
         Beans.get(StockMoveLineRepository.class)

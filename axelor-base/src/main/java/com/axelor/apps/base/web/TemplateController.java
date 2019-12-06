@@ -20,20 +20,18 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TemplateController {
 
-  @Inject private TemplateService templateService;
-
   public void checkTargetReceptor(ActionRequest request, ActionResponse response) {
-
     try {
-      templateService.checkTargetReceptor(request.getContext().asType(Template.class));
+      Beans.get(TemplateService.class)
+          .checkTargetReceptor(request.getContext().asType(Template.class));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

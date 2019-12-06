@@ -37,7 +37,7 @@ public class TemplateMessageAccountServiceImpl implements TemplateMessageAccount
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message generateMessage(DebtRecoveryHistory debtRecoveryHistory, Template template)
       throws ClassNotFoundException, IOException, InstantiationException, AxelorException,
           IllegalAccessException {

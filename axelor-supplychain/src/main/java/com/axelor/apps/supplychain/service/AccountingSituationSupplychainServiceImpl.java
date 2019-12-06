@@ -78,7 +78,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateUsedCredit(Partner partner) throws AxelorException {
     if (appAccountService.getAppAccount().getManageCustomerCredit()) {
       List<AccountingSituation> accountingSituationList =
@@ -90,7 +90,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateCustomerCredit(Partner partner) throws AxelorException {
     if (!appAccountService.getAppAccount().getManageCustomerCredit()
         || partner.getIsContact()

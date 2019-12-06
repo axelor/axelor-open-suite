@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
    
     <grid name="invoice-line-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" >
         <hilite strong="true" color="default" if="typeSelect != 0"/>
        	<field name="product.code" width="120"/>
         <field name="productName"/>
         <field name="qty" aggregate="sum"/>
-        <field name="price" x-scale="2"/>
+        <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
 	    <field name="typeSelect" hidden="true"/>
     </grid>
-	
+
 	<grid name="invoice-line-menu-grid" title="Invoice lines" model="com.axelor.apps.account.db.InvoiceLine" canNew="false" canEdit="false" canSave="false" canDelete="false" canArchive="false" edit-icon="true" orderBy="-invoice.invoiceDate">
   	 <hilite color="primary" if="$get('invoice.statusSelect') == 1"/>
      <hilite color="danger" if="$get('invoice.statusSelect') == 3 &amp;&amp; $get('invoice.amountRemaining') &gt; 0 &amp;&amp; $moment($get('invoice.dueDate')).diff(todayDate,'days') &lt; 0"/>
@@ -30,7 +30,7 @@
   		<field name="product.code" title="product.code" width="120"/>
   		<field name="productName" width="170"/>
   		<field name="qty" width="50" aggregate="sum"/>
-  		<field name="price" x-scale="2"/>
+  		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
   		<field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="exTaxTotal" aggregate="sum"/>
   		<field name="invoice.currency" width="85"/>
@@ -99,11 +99,21 @@
 			</panel>
 
 			<panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+				<field name="companyExTaxTotal" title="Total W.T." colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true" hidden="false">
+					<viewer depends="companyExTaxTotal,$currencySymbol">
+						<![CDATA[
+							<dd>{{record.companyExTaxTotal}} {{record.$currencySymbol}}</dd>
+						]]>
+					</viewer>
+				</field>
+				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false" domain="self.statusSelect = 2"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+				<field name="$currencySymbol" hidden="true"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
 				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+				<panel-dashlet name="teamTaskListPanel" title="Related tasks" action="action-invoice-line-view-team-tasks" colSpan="12"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" readonlyIf="!account.analyticDistributionAuthorized" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-invoice-line-method-create-distribution" onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"/>
@@ -111,10 +121,10 @@
 				<field name="account.analyticDistributionAuthorized" hidden="true" />
 			</panel>
 			<panel name="configurationPanel" title="Configuration" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-				<field name="saleOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-form" grid-view="sale-order-grid" />
-				<field name="purchaseOrder" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-				<field name="saleOrderLine" canEdit="false" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
-				<field name="purchaseOrderLine" canEdit="false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+
+				<field name="saleOrderLine" if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" form-view="sale-order-line-invoice-form" grid-view="sale-order-line-invoice-grid" domain="(self.saleOrder.statusSelect = 3 OR self.saleOrder.statusSelect = 4 ) AND EXISTS(SELECT i FROM Invoice i WHERE i = :invoice AND self.saleOrder.clientPartner = i.partner )"/>
+				<field name="purchaseOrderLine" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" form-view="purchase-order-line-form" grid-view="purchase-order-line-grid"/>
+
 			</panel>
 		</panel-tabs>
 	</form>
@@ -149,7 +159,7 @@
 
 	<form name="invoice-line-menu-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large"
 		canNew="false" canEdit="false" canSave="false" canDelete="false" canCopy="false" canArchive="false"
-		  onLoad="action-attrs-account-invoice-line-onnew-onload,action-invoice-line-attrs-readonly-menu-form">
+		  onLoad="action-group-invoice-line-menu-form-onload">
 		<panel name="mainPanel">
 			<field name="invoice.company" colSpan="12"/>
 			<field name="invoice.partner" colSpan="3"/>
@@ -169,7 +179,7 @@
 	</action-method>
     
     <action-attrs name="action-invoice-line-attrs-read-only-distribution-lines">
-		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1 || !account.analyticDistributionAuthorized"/>
+		<attribute name="readonly" for="analyticMoveLineList" expr="eval: __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1 || !account?.analyticDistributionAuthorized"/>
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-line-attrs-set-domain-analytic-distribution-template">
@@ -205,7 +215,18 @@
 
 		<attribute name="readonly" for="accountingPanel" expr="eval: invoice.statusSelect &gt; 2"/>
 	</action-attrs>
-	
+
+	<action-attrs name="action-invoice-line-attrs-hidden-menu-form">
+		<!-- Show Elements -->
+		<attribute name="hidden" for="saleOrder" expr="eval: invoice?.operationTypeSelect != 3 &amp;&amp; invoice?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="purchaseOrder" expr="eval: invoice?.operationTypeSelect != 1 &amp;&amp; invoice?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="saleOrderLine" expr="eval: invoice?.operationTypeSelect != 3 &amp;&amp; invoice?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="purchaseOrderLine" expr="eval: invoice?.operationTypeSelect != 1 &amp;&amp; invoice?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="budgetPanel" expr="eval: invoice?.operationTypeSelect != 1 &amp;&amp; invoice?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')" />
+		<attribute name="hidden" for="$isFilterOnSupplier" expr="eval: invoice?.operationTypeSelect &gt; 2" />
+		<attribute name="hidden" for="accountingPanel" expr="eval:invoice?.operationSubTypeSelect==2"/>
+	</action-attrs>
+
 	<action-attrs name="action-invoice-line-attrs-set-product-domain-onselect">
   		<attribute if="__parent__.operationTypeSelect &lt; 3  &amp;&amp; __config__.app.isApp('purchase')  &amp;&amp;  __config__.app.getApp('purchase').getManageSupplierCatalog()" name="domain" expr="eval: isFilterOnSupplier ? &quot; self.isModel = false and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.partner?.id}) &quot; : &quot; self.isModel = false &quot;" for="product"/>
   		<attribute  name="domain"  for="product" expr="eval: &quot; self.isModel = false &quot;" if="__parent__.operationTypeSelect > 2"/>
@@ -214,11 +235,11 @@
     <!-- ACTION GROUPs -->
     <action-group name="action-account-invoice-line-onnew-group">
 	    <action name="action-invoice-line-record-new"/>
-	    <action name="action-invoice-line-record-order" if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain').getManageInvoicedAmountByLine()"/>
 	    <action name="action-invoice-line-record-project"/>
 	    <action name="action-invoice-line-record-operation-type"/>
 	    <action name="action-attrs-account-invoice-line-onnew-onload"/>
 	    <action name="action-invoice-line-attrs-sub-line" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
+		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
     </action-group>
 
 	<action-group name="action-group-account-invoice-line-onload">
@@ -226,6 +247,7 @@
 		<action name="action-attrs-account-invoice-line-onnew-onload"/>
 		<action name="action-invoice-line-attrs-readonly-form"/>
 		<action name="action-invoice-line-record-operation-type"/>
+		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
 	</action-group>
 
     <action-group name="action-group-account-invoice-line-product-onchange">
@@ -253,7 +275,12 @@
 		<action name="action-attrs-account-invoice-line-onnew-onload"/>
 	</action-group>
 	
-    
+	<action-group name="action-group-invoice-line-menu-form-onload">
+		<action name="action-attrs-account-invoice-line-onnew-onload"/>
+		<action name="action-invoice-line-attrs-readonly-menu-form"/>
+		<action name="action-invoice-line-attrs-hidden-menu-form"/>
+	</action-group>
+
     <!--     ACTION RECORDS -->
     
     <action-record name="action-invoice-line-record-new" model="com.axelor.apps.account.db.InvoiceLine">
@@ -328,19 +355,22 @@
 		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getFixedAssetCategory"/>
 	</action-method>
 
+	<action-method name="action-invoice-order-method-compute-budget-distribution-sum-amount">
+		<call class="com.axelor.apps.supplychain.web.InvoiceLineController" method="computeBudgetDistributionSumAmount"/>
+	</action-method>
+
 	<!-- ACTION ATTRS -->
 	<action-attrs name="action-attrs-account-invoice-line-onnew-onload">
 		<!-- Show Elements -->
 		<attribute name="title" for="projectPanel" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 		<attribute name="title" for="project" expr="eval:  __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
-		<attribute name="hidden" for="saleOrder" expr="eval: _parent?.operationTypeSelect != 3 &amp;&amp; _parent?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
-		<attribute name="hidden" for="purchaseOrder" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
-		<attribute name="hidden" for="saleOrderLine" expr="eval: _parent?.operationTypeSelect != 3 &amp;&amp; _parent?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
-		<attribute name="hidden" for="purchaseOrderLine" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
-		<attribute name="hidden" for="budgetPanel" expr="eval: _parent?.operationTypeSelect != 1 &amp;&amp; _parent?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')" />
+		<attribute name="hidden" for="saleOrder" expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="purchaseOrder" expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="saleOrderLine" expr="eval: __parent__?.operationTypeSelect != 3 &amp;&amp; __parent__?.operationTypeSelect != 4" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="purchaseOrderLine" expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')"/>
+		<attribute name="hidden" for="budgetPanel" expr="eval: __parent__?.operationTypeSelect != 1 &amp;&amp; __parent__?.operationTypeSelect != 2" if="__config__.app.isApp('business-project')" />
 		<attribute name="hidden" for="$isFilterOnSupplier" expr="eval: __parent__?.operationTypeSelect &gt; 2" />
-		<attribute name="hidden" for="accountingPanel" expr="eval:_parent?.operationSubTypeSelect==2"/>
-		
+		<attribute name="hidden" for="accountingPanel" expr="eval:__parent__?.operationSubTypeSelect==2"/>
 		<!-- Scale and Precision -->
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="inTaxPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
@@ -348,34 +378,34 @@
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 
 		<!-- Hide ATI OR depending on pack configuration -->
-		<attribute name="hidden" for="exTaxTotal,price" expr="eval: _parent.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="_parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
-		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: _parent.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="_parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
-		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !_parent.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="_parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
-		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !_parent.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="_parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="hidden" for="exTaxTotal,price" expr="eval: __parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: __parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !__parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !__parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 		
-		<attribute name="hidden" for="exTaxTotal,price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="invoice != null &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'" />
-		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="invoice != null &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'" />
-		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="invoice != null &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'" />
-		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="invoice != null &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'" />
+		<attribute name="hidden" for="exTaxTotal,price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="invoice != null &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'" />
+		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="invoice != null &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'" />
+		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="invoice != null &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'" />
+		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="invoice != null &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'" />
 		
-		<attribute name="hidden" for="exTaxTotal,price" expr="eval: _parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent?._model == 'com.axelor.apps.account.db.InvoiceLine'" />
-		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !_parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.account.db.InvoiceLine'" />
+		<attribute name="hidden" for="exTaxTotal,price" expr="eval: __parent__?.__parent__?.inAti || __parent__?.packPriceSelect == 0" if="isSubLine &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'" />
+		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !__parent__?.__parent__?.inAti || __parent__?.packPriceSelect == 0" if="isSubLine &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.InvoiceLine'" />
 		
 		<attribute name="hidden" for="discount,taxLine" expr="eval:packPriceSelect == 1" if="typeSelect == 2"/>
-		<attribute name="hidden" for="discount,taxLine" expr="eval:_parent.packPriceSelect == 0"  if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
-		<attribute name="hidden" for="discount,taxLine" expr="eval:parentLine.packPriceSelect == 0"  if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="hidden" for="discount,taxLine" expr="eval:__parent__?.packPriceSelect == 0"  if="isSubLine &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+		<attribute name="hidden" for="discount,taxLine" expr="eval:parentLine?.packPriceSelect == 0"  if="isSubLine &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Invoice'"/>
 		
 		<!-- Show Price Discounted -->
-		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; !_parent?.inAti"/>
-		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; _parent?.inAti"/>
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; !__parent__?.inAti"/>
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; __parent__?.inAti"/>
 		
-		<attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
+		<attribute name="required" for="analyticDistributionTemplate" expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
 		
 	</action-attrs>
 
-  <action-attrs name="action-attrs-account-invoice-line-account-onchange">
-    <attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
-  </action-attrs>
+  	<action-attrs name="action-attrs-account-invoice-line-account-onchange">
+    	<attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
+  	</action-attrs>
 
 	<action-attrs name="action-invoice-line-attrs-sub-line">
 	  <attribute if="eval: __parent__.typeSelect == 2" name="value" expr="eval: true" for="isSubLine"/>
@@ -390,16 +420,18 @@
 		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
 	</action-record>
 
-	<action-record name="action-invoice-line-record-order" model="com.axelor.apps.account.db.InvoiceLine">
-		<field name="saleOrder" expr="eval: _parent?.saleOrder" if="_parent?.operationTypeSelect == 3 || _parent?.operationTypeSelect == 4"/>
-		<field name="purchaseOrder" expr="eval: _parent?.purchaseOrder" if="_parent?.operationTypeSelect == 1 || _parent?.operationTypeSelect == 2"/>
-	</action-record>
-
 	<action-attrs name="action-invoice-line-attrs-compute-total-pack">
 		<attribute name="value" for="totalPack" expr="eval:subLineList.collect{it->it.inTaxTotal}.sum()" if="typeSelect == 2 &amp;&amp; subLineList != null &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 	</action-attrs>
 
+	<action-view name="action-invoice-line-view-team-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<domain>self.invoiceLine = :id</domain>
+	</action-view>
+
 	<search-filters name="invoice-line-filters" model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
 		<field name="invoice.invoiceDate" title="Invoice Date"/>
 	</search-filters>
+
 </object-views>

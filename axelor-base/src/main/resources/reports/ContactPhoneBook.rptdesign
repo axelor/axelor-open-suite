@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -145,8 +145,8 @@
                     <value>ILYNN</value>
                 </ex-property>
             </list-property>
-            <property name="odaDriverClass">com.mysql.jdbc.Driver</property>
-            <property name="odaURL">jdbc:mysql://localhost:3306</property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -379,7 +379,56 @@ ContactPartner.fax,contact_picture order by ContactPartner.name]]></xml-property
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="CompanyDS" id="392">
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">full_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">full_name</text-property>
+                    <text-property name="heading">full_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">web_site</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">web_site</text-property>
+                    <text-property name="heading">web_site</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">email</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">email</text-property>
+                    <text-property name="heading">email</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fax</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fax</text-property>
+                    <text-property name="heading">fax</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">fixed_phone1</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">fixed_phone1</text-property>
+                    <text-property name="heading">fixed_phone1</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -425,6 +474,16 @@ ContactPartner.fax,contact_picture order by ContactPartner.name]]></xml-property
                         <property name="name">fixed_phone1</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -434,39 +493,60 @@ ContactPartner.fax,contact_picture order by ContactPartner.name]]></xml-property
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">full_name</property>
                     <property name="nativeName">full_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">web_site</property>
                     <property name="nativeName">web_site</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">email</property>
                     <property name="nativeName">email</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">fax</property>
                     <property name="nativeName">fax</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">fixed_phone1</property>
                     <property name="nativeName">fixed_phone1</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path, Address.full_name, Partner.web_site, Email.name as email, Partner.fax, Partner.fixed_phone as fixed_phone1
+            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path, Address.full_name, Partner.web_site, Email.name as email, Partner.fax,
+Partner.fixed_phone as fixed_phone1, Company.height as logo_height, Company.width as logo_width
 from auth_user as AuthUser 
 left outer join base_company as Company on (AuthUser.active_company = Company.id)
 left outer join base_address as Address on (Company.address = Address.id)
@@ -477,26 +557,6 @@ where AuthUser.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -771,9 +831,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <cell id="4601">
                         <property name="colSpan">4</property>
                         <property name="rowSpan">1</property>
-                        <image id="3440">
-                            <property name="height">2.169583333333333cm</property>
-                            <property name="width">6.138333333333333cm</property>
+                        <text id="4748">
+                            <property name="fontSize">8pt</property>
                             <property name="dataSet">CompanyDS</property>
                             <list-property name="visibility">
                                 <structure>
@@ -818,18 +877,30 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <expression name="expression" type="javascript">dataSetRow["fixed_phone1"]</expression>
                                     <property name="dataType">string</property>
                                 </structure>
-                            </list-property>
-                            <property name="source">file</property>
-                            <property name="proportionalScale">true</property>
-                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            <list-property name="action">
                                 <structure>
-                                    <property name="linkType">hyperlink</property>
-                                    <expression name="uri" type="javascript">row["web_site"]</expression>
-                                    <property name="targetWindow">_parent</property>
+                                    <property name="name">logo_height</property>
+                                    <text-property name="displayName">logo_height</text-property>
+                                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">logo_width</property>
+                                    <text-property name="displayName">logo_width</text-property>
+                                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                                    <property name="dataType">string</property>
+                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
-                        </image>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                        </text>
                     </cell>
                 </row>
                 <row id="4595">

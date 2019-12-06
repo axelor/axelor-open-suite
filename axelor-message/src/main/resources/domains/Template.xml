@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
@@ -21,6 +21,11 @@
 	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
 	<boolean name="isDefault" title="Default"/>
 	<boolean name="isSystem" title="System"/>
+	<boolean name="isJson" title="Json"/>
+  	<many-to-one name="metaJsonModel" ref="com.axelor.meta.db.MetaJsonModel" title="Model"/>
+	
+	<one-to-many name="templateContextList" ref="com.axelor.apps.message.db.TemplateContext" mappedBy="template" title="Context"/>
+	
 
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT

@@ -35,10 +35,10 @@ public interface BillOfMaterialService {
 
   public List<BillOfMaterial> getBillOfMaterialSet(Product product);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductCostPrice(BillOfMaterial billOfMaterial) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial customizeBillOfMaterial(SaleOrderLine saleOrderLine) throws AxelorException;
 
   public BillOfMaterial generateNewVersion(BillOfMaterial billOfMaterial);
@@ -49,16 +49,16 @@ public interface BillOfMaterialService {
       BillOfMaterial billOfMaterial, String name, String language, String format)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public TempBomTree generateTree(BillOfMaterial billOfMaterial);
 
   @Transactional
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
 

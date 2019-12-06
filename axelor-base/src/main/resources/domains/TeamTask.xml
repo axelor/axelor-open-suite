@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="project" package="com.axelor.team.db"/>
+
+  <entity name="TeamTask">
+    <many-to-one name="frequency" title="Frequency" ref="com.axelor.apps.base.db.Frequency"/>
+    <many-to-one name="nextTeamTask" title="Next task" ref="com.axelor.team.db.TeamTask" readonly="true"/>
+    <boolean name="isFirst" title="First" readonly="true" default="false"/> <!-- if first, on save, it can generate reccurent tasks -->
+    <boolean name="doApplyToAllNextTasks" title="Apply modifications to next tasks" default="false"/>
+    <boolean name="hasDateOrFrequencyChanged" title="Date or frequency changed" readonly="true" default="false"/>
+
+    <string name="typeSelect" title="Type" selection="team.task.type.select" default="task"/>
+
+    <extra-code>
+      // TYPE SELECT
+      public static final String TYPE_TASK = "task";
+      public static final String TYPE_TICKET = "ticket";
+    </extra-code>
+  </entity>
+
+</domain-models>

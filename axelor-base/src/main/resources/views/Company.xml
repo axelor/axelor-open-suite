@@ -1,29 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="address" form-view="address-form" grid-view="address-grid"/>
-    </grid>
+  <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
+	  <field name="name"/>
+	  <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+	  <field name="address" form-view="address-form" grid-view="address-grid"/>
+  </grid>
 
 	<form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
-		onSave="action-company-check-multi-banks">
+		onSave="action-company-check-multi-banks" canNew="_canNew">
 		<panel name="mainPanel" readonlyIf="$popup()">
-		    <panel name="logoPanel" colSpan="4">
-				<field name="logo" widget="Image"/>
+      <panel name="logoPanel" colSpan="4">
+				<field name="logo" widget="Image" colSpan="12" onChange="action-company-logo-onchange-update-dimension"/>
+				<field name="width" requiredIf="height" onChange="action-company-condition-validate-logo-height-and-width">
+				  <viewer depends="width"><![CDATA[
+				      {{record.width}}
+				      <span x-translate>px</span>
+				  ]]></viewer>
+				</field>
+				<spacer name="widthSpacer"/>
+				<field name="height" requiredIf="width" onChange="action-company-condition-validate-logo-height-and-width">
+				  <viewer depends="height"><![CDATA[
+				      {{record.height}}
+              <span x-translate>px</span>
+				  ]]></viewer>
+				</field>
+				<spacer name="heightSpacer"/>
 			</panel>
 			<panel name="detailsPanel" colSpan="8">
-		    	<field name="name"/>
-			    <field name="code" x-bind="{{code|unaccent|uppercase}}" />
-			    <field name="parent" form-view="company-form" grid-view="company-grid"/>
-			    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-		    </panel>
+        <field name="name"/>
+		    <field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		    <field name="parent" form-view="company-form" grid-view="company-grid"/>
+		    <field name="partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 		    <field name="address" canNew="true" colSpan="12" form-view="address-form" grid-view="address-grid"/>
-	  	</panel>
-	  
+	    </panel>
+    </panel>
 	  	<panel sidebar="true" name="modulesConfigPanel" title="Modules configurations" hideIf="$popup()">
 	  		<button name="accountConfigBtn" title="Account config" width="100%" colSpan="6" onClick="action-company-view-account-config" if-module="axelor-account" if="__config__.app.isApp('account')"/>
 			<button name="bankPaymentConfigBtn" title="Bank payment config" width="100%" colSpan="6" onClick="action-company-view-bank-payment-config" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
@@ -55,6 +68,7 @@
 				<field name="tradingNamePrintingSettingsList" canNew="true" form-view="trading-name-printing-settings-company-form" grid-view="trading-name-printing-settings-company-grid" colSpan="12" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 				<field name="weeklyPlanning" title="Weekly planning" canNew="true" form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
 				<field name="publicHolidayEventsPlanning" form-view="events-planning-form" grid-view="events-planning-grid" canNew="true" />
+				<field name="language" colSpan="6" canEdit="false"/>
 	  		</panel>
 	    	<panel name="bankDetailsPanel" title="Bank details">
                 <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
@@ -73,8 +87,17 @@
 				   expr="self.id IN (0)"/>
 	</action-attrs>
 
+  <action-condition name="action-company-condition-validate-logo-height-and-width">
+    <check field="height" error="Please fill pixel for height" if="width &gt; 0 &amp;&amp; height == 0"/>
+    <check field="width" error="Please fill pixel for width" if="height &gt; 0 &amp;&amp; width == 0"/>
+  </action-condition>
+
 	<action-method name="action-company-check-multi-banks">
 		<call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks" />
 	</action-method>
+
+  <action-method name="action-company-logo-onchange-update-dimension">
+    <call class="com.axelor.apps.base.web.CompanyController" method="updateDimension"/>
+  </action-method>
 
 </object-views>

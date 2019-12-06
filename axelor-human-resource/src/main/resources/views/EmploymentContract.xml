@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="employment-contract-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
         <hilite color="warning" if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
@@ -22,13 +22,16 @@
 		<field name="status"/>
     </grid>
 
-    <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new">
-        <toolbar>
-            <button name="createAmendmentBtn" title="Create amendment" onClick="save,action-employment-contract-method-addAmendment" hidden="true"/>
-            <button name="editContractWordMLBtn" title="Print contract" onClick="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
-        	<button name="generatePayrollPreparationBtn" title="Generate payroll prepa." onClick="save,action-employment-contract-generate-payroll-prepa"
-					if="__config__.app.getApp('employee').getPayrollPreparation()"/>
-        </toolbar>
+    <form name="employment-contract-form" title="Employment contract" model="com.axelor.apps.hr.db.EmploymentContract" onNew="action-employment-contract-record-on-new" width="large">
+		<menubar>
+			<menu title="Tools" icon="fa-wrench" showTitle="true">
+				<item title="Create amendment" action="save,action-employment-contract-method-addAmendment" hideIf="true"/>
+				<item title="Print contract" action="save,action-employment-contract-validate-printing-settings,action-employment-contract-export-word"/>
+				<item title="Generate payroll prepa." action="save,action-employment-contract-generate-payroll-prepa"
+						if="__config__.app.getApp('employee').getPayrollPreparation()"/>
+				<item title="Export employment contract" action="save,action-employment-contract-method-export"/>
+			</menu>
+		</menubar>
         <panel name="statusPanel" title="Status">
         	<field name="status" colSpan="12" widget="NavSelect" canEdit="true" showTitle="false"/>
         </panel>
@@ -102,6 +105,10 @@
     
     <action-method name="action-employment-contract-method-addAmendment">
         <call class="com.axelor.apps.hr.web.EmploymentContractController" method="addAmendment"/>
+    </action-method>
+    
+    <action-method name="action-employment-contract-method-export">
+    	<call class="com.axelor.apps.hr.web.EmploymentContractController" method="exportEmploymentContract"/>
     </action-method>
     
     <action-validate name="action-employment-contract-validate-printing-settings">

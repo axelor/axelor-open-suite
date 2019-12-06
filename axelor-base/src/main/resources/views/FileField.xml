@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+   
+	<grid name="file-field-grid" title="File fields" model="com.axelor.apps.base.db.FileField">
+		<hilite color="danger" if="(subImportField == null &amp;&amp; relationship != null) || importField == null || (dateFormat == null &amp;&amp; expression == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime'))"/>
+		<field name="importField"/>
+		<field name="subImportField"/>
+		<field name="importType"/>
+		<field name="relationship" hidden="true"/>
+		<field name="dateFormat" hidden="true"/>
+		<field name="expression" hidden="true"/>
+		<field name="targetType" hidden="true"/>
+		<field name="isMatchWithFile" hidden="true"/>
+	</grid>
+    
+	<form name="file-field-form" title="File field" model="com.axelor.apps.base.db.FileField" onNew="action-file-field-attrs-onnew-onload" 
+	onLoad="action-file-field-attrs-onnew-onload,action-file-field-attrs-readonly-onload">
+		<panel name="informationPanel" title="Data from file" readonlyIf="isMatchWithFile" showIf="isMatchWithFile">
+			<field name="firstLine"/>
+			<field name="secondLine"/>
+			<field name="thirdLine"/>
+			<field name="columnTitle"/>
+	    </panel>
+	    <panel name="configPanel" title="Configuration">
+			<panel name="generalPanel" itemSpan="12">
+				<field name="importType" showIf="relationship == null" selection-in="[0,4]"/>
+		      	<field name="importType" showIf="relationship != null &amp;&amp; relationship != 'ManyToMany' &amp;&amp; targetType != 'MetaFile'" selection-in="[1,2,3,4]"/>
+		      	<field name="importType" showIf="relationship == 'ManyToMany' &amp;&amp; targetType != 'MetaFile'" selection-in="[1,4]"/>
+		      	<field name="importType" showIf="targetType == 'MetaFile'" selection-in="[3,4]"/>
+		      	<field name="importField" onChange="action-advanced-import-method-fill-type,action-file-field-record-set-import-type" onSelect="action-file-field-attrs-domain-on-import-field" requiredIf="importType != 4"/>
+		      	<field name="expression" showIf="targetType != 'MetaFile'" requiredIf="((!isMatchWithFile &amp;&amp; importType != 4) || (dateFormat == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime'))) &amp;&amp; targetType != 'MetaFile'"/>
+		  	</panel>
+		    <panel name="otherInfoPanel" itemSpan="12">
+				<field name="forSelectUse"/>
+				<field name="subImportField" showIf="importField != null &amp;&amp; importField.relationship != null" onChange="action-advanced-import-method-fill-type,action-advanced-import-validate-field,action-file-field-record-set-import-type" requiredIf="importField.relationship != null"/>
+				<field name="dateFormat" showIf="isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime')" requiredIf="expression == null &amp;&amp; isMatchWithFile &amp;&amp; (targetType == 'LocalDate' || targetType == 'LocalDateTime' || targetType == 'LocalTime' || targetType == 'ZonedDateTime')"/>
+				<field name="splitBy" showIf="relationship == 'ManyToMany'"/>
+				<field name="noImportIf"/>
+				<field name="defaultIfNotFound"/>
+				<field name="importField.relationship" hidden="true"/>
+				<field name="isMatchWithFile" hidden="true"/>
+				<field name="importField.typeName" hidden="true"/>
+				<field name="targetType" hidden="true"/>
+				<field name="relationship" hidden="true"/>
+		  	</panel>
+  		</panel>
+	</form>
+	
+	<action-attrs name="action-file-field-attrs-onnew-onload">
+		<attribute name="hidden" for="columnTitle" expr="eval: !_parent?._parent?.isHeader"/>
+	</action-attrs>
+	
+	<action-attrs name="action-file-field-attrs-domain-on-import-field">
+		<attribute name="domain" for="importField" expr="eval: (_parent != null &amp;&amp; _parent.metaModel != null) ? &quot; self.metaModel = ${_parent.metaModel.id} AND (self.relationship IS NULL OR self.relationship != 'OneToMany') &quot; : &quot; self.id IN (null) &quot;" if="isMatchWithFile"/>
+		<attribute name="domain" for="importField" expr="eval: (_parent != null &amp;&amp; _parent.metaModel != null) ? &quot; self.metaModel = ${_parent.metaModel.id} AND (self.relationship IS NULL OR (self.relationship != 'OneToMany' AND self.relationship != 'ManyToMany')) &quot; : &quot; self.id IN (null) &quot;" if="!isMatchWithFile"/>
+	</action-attrs>
+	
+	<action-attrs name="action-file-field-attrs-readonly-onload">
+		<attribute name="readonly" for="importField,subImportField" expr="eval: _parent?._parent?.isConfigInFile &amp;&amp; isMatchWithFile"/>
+		<attribute name="readonly" for="columnTitle" expr="eval: !_parent?._parent?.isConfigInFile &amp;&amp; isMatchWithFile"/>
+	</action-attrs>
+	
+	<action-record name="action-file-field-record-set-import-type" model="com.axelor.apps.base.db.FileField">
+		<field name="importType" expr="eval: (targetType != 'MetaFile' &amp;&amp; relationship != null) ? 1 : (targetType == 'MetaFile' &amp;&amp; relationship != null) ? 3 : 0"/>
+	</action-record>
+	
+	<action-record name="action-advanced-import-record-empty-field" model="com.axelor.apps.base.db.FileField">
+		<field name="subImportField" expr="eval: null"/>
+	</action-record>
+	
+	<action-method name="action-advanced-import-method-fill-type">
+		<call class="com.axelor.apps.base.web.FileFieldController" method="fillType"/>
+	</action-method>
+	
+	<action-validate name="action-advanced-import-validate-field">
+		<error message="'OneToMany' field doesn't allowed" if="relationship == 'OneToMany' &amp;&amp; isMatchWithFile" action="action-advanced-import-record-empty-field"/>
+		<error message="'OneToMany' and 'ManyToMany' fields doesn't allowed" if="(relationship == 'OneToMany' || relationship == 'ManyToMany') &amp;&amp; !isMatchWithFile" action="action-advanced-import-record-empty-field"/>
+	</action-validate>
+	
+</object-views>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <menuitem name="app-builder-root" title="App builder" order="-70" icon="fa-pencil-square-o" icon-background="purple" if="__config__.app.isApp('bpm')" />
 
@@ -57,13 +57,6 @@
     <menuitem name="app-builder-custom-models" title="Custom models" parent="app-builder-config" action="custom.models.all" order="41" />
 
     <menuitem name="app-builder-custom-fields" title="Custom fields" parent="app-builder-config" action="custom.fields.all" order="42" />
-
-    <menuitem name="app-builder-base-models" title="Base models" parent="app-builder-config" action="action.base.models.view" order="43" />
-
-    <action-view name="action.base.models.view" title="Base models" model="com.axelor.studio.db.JsonCreator">
-        <view type="grid" name="json-creator-grid" />
-        <view type="form" name="json-creator-form" />
-    </action-view>
 
     <menuitem name="app-builder-menu-builders" title="Menu builders" parent="app-builder-config" action="action.menu.builders.view" order="44" />
 

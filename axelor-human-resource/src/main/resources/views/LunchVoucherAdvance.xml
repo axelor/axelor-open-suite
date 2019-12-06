@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="lunch-voucher-advance-grid" title="Lunch Voucher Advances" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" orderBy="-distributionDate">
+    <grid name="lunch-voucher-advance-grid" title="Lunch voucher advances" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" orderBy="-distributionDate">
         <field name="distributionDate"/>
         <field name="nbrLunchVouchers" aggregate="sum"/>
         <field name="lunchVoucherWageShare"/>
@@ -12,7 +12,7 @@
         <button name="printLunchVoucherAdvanceBtn" title="Print" icon="fa-print" onClick="action-lunch-voucher-advance-print"/>
     </grid>
 
-	<form name="lunch-voucher-advance-form" title="Lunch Voucher Advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" width="large">
+	<form name="lunch-voucher-advance-form" title="Lunch voucher advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-record-default" width="large">
 		<panel name="mainPanel">
 			<field name="distributionDate"/>
 	        <field name="nbrLunchVouchers"/>
@@ -32,7 +32,7 @@
 	
 	<!-- Create a new lunch voucher advance from an employee -->
 	
-	<action-view name="action-lunch-voucher-advance-new" title="Lunch Voucher Advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance">
+	<action-view name="action-lunch-voucher-advance-new" title="Lunch voucher advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance">
 		<view type="form" name="lunch-voucher-advance-new-form"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
@@ -41,7 +41,7 @@
 		<context name="_xEmployeeId" expr="eval: __this__.id"/>
 	</action-view>
 	
-	<form name="lunch-voucher-advance-new-form" title="Lunch Voucher Advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-new-record-default" width="large">
+	<form name="lunch-voucher-advance-new-form" title="Lunch voucher advance" model="com.axelor.apps.hr.db.LunchVoucherAdvance" onNew="action-lunch-voucher-advance-new-record-default" width="large">
 		<panel name="mainPanel">
 			<field name="distributionDate"/>
 	        <field name="nbrLunchVouchers"/>

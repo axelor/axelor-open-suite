@@ -51,15 +51,14 @@ public final class FileTool {
   public static List<String> reader(String fileName) throws IOException {
 
     List<String> content = new ArrayList<>();
-
     try (BufferedReader br = new BufferedReader(new FileReader(new File(fileName)))) {
       String ligne = "";
+
       while ((ligne = br.readLine()) != null) {
         content.add(ligne);
       }
-    } catch (IOException ex) {
-      LOG.error(ex.getMessage());
     }
+
     return content;
   }
 
@@ -73,14 +72,13 @@ public final class FileTool {
    */
   public static void writer(String destinationFolder, String fileName, String line)
       throws IOException {
-
     System.setProperty("line.separator", "\r\n");
 
     File file = create(destinationFolder, fileName);
-    try (FileWriter writer = new FileWriter(file)) {
+    try (FileWriter writer = new FileWriter(file); ) {
       writer.write(line);
-    } catch (IOException ex) {
 
+    } catch (IOException ex) {
       LOG.error(ex.getMessage());
     }
   }
@@ -97,10 +95,8 @@ public final class FileTool {
       throws IOException {
     System.setProperty("line.separator", "\r\n");
 
-    File file = null;
+    File file = create(destinationFolder, fileName);
     try (BufferedWriter output = new BufferedWriter(new FileWriter(file))) {
-
-      file = create(destinationFolder, fileName);
       int i = 0;
 
       for (String line : multiLine) {
@@ -114,7 +110,6 @@ public final class FileTool {
       }
 
     } catch (IOException ex) {
-
       LOG.error(ex.getMessage());
     }
 

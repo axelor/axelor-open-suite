@@ -105,7 +105,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder createPurchaseOrder(
       Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
       throws AxelorException {
@@ -155,6 +155,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     }
 
     purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+
+    purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
 
     Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
 

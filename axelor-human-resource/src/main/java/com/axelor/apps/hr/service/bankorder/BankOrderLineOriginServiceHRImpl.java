@@ -22,6 +22,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceI
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.db.Model;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 
 public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginServiceImpl {
 
@@ -41,6 +42,32 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
     } else {
 
       return super.computeRelatedToSelectName(model);
+    }
+  }
+
+  @Override
+  protected LocalDate computeRelatedToSelectDate(Model model) {
+
+    if (model instanceof Expense) {
+
+      return ((Expense) model).getValidationDate();
+
+    } else {
+
+      return super.computeRelatedToSelectDate(model);
+    }
+  }
+
+  @Override
+  protected LocalDate computeRelatedToSelectDueDate(Model model) {
+
+    if (model instanceof Expense) {
+
+      return ((Expense) model).getValidationDate();
+
+    } else {
+
+      return super.computeRelatedToSelectDueDate(model);
     }
   }
 }

@@ -48,7 +48,7 @@ public class MoveManagementRepository extends MoveRepository {
     try {
       period =
           Beans.get(PeriodService.class)
-              .rightPeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
+              .getActivePeriod(copy.getDate(), entity.getCompany(), YearRepository.TYPE_FISCAL);
     } catch (AxelorException e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
