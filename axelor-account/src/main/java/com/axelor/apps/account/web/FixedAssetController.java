@@ -87,12 +87,14 @@ public class FixedAssetController {
                 fixedAsset.getAnalyticDistributionTemplate(), moveLine);
           }
         }
-        for (FixedAssetLine fixedAssetLine : fixedAsset.getFixedAssetLineList()) {
-          if (fixedAssetLine.getDepreciationAccountMove() != null) {
-            for (MoveLine moveLine :
-                fixedAssetLine.getDepreciationAccountMove().getMoveLineList()) {
-              fixedAssetService.createAnalyticOnMoveLine(
-                  fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+        if (fixedAsset.getFixedAssetLineList() != null) {
+          for (FixedAssetLine fixedAssetLine : fixedAsset.getFixedAssetLineList()) {
+            if (fixedAssetLine.getDepreciationAccountMove() != null) {
+              for (MoveLine moveLine :
+                  fixedAssetLine.getDepreciationAccountMove().getMoveLineList()) {
+                fixedAssetService.createAnalyticOnMoveLine(
+                    fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+              }
             }
           }
         }
