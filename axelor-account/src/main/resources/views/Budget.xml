@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
-        <field name="name"/>
-        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="fromDate"/>
-        <field name="toDate"/>
-        <field name="company"/>
-        <field name="inChargeUser"/>
-        <field name="totalAmountExpected" aggregate="sum"/>
-        <field name="statusSelect"/>
+	<grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
+		<field name="name"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="inChargeUser"/>
+		<field name="totalAmountExpected" aggregate="sum"/>
+	<field name="statusSelect"/>
     </grid>
     
     <form name="budget-form" title="Budget" model="com.axelor.apps.account.db.Budget" width="large" onNew="action-budget-record-on-new" onSave="action-budget-check-shared-dates">
@@ -43,12 +43,12 @@
 		<panel-related name="budgetLineListPanel" field="budgetLineList" onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect == 2"/>
 		<panel name="buttonPannel" colSpan="4" sidebar="true" showTitle="false">
     		<button name="validateButton" title="Validate" onClick="save,action-account-budget-validate" showIf="statusSelect == 1"/>
-    		<button name="draftButton" title="Draft" onClick="save,action-account-budget-draft" showIf="statusSelect == 2"/>		
+    		<button name="draftButton" title="Draft" onClick="save,action-account-budget-draft" showIf="statusSelect == 2"/>
     	</panel>
 		<panel name="totalAmountExpectedPanel" readonly="true" colSpan="4" sidebar="true" title="Total amounts">
     		<field name="totalAmountExpected"/>
     		<field name="totalAmountCommitted" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-    		<field name="totalAmountRealized"/>			
+    		<field name="totalAmountRealized"/>
     	</panel>
 
 		<panel-dashlet name="budgetDistributionLinePurchaseOrderLinePanel" action="action-budget-view-budget-distribution-purchase-order-line" colSpan="12" showIf="statusSelect == 2" canSearch="true" height="350" readonly="true" if="__config__.app.isApp('supplychain')"/>
@@ -102,19 +102,19 @@
 	<action-method name="action-method-budget-update-total-amount-committed">
 		<call class="com.axelor.apps.supplychain.web.BudgetController" method="computeTotalAmountCommited"/>
 	</action-method>
-    
+
     <action-method name="action-method-budget-year-generate-periods">
     	<call class="com.axelor.apps.account.web.BudgetController" method="generatePeriods"/>
     </action-method>
-    
+
     <action-method name="action-account-budget-validate">
     	<call class="com.axelor.apps.account.web.BudgetController" method="validate"/>
     </action-method>
-    
+
     <action-method name="action-account-budget-draft">
     	<call class="com.axelor.apps.account.web.BudgetController" method="draft"/>
     </action-method>
-    
+
     <action-validate name="action-budget-validate-exceed-line-amount">
 		<alert if="__config__.app.getApp('budget')?.manageMultiBudget
                   &amp;&amp;budgetDistributionList != null &amp;&amp; budgetDistributionList

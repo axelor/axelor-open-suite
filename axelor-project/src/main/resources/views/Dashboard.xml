@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<dashboard name="project-my-projects" title="My projects">
 		<dashlet action="action-project-db-my-tasks-to-do"/>
 		<dashlet action="action-project-db-my-tasks-due"/>
 		<dashlet action="action-project-db-my-today-planning"/>
 		<dashlet action="action-project-db-my-upcomming-planning"/>
+	</dashboard>
+	
+	<dashboard name="project-planned-charge" title="Planned charge">
+		<dashlet action="chart:chart.daily.planned.charge.in.month.per.project" colSpan="12"/>
+		<dashlet action="chart:chart.daily.planned.charge.in.month.per.employee" colSpan="12"/>
+		<dashlet action="chart:chart.average.daily.planned.charge.in.month.per.employee" colSpan="12"/>
 	</dashboard>
 	
 	<action-view name="action-project-db-my-tasks-to-do" title="My tasks to do" model="com.axelor.team.db.TeamTask">
@@ -41,6 +47,5 @@
 		<view type="form" name="project-planning-time-form" />
 		<domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
 	</action-view>
-	
 	
 </object-views>

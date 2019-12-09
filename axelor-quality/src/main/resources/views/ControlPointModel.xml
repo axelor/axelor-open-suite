@@ -1,61 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="control-point-model-grid" title="Control points" model="com.axelor.apps.quality.db.ControlPointModel">
 		<field name="name"/>
-		<field name="priority"/>
-		<field name="product"/>
-		<field name="team"/>
-		<field name="responsible"/>
-		<field name="controlTypeSelect"/>
-		<field name="testTypeSelect"/>
 	</grid>
 	
 	<form name="control-point-model-form" title="Control points" model="com.axelor.apps.quality.db.ControlPointModel">	
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="priority"/>
-			<field name="product"/>
-			<field name="team" domain="self.typeSelect = 'quality'"/>
-			<field name="responsible"/>
-			<field name="controlTypeSelect"/>
-			<field name="testTypeSelect"/>
+			<field name="controlPointType"/>
+			<field name="sequence"/>
 		</panel>
-		<panel name="ControlFrequencyPanel" showIf="controlTypeSelect == 2 || controlTypeSelect == 3" title="Control Frequency">
-			<field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 2" showTitle="false">
-				<viewer>
-				<![CDATA[
-		             <span>Every  <b>{{record.controlFrequency}}%</b> of the operation</span>
-		        ]]>
-		        </viewer>
-				<editor x-show-titles="false">
-					<label name="every1Label" type="string" title="Every" readonly="true" colSpan="1" />
-					<field name="controlFrequency" showTitle="false" colSpan="3" />
-					<label name="operationLabel" type="string" readonly="true" title="% of the operation" />
-				</editor>
-			</field>
-            <field name="cf" title="Control Frequency" type="string" colSpan="12" showIf="controlTypeSelect == 3" showTitle="false">
-            	<viewer>
-                <![CDATA[
-                	<span>Every  <b>{{record.controlFrequency}}</b></span>
-                ]]>
-                </viewer>
-                <editor x-show-titles="false">
-                	<label name="every2Label" type="string" title="Every" readonly="true"  colSpan="1" />
-                    <field name="controlFrequency" showTitle="false"  colSpan="3"/>
-                    <field name="period" showTitle="false" colSpan="3"  selection="quality.control.point.model.period"/>
-                </editor>
-            </field>
-		</panel>
-		<panel name="instructionsPanel">
-			<field name="instructions" colSpan="12" height="6" widget="html" showTitle="false"/>
+		<panel name="measuringPointPanel">
+			<panel-related name="measuringPointListPanel" field="measuringPointList" colSpan="12" grid-view="quality-measuring-point-model-grid" form-view="quality-measuring-point-model-form"/>
 		</panel>
 		<panel name="notesPanel">
 			<field name="notes" colSpan="12" height="6" widget="html" showTitle="false"/>
-		</panel>
-		<panel name="messageIfFailurePanel">
-			<field name="messageIfFailure" colSpan="12" height="6" widget="html" showTitle="false"/>
 		</panel>	
 	</form>	
 	

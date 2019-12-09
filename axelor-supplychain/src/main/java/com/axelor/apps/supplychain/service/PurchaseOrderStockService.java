@@ -54,4 +54,16 @@ public interface PurchaseOrderStockService {
   public boolean existActiveStockMoveForPurchaseOrder(Long purchaseOrderId);
 
   public void updateReceiptState(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  /**
+   * Create a query to find purchase order line of a product of a specific/all company and a
+   * specific/all stock location
+   *
+   * @param productId
+   * @param companyId
+   * @param stockLocationId
+   * @return the query.
+   */
+  public String getPurchaseOrderLineListForAProduct(
+      Long productId, Long companyId, Long stockLocationId);
 }

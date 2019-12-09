@@ -51,13 +51,13 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
   private static final String CONFIG_FILE_PATH =
       "/data-import/import-configurator-creator-config.xml";
 
-  @Transactional(rollbackOn = {IOException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public String importConfiguratorCreators(String filePath) throws IOException {
     return importConfiguratorCreators(filePath, CONFIG_FILE_PATH);
   }
 
-  @Transactional(rollbackOn = {IOException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public String importConfiguratorCreators(String filePath, String configFilePath)
       throws IOException {

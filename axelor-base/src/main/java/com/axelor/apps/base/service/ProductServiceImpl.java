@@ -33,7 +33,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.beust.jcommander.internal.Lists;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
   @Inject private MetaFiles metaFiles;
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void updateProductPrice(Product product) {
 
     this.updateSalePrice(product);
@@ -162,7 +162,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateProductVariants(Product productModel) {
 
     List<ProductVariant> productVariantList =

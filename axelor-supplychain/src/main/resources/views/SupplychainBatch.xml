@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-    <grid name="supplychain-batch-grid" title="Supplychain batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
-    	<field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
+  <grid name="supplychain-batch-grid" title="Supplychain batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
+    <field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 		<field name="actionSelect" selection="supplychain.batch.invoice.stock.moves.action.select" if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
-    	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}" />
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="createdOn"/>
 		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
-    </grid>
+  </grid>
 
 	<form name="supplychain-batch-form" title="Supplychain Batch"
 		model="com.axelor.apps.supplychain.db.SupplychainBatch" onNew="action-supplychain-batch-record-on-new" onLoad="action-group-supplychain-batch-group-onload">

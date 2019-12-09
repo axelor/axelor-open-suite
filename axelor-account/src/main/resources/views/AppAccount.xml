@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="app-account-config-form" title="App account" model="com.axelor.apps.base.db.AppAccount" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
@@ -11,6 +11,7 @@
 			<field name="manageFactors" widget="Boolean-switch"/>
 			<field name="manageAdvancePaymentInvoice" widget="boolean-switch"/>
             <field name="paymentVouchersOnInvoice" widget="boolean-switch"/>
+            <field name="activatePassedForPayment" widget="boolean-switch"/>
 			<panel name="rejectsReasonsAndCodesListPanel" title="Rejects reasons and codes list" colSpan="12">
 				<field name="transferAndDirectDebitInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>
 				<field name="chequeInterbankCode" grid-view="interbank-code-grid" form-view="interbank-code-form"/>

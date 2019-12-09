@@ -18,7 +18,7 @@
 package com.axelor.apps.tool.service;
 
 import com.axelor.app.AppSettings;
-import com.mysql.jdbc.StringUtils;
+import com.axelor.common.StringUtils;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -89,7 +89,7 @@ public class CipherServiceImpl implements CipherService {
     String encryptionkey = AppSettings.get().get("application.encryptionkey");
     SecretKey key = null;
 
-    if (!StringUtils.isNullOrEmpty(encryptionkey)) {
+    if (StringUtils.notEmpty(encryptionkey)) {
       byte[] arrayBytes = encryptionkey.getBytes(UNICODE_FORMAT);
       KeySpec ks = new DESedeKeySpec(arrayBytes);
       SecretKeyFactory skf = SecretKeyFactory.getInstance(encryptionScheme);

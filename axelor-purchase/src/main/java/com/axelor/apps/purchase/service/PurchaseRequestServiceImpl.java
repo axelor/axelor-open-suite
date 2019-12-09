@@ -70,7 +70,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public List<PurchaseOrder> generatePo(
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)

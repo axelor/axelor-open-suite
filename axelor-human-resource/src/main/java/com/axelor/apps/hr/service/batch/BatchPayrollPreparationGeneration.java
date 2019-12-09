@@ -19,7 +19,6 @@ package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
-import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.Employee;
@@ -32,15 +31,14 @@ import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -73,7 +71,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -101,47 +99,29 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     if (!hrBatch.getEmployeeSet().isEmpty()) {
       String employeeIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getEmployeeSet(),
-                      new Function<Employee, String>() {
-                        public String apply(Employee obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getEmployeeSet(), obj -> obj.getId().toString()));
       query.add("self.id IN (" + employeeIds + ")");
     }
     if (!hrBatch.getPlanningSet().isEmpty()) {
       String planningIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getPlanningSet(),
-                      new Function<WeeklyPlanning, String>() {
-                        public String apply(WeeklyPlanning obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getPlanningSet(), obj -> obj.getId().toString()));
 
       query.add("self.weeklyPlanning.id IN (" + planningIds + ")");
     }
 
-    List<Employee> employeeList = Lists.newArrayList();
     String liaison = query.isEmpty() ? "" : " AND";
     if (hrBatch.getCompany() != null) {
-      employeeList =
-          JPA.all(Employee.class)
-              .filter(
-                  Joiner.on(" AND ").join(query)
-                      + liaison
-                      + " self.mainEmploymentContract.payCompany = :company")
-              .bind("company", hrBatch.getCompany())
-              .fetch();
+      return JPA.all(Employee.class)
+          .filter(
+              Joiner.on(" AND ").join(query)
+                  + liaison
+                  + " self.mainEmploymentContract.payCompany = :company")
+          .bind("company", hrBatch.getCompany())
+          .fetch();
     } else {
-      employeeList = JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();
+      return JPA.all(Employee.class).filter(Joiner.on(" AND ").join(query)).fetch();
     }
-
-    return employeeList;
   }
 
   public void generatePayrollPreparations(List<Employee> employeeList) {
@@ -155,7 +135,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
           createPayrollPreparation(employee);
         }
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
         if (e.getCategory() == TraceBackRepository.CATEGORY_NO_UNIQUE_KEY) {
           duplicateAnomaly++;
@@ -169,7 +149,7 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createPayrollPreparation(Employee employee) throws AxelorException {
     String filter = "self.period = ?1 AND self.employee = ?2";
     String companyFilter = filter + " AND self.company = ?3";

@@ -36,7 +36,7 @@ public class IndicatorGeneratorGroupingService {
 
   @Inject private IndicatorGeneratorGroupingRepository iggRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void run(IndicatorGeneratorGrouping indicatorGeneratorGrouping) throws AxelorException {
 
     String log = "";
@@ -69,7 +69,7 @@ public class IndicatorGeneratorGroupingService {
     iggRepo.save(indicatorGeneratorGrouping);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void export(IndicatorGeneratorGrouping indicatorGeneratorGrouping) throws AxelorException {
 
     String log = "";

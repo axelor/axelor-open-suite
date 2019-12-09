@@ -66,7 +66,7 @@ public class BankReconciliationValidateService {
     this.bankReconciliationLineService = bankReconciliationLineService;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(BankReconciliation bankReconciliation) throws AxelorException {
 
     // TODO CHECK should be done on all, before generate any moves.
@@ -193,7 +193,7 @@ public class BankReconciliationValidateService {
     moveLine.setBankReconciledAmount(bankReconciledAmount);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,

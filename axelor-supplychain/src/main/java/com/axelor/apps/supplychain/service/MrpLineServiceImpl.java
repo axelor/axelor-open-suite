@@ -86,24 +86,31 @@ public class MrpLineServiceImpl implements MrpLineService {
 
   @Override
   public void generateProposal(MrpLine mrpLine) throws AxelorException {
-    generateProposal(mrpLine, null);
+    generateProposal(mrpLine, null, null, false);
   }
 
   @Override
   public void generateProposal(
-      MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders)
+      MrpLine mrpLine,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      boolean isProposalsPerSupplier)
       throws AxelorException {
 
     if (mrpLine.getMrpLineType().getElementSelect()
         == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
 
-      this.generatePurchaseProposal(mrpLine, purchaseOrders);
+      this.generatePurchaseProposal(
+          mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalsPerSupplier);
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void generatePurchaseProposal(
-      MrpLine mrpLine, Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders)
+      MrpLine mrpLine,
+      Map<Pair<Partner, LocalDate>, PurchaseOrder> purchaseOrders,
+      Map<Partner, PurchaseOrder> purchaseOrdersPerSupplier,
+      boolean isProposalsPerSupplier)
       throws AxelorException {
 
     Product product = mrpLine.getProduct();
@@ -125,9 +132,15 @@ public class MrpLineServiceImpl implements MrpLineService {
     Pair<Partner, LocalDate> key = null;
     PurchaseOrder purchaseOrder = null;
 
-    if (purchaseOrders != null) {
-      key = Pair.of(supplierPartner, maturityDate);
-      purchaseOrder = purchaseOrders.get(key);
+    if (isProposalsPerSupplier) {
+      if (purchaseOrdersPerSupplier != null) {
+        purchaseOrder = purchaseOrdersPerSupplier.get(supplierPartner);
+      }
+    } else {
+      if (purchaseOrders != null) {
+        key = Pair.of(supplierPartner, maturityDate);
+        purchaseOrder = purchaseOrders.get(key);
+      }
     }
 
     if (purchaseOrder == null) {
@@ -147,8 +160,14 @@ public class MrpLineServiceImpl implements MrpLineService {
                       .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
                   supplierPartner,
                   null));
-      if (purchaseOrders != null) {
-        purchaseOrders.put(key, purchaseOrder);
+      if (isProposalsPerSupplier) {
+        if (purchaseOrdersPerSupplier != null) {
+          purchaseOrdersPerSupplier.put(supplierPartner, purchaseOrder);
+        }
+      } else {
+        if (purchaseOrders != null) {
+          purchaseOrders.put(key, purchaseOrder);
+        }
       }
     }
     Unit unit = product.getPurchasesUnit();
@@ -160,9 +179,11 @@ public class MrpLineServiceImpl implements MrpLineService {
           Beans.get(UnitConversionService.class)
               .convert(product.getUnit(), unit, qty, qty.scale(), product);
     }
-    purchaseOrder.addPurchaseOrderLineListItem(
+    PurchaseOrderLine poLine =
         purchaseOrderLineService.createPurchaseOrderLine(
-            purchaseOrder, product, null, null, qty, unit));
+            purchaseOrder, product, null, null, qty, unit);
+    poLine.setDesiredDelivDate(maturityDate);
+    purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
     purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 

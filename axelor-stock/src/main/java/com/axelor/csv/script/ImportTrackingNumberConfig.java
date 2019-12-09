@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class ImportTrackingNumberConfig {
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object computeFullName(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof TrackingNumberConfiguration;

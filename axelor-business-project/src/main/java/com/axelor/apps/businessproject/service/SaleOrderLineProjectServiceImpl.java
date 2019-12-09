@@ -17,14 +17,17 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
-public class SaleOrderLineProjectServiceImpl implements SaleOrderLineProjectService {
+public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyChainImpl
+    implements SaleOrderLineProjectService {
 
   @Inject private SaleOrderLineRepository saleOrderLineRepo;
 
@@ -42,5 +45,17 @@ public class SaleOrderLineProjectServiceImpl implements SaleOrderLineProjectServ
         saleOrderLineRepo.save(line);
       }
     }
+  }
+
+  @Override
+  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine) {
+
+    SaleOrderLine soLine = super.createAnalyticDistributionWithTemplate(saleOrderLine);
+    List<AnalyticMoveLine> analyticMoveLineList = soLine.getAnalyticMoveLineList();
+
+    if (soLine.getProject() != null && analyticMoveLineList != null) {
+      analyticMoveLineList.forEach(analyticLine -> analyticLine.setProject(soLine.getProject()));
+    }
+    return soLine;
   }
 }

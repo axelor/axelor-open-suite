@@ -107,7 +107,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -210,7 +210,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -434,7 +434,13 @@ AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
-AND AccountingReport.company = Move.company 
+AND (AccountingReport.display_closing_accounting_moves is true
+	OR(AccountingReport.display_closing_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true
+	OR(AccountingReport.display_opening_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND AccountingReport.company = Move.company
 order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -834,7 +840,13 @@ AND Tax.type_select = 1
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val >= AccountingReport.date_from
 AND MoveLine.date_val <= AccountingReport.date_to
-AND AccountingReport.company = Move.company 
+AND (AccountingReport.display_closing_accounting_moves is true
+	OR(AccountingReport.display_closing_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true
+	OR(AccountingReport.display_opening_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND AccountingReport.company = Move.company
 GROUP BY Tax.id ,TaxPaymentMoveLine.tax_rate
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>

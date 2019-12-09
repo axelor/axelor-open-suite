@@ -23,29 +23,23 @@ import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.apps.talent.service.JobApplicationService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Map;
 
 @Singleton
 public class JobApplicationController {
 
-  @Inject private JobApplicationRepository jobApplicationRepo;
-
-  @Inject private JobApplicationService jobApplicationService;
-
-  @Inject private PartnerService partnerService;
-
   public void hire(ActionRequest request, ActionResponse response) {
 
     JobApplication jobApplication = request.getContext().asType(JobApplication.class);
 
-    jobApplication = jobApplicationRepo.find(jobApplication.getId());
+    jobApplication = Beans.get(JobApplicationRepository.class).find(jobApplication.getId());
 
-    Employee employee = jobApplicationService.hire(jobApplication);
+    Employee employee = Beans.get(JobApplicationService.class).hire(jobApplication);
 
     response.setReload(true);
 
@@ -63,8 +57,8 @@ public class JobApplicationController {
 
     JobApplication application = request.getContext().asType(JobApplication.class);
     Map<String, String> urlMap =
-        partnerService.getSocialNetworkUrl(
-            application.getFirstName(), application.getLastName(), 2);
+        Beans.get(PartnerService.class)
+            .getSocialNetworkUrl(application.getFirstName(), application.getLastName(), 2);
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
   }
 }

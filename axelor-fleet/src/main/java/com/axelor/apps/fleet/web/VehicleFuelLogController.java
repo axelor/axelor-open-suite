@@ -19,20 +19,19 @@ package com.axelor.apps.fleet.web;
 
 import com.axelor.apps.fleet.db.VehicleFuelLog;
 import com.axelor.apps.fleet.service.VehicleFuelLogService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 
 @Singleton
 public class VehicleFuelLogController {
 
-  @Inject VehicleFuelLogService fuelService;
-
   public void calculateTotalPrice(ActionRequest request, ActionResponse response) {
     VehicleFuelLog vehicleFuelLog = request.getContext().asType(VehicleFuelLog.class);
-    BigDecimal totalPrice = fuelService.calculateTotalPrice(vehicleFuelLog);
+    BigDecimal totalPrice =
+        Beans.get(VehicleFuelLogService.class).calculateTotalPrice(vehicleFuelLog);
     response.setValue("totalPrice", totalPrice);
   }
 }

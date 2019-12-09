@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
    		<hilite strong="true" color="default" if="typeSelect != 0"/>
@@ -18,7 +18,7 @@
     <button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-		<field name="price" x-scale="2"/>
+		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
 		<field name="exTaxTotal" aggregate="sum"/>
 		<field name="inTaxTotal" aggregate="sum"/>
@@ -35,9 +35,10 @@
   		<field name="product.code" width="120"/>
 	    <field name="productName"/>
 	    <field name="qty" aggregate="sum"/>
-			<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
+	    <field name="deliveredQty" aggregate="sum"/>
+		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="price" x-scale="2"/>
+	    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
 	    <field name="exTaxTotal" aggregate="sum"/>
    		<field name="estimatedDelivDate"/>
    		<field name="saleOrder.confirmationDateTime"/>
@@ -50,7 +51,7 @@
 	    <field name="productName"/>
 	    <field name="qty" aggregate="sum"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-	    <field name="price" x-scale="2"/>
+	    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
 	    <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
@@ -174,7 +175,6 @@
           <button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested" onClick="save,action-method-sale-order-line-cancel-reservation"/>
         </panel>
         </panel>
-				<spacer/>
 				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$allocatedStock" colSpan="3" readonly="true" type="decimal" title="Allocated stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$totalStock" colSpan="3" readonly="true" type="decimal" title="Total stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
@@ -199,11 +199,11 @@
 				<field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
 				<field name="estimatedDelivDate" readonlyIf="$availabiltyRequest"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
-				<button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart" colSpan="3" onClick="action-view-sale-order-line-view-planned-stock-move-lines" widget="info-button" if-module="axelor-supplychain"/>
+                <button name="$previewBtn" title="See stock details"  icon="fa-cubes" colSpan="4" widget="info-button" onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view" if-module="axelor-supplychain"/>
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
-			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageInvoicedAmountByLine()">
+			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<field name="invoicingDate"/>
 				<field name="amountInvoiced" />
 				<panel-dashlet name="invoiceLinesFromSOLinePanel" action="action-sale-order-line-view-show-invoice-lines"  colSpan="12"/>
@@ -211,6 +211,7 @@
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Business Project" readonlyIf="$isReadOnly !== false" if-module="axelor-business-project">
 				<field name="project" title="Business Project" canEdit="false" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
 				<field name="toInvoice" colSpan="3" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" if-module="axelor-business-project" />
+				<panel-dashlet name="teamTaskListPanel" title="Related tasks" action="action-sale-order-line-view-team-tasks" colSpan="12"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
@@ -525,10 +526,10 @@
 
 <!--     TODO : should be splited per module -->
     <action-record name="action-sale-order-line-get-production-information" model="com.axelor.apps.sale.db.SaleOrderLine">
-    	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
-    	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
-    	<field name="standardDelay" expr="eval: product?.standardDelay" if="saleSupplySelect == 2 || saleSupplySelect == 3" />
-    	<field name="standardDelay" expr="eval: 0" if="saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3" />
+    	<field name="billOfMaterial" expr="eval: product?.defaultBillOfMaterial" if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial != null"/>
+    	<field name="billOfMaterial" expr="eval: product?.parentProduct?.defaultBillOfMaterial" if="__config__.app.isApp('production') &amp;&amp; saleSupplySelect == 3 &amp;&amp; product?.defaultBillOfMaterial == null"/>
+    	<field name="standardDelay" expr="eval: product?.standardDelay" if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect == 2 || saleSupplySelect == 3" />
+    	<field name="standardDelay" expr="eval: 0" if="__config__.app.isApp('supplychain') &amp;&amp; saleSupplySelect != 2 &amp;&amp; saleSupplySelect != 3" />
     </action-record>
     
     <action-record name="action-sale-order-line-record-progress" model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -657,6 +658,11 @@
   		<domain>self.saleOrderLine.id = :id</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
-    
-    
+
+  	<action-view name="action-sale-order-line-view-team-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
+  		<view type="grid" name="team-task-grid"/>
+  		<view type="form" name="team-task-form"/>
+  		<domain>self.saleOrderLine = :id</domain>
+  	</action-view>
+
 </object-views>

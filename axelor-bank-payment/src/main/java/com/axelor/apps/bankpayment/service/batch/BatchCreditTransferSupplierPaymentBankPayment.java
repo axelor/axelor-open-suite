@@ -24,7 +24,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -57,7 +57,7 @@ public class BatchCreditTransferSupplierPaymentBankPayment
       try {
         bankOrderMergeService.mergeFromInvoicePayments(doneList);
       } catch (Exception e) {
-        TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
         LOG.error(e.getMessage());
       }
     }

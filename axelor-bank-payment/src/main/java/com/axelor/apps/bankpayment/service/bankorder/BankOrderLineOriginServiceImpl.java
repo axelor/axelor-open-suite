@@ -26,6 +26,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.google.inject.Inject;
+import java.time.LocalDate;
 
 public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginService {
 
@@ -42,7 +43,11 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
     Class<?> klass = EntityHelper.getEntityClass(model);
 
     return this.createBankOrderLineOrigin(
-        klass.getCanonicalName(), model.getId(), computeRelatedToSelectName(model));
+        klass.getCanonicalName(),
+        model.getId(),
+        computeRelatedToSelectName(model),
+        computeRelatedToSelectDate(model),
+        computeRelatedToSelectDueDate(model));
   }
 
   protected String computeRelatedToSelectName(Model model) {
@@ -62,13 +67,51 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
     return null;
   }
 
+  protected LocalDate computeRelatedToSelectDate(Model model) {
+    if (model instanceof Invoice) {
+
+      return ((Invoice) model).getInvoiceDate();
+
+    } else if (model instanceof PaymentScheduleLine) {
+
+      return ((PaymentScheduleLine) model).getScheduleDate();
+
+    } else if (model instanceof Reimbursement) {
+
+      return null;
+    }
+    return null;
+  }
+
+  protected LocalDate computeRelatedToSelectDueDate(Model model) {
+    if (model instanceof Invoice) {
+
+      return ((Invoice) model).getDueDate();
+
+    } else if (model instanceof PaymentScheduleLine) {
+
+      return ((PaymentScheduleLine) model).getScheduleDate();
+
+    } else if (model instanceof Reimbursement) {
+
+      return null;
+    }
+    return null;
+  }
+
   protected BankOrderLineOrigin createBankOrderLineOrigin(
-      String relatedToSelect, Long relatedToSelectId, String relatedToSelectName) {
+      String relatedToSelect,
+      Long relatedToSelectId,
+      String relatedToSelectName,
+      LocalDate relatedToSelectDate,
+      LocalDate relatedToSelectDueDate) {
     BankOrderLineOrigin bankOrderLineOrigin = new BankOrderLineOrigin();
 
     bankOrderLineOrigin.setRelatedToSelect(relatedToSelect);
     bankOrderLineOrigin.setRelatedToSelectId(relatedToSelectId);
     bankOrderLineOrigin.setRelatedToSelectName(relatedToSelectName);
+    bankOrderLineOrigin.setRelatedToSelectDate(relatedToSelectDate);
+    bankOrderLineOrigin.setRelatedToSelectDueDate(relatedToSelectDueDate);
 
     return bankOrderLineOrigin;
   }

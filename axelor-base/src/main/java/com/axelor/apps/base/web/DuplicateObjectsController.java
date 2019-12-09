@@ -26,13 +26,12 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -51,10 +50,8 @@ public class DuplicateObjectsController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private DuplicateObjectsService duplicateObjectService;
-  @Inject private MetaModelRepository metaModelRepo;
-
   public void removeDuplicate(ActionRequest request, ActionResponse response) {
+
     List<Long> selectedIds = new ArrayList<>();
     String originalId =
         ((Map) request.getContext().get("originalObject")).get("recordId").toString();
@@ -68,7 +65,7 @@ public class DuplicateObjectsController {
     }
     String model = request.getContext().get("_modelName").toString();
     String modelName = model.substring(model.lastIndexOf(".") + 1, model.length());
-    duplicateObjectService.removeDuplicate(selectedIds, modelName);
+    Beans.get(DuplicateObjectsService.class).removeDuplicate(selectedIds, modelName);
     response.setCanClose(true);
   }
 
@@ -77,11 +74,13 @@ public class DuplicateObjectsController {
     List<Long> selectedIds = new ArrayList<>();
     List<Object[]> duplicateObjects = new ArrayList<>();
     List<Wizard> wizardDataList = new ArrayList<>();
+    DuplicateObjectsService duplicateObjectsService = Beans.get(DuplicateObjectsService.class);
     for (Integer id : (List<Integer>) request.getContext().get("_ids")) {
       selectedIds.add(Long.parseLong("" + id));
     }
     String modelName = request.getContext().get("_modelName").toString();
-    List<Object> duplicateObj = duplicateObjectService.getAllSelectedObject(selectedIds, modelName);
+    List<Object> duplicateObj =
+        duplicateObjectsService.getAllSelectedObject(selectedIds, modelName);
 
     for (Object object : duplicateObj) {
       Long id = (Long) Mapper.of(object.getClass()).get(object, "id");
@@ -93,11 +92,12 @@ public class DuplicateObjectsController {
       String noColumn = null;
       if (nameColumn != null) {
         duplicateObjects.add(
-            (Object[]) duplicateObjectService.getWizardValue(id, modelName, nameColumn));
+            (Object[]) duplicateObjectsService.getWizardValue(id, modelName, nameColumn));
       } else if (code != null) {
-        duplicateObjects.add((Object[]) duplicateObjectService.getWizardValue(id, modelName, code));
+        duplicateObjects.add(
+            (Object[]) duplicateObjectsService.getWizardValue(id, modelName, code));
       } else {
-        Object obj = duplicateObjectService.getWizardValue(id, modelName, noColumn);
+        Object obj = duplicateObjectsService.getWizardValue(id, modelName, noColumn);
         Wizard wizard = new Wizard();
         wizard.setRecordId(obj.toString());
         wizard.setName(obj.toString());
@@ -192,8 +192,8 @@ public class DuplicateObjectsController {
     LOG.debug("Duplicate finder fields: {}", fields);
 
     List<?> ids =
-        duplicateObjectService.findDuplicatedRecordIds(
-            fields, modelClass, getCriteria(request, modelClass));
+        Beans.get(DuplicateObjectsService.class)
+            .findDuplicatedRecordIds(fields, modelClass, getCriteria(request, modelClass));
 
     if (ids.isEmpty()) {
       return null;

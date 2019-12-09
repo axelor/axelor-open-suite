@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,12 +10,16 @@
 		<many-to-one name="defaultProjectUnit" title="Default Project unit" ref="com.axelor.apps.base.db.Unit"/>
 		<many-to-one name="defaultPartnerLanguage" ref="com.axelor.apps.base.db.Language" title="Default Partner language"/>
 		<boolean name="emailAccountByUser" title="Manage mail account by user" default="false"/>
-		
+        <boolean name="storeStreets" title="Store streets" default="false" />
+        
 		<!-- Interfaces QAS et SVI -->
 		<string name="qasWsdlUrl" title="URL to QAS WSDL"/>
 
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
+		
+		<!-- Routing service API for Open Street Map> -->
+		<integer name="osmRoutingServiceApiSelect" title="Routing service provider for Open Street Map" selection="base.app.base.osm.routing.api.select" default="1" />
 		
 		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
@@ -61,8 +65,12 @@
 
 		<boolean name="enableCalendars" title="Calendar" default="true"/>
 
+        <boolean name="enableMultiCompany" title="Enable multi-company management" default="true"/>
+    
         <many-to-one name="passwordChangedTemplate" ref="com.axelor.apps.message.db.Template" title="Template for changed password"/>
-
+    
+        <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
+    
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -71,6 +79,9 @@
 	   			
 	   			public static final int MAP_API_GOOGLE = 1;
 	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
+	   			
+	   			public static final int ROUTING_API_YOURS = 1;
+	   			public static final int ROUTING_API_OSRM = 2;
 	   		]]>
 	   	</extra-code>
 	   	
@@ -110,6 +121,7 @@
 		   	<field name="enableTradingNamesManagement" on="UPDATE"/>
 		   	<field name="enableCalendars" on="UPDATE"/>
 		   	<field name="passwordChangedTemplate" on="UPDATE"/>
+		   	<field name="generatePartnerSequence" on="UPDATE"/>
 <!-- 		   	31 fields -->
 	   	</track>
 	   	

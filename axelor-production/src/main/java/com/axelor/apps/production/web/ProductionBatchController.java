@@ -27,10 +27,10 @@ import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.format.DateTimeFormatter;
@@ -42,15 +42,11 @@ public class ProductionBatchController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private ProductionBatchRepository productionBatchRepo;
-
-  @Inject private ProductionBatchService productionBatchService;
-
   public void computeValuation(ActionRequest request, ActionResponse response) {
 
     ProductionBatch productionBatch = request.getContext().asType(ProductionBatch.class);
-    productionBatch = productionBatchRepo.find(productionBatch.getId());
-    Batch batch = productionBatchService.computeValuation(productionBatch);
+    productionBatch = Beans.get(ProductionBatchRepository.class).find(productionBatch.getId());
+    Batch batch = Beans.get(ProductionBatchService.class).computeValuation(productionBatch);
     if (batch != null) {
       response.setFlash(batch.getComments());
     }
@@ -59,7 +55,7 @@ public class ProductionBatchController {
 
   public void showValuation(ActionRequest request, ActionResponse response) throws AxelorException {
     ProductionBatch productionBatch = request.getContext().asType(ProductionBatch.class);
-    productionBatch = productionBatchRepo.find(productionBatch.getId());
+    productionBatch = Beans.get(ProductionBatchRepository.class).find(productionBatch.getId());
 
     String name = I18n.get(ITranslation.WORK_IN_PROGRESS_VALUATION);
 

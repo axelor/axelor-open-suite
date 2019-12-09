@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
@@ -60,9 +60,9 @@
 					</field>
 				</panel>
       			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="7" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-       	 			<button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
-       	 			<button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
-       	 			<button name="$reservedQtyBtn" title="Allocated qty" colSpan="4" icon="fa-cubes" onClick="action-stock-move-line-product-reserved-planned" widget="info-button" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
+       	 		    <button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
+             	    <button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>	
+                    <button name="$previewBtn" title="See stock details" colSpan="4" onClick="action-stock-location-line-view-for-a-product-from-product-view" if-module="axelor-supplychain" widget="info-button" icon="fa-cubes"/>
     	  			<field name="isModel" hidden="true"/>
 				</panel>
       		</panel>
@@ -208,6 +208,8 @@
                     onTabSelect="action-product-attrs-readonly-create-production-order"
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
+                    <field name="costSheetGroup" showIf="productSubTypeSelect == 3" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
+                    <field name="economicManufOrderQty"/>
                     <panel name="productionPanel" colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>
@@ -263,8 +265,7 @@
 	      			<button name="updateProductsPricesBtn" title="Update products prices" onClick="save,action-product-method-update-products-prices"/>
 					</panel>
 				<panel name="taskPanel" title="Task templates" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct" if-module="axelor-business-project">
-					<button name="addTaskBtn" title="New" css="btn-custom text-left" icon="fa-plus" colSpan="2" onClick="save,action-product-task-template-add-task"/>
-					<panel-dashlet name="productTemplateTaskTreePanel" title="Task Tree" colSpan="12" action="action-product-task-template-task-tree"/>
+					<field name="taskTemplateSet" widget="TagSelect" colSpan="12"/>
 				</panel>
             <panel name="linksPanel" title="Links" if-module="axelor-stock" if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged" showIf="id">
 				<panel-dashlet name="StockMoveLineIncomingPLannedPanel" colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />

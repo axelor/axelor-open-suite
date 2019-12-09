@@ -48,6 +48,8 @@ public class XPathParse {
     this.doc = doc;
   }
 
+  public XPathParse() {}
+
   public XPathParse(String xml) {
 
     DocumentBuilderFactory domFactory = getDocumentBuilderFactory();

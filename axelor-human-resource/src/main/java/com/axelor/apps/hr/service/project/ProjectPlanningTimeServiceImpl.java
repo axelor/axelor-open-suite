@@ -44,21 +44,34 @@ import org.slf4j.LoggerFactory;
 
 public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeService {
 
-  private static final Logger log = LoggerFactory.getLogger(ProjectPlanningTimeService.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(ProjectPlanningTimeService.class);
 
-  @Inject private ProjectPlanningTimeRepository planningTimeRepo;
+  protected ProjectPlanningTimeRepository planningTimeRepo;
+  protected ProjectRepository projectRepo;
+  protected TeamTaskRepository teamTaskRepo;
+  protected WeeklyPlanningService weeklyPlanningService;
+  protected PublicHolidayHrService holidayService;
+  protected ProductRepository productRepo;
+  protected UserRepository userRepo;
 
-  @Inject private ProjectRepository projectRepo;
-
-  @Inject private TeamTaskRepository teamTaskRepo;
-
-  @Inject private WeeklyPlanningService weeklyPlanningService;
-
-  @Inject private PublicHolidayHrService holidayService;
-
-  @Inject private ProductRepository productRepo;
-
-  @Inject private UserRepository userRepo;
+  @Inject
+  public ProjectPlanningTimeServiceImpl(
+      ProjectPlanningTimeRepository planningTimeRepo,
+      ProjectRepository projectRepo,
+      TeamTaskRepository teamTaskRepo,
+      WeeklyPlanningService weeklyPlanningService,
+      PublicHolidayHrService holidayService,
+      ProductRepository productRepo,
+      UserRepository userRepo) {
+    super();
+    this.planningTimeRepo = planningTimeRepo;
+    this.projectRepo = projectRepo;
+    this.teamTaskRepo = teamTaskRepo;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.holidayService = holidayService;
+    this.productRepo = productRepo;
+    this.userRepo = userRepo;
+  }
 
   @Override
   public BigDecimal getTaskPlannedHrs(TeamTask task) {
@@ -67,25 +80,16 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     if (task != null) {
       List<ProjectPlanningTime> plannings =
           planningTimeRepo.all().filter("self.task = ?1", task).fetch();
-      totalPlanned =
-          plannings.stream().map(p -> p.getPlannedHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (plannings != null) {
+        totalPlanned =
+            plannings
+                .stream()
+                .map(ProjectPlanningTime::getPlannedHours)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+      }
     }
 
     return totalPlanned;
-  }
-
-  @Override
-  public BigDecimal getTaskRealHrs(TeamTask task) {
-
-    BigDecimal totalRealHrs = BigDecimal.ZERO;
-    if (task != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo.all().filter("self.task = ?1", task).fetch();
-      totalRealHrs =
-          plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    return totalRealHrs;
   }
 
   @Override
@@ -94,30 +98,27 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (project != null) {
       List<ProjectPlanningTime> plannings =
-          planningTimeRepo.all().filter("self.project = ?1", project).fetch();
-      totalPlanned =
-          plannings.stream().map(p -> p.getPlannedHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
+          planningTimeRepo
+              .all()
+              .filter(
+                  "self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)",
+                  project,
+                  true)
+              .fetch();
+      if (plannings != null) {
+        totalPlanned =
+            plannings
+                .stream()
+                .map(ProjectPlanningTime::getPlannedHours)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+      }
     }
 
     return totalPlanned;
   }
 
   @Override
-  public BigDecimal getProjectRealHrs(Project project) {
-
-    BigDecimal totalRealHrs = BigDecimal.ZERO;
-    if (project != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo.all().filter("self.project = ?1", project).fetch();
-      totalRealHrs =
-          plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    return totalRealHrs;
-  }
-
-  @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void addMultipleProjectPlanningTime(Map<String, Object> datas) throws AxelorException {
 
     if (datas.get("project") == null
@@ -167,7 +168,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
       LocalDate date = fromDate.toLocalDate();
 
-      log.debug("Create Planning for the date: {}", date);
+      LOG.debug("Create Planning for the date: {}", date);
 
       double dayHrs = 0;
       if (employee.getWeeklyPlanning() != null) {
@@ -177,6 +178,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       if (dayHrs > 0 && !holidayService.checkPublicHolidayDay(date, employee)) {
 
         ProjectPlanningTime planningTime = new ProjectPlanningTime();
+
         planningTime.setTask(teamTask);
         planningTime.setProduct(activity);
         planningTime.setTimepercent(timePercent);
@@ -196,6 +198,17 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       }
 
       fromDate = fromDate.plusDays(1);
+    }
+  }
+
+  @Override
+  @Transactional
+  public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines) {
+
+    for (Map<String, Object> line : projectPlanningLines) {
+      ProjectPlanningTime projectPlanningTime =
+          planningTimeRepo.find(Long.parseLong(line.get("id").toString()));
+      planningTimeRepo.remove(projectPlanningTime);
     }
   }
 }

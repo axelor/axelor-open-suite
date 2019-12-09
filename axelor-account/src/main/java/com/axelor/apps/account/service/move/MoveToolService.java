@@ -329,7 +329,7 @@ public class MoveToolService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BigDecimal getInTaxTotalRemaining(Invoice invoice) throws AxelorException {
     BigDecimal inTaxTotalRemaining = BigDecimal.ZERO;
 

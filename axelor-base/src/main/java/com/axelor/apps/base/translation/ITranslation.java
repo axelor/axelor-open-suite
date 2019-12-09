@@ -25,4 +25,20 @@ public interface ITranslation {
   public static final String BASE_DURATION_MONTHS = /*$$(*/ "months"; /*)*/
   public static final String BASE_DURATION_DAY = /*$$(*/ "day"; /*)*/
   public static final String BASE_DURATION_DAYS = /*$$(*/ "days"; /*)*/
+
+  public static final String ABC_ANALYSIS_CREATED_BY = /*$$(*/ "AbcAnalysis.createdBy"; /*)*/
+  public static final String ABC_ANALYSIS_COMPANY = /*$$(*/ "AbcAnalysis.company"; /*)*/
+  public static final String ABC_ANALYSIS_DESCRIPTION = /*$$(*/ "AbcAnalysis.description"; /*)*/
+  public static final String ABC_ANALYSIS_RESULTS = /*$$(*/ "AbcAnalysis.analysisResult"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CODE = /*$$(*/ "AbcAnalysisLine.code"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_NAME = /*$$(*/ "AbcAnalysisLine.name"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CATEGORY = /*$$(*/ "AbcAnalysisLine.category"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_WORTH = /*$$(*/ "AbcAnalysisLine.worth"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CUMULATED_WORTH = /*$$(*/
+      "AbcAnalysisLine.cumulatedWorth"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_QTY = /*$$(*/ "AbcAnalysisLine.qty"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CUMULATED_QTY = /*$$(*/
+      "AbcAnalysisLine.cumulatedQty"; /*)*/
+  public static final String ABC_ANALYSIS_LINE_CUMULATED_CLASS = /*$$(*/
+      "AbcAnalysisLine.class"; /*)*/
 }

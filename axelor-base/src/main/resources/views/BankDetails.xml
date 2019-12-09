@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
 		<toolbar>
@@ -113,7 +113,7 @@
     </action-attrs>
     
      <action-attrs name="action-bank-details-attrs-specific-notes">
-        <attribute name="hidden" for="specificNotesPanel" expr="eval: !partner?.isFactor &amp;&amp; !__parent__.getContextClass().equals('Company')"/>
+        <attribute name="hidden" for="specificNotesPanel" expr="eval: !partner?.isFactor &amp;&amp; !__parent__?.getContextClass().equals('Company')"/>
     </action-attrs>
     
 

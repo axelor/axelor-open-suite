@@ -1,0 +1,3564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <simple-property-list name="includeResource">
+        <value>translation_fr_FR</value>
+        <value>translation_en_US</value>
+    </simple-property-list>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+    </list-property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="abcAnalysisId" id="178">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DBName" id="3673">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="3674">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="3675">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Locale" id="3676">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3818">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="4003">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="4">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="abcAnalysisLineDS" id="39">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">product_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_code</text-property>
+                    <text-property name="heading">product_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">category_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">category_name</text-property>
+                    <text-property name="heading">category_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency_symbol</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency_symbol</text-property>
+                    <text-property name="heading">currency_symbol</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">decimal_worth</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">decimal_worth</text-property>
+                    <text-property name="heading">decimal_worth</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">worth</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">worth</text-property>
+                    <text-property name="heading">worth</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cumulated_worth</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cumulated_worth</text-property>
+                    <text-property name="heading">cumulated_worth</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">decimal_qty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">decimal_qty</text-property>
+                    <text-property name="heading">decimal_qty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">qty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">qty</text-property>
+                    <text-property name="heading">qty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cumulated_qty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cumulated_qty</text-property>
+                    <text-property name="heading">cumulated_qty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">class_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">class_name</text-property>
+                    <text-property name="heading">class_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">class_sequence</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">class_sequence</text-property>
+                    <text-property name="heading">class_sequence</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">abcAnalysisId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <expression name="defaultValue" type="javascript">10</expression>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">product_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">product_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">category_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">currency_symbol</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">decimal_worth</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">worth</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">cumulated_worth</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">decimal_qty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">qty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">cumulated_qty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">class_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">class_sequence</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">product_code</property>
+                    <property name="nativeName">product_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">product_name</property>
+                    <property name="nativeName">product_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">category_name</property>
+                    <property name="nativeName">category_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">currency_symbol</property>
+                    <property name="nativeName">currency_symbol</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">decimal_worth</property>
+                    <property name="nativeName">decimal_worth</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">worth</property>
+                    <property name="nativeName">worth</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">cumulated_worth</property>
+                    <property name="nativeName">cumulated_worth</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">decimal_qty</property>
+                    <property name="nativeName">decimal_qty</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">qty</property>
+                    <property name="nativeName">qty</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">cumulated_qty</property>
+                    <property name="nativeName">cumulated_qty</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">class_name</property>
+                    <property name="nativeName">class_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">class_sequence</property>
+                    <property name="nativeName">class_sequence</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select
+	product.code product_code, 
+	product.name product_name,
+	category.name category_name,
+	currency.symbol currency_symbol,
+	ABCLine.decimal_worth, 
+	ABCLine.worth,
+	ABCLine.cumulated_worth,  
+	ABCLine.decimal_qty, 
+	ABCLine.qty,
+	ABCLine.cumulated_qty,
+	class.name class_name,
+	class.sequence class_sequence
+from base_abc_analysis_line ABCLine
+LEFT JOIN base_abc_analysis ABC on ABCLine.abc_analysis = ABC.id
+LEFT JOIN base_company Company on ABC.company = Company.id
+LEFT JOIN base_currency currency on Company.currency = currency.id
+LEFT JOIN base_product product on ABCLine.product = product.id
+LEFT JOIN base_product_category category on product.product_category = category.id 
+LEFT JOIN base_abc_analysis_class class on ABCLine.abc_analysis_class = class.id
+where ABC.id = ?
+order by ABCLine.cumulated_worth;]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="abcAnalysisHeaderDS" id="177">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">abc_analysis_seq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">abc_analysis_seq</text-property>
+                    <text-property name="heading">abc_analysis_seq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">abcAnalysisId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <expression name="defaultValue" type="javascript">10</expression>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">abc_analysis_seq</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">abc_analysis_seq</property>
+                    <property name="nativeName">abc_analysis_seq</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select 
+	abc_analysis.abc_analysis_seq,
+	Company.height as logo_height,
+	Company.width as logo_width,
+	MetaFile.file_path as logo_path 
+from base_abc_analysis abc_analysis
+left outer join base_company Company on (Company.id = abc_analysis.company)
+left outer join meta_file MetaFile on (MetaFile.id = Company.logo)
+where abc_analysis.id=?;
+
+
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>name</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>255</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>name</design:label>
+            <design:formattingHints>
+              <design:displaySize>255</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.SPSelectDataSet" name="abcAnalysisProc" id="181">
+            <list-property name="columnHints"/>
+            <list-property name="parameters"/>
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet"/>
+            <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS abc_analysis_proc(bigint);
+CREATE OR REPLACE FUNCTION abc_analysis_proc(abc_analysis_id bigint)
+RETURNS table(
+	name varchar, 
+	description text,
+	type varchar,
+	company_name varchar,
+	full_name varchar,
+	start_date date,
+	end_date date,
+	stock_location_name varchar) as $func$
+DECLARE
+	null_date date := null;
+BEGIN
+IF ((SELECT COUNT(id) from base_abc_analysis ABC WHERE ABC.type_select='com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl' AND ABC.id=abc_analysis_id) != 0) THEN
+
+return query
+select 
+	ABC.name name_lolilol, 
+	ABC.description, 
+	ABC.type_select, 
+	Company.name company_name, 
+	auth_user.full_name,
+	null_date as start_date,
+	null_date as end_date,
+	stock_location.name stock_location_name
+	from base_abc_analysis ABC
+	LEFT JOIN base_company Company on ABC.company = Company.id
+	LEFT JOIN auth_user on ABC.created_by = auth_user.id
+	LEFT JOIN stock_stock_location stock_location on ABC.stock_location = stock_location.id
+	where ABC.id = abc_analysis_id;
+ELSIF ((SELECT COUNT(id) from base_abc_analysis ABC WHERE (ABC.type_select='com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl' OR ABC.type_select='com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl') AND ABC.id=abc_analysis_id) != 0) THEN
+return query
+select 
+	ABC.name name_lolilol, 
+	ABC.description, 
+	ABC.type_select, 
+	Company.name company_name, 
+	auth_user.full_name,
+	ABC.start_date,
+	ABC.end_date,
+	''::varchar(255) as stock_location_name
+	from base_abc_analysis ABC
+	LEFT JOIN base_company Company on ABC.company = Company.id
+	LEFT JOIN auth_user on ABC.created_by = auth_user.id
+	where ABC.id = abc_analysis_id;
+ELSE
+return query
+select 
+	ABC.name name_lolilol, 
+	ABC.description, 
+	ABC.type_select, 
+	Company.name company_name, 
+	auth_user.full_name,
+	null_date as start_date,
+	null_date as end_date,
+	''::varchar(255) as stock_location_name
+	from base_abc_analysis ABC
+	LEFT JOIN base_company Company on ABC.company = Company.id
+	LEFT JOIN auth_user on ABC.created_by = auth_user.id
+	LEFT JOIN stock_stock_location stock_location on ABC.stock_location = stock_location.id
+	where ABC.id = abc_analysis_id;
+end if;
+END;
+$func$ LANGUAGE plpgsql; ]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="abcAnalysisDS" id="182">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">type</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">type</text-property>
+                    <text-property name="heading">type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">company_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">company_name</text-property>
+                    <text-property name="heading">company_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">full_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">full_name</text-property>
+                    <text-property name="heading">full_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">start_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">start_date</text-property>
+                    <text-property name="heading">start_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">end_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">end_date</text-property>
+                    <text-property name="heading">end_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">stock_location_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">stock_location_name</text-property>
+                    <text-property name="heading">stock_location_name</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">abcAnalysisId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">type</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">company_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">full_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">start_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">end_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">stock_location_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">type</property>
+                    <property name="nativeName">type</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">company_name</property>
+                    <property name="nativeName">company_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">full_name</property>
+                    <property name="nativeName">full_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">start_date</property>
+                    <property name="nativeName">start_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">end_date</property>
+                    <property name="nativeName">end_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">stock_location_name</property>
+                    <property name="nativeName">stock_location_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select * from abc_analysis_proc(cast(? as bigint)); ]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>name</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>description</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>description</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>description</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>type</design:name>
+              <design:position>3</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>type</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>type</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>company_name</design:name>
+              <design:position>4</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>company_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>company_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>full_name</design:name>
+              <design:position>5</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>full_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>full_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>start_date</design:name>
+              <design:position>6</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>start_date</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>start_date</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>end_date</design:name>
+              <design:position>7</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>91</design:nativeDataTypeCode>
+            <design:precision>13</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>end_date</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>end_date</design:label>
+            <design:formattingHints>
+              <design:displaySize>13</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>stock_location_name</design:name>
+              <design:position>8</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>2147483647</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Unknown</design:nullability>
+            <design:uiHints>
+              <design:displayName>stock_location_name</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>stock_location_name</design:label>
+            <design:formattingHints>
+              <design:displaySize>2147483647</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslationDS" id="4004">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select message_key,message_value as "translation"
+from meta_translation
+WHERE message_key = ? AND language = ?]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="orientation">landscape</property>
+            <property name="topMargin">0in</property>
+            <page-footer>
+                <grid id="199">
+                    <column id="4050">
+                        <property name="fontFamily">serif</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">4cm</property>
+                    </column>
+                    <column id="211">
+                        <property name="width">75%</property>
+                    </column>
+                    <column id="272"/>
+                    <column id="200">
+                        <property name="width">6%</property>
+                    </column>
+                    <column id="201">
+                        <property name="width">3%</property>
+                    </column>
+                    <column id="202">
+                        <property name="width">6%</property>
+                    </column>
+                    <row id="203">
+                        <cell id="4049">
+                            <text id="4026">
+                                <property name="dataSet">abcAnalysisHeaderDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">abc_analysis_seq</property>
+                                        <text-property name="displayName">abc_analysis_seq</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["abc_analysis_seq"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_height</property>
+                                        <text-property name="displayName">logo_height</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0 &amp;&amp; dataSetRow["logo_height"]&lt;48){dataSetRow["logo_height"]+'px'}else{'48px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_width</property>
+                                        <text-property name="displayName">logo_width</text-property>
+                                        <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE >
+	<TR>
+		<VALUE-OF format="HTML">
+		"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='"+row["logo_width"]+"' height='"+row["logo_height"]+"'/></TD>"
+ 		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="210">
+                            <property name="verticalAlign">middle</property>
+                            <text id="270">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">abcAnalysisHeaderDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">abc_analysis_seq</property>
+                                        <text-property name="displayName">abc_analysis_seq</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["abc_analysis_seq"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["abc_analysis_seq"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="271">
+                            <text id="273">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="dd MMM yyyy hh:mm" >new Date();</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="204">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="205">
+                                <property name="textAlign">right</property>
+                                <property name="type">page-number</property>
+                            </auto-text>
+                        </cell>
+                        <cell id="206">
+                            <property name="verticalAlign">middle</property>
+                            <text id="207">
+                                <property name="textAlign">center</property>
+                                <property name="contentType">plain</property>
+                                <text-property name="content"><![CDATA[/]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="208">
+                            <property name="verticalAlign">middle</property>
+                            <auto-text id="209">
+                                <property name="textAlign">left</property>
+                                <property name="type">total-page</property>
+                            </auto-text>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <text id="23">
+            <property name="fontSize">12pt</property>
+            <property name="fontWeight">normal</property>
+            <property name="textAlign">left</property>
+            <property name="dataSet">abcAnalysisProc</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">true</expression>
+                </structure>
+            </list-property>
+            <property name="contentType">auto</property>
+            <text-property name="content"><![CDATA[ABCAnalysisProc : Used for load the ABCAnalysisProc function]]></text-property>
+        </text>
+        <grid id="264">
+            <property name="fontSize">9pt</property>
+            <property name="height">0.65625in</property>
+            <property name="dataSet">abcAnalysisHeaderDS</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">abc_analysis_seq</property>
+                    <text-property name="displayName">abc_analysis_seq</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["abc_analysis_seq"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="265">
+                <property name="suppressDuplicates">false</property>
+                <property name="width">100%</property>
+            </column>
+            <row id="266">
+                <property name="borderBottomStyle">none</property>
+                <property name="borderLeftStyle">none</property>
+                <property name="borderRightStyle">none</property>
+                <property name="borderTopStyle">none</property>
+                <property name="height">54px</property>
+                <cell id="267">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="textAlign">center</property>
+                    <text id="179">
+                        <property name="fontSize">16pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[ABC Analysis N°<VALUE-OF>row["abc_analysis_seq"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="4030">
+                <property name="borderBottomStyle">solid</property>
+                <property name="borderBottomWidth">thin</property>
+                <property name="borderLeftStyle">none</property>
+                <property name="borderRightStyle">none</property>
+                <property name="borderTopStyle">none</property>
+                <property name="height">9px</property>
+                <cell id="4033">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                </cell>
+            </row>
+        </grid>
+        <grid id="25">
+            <property name="fontSize">9pt</property>
+            <property name="marginTop">10px</property>
+            <property name="height">2.1979166666666665in</property>
+            <property name="dataSet">abcAnalysisDS</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">name</property>
+                    <text-property name="displayName">name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">type</property>
+                    <text-property name="displayName">type</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["type"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">company_name</property>
+                    <text-property name="displayName">company_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">full_name</property>
+                    <text-property name="displayName">full_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">start_date</property>
+                    <text-property name="displayName">start_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["start_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">end_date</property>
+                    <text-property name="displayName">end_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["end_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">stock_location_name</property>
+                    <text-property name="displayName">stock_location_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["stock_location_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <column id="26">
+                <property name="suppressDuplicates">false</property>
+                <property name="width">50%</property>
+            </column>
+            <column id="27"/>
+            <row id="28">
+                <property name="borderBottomStyle">none</property>
+                <property name="borderLeftStyle">none</property>
+                <property name="borderRightStyle">none</property>
+                <property name="borderTopStyle">none</property>
+                <property name="height">20px</property>
+                <cell id="29">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <text id="36">
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AbcAnalysis.createdBy'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["full_name"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="30">
+                    <text id="37">
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AbcAnalysis.company'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["company_name"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="183">
+                <cell id="184">
+                    <text id="188">
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">pdf</property>
+                                <expression name="valueExpr" type="javascript">row._outer["type"] != "com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AbcAnalysis.stockLocation'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["stock_location_name"]</VALUE-OF>]]></text-property>
+                    </text>
+                    <text id="186">
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">pdf</property>
+                                <expression name="valueExpr" type="javascript">row._outer["type"] != "com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl" &amp; row._outer["type"] != "com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl"</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AbcAnalysis.startDate'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["start_date"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="185">
+                    <text id="187">
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">pdf</property>
+                                <expression name="valueExpr" type="javascript">row._outer["type"] != "com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl" &amp; row._outer["type"] != "com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl"</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AbcAnalysis.endDate'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["end_date"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="193">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">row["description"] == null</expression>
+                    </structure>
+                </list-property>
+                <cell id="194">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="196">
+                        <property name="marginLeft">0px</property>
+                        <property name="textAlign">justify</property>
+                        <property name="pageBreakInside">avoid</property>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AbcAnalysis.description'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF format="HTML">row._outer["description"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
+        <grid id="238">
+            <property name="fontSize">9pt</property>
+            <property name="height">1.65625in</property>
+            <column id="239">
+                <property name="suppressDuplicates">false</property>
+                <property name="width">100%</property>
+            </column>
+            <row id="241">
+                <property name="borderBottomStyle">none</property>
+                <property name="borderLeftStyle">none</property>
+                <property name="borderRightStyle">none</property>
+                <property name="borderTopStyle">none</property>
+                <property name="height">20px</property>
+                <cell id="242">
+                    <property name="colSpan">1</property>
+                    <property name="rowSpan">1</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                </cell>
+            </row>
+        </grid>
+        <extended-item extensionName="Chart" id="4016">
+            <xml-property name="xmlRepresentation"><![CDATA[<model:ChartWithAxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:attribute="http://www.birt.eclipse.org/ChartModelAttribute" xmlns:data="http://www.birt.eclipse.org/ChartModelData" xmlns:layout="http://www.birt.eclipse.org/ChartModelLayout" xmlns:model="http://www.birt.eclipse.org/ChartModel" xmlns:type="http://www.birt.eclipse.org/ChartModelType">
+  <Version>2.6.1</Version>
+  <Type>Line Chart</Type>
+  <SubType>Overlay</SubType>
+  <Block>
+    <Children xsi:type="layout:TitleBlock">
+      <Bounds>
+        <Left>0.0</Left>
+        <Top>0.0</Top>
+        <Width>0.0</Width>
+        <Height>0.0</Height>
+      </Bounds>
+      <Insets>
+        <Top>3.0</Top>
+        <Left>3.0</Left>
+        <Bottom>3.0</Bottom>
+        <Right>3.0</Right>
+      </Insets>
+      <Row>-1</Row>
+      <Column>-1</Column>
+      <Rowspan>-1</Rowspan>
+      <Columnspan>-1</Columnspan>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </Outline>
+      <Visible>false</Visible>
+      <Label>
+        <Caption>
+          <Value>Chart Title</Value>
+          <Font>
+            <Size>16.0</Size>
+            <Bold>true</Bold>
+            <Alignment>
+              <horizontalAlignment>Center</horizontalAlignment>
+              <verticalAlignment>Center</verticalAlignment>
+            </Alignment>
+          </Font>
+        </Caption>
+        <Background xsi:type="attribute:ColorDefinition">
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Background>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>2.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>3.0</Right>
+        </Insets>
+        <Visible>true</Visible>
+      </Label>
+    </Children>
+    <Children xsi:type="layout:Plot">
+      <Bounds>
+        <Left>0.0</Left>
+        <Top>0.0</Top>
+        <Width>0.0</Width>
+        <Height>0.0</Height>
+      </Bounds>
+      <Insets>
+        <Top>3.0</Top>
+        <Left>3.0</Left>
+        <Bottom>3.0</Bottom>
+        <Right>3.0</Right>
+      </Insets>
+      <Row>-1</Row>
+      <Column>-1</Column>
+      <Rowspan>-1</Rowspan>
+      <Columnspan>-1</Columnspan>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </Outline>
+      <Visible>true</Visible>
+      <HorizontalSpacing>5</HorizontalSpacing>
+      <VerticalSpacing>5</VerticalSpacing>
+      <ClientArea>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>0</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>0.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>0.0</Right>
+        </Insets>
+      </ClientArea>
+    </Children>
+    <Children xsi:type="layout:Legend">
+      <Bounds>
+        <Left>0.0</Left>
+        <Top>0.0</Top>
+        <Width>0.0</Width>
+        <Height>0.0</Height>
+      </Bounds>
+      <Insets>
+        <Top>3.0</Top>
+        <Left>3.0</Left>
+        <Bottom>3.0</Bottom>
+        <Right>3.0</Right>
+      </Insets>
+      <Row>-1</Row>
+      <Column>-1</Column>
+      <Rowspan>-1</Rowspan>
+      <Columnspan>-1</Columnspan>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </Outline>
+      <Visible>true</Visible>
+      <ClientArea>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>0</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </Outline>
+        <Insets>
+          <Top>2.0</Top>
+          <Left>2.0</Left>
+          <Bottom>2.0</Bottom>
+          <Right>2.0</Right>
+        </Insets>
+      </ClientArea>
+      <Text>
+        <Value></Value>
+        <Font>
+          <Alignment/>
+        </Font>
+      </Text>
+      <Orientation>Vertical</Orientation>
+      <Direction>Top_Bottom</Direction>
+      <Separator>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>true</Visible>
+      </Separator>
+      <Position>Right</Position>
+      <ItemType>Series</ItemType>
+      <Title>
+        <Caption>
+          <Value></Value>
+          <Font>
+            <Alignment/>
+          </Font>
+        </Caption>
+        <Background xsi:type="attribute:ColorDefinition">
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Background>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>2.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>3.0</Right>
+        </Insets>
+        <Visible>false</Visible>
+      </Title>
+      <TitlePosition>Above</TitlePosition>
+    </Children>
+    <Bounds>
+      <Left>0.0</Left>
+      <Top>0.0</Top>
+      <Width>752.25</Width>
+      <Height>376.125</Height>
+    </Bounds>
+    <Insets>
+      <Top>3.0</Top>
+      <Left>3.0</Left>
+      <Bottom>3.0</Bottom>
+      <Right>3.0</Right>
+    </Insets>
+    <Row>-1</Row>
+    <Column>-1</Column>
+    <Rowspan>-1</Rowspan>
+    <Columnspan>-1</Columnspan>
+    <Outline>
+      <Style>Solid</Style>
+      <Thickness>1</Thickness>
+      <Color>
+        <Transparency>255</Transparency>
+        <Red>0</Red>
+        <Green>0</Green>
+        <Blue>0</Blue>
+      </Color>
+      <Visible>false</Visible>
+    </Outline>
+    <Visible>true</Visible>
+  </Block>
+  <Dimension>Two_Dimensional</Dimension>
+  <Units>Points</Units>
+  <SeriesThickness>10.0</SeriesThickness>
+  <ExtendedProperties>
+    <Name>enable.area.alt</Name>
+    <Value>false</Value>
+  </ExtendedProperties>
+  <SampleData>
+    <BaseSampleData>
+      <DataSetRepresentation>6,4,12,8,10</DataSetRepresentation>
+    </BaseSampleData>
+    <OrthogonalSampleData>
+      <DataSetRepresentation>6,4,12,8,10</DataSetRepresentation>
+      <SeriesDefinitionIndex>0</SeriesDefinitionIndex>
+    </OrthogonalSampleData>
+  </SampleData>
+  <Interactivity/>
+  <EmptyMessage>
+    <Caption>
+      <Value>This chart contains no data.</Value>
+      <Font>
+        <Alignment>
+          <horizontalAlignment>Center</horizontalAlignment>
+          <verticalAlignment>Center</verticalAlignment>
+        </Alignment>
+      </Font>
+    </Caption>
+    <Background xsi:type="attribute:ColorDefinition">
+      <Transparency>64</Transparency>
+      <Red>127</Red>
+      <Green>127</Green>
+      <Blue>127</Blue>
+    </Background>
+    <Outline>
+      <Color>
+        <Transparency>128</Transparency>
+        <Red>127</Red>
+        <Green>127</Green>
+        <Blue>127</Blue>
+      </Color>
+      <Visible>true</Visible>
+    </Outline>
+    <Insets>
+      <Top>10.0</Top>
+      <Left>10.0</Left>
+      <Bottom>10.0</Bottom>
+      <Right>10.0</Right>
+    </Insets>
+    <Visible>false</Visible>
+  </EmptyMessage>
+  <Axes>
+    <Type>Linear</Type>
+    <Title>
+      <Caption>
+        <Value>Cumulated Qty (%)</Value>
+        <Font>
+          <Size>11.0</Size>
+          <Bold>true</Bold>
+          <Alignment>
+            <horizontalAlignment>Center</horizontalAlignment>
+            <verticalAlignment>Center</verticalAlignment>
+          </Alignment>
+          <Rotation>0.0</Rotation>
+        </Font>
+      </Caption>
+      <Background xsi:type="attribute:ColorDefinition">
+        <Transparency>0</Transparency>
+        <Red>255</Red>
+        <Green>255</Green>
+        <Blue>255</Blue>
+      </Background>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+      </Outline>
+      <Insets>
+        <Top>0.0</Top>
+        <Left>2.0</Left>
+        <Bottom>0.0</Bottom>
+        <Right>3.0</Right>
+      </Insets>
+      <Visible>true</Visible>
+    </Title>
+    <TitlePosition>Below</TitlePosition>
+    <AssociatedAxes>
+      <Type>Linear</Type>
+      <Title>
+        <Caption>
+          <Value>Cumulated worth (%)</Value>
+          <Font>
+            <Size>11.0</Size>
+            <Bold>true</Bold>
+            <Alignment>
+              <horizontalAlignment>Center</horizontalAlignment>
+              <verticalAlignment>Center</verticalAlignment>
+            </Alignment>
+            <Rotation>90.0</Rotation>
+          </Font>
+        </Caption>
+        <Background xsi:type="attribute:ColorDefinition">
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Background>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>2.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>3.0</Right>
+        </Insets>
+        <Visible>true</Visible>
+      </Title>
+      <TitlePosition>Left</TitlePosition>
+      <SeriesDefinitions>
+        <Query>
+          <Definition>row[&quot;class_name&quot;]</Definition>
+          <Grouping>
+            <GroupType>Text</GroupType>
+          </Grouping>
+        </Query>
+        <SeriesPalette>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>80</Red>
+            <Green>166</Green>
+            <Blue>218</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>71</Red>
+            <Green>191</Green>
+            <Blue>219</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>232</Red>
+            <Green>172</Green>
+            <Blue>57</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>232</Red>
+            <Green>172</Green>
+            <Blue>57</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>232</Red>
+            <Green>172</Green>
+            <Blue>57</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>242</Red>
+            <Green>88</Green>
+            <Blue>106</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>255</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>64</Red>
+            <Green>128</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>128</Green>
+            <Blue>192</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>170</Red>
+            <Green>85</Green>
+            <Blue>85</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>128</Green>
+            <Blue>0</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>192</Red>
+            <Green>192</Green>
+            <Blue>192</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>192</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>7</Red>
+            <Green>146</Green>
+            <Blue>94</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>128</Green>
+            <Blue>255</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>128</Green>
+            <Blue>192</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>128</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>128</Green>
+            <Blue>192</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>0</Green>
+            <Blue>255</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>64</Green>
+            <Blue>64</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>128</Green>
+            <Blue>64</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>80</Red>
+            <Green>240</Green>
+            <Blue>120</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>64</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>0</Green>
+            <Blue>64</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>0</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>128</Green>
+            <Blue>64</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>128</Red>
+            <Green>128</Green>
+            <Blue>128</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>128</Green>
+            <Blue>255</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>64</Green>
+            <Blue>0</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>128</Green>
+            <Blue>0</Blue>
+          </Entries>
+          <Entries xsi:type="attribute:ColorDefinition">
+            <Transparency>255</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Entries>
+        </SeriesPalette>
+        <Series xsi:type="type:LineSeries">
+          <Visible>true</Visible>
+          <Label>
+            <Caption>
+              <Value></Value>
+              <Font>
+                <Alignment/>
+              </Font>
+            </Caption>
+            <Background xsi:type="attribute:ColorDefinition">
+              <Transparency>0</Transparency>
+              <Red>255</Red>
+              <Green>255</Green>
+              <Blue>255</Blue>
+            </Background>
+            <Outline>
+              <Style>Solid</Style>
+              <Thickness>1</Thickness>
+              <Color>
+                <Transparency>255</Transparency>
+                <Red>0</Red>
+                <Green>0</Green>
+                <Blue>0</Blue>
+              </Color>
+              <Visible>false</Visible>
+            </Outline>
+            <Insets>
+              <Top>0.0</Top>
+              <Left>2.0</Left>
+              <Bottom>0.0</Bottom>
+              <Right>3.0</Right>
+            </Insets>
+            <Visible>false</Visible>
+          </Label>
+          <DataDefinition>
+            <Definition>row[&quot;cumulated_worth&quot;]</Definition>
+            <Grouping>
+              <GroupType>Text</GroupType>
+              <AggregateExpression>Sum</AggregateExpression>
+            </Grouping>
+          </DataDefinition>
+          <SeriesIdentifier></SeriesIdentifier>
+          <DataPoint>
+            <Components>
+              <Type>Orthogonal_Value</Type>
+            </Components>
+            <Separator>, </Separator>
+          </DataPoint>
+          <LabelPosition>Above</LabelPosition>
+          <Stacked>false</Stacked>
+          <Markers>
+            <Type>Box</Type>
+            <Size>4</Size>
+            <Visible>true</Visible>
+            <Outline>
+              <Visible>true</Visible>
+            </Outline>
+          </Markers>
+          <LineAttributes>
+            <Style>Solid</Style>
+            <Thickness>1</Thickness>
+            <Color>
+              <Transparency>255</Transparency>
+              <Red>0</Red>
+              <Green>0</Green>
+              <Blue>0</Blue>
+            </Color>
+            <Visible>true</Visible>
+          </LineAttributes>
+          <PaletteLineColor>true</PaletteLineColor>
+        </Series>
+        <Grouping>
+          <GroupType>Text</GroupType>
+          <AggregateExpression>Sum</AggregateExpression>
+        </Grouping>
+      </SeriesDefinitions>
+      <Orientation>Vertical</Orientation>
+      <LineAttributes>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+        <Visible>true</Visible>
+      </LineAttributes>
+      <Label>
+        <Caption>
+          <Value></Value>
+          <Font>
+            <Alignment/>
+            <Rotation>90.0</Rotation>
+          </Font>
+        </Caption>
+        <Background xsi:type="attribute:ColorDefinition">
+          <Transparency>0</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Background>
+        <Outline>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>0</Red>
+            <Green>0</Green>
+            <Blue>0</Blue>
+          </Color>
+        </Outline>
+        <Insets>
+          <Top>0.0</Top>
+          <Left>2.0</Left>
+          <Bottom>0.0</Bottom>
+          <Right>3.0</Right>
+        </Insets>
+        <Visible>true</Visible>
+      </Label>
+      <LabelPosition>Left</LabelPosition>
+      <MajorGrid>
+        <LineAttributes>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>196</Red>
+            <Green>196</Green>
+            <Blue>196</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </LineAttributes>
+        <TickStyle>Across</TickStyle>
+        <TickAttributes>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>196</Red>
+            <Green>196</Green>
+            <Blue>196</Blue>
+          </Color>
+          <Visible>true</Visible>
+        </TickAttributes>
+      </MajorGrid>
+      <MinorGrid>
+        <LineAttributes>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>225</Red>
+            <Green>225</Green>
+            <Blue>225</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </LineAttributes>
+        <TickStyle>Across</TickStyle>
+        <TickAttributes>
+          <Style>Solid</Style>
+          <Thickness>1</Thickness>
+          <Color>
+            <Transparency>255</Transparency>
+            <Red>225</Red>
+            <Green>225</Green>
+            <Blue>225</Blue>
+          </Color>
+          <Visible>false</Visible>
+        </TickAttributes>
+      </MinorGrid>
+      <Scale>
+        <Min xsi:type="data:NumberDataElement">
+          <Value>0.0</Value>
+        </Min>
+        <Max xsi:type="data:NumberDataElement">
+          <Value>100.0</Value>
+        </Max>
+        <Step>10.0</Step>
+        <MinorGridsPerUnit>5</MinorGridsPerUnit>
+        <AutoExpand>true</AutoExpand>
+      </Scale>
+      <Origin>
+        <Type>Min</Type>
+        <Value xsi:type="data:NumberDataElement">
+          <Value>0.0</Value>
+        </Value>
+      </Origin>
+      <PrimaryAxis>true</PrimaryAxis>
+      <Percent>false</Percent>
+    </AssociatedAxes>
+    <SeriesDefinitions>
+      <Query>
+        <Definition></Definition>
+      </Query>
+      <SeriesPalette>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>80</Red>
+          <Green>166</Green>
+          <Blue>218</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>242</Red>
+          <Green>88</Green>
+          <Blue>106</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>232</Red>
+          <Green>172</Green>
+          <Blue>57</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>255</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>64</Red>
+          <Green>128</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>128</Green>
+          <Blue>192</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>170</Red>
+          <Green>85</Green>
+          <Blue>85</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>128</Green>
+          <Blue>0</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>192</Red>
+          <Green>192</Green>
+          <Blue>192</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>192</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>7</Red>
+          <Green>146</Green>
+          <Blue>94</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>128</Green>
+          <Blue>255</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>128</Green>
+          <Blue>192</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>128</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>128</Green>
+          <Blue>192</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>0</Green>
+          <Blue>255</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>64</Green>
+          <Blue>64</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>128</Green>
+          <Blue>64</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>80</Red>
+          <Green>240</Green>
+          <Blue>120</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>64</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>0</Green>
+          <Blue>64</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>0</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>128</Green>
+          <Blue>64</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>128</Red>
+          <Green>128</Green>
+          <Blue>128</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>128</Green>
+          <Blue>255</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>64</Green>
+          <Blue>0</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>255</Green>
+          <Blue>255</Blue>
+        </Entries>
+        <Entries xsi:type="attribute:ColorDefinition">
+          <Transparency>255</Transparency>
+          <Red>255</Red>
+          <Green>128</Green>
+          <Blue>0</Blue>
+        </Entries>
+      </SeriesPalette>
+      <Series>
+        <Visible>true</Visible>
+        <Label>
+          <Caption>
+            <Value></Value>
+            <Font>
+              <Alignment/>
+            </Font>
+          </Caption>
+          <Background xsi:type="attribute:ColorDefinition">
+            <Transparency>0</Transparency>
+            <Red>255</Red>
+            <Green>255</Green>
+            <Blue>255</Blue>
+          </Background>
+          <Outline>
+            <Style>Solid</Style>
+            <Thickness>1</Thickness>
+            <Color>
+              <Transparency>255</Transparency>
+              <Red>0</Red>
+              <Green>0</Green>
+              <Blue>0</Blue>
+            </Color>
+            <Visible>false</Visible>
+          </Outline>
+          <Insets>
+            <Top>0.0</Top>
+            <Left>2.0</Left>
+            <Bottom>0.0</Bottom>
+            <Right>3.0</Right>
+          </Insets>
+          <Visible>false</Visible>
+        </Label>
+        <DataDefinition>
+          <Definition>row[&quot;cumulated_qty&quot;]</Definition>
+        </DataDefinition>
+        <SeriesIdentifier></SeriesIdentifier>
+        <DataPoint>
+          <Components>
+            <Type>Orthogonal_Value</Type>
+          </Components>
+          <Separator>, </Separator>
+        </DataPoint>
+        <LabelPosition>Outside</LabelPosition>
+        <Stacked>false</Stacked>
+      </Series>
+      <Grouping>
+        <Enabled>true</Enabled>
+        <GroupType>Numeric</GroupType>
+        <AggregateExpression>Sum</AggregateExpression>
+      </Grouping>
+    </SeriesDefinitions>
+    <Orientation>Horizontal</Orientation>
+    <LineAttributes>
+      <Style>Solid</Style>
+      <Thickness>1</Thickness>
+      <Color>
+        <Transparency>255</Transparency>
+        <Red>0</Red>
+        <Green>0</Green>
+        <Blue>0</Blue>
+      </Color>
+      <Visible>true</Visible>
+    </LineAttributes>
+    <Label>
+      <Caption>
+        <Value></Value>
+        <Font>
+          <Alignment/>
+        </Font>
+      </Caption>
+      <Background xsi:type="attribute:ColorDefinition">
+        <Transparency>0</Transparency>
+        <Red>255</Red>
+        <Green>255</Green>
+        <Blue>255</Blue>
+      </Background>
+      <Outline>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>0</Red>
+          <Green>0</Green>
+          <Blue>0</Blue>
+        </Color>
+      </Outline>
+      <Insets>
+        <Top>0.0</Top>
+        <Left>2.0</Left>
+        <Bottom>0.0</Bottom>
+        <Right>3.0</Right>
+      </Insets>
+      <Visible>true</Visible>
+    </Label>
+    <LabelPosition>Below</LabelPosition>
+    <MajorGrid>
+      <LineAttributes>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>196</Red>
+          <Green>196</Green>
+          <Blue>196</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </LineAttributes>
+      <TickStyle>Across</TickStyle>
+      <TickAttributes>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>196</Red>
+          <Green>196</Green>
+          <Blue>196</Blue>
+        </Color>
+        <Visible>true</Visible>
+      </TickAttributes>
+    </MajorGrid>
+    <MinorGrid>
+      <LineAttributes>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>225</Red>
+          <Green>225</Green>
+          <Blue>225</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </LineAttributes>
+      <TickStyle>Across</TickStyle>
+      <TickAttributes>
+        <Style>Solid</Style>
+        <Thickness>1</Thickness>
+        <Color>
+          <Transparency>255</Transparency>
+          <Red>225</Red>
+          <Green>225</Green>
+          <Blue>225</Blue>
+        </Color>
+        <Visible>false</Visible>
+      </TickAttributes>
+    </MinorGrid>
+    <Scale>
+      <Min xsi:type="data:NumberDataElement">
+        <Value>0.0</Value>
+      </Min>
+      <Max xsi:type="data:NumberDataElement">
+        <Value>100.0</Value>
+      </Max>
+      <Step>10.0</Step>
+      <MinorGridsPerUnit>5</MinorGridsPerUnit>
+      <ShowOutside>false</ShowOutside>
+    </Scale>
+    <Origin>
+      <Type>Value</Type>
+      <Value xsi:type="data:NumberDataElement">
+        <Value>0.0</Value>
+      </Value>
+    </Origin>
+    <PrimaryAxis>true</PrimaryAxis>
+    <CategoryAxis>false</CategoryAxis>
+    <Percent>false</Percent>
+  </Axes>
+  <Orientation>Vertical</Orientation>
+  <UnitSpacing>50.0</UnitSpacing>
+  <Rotation>
+    <Angles>
+      <XAngle>-20.0</XAngle>
+      <YAngle>45.0</YAngle>
+      <ZAngle>0.0</ZAngle>
+      <Type>None</Type>
+    </Angles>
+  </Rotation>
+  <ReverseCategory>false</ReverseCategory>
+</model:ChartWithAxes>
+]]></xml-property>
+            <property name="outputFormat">SVG</property>
+            <property name="inheritColumns">false</property>
+            <property name="pageBreakAfter">always</property>
+            <property name="height">376.125pt</property>
+            <property name="width">752.25pt</property>
+            <property name="dataSet">abcAnalysisLineDS</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">product_code</property>
+                    <text-property name="displayName">product_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["product_code"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">product_name</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">category_name</property>
+                    <text-property name="displayName">category_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["category_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">decimal_worth</property>
+                    <text-property name="displayName">decimal_worth</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["decimal_worth"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">worth</property>
+                    <text-property name="displayName">worth</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["worth"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">cumulated_worth</property>
+                    <text-property name="displayName">cumulated_worth</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cumulated_worth"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">decimal_qty</property>
+                    <text-property name="displayName">decimal_qty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["decimal_qty"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">qty</property>
+                    <text-property name="displayName">qty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">cumulated_qty</property>
+                    <text-property name="displayName">cumulated_qty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cumulated_qty"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">class_name</property>
+                    <text-property name="displayName">class_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["class_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">class_sequence</property>
+                    <text-property name="displayName">class_sequence</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["class_sequence"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+        </extended-item>
+        <table id="113">
+            <property name="fontSize">9pt</property>
+            <property name="borderBottomStyle">none</property>
+            <property name="borderLeftStyle">none</property>
+            <property name="borderRightStyle">none</property>
+            <property name="borderTopStyle">none</property>
+            <property name="width">10.447916666666666in</property>
+            <property name="dataSet">abcAnalysisLineDS</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">product_code</property>
+                    <text-property name="displayName">product_code</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["product_code"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">product_name</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">category_name</property>
+                    <text-property name="displayName">category_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["category_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">currency_symbol</property>
+                    <text-property name="displayName">currency_symbol</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency_symbol"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">decimal_worth</property>
+                    <text-property name="displayName">decimal_worth</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["decimal_worth"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">worth</property>
+                    <text-property name="displayName">worth</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["worth"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">cumulated_worth</property>
+                    <text-property name="displayName">cumulated_worth</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cumulated_worth"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">decimal_qty</property>
+                    <text-property name="displayName">decimal_qty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["decimal_qty"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">qty</property>
+                    <text-property name="displayName">qty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">cumulated_qty</property>
+                    <text-property name="displayName">cumulated_qty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cumulated_qty"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">class_name</property>
+                    <text-property name="displayName">class_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["class_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">class_sequence</property>
+                    <text-property name="displayName">class_sequence</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["class_sequence"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+            </list-property>
+            <column id="167">
+                <property name="width">95px</property>
+            </column>
+            <column id="168"/>
+            <column id="169">
+                <property name="textAlign">center</property>
+                <property name="width">95px</property>
+            </column>
+            <column id="4037">
+                <property name="textAlign">center</property>
+                <property name="width">70px</property>
+            </column>
+            <column id="171">
+                <property name="textAlign">center</property>
+                <property name="width">70px</property>
+            </column>
+            <column id="172">
+                <property name="textAlign">center</property>
+                <property name="width">115px</property>
+            </column>
+            <column id="4043">
+                <property name="textAlign">center</property>
+                <property name="width">55px</property>
+            </column>
+            <column id="174">
+                <property name="textAlign">center</property>
+                <property name="width">60px</property>
+            </column>
+            <column id="175">
+                <property name="textAlign">center</property>
+                <property name="width">110px</property>
+            </column>
+            <column id="176">
+                <property name="textAlign">center</property>
+                <property name="width">50px</property>
+            </column>
+            <header>
+                <row id="114">
+                    <property name="borderBottomStyle">solid</property>
+                    <property name="borderBottomWidth">thin</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <cell id="115">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4006">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.code'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="117">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4007">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.name'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="119">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4008">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.category'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4034">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4038">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.worth'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>(row["translation"]||row["message_key"])+" ("+row._outer["currency_symbol"]+")"</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="123">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4009">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.worth'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>(row["translation"]||row["message_key"])+" (%)"</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="125">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4010">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.cumulatedWorth'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4040">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4044">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.qty'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="129">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4011">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.qty'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>(row["translation"]||row["message_key"])+" (%)"</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="131">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4012">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.cumulatedQty'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="133">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <text id="4013">
+                            <property name="dataSet">TranslationDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">'AbcAnalysisLine.class'</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">message_key</property>
+                                    <text-property name="displayName">message_key</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">translation</property>
+                                    <text-property name="displayName">translation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                            </list-property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        </text>
+                    </cell>
+                </row>
+            </header>
+            <detail>
+                <row id="135">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="height">30px</property>
+                    <cell id="136">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <data id="137">
+                            <property name="resultSetColumn">product_code</property>
+                        </data>
+                    </cell>
+                    <cell id="138">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <data id="139">
+                            <property name="resultSetColumn">product_name</property>
+                        </data>
+                    </cell>
+                    <cell id="140">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <data id="141">
+                            <property name="textAlign">left</property>
+                            <property name="resultSetColumn">category_name</property>
+                        </data>
+                    </cell>
+                    <cell id="4035">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="4047">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["decimal_worth"] + row["currency_symbol"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="144">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="234">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["worth"]</VALUE-OF>%]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="146">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="235">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["cumulated_worth"]</VALUE-OF>%]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="4041">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="4048">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["decimal_qty"]</VALUE-OF>]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="150">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="236">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["qty"]</VALUE-OF>%]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="152">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <text id="237">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["cumulated_qty"]</VALUE-OF>%]]></text-property>
+                        </text>
+                    </cell>
+                    <cell id="154">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">none</property>
+                        <list-property name="highlightRules">
+                            <structure>
+                                <property name="operator">eq</property>
+                                <property name="backgroundColor">#E8AC39</property>
+                                <property name="color">#FFFFFF</property>
+                                <expression name="testExpr" type="javascript">row["class_sequence"] % 2</expression>
+                                <simple-property-list name="value1">
+                                    <value type="javascript">0</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="operator">eq</property>
+                                <property name="backgroundColor">#F2586A</property>
+                                <property name="color">#FFFFFF</property>
+                                <expression name="testExpr" type="javascript">row["class_sequence"] % 2</expression>
+                                <simple-property-list name="value1">
+                                    <value type="javascript">1</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="operator">eq</property>
+                                <property name="backgroundColor">#50A6DA</property>
+                                <property name="color">#FFFFFF</property>
+                                <expression name="testExpr" type="javascript">row["class_sequence"]</expression>
+                                <simple-property-list name="value1">
+                                    <value type="javascript">0</value>
+                                </simple-property-list>
+                            </structure>
+                            <structure>
+                                <property name="operator">eq</property>
+                                <property name="backgroundColor">#47BFDB</property>
+                                <expression name="testExpr" type="javascript">row["class_sequence"]</expression>
+                                <simple-property-list name="value1">
+                                    <value type="javascript">1</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <data id="155">
+                            <property name="textAlign">center</property>
+                            <property name="resultSetColumn">class_name</property>
+                        </data>
+                    </cell>
+                </row>
+            </detail>
+            <footer>
+                <row id="156">
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="pageBreakAfter">auto</property>
+                    <property name="pageBreakBefore">auto</property>
+                    <cell id="157">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="158">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="159">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="4036">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="161">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="162">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="4042">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="164">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="165">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                    <cell id="166">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                    </cell>
+                </row>
+            </footer>
+        </table>
+    </body>
+</report>

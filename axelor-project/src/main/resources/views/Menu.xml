@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem name="menu-project-root" order="-103" title="Projects" icon="fa-tasks"  if="__config__.app.isApp('project')"
 	     icon-background="#3f6bb9"/> 	
@@ -18,7 +18,7 @@
 		<view type="grid" name="project-grid"/>
 		<view type="form" name="project-form"/>
 		<view type="kanban" name="project-kanban"/>
-		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect</domain>
+		<domain>self.isProject = true and (self.projectTypeSelect = :_xProjectTypeSelect or self.projectTypeSelect = 0 or self.projectTypeSelect = null)</domain>
 		<context name="_fromProject" expr="eval:true"/>
 		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PROJECT"/>
 	</action-view>
@@ -38,7 +38,18 @@
 		<view type="kanban" name="team-task-kanban"/>
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
-		<domain>self.project.statusSelect IN (1,2)</domain>
+		<domain>self.project.statusSelect IN (1,2) and self.typeSelect = 'task'</domain>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
+	</action-view>
+
+	<menuitem name="project-open-tickets" parent="menu-project-root" title="Tickets" order="21" action="all.open.project.tickets" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
+	<action-view name="all.open.project.tickets" title="Ticket" model="com.axelor.team.db.TeamTask">
+		<view type="kanban" name="team-task-kanban"/>
+		<view type="grid" name="team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<view-param name="forceTitle" value="true"/>
+		<domain>self.project.statusSelect IN (1,2) and self.typeSelect = 'ticket'</domain>
+		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
 	</action-view>
 
 	<menuitem name="project-wiki" parent="menu-project-root" title="Wiki" action="all.wiki" order="30"/>
@@ -47,7 +58,21 @@
 		<view type="form" name="wiki-form"/>
 	</action-view>
 
-	<menuitem title="Historical" name="project-historical" parent="menu-project-root" order="36" icon="fa-clock-o"/>
+	<menuitem name="project-template" parent="menu-project-root" order="38" title="Template"/>
+
+	<menuitem name="project-task-template" parent="project-template" title="Task template" action="project.task.template"/>
+	<action-view name="project.task.template" title="Task template" model="com.axelor.apps.project.db.TaskTemplate">
+		<view type="grid" name="task-template-grid"/>
+		<view type="form" name="task-template-form"/>
+	</action-view>
+
+	<menuitem name="project-project-template" parent="project-template" title="Project template" action="project.project.template"/>
+	<action-view name="project.project.template" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate">
+		<view type="grid" name="project-template-grid"/>
+		<view type="form" name="project-template-form"/>
+	</action-view>
+
+	<menuitem title="Historical" name="project-historical" parent="menu-project-root" order="39" icon="fa-clock-o"/>
 
 	<menuitem name="project-task-history" parent="project-historical" title="Task history" action="all.tasks.history"/>
 	<action-view name="all.tasks.history" title="Task history" model="com.axelor.team.db.TeamTask">
@@ -56,11 +81,16 @@
 		<domain>self.status = 'closed' or self.status = 'canceled'</domain>
 	</action-view>
 
-  <menuitem name="project-reporting" parent="menu-project-root" order="39" title="Reportings" icon="fa-bar-chart"/>
+  <menuitem name="project-reporting" parent="menu-project-root" order="40" title="Reportings" icon="fa-bar-chart"/>
 
 	<menuitem name="project-reporting-my-projects" parent="project-reporting" order="31" title="My projects" action="project.my.projects"/>
 	<action-view name="project.my.projects" title="My projects">
 		<view type="dashboard" name="project-my-projects"/>
+	</action-view>
+	
+	<menuitem name="project-reporting-planned-charge" parent="project-reporting" order="32" title="Planned charge" action="project.planned.charge"/>
+	<action-view name="project.planned.charge" title="Planned charge">
+		<view type="dashboard" name="project-planned-charge"/>
 	</action-view>
 
 	<menuitem name="project-resource-booking" title="Resource bookings" order="35" parent="menu-project-root" action="project.resource.booking" if="__config__.app.getApp('project').getResourceManagement()" />
@@ -70,14 +100,13 @@
 		<view type="calendar" name="resource-booking-calendar" />
 	</action-view>
 	
-	
     <!-- PROJECT CONFIGURATION -->
-	<menuitem name="project-configurations" parent="menu-project-root" title="Configuration" order="40" icon="fa-cog"/>
+	<menuitem name="project-configurations" parent="menu-project-root" title="Configuration" order="41" icon="fa-cog"/>
 	
-	<menuitem name="project-category" parent="project-configurations" title="Category" action="project-category"/>
-	<action-view name="project-category" title="Project Category" model="com.axelor.apps.project.db.ProjectCategory">
-		<view type="grid" name="category-grid"/>
-		<view type="form" name="category-form"/>
+	<menuitem name="team-task-category" parent="project-configurations" title="Category" action="team.task.category"/>
+	<action-view name="team.task.category" title="Team Task Category" model="com.axelor.apps.project.db.TeamTaskCategory">
+		<view type="grid" name="team-task-category-grid"/>
+		<view type="form" name="team-task-category-form"/>
 	</action-view>
 	
 	<menuitem name="project-resource-type" parent="project-configurations" title="Resource types" action="project.resource.types" if="__config__.app.getApp('project').getResourceManagement()" />

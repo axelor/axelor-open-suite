@@ -33,6 +33,8 @@ import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
+import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
+import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
@@ -40,6 +42,7 @@ import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.ProdProcessLineServiceImpl;
 import com.axelor.apps.production.service.ProdProductProductionRepository;
+import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
@@ -60,6 +63,10 @@ import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
+import com.axelor.apps.production.service.costsheet.UnitCostCalcLineService;
+import com.axelor.apps.production.service.costsheet.UnitCostCalcLineServiceImpl;
+import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
+import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -73,10 +80,11 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderWizardS
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
-import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
+import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
@@ -109,7 +117,7 @@ public class ProductionModule extends AxelorModule {
     bind(ConfiguratorServiceImpl.class).to(ConfiguratorServiceProductionImpl.class);
     bind(AppProductionService.class).to(AppProductionServiceImpl.class);
     bind(ProdProcessRepository.class).to(ProdProcessManagementRepository.class);
-    bind(StockMoveLineStockRepository.class).to(StockMoveLineProductionRepository.class);
+    bind(StockMoveLineSupplychainRepository.class).to(StockMoveLineProductionRepository.class);
     bind(ProdProcessLineService.class).to(ProdProcessLineServiceImpl.class);
     bind(StockMoveServiceSupplychainImpl.class).to(StockMoveProductionServiceImpl.class);
     bind(ProdProductRepository.class).to(ProdProductProductionRepository.class);
@@ -117,8 +125,12 @@ public class ProductionModule extends AxelorModule {
     bind(RawMaterialRequirementRepository.class)
         .to(RawMaterialRequirementProductionRepository.class);
     bind(ProductionBatchRepository.class).to(ProductionBatchManagementRepository.class);
+    bind(UnitCostCalculationRepository.class).to(UnitCostCalculationManagementRepository.class);
+    bind(UnitCostCalculationService.class).to(UnitCostCalculationServiceImpl.class);
+    bind(UnitCostCalcLineService.class).to(UnitCostCalcLineServiceImpl.class);
     bind(ProductStockRepository.class).to(ProductProductionRepository.class);
     bind(ConfiguratorCreatorImportServiceImpl.class)
         .to(ConfiguratorCreatorImportServiceProductionImpl.class);
+    bind(ProductStockLocationServiceImpl.class).to(ProductionProductStockLocationServiceImpl.class);
   }
 }

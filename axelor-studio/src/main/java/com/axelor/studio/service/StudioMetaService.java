@@ -70,10 +70,8 @@ public class StudioMetaService {
       return;
     }
 
-    actionNames =
-        actionNames
-            .replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "")
-            .replaceAll(WkfTrackingService.ACTION_TRACK, "");
+    actionNames = actionNames.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "");
+    //            .replaceAll(WkfTrackingService.ACTION_TRACK, "");
     List<MetaAction> metaActions =
         metaActionRepo
             .all()

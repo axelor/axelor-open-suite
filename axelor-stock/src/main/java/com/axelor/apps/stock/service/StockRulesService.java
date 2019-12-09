@@ -29,7 +29,7 @@ public interface StockRulesService {
   void generateOrder(Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   void generatePurchaseOrder(
       Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException;

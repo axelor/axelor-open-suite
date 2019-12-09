@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 		<!-- SALES MAN DASHBOARD -->
 		
@@ -28,7 +28,7 @@
 	<action-view name="dashlet.salesman.dashboard.activities" title="My Today Activities"
 		model="com.axelor.apps.crm.db.Event">
 		<view type="grid" name="my-event-grid"/>
-		<view type="form" />
+		<view type="form" name="event-form"/>
 	    <domain>self.startDateTime between :_today and :_tomorrow and self.user =:__user__</domain>
 	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).atStartOfDay()"/>
 	    <context name="_today" expr="eval: __date__.atStartOfDay()"/>
@@ -86,13 +86,13 @@
 	    <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 	
-	<action-view name="dashlet.sales.turnover.ytd.vs.lastyear.by.family" title="Sales Turnover YTD vs Last year by Product Family" model="com.axelor.apps.sale.db.SaleOrderLine">
+	<action-view name="dashlet.sales.turnover.ytd.vs.lastyear.by.family" title="Sales Turnover YTD vs Last year by Product Accounting Family" model="com.axelor.apps.sale.db.SaleOrderLine">
 	  <view type="chart" name="chart.sale.turnover.ytd.vs.lastyear.by.family"/>
 	  <domain>self.saleOrder.company=:active_company</domain>
 	  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
 	</action-view>
 	
-	<action-view name="dashlet.sales.turnover.by.family.ytd.vs.lastyear" title="Product Family Sales Turnover this year vs last year" model="com.axelor.apps.sale.db.SaleOrderLine">
+	<action-view name="dashlet.sales.turnover.by.family.ytd.vs.lastyear" title="Product Accounting Family Sales Turnover this year vs last year" model="com.axelor.apps.sale.db.SaleOrderLine">
 	  <view type="chart" name="chart.sale.turnover.by.family.ytd.vs.lastyear"/>
 	  <domain>self.saleOrder.company=:active_company</domain>
 	  <context name="active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
@@ -110,7 +110,7 @@
 
 	</action-view>
 	
-	<action-view name="dashlet.sales.manager.dashboard.sales.distribution.per.family" title="Sales distribution per product family">
+	<action-view name="dashlet.sales.manager.dashboard.sales.distribution.per.family" title="Sales distribution per product accounting family">
 	  <view type="chart" name="chart.sale.manager.dashboard.sale.distribution.per.family"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 
@@ -213,7 +213,7 @@
 	</action-view>
 		
  	<!-- This Portlet is called in Partner-Form in axelor-base and axelor-account -->
-	<action-view name="dashlet.customer.sales.lastYear.vs.ytd.by.family" title="Sales turnover comparison per month this year vs past years by family" model="com.axelor.apps.sale.db.SaleOrderLine">
+	<action-view name="dashlet.customer.sales.lastYear.vs.ytd.by.family" title="Sales turnover comparison per month this year vs past years by accounting family" model="com.axelor.apps.sale.db.SaleOrderLine">
 	  <view type="chart" name="chart.customer.sale.lastYear.vs.ytd.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>  
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>

@@ -45,11 +45,11 @@ public interface StockMoveMultiInvoiceService {
   Map<String, Object> areFieldsConflictedToGenerateSupplierInvoice(List<StockMove> stockMoveList)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(
       List<StockMove> stockMoveList,
       PaymentCondition paymentCondition,
@@ -57,11 +57,11 @@ public interface StockMoveMultiInvoiceService {
       Partner contactPartner)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   Optional<Invoice> createInvoiceFromMultiIncomingStockMove(List<StockMove> stockMoveList)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   Optional<Invoice> createInvoiceFromMultiIncomingStockMove(
       List<StockMove> stockMoveList,
       PaymentCondition paymentConditionIn,

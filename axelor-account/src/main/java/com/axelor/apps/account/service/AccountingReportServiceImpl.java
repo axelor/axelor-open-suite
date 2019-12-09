@@ -376,14 +376,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setStatus(AccountingReport accountingReport) {
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_VALIDATED);
     accountingReportRepo.save(accountingReport);
   }
 
   /** @param accountingReport */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setPublicationDateTime(AccountingReport accountingReport) {
     accountingReport.setPublicationDateTime(appBaseService.getTodayDateTime());
     accountingReportRepo.save(accountingReport);
@@ -479,6 +479,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   public BigDecimal getCreditBalanceType4() {
 
     return this.getDebitBalance().subtract(this.getDebitBalanceType4());
+  }
+
+  public void testReportedDateField(LocalDate reportedDate) throws AxelorException {
+    if (reportedDate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CLOSE_NO_REPORTED_BALANCE_DATE));
+    }
   }
 
   @Override

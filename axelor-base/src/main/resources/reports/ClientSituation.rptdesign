@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -200,6 +200,18 @@
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">title_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">title_select</text-property>
@@ -322,81 +334,91 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">title_select</property>
+                        <property name="name">logo_height</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">partner_type_select</property>
+                        <property name="name">logo_width</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
+                        <property name="name">title_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">partner_type_select</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
                         <property name="name">partner_first_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">8</property>
                         <property name="name">partner_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">9</property>
                         <property name="name">partner_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">10</property>
                         <property name="name">invoicing_full_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">11</property>
                         <property name="name">fixed_phone</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">12</property>
                         <property name="name">fax</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">13</property>
                         <property name="name">mobile_phone</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">14</property>
                         <property name="name">email_address</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">15</property>
                         <property name="name">web_site</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">16</property>
                         <property name="name">internal_user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">17</property>
                         <property name="name">team_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">18</property>
                         <property name="name">balance_cust_account</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">19</property>
                         <property name="name">balance_due_cust_account</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">20</property>
                         <property name="name">balance_due_debt_recovery_cust_account</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -420,118 +442,132 @@
                 </structure>
                 <structure>
                     <property name="position">3</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">6</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">7</property>
                     <property name="name">partner_first_name</property>
                     <property name="nativeName">partner_first_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">8</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">9</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">10</property>
                     <property name="name">invoicing_full_name</property>
                     <property name="nativeName">invoicing_full_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">11</property>
                     <property name="name">fixed_phone</property>
                     <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">12</property>
                     <property name="name">fax</property>
                     <property name="nativeName">fax</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">13</property>
                     <property name="name">mobile_phone</property>
                     <property name="nativeName">mobile_phone</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">14</property>
                     <property name="name">email_address</property>
                     <property name="nativeName">email_address</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">15</property>
                     <property name="name">web_site</property>
                     <property name="nativeName">web_site</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">16</property>
                     <property name="name">internal_user_name</property>
                     <property name="nativeName">internal_user_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">17</property>
                     <property name="name">team_name</property>
                     <property name="nativeName">team_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">18</property>
                     <property name="name">balance_cust_account</property>
                     <property name="nativeName">balance_cust_account</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">19</property>
                     <property name="name">balance_due_cust_account</property>
                     <property name="nativeName">balance_due_cust_account</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">20</property>
                     <property name="name">balance_due_debt_recovery_cust_account</property>
                     <property name="nativeName">balance_due_debt_recovery_cust_account</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Partner.id, MetaFile.file_path as logo_path, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
+            <xml-property name="queryText"><![CDATA[select Partner.id, MetaFile.file_path as logo_path, Company.height as logo_height, Company.width as logo_width, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
 Partner.name as partner_name, Partner.partner_seq, InvoicingAddress.full_name as invoicing_full_name,
 Partner.fixed_phone, Partner.fax, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site, 
 AuthUser.name as internal_user_name, Team.name as team_name,
@@ -550,23 +586,6 @@ where Partner.id = ?
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -1983,6 +2002,20 @@ $func$ LANGUAGE plpgsql;
                     <expression name="expression" type="javascript">dataSetRow["balance_due_debt_recovery_cust_account"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">4.0216666666666665cm</property>
@@ -2040,19 +2073,23 @@ $func$ LANGUAGE plpgsql;
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <image id="3419">
-                        <property name="height">81px</property>
-                        <property name="width">261px</property>
+                    <text id="4574">
+                        <property name="fontSize">8pt</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="source">file</property>
-                        <property name="proportionalScale">true</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                    </image>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="4096">
                     <property name="colSpan">4</property>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -20,7 +22,7 @@
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
   	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode" />
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" />
-    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
+    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
 	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
     <string name="addressStr" title="Address" large="true" multiline="true"/>
@@ -45,8 +47,6 @@
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
     <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Ventilated by"/>
-
-    
     
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice" title="Invoice Lines" />
@@ -119,6 +119,8 @@
     <!-- Invoice mail -->
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
     <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+    <boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate" default="false" />
+	<many-to-one name="invoiceMessageTemplateOnValidate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 
     <many-to-many name="advancePaymentInvoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Advance payments"/>
 
@@ -131,6 +133,14 @@
     <many-to-one name="subrogationRelease" ref="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"/>
     <many-to-one name="subrogationReleaseMove" ref="com.axelor.apps.account.db.Move" title="Subrogation release Move"/>
 	
+	<date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
+	<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
+	<integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+	<many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay" ref="com.axelor.apps.base.db.CancelReason"/>
+	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+	
+	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
+
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[
@@ -158,6 +168,18 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+
+	    // REPORT TYPE
+		public static final int REPORT_TYPE_PROFORMA = 1;
+		public static final int REPORT_TYPE_ORIGINAL_INVOICE = 2;
+		public static final int REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS= 3;
+		public static final int REPORT_TYPE_UPDATED_COPY = 4;
+
+
+	    // PFP VALIDATE STATUS SELECT
+	    public static final int PFP_STATUS_AWAITING = 1;
+	    public static final int PFP_STATUS_VALIDATED = 2;
+	    public static final int PFP_STATUS_LITIGATION = 3;
 
 	]]></extra-code>
 	

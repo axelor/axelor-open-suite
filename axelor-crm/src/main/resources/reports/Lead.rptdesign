@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -180,6 +180,18 @@
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logopath</text-property>
                     <text-property name="heading">logopath</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">created_on</property>
@@ -366,121 +378,131 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
                         <property name="name">created_on</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">6</property>
                         <property name="name">updated_on</property>
                         <property name="dataType">date-time</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">7</property>
                         <property name="name">created_by</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">8</property>
                         <property name="name">updated_by</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">9</property>
                         <property name="name">title_select</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">10</property>
                         <property name="name">lead_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">11</property>
                         <property name="name">lead_first_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">12</property>
                         <property name="name">status_select</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">13</property>
                         <property name="name">source_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">14</property>
                         <property name="name">industry_sector_select</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">15</property>
                         <property name="name">fax</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">16</property>
                         <property name="name">email</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">17</property>
                         <property name="name">fixed_phone</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">18</property>
                         <property name="name">mobile_phone</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">19</property>
                         <property name="name">web_site</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">20</property>
                         <property name="name">enterprise_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">21</property>
                         <property name="name">primary_address</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">22</property>
                         <property name="name">primary_state</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">23</property>
                         <property name="name">primary_city</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">24</property>
                         <property name="name">primary_postal_code</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">23</property>
+                        <property name="position">25</property>
                         <property name="name">primary_country</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">24</property>
+                        <property name="position">26</property>
                         <property name="name">job_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">25</property>
+                        <property name="position">27</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">26</property>
+                        <property name="position">28</property>
                         <property name="name">company_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -494,160 +516,203 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logopath</property>
                     <property name="nativeName">logopath</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">created_on</property>
-                    <property name="nativeName">created_on</property>
-                    <property name="dataType">date-time</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">updated_on</property>
-                    <property name="nativeName">updated_on</property>
-                    <property name="dataType">date-time</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">created_by</property>
-                    <property name="nativeName">created_by</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">created_on</property>
+                    <property name="nativeName">created_on</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">updated_by</property>
-                    <property name="nativeName">updated_by</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">updated_on</property>
+                    <property name="nativeName">updated_on</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">title_select</property>
-                    <property name="nativeName">title_select</property>
-                    <property name="dataType">string</property>
+                    <property name="name">created_by</property>
+                    <property name="nativeName">created_by</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">lead_name</property>
-                    <property name="nativeName">lead_name</property>
-                    <property name="dataType">string</property>
+                    <property name="name">updated_by</property>
+                    <property name="nativeName">updated_by</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">lead_first_name</property>
-                    <property name="nativeName">lead_first_name</property>
+                    <property name="name">title_select</property>
+                    <property name="nativeName">title_select</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">status_select</property>
-                    <property name="nativeName">status_select</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">lead_name</property>
+                    <property name="nativeName">lead_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">source_name</property>
-                    <property name="nativeName">source_name</property>
+                    <property name="name">lead_first_name</property>
+                    <property name="nativeName">lead_first_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">industry_sector_select</property>
-                    <property name="nativeName">industry_sector_select</property>
-                    <property name="dataType">string</property>
+                    <property name="name">status_select</property>
+                    <property name="nativeName">status_select</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">fax</property>
-                    <property name="nativeName">fax</property>
+                    <property name="name">source_name</property>
+                    <property name="nativeName">source_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
-                    <property name="name">email</property>
-                    <property name="nativeName">email</property>
+                    <property name="name">industry_sector_select</property>
+                    <property name="nativeName">industry_sector_select</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">fixed_phone</property>
-                    <property name="nativeName">fixed_phone</property>
+                    <property name="name">fax</property>
+                    <property name="nativeName">fax</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
-                    <property name="name">mobile_phone</property>
-                    <property name="nativeName">mobile_phone</property>
+                    <property name="name">email</property>
+                    <property name="nativeName">email</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
-                    <property name="name">web_site</property>
-                    <property name="nativeName">web_site</property>
+                    <property name="name">fixed_phone</property>
+                    <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
-                    <property name="name">enterprise_name</property>
-                    <property name="nativeName">enterprise_name</property>
+                    <property name="name">mobile_phone</property>
+                    <property name="nativeName">mobile_phone</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
-                    <property name="name">primary_address</property>
-                    <property name="nativeName">primary_address</property>
+                    <property name="name">web_site</property>
+                    <property name="nativeName">web_site</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
-                    <property name="name">primary_state</property>
-                    <property name="nativeName">primary_state</property>
+                    <property name="name">enterprise_name</property>
+                    <property name="nativeName">enterprise_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">primary_city</property>
-                    <property name="nativeName">primary_city</property>
+                    <property name="name">primary_address</property>
+                    <property name="nativeName">primary_address</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
-                    <property name="name">primary_postal_code</property>
-                    <property name="nativeName">primary_postal_code</property>
+                    <property name="name">primary_state</property>
+                    <property name="nativeName">primary_state</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
-                    <property name="name">primary_country</property>
-                    <property name="nativeName">primary_country</property>
+                    <property name="name">primary_city</property>
+                    <property name="nativeName">primary_city</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
-                    <property name="name">job_title</property>
-                    <property name="nativeName">job_title</property>
+                    <property name="name">primary_postal_code</property>
+                    <property name="nativeName">primary_postal_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
-                    <property name="name">user_name</property>
-                    <property name="nativeName">user_name</property>
+                    <property name="name">primary_country</property>
+                    <property name="nativeName">primary_country</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">26</property>
+                    <property name="name">job_title</property>
+                    <property name="nativeName">job_title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">user_name</property>
+                    <property name="nativeName">user_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">28</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
-Lead.id as id,MetaFile.file_path as logopath, Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
+Lead.id as id,MetaFile.file_path as logopath,
+Company.height as logo_height,
+Company.width as logo_width,
+Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
 Lead.name as lead_name, Lead.first_name as lead_first_name, Lead.status_select, Source.name AS source_name,
 IndustrySector.name as industry_sector_select, Lead.fax,messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
 Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,
@@ -665,6 +730,23 @@ where Lead.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -3031,6 +3113,20 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">40</property>
             <column id="3819">
@@ -3066,19 +3162,23 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <cell id="3350">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
-                                    <image id="3419">
-                                        <property name="height">87px</property>
-                                        <property name="width">308px</property>
+                                    <text id="3827">
+                                        <property name="fontSize">8pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">row["logopath"] == null</expression>
                                             </structure>
                                         </list-property>
-                                        <property name="source">file</property>
-                                        <property name="proportionalScale">true</property>
-                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logopath"]</expression>
-                                    </image>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logopath"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="3353"/>
                                 <cell id="3354">

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module package="com.axelor.apps.base.db" name="base"/>
+
+	<entity name="MailingListMessage">
+		<binary name="image" title="Image"/>
+		<string name="subject" title="Subject"/>
+		<string name="description" title="Description"/>
+
+		<track files="true">
+			<field name="subject"/>
+			<field name="description"/>
+			<message if="true" on="CREATE">Mailing list created</message>
+			<message if="true" on="UPDATE">Mailing list updated</message>
+		</track>
+	</entity>
+
+</domain-models>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <grid name="team-task-grid" id="base-team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask">
+    <field name="name"/>
+    <field name="team"/>
+    <field name="taskDate"/>
+    <field name="status"/>
+    <field name="priority"/>
+  </grid>
+
+  <form name="team-task-form" id="base-team-task-form" title="Task" model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew">
+    <panel showIf="nextTeamTask">
+      <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
+    </panel>
+
+    <panel>
+      <field name="name"/>
+      <field name="team"/>
+      <field name="priority"/>
+      <field name="status"/>
+      <field name="taskDate" onChange="action-team-task-record-set-date-or-frequency-changed"/>
+      <field name="taskDeadline"/>
+      <field name="taskDuration"/>
+      <field name="assignedTo"/>
+      <field name="description" colSpan="12"/>
+
+      <field name="typeSelect" hidden="true"/>
+    </panel>
+
+    <panel-tabs>
+      <panel title="Frequency">
+        <field name="frequency" onChange="action-team-task-record-set-date-or-frequency-changed" domain="1 &lt;&gt; 1" canNew="true" grid-view="frequency-grid" form-view="frequency-form"/>
+        <field name="nextTeamTask" hidden="true" showIf="nextTeamTask"/>
+        <field name="isFirst" hidden="true"/>
+        <field name="doUpdateNextTasks" hidden="true"/>
+        <field name="hasDateOrFrequencyChanged" hidden="true"/>
+      </panel>
+    </panel-tabs>
+
+    <panel-mail>
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-group name="action-team-task-group-onnew">
+    <action name="team.task.on-new"/>
+    <action name="action-team-task-record-set-default"/>
+  </action-group>
+
+  <action-record name="action-team-task-record-set-default" model="com.axelor.team.db.TeamTask">
+    <field name="isFirst" expr="true"/>
+    <field name="typeSelect" expr="eval: _typeSelect"/>
+  </action-record>
+
+  <action-record name="action-team-task-record-set-date-or-frequency-changed" model="com.axelor.team.db.TeamTask">
+    <field name="hasDateOrFrequencyChanged" expr="true" if="nextTeamTask"/>
+  </action-record>
+
+</object-views>

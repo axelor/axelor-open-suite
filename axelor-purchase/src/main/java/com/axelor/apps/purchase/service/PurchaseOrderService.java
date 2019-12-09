@@ -33,7 +33,7 @@ public interface PurchaseOrderService {
 
   PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
   /**
@@ -82,7 +82,7 @@ public interface PurchaseOrderService {
 
   public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Partner validateSupplier(PurchaseOrder purchaseOrder);
 
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException;

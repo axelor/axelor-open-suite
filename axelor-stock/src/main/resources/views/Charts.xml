@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	  
 	<chart onInit="action.base.default.month.value" name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
 		<search-fields>
@@ -64,7 +64,7 @@
 	</chart>
 
 	<chart onInit="action.base.default.month.value" name="chart.stockMoveLine.product.delivery.by.country.by.family" 
-	       title="Product deliveries in qty by country by family" stacked="true">
+	       title="Product deliveries in qty by country by accounting family" stacked="true">
 		<search-fields>
 			<field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 		</search-fields>
