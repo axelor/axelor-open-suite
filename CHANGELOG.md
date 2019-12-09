@@ -9,7 +9,8 @@
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'
 - MOVE : changed position of reconciliation tag in move form.
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
-- STOCK MOVE: empty reservationDateTime on duplicate stock move.
+- PRODUCT : update translation for "Service" and "Product"
+- STOCK MOVE: empty reservationDateTime on duplicate stock move
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
@@ -20,6 +21,7 @@
 - INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
 - User: find user by email using partner email address
 - Invoice: fix exception during passed for payment validation.
+- Resolve NPE on stockMoveLines while displaying archived records.
 
 ## [5.2.0] - 2019-11-29
 ## Features
