@@ -125,6 +125,7 @@
     
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
+    <string name="headOfficeAddress" title="Head office address"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

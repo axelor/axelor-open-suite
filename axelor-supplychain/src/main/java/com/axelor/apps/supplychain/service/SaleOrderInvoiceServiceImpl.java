@@ -484,7 +484,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return new InvoiceGeneratorSupplyChain(saleOrder, isRefund) {
       @Override
       public Invoice generate() throws AxelorException {
-        return super.createInvoiceHeader();
+        Invoice invoice = super.createInvoiceHeader();
+        invoice.setHeadOfficeAddress(saleOrder.getClientPartner().getHeadOfficeAddress());
+        return invoice;
       }
     };
   }
