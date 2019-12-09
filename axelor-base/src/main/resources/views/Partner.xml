@@ -224,6 +224,8 @@
 							<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
 						</editor>
 					</field>
+					<spacer/>
+					<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
 				</panel>
 				<panel name="postalAddresses" title="Postal addresses" colSpan="12" hideIf="isEmployee">
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">

@@ -148,6 +148,7 @@
         <!-- Invoice mail -->
         <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
         <many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
 
         <finder-method name="findByCompany" using="company"/>
 
