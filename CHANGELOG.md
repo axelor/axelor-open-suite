@@ -22,6 +22,7 @@
 - User: find user by email using partner email address
 - Invoice: fix exception during passed for payment validation.
 - Resolve NPE on stockMoveLines while displaying archived records.
+- PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
 
 ## [5.2.0] - 2019-11-29
 ## Features
