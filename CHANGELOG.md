@@ -7,6 +7,7 @@
 ## Improvements
 - MOVE : changed position of reconciliation tag in move form.
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
+- STOCK MOVE: empty reservationDateTime on duplicate stock move
 
 ## Bug Fixes
 - REFUND : avoid blocking message when ventilation of the invoice
