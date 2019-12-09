@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid model="com.axelor.apps.koryo.db.ModelDocument" title="Model document" name="model-document-grid">
+		<field name="name"/>
+		<field name="message"/>
+	</grid>
+
+	<form model="com.axelor.apps.koryo.db.ModelDocument" title="Model document" name="model-document-form">
+		<panel name="mainPanel">
+			<field name="name"/>
+			<field name="message" widget="html"/>
+		</panel>	
+	</form>
+	
+</object-views>	

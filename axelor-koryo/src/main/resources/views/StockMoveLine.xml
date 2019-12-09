@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+
+    <form name="stock-move-line-all-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine" extension="true" id="koryo-stock-move-line-all-form" >
+      
+      
+      <extend target="//panel[@name='moveDetailsPanel']">
+				<insert position="after">
+					<panel name="koryoPanel" colSpan="12" >
+					      <field name="litigation"/>
+					      <field name="litigationInfo" widget="Html" colSpan="12" />
+					 </panel>
+				</insert>
+		</extend>
+      
+    </form>
+
+
+</object-views>

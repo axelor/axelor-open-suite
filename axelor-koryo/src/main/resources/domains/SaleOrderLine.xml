@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+               
+               <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  			   <entity name="SaleOrderLine" lang="java">
+  			   		<integer name="statut" title="Statut" selection="koryo.sale.order.line.statut"/>
+  			   		<many-to-one name="modeleDeDescriptifDeConsultation" ref="com.axelor.apps.koryo.db.ModelDocument" title="Modèle de descriptif de consultation"/>
+  			   		<string name="descriptifTechniqueDeLaConsultation" title="Descriptif technique de la consultation"/>
+  			   		<one-to-many name="consultationsFournisseursList" ref="com.axelor.apps.koryo.db.SupplierConsulation" title="Consultations fournisseurs"/>
+  			   		<many-to-one name="fournisseurSelectionne" ref="com.axelor.apps.base.db.Partner" title="Fournisseur sélectionné"/>
+  			   		<many-to-one name="supplierOption1" ref="com.axelor.apps.koryo.db.SupplierOption" title="Option 1 sélectionnée"/>
+  			   		<many-to-one name="supplierOption2" ref="com.axelor.apps.koryo.db.SupplierOption" title="Option 2 sélectionnée"/>
+  			   		<decimal name="qteaAcheter" title="Qté à acheter"/>
+  			   		<decimal name="sousTotaldAchatHT" title="Sous total d'achat HT"/>
+  			   		<decimal name="prixUnitairedAchat" title="Prix unitaire d'achat"/>
+					<boolean name="cacherLignealImpression" title="Cacher ligne à l'impression"/>
+					<boolean name="cacherSousTotaux" title="Cacher sous totaux"/>
+					
+					<many-to-many name="listeDesOptions" ref="com.axelor.apps.koryo.db.SupplierOption" title="Liste des options"/>
+					<many-to-many name="listeDesQuantites" ref="com.axelor.apps.koryo.db.SupplierQtity" title="Liste des quantités"/>
+  			   </entity>
+  			   
+</domain-models>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+		<form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" id="koryo-stock-move-form" extension="true">
+			
+			<extend target="//panel[@name='outgoingMove']/field[@name='partner']">
+			  	<attribute name="title" value="Client"/>
+			</extend>
+  		
+  			<extend target="//panel[@name='outgoingMove']/field[@name='toAddress']">
+				<attribute name="title" value="Delivery address"/>  				
+  			</extend>
+  			
+  			<extend target="//panel[@name='outgoingMove']/field[@title='Client']">
+  				<insert position="before">
+  					<field name="entityGroup" domain="self.isCustomer = true" />
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='outgoingMove']/field[@title='Delivery address']">
+  				<insert position="after">
+  					<field name="billingAddress"/>
+  				</insert>
+  			</extend>
+  			
+	  	   <extend target="//panel[@name='outgoingMove']/field[@name='estimatedDate']">
+				    <insert position="after">
+				      <field name="billingStatus" widget="radio-select" />
+				    </insert>
+	  	   </extend>
+  	   
+  	   		<extend target="//panel[@name='outgoingMove']/field[@title='Client']">
+  				<insert position="after">
+  					<field name="provider" domain="self.isSupplier = true"/>
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='outgoingMove']/field[@name='provider']">
+  				<insert position="after">
+  					<field name="controlSupplier" domain="self.supplierPartner = :provider"/>
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='mainPanel']">
+  				<insert position="after">
+  					 <panel name="koryoPanel" colSpan="12" >
+					      <field name="litigation"/>
+					      <field name="litigationInfo" widget="Html" colSpan="12" />
+					 </panel>
+  				</insert>
+  			</extend>
+  			
+  			
+  			
+  			
+  			<extend target="//panel[@name='incomingMove']/field[@name='partner']">
+			  	<attribute name="title" value="Fournisseur"/>
+			</extend>
+  			
+  			<extend target="//panel[@name='incomingMove']/field[@title='Fournisseur']">
+  				<insert position="before">
+  					<field name="entityGroup" domain="self.isCustomer = true" />
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='incomingMove']/field[@title='Fournisseur']">
+  				<insert position="after">
+  					<field name="provider" domain="self.isSupplier = true"/>
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='incomingMove']/field[@name='provider']">
+  				<insert position="after">
+  					<field name="controlSupplier" domain="self.supplierPartner = :provider"/>
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='incomingMove']/field[@title='From address']">
+  				<insert position="after">
+  					<field name="billingAddress"/>
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='incomingMove']/field[@name='billingAddress']">
+				    <insert position="after">
+				      <field name="billingStatus" widget="radio-select" />
+				    </insert>
+	  	   </extend>
+  			
+  			
+  
+		</form>
+
+</object-views>

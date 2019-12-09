@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+
+	<module name="account" package="com.axelor.apps.account.db"/>
+
+  	<entity sequential="true" name="Invoice" lang="java">
+  		<date name="dateDerniereRelance" title="Date dernière relance"/>
+  		<date name="dateProchaineRelance" title="Date prochaine relance"/>
+  		<many-to-many name="listeDesContactsFacturation" ref="com.axelor.apps.base.db.Partner"/>
+  		<boolean name="anomalieMontant" title="Anomalie montant"/>
+  		<one-to-many name="userLogList" ref="com.axelor.apps.koryo.db.UserLog" title="User logs"/>
+  		<many-to-one name="fabrican" ref="com.axelor.auth.db.User" title="Fabrican"/>
+  	</entity>
+               
+</domain-models>               

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+		<menuitem name="koryo-root" title="Koryo" icon="fa-user" icon-background="#2fa042" 
+				if="__config__.app.isApp('koryo')" />
+		
+		<menuitem title="Quotation down payment" name="koryo-sc-root-finalized-quotations" parent="sc-root-sale" action="koryo.sc.root.finalized.quotations" if="__config__.app.isApp('koryo')" />
+		
+		<action-view name="koryo.sc.root.finalized.quotations" title="Quotation down payment" model="com.axelor.apps.sale.db.SaleOrder">
+			<view type="cards" name="sale-order-cards" />
+			<view type="grid" name="sale-order-grid" />
+        	<view type="calendar" name="sale-order-calendar" />
+			<view type="form" name="sale-order-form" />
+			<domain>self.statusSelect = 2 and self.demandedAcompte &gt; 0</domain>
+		</action-view>
+		
+		
+		<menuitem title="Fact. customers to revive" name="koryo-invoice-root-ventilated-invoices" action="koryo.invoice.root.ventilated.invoices" 
+		if="__config__.app.isApp('koryo')" parent="invoice-root" order="6"/>
+		
+		<action-view name="koryo.invoice.root.ventilated.invoices" title="Fact. customers to revive"
+		model="com.axelor.apps.account.db.Invoice">
+			<view type="grid" name="koryo-invoice-grid"/>
+			<view type="form" name="invoice-form"/>
+			<domain>self.statusSelect = 3 and self.dueDate &lt;= :_todayDate and self.amountRemaining != 0</domain>
+			<context name="_operationTypeSelect" expr="eval:3"/>
+			<context name="_todayDate" expr="eval:__config__.app.getTodayDate()" />
+		</action-view>
+		
+		<menuitem title="Invoices to ventilate" name="koryo-invoice-root-valiadated-invoices" parent="invoice-root" order="7" if="__config__.app.isApp('koryo')" action="koryo.invoice.root.validated.invoices"/>
+		
+		<action-view name="koryo.invoice.root.validated.invoices" title="Invoices to ventilate"
+		model="com.axelor.apps.account.db.Invoice">
+			<view type="grid" name="invoice-grid"/>
+			<view type="form" name="invoice-form"/>
+			<domain>self.statusSelect = 2</domain>
+			<context name="_operationTypeSelect" expr="eval:3"/>
+			<context name="_todayDate" expr="eval:__config__.app.getTodayDate()" />
+		</action-view>
+		
+		<menuitem title="Fact Provided anomaly" name="koryo-invoice-root-purchase-supinvoices" if="__config__.app.isApp('koryo')" parent="invoice-root" action="koryo.invoice.root.purchase.supinvoices" order="16"/>
+		
+		<action-view name="koryo.invoice.root.purchase.supinvoices" title="Fact Provided anomaly"
+			model="com.axelor.apps.account.db.Invoice" >
+			<view type="grid" name="invoice-supplier-grid"/>
+			<view type="form" name="invoice-form"/>
+			<view-param name="search-filters" value="supplier-invoices-filters"/>
+			<domain>self.operationTypeSelect = 1 and self.anomalieMontant = true</domain>
+			<context name="_operationTypeSelect" expr="eval:1"/>
+			<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		</action-view>
+		
+		<menuitem title="Liste des Commandes non livrées" name="koryo-sc-root-undelivered-orders" if="__config__.app.isApp('koryo')" parent="sc-root-sale" action="koryo.sc.root.undelivered.order"/>
+		
+		<action-view name="koryo.sc.root.undelivered.order" title="Liste des Commandes non livrées" model="com.axelor.apps.sale.db.SaleOrder">
+			<view type="cards" name="sale-order-cards" />
+			<view type="grid" name="sale-order-grid" />
+        	<view type="calendar" name="sale-order-calendar" />
+			<view type="form" name="sale-order-form" />
+			<domain>self.statusSelect &lt; 3</domain>
+		</action-view>
+		
+
+		<menuitem title="Liste des BL non livrés" name="koryo-stock-root-stock-moves" if="__config__.app.isApp('koryo')" parent="stock-root-stock-moves" action="koryo.stock.move.root.undelivered.bls"/>
+		
+		<action-view name="koryo.stock.move.root.undelivered.bls" model="com.axelor.apps.stock.db.StockMove" title="Liste des BL non livrés">
+			  <view name="stock-move-grid" type="grid" />
+			  <view name="stock-move-form" type="form"/>
+			  <domain>self.statusSelect = 2</domain>
+		</action-view>
+		
+		<menuitem title="Liste des BL non facturés" name="koryo-stock-root-stock-moves-unbilled-bls" if="__config__.app.isApp('koryo')" parent="stock-root-stock-moves" action="koryo.stock.move.root.unbilled.bls"/>
+		
+		<action-view name="koryo.stock.move.root.unbilled.bls" model="com.axelor.apps.stock.db.StockMove" title="Liste des BL non facturés">
+		  <view name="stock-move-grid" type="grid" />
+		  <view name="stock-move-form" type="form"/>
+		  <domain>self.billingStatus = 1</domain>
+		</action-view>
+	
+</object-views>	

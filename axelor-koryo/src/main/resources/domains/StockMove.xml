@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  	<entity name="StockMove" lang="java">  	
+		<many-to-one name="entityGroup" ref="com.axelor.apps.base.db.Partner" title="Entity group" />
+  		<many-to-one name="billingAddress" ref="com.axelor.apps.base.db.Address" title="Billing address" />
+  		<integer name="billingStatus" title="Billing status" selection="koryo.app.stock.move.billing.status.select"/>
+  		<many-to-one name="provider" ref="com.axelor.apps.base.db.Partner" title="Provider" />
+  		<many-to-one name="controlSupplier" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Control supplier"/>
+		<boolean name="litigation" title="Litigation" />  		
+  		<string name="litigationInfo" title="Litigation info" />
+  		
+  	</entity>
+  
+</domain-models>

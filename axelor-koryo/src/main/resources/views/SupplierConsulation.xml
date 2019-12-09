@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              
+              
+              <grid model="com.axelor.apps.koryo.db.SupplierConsulation" title="Supplier consulation" name="koryo-supplier-consulation-grid">
+				<field name="fournisseur"/>
+				<field name="envoyerRenvoyerDemandeUnitaire"/>
+				<field name="envoyee"/>
+				<field name="supplierOption1"/>
+				<field name="supplierOption2"/>
+				<field name="quantite"/>
+				<field name="prixAchat"/>
+				<field name="prixDeVente"/>
+				<field name="margeEnMontant"/>
+				<field name="margeEn"/>       
+              </grid>
+              
+              <form model="com.axelor.apps.koryo.db.SupplierConsulation" title="Supplier consulation" name="koryo-supplier-consulation-form">
+              	<panel name="mainPanel" colSpan="12">
+              		<field name="fournisseur" domain="self.isSupplier = true"/>
+              		<field name="envoyerRenvoyerDemandeUnitaire"/>
+              	</panel>
+              	
+              	<panel title="Réponse consultation" colSpan="12">
+              		<field name="envoyee" help="Case à cocher en lecture seule, permet de savoir si la demande a été envoyée à ce fournisseur"/>
+              		<field name="supplierOption1" canNew="true" form-view="koryo-supplier-option-form" grid-view="koryo-supplier-qtity-grid"/>
+              		<field name="supplierOption2" canNew="true" form-view="koryo-supplier-option-form" grid-view="koryo-supplier-qtity-grid"/>
+              		<field name="quantite" canNew="true" form-view="koryo-supplier-qtity-form" grid-view="koryo-supplier-qtity-grid"/>
+              		<field name="prixAchat"/>
+              		<field name="prixDeVente"/>
+              		<field name="margeEnMontant"/>
+              		<field name="margeEn"/>
+              	</panel>
+              	
+              	<panel name="actionPanel" title="Actions" sidebar="true">
+              		<button name="proposerBtn" help="Permet de savoir si l'on propose cette option au client. On ne doit pas pouvoir proposer s'il n'y a pas de prix de vente" title="Proposer"/>
+              		<button name="sélectionnerBtn" help="permet de mettre automatiquement les prix, qté, option et prix sur la ligne de devis" title="Sélectionner"/>
+              		<button name="prévisulaiserConsultationBtn" help="bouton permettant de voir le pdf qui sera envoyé au fournisseur (voir comment afficher le pdf depuis une popup ou tab à part)" title="PrévisulaiserConsultation"/>
+              	</panel>
+              	
+              	<panel-related field="contactsConsultes" onSelect="action-koryo-supplier-consulation-attrs-filter-on-contacts" form-view="partner-contact-form" grid-view="partner-contact-grid" colSpan="12"/>
+              	
+              </form>
+              
+        <action-attrs name="action-koryo-supplier-consulation-attrs-filter-on-contacts">
+        	<attribute name="domain" for="contactsConsultes" expr="eval: &quot; self.id IN (${fournisseur.contactPartnerSet.collect{it.id}.join(',')}) AND self.isContact = true &quot;" if="fournisseur"/>
+        </action-attrs>
+              
+</object-views>

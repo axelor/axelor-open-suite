@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+				
+               <module name="koryo" package="com.axelor.apps.koryo.db"/>
+ 				<entity name="SupplierConsulation" lang="java">
+ 					<many-to-one name="fournisseur" ref="com.axelor.apps.base.db.Partner" title="Fournisseur"/>
+ 					<many-to-many name="contactsConsultes" ref="com.axelor.apps.base.db.Partner" title="Contacts consultés"/>
+ 					<boolean name="envoyerRenvoyerDemandeUnitaire" title="Envoyer/renvoyer demande unitaire "/>
+ 					<boolean name="envoyee" title="Envoyée"/>
+ 					<many-to-one name="supplierOption1" ref="com.axelor.apps.koryo.db.SupplierOption" title="Selection Option 1"/>
+ 					<many-to-one name="supplierOption2" ref="com.axelor.apps.koryo.db.SupplierOption" title="Selection Option 2"/>
+ 					<many-to-one name="quantite" ref="com.axelor.apps.koryo.db.SupplierQtity" title="Quantité"/>
+ 					<decimal name="prixAchat" title="prix achat"/>
+ 					<decimal name="prixDeVente" title="Prix de vente"/>
+ 					<decimal name="margeEnMontant" title="Marge en montant"/>
+					<integer name="margeEn" title="Marge en %"/>
+ 				</entity>
+               
+</domain-models>               

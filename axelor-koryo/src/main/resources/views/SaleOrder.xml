@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="sale-order-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder" extension="true" id="koryo-sale-order-grid">
+		<extend target="/">
+			<insert position="after">
+			<toolbar>
+				<button name="sentBtn" title="Envoyer" icon="fa-envelope"/>
+			</toolbar>	
+			</insert>
+		</extend>
+	</grid>
+	
+	
+	<form id="koryo-sale-order-form" name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+		<extend target="//field[@name='clientPartner.saleOrderInformation']">
+			<insert position="after">
+				<field name="typeDeTaux" widget="radio-select"/>
+			</insert>		
+		</extend>
+		
+		<extend target="//field[@name='saleOrderSeq']">
+			<insert position="after">
+				<field name="envoye" readonly="true">
+					<viewer>
+						<![CDATA[
+							<div>
+	            				<div class="span7">
+	             					 <h5>
+	                					<span class="label label-info">{{record.envoye}}</span>
+	              					 </h5>
+	               				</div>
+	          				</div>						
+						]]>
+					</viewer>
+				</field>
+			</insert>
+		</extend>
+		
+		<extend target="//field[@name='clientPartner.saleOrderInformation']">
+			<insert position="after">
+				<field name="demandedAcompte"/>
+			</insert>		
+		</extend>
+		
+		<extend target="//field[@name='saleOrderTypeSelect']">
+			<insert position="after">
+				<field name="titreDevis" height="3"/>
+			</insert>
+		</extend>
+		
+		<extend target="//field[@name='statusSelect']">
+			<attribute name="selection" value="koryo.sale.order.status.select"/>
+		</extend>
+		
+		<extend target="/">
+			<attribute name="onNew" value="action-group-sale-saleorder-onnew,action-koryo-sale-order-record-set-status-select"/>
+		</extend>
+		
+		<extend target="//button[@name='finalizeBtn']">
+			<insert position="after">
+				<button name="draftBtn" onClick="action-koryo-sale-order-record-draft-quotation,save" showIf="statusSelect == 0" title="Draft quotation"/>
+			</insert>		
+		</extend>
+		
+		<extend target="//field[@name='salespersonUser']">
+			<attribute name="title" value="Fabricant"/>
+		</extend>
+		
+		<extend target="//field[@name='salespersonUser']">
+			<insert position="after">
+				<field name="commercial"/>
+			</insert>
+		</extend>
+		
+	</form>
+	
+	<action-record name="action-koryo-sale-order-record-set-status-select" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="statusSelect" expr="eval: 0"/>	
+	</action-record>
+	
+	<action-record name="action-koryo-sale-order-record-draft-quotation" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="statusSelect" expr="eval: 1"/>
+	</action-record>
+
+</object-views>

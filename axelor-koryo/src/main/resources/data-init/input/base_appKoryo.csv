@@ -1,0 +1,2 @@
+name,code,installOrder,description,imagePath,modules,dependsOn,sequence
+Koryo,koryo,100,Koryo application,app-koryo.png,axelor-koryo,"sale,purchase,stock",51

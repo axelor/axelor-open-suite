@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="PurchaseOrder" lang="java">
+
+		<many-to-one name="customerOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Customer Order"/>
+		<many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>
+		<string name="deliveryInstruction" large="true" multiline="true" title="Delivery instruction"/>	
+		
+  </entity>
+
+</domain-models>

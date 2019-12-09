@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" id="koryo-purchase-order-form" extension="true" >
+		
+		<extend target="//panel[@name='overviewPanel']">
+  				<insert position="after">
+  					 <panel name="koryoPanel" colSpan="12" >
+					      <field name="customerOrder"/>
+					      <field name="deliveryAddress" onSelect="action-koryo-purchase-order-attrs-filter-on-address"/>
+					      <field name="deliveryInstruction" widget="Html" colSpan="12" />
+					 </panel>
+  				</insert>
+  			</extend>
+  			
+  			<extend target="//panel[@name='deliveryPanel']/field[@name='stockLocation']">
+  				<attribute name="hidden" value="true" />
+  			</extend>
+  			
+  			<extend target="//panel[@name='deliveryPanel']/field[@name='stockLocation.address']">
+  				<attribute name="hidden" value="true" />
+  			</extend>
+  			
+  			<extend target="//panel[@name='internalNotePanel']">
+			    <insert position="after">
+			      <panel name="stockMoveDeshlat" >
+			            <panel-dashlet action="action-purchase-order-view-stock-moves" name="stockMovePanel" colSpan="12" />
+			      </panel>
+			    </insert>
+ 			 </extend>
+	</form>
+	
+		<action-attrs name="action-koryo-purchase-order-attrs-filter-on-address">
+       		<attribute name="domain" for="deliveryAddress" expr="eval: &quot; self.id IN (${customerOrder.clientPartner.partnerAddressList.collect{it.id}.join(',')}) &quot;"/>
+        </action-attrs>
+       
+</object-views>
+
+
+
+
+        

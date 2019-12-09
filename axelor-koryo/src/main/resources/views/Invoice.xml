@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+		<grid name="koryo-invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
+				<toolbar>
+    				<button name="relanceEnMasse" title="Relance en  masse" icon="fa-print"/>
+  				</toolbar>
+   				<menubar>
+	    			<menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+	      				<item name="printInvoicesItem" title="Print invoices" action="action-invoice-method-show-invoice"/>
+	  				</menu>
+     				<menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	      				<item name="validateSelectedInvoicesItem" title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	     				<item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	     				<item name="mergeCustInvoicesItem" title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
+	      				<item name="seeCustInvoicesLinesItem" title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
+	    			</menu>
+				</menubar>
+   				<hilite color="primary" if="statusSelect == 1"/>
+    			<hilite color="danger" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
+    			<hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
+    			<hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+   			    <field name="invoiceId" width="120"/>
+				<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+				<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
+    			<field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
+				<field name="operationSubTypeSelect" widget="160"/>
+    			<field name="invoiceDate" width="120"/>
+    			<field name="dueDate" width="120"/>
+    			<field name="exTaxTotal" aggregate="sum" width="120"/>
+   				<field name="inTaxTotal" aggregate="sum" width="120"/>
+    			<field name="amountRemaining" aggregate="sum" width="120"/>
+   				<field name="currency" width="60"/>
+    			<field name="statusSelect" width="100"/>
+    			<button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
+    			<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+  		</grid>
+  		
+  		
+  		<form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice" id="koryo-invoice-form" extension="true">
+			<extend target="//field[@name='company']">
+				<insert position="after">
+					<field name="anomalieMontant" showIf="self.operationTypeSelect = 1"/>
+				</insert>
+			</extend>
+			
+			<extend target="//panel[@name='directDebitPanel']">
+				<insert position="after">
+					<panel-related field="userLogList" name="userLogListPanel" form-view="user-log-form" grid-view="user-log-grid" colSpan="12" title="Relances passées"/>
+				</insert>			
+			</extend>
+			
+			<extend target="//field[@name='anomalieMontant']">
+				<insert position="after">
+					<field name="fabrican"/>
+				</insert>
+			</extend>
+			
+			<extend target="//field[@name='estimatedPaymentDate']">
+				<insert position="after">
+					<field name="dateProchaineRelance"/>
+					<field name="dateDerniereRelance"/>
+				</insert>
+			</extend>
+			
+			<extend target="//field[@name='addressStr']">
+				<insert position="after">
+					<field name="listeDesContactsFacturation" widget="tag-select" help="envoyer par email, à tous ces contacts pour chaque facture et relance associée" onSelect="action-koryo-invoice-attrs-filter-on-contacts"/>
+				</insert>
+			</extend>
+			
+			<extend target="//button[@name='addPaymentBtn']">
+				<insert position="after">
+					<button name="envoyerRelance" title="Envoyer relance" showIf="statusSelect == 2"/>
+				</insert>
+			</extend>
+			
+			<extend target="panel[@name='invoicingInfoPanel']/field[@name='paymentCondition']">
+				<attribute name="onChange" value="action-invoice-record-due-date,action-koryo-invoice-record-dateProchaineRelance"/>
+			</extend>
+			
+			<extend target="panel[@name='invoicingInfoPanel']/field[@name='originDate']">
+				<attribute name="onChange" value="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-koryo-invoice-record-dateProchaineRelance"/>
+			</extend>
+			
+			<extend target="//panel[@name='datesPanel']/field[@name='invoiceDate']">
+				<attribute name="onChange" value="action-invoice-record-due-date,action-invoice-record-estimated-payment-date,action-koryo-invoice-record-dateProchaineRelance"/>
+			</extend>
+			
+        </form>
+        
+        <action-attrs name="action-koryo-invoice-attrs-filter-on-contacts">
+        	<attribute name="domain" for="listeDesContactsFacturation" expr="eval: &quot; self.id IN (${partner.contactPartnerSet.collect{it.id}.join(',')}) AND self.isContact = true &quot;" if="partner"/>
+        </action-attrs>
+        
+        <action-record name="action-koryo-invoice-record-dateProchaineRelance" model="com.axelor.apps.account.db.Invoice">
+			<field name="dateProchaineRelance" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,originDate)" if="paymentCondition != null &amp;&amp; originDate != null &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2) "/>
+    		<field name="dateProchaineRelance" expr="call: com.axelor.apps.account.service.invoice.InvoiceToolService:getDueDate(paymentCondition,invoiceDate)" if="paymentCondition != null &amp;&amp; invoiceDate != null &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4)"/>       
+        </action-record>
+			  
+		<search-filters name="supplier-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters" id="koryo-supplier-invoices-filters">
+			   <field name="address" hidden="true"/>
+			   <field name="debitBlockingByUser" title="Debit blocking done by"/>
+			   <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
+			   <field name="debitBlockingReason" title="Debit blocking reason"/>
+			   <field name="debtRecoveryBlockingReason" title="Debt recovery blocking reason"/>
+			   <field name="debitBlockingToDate" title="Debit blocking until"/>
+			   <field name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
+			   <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
+			   <field name="companyTaxTotal" title="Total tax in company currency"/>
+			   <field name="companyInTaxTotal" title="Total A.T.I. in company currency"/>
+			   <filter title="My invoices">
+			   	<domain>self.validatedByUser = :__user__</domain>
+			   </filter>
+					<filter title="Draft">
+					<domain>self.statusSelect = 1</domain>
+					</filter>
+					<filter title="Validated">
+					<domain>self.statusSelect = 2</domain>
+					</filter>
+					<filter title="Ventilated">
+					<domain>self.statusSelect = 3</domain>
+					</filter>
+					<filter title="Unpaid">
+					<domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+					</filter>
+					<filter title="Unpaid Due">
+					<domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+			</filter>
+		</search-filters>
+		
+			  
+</object-views>			  

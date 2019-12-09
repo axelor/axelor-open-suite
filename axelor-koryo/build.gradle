@@ -1,0 +1,18 @@
+apply plugin: "com.axelor.app-module"
+
+apply from: "../version.gradle"
+
+apply {
+	version = openSuiteVersion
+}
+
+axelor {
+	title "Axelor Koryo"
+	description "Axelor Koryo Module"
+}
+
+dependencies {
+	compile project(":modules:axelor-stock")
+	compile project(":modules:axelor-purchase")
+	compile project(":modules:axelor-sale")
+}

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+               
+      <module name="base" package="com.axelor.apps.base.db"/>
+         <entity name="Partner" lang="java">
+               	<many-to-many name="listeDesContactsFacturation" ref="com.axelor.apps.base.db.Partner" title="Liste des contacts facturation"/>
+               	<boolean name="groupe" title="Groupe"/>
+               	<string name="codeComptable" title="Code comptable"/>
+               	<integer name="modeleEconomique" title="Modèle économique" selection="koryo.partner.economic.model.select"/>
+               	<integer name="typeDeTaux" title="Type de taux" selection="koryo.partner.rate.type.select"/>
+               	<integer name="tauxDeMarge" title="Taux de marge (en %)"/>
+               	<many-to-many name="commerciaux" ref="com.axelor.auth.db.User" title="Commerciaux"/>
+         </entity>
+</domain-models>

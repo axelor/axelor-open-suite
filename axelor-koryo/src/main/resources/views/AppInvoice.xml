@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+
+		<form name="app-invoice-config-form" title="App invoice" model="com.axelor.apps.base.db.AppInvoice" id="koryo-app-invoice-config-form" extension="true">
+			<extend target="//field[@name='autoGenerateInvoicePrintingFileOnPurchaseInvoice']">
+				<insert position="after">
+					<field name="nbDeJoursDeRelanceApresDerniereRelance"/>
+				</insert>
+			</extend>
+			
+			<extend target="//field[@name='nbDeJoursDeRelanceApresDerniereRelance']">
+				<insert position="after">
+					<field name="coefficientOfIncrease"/>
+				</insert>
+			</extend>
+		</form>
+	
+</object-views>	

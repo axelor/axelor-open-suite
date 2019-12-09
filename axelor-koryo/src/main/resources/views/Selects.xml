@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<selection name="koryo.app.stock.move.billing.status.select">
+		<option value="0">Pending billing</option>
+		<option value="1">Billing</option>
+	</selection>
+
+
+	<selection name="koryo.partner.economic.model.select">
+		<option value="0">Libre</option>
+		<option value="1">Fixe</option>
+	</selection>
+	
+	<selection name="koryo.partner.rate.type.select">
+		<option value="0">Visible</option>
+		<option value="1">Non visible</option>
+	</selection>
+	
+	<selection name="koryo.sale.order.rate.type.select">
+		<option value="0">Visible</option>
+		<option value="1">Non visible</option>
+	</selection>
+	
+	<selection name="koryo.sale.order.status.select">
+		<option value="0">Etudes achat</option>
+		<option value="1">Draft quotation</option>
+		<option value="2">Finalized quotation</option>
+		<option value="3">Order confirmed</option>
+		<option value="4">Order completed</option>
+		<option value="5">Canceled</option>	
+	</selection>
+	
+	<selection name="koryo.sale.order.line.statut">
+		<option value="1">Empty(nothing)</option>
+		<option value="2">Commandé fournisseur</option>
+		<option value="3">Livré</option>
+		<option value="4">facturé</option>
+	</selection>
+
+</object-views>

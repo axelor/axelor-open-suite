@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+			  <form name="partner-form"  title="Partner" model="com.axelor.apps.base.db.Partner" extension="true" id="koryo-partner-form">
+			  		<extend target="//field[@name='parentPartner']">
+			  			<insert position="after">
+			  				<field name="groupe" help="Permet d'dentifier les groupes"/>
+			  			</insert>
+			  		</extend>
+			  		
+			  		<extend target="//field[@name='language']">
+						<insert position="after">
+							<field name="codeComptable"/>
+						</insert>		  		
+			  		</extend>
+			  		
+			  		<extend target="//field[@name='user']">
+						<attribute name="hidden" value="true"/>
+						<attribute name="hideIf" value=""/>
+			  		</extend>
+			  		
+			  		<extend target="//panel[@name='blockingPanel']">
+			  			<insert position="after">
+			  				<field name="listeDesContactsFacturation" widget="TagSelect" help="Permet d'envoyer un email tous ces contacts pour chaque facture associé à ce client" domain="self.isContact = true"/>
+			  			</insert>
+			  		</extend>
+			  		
+			  		<extend target="//field[@name='team']">
+						<insert position="before">
+							<field name="commerciaux" widget="TagSelect"/>
+						</insert>			  		
+			  		</extend>
+			  		
+			  		<extend target="//panel[@name='invoiceCommentsPanel']">
+			  			<insert position="before">
+			  				<panel colSpan="12">
+			  					<field name="modeleEconomique" widget="radio-select" colSpan="4"/>
+			  					<field name="typeDeTaux" widget="radio-select" colSpan="4" showIf="modeleEconomique == 1"/>
+			  					<field name="tauxDeMarge" colSpan="4" showIf="modeleEconomique == 1"/>
+			  				</panel>
+			  			</insert>
+			  		</extend>
+			  		
+			  		<extend target="//panel[@name='partnerAttrsPanel']">
+			  			<insert position="after">
+			  				<panel-dashlet action="action-koryo-partner-dashlet" title="Sociétés filles" name="koryoPartnerDashlet"/>
+			  			</insert>
+			  		</extend>
+			  </form>
+			  
+			  <action-view name="action-koryo-partner-dashlet" title="Partners"  model="com.axelor.apps.base.db.Partner">
+				<view type="grid" name="partner-grid"/>
+				<view type="form" name="partner-form"/>
+				<domain>self.parentPartner.id = self.id</domain>
+			  </action-view>
+</object-views>
