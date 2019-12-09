@@ -47,6 +47,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;

@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.1]
 ## Features
 - ACCOUNTING REPORT : add new report, bank reconciliation statement.
+- RM#23133 INVOICE : new mandatory labelling
 
 ## Improvements
 - AdvancedExportLine : Add translation for field orderByType.
