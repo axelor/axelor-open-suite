@@ -10,6 +10,7 @@
 - MOVE : changed position of reconciliation tag in move form.
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
 - PRODUCT : update translation for "Service" and "Product"
+- STOCK MOVE: empty reservationDateTime on duplicate stock move
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
