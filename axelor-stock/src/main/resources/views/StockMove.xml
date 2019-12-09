@@ -187,7 +187,7 @@
 					</viewer>
 					</field>
 					<panel name="subTypeSelectPanel" colSpan="4" itemSpan="4" stacked="true">
-						<field name="conformitySelect" showIf="statusSelect == 2 &amp;&amp; toStockLocation?.typeSelect != 3" onChange="action-stock-move-method-change-conformity" />
+						<field name="conformitySelect" showIf="statusSelect == 2" onChange="action-stock-move-method-change-conformity" />
 						<field name="typeSelect" title="Type" showIf="!$readonly()" readonlyIf="statusSelect != 1" onChange="action-stock-move-attrs-set-values-typeselect-onchange,action-stock-move-set-default-stock-locations,action-stock-move-attrs-typeselect-change"/>
 						<field name="cancelReason" readonly="true" showIf="cancelReason != null" canView="false"/>
 						<field name="isReversion" hidden="true"/>
@@ -197,6 +197,19 @@
 				</panel>
 				<panel colSpan="9">
 					<panel name="tagPanels" colSpan="12">
+						<field name="$tags" showTitle="false" hidden="true" showIf="$readonly()" colSpan="6">
+							<viewer depends="typeSelect,conformitySelect,pickingIsEdited,availabilityRequest,statusSelect "><![CDATA[
+								<h4 class="text-left">
+									<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
+									<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
+									<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
+
+									<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
+									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
+								</h4>
+
+							]]></viewer>
+						</field>
 						<field name="$tags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="3">
 						<viewer depends="pickingIsEdited,availabilityRequest,statusSelect"><![CDATA[
 
@@ -218,20 +231,7 @@
 									</h4>
 								]]></viewer>
 							</field>
-							<field name="$tags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="6">
-								<viewer depends="typeSelect,conformitySelect,pickingIsEdited,availabilityRequest,statusSelect "><![CDATA[
-
-									<h4 class="text-left">
-										<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
-										<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
-										<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
-
-										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2" x-translate>Compliant</span>
-										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3" x-translate>Non-compliant</span>
-									</h4>
-
-								]]></viewer>
-							</field>
+							
 							<field name="$invoicingTags" showTitle="false" colSpan="2" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
 								<viewer depends="$invoiceStatus"><![CDATA[
 
@@ -271,8 +271,8 @@
 
 			<panel name="internalMove" showIf="typeSelect == 1" colSpan="12" itemSpan="3">
 				<field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
-                <field name="fromStockLocation"  canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
-                <field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
+                <field name="fromStockLocation"  canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+                <field name="toStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
                 <field name="filterOnAvailableProducts" hidden="true" widget="boolean-switch" onChange="action-stock-move-method-update-stock-move-line"/>
                 <field name="estimatedDate" readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
                 <field name="fromAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
@@ -438,8 +438,8 @@
 					<field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
                     <field name="realStockMoveAutomaticMail"/>
                 </panel>
-                <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
-                <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form"/>
+                <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+                <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
                 <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
                     <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
