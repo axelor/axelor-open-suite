@@ -1608,11 +1608,11 @@ order by code,line
                 <property name="width">1in</property>
             </column>
             <column id="494">
-                <property name="suppressDuplicates">true</property>
+                <property name="suppressDuplicates">false</property>
                 <property name="width">1in</property>
             </column>
             <column id="495">
-                <property name="suppressDuplicates">true</property>
+                <property name="suppressDuplicates">false</property>
                 <property name="width">1in</property>
             </column>
             <column id="4696">
@@ -1711,6 +1711,8 @@ order by code,line
                     </text>
                 </cell>
                 <cell id="503">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <property name="fontSize">10pt</property>
                     <data id="6229">
                         <property name="fontFamily">sans-serif</property>
@@ -1725,10 +1727,6 @@ order by code,line
                         </list-property>
                         <property name="resultSetColumn">company_name</property>
                     </data>
-                </cell>
-                <cell id="4119">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
                 </cell>
                 <cell id="6227">
                     <text id="6239">
@@ -1768,6 +1766,8 @@ order by code,line
                     </text>
                 </cell>
                 <cell id="504">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="6231">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1783,7 +1783,6 @@ order by code,line
                         <property name="resultSetColumn">report_date</property>
                     </data>
                 </cell>
-                <cell id="505"/>
                 <cell id="4700"/>
             </row>
             <row id="4211">
@@ -1825,6 +1824,8 @@ order by code,line
                     </text>
                 </cell>
                 <cell id="4214">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="6230">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1839,10 +1840,6 @@ order by code,line
                         </list-property>
                         <property name="resultSetColumn">currency</property>
                     </data>
-                </cell>
-                <cell id="4215">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
                 </cell>
                 <cell id="6228"/>
                 <cell id="4217">
@@ -2305,7 +2302,6 @@ order by code,line
                         <detail>
                             <row id="6268">
                                 <property name="fontFamily">sans-serif</property>
-                                <property name="height">0.5520833333333334in</property>
                                 <cell id="6269"/>
                                 <cell id="6462">
                                     <data id="6509">
@@ -2340,6 +2336,10 @@ order by code,line
                                 <cell id="6281">
                                     <data id="6282">
                                         <property name="fontSize">8.5pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">debit</property>
                                     </data>
@@ -2347,6 +2347,10 @@ order by code,line
                                 <cell id="6283">
                                     <data id="6284">
                                         <property name="fontSize">8.5pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">credit</property>
                                     </data>
@@ -2354,6 +2358,10 @@ order by code,line
                                 <cell id="6285">
                                     <data id="6286">
                                         <property name="fontSize">8.5pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">amountremaining</property>
                                     </data>
@@ -2536,6 +2544,8 @@ order by code,line
                     </text>
                 </cell>
                 <cell id="5169">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <property name="fontSize">10pt</property>
                     <data id="6244">
                         <property name="dataSet">AccountingReportDS</property>
@@ -2549,10 +2559,6 @@ order by code,line
                         </list-property>
                         <property name="resultSetColumn">company_name</property>
                     </data>
-                </cell>
-                <cell id="5171">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
                 </cell>
                 <cell id="6237">
                     <text id="6247">
@@ -2592,6 +2598,8 @@ order by code,line
                     </text>
                 </cell>
                 <cell id="5174">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="6242">
                         <property name="fontSize">10pt</property>
                         <property name="dataSet">AccountingReportDS</property>
@@ -2606,8 +2614,7 @@ order by code,line
                         <property name="resultSetColumn">report_date</property>
                     </data>
                 </cell>
-                <cell id="5176"/>
-                <cell id="5178"/>
+                <cell id="6514"/>
             </row>
             <row id="5179">
                 <property name="fontFamily">sans-serif</property>
@@ -2649,6 +2656,8 @@ order by code,line
                     </text>
                 </cell>
                 <cell id="5181">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <data id="6243">
                         <property name="fontSize">10pt</property>
                         <property name="dataSet">AccountingReportDS</property>
@@ -2662,10 +2671,6 @@ order by code,line
                         </list-property>
                         <property name="resultSetColumn">currency</property>
                     </data>
-                </cell>
-                <cell id="5183">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
                 </cell>
                 <cell id="6236">
                     <text id="6240">
@@ -2705,6 +2710,8 @@ order by code,line
                     </text>
                 </cell>
                 <cell id="5186">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <property name="textAlign">left</property>
                     <data id="6226">
                         <property name="fontSize">10pt</property>
@@ -2720,8 +2727,9 @@ order by code,line
                         <property name="resultSetColumn">journal_name</property>
                     </data>
                 </cell>
-                <cell id="5188"/>
-                <cell id="5190"/>
+                <cell id="6512">
+                    <property name="textAlign">left</property>
+                </cell>
             </row>
             <row id="5191">
                 <cell id="5192">
@@ -3261,6 +3269,10 @@ order by code,line
                                 <cell id="6343">
                                     <data id="6344">
                                         <property name="fontSize">8.5pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">debit</property>
                                     </data>
@@ -3268,6 +3280,10 @@ order by code,line
                                 <cell id="6345">
                                     <data id="6346">
                                         <property name="fontSize">8.5pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">credit</property>
                                     </data>
@@ -3275,6 +3291,10 @@ order by code,line
                                 <cell id="6347">
                                     <data id="6348">
                                         <property name="fontSize">8.5pt</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Currency</property>
+                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                        </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">amountremaining</property>
                                     </data>
