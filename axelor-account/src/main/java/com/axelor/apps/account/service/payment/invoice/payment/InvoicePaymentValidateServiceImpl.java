@@ -128,7 +128,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
   protected void checkConditionBeforeValidate(InvoicePayment invoicePayment)
       throws AxelorException {
-    if (invoicePayment.getInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
+    if (invoicePayment.getInvoice() != null
+        && invoicePayment.getInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
