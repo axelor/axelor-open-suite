@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,7 +36,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.shiro.util.CollectionUtils;
 
 @Singleton
 public class AccountController {
@@ -73,24 +73,24 @@ public class AccountController {
     try {
       Account account = request.getContext().asType(Account.class);
       account = Beans.get(AccountRepository.class).find(account.getId());
-      if (account.getAnalyticDistributionAuthorized() == false) {
+      if (!account.getAnalyticDistributionAuthorized()) {
         List<InvoiceLine> invoiceLineList =
             Beans.get(AccountService.class).searchInvoiceLinesByAccountAndAnalytic(account, true);
 
         List<MoveLine> moveLineList =
             Beans.get(AccountService.class).searchMoveLinesByAccountAndAnalytic(account, true);
 
-        if (!CollectionUtils.isEmpty(invoiceLineList) || !CollectionUtils.isEmpty(moveLineList)) {
-          List<Long> idInvoiceLineList = new ArrayList<Long>();
-          idInvoiceLineList.add((long) 0);
-          if (!CollectionUtils.isEmpty(invoiceLineList)) {
+        if (!ObjectUtils.isEmpty(invoiceLineList) || !ObjectUtils.isEmpty(moveLineList)) {
+          List<Long> idInvoiceLineList = new ArrayList<>();
+          idInvoiceLineList.add(0L);
+          if (!ObjectUtils.isEmpty(invoiceLineList)) {
             idInvoiceLineList =
                 invoiceLineList.stream().map(InvoiceLine::getId).collect(Collectors.toList());
           }
 
-          List<Long> idMoveLineList = new ArrayList<Long>();
-          idMoveLineList.add((long) 0);
-          if (!CollectionUtils.isEmpty(moveLineList)) {
+          List<Long> idMoveLineList = new ArrayList<>();
+          idMoveLineList.add(0L);
+          if (!ObjectUtils.isEmpty(moveLineList)) {
             idMoveLineList =
                 moveLineList.stream().map(MoveLine::getId).collect(Collectors.toList());
           }
@@ -123,7 +123,7 @@ public class AccountController {
       if (account.getAnalyticDistributionRequiredOnInvoiceLines() == true) {
         List<InvoiceLine> invoiceLineList =
             Beans.get(AccountService.class).searchInvoiceLinesByAccountAndAnalytic(account, false);
-        if (!CollectionUtils.isEmpty(invoiceLineList)) {
+        if (!ObjectUtils.isEmpty(invoiceLineList)) {
           List<Long> idInvoiceLineList =
               invoiceLineList.stream().map(InvoiceLine::getId).collect(Collectors.toList());
           response.setView(
@@ -153,7 +153,7 @@ public class AccountController {
       if (account.getAnalyticDistributionRequiredOnMoveLines() == true) {
         List<MoveLine> moveLineList =
             Beans.get(AccountService.class).searchMoveLinesByAccountAndAnalytic(account, false);
-        if (!CollectionUtils.isEmpty(moveLineList)) {
+        if (!ObjectUtils.isEmpty(moveLineList)) {
           List<Long> idMoveLineList =
               moveLineList.stream().map(MoveLine::getId).collect(Collectors.toList());
           response.setView(

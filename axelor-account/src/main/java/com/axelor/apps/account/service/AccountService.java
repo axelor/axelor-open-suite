@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -86,19 +87,30 @@ public class AccountService {
   }
 
   public List<MoveLine> searchMoveLinesByAccountAndAnalytic(Account account, boolean isWithAnalytic)
-      throws Exception {
-    String analyticFilter = "";
+      throws AxelorException {
+    String analyticFilter;
     if (isWithAnalytic) {
       analyticFilter =
-          "(moveLine.analyticDistributionTemplate is not null OR (SELECT COUNT(0) FROM AnalyticMoveLine  analyticMoveLine WHERE analyticMoveLine.moveLine = moveLine.id) > 0)";
+          "(moveLine.analyticDistributionTemplate is not null "
+              + "OR (SELECT COUNT(0) "
+              + "FROM AnalyticMoveLine  analyticMoveLine "
+              + "WHERE analyticMoveLine.moveLine = moveLine.id) "
+              + "> 0)";
     } else {
       analyticFilter =
-          "(moveLine.analyticDistributionTemplate is null OR (SELECT COUNT(0) FROM AnalyticMoveLine analyticMoveLine WHERE analyticMoveLine.moveLine = moveLine.id) = 0)";
+          "(moveLine.analyticDistributionTemplate is null "
+              + "OR (SELECT COUNT(0) "
+              + "FROM AnalyticMoveLine analyticMoveLine "
+              + "WHERE analyticMoveLine.moveLine = moveLine.id) "
+              + "= 0)";
     }
     TypedQuery<MoveLine> moveLineQuery =
         JPA.em()
             .createQuery(
-                "SELECT moveLine FROM MoveLine moveLine WHERE moveLine.account = :accountId AND "
+                "SELECT moveLine "
+                    + "FROM MoveLine moveLine "
+                    + "WHERE moveLine.account = :accountId "
+                    + "AND "
                     + analyticFilter,
                 MoveLine.class);
     moveLineQuery.setParameter("accountId", account);
@@ -106,33 +118,43 @@ public class AccountService {
   }
 
   public List<InvoiceLine> searchInvoiceLinesByAccountAndAnalytic(
-      Account account, boolean isWithAnalytic) throws Exception {
-    String analyticFilter = "";
+      Account account, boolean isWithAnalytic) throws AxelorException {
+    String analyticFilter;
     if (isWithAnalytic) {
       analyticFilter =
-          "(invoiceLine.analyticDistributionTemplate is not null OR (SELECT COUNT(0) FROM AnalyticMoveLine analyticMoveLine WHERE analyticMoveLine.invoiceLine = invoiceLine.id) > 0)";
+          "(invoiceLine.analyticDistributionTemplate is not null "
+              + "OR (SELECT COUNT(0) "
+              + "FROM AnalyticMoveLine analyticMoveLine "
+              + "WHERE analyticMoveLine.invoiceLine = invoiceLine.id) "
+              + "> 0)";
     } else {
       analyticFilter =
-          "(invoiceLine.analyticDistributionTemplate is null OR (SELECT COUNT(0) FROM AnalyticMoveLine analyticMoveLine WHERE analyticMoveLine.invoiceLine = invoiceLine.id) = 0)";
+          "(invoiceLine.analyticDistributionTemplate is null "
+              + "OR (SELECT COUNT(0) "
+              + "FROM AnalyticMoveLine analyticMoveLine "
+              + "WHERE analyticMoveLine.invoiceLine = invoiceLine.id) "
+              + "= 0)";
     }
     TypedQuery<InvoiceLine> invoiceLineQuery =
         JPA.em()
             .createQuery(
-                "SELECT invoiceLine FROM InvoiceLine invoiceLine WHERE invoiceLine.account = :accountId AND "
+                "SELECT invoiceLine "
+                    + "FROM InvoiceLine invoiceLine "
+                    + "WHERE invoiceLine.account = :accountId AND "
                     + analyticFilter,
                 InvoiceLine.class);
     invoiceLineQuery.setParameter("accountId", account);
     return invoiceLineQuery.getResultList();
   }
 
-  public void cleanAnalytic(Account account) throws Exception {
+  public void cleanAnalytic(Account account) throws AxelorException {
     List<MoveLine> moveLineList = this.searchMoveLinesByAccountAndAnalytic(account, true);
     for (MoveLine moveLine : moveLineList) {
       moveLineService.cleanAnalytic(moveLine);
     }
 
-    List<InvoiceLine> incoiceLineList = this.searchInvoiceLinesByAccountAndAnalytic(account, true);
-    for (InvoiceLine invoiceLine : incoiceLineList) {
+    List<InvoiceLine> invoiceLineList = this.searchInvoiceLinesByAccountAndAnalytic(account, true);
+    for (InvoiceLine invoiceLine : invoiceLineList) {
       invoiceLineService.cleanAnalytic(invoiceLine);
     }
   }
