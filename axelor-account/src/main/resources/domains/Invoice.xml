@@ -131,6 +131,8 @@
     <many-to-one name="subrogationRelease" ref="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"/>
     <many-to-one name="subrogationReleaseMove" ref="com.axelor.apps.account.db.Move" title="Subrogation release Move"/>
 	
+    <string name="headOfficeAddress" title="Head office address"/>
+
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[

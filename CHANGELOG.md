@@ -3,6 +3,7 @@
 ## [Unreleased 5.1.14]
 ## Features
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'
+- RM#23133 INVOICE : new mandatory labelling
 
 ## Improvements
 - MOVE : changed position of reconciliation tag in move form.
