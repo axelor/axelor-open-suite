@@ -30,6 +30,7 @@
 - INVOICE : replace filter of stockMoveRepo changed to invoiceSet from invoice. 
 - Invoice : fix payment button visibility issue
 - HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
+- INVOICE : Fix printing of unitPrice when invoiceLine type is title.
 
 ## [5.2.0] - 2019-11-29
 ## Features
