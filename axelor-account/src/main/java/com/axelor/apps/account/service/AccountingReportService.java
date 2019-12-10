@@ -69,6 +69,9 @@ public interface AccountingReportService {
 
   public BigDecimal getCreditBalanceType4();
 
+  public String getReportFileLink(AccountingReport accountingReport, String name)
+      throws AxelorException;
+
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
 
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
