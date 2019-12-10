@@ -4943,7 +4943,7 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
