@@ -377,7 +377,7 @@
 "SaleOrder.isIspmRequired","Norme NIMP15 requise",,
 "SaleOrder.no","Devis N° ",,
 "SaleOrder.note","Remarques",,
-"SaleOrder.order","Commande",,
+"SaleOrder.order","Accusé réception commande",,
 "SaleOrder.others","Autres",,
 "SaleOrder.paymentCondition","Conditions de paiement",,
 "SaleOrder.paymentMode","Mode de paiement",,

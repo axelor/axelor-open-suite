@@ -13,6 +13,7 @@
 - PRODUCT : update translation for "Service" and "Product"
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
 - STOCK CONFIG : rename field name "stockLocationValue" 
+- SALE ORDER PRINTING : rename title  "Sale order" in "Order Acknowledgement"  of report on condition
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
