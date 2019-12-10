@@ -13,6 +13,7 @@
 - PRODUCT : update translation for "Service" and "Product"
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
 - STOCK CONFIG : rename field name "stockLocationValue" 
+- SALE ORDER PRINTING : rename title  "Sale order" in "Order Acknowledgement"  of report on condition
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
@@ -27,6 +28,7 @@
 - StockMove : set readonly to/fromStockLocation if status != Draft
 - PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
 - INVOICE : replace filter of stockMoveRepo changed to invoiceSet from invoice. 
+- Invoice : fix payment button visibility issue
 - HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
 
 ## [5.2.0] - 2019-11-29
