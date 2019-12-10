@@ -12,6 +12,7 @@
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
 - PRODUCT : update translation for "Service" and "Product"
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
+- STOCK CONFIG : rename field name "stockLocationValue" 
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
