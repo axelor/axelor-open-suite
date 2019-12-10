@@ -377,7 +377,7 @@
 "SaleOrder.isIspmRequired","ISPM 15 standard required",,
 "SaleOrder.no","Order N°",,
 "SaleOrder.note","Note",,
-"SaleOrder.order","Order",,
+"SaleOrder.order","Order Acknowledgement",,
 "SaleOrder.others","Others",,
 "SaleOrder.paymentCondition","Payment condition",,
 "SaleOrder.paymentMode","Payment mode",,
