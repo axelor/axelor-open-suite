@@ -17,10 +17,6 @@
  */
 package com.axelor.apps.hr.service.leave;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import javax.mail.MessagingException;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -30,6 +26,10 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import javax.mail.MessagingException;
 
 public interface LeaveService {
 
