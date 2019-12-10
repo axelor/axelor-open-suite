@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="quality" package="com.axelor.apps.quality.db"/>
+
+	<entity name="QualityCorrectiveAction">
+
+		<string name="name" title="Name"/>
+		<boolean name="isApplicable" title="Applicable"/>
+		<string name="details" title="Details"/>
+		<many-to-one name="qualityControl" title="Quality control" ref="com.axelor.apps.quality.db.QualityControl"/>
+
+	</entity>
+
+</domain-models>

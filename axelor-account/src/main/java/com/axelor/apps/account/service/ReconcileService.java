@@ -27,14 +27,14 @@ import java.util.List;
 
 public interface ReconcileService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Reconcile createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal amount,
       boolean canBeZeroBalanceOk);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
       throws AxelorException;
 
@@ -51,10 +51,10 @@ public interface ReconcileService {
       boolean updateInvoicePayments)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void unreconcile(Reconcile reconcile) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void canBeZeroBalance(Reconcile reconcile) throws AxelorException;
 
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException;

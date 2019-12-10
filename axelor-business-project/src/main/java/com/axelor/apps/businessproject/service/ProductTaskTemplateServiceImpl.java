@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.businessproject.db.ProductTaskTemplate;
-import com.axelor.apps.businessproject.db.repo.ProductTaskTemplateRepository;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
@@ -32,17 +32,14 @@ import java.util.List;
 
 public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateService {
 
-  protected ProductTaskTemplateRepository repository;
-  protected TeamTaskBusinessService teamTaskBusinessService;
+  protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
   protected TeamTaskRepository teamTaskRepository;
 
   @Inject
   public ProductTaskTemplateServiceImpl(
-      ProductTaskTemplateRepository repository,
-      TeamTaskBusinessService teamTaskBusinessService,
+      TeamTaskBusinessProjectService teamTaskBusinessProjectService,
       TeamTaskRepository teamTaskRepository) {
-    this.repository = repository;
-    this.teamTaskBusinessService = teamTaskBusinessService;
+    this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
     this.teamTaskRepository = teamTaskRepository;
   }
 
@@ -53,8 +50,10 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       Project project,
       TeamTask parent,
       LocalDateTime startDate,
-      BigDecimal qty) {
+      BigDecimal qty,
+      SaleOrderLine saleOrderLine) {
     List<TeamTask> tasks = new ArrayList<>();
+    Product product = saleOrderLine.getProduct();
 
     for (TaskTemplate template : templates) {
       BigDecimal qtyTmp = (template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
@@ -62,13 +61,29 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       while (qtyTmp.signum() > 0) {
         LocalDateTime dateWithDelay = startDate.plusHours(template.getDelayToStart().longValue());
 
-        TeamTask task = teamTaskBusinessService.create(template, project, dateWithDelay, qty);
+        TeamTask task =
+            teamTaskBusinessProjectService.create(template, project, dateWithDelay, qty);
         task.setParentTask(parent);
+        task.setProduct(product);
+        task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
+        task.setUnit(product.getUnit());
+        task.setUnitPrice(product.getSalePrice());
+        task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
+        if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
+          task.setToInvoice(true);
+          task.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+        }
         tasks.add(teamTaskRepository.save(task));
 
         // Only parent task can have multiple quantities
         List<TeamTask> children =
-            convert(template.getTaskTemplateList(), project, task, dateWithDelay, BigDecimal.ONE);
+            convert(
+                template.getTaskTemplateList(),
+                project,
+                task,
+                dateWithDelay,
+                BigDecimal.ONE,
+                saleOrderLine);
         tasks.addAll(children);
 
         qtyTmp = qtyTmp.subtract(BigDecimal.ONE);
@@ -76,14 +91,5 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
     }
 
     return tasks;
-  }
-
-  @Override
-  @Transactional
-  public void remove(ProductTaskTemplate productTaskTemplate) {
-    productTaskTemplate = repository.find(productTaskTemplate.getId());
-    if (productTaskTemplate != null) {
-      repository.remove(productTaskTemplate);
-    }
   }
 }

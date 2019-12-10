@@ -188,7 +188,7 @@ public class SequenceService {
    * @param sequence
    * @return
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
 
     SequenceVersion sequenceVersion = getVersion(sequence, refDate);

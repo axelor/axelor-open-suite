@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="WeeklyPlanning" cachable="true">
+  <entity name="WeeklyPlanning" cacheable="true">
   	  <string name="name" required="true" namecolumn="true"/>
   	  <one-to-many name="weekDays" ref="com.axelor.apps.base.db.DayPlanning" mappedBy="weeklyPlann"/>
   	  <decimal name="bonusCoef" title="Coefficient for bonus" />
@@ -15,10 +15,11 @@
   <entity name="DayPlanning">
   	<many-to-one name="weeklyPlann" ref="com.axelor.apps.base.db.WeeklyPlanning"/>
   	<string name="name" required="true" namecolumn="true" title="Day" selection="hrs.weekly.day.select"/>
-  	<time name="morningFrom" title="Morning From"/>
+  	<time name="morningFrom" title="1st Period From"/>
     <time name="morningTo" title="To"/>
-    <time name="afternoonFrom" title="Afternoon From"/>
+    <time name="afternoonFrom" title="2nd Period From"/>
     <time name="afternoonTo" title="To"/>
+    <integer name="sequence" title="Seq."/>
   </entity>
   
 </domain-models>

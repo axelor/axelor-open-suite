@@ -28,7 +28,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -39,15 +38,14 @@ public class ManufOrderBusinessController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private ManufOrderRepository manufOrderRepo;
-
   public void propagateIsToInvoice(ActionRequest request, ActionResponse response) {
 
     ManufOrderServiceBusinessImpl manufOrderService =
         Beans.get(ManufOrderServiceBusinessImpl.class);
     ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 
-    manufOrderService.propagateIsToInvoice(manufOrderRepo.find(manufOrder.getId()));
+    manufOrderService.propagateIsToInvoice(
+        Beans.get(ManufOrderRepository.class).find(manufOrder.getId()));
 
     response.setReload(true);
   }

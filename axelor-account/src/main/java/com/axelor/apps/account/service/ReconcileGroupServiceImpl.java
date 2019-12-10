@@ -65,7 +65,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(ReconcileGroup reconcileGroup, List<Reconcile> reconcileList)
       throws AxelorException {
     if (CollectionUtils.isEmpty(reconcileList)) {
@@ -254,7 +254,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void unletter(ReconcileGroup reconcileGroup) throws AxelorException {
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
 

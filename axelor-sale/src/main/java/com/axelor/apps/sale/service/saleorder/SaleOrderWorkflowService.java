@@ -26,7 +26,7 @@ import com.google.inject.persist.Transactional;
 
 public interface SaleOrderWorkflowService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Partner validateCustomer(SaleOrder saleOrder);
 
   public String getSequence(Company company) throws AxelorException;

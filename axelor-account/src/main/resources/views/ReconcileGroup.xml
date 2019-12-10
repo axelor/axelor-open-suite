@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-  <grid name="reconcile-group-grid" title="Reconcile group"
-    model="com.axelor.apps.account.db.ReconcileGroup"
-    canNew="false"
+  <grid name="reconcile-group-grid" title="Reconcile group" model="com.axelor.apps.account.db.ReconcileGroup" canNew="false"
     canDelete="false">
     <field name="code" width="120"/>
-    <field name="company"/>
+    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
   </grid>
 
   <form name="reconcile-group-form" title="Reconcile group"
-    model="com.axelor.apps.account.db.ReconcileGroup" 
+    model="com.axelor.apps.account.db.ReconcileGroup"
     canNew="false"
     canDelete="false">
     <panel itemSpan="12" name="infoPanel">

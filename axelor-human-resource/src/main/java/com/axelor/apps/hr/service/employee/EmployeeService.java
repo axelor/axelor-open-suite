@@ -18,8 +18,10 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
@@ -37,4 +39,8 @@ public interface EmployeeService extends UserService {
       throws AxelorException;
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName);
+
+  /** Generates a new {@link DPAE} for given {@link Employee} and returns its id. */
+  @Transactional(rollbackOn = {Exception.class})
+  Long generateNewDPAE(Employee employee) throws AxelorException;
 }

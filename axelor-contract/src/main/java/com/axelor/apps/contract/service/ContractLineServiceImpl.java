@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -27,10 +31,12 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
@@ -133,6 +139,24 @@ public class ContractLineServiceImpl implements ContractLineService {
     BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     contractLine.setInTaxTotal(inTaxTotal);
 
+    return contractLine;
+  }
+
+  @Override
+  public ContractLine createAnalyticDistributionWithTemplate(
+      ContractLine contractLine, Contract contract) {
+
+    AppAccountService appAccountService = Beans.get(AppAccountService.class);
+
+    List<AnalyticMoveLine> analyticMoveLineList =
+        Beans.get(AnalyticMoveLineService.class)
+            .generateLines(
+                contractLine.getAnalyticDistributionTemplate(),
+                contractLine.getExTaxTotal(),
+                AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT,
+                appAccountService.getTodayDate());
+
+    contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
   }
 }

@@ -21,17 +21,14 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.service.EmploymentContractService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.io.IOException;
 
 @Singleton
 public class EmploymentContractController {
-
-  @Inject private EmploymentContractService employmentContractService;
-
-  @Inject private EmploymentContractRepository employmentContractRepo;
 
   public void addAmendment(ActionRequest request, ActionResponse response) {
 
@@ -39,8 +36,9 @@ public class EmploymentContractController {
 
     try {
 
-      employmentContractService.addAmendment(
-          employmentContractRepo.find(employmentContract.getId()));
+      Beans.get(EmploymentContractService.class)
+          .addAmendment(
+              Beans.get(EmploymentContractRepository.class).find(employmentContract.getId()));
       response.setFlash(
           String.format(
               "Contrat %s - avenant %s",
@@ -50,5 +48,16 @@ public class EmploymentContractController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void exportEmploymentContract(ActionRequest request, ActionResponse response)
+      throws IOException {
+    EmploymentContract employmentContract =
+        Beans.get(EmploymentContractRepository.class)
+            .find(request.getContext().asType(EmploymentContract.class).getId());
+
+    Beans.get(EmploymentContractService.class).exportEmploymentContract(employmentContract);
+
+    response.setReload(true);
   }
 }

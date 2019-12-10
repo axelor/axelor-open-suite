@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.JournalType;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface AccountingReportService {
 
@@ -34,7 +35,7 @@ public interface AccountingReportService {
 
   public String addParams(String paramQuery);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setSequence(AccountingReport accountingReport, String sequence);
 
   public String getSequence(AccountingReport accountingReport) throws AxelorException;
@@ -43,11 +44,11 @@ public interface AccountingReportService {
 
   public Account getAccount(AccountingReport accountingReport);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setStatus(AccountingReport accountingReport);
 
   /** @param accountingReport */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setPublicationDateTime(AccountingReport accountingReport);
 
   /**
@@ -68,5 +69,10 @@ public interface AccountingReportService {
 
   public BigDecimal getCreditBalanceType4();
 
+  public String getReportFileLink(AccountingReport accountingReport, String name)
+      throws AxelorException;
+
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException;
+
+  public void testReportedDateField(LocalDate reportedDate) throws AxelorException;
 }

@@ -569,7 +569,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void processCollected(LogisticalForm logisticalForm) throws AxelorException {
     if (logisticalForm.getLogisticalFormLineList() == null) {
       return;

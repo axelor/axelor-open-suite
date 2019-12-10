@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<selection name="quality.alert.priority.select">
 		<option value="1">Low</option>
@@ -18,31 +18,17 @@
 	</selection>
 	
 	<selection name="quality.control.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Canceled</option>
-		<option value="3">Planned</option>
-		<option value="4">In progress</option>
-		<option value="5">Standby</option>
-		<option value="6">Finished</option>
-	</selection>
-	
-	<selection name="quality.control.points.control.type.select">
-		<option value="1">All operations</option>
-		<option value="2">Randomly</option>
-		<option value="3">Periodically</option>
-	</selection>
-	
-	<selection name="quality.control.points.test.type.select">
-		<option value="1">Pass-fail</option>
-		<option value="2">Measure</option>
-		<option value="3">Dummy</option>
-		<option value="4">Take a picture</option>
+		<option order="0" value="1">Draft</option>
+		<option order="4" value="2">Canceled</option>
+		<option order="1" value="3">Planned</option>
+		<option order="2" value="4">In progress</option>
+		<option order="3" value="5">Standby</option>
+		<option order="5" value="6">Finished</option>
 	</selection>
 	
 	<selection name="quality.control.points.status.select">
-		<option value="1">To do</option>
-		<option value="2">Passed</option>
-		<option value="3">Failed</option>
+		<option value="1">On hold</option>
+		<option value="2">Done</option>
 	</selection>
 	
 	<selection name="quality.control.point.model.period">
@@ -57,5 +43,19 @@
 	<selection name="team.type.select" id="quality.team.type.select">
 		<option value="quality">Quality</option>
 	</selection>
-	
+
+	<selection name="quality.measuring.point.measuring.note.select">
+		<option value="0" icon="img/rating/rating-0.00.png">0</option>
+		<option value="1" icon="img/rating/rating-1.00.png">1</option>
+		<option value="2" icon="img/rating/rating-2.00.png">2</option>
+		<option value="3" icon="img/rating/rating-3.00.png">3</option>
+		<option value="4" icon="img/rating/rating-4.00.png">4</option>
+		<option value="5" icon="img/rating/rating-5.00.png">5</option>
+	</selection>
+
+	<selection name="quality.measuring.point.measuring.type.select">
+		<option value="1">Note</option>
+		<option value="2">Conformity</option>
+	</selection>
+
 </object-views>

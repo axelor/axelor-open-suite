@@ -18,19 +18,17 @@
 package com.axelor.apps.hr.web;
 
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AppHumanResourceController {
 
-  @Inject private AppHumanResourceService appHumanResourceService;
-
   public void generateHrConfigurations(ActionRequest request, ActionResponse response) {
 
-    appHumanResourceService.generateHrConfigurations();
+    Beans.get(AppHumanResourceService.class).generateHrConfigurations();
 
     response.setReload(true);
   }

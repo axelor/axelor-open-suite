@@ -26,24 +26,18 @@ import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AppBaseController {
 
-  @Inject private ExportDbObjectService eos;
-
-  @Inject private MapService mapService;
-
-  @Inject private CurrencyConversionService currencyConversionService;
-
   public void exportObjects(ActionRequest request, ActionResponse response) {
-    MetaFile metaFile = eos.exportObject();
+    MetaFile metaFile = Beans.get(ExportDbObjectService.class).exportObject();
     if (metaFile == null) {
       response.setFlash(I18n.get(IExceptionMessage.GENERAL_4));
     } else {
@@ -64,7 +58,7 @@ public class AppBaseController {
       Integer apiType = appBase.getMapApiSelect();
 
       if (apiType == 1) {
-        mapService.testGMapService();
+        Beans.get(MapService.class).testGMapService();
         response.setFlash(IExceptionMessage.GENERAL_6);
       }
     } catch (Exception e) {
@@ -74,7 +68,7 @@ public class AppBaseController {
 
   public void updateCurrencyConversion(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    currencyConversionService.updateCurrencyConverion();
+    Beans.get(CurrencyConversionService.class).updateCurrencyConverion();
     response.setReload(true);
   }
 
@@ -89,7 +83,7 @@ public class AppBaseController {
     try {
       response.setView(
           ActionView.define(I18n.get("Customers"))
-              .add("html", mapService.getMapURI("customer"))
+              .add("html", Beans.get(MapService.class).getMapURI("customer"))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -100,7 +94,7 @@ public class AppBaseController {
     try {
       response.setView(
           ActionView.define(I18n.get("Prospects"))
-              .add("html", mapService.getMapURI("prospect"))
+              .add("html", Beans.get(MapService.class).getMapURI("prospect"))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -111,7 +105,7 @@ public class AppBaseController {
     try {
       response.setView(
           ActionView.define(I18n.get("Suppliers"))
-              .add("html", mapService.getMapURI("supplier"))
+              .add("html", Beans.get(MapService.class).getMapURI("supplier"))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);

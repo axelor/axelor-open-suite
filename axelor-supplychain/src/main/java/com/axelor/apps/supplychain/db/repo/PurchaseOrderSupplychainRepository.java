@@ -18,10 +18,10 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.service.app.AppService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -39,7 +39,7 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
       return copy;
     }
 
-    copy.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+    copy.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
     copy.setAmountInvoiced(null);
 
     for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {

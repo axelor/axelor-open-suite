@@ -34,6 +34,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
@@ -45,14 +46,17 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
@@ -93,7 +97,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       for (StockMove stockMove : stockMoveList) {
         offset++;
         try {
-          Invoice invoice = stockMoveInvoiceService.createInvoice(stockMove);
+          Invoice invoice = stockMoveInvoiceService.createInvoice(stockMove, 0, null);
           if (invoice != null) {
             invoiceIdList.add(invoice.getId());
           }
@@ -304,7 +308,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(
       List<StockMove> stockMoveList,
       PaymentCondition paymentConditionIn,
@@ -320,7 +324,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiOutgoingStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
 
@@ -378,7 +382,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     for (StockMove stockMoveLocal : stockMoveList) {
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList());
+              invoice, stockMoveLocal.getStockMoveLineList(), null);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
@@ -390,17 +394,35 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceRepository.save(invoice);
     if (invoice.getExTaxTotal().signum() < 0) {
       Invoice refund = transformToRefund(invoice);
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(refund));
+      stockMoveList.forEach(
+          stockMove -> {
+            if (stockMove.getInvoiceSet() != null) {
+              stockMove.getInvoiceSet().add(refund);
+            } else {
+              Set<Invoice> invoiceSet = new HashSet<>();
+              invoiceSet.add(refund);
+              stockMove.setInvoiceSet(invoiceSet);
+            }
+          });
       invoiceRepository.remove(invoice);
       return Optional.of(refund);
     } else {
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+      stockMoveList.forEach(
+          stockMove -> {
+            if (stockMove.getInvoiceSet() != null) {
+              stockMove.getInvoiceSet().add(invoice);
+            } else {
+              Set<Invoice> invoiceSet = new HashSet<>();
+              invoiceSet.add(invoice);
+              stockMove.setInvoiceSet(invoiceSet);
+            }
+          });
       return Optional.of(invoice);
     }
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiIncomingStockMove(
       List<StockMove> stockMoveList,
       PaymentCondition paymentConditionIn,
@@ -416,7 +438,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Invoice> createInvoiceFromMultiIncomingStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
     if (stockMoveList == null || stockMoveList.isEmpty()) {
@@ -473,7 +495,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     for (StockMove stockMoveLocal : stockMoveList) {
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList());
+              invoice, stockMoveLocal.getStockMoveLineList(), null);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
@@ -485,11 +507,30 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceRepository.save(invoice);
     if (invoice.getExTaxTotal().signum() < 0) {
       Invoice refund = transformToRefund(invoice);
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(refund));
+      stockMoveList.forEach(
+          stockMove -> {
+            if (stockMove.getInvoiceSet() != null) {
+              stockMove.getInvoiceSet().add(refund);
+            } else {
+              Set<Invoice> invoiceSet = new HashSet<>();
+              invoiceSet.add(refund);
+              stockMove.setInvoiceSet(invoiceSet);
+            }
+          });
+
       invoiceRepository.remove(invoice);
       return Optional.of(refund);
     } else {
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
+      stockMoveList.forEach(
+          stockMove -> {
+            if (stockMove.getInvoiceSet() != null) {
+              stockMove.getInvoiceSet().add(invoice);
+            } else {
+              Set<Invoice> invoiceSet = new HashSet<>();
+              invoiceSet.add(invoice);
+              stockMove.setInvoiceSet(invoiceSet);
+            }
+          });
       return Optional.of(invoice);
     }
   }
@@ -634,8 +675,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
   /** This method will throw an exception if the given stock move is already invoiced. */
   protected void checkIfAlreadyInvoiced(StockMove stockMove) throws AxelorException {
-    if (stockMove.getInvoice() != null
-        && stockMove.getInvoice().getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
+    if (stockMove.getInvoiceSet() != null
+        && stockMove
+                .getStockMoveLineList()
+                .stream()
+                .map(StockMoveLine::getQtyInvoiced)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO)
+                .compareTo(BigDecimal.ZERO)
+            == 0) {
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         templateMessage = IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;

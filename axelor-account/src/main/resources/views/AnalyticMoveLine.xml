@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
     <grid name="analytic-move-line-grid" title="Analytic Move Lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
     	<hilite if="typeSelect == 1" color="warning"/>
@@ -42,13 +42,13 @@
             <field name="originalPieceAmount" aggregate="sum"/>
 	        <field name="amount"/>
 	        <field name="currency" canEdit="false"  form-view="currency-form" grid-view="currency-grid" />
-	        <field name="project" domain="self.imputable = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')"/>
+	        <field name="project" domain="self.imputable = true AND self.isBusinessProject = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')" title="Business project"/>
   			<field name="account" onSelect="action-analytic-move-line-attrs-account-domain" onChange="action-analytic-move-line-record-account-onchange"/>
             <field name="accountType" onChange="action-analytic-move-line-record-account-type-onchange"/>
 	        <field name="typeSelect"/>
            <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
        </panel>
-        
+
     </form>
     
     <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onNew="action-analytic-move-line-attrs-set-original-piece-amount">

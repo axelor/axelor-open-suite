@@ -108,7 +108,7 @@ public interface BankDetailsService {
   String getActiveCompanyBankDetails(Company company);
 
   /**
-   * ABS method to validate a iban.
+   * Method to validate a iban.
    *
    * @param iban
    * @throws IbanFormatException

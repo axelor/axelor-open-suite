@@ -34,7 +34,7 @@ public class ImportBillOfMaterial {
 
   @Inject BillOfMaterialRepository bomRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object computeCostPrice(Object bean, Map values) throws AxelorException {
     if (bean == null) {
       return bean;
@@ -42,7 +42,7 @@ public class ImportBillOfMaterial {
     assert bean instanceof BillOfMaterial;
     BillOfMaterial bom = (BillOfMaterial) bean;
     bom = bomRepo.save(bom);
-    costSheetService.computeCostPrice(bom);
+    costSheetService.computeCostPrice(bom, CostSheetService.ORIGIN_BILL_OF_MATERIAL, null);
     billOfMaterialService.updateProductCostPrice(bom);
     return bom;
   }

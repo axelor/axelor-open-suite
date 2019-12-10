@@ -71,4 +71,12 @@ public interface ContractLineService {
    * @return ContractLine with ex/in tax total computed.
    */
   ContractLine computeTotal(ContractLine contractLine);
+
+  /**
+   * Create analytic move lines using analytic distribution template
+   *
+   * @param contractLine
+   * @return ContractLine filled with analytic move lines
+   */
+  ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
 }

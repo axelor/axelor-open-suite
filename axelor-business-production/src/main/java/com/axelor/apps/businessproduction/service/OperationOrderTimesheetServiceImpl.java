@@ -58,7 +58,7 @@ public class OperationOrderTimesheetServiceImpl implements OperationOrderTimeshe
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateOperationOrders(Timesheet timesheet) throws AxelorException {
     if (timesheet.getTimesheetLineList() == null) {
       return;

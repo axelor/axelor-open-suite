@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module package="com.axelor.apps.project.db" name="project"/>
+
+	<entity name="Project">
+		   <one-to-many name="announcementList" ref="com.axelor.apps.businesssupport.db.ProjectAnnouncement" title="Announcement" mappedBy="project"/>
+		   <one-to-many name="roadmapList" ref="com.axelor.apps.businesssupport.db.ProjectVersion" title="Project.version" mappedBy="project"/>
+	</entity>
+
+</domain-models>
+

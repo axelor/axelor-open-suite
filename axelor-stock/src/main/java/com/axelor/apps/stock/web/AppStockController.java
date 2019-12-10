@@ -18,19 +18,17 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AppStockController {
 
-  @Inject private AppStockService appStockService;
-
   public void generateStockConfigurations(ActionRequest request, ActionResponse response) {
 
-    appStockService.generateStockConfigurations();
+    Beans.get(AppStockService.class).generateStockConfigurations();
 
     response.setReload(true);
   }

@@ -151,4 +151,9 @@ public class AccountingBatchService extends AbstractBatchService {
 
     return Beans.get(BatchRealizeFixedAssetLine.class).run(accountingBatch);
   }
+
+  public Batch closeAnnualAccounts(AccountingBatch accountingBatch) {
+
+    return Beans.get(BatchCloseAnnualAccounts.class).run(accountingBatch);
+  }
 }

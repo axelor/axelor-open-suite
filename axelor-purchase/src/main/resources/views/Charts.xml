@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	  
 	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.chart.set.date.6m">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
@@ -15,7 +15,7 @@
 	  <field name="monthSelect" expr="eval:12" />
 	</action-record>
 	  
-	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.per.product.family.volume" title="My purchased qty by product family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.per.product.family.volume" title="My purchased qty by product accounting family">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date" x-required="true"/>
 	    <field type="date" name="toDate" title="To Date" x-required="true"/>
@@ -43,12 +43,12 @@
 	    product.productFamily.name
 	  
 	  </dataset>
-	  <category key="_product_family" type="text" title="Product Family"/>
+	  <category key="_product_family" type="text" title="Product Accounting Family"/>
 	  <series key="_qty" type="donut" title="Quantity"/>
 	</chart>
 	  
 	  
-	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.amount.per.product.family" title="My purchased amount by product family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.my.purchase.amount.per.product.family" title="My purchased amount by product accounting family">
 	  <search-fields>
 	    <field type="date" name="fromDate" title="From Date" x-required="true"/>
 	    <field type="date" name="toDate" title="To Date" x-required="true"/>
@@ -75,12 +75,12 @@
 	    product.productFamily.name
 	  
 	  </dataset>
-	  <category key="_product_family" type="text" title="Product Family"/>
+	  <category key="_product_family" type="text" title="Product Accounting Family"/>
 	  <series key="amount" type="bar" title="Amount"/>
 	</chart>
 	  
 	   
-	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by accounting family">
 	
 	  <search-fields>
 	    <field name="fromDate" type="date" title="From Date" x-required="true"/>
@@ -115,7 +115,7 @@
 	</chart>
 	  
 	  
-	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.by.family" title="Purchased amount by family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.by.family" title="Purchased amount by accounting family">
 	  <search-fields>
 	    <field name="fromDate" type="date" title="From Date" x-required="true"/>
 	    <field name="toDate" type="date" title="To Date" x-required="true"/>
@@ -148,12 +148,12 @@
 	      family_name
 	  
 	  </dataset>
-	  <category key="family_name" type="text" title="Product Family"/>
+	  <category key="family_name" type="text" title="Product Accounting Family"/>
 	  <series key="amount" type="bar" title="Amount"/>
 	</chart>
 	  
 	  
-	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by accounting family">
 	  <search-fields>
 	    <field name="fromDate" type="date" title="From Date" x-required="true"/>
 	    <field name="toDate" type="date" title="To Date" x-required="true"/>
@@ -200,7 +200,7 @@
 	    base_product_family.name
 	  
 	  </dataset>
-	  <category key="_family_product" type="text" title="Product Family"/>
+	  <category key="_family_product" type="text" title="Product Accounting Family"/>
 	  <series key="_percent" type="donut" title="Percent"/>
 	</chart>	  
 	
@@ -294,7 +294,7 @@
 		<config name="xFormat" value="MM-YYYY"/>
 	</chart>
 	
-	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product family">
+	<chart onInit="action.purchase.chart.set.date.6m" name="chart.purchase.amount.per.product.family" title="Purchased amount by product accounting family">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
 			<field type="date" name="toDate" title="To Date" x-required="true"/>
@@ -322,7 +322,7 @@
 			ORDER BY
 			  product.productFamily.name
 		</dataset>
-		<category key="_family_product" type="text" title="Product Family"/>
+		<category key="_family_product" type="text" title="Product Accounting Family"/>
 		<series key="amount" type="bar" title="Amount"/>
 	</chart>
 	

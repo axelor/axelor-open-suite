@@ -25,7 +25,7 @@ import java.util.Collection;
 
 public interface BankOrderMergeService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException;
 
   /**

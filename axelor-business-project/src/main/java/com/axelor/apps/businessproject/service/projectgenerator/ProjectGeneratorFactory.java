@@ -68,7 +68,8 @@ public interface ProjectGeneratorFactory {
         return Beans.get(ProjectGeneratorFactoryTaskTemplate.class);
       default:
         throw new AxelorException(
-            TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.FACTORY_NO_FOUND));
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FACTORY_NO_FOUND));
     }
   }
 

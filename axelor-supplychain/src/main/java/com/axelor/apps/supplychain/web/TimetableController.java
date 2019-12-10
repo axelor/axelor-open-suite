@@ -18,33 +18,36 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 @Singleton
 public class TimetableController {
 
-  @Inject protected TimetableService timetableService;
-
-  @Inject protected TimetableRepository timeTableRepo;
+  @Inject TimetableService timetableService;
 
   public void generateInvoice(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Timetable timetable = request.getContext().asType(Timetable.class);
-    timetable = timeTableRepo.find(timetable.getId());
+    timetable = Beans.get(TimetableRepository.class).find(timetable.getId());
 
     Context parentContext = request.getContext().getParent();
     if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
@@ -72,30 +75,27 @@ public class TimetableController {
             .map());
   }
 
-  /**
-   * Called by the timetable grid and form. Update all fields when the product is changed.
-   *
-   * @param request
-   * @param response
-   */
-  public void getProductInformation(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void applyTemplate(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 
-    Timetable timetable = context.asType(Timetable.class);
-
-    Product product = timetable.getProduct();
-
-    if (product != null) {
-      try {
-        timetableService.computeProductInformation(timetable);
-
-        response.setValue("productName", timetable.getProductName());
-        response.setValue("unit", timetable.getUnit());
-      } catch (Exception e) {
-        response.setFlash(e.getMessage());
+    try {
+      if (context.get("timetableTemplate") == null
+          || context.get("exTaxTotal") == null
+          || context.get("computationDate") == null) {
+        return;
       }
+
+      TimetableTemplate template = (TimetableTemplate) context.get("timetableTemplate");
+
+      List<Timetable> timetableList =
+          timetableService.applyTemplate(
+              template,
+              (BigDecimal) context.get("exTaxTotal"),
+              (LocalDate) context.get("computationDate"));
+
+      response.setValue("timetableList", timetableList);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

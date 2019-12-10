@@ -105,14 +105,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     try {
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
         String[] splitField = advancedExportLine.getTargetField().split("\\.");
-        String alias = "Col_" + col + ",";
+        String alias = "Col_" + col;
 
         createQueryParts(splitField, 0, advancedExport.getMetaModel());
 
-        selectFieldBuilder.append(aliasName + selectField + " AS " + alias);
+        selectFieldBuilder.append(aliasName + selectField + " AS " + alias + ",");
 
         if (advancedExportLine.getOrderBy()) {
-          orderByFieldBuilder.append(alias);
+          orderByFieldBuilder.append(alias + " " + advancedExportLine.getOrderByType() + ",");
         }
         selectField = "";
         aliasName = "";

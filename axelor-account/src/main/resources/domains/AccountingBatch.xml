@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -47,6 +47,16 @@
 	<integer name="customerReimbursementTypeSelect" title="Customer reimbursement type"
 		default="1" required="true"
 		selection="iaccount.account.batch.transfer.customer.reimbursement.type.select" />
+		
+	<!-- CLOSE/OPEN ANNUAL ACCOUNTS -->
+	<boolean name="openYear" title="Open the year accounts"/>
+	<boolean name="closeYear" title="Close the year accounts"/>
+	<many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"/>
+    <many-to-many name="accountSet" ref="Account" title="Accounting.Accounts"/>
+<!--     <many-to-many name="journalSet" ref="Journal" title="Journals"/> -->
+    <boolean name="allocatePerPartner" title="Allocate per partner"/>
+	 <string name="moveDescription" title="Move description"/>
+
 
   	<extra-code><![CDATA[
 	
@@ -58,6 +68,8 @@
 		public static final int ACTION_MOVE_LINE_EXPORT = 18;
 		public static final int ACTION_CREDIT_TRANSFER = 19;
 		public static final int ACTION_REALIZE_FIXED_ASSET_LINES = 20;
+		public static final int ACTION_CLOSE_ANNUAL_ACCOUNTS_OF_PAST_YEAR = 21;
+		public static final int ACTION_OPEN_ANNUAL_ACCOUNTS_OF_NEXT_YEAR = 22;
 		
 		// REIMBURSEMENT TYPE
 		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;

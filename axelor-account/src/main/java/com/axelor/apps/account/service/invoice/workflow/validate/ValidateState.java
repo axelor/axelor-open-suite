@@ -100,6 +100,7 @@ public class ValidateState extends WorkflowInvoice {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
+
     invoice.setStatusSelect(InvoiceRepository.STATUS_VALIDATED);
     invoice.setValidatedByUser(userService.getUser());
     invoice.setValidatedDate(appBaseService.getTodayDate());

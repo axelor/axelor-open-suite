@@ -20,4 +20,8 @@ package com.axelor.apps.supplychain.translation;
 public interface ITranslation {
 
   public static final String SUPPLYCHAIN_APP_NAME = /*$$(*/ "value:Supplychain"; /*)*/
+
+  public static final String INVOICE = /*$$(*/ "Invoice"; /*)*/
+
+  public static final String INVOICING = /*$$(*/ "Invoicing"; /*)*/
 }

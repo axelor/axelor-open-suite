@@ -20,9 +20,9 @@ package com.axelor.csv.script;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.script.ImportPurchaseOrder;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -101,11 +101,12 @@ public class ImportSupplyChain {
         }
       }
 
-      if (status == IPurchaseOrder.STATUS_VALIDATED || status == IPurchaseOrder.STATUS_FINISHED) {
+      if (status == PurchaseOrderRepository.STATUS_VALIDATED
+          || status == PurchaseOrderRepository.STATUS_FINISHED) {
         purchaseOrderServiceSupplychainImpl.validatePurchaseOrder(purchaseOrder);
       }
 
-      if (status == IPurchaseOrder.STATUS_FINISHED) {
+      if (status == PurchaseOrderRepository.STATUS_FINISHED) {
         List<Long> idList =
             purchaseOrderStockServiceImpl.createStockMoveFromPurchaseOrder(purchaseOrder);
         for (Long id : idList) {

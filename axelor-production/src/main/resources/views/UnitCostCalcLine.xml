@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+  <grid name="unit-cost-calc-line-grid" title="Results" model="com.axelor.apps.production.db.UnitCostCalcLine" editable="true" orderBy="product.code">
+		<field name="product.code"/>
+		<field name="product.name"/>
+		<field name="company" readonly="true" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="maxLevel" readonly="true"/>
+		<field name="company.currency"/>
+		<field name="previousCost" readonly="true" x-scale="2"/>
+		<field name="computedCost" readonly="true" x-scale="2"/>
+		<field name="costToApply" x-scale="2"/>
+  </grid>
+    
+	<form name="unit-cost-calc-line-form" title="Results" model="com.axelor.apps.production.db.UnitCostCalcLine" width="large"
+	onLoad="action-unit-cost-calc-line-attrs-price-digits">
+		<panel name="mainPanel">
+			<field name="unitCostCalculation" hidden="true"/>
+			<field name="product" readonly="true"/>
+			<field name="company" readonly="true"/>
+			<field name="maxLevel" readonly="true"/>
+			<field name="company.currency"/>
+			<field name="previousCost" readonly="true"/>
+			<field name="computedCost" readonly="true"/>
+			<field name="costSheet" readonly="true"/>
+			<field name="costToApply"/>
+		</panel>
+	</form>
+	
+	<action-attrs name="action-unit-cost-calc-line-attrs-price-digits">
+        <attribute name="scale" for="previousCost,computedCost,costToApply" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    </action-attrs>
+	
+</object-views>

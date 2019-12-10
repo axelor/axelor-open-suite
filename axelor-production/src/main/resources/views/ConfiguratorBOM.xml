@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <form name="configurator-bom-form" title="Configurator BOM"
     		onNew="action-configurator-bom-method-set-parent"
@@ -27,7 +27,7 @@
                 <field name="product" colSpan="12"
                        showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
                        onSelect="action-configurator-bom-attrs-product-domain"
-                       form-view="product-view" grid-view="product-grid"/>
+                       form-view="product-form" grid-view="product-grid"/>
                 <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                        x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
             </panel>
@@ -60,6 +60,9 @@
 
     <grid name="configurator-bom-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
         <field name="name"/>
+        <field name="product"/>
+        <field name="qty"/>
+        <field name="unit"/>
     </grid>
 
      <action-view name="action-configurator-bom-view" title="Configurator BOM"

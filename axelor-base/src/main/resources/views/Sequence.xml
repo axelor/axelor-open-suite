@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-    <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
-        <field name="name"/>
-        <field name="code"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="prefixe"/>
-        <field name="suffixe"/>
-        <field name="padding"/>
-        <field name="toBeAdded"/>
-    </grid>
+	<grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
+		<field name="name"/>
+		<field name="code"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="prefixe"/>
+		<field name="suffixe"/>
+		<field name="padding"/>
+		<field name="toBeAdded"/>
+	</grid>
     
     <form name="sequence-form" title="Sequence" model="com.axelor.apps.base.db.Sequence" onNew="action-group-base-sequence-onnew" onLoad="action-sequence-attrs" onSave="action-sequence-validate">
 		<panel name="mainPanel">

@@ -26,7 +26,6 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.mail.MailParser;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.util.Date;
 import javax.mail.MessagingException;
 
@@ -41,10 +40,10 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
   @Inject private JobPositionService jobPositionService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date)
-      throws MessagingException, IOException {
+      throws MessagingException {
 
     Message message = super.createMessage(mailAccount, parser, date);
 

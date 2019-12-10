@@ -56,7 +56,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<InvoicePayment> createMassInvoicePayment(
       List<Long> invoiceList,
       PaymentMode paymentMode,

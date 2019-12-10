@@ -36,7 +36,7 @@ public abstract class ThreadedJob implements Job {
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void execute(JobExecutionContext context) throws JobExecutionException {
     if (isRunning(context)) {
       return;
