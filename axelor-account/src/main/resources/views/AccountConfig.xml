@@ -121,11 +121,12 @@
 					<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
 					<field name="displayTimesheetOnPrinting" widget="boolean-switch" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
 					<field name="displayExpenseOnPrinting" widget="boolean-switch" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
-					<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
+          <field name="displayHeadOfficeAddrOnInvoicePrinting"/>
+          <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
 					<field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
 					<field name="termsAndConditions" widget="html" colSpan="12"/>
 				</panel>
-			</panel>
+      </panel>
 
 			<panel name="journalsPanel" title="Journals">
 				<field name="saleJournalType" grid-view="journal-type-grid" form-view="journal-type-form"/>

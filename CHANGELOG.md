@@ -3,15 +3,22 @@
 ## [Unreleased 5.1.14]
 ## Features
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'
+- RM#23133 INVOICE : new mandatory labelling
 
 ## Improvements
 - MOVE : changed position of reconciliation tag in move form.
-- MOVE : in remove function improved messages. 
-
+- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
+- STOCK MOVE: empty reservationDateTime on duplicate stock move
+- MOVE : Improved messages when there is an exception on trying to remove an accounting move. 
 
 ## Bug Fixes
 - REFUND : avoid blocking message when ventilation of the invoice
 - MOVE : corrected display of status tag in move form.
+- Manuf Order: fix real quantity not updating when a new line in consumed products is created.
+- INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
+- INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
+- PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
+- HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
 
 ## [5.1.13] - 2019-11-29
 ## Improvements

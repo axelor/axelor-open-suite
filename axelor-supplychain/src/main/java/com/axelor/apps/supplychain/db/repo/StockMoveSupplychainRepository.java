@@ -34,6 +34,7 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
         stockMoveLine.setReservedQty(BigDecimal.ZERO);
       }
     }
+    copy.setReservationDateTime(null);
 
     return copy;
   }

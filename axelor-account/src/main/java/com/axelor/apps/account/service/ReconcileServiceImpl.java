@@ -324,18 +324,24 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   public void updateInvoicePayments(Reconcile reconcile) throws AxelorException {
 
-    Move debitMove = reconcile.getDebitMoveLine().getMove();
-    Move creditMove = reconcile.getCreditMoveLine().getMove();
+    MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    Move debitMove = debitMoveLine.getMove();
+    Move creditMove = creditMoveLine.getMove();
     Invoice debitInvoice = debitMove.getInvoice();
     Invoice creditInvoice = creditMove.getInvoice();
     BigDecimal amount = reconcile.getAmount();
 
-    if (debitInvoice != null) {
+    if (debitInvoice != null
+        && debitMoveLine.getAccount().getUseForPartnerBalance()
+        && creditMoveLine.getAccount().getUseForPartnerBalance()) {
       InvoicePayment debitInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
       debitInvoicePayment.setReconcile(reconcile);
     }
-    if (creditInvoice != null) {
+    if (creditInvoice != null
+        && debitMoveLine.getAccount().getUseForPartnerBalance()
+        && creditMoveLine.getAccount().getUseForPartnerBalance()) {
       InvoicePayment creditInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
       creditInvoicePayment.setReconcile(reconcile);
