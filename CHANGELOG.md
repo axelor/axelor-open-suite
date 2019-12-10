@@ -12,6 +12,7 @@
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
 - PRODUCT : update translation for "Service" and "Product"
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
+- STOCK CONFIG : rename field name "stockLocationValue" 
 - SALE ORDER PRINTING : rename title  "Sale order" in "Order Acknowledgement"  of report on condition
 
 ## Bug Fixes
@@ -25,6 +26,9 @@
 - Invoice: fix exception during passed for payment validation.
 - Resolve NPE on stockMoveLines while displaying archived records.
 - StockMove : set readonly to/fromStockLocation if status != Draft
+- PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
+- INVOICE : replace filter of stockMoveRepo changed to invoiceSet from invoice. 
+- Invoice : fix payment button visibility issue
 
 ## [5.2.0] - 2019-11-29
 ## Features

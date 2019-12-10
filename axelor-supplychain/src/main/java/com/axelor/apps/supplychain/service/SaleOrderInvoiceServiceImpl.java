@@ -919,7 +919,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     com.axelor.db.Query<StockMove> stockMoveQuery =
         stockMoveRepository
             .all()
-            .filter("self.invoice.id in (" + getIdListString(invoiceList) + ")");
+            .filter("self.invoiceSet.id in (" + getIdListString(invoiceList) + ")");
     stockMoveQuery
         .fetch()
         .forEach(
