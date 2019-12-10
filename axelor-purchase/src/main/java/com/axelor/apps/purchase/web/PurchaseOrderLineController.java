@@ -116,7 +116,8 @@ public class PurchaseOrderLineController {
         productName = product.getName();
         productCode = product.getCode();
       }
-
+      response.setValue("productName",productName);
+      response.setValue("productCode",productCode);
       response.setValue("unit", purchaseOrderLineService.getPurchaseUnit(purchaseOrderLine));
       BigDecimal qty = purchaseOrderLineService.getQty(purchaseOrder, purchaseOrderLine);
       purchaseOrderLine.setQty(qty);
