@@ -700,6 +700,7 @@
 "The sender bank details currency is not compatible with the currency in bank order.","La devise du compte bancaire émetteur n'est pas compatible avec la devise de l'ordre bancaire",,
 "There is at least one incomplete bank reconciliation. Are you sure you want to continue ?","Il y a au moins une ligne de rapprochement bancaire incomplete. Êtes-vous sûr de vouloir continuer ?",,
 "This action is irreversible, do you want to continue ?","Cette action est irréversible, êtes-vous sûr de continuer?",,
+"This move line %s can not be archived because its bank reconciliation amount is superior to 0.","Cette ligne d' écriture %s ne peut pas être archivée car son montant de rapprochement bancaire est supérieur à 0.",,
 "To Date","à",,
 "Total amount","Montant total",,
 "Total amount in company currency","Montant total en devise société",,

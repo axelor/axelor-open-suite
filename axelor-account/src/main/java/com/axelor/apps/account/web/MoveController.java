@@ -136,18 +136,9 @@ public class MoveController {
       MoveRepository moveRepository = Beans.get(MoveRepository.class);
       move = moveRepository.find(move.getId());
 
-      MoveService moveService = Beans.get(MoveService.class);
+      move = moveRepository.find(move.getId());
+      this.removeOneMove(move, response);
 
-      if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-        moveService.getMoveRemoveService().deleteMove(move);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
-      } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
-        moveService.getMoveRemoveService().archiveDaybookMove(move);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-      } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
-        moveService.getMoveRemoveService().archiveMove(move);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-      }
       if (!move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
         response.setView(
             ActionView.define("Moves")
@@ -157,37 +148,63 @@ public class MoveController {
                 .map());
         response.setCanClose(true);
       }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
+  protected void removeOneMove(Move move, ActionResponse response) throws Exception {
+    MoveService moveService = Beans.get(MoveService.class);
+
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
+      moveService.getMoveRemoveService().deleteMove(move);
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+      moveService.getMoveRemoveService().archiveDaybookMove(move);
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
+      moveService.getMoveRemoveService().archiveMove(move);
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
-
-    List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-    if (!moveIds.isEmpty()) {
-      List<? extends Move> moveList =
-          Beans.get(MoveRepository.class)
-              .all()
-              .filter(
-                  "self.id in ?1 AND self.statusSelect in (?2,?3,?4) AND (self.archived = false or self.archived = null)",
-                  moveIds,
-                  MoveRepository.STATUS_NEW,
-                  MoveRepository.STATUS_DAYBOOK,
-                  MoveRepository.STATUS_CANCELED)
-              .fetch();
-      if (!moveList.isEmpty()) {
-        boolean error =
-            Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
-        if (error) {
-          response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK));
-        } else {
-          response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
-          response.setReload(true);
-        }
+    try {
+      List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+      if (!moveIds.isEmpty()) {
+        List<? extends Move> moveList =
+            Beans.get(MoveRepository.class)
+                .all()
+                .filter(
+                    "self.id in ?1 AND self.statusSelect in (?2,?3,?4) AND (self.archived = false or self.archived = null)",
+                    moveIds,
+                    MoveRepository.STATUS_NEW,
+                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_CANCELED)
+                .fetch();
+        if (!moveList.isEmpty()) {
+          if (moveList.size() == 1) {
+            this.removeOneMove(moveList.get(0), response);
+          } else {
+            int errorNB =
+                Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
+            if (errorNB > 0) {
+              response.setFlash(
+                  String.format(
+                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
+            } else {
+              response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+              response.setReload(true);
+            }
+          }
+        } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
       } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
-    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
