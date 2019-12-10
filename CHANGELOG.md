@@ -27,6 +27,7 @@
 - StockMove : set readonly to/fromStockLocation if status != Draft
 - PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
 - INVOICE : replace filter of stockMoveRepo changed to invoiceSet from invoice. 
+- Invoice : fix payment button visibility issue
 
 ## [5.2.0] - 2019-11-29
 ## Features
