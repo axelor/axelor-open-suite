@@ -594,6 +594,7 @@
 	
 	<action-attrs name="action-stock-move-hide-reserved-qty">
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
+        <attribute for="stockMoveLineList.requestedReservedQty,reservationDateTime" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
 
