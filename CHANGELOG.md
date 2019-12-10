@@ -17,6 +17,7 @@
 - INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
 - INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
 - PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
+- HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
 
 ## [5.1.13] - 2019-11-29
 ## Improvements

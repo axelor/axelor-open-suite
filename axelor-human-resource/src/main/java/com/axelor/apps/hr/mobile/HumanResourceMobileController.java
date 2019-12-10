@@ -68,6 +68,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -448,15 +449,15 @@ public class HumanResourceMobileController {
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
-   * fields: leaveReason, fromDate, startOn, toDate, endOn, comment
+   * fields: leaveReason, fromDateT, startOn, toDateT, endOn, comment
    *
    * payload:
    * { "data": {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave",
    * 		"leaveReason": 10,
-   * 		"fromDate": "2018-02-22",
+   * 		"fromDateT": "2018-02-22T10:30:00",
    * 		"startOn": 1,
-   * 		"toDate": "2018-02-24",
+   * 		"toDateT": "2018-02-24T:19:30:00",
    *	 	"endOn": 1,
    * 		"comment": "no"
    * } }
@@ -498,16 +499,16 @@ public class HumanResourceMobileController {
       }
       leave.setLeaveLine(leaveLine);
       leave.setRequestDate(appBaseService.getTodayDate());
-      if (requestData.get("fromDate") != null) {
+      if (requestData.get("fromDateT") != null) {
         leave.setFromDateT(
-            LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE)
-                .atStartOfDay());
+            LocalDateTime.parse(
+                requestData.get("fromDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
       leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
-      if (requestData.get("toDate") != null) {
+      if (requestData.get("toDateT") != null) {
         leave.setToDateT(
-            LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE)
-                .atStartOfDay());
+            LocalDateTime.parse(
+                requestData.get("toDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
       leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
       leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
@@ -517,11 +518,6 @@ public class HumanResourceMobileController {
       }
       leave = Beans.get(LeaveRequestRepository.class).save(leave);
       response.setTotal(1);
-      HashMap<String, Object> data = new HashMap<>();
-      data.put("id", leave.getId());
-      response.setData(data);
-      Beans.get(LeaveRequestRepository.class).save(leave);
-
       response.setValue("id", leave.getId());
     }
   }
