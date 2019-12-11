@@ -247,6 +247,8 @@
 "BankReconciliationStatement.page2Title","Unreconciled or partially reconcile move lines ",,
 "BankReconciliationStatement.reference","Reference",,
 "BankReconciliationStatement.line","Line",,
+"BankReconciliationStatement.amountToReconcile","Amount to reconcile",,
+"BankReconciliationStatement.noLineFoundMessage","No record found.",,
 "BankStatement.Import","Import",,
 "BankStatement.accountCurrency","Account currency:",,
 "BankStatement.bankAccount","Bank account:",,

@@ -5,7 +5,6 @@
 - ACCOUNTING REPORT : add new report, bank reconciliation statement.
 - RM#23133 INVOICE : new mandatory labelling
 
-
 ## Improvements
 - AdvancedExportLine : Add translation for field orderByType.
 - PURCHASE REQUEST: add new columns in 'purchase-request-grid'
