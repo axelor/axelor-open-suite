@@ -32,6 +32,7 @@
 - Invoice : fix payment button visibility issue
 - HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
 - INVOICE : Fix printing of unitPrice when invoiceLine type is title.
+- MOVE LINE: fix amount paid display in move line form.
 - STOCK : ProductWorth computation fixed in ABCAnalysis.
 - BASE : ABC Analysis Line with qty and worth equal to 0 are now removed.
 
