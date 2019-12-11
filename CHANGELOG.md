@@ -10,6 +10,7 @@
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
 - MOVE : Improved messages when there is an exception on trying to remove an accounting move. 
+- STOCK MOVE : to and from stock location set on company change.
 
 ## Bug Fixes
 - REFUND : avoid blocking message when ventilation of the invoice
