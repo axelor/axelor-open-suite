@@ -55,6 +55,8 @@ public interface IExceptionMessage {
       "This move %s can not be archive because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
       "This move line %s can not be archive because it is linked to another piece named %s." /*)*/;
+  static final String MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED = /*$$(*/
+      "The move lines %s are reconciled and should not have been removed." /*)*/;;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
