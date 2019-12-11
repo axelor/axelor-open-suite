@@ -15,6 +15,7 @@
 - STOCK CONFIG : rename field name "stockLocationValue" 
 - SALE ORDER PRINTING : rename title  "Sale order" in "Order Acknowledgement"  of report on condition
 - MOVE : Improved messages when there is an exception on trying to remove an accounting move.
+- Partner Form : change the translation of "Create sale quotation".
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
