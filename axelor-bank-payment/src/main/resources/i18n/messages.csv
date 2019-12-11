@@ -247,6 +247,8 @@
 "BankReconciliationStatement.page2Title",,,
 "BankReconciliationStatement.reference",,,
 "BankReconciliationStatement.line",,,
+"BankReconciliationStatement.amountToReconcile",,,
+"BankReconciliationStatement.noLineFoundMessage",,,
 "BankStatement.Import",,,
 "BankStatement.accountCurrency",,,
 "BankStatement.bankAccount",,,

@@ -247,6 +247,8 @@
 "BankReconciliationStatement.page2Title","Lignes d'écritures non ou partiellement rapprochées",,
 "BankReconciliationStatement.reference","Reference",,
 "BankReconciliationStatement.line","Ligne",,
+"BankReconciliationStatement.amountToReconcile","Montant à rapprocher",,
+"BankReconciliationStatement.noLineFoundMessage","Aucun enregistrement trouvé.",,
 "BankStatement.Import","Importer",,
 "BankStatement.accountCurrency","Devise du compte :",,
 "BankStatement.bankAccount","Compte bancaire :",,
