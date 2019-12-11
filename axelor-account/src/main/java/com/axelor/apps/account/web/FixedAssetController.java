@@ -98,9 +98,7 @@ public class FixedAssetController {
             }
           }
         }
-        fixedAsset = fixedAssetService.generateAndcomputeLines(fixedAsset);
       }
-
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
