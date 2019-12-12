@@ -48,14 +48,13 @@ import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +89,7 @@ public class StudioMetaService {
     }
 
     actionNames = actionNames.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "");
-    //            .replaceAll(WkfTrackingService.ACTION_TRACK, "");
+    // .replaceAll(WkfTrackingService.ACTION_TRACK, "");
     List<MetaAction> metaActions =
         metaActionRepo
             .all()
@@ -307,23 +306,19 @@ public class StudioMetaService {
     }
   }
 
-  public String trackJsonField(MetaJsonModel jsonModel) {
+  @Transactional
+  public void trackJsonField(MetaJsonModel jsonModel) {
+
+    String messageBody = "";
 
     List<MetaJsonField> metaJsonFieldList = jsonModel.getFields();
-    String trackingFields = "";
 
-    if (jsonModel.getId() == null && metaJsonFieldList != null) {
-      for (MetaJsonField metaJsonField : metaJsonFieldList) {
-        trackingFields += this.createTracking(metaJsonField, "Added:");
-      }
-      return trackingFields;
-    }
+    jsonModel = Beans.get(MetaJsonModelRepository.class).find(jsonModel.getId());
 
-    List<MetaJsonField> jsonFieldList =
-        Beans.get(MetaJsonModelRepository.class).find(jsonModel.getId()).getFields();
+    List<MetaJsonField> jsonFieldList = new ArrayList<MetaJsonField>(jsonModel.getFields());
 
     if (metaJsonFieldList.equals(jsonFieldList)) {
-      return jsonModel.getJsonFieldTracking();
+      return;
     }
 
     List<MetaJsonField> commonJsonFieldList = new ArrayList<>(jsonFieldList);
@@ -331,21 +326,17 @@ public class StudioMetaService {
 
     metaJsonFieldList.removeAll(jsonFieldList);
     if (!metaJsonFieldList.isEmpty()) {
-      for (MetaJsonField metaJsonField : metaJsonFieldList) {
-        trackingFields += this.createTracking(metaJsonField, "Added:");
-      }
+      messageBody =
+          metaJsonFieldList.stream().map(list -> list.getName()).collect(Collectors.joining(", "));
+      trackingFields(jsonModel, messageBody, "Field added");
     }
+
     jsonFieldList.removeAll(commonJsonFieldList);
     if (!jsonFieldList.isEmpty()) {
-      for (MetaJsonField metaJsonField : jsonFieldList) {
-        trackingFields += this.createTracking(metaJsonField, "Removed:");
-      }
+      messageBody =
+          jsonFieldList.stream().map(list -> list.getName()).collect(Collectors.joining(", "));
+      trackingFields(jsonModel, messageBody, "Field removed");
     }
-
-    trackingFields +=
-        jsonModel.getJsonFieldTracking() != null ? jsonModel.getJsonFieldTracking() : "";
-
-    return trackingFields;
   }
 
   @Transactional
@@ -374,21 +365,5 @@ public class StudioMetaService {
         metaModelRepo.all().filter("self.fullName = ?1", metaJsonField.getModel()).fetchOne();
 
     trackingFields(metaModel, metaJsonField.getName(), "Field added");
-  }
-
-  public String createTracking(MetaJsonField metaJsonField, String actionType) {
-
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-    String dateTime = LocalDateTime.now().format(dtf);
-    String userName = AuthUtils.getUser().getName();
-
-    return dateTime
-        + ", "
-        + "User:"
-        + userName
-        + ", "
-        + actionType
-        + metaJsonField.getName()
-        + "\n";
   }
 }
