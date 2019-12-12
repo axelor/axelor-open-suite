@@ -43,6 +43,7 @@
 - BASE : ABC Analysis Line with qty and worth equal to 0 are now removed.
 - Fix Issues on EBICS user and partner form
 - Purchase Order: fix view budgetDistributionListPanel of purchaseOrderLine
+- Weighted Average Price: Fix computation issue causing an error in wap price.
 
 ## [5.2.0] - 2019-11-29
 ## Features
