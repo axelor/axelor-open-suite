@@ -148,4 +148,8 @@ public interface ITranslation {
       "BankReconciliationStatement.journalCode"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_LINE = /*$$(*/
       "BankReconciliationStatement.line"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_AMOUNT_TO_RECONCILE = /*$$(*/
+      "BankReconciliationStatement.amountToReconcile"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_NO_LINE_FOUND_MESSAGE = /*$$(*/
+      "BankReconciliationStatement.noLineFoundMessage"; /*)*/;
 }

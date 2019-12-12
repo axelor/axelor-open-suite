@@ -104,7 +104,7 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
                 5,
                 product);
         productQty = productQty.add(convertedQty);
-        productWorth = productQty.add(stockLocationLine.getAvgPrice());
+        productWorth = productWorth.add(stockLocationLine.getAvgPrice());
       }
 
       super.incTotalQty(productQty);

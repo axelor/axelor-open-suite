@@ -14,6 +14,13 @@
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
 - STOCK CONFIG : rename field name "stockLocationValue" 
 - STOCK MOVE: Update stock move's form view 
+- SALE ORDER PRINTING : rename title  "Sale order" in "Order Acknowledgement"  of report on condition
+- MOVE : Improved messages when there is an exception on trying to remove an accounting move.
+- Partner Form : change the translation of "Create sale quotation".
+- STOCK MOVE : to and from stock location set on company change.
+- STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
+- STOCK MOVE : rename title of stock-move-form buttons related to PFP
+- INVOICE : hide 'stockMoveSet' buttons of 'invoice-form'
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
@@ -28,6 +35,14 @@
 - StockMove : set readonly to/fromStockLocation if status != Draft
 - PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
 - INVOICE : replace filter of stockMoveRepo changed to invoiceSet from invoice. 
+- Invoice : fix payment button visibility issue
+- HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
+- INVOICE : Fix printing of unitPrice when invoiceLine type is title.
+- MOVE LINE: fix amount paid display in move line form.
+- STOCK : ProductWorth computation fixed in ABCAnalysis.
+- BASE : ABC Analysis Line with qty and worth equal to 0 are now removed.
+- Fix Issues on EBICS user and partner form
+- Purchase Order: fix view budgetDistributionListPanel of purchaseOrderLine
 
 ## [5.2.0] - 2019-11-29
 ## Features
