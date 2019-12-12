@@ -281,6 +281,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       this.extendInternalReference(stockMove, invoice);
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
+      if (stockMoveType == StockMoveRepository.TYPE_OUTGOING) {
+        invoice.setHeadOfficeAddress(stockMove.getPartner().getHeadOfficeAddress());
+      }
+      invoiceRepository.save(invoice);
 
       if (invoice != null) {
         Set<StockMove> stockMoveSet = invoice.getStockMoveSet();

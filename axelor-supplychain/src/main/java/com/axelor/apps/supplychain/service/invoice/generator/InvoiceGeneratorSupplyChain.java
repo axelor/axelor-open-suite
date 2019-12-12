@@ -43,7 +43,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
             : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
         saleOrder.getCompany(),
         saleOrder.getPaymentCondition(),
-        saleOrder.getPaymentMode(),
+        isRefund ? saleOrder.getClientPartner().getOutPaymentMode() : saleOrder.getPaymentMode(),
         saleOrder.getMainInvoicingAddress(),
         saleOrder.getClientPartner(),
         saleOrder.getContactPartner(),
@@ -69,7 +69,9 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
             : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
         purchaseOrder.getCompany(),
         purchaseOrder.getPaymentCondition(),
-        purchaseOrder.getPaymentMode(),
+        isRefund
+            ? purchaseOrder.getSupplierPartner().getInPaymentMode()
+            : purchaseOrder.getPaymentMode(),
         null,
         purchaseOrder.getSupplierPartner(),
         purchaseOrder.getContactPartner(),

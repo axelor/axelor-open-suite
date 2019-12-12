@@ -219,4 +219,7 @@ public interface IExceptionMessage {
   /** Generate bank order from invoices */
   static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
       "A bank order %s already exist for the invoice %s." /*)*/;
+
+  static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_BANK_RECONCILIATION_AMOUNT = /*$$(*/
+      "This move line %s can not be archived because its bank reconciliation amount is superior to 0." /*)*/;
 }

@@ -73,10 +73,6 @@ public class StockLocationController {
     String printType = (String) context.get("printingType");
     String exportType = (String) context.get("exportTypeSelect");
 
-    if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
-      response.setNotify(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
-    }
-
     @SuppressWarnings("unchecked")
     List<Integer> lstSelectedLocations = (List<Integer>) context.get("_ids");
     if (lstSelectedLocations != null) {
@@ -111,6 +107,10 @@ public class StockLocationController {
             lstSelectedLocations == null
                 ? I18n.get("Stock location") + " " + stockLocation.getName()
                 : I18n.get("Stock location(s)");
+      }
+
+      if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
+        response.setNotify(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
       }
 
       String fileLink =

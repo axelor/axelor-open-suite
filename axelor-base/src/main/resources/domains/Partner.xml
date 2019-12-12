@@ -84,6 +84,7 @@
 	<!-- -Json fields -->
 	<string name="partnerAttrs" title="Fields" json="true" />
 	<string name="contactAttrs" title="Fields" json="true" />
+	<string name="headOfficeAddress" title="Head office address"/>
 
 	<string name="invoiceComments" title="Comment to display on invoice" large="true"/>
 	<string name="saleOrderComments" title="Comment to display on sale order" large="true"/>
