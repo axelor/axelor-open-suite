@@ -13,6 +13,7 @@
 - PRODUCT : update translation for "Service" and "Product"
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
 - STOCK CONFIG : rename field name "stockLocationValue" 
+- STOCK MOVE: Update stock move's form view 
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
