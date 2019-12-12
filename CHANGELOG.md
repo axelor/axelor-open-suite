@@ -15,7 +15,10 @@
 - STOCK CONFIG : rename field name "stockLocationValue" 
 - SALE ORDER PRINTING : rename title  "Sale order" in "Order Acknowledgement"  of report on condition
 - MOVE : Improved messages when there is an exception on trying to remove an accounting move.
-- STOCK MOVE : rename title of stock-move-form buttons
+- Partner Form : change the translation of "Create sale quotation".
+- STOCK MOVE : to and from stock location set on company change.
+- STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
+- STOCK MOVE : rename title of stock-move-form buttons related to PFP
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
@@ -36,6 +39,8 @@
 - MOVE LINE: fix amount paid display in move line form.
 - STOCK : ProductWorth computation fixed in ABCAnalysis.
 - BASE : ABC Analysis Line with qty and worth equal to 0 are now removed.
+- Fix Issues on EBICS user and partner form
+- Purchase Order: fix view budgetDistributionListPanel of purchaseOrderLine
 
 ## [5.2.0] - 2019-11-29
 ## Features
