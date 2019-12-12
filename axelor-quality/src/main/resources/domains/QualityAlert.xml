@@ -15,10 +15,16 @@
     	<string name="reference" readonly="true"/> 
     	<string name="fullName" title="Full name" namecolumn="true">
     		<![CDATA[
-    				if (reference != null && reference != "")
-    						return  reference + "[" + product.getCode() + "]";
-    				else
-    					return product.getCode();
+                       String fullName = "";
+    				   if (reference != null && reference != "") {
+                            if(product.getCode() != null)
+    						fullName +=  reference + "[" + product.getCode() + "]";
+                            else 
+                              fullName += reference;
+    				    }else if(product.getCode() != null) 
+                              fullName += "[" + product.getCode() + "]";
+    					return fullName; 
+                    
     		]]>
     	</string>
     	<integer name="prioritySelect" selection="quality.alert.priority.select" title="Priority" />

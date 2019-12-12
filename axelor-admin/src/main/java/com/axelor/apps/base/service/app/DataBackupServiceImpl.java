@@ -64,7 +64,7 @@ public class DataBackupServiceImpl implements DataBackupService {
             public Boolean call() throws Exception {
               RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
               try (RequestScoper.CloseableScope ignored = scope.open()) {
-                startBackup(dataBackup);
+                startBackup(obj);
               }
               return true;
             }
@@ -84,6 +84,7 @@ public class DataBackupServiceImpl implements DataBackupService {
             Logger LOG = LoggerFactory.getLogger(getClass());
             DataBackup obj = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
             File backupFile = createService.create(obj.getFetchLimit());
+            dataBackupRepository.refresh(obj);
             obj.setBackupMetaFile(metaFiles.upload(backupFile));
             obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_CREATED);
             Beans.get(DataBackupRepository.class).save(obj);

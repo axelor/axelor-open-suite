@@ -48,6 +48,7 @@
 	<integer name="stockLocationValue" title="Stock location value on form view" selection="stock.stock.location.value.type" />
 
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
+	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
 	
 	<track>
 		<field name="company" on="UPDATE"/>
@@ -86,8 +87,11 @@
 		<field name="pickingOrderPrintingDetailed" on="UPDATE"/>
 		<field name="isDisplaySaleValueInPrinting" on="UPDATE"/>
 		<field name="isDisplayAccountingValueInPrinting" on="UPDATE"/>
+		<field name="isDisplayAgPriceInPrinting" on="UPDATE"/>
+		<field name="stockLocationValue" on="UPDATE"/>
 		
 		<field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
+		<field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
 	</track>
   </entity>
   

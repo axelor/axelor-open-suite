@@ -71,6 +71,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineServiceSupplychain stockMoveLineSupplychainService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -81,7 +82,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
       StockMoveLineRepository stockMoveLineRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderRepository saleOrderRepository) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -91,6 +93,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineSupplychainService = stockMoveLineSupplychainService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -187,6 +190,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
+    } else if (supplychainConfig.getDefaultEstimatedDate()
+            == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(
+          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     stockMoveService.plan(stockMove);
@@ -531,5 +539,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
     return deliveryState;
+  }
+
+  public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
+    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+        && stockMove.getOriginId() != null) {
+      return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
+    } else {
+      return Optional.empty();
+    }
   }
 }

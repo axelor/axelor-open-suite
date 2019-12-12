@@ -9,7 +9,7 @@
 
   	<string name="fullName" namecolumn="true">
   	<![CDATA[
-  		if(purchaseOrderSeq==null && supplierPartner == null){
+  		if(purchaseOrderSeq==null){
   			return " ";
   		}
   		return purchaseOrderSeq + "-" + supplierPartner.getName();

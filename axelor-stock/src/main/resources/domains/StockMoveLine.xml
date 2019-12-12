@@ -10,14 +10,14 @@
   	<many-to-one name="stockMove" readonly="true" ref="com.axelor.apps.stock.db.StockMove" title="Stock move"/>
     <many-to-one name="plannedStockMove" ref="com.axelor.apps.stock.db.StockMove"/>
 
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>    
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	<boolean name="filterOnAvailableProducts" title="Filter on available products" default="true" transient="true"/>
-	<decimal name="qty" title="Expected Qty"/>
-	<decimal name="realQty" title="Real Qty"/>
+	<decimal name="qty" min="0" title="Expected Qty"/>
+	<decimal name="realQty" min="0" title="Real Qty"/>
 	<decimal name="oldQty" hidden="true"/>
 	<decimal name="availableQty" title="Available qty" transient="true"/>
 	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
-	<string name="availableStatus" title="Status" transient="true"/>
+	<string name="availableStatus" title="Availability" transient="true"/>
 	<integer name="availableStatusSelect" title="Status" transient="true" selection="stock.move.line.available.status.select"/>
 	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -42,10 +42,23 @@
     <decimal name="unitPriceTaxed" precision="20" scale="10" title="Unit price"/>
     
     <decimal name="companyUnitPriceUntaxed" precision="20" scale="10" title="Company Unit price W.T."/>
-    
+
+    <decimal name="wapPrice" precision="20" scale="10" readonly="true" nullable="true" title="Price used for WAP"/>
+
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
-
+  
+    <string name="name" title="Ref.">
+    	<![CDATA[
+    	if (stockMove != null && stockMove.getStockMoveSeq() != null){
+    		return stockMove.getStockMoveSeq()+ "-" +Integer.toString(sequence);
+    	}
+		else {
+			return Integer.toString(sequence);
+		 }
+	    ]]>
+    </string>
+	
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
     <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />

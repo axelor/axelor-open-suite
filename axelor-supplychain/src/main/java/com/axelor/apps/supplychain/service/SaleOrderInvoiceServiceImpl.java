@@ -262,9 +262,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     Invoice invoice = invoiceGenerator.generate();
 
-    invoiceGenerator.populate(
-        invoice,
-        this.createInvoiceLinesFromTax(invoice, taxLineList, invoicingProduct, percentToInvoice));
+    List<InvoiceLine> invoiceLinesList =
+        (taxLineList != null && !taxLineList.isEmpty())
+            ? this.createInvoiceLinesFromTax(
+                invoice, taxLineList, invoicingProduct, percentToInvoice)
+            : this.createInvoiceLinesFromSO(invoice, saleOrder, invoicingProduct, percentToInvoice);
+
+    invoiceGenerator.populate(invoice, invoiceLinesList);
 
     this.fillInLines(invoice);
 
@@ -349,6 +353,58 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
     return createdInvoiceLineList;
+  }
+
+  protected List<InvoiceLine> createInvoiceLinesFromSO(
+      Invoice invoice, SaleOrder saleOrder, Product invoicingProduct, BigDecimal percentToInvoice)
+      throws AxelorException {
+
+    List<InvoiceLine> invoiceLineList = new ArrayList<>();
+    BigDecimal lineAmountToInvoice =
+        percentToInvoice
+            .multiply(saleOrder.getInTaxTotal())
+            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_EVEN);
+
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            invoice,
+            invoicingProduct,
+            invoicingProduct.getName(),
+            lineAmountToInvoice,
+            lineAmountToInvoice,
+            lineAmountToInvoice,
+            invoicingProduct.getDescription(),
+            BigDecimal.ONE,
+            invoicingProduct.getUnit(),
+            null,
+            InvoiceLineGenerator.DEFAULT_SEQUENCE,
+            BigDecimal.ZERO,
+            PriceListLineRepository.AMOUNT_TYPE_NONE,
+            lineAmountToInvoice,
+            null,
+            false,
+            false,
+            0) {
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+
+            List<InvoiceLine> invoiceLines = new ArrayList<>();
+            invoiceLines.add(invoiceLine);
+
+            return invoiceLines;
+          }
+        };
+
+    List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
+    // Link to the Sale Order
+    for (InvoiceLine invoiceLine : invoiceOneLineList) {
+      invoiceLine.setSaleOrder(invoice.getSaleOrder());
+    }
+    invoiceLineList.addAll(invoiceOneLineList);
+
+    return invoiceLineList;
   }
 
   @Override
@@ -514,7 +570,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return new InvoiceGeneratorSupplyChain(saleOrder, isRefund) {
       @Override
       public Invoice generate() throws AxelorException {
-        return super.createInvoiceHeader();
+        Invoice invoice = super.createInvoiceHeader();
+        invoice.setHeadOfficeAddress(saleOrder.getClientPartner().getHeadOfficeAddress());
+        return invoice;
       }
     };
   }
@@ -929,9 +987,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
-                    + "(self.archived = NULL OR self.archived = false)")
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
@@ -940,13 +996,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
               .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN);
     }
-    BigDecimal sumInvoices =
-        invoices
-            .stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .add(amountToInvoice);
+    BigDecimal sumInvoices = computeSumInvoices(invoices);
+    sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
@@ -961,23 +1012,31 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
-                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.statusSelect != :invoiceStatus AND "
-                    + "(self.archived = NULL OR self.archived = false)")
+                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect"
+                    + " AND self.statusSelect != :invoiceStatus")
             .bind("saleOrderId", saleOrder.getId())
             .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
-    BigDecimal sumInvoices =
-        invoices
-            .stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce((x, y) -> x.add(y))
-            .orElse(BigDecimal.ZERO);
+    BigDecimal sumInvoices = computeSumInvoices(invoices);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
+  }
+
+  protected BigDecimal computeSumInvoices(List<Invoice> invoices) {
+    BigDecimal sumInvoices = BigDecimal.ZERO;
+    for (Invoice invoice : invoices) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
+      } else {
+        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+      }
+    }
+    return sumInvoices;
   }
 }

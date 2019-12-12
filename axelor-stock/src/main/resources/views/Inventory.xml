@@ -14,7 +14,7 @@
     <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory" width="large" onNew="action-inventory-record-new">
         <menubar>
 	        <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-	        	<item action="action-inventory-method-show-stockmove" title="Show stock move" readonlyIf="statusSelect != 5"/>
+	        	<item name="showStockMoveItem" action="action-inventory-method-show-stockmoves" title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
 	        </menu>
         </menubar>
         <panel name="mainPanel">
@@ -205,8 +205,8 @@
 		<attribute name="domain" for="product" expr="eval:null" if="productCategory == null &amp;&amp; productFamily == null"/>
 	</action-attrs>
 	
-	<action-method name="action-inventory-method-show-stockmove">
-		<call class="com.axelor.apps.stock.web.InventoryController" method="showStockMove"/>
+	<action-method name="action-inventory-method-show-stockmoves">
+		<call class="com.axelor.apps.stock.web.InventoryController" method="showStockMoves"/>
 	</action-method>
 
     <search-filters name="inventories-filters" model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">

@@ -142,7 +142,7 @@ public class PayrollPreparationService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDateT <= ?1 AND self.toDateT >= ?2",
+                "self.statusSelect = ?4 AND self.user.employee = ?3 AND ((self.fromDateT BETWEEN ?2 AND ?1 OR self.toDateT BETWEEN ?2 AND ?1) OR (?1 BETWEEN self.fromDateT AND self.toDateT OR ?2 BETWEEN self.fromDateT AND self.toDateT))",
                 toDate,
                 fromDate,
                 employee,

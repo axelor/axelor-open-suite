@@ -77,6 +77,16 @@ public class TimesheetController {
   @Inject private Provider<ProjectRepository> projectRepoProvider;
   @Inject private Provider<UserHrService> userHrservice;
 
+  public void prefillLines(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      timesheetServiceProvider.get().prefillLines(timesheet);
+      response.setValues(timesheet);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
@@ -384,6 +394,7 @@ public class TimesheetController {
       TimesheetService timesheetService = timesheetServiceProvider.get();
 
       Message message = timesheetService.confirmAndSendConfirmationEmail(timesheet);
+
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
         response.setFlash(
             String.format(
@@ -548,8 +559,9 @@ public class TimesheetController {
   public void timesheetPeriodTotalController(ActionRequest request, ActionResponse response) {
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      TimesheetService timesheetService = timesheetServiceProvider.get();
 
-      BigDecimal periodTotal = timesheetServiceProvider.get().computePeriodTotal(timesheet);
+      BigDecimal periodTotal = timesheetService.computePeriodTotal(timesheet);
 
       response.setAttr("periodTotal", "value", periodTotal);
       response.setAttr("$periodTotalConvert", "hidden", false);
@@ -559,9 +571,7 @@ public class TimesheetController {
           Beans.get(TimesheetLineService.class)
               .computeHoursDuration(timesheet, periodTotal, false));
       response.setAttr(
-          "$periodTotalConvert",
-          "title",
-          timesheetServiceProvider.get().getPeriodTotalConvertTitle(timesheet));
+          "$periodTotalConvert", "title", timesheetService.getPeriodTotalConvertTitle(timesheet));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

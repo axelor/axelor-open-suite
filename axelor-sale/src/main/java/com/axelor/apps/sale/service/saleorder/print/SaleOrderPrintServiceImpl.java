@@ -75,12 +75,16 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
       throws AxelorException {
 
     if (saleOrder.getPrintingSettings() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          String.format(
-              I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
-              saleOrder.getSaleOrderSeq()),
-          saleOrder);
+      if (saleOrder.getCompany().getPrintingSettings() != null) {
+        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            String.format(
+                I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                saleOrder.getSaleOrderSeq()),
+            saleOrder);
+      }
     }
     String locale = ReportSettings.getPrintingLocale(saleOrder.getClientPartner());
 
@@ -93,6 +97,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
+        .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
   }
 

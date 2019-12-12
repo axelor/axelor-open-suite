@@ -32,7 +32,6 @@ public interface IExceptionMessage {
       "An error occurred while importing the file data, product not found with code :" /*)*/;
   static final String INVENTORY_5 = /*$$(*/
       "There is currently no such file in the specified folder or the folder may not exists." /*)*/;
-  static final String INVENTORY_6 = /*$$(*/ "Company missing for stock location %s" /*)*/;
   static final String INVENTORY_7 = /*$$(*/ "Incorrect product in inventory line" /*)*/;
   static final String INVENTORY_8 = /*$$(*/ "File %s successfully imported." /*)*/;
   static final String INVENTORY_9 = /*$$(*/ "There's no product in stock location." /*)*/;
@@ -149,6 +148,9 @@ public interface IExceptionMessage {
 
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
       "Please configure mass units for this product packing : %s" /*)*/;
+
+  static final String STOCK_CONFIGURATION_MISSING = /*$$(*/
+      "Configuration is missing in stock configuration to see financial data" /*)*/;
 
   /** Partner Product Quality Rating Service */
   String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;

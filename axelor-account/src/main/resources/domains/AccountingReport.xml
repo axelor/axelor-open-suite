@@ -37,12 +37,13 @@
     
     <!--Report 7 : Partner genereal ledger  --> 
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>
+    <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
     
     
-	<!--Report 1 : genereal ledger  --> 
-    <boolean name="displayCodeAccountOnPrinting" title="Display code account on printing"/>
-    <boolean name="displayNameAccountOnPrinting" title="Display name account on printing"/>
-    <boolean name="displayMoveSequenceOnPrinting" title="Display move sequence on printing"/>
+	<!--Report 1 : general ledger  --> 
+    <boolean name="displayCodeAccountColumnOnPrinting" title="Display column with accounting number"/>
+    <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
+    <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
 
 	<unique-constraint columns="ref,company"/>
     

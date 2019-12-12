@@ -618,7 +618,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     BigDecimal qtyLeftToBeAllocated =
         stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-    return qtyLeftToBeAllocated.min(requestedReservedQty);
+    return qtyLeftToBeAllocated.min(requestedReservedQty).max(BigDecimal.ZERO);
   }
 
   @Override
@@ -925,6 +925,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       return;
     }
     saleOrderLine.setIsQtyRequested(true);
+    if (saleOrderLine.getQty().signum() < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
+    }
     this.updateRequestedReservedQty(saleOrderLine, saleOrderLine.getQty());
   }
 
