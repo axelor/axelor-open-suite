@@ -111,7 +111,8 @@ public class MoveLineController {
 
   public void accountingReconcile(ActionRequest request, ActionResponse response) {
 
-    List<MoveLine> moveLineList = new ArrayList<>();
+    List<MoveLine> reconciliableCreditMoveLineList = new ArrayList<>();
+    List<MoveLine> reconciliableDebitMoveLineList = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
@@ -122,14 +123,23 @@ public class MoveLineController {
           MoveLine moveLine = Beans.get(MoveLineRepository.class).find(it.longValue());
           if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_VALIDATED
                   || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-            moveLineList.add(moveLine);
+              && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+              && moveLine.getAccount().getReconcileOk()) {
+            if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+                && moveLine.getDebit().compareTo(BigDecimal.ZERO) == 0) {
+              reconciliableCreditMoveLineList.add(moveLine);
+            } else if (moveLine.getCredit().compareTo(BigDecimal.ZERO) == 0
+                && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
+              reconciliableDebitMoveLineList.add(moveLine);
+            }
           }
         }
       }
 
-      if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+      if (!reconciliableCreditMoveLineList.isEmpty() && !reconciliableDebitMoveLineList.isEmpty()) {
+        Beans.get(MoveLineService.class)
+            .reconcileMoveLinesWithCacheManagement(
+                reconciliableCreditMoveLineList, reconciliableDebitMoveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {

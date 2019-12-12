@@ -11,6 +11,7 @@
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
 - MOVE : Improved messages when there is an exception on trying to remove an accounting move. 
 - STOCK MOVE : to and from stock location set on company change.
+- MOVE LINE: improved speed of the mass reconciliation process.
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund

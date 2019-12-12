@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
@@ -50,6 +51,7 @@ public class PaymentServiceImpl implements PaymentService {
 
   protected ReconcileService reconcileService;
   protected MoveLineService moveLineService;
+  protected MoveLineRepository moveLineRepository;
 
   protected AppAccountService appAccountService;
 
@@ -57,11 +59,13 @@ public class PaymentServiceImpl implements PaymentService {
   public PaymentServiceImpl(
       AppAccountService appAccountService,
       ReconcileService reconcileService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      MoveLineRepository moveLineRepository) {
 
     this.reconcileService = reconcileService;
     this.moveLineService = moveLineService;
     this.appAccountService = appAccountService;
+    this.moveLineRepository = moveLineRepository;
   }
 
   /**
@@ -91,6 +95,26 @@ public class PaymentServiceImpl implements PaymentService {
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
     try {
       useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      log.debug(e.getMessage());
+    }
+  }
+
+  /**
+   * Use excess payment between a list of debit move lines and a list of credit move lines. The
+   * lists needs to be ordered by date in order to pay the invoices chronologically. This method
+   * doesn't throw any exception if a reconciliation fails.
+   *
+   * @param debitMoveLines
+   * @param creditMoveLines
+   */
+  @Override
+  public void useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
+      List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
+    try {
+      useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
+          debitMoveLines, creditMoveLines, true);
     } catch (Exception e) {
       TraceBackService.trace(e);
       log.debug(e.getMessage());
@@ -153,6 +177,78 @@ public class PaymentServiceImpl implements PaymentService {
                   log.debug(e.getMessage());
                 } else {
                   throw e;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Use excess payment between a list of debit move lines and a list of credit move lines. The
+   * lists needs to be ordered by date in order to pay the invoices chronologically.
+   *
+   * @param debitMoveLines
+   * @param creditMoveLines
+   * @param dontThrow
+   * @throws AxelorException
+   */
+  protected void useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
+      List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow)
+      throws AxelorException {
+
+    if (debitMoveLines != null && creditMoveLines != null) {
+
+      log.debug(
+          "Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
+          new Object[] {debitMoveLines.size(), creditMoveLines.size()});
+
+      BigDecimal debitTotalRemaining = BigDecimal.ZERO;
+      BigDecimal creditTotalRemaining = BigDecimal.ZERO;
+      for (MoveLine creditMoveLine : creditMoveLines) {
+        log.debug("Emploie du trop perçu : ligne en crédit : {})", creditMoveLine);
+
+        log.debug(
+            "Emploie du trop perçu : ligne en crédit (restant à payer): {})",
+            creditMoveLine.getAmountRemaining());
+        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
+      }
+      for (MoveLine debitMoveLine : debitMoveLines) {
+
+        log.debug("Emploie du trop perçu : ligne en débit : {})", debitMoveLine);
+
+        log.debug(
+            "Emploie du trop perçu : ligne en débit (restant à payer): {})",
+            debitMoveLine.getAmountRemaining());
+        debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
+      }
+      int count = 0;
+      for (MoveLine creditMoveLine : creditMoveLines) {
+        creditMoveLine = moveLineRepository.find(creditMoveLine.getId());
+        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
+
+          for (MoveLine debitMoveLine : debitMoveLines) {
+            debitMoveLine = moveLineRepository.find(debitMoveLine.getId());
+            if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
+                && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
+              try {
+                creditMoveLine = moveLineRepository.find(creditMoveLine.getId());
+                createReconcile(
+                    debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+                count++;
+              } catch (Exception e) {
+                if (dontThrow) {
+                  TraceBackService.trace(e);
+                  log.debug(e.getMessage());
+                } else {
+                  throw e;
+                }
+              } finally {
+                if (count == 20) {
+                  JPA.clear();
+                  count = 0;
                 }
               }
             }

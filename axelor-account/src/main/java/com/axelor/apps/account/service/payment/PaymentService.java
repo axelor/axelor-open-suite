@@ -93,4 +93,8 @@ public interface PaymentService {
   BigDecimal getAmountRemainingFromPaymentMove(PaymentScheduleLine psl);
 
   BigDecimal getAmountRemainingFromPaymentMove(Invoice invoice);
+
+  void useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
+      List<MoveLine> companyPartnerDebitMoveLineList,
+      List<MoveLine> companyPartnerCreditMoveLineList);
 }

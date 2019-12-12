@@ -948,10 +948,9 @@ public class MoveLineService {
    *
    * @param moveLineList
    */
-  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList) {
-
-    List<MoveLine> reconciliableCreditMoveLineList = getReconciliableCreditMoveLines(moveLineList);
-    List<MoveLine> reconciliableDebitMoveLineList = getReconciliableDebitMoveLines(moveLineList);
+  public void reconcileMoveLinesWithCacheManagement(
+      List<MoveLine> reconciliableCreditMoveLineList,
+      List<MoveLine> reconciliableDebitMoveLineList) {
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap = new HashMap<>();
 
@@ -966,7 +965,8 @@ public class MoveLineService {
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
-        this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+        this.useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
+            byDate, paymentService, moveLineLists);
       } catch (Exception e) {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
@@ -1031,6 +1031,18 @@ public class MoveLineService {
     companyPartnerCreditMoveLineList.sort(byDate);
     companyPartnerDebitMoveLineList.sort(byDate);
     paymentService.useExcessPaymentOnMoveLinesDontThrow(
+        companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+  }
+
+  protected void useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
+      Comparator<MoveLine> byDate,
+      PaymentService paymentService,
+      Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
+    List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+    List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+    companyPartnerCreditMoveLineList.sort(byDate);
+    companyPartnerDebitMoveLineList.sort(byDate);
+    paymentService.useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
         companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 
