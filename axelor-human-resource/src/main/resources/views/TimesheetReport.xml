@@ -17,7 +17,7 @@
 			<field name="toDate" onChange="action-human-resource-group-date"/>
 			<field name="userSet" form-view="user-form" grid-view="user-grid" colSpan="12" canNew="false" canEdit="false" 
 				help="Please, provide weeklyPlanning , publicHolidaysPlanning and mainContract information for selected employees"/>
-			<field name="reminderUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" readonly="true" showIf="typeSelect == 1"/>
+			<field name="reminderUserSet" colSpan="12" form-view="user-form" grid-view="user-grid" canEdit="false" canNew="false"  canSelect="false" canView="false" showIf="typeSelect == 1"/>
 		</panel>
 		<panel name="buttonPanel" sidebar="true">
 			<button name="setMissingUsersBtn" title="Set users to be reminded" onClick="save,action-human-resource-method-set-user-to-be-reminded,save" showIf="typeSelect == 1"/>

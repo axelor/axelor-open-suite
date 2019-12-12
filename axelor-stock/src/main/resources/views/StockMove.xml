@@ -260,8 +260,8 @@
 			</panel>
 			<panel name="actionPanel" colSpan="3" itemSpan="12">
 				<button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
-				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="Authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="Litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
+				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="PFP authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
+				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="PFP litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
 				<button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 				<button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
@@ -642,6 +642,7 @@
     <action-group name="action-stock-move-group-onchange-company">
         <action name="action-stock-move-record-update-info-company"/>
         <action name="action-stock-move-record-mail-configuration"/>
+        <action name="action-stock-move-record-set-stock-locations-company-onchange"/>
     </action-group>
 
     <action-group name="action-stock-move-group-available-qty-onchange">
@@ -688,6 +689,7 @@
 	
 	<action-attrs name="action-stock-move-hide-reserved-qty">
         <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
+        <attribute for="stockMoveLineList.requestedReservedQty,reservationDateTime" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
 
@@ -743,10 +745,10 @@
 	</action-record>
 	
 	<action-record name="action-stock-move-set-default-stock-locations" model="com.axelor.apps.stock.db.StockMove">
-	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.pickupDefaultStockLocation"/>
-	    <field if="_typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
-	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
-	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
+	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.pickupDefaultStockLocation"/>
+	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.customerVirtualStockLocation"/>
+	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
+	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',company != null ? company.id : __user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-record-partner-delivery-informations" model="com.axelor.apps.stock.db.StockMove">
@@ -780,6 +782,14 @@
         <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
         <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
     </action-record>
+    
+    <action-record name="action-stock-move-record-set-stock-locations-company-onchange" model="com.axelor.apps.stock.db.StockMove">
+	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="fromStockLocation" expr="eval: company?.getStockConfig()?.getPickupDefaultStockLocation()"/>
+	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="toStockLocation" expr="eval:company?.getStockConfig()?.getCustomerVirtualStockLocation()"/>
+	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null" name="toStockLocation" expr="eval:company?.getStockConfig()?.getReceiptDefaultStockLocation()"/>
+	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null" name="fromStockLocation" expr="eval:company?.getStockConfig()?.getSupplierVirtualStockLocation()"/>
+	    <field name="fromStockLocation,toStockLocation" expr="eval: null" if="company == null"/>
+	</action-record>
 	
 	<action-method name="action-stock-move-method-plan">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
