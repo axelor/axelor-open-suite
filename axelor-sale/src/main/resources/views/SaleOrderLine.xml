@@ -485,12 +485,6 @@
 		<attribute name="hidden" for="qtyValid" expr="true"/>
 	</action-attrs>
 
-	<action-attrs name="action-sale-order-line-attrs-pack">
-		<attribute name="hidden" for="discountPanel,taxLine,marginPanel" expr="eval:packPriceSelect == 1" if="typeSelect == 2"/>
-		<attribute name="hidden" for="discountPanel,taxLine,marginPanel" expr="eval:_parent.packPriceSelect == 0"  if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
-		<attribute name="hidden" for="discountPanel,taxLine,marginPanel" expr="eval:parentLine.packPriceSelect == 0"  if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-	</action-attrs>
-
 	<action-attrs name="action-sale-order-line-attrs-show-availabilty-request">
 		<attribute name="value" for="$availabiltyRequest" expr="eval:  id &amp;&amp; __repo__(StockMoveLine).all().filter('self.saleOrderLine.id = ? AND self.stockMove.availabilityRequest = TRUE AND self.stockMove.statusSelect = 2', __self__?.id).count() > 0"/>
 	</action-attrs>

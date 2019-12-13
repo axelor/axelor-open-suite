@@ -35,6 +35,7 @@
 - Studio: Added colSpan,title for the label and  visibleInGrid option for button.
 - Studio: Added restriction for model and model field names, allowed only alphanumberic characters
 - Studio: Disable 'Visible in grid' option for spacer
+- STOCK MOVE LINE : display invoiced status at same place as avalable tag
 
 ## Bug Fixes
 - Fix injection error during test
