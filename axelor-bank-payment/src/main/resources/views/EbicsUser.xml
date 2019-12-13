@@ -60,7 +60,7 @@
 					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-dashlet action="action-ebics-user-view-ebics-request-log" name="ebicsRequestLogPanel" title="Request log"/>
+			<panel-dashlet action="action-ebics-user-view-ebics-request-log" name="ebicsRequestLogPanel" title="Request log" readonly="true"/>
 		</panel-tabs>
 		
 		<panel name="actionBtnsPanel" sidebar="true">

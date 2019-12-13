@@ -92,7 +92,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   public boolean validate(StockCorrection stockCorrection) throws AxelorException {
     AppBaseService baseService = Beans.get(AppBaseService.class);
     StockMove stockMove = generateStockMove(stockCorrection);
-    if (!stockMove.getStockMoveLineList().isEmpty()) {
+    if (stockMove != null) {
       stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_VALIDATED);
       stockCorrection.setValidationDateT(baseService.getTodayDateTime().toLocalDateTime());
       return true;
@@ -102,22 +102,13 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   public StockMove generateStockMove(StockCorrection stockCorrection) throws AxelorException {
     StockLocation toStockLocation = stockCorrection.getStockLocation();
+
     Company company = toStockLocation.getCompany();
+    StockLocation fromStockLocation =
+        stockConfigService.getInventoryVirtualStockLocation(
+            stockConfigService.getStockConfig(company));
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
-
-    if (company == null) {
-      throw new AxelorException(
-          stockCorrection,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVENTORY_6),
-          toStockLocation.getName());
-    }
-
-    StockMove stockMove = this.createStockMoveHeader(company, toStockLocation);
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_STOCK_CORRECTION);
-    stockMove.setOriginId(stockCorrection.getId());
-    stockMove.setStockCorrectionReason(stockCorrection.getStockCorrectionReason());
 
     StockLocationLine stockLocationLine = null;
     StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
@@ -137,44 +128,55 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     BigDecimal realQty = stockCorrection.getRealQty();
     Product product = stockCorrection.getProduct();
     TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
+    BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
 
-    if (stockLocationLine.getCurrentQty().compareTo(realQty) != 0) {
-      BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
+    StockMove stockMove = null;
 
-      StockMoveLine stockMoveLine =
-          stockMoveLineService.createStockMoveLine(
-              product,
-              product.getName(),
-              product.getDescription(),
-              diff,
-              product.getCostPrice(),
-              product.getCostPrice(),
-              product.getUnit(),
-              stockMove,
-              StockMoveLineService.TYPE_NULL,
-              false,
-              BigDecimal.ZERO);
-
-      if (stockMoveLine == null) {
-        throw new AxelorException(
-            stockCorrection,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.STOCK_CORRECTION_1));
-      }
-      if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
-        stockMoveLine.setTrackingNumber(trackingNumber);
-      }
-      if (stockMove.getStockMoveLineList() != null) {
-
-        stockMoveService.plan(stockMove);
-        stockMoveService.copyQtyToRealQty(stockMove);
-        stockMoveService.realize(stockMove, false);
-      }
+    if (diff.compareTo(BigDecimal.ZERO) == 0) {
+      return null;
+    } else if (diff.compareTo(BigDecimal.ZERO) > 0) {
+      stockMove = this.createStockMoveHeader(company, fromStockLocation, toStockLocation);
+    } else {
+      stockMove = this.createStockMoveHeader(company, toStockLocation, fromStockLocation);
     }
+
+    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_STOCK_CORRECTION);
+    stockMove.setOriginId(stockCorrection.getId());
+    stockMove.setStockCorrectionReason(stockCorrection.getStockCorrectionReason());
+
+    StockMoveLine stockMoveLine =
+        stockMoveLineService.createStockMoveLine(
+            product,
+            product.getName(),
+            product.getDescription(),
+            diff.abs(),
+            product.getCostPrice(),
+            product.getCostPrice(),
+            product.getUnit(),
+            stockMove,
+            StockMoveLineService.TYPE_NULL,
+            false,
+            BigDecimal.ZERO);
+
+    if (stockMoveLine == null) {
+      throw new AxelorException(
+          stockCorrection,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.STOCK_CORRECTION_1));
+    }
+    if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
+      stockMoveLine.setTrackingNumber(trackingNumber);
+    }
+
+    stockMoveService.plan(stockMove);
+    stockMoveService.copyQtyToRealQty(stockMove);
+    stockMoveService.realize(stockMove, false);
+
     return stockMove;
   }
 
-  public StockMove createStockMoveHeader(Company company, StockLocation toStockLocation)
+  public StockMove createStockMoveHeader(
+      Company company, StockLocation fromStockLocation, StockLocation toStockLocation)
       throws AxelorException {
     StockMove stockMove =
         Beans.get(StockMoveService.class)
@@ -182,8 +184,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
                 null,
                 null,
                 company,
-                stockConfigService.getInventoryVirtualStockLocation(
-                    stockConfigService.getStockConfig(company)),
+                fromStockLocation,
                 toStockLocation,
                 null,
                 null,

@@ -35,7 +35,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,10 +68,10 @@ public class TimesheetReportController {
 
   public void fillTimesheetReportReminderUsers(ActionRequest request, ActionResponse response) {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);
-    List<User> userList =
+    Set<User> reminderUserSet =
         Beans.get(TimesheetReportService.class).getUserToBeReminded(timesheetReport);
-    if (!CollectionUtils.isEmpty(userList)) {
-      response.setValue("reminderUserSet", userList.stream().collect(Collectors.toSet()));
+    if (!CollectionUtils.isEmpty(reminderUserSet)) {
+      response.setValue("reminderUserSet", reminderUserSet);
     } else {
       response.setValue("reminderUserSet", null);
       response.setNotify(I18n.get(ITranslation.TS_REPORT_FILL_NO_USER));

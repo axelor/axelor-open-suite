@@ -486,13 +486,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected void computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
-    BigDecimal oldQty = stockLocationLine.getCurrentQty();
     // avgPrice in stock move line is a bigdecimal but is nullable.
+    BigDecimal newQty = stockMoveLine.getRealQty();
+    BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
     BigDecimal newPrice =
         stockMoveLine.getWapPrice() != null
             ? stockMoveLine.getWapPrice()
             : stockMoveLine.getCompanyUnitPriceUntaxed();
-    BigDecimal newQty = stockMoveLine.getRealQty();
     BigDecimal newAvgPrice;
     if (oldAvgPrice == null
         || oldQty == null

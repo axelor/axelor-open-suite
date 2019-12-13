@@ -87,7 +87,7 @@
           <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"/>
           <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>
           <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"/>
-          <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll || isSubline" min="0" />
+          <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll || isSubline" min="0" validIf="$number(remainingQty) >= $number(qtyToInvoice)"/>
           <field name="invoiceAll" title="Invoice all" type="boolean" onChange="action-attrs-stock-move-line-invoicing-wizard-fill-qty"/>
           <field name="isSubline" hidden="true" />
           <field name="stockMoveLineId" hidden="true"/>

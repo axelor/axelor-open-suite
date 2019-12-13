@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
@@ -25,11 +24,9 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -209,15 +206,7 @@ public class AccountingReportController {
                 + " "
                 + accountingReport.getRef();
 
-        String fileLink =
-            ReportFactory.createReport(
-                    String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelect), name + "-${date}")
-                .addParam("AccountingReportId", accountingReport.getId())
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addFormat(accountingReport.getExportTypeSelect())
-                .toAttach(accountingReport)
-                .generate()
-                .getFileLink();
+        String fileLink = accountingReportService.getReportFileLink(accountingReport, name);
 
         logger.debug("Printing " + name);
 
