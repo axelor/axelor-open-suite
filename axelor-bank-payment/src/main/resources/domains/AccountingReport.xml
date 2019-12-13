@@ -6,11 +6,12 @@
   <entity name="AccountingReport" lang="java">
   
   <many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank details"/>
+  <many-to-many name="journalSet" ref="com.axelor.apps.account.db.Journal" title="Journals"/>
     
     <extra-code><![CDATA[
 	
 	   	// TYPE SELECT
-		public static final int REPORT_BANK_RECONCILIATION_STATEMENT = 3000;
+		public static final int REPORT_BANK_RECONCILIATION_STATEMENT = 18;
 
 		
 	]]></extra-code>

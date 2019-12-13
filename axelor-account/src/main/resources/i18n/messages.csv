@@ -1799,6 +1799,7 @@
 "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled",,,
 "The batch to close the annual accounts has already ran. Are you sure you want to continue ?",,,
 "The chart of account has been loaded successfully",,,
+"The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.",,,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book",,,
 "The company is required and must be the same for all invoices",,,
 "The currency is required and must be the same for all invoices",,,

@@ -439,7 +439,6 @@ Company.name as company_name,
 AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, 
 MetaFile.file_path as logo_path,
-Journal.name as journal_name, 
 Currency.code as currency,
 Company.height as logo_height,
 Company.width as logo_width
@@ -714,13 +713,14 @@ left outer join public.account_account as Account on MoveLine.account  = Account
 left outer join public.account_account_type as AccountType on Account.account_type = AccountType.id
 left outer join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 left outer join public.base_company as Company on AccountingReport.company = Company.id
+left outer join public.account_accounting_report_journal_set as JournalSet on JournalSet.account_accounting_report = AccountingReport.id
 left outer join public.account_journal as Journal on Move.journal = Journal.id
 where BankReconciliationLine.id is null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val 
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
-AND(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal)
+AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select != 4
 AND AccountType.technical_type_select like 'cash'
 AND MoveLine.bank_reconciled_amount != MoveLine.debit + MoveLine.credit
@@ -747,13 +747,14 @@ left outer join public.account_account as Account on MoveLine.account  = Account
 left outer join public.account_account_type as AccountType on Account.account_type = AccountType.id
 left outer join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 left outer join public.base_company as Company on AccountingReport.company = Company.id
+left outer join public.account_accounting_report_journal_set as JournalSet on JournalSet.account_accounting_report = AccountingReport.id
 left outer join public.account_journal as Journal on Move.journal = Journal.id
 where BankReconciliationLine.id is not null
 AND AccountingReport.currency = Move.company_currency
 AND MoveLine.date_val <= AccountingReport.date_val 
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
-AND(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal)
+AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select != 4
 AND AccountType.technical_type_select like 'cash'
 and BankReconciliationLine.is_posted = true
@@ -969,7 +970,7 @@ AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
 AND BankStatementLine.debit + BankStatementLine.credit > 0
-AND BankStatement.status_select = 1
+AND BankStatementLine.amount_remain_to_reconcile > 0
 
 Union
 
@@ -995,7 +996,7 @@ AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportB
 AND AccountingReport.company = Company.id
 AND BankReconciliationLine.effect_date <=  AccountingReport.date_val
 and BankReconciliationLine.is_posted = true
-AND BankStatement.status_select = 1
+AND BankStatementLine.amount_remain_to_reconcile > 0
 group by BankStatementLine.id,
 BankStatementLine.sequence,
 BankStatementLine.operation_date,
@@ -1030,7 +1031,8 @@ AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
 AND BankStatementLine.debit + BankStatementLine.credit > 0
-AND BankStatement.status_select = 1
+AND BankStatementLine.amount_remain_to_reconcile > 0
+AND BankStatementLine.line_type_select = 2
 
 Union
 
@@ -1056,7 +1058,8 @@ AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportB
 AND AccountingReport.company = Company.id
 AND BankReconciliationLine.effect_date <=  AccountingReport.date_val
 and BankReconciliationLine.is_posted = true
-AND BankStatement.status_select = 1
+AND BankStatementLine.amount_remain_to_reconcile > 0
+AND BankStatementLine.line_type_select = 2
 group by BankStatementLine.id,
 BankStatementLine.sequence,
 BankStatementLine.operation_date,
@@ -2520,60 +2523,11 @@ order by date
                         <property name="resultSetColumn">currency</property>
                     </data>
                 </cell>
-                <cell id="6236">
-                    <text id="6240">
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">10pt</property>
-                        <property name="fontWeight">normal</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'BankReconciliationStatement.journal'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
-                    </text>
-                </cell>
+                <cell id="6236"/>
                 <cell id="5186">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <property name="textAlign">left</property>
-                    <data id="6226">
-                        <property name="fontSize">10pt</property>
-                        <property name="dataSet">AccountingReportDS</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">journal_name</property>
-                                <text-property name="displayName">journal_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["journal_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">journal_name</property>
-                    </data>
                 </cell>
                 <cell id="6512">
                     <property name="textAlign">left</property>

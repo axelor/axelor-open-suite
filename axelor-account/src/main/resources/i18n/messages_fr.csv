@@ -1801,6 +1801,7 @@
 "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled","L'ordre bancaire lié à ce paiement a déjà été réalisé/rejeté, vous ne pouvez donc annuler ce paiement",,
 "The batch to close the annual accounts has already ran. Are you sure you want to continue ?","Attention, le batch de clôture annuelle a déjà été lancé. Êtes-vous sûr de vouloir continuer ?",,
 "The chart of account has been loaded successfully","Le plan de compte a été chargé avec succès",,
+"The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.","La date d'arrêté est antérieure à la date du jour : les écritures enregistrées après cette date ne seront pas prise en compte dans le rapport.",,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book","La clôture d’une année fiscale entraîne l’intégration irréversible d’une écriture comptable dans le Journal des écritures comptables.",,
 "The company is required and must be the same for all invoices","La société est obligatoire et doit être la même pour l'ensemble des factures",,
 "The currency is required and must be the same for all invoices","La devise est obligatoire et doit être la même pour l'ensemble des factures",,
