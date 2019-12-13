@@ -23,6 +23,7 @@
 - INVOICE : hide 'stockMoveSet' buttons of 'invoice-form'
 - STOCK MOVE: update pfp tags on stock move form
 - Invoicing project : unit conversion for "Duration adjust for customer".
+- ACCOUNTING REPORT : change the title of "General ledger 2" from the selection.
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.

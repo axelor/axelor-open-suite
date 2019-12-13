@@ -79,7 +79,7 @@
 		<option order="12" value="12">VAT Statement on invoices</option>
 		<option order="13" value="15">VAT Statement on amount received</option>
 		<option order="14" value="13">Payment differences</option>
-		<option order="15" value="14">General ledger 2</option>
+		<option order="15" value="14">General ledger (old presentation)</option>
 		<option value="16" order="16">Acquisitions</option>
 		<option value="17" order="17">Summary of gross values and depreciation</option>
 		<option order="2000" value="2000">Analytic balance</option>
