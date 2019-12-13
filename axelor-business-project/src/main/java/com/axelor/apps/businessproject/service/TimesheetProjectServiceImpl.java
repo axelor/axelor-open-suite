@@ -44,7 +44,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
+public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
+    implements TimesheetProjectService {
 
   @Inject
   public TimesheetProjectServiceImpl(
@@ -92,7 +93,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       tabInformations[3] = timesheetLine.getDate();
       tabInformations[4] =
           timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
-              ? timesheetLine.getDurationForCustomer()
+              ? this.computeDurationForCustomer(timesheetLine)
               : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
 
@@ -118,7 +119,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
               ((BigDecimal) tabInformations[4])
                   .add(
                       timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
-                          ? timesheetLine.getDurationForCustomer()
+                          ? this.computeDurationForCustomer(timesheetLine)
                           : timesheetLine.getHoursDuration());
         } else {
           timeSheetInformationsMap.put(key, tabInformations);
@@ -157,5 +158,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
     }
 
     return invoiceLineList;
+  }
+
+  @Override
+  public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException {
+    return timesheetLineService.computeHoursDuration(
+        timesheetLine.getTimesheet(), timesheetLine.getDurationForCustomer(), true);
   }
 }
