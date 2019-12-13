@@ -137,4 +137,17 @@ public class ArchivingToolServiceImpl implements ArchivingToolService {
     ;
     return moduleName + objectName;
   }
+
+  @Override
+  public String getModelTitle(String modelName) throws AxelorException {
+    Query FindModelWithobjectFieldQuery =
+        JPA.em()
+            .createNativeQuery(
+                "SELECT view.title as viewTitle"
+                    + " FROM meta_view view"
+                    + " WHERE view.name like :viewtName");
+    FindModelWithobjectFieldQuery.setParameter(
+        "viewtName", modelName.replaceAll("([a-z])([A-Z])", "$1-$2").toLowerCase() + "-form");
+    return (String) FindModelWithobjectFieldQuery.getSingleResult();
+  }
 }

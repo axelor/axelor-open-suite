@@ -276,7 +276,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     if (invoiceSet != null) {
       for (Invoice invoice : invoiceSet) {
         if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED) {
-          invoiceId += invoice.getId() + "|";
+          invoiceId += invoice.getInvoiceId() + "|";
         }
       }
       if (invoiceId != null && !invoiceId.isEmpty()) {

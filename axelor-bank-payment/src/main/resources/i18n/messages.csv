@@ -702,6 +702,7 @@
 "The sender bank details currency is not compatible with the currency in bank order.",,,
 "There is at least one incomplete bank reconciliation. Are you sure you want to continue ?",,,
 "This action is irreversible, do you want to continue ?",,,
+"This move line %s can not be archived because its bank reconciliation amount is superior to 0.",,,
 "To Date",,,
 "Total amount",,,
 "Total amount in company currency",,,
