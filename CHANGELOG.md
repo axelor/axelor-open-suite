@@ -22,6 +22,7 @@
 - STOCK MOVE : rename title of stock-move-form buttons related to PFP
 - INVOICE : hide 'stockMoveSet' buttons of 'invoice-form'
 - STOCK MOVE: update pfp tags on stock move form
+- Invoicing project : unit conversion for "Duration adjust for customer".
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
