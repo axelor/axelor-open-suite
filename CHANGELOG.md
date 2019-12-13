@@ -46,6 +46,7 @@
 - Purchase Order: fix view budgetDistributionListPanel of purchaseOrderLine
 - Weighted Average Price: Fix computation issue causing an error in wap price.
 - STOCK MOVE : fix the problem of partially invoice qty in "stock-move-invoicing-wizard-form"
+- STOCK CORRECTION : fixed error when qty is negative by reversing toStockLocation and fromStockLocation of created stockMove
 
 ## [5.2.0] - 2019-11-29
 ## Features
