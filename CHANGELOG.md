@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - PURCHASEORDERLINE: autofill productCode and productName when choosing a product
+- Sale order/quotation: fix tab title when generating a quotation from an opportunity.
 
 ## [5.0.10] - 2019-11-27
 ## Improvements
