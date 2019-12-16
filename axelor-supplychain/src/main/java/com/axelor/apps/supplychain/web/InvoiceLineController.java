@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -67,12 +68,15 @@ public class InvoiceLineController {
     BigDecimal priceDiscounted = BigDecimal.ZERO;
     BigDecimal taxRate = BigDecimal.ZERO;
 
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    
+    int scale = appBaseService.getNbDecimalDigitForQty();
 
     if (invoiceLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (InvoiceLine line : invoiceLines) {
-          qty = (line.getQty().divide(oldKitQty, 2, RoundingMode.HALF_EVEN)).multiply(newKitQty);
+          qty = (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_EVEN)).multiply(newKitQty).setScale(scale, RoundingMode.HALF_EVEN);
           priceDiscounted = invoiceLineService.computeDiscount(line, invoice.getInAti());
 
           if (line.getTaxLine() != null) {
@@ -91,7 +95,7 @@ public class InvoiceLineController {
           companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
           companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 
-          line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+          line.setQty(qty);
           line.setExTaxTotal(exTaxTotal);
           line.setCompanyExTaxTotal(companyExTaxTotal);
           line.setInTaxTotal(inTaxTotal);
@@ -101,7 +105,7 @@ public class InvoiceLineController {
         }
       } else {
         for (InvoiceLine line : invoiceLines) {
-          line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+          line.setQty(qty);
         }
       }
     }

@@ -62,6 +62,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
   protected CurrencyService currencyService;
   protected UnitConversionRepository unitConversionRepo;
+  protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
   protected InvoiceLineService invoiceLineService;
   protected AccountManagementAccountService accountManagementService;
@@ -95,6 +96,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     this.invoice = invoice;
     this.unitConversionRepo = Beans.get(UnitConversionRepository.class);
+    this.appBaseService = Beans.get(AppBaseService.class);
     this.appAccountService = Beans.get(AppAccountService.class);
     this.invoiceLineService = Beans.get(InvoiceLineService.class);
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
@@ -117,7 +119,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.product = product;
     this.productName = productName;
     this.description = description;
-    this.qty = qty;
+    this.qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
     this.unit = unit;
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;

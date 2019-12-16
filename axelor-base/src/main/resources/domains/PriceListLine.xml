@@ -12,7 +12,7 @@
 			<integer name="typeSelect" title="Discount/Additionnal/Replace" selection="base.price.list.line.type.select"/>
 			<integer name="amountTypeSelect" title="Fixed Amount/%" selection="base.price.list.line.amount.type.select"/>
 			<decimal name="amount" title="Amount/%" precision="20" scale="10"/>
-			<decimal name="minQty" title="Qty min (by product)"/>
+			<decimal name="minQty" title="Qty min (by product)" precision="20" scale="10"/>
 
 			<finder-method name="findByPriceListAndProduct" using="priceList,product"/>
 

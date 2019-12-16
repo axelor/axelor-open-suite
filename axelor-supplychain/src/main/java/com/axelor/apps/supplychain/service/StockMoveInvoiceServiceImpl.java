@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -68,6 +69,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   private SaleOrderRepository saleOrderRepo;
   private PurchaseOrderRepository purchaseOrderRepo;
   private StockMoveLineRepository stockMoveLineRepository;
+  private AppBaseService appBaseService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -77,7 +79,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       InvoiceRepository invoiceRepository,
       SaleOrderRepository saleOrderRepo,
       PurchaseOrderRepository purchaseOrderRepo,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      AppBaseService appBaseService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -85,6 +88,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.saleOrderRepo = saleOrderRepo;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -145,9 +149,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           qty =
               qtyToInvoiceItem
                   .multiply(subLine.getQty())
-                  .divide(stockMoveLine.getQty(), 2, RoundingMode.HALF_EVEN);
+                  .divide(stockMoveLine.getQty(), appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
         }
-        qty = qty.setScale(2, RoundingMode.HALF_EVEN);
+        qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
         qtyToInvoiceMap.put(subLine.getId(), qty);
       }
     }

@@ -103,6 +103,18 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     return DEFAULT_NB_DECIMAL_DIGITS;
   }
+  
+  @Override
+  public int getNbDecimalDigitForQty() {
+
+    AppBase appBase = getAppBase();
+
+    if (appBase != null) {
+      return appBase.getNbDecimalDigitForQty();
+    }
+
+    return DEFAULT_NB_DECIMAL_DIGITS;
+  }
 
   @Override
   public String getDefaultPartnerLanguageCode() {

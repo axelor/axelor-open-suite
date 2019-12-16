@@ -26,8 +26,8 @@
   	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
   	<integer name="sequence" title="Seq."/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Qty" default="1"/>
-  	<decimal name="oldQty" hidden="true"/>
+  	<decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
+  	<decimal name="oldQty" hidden="true" precision="20" scale="10"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
   	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
   	<decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
@@ -48,7 +48,7 @@
   	  	
   	<date name="estimatedDelivDate" title="Estimated shipping date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
-	<decimal name="deliveredQty" title="Delivered quantity"/>
+	<decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
   	
 <!-- 	Margins -->
 	<decimal name="subTotalCostPrice" title="SubTotal cost price"/>

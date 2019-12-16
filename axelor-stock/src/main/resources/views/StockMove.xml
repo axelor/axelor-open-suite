@@ -484,12 +484,16 @@
 		<field name="isWithBackorder" expr="true"/>
 	</action-record>
 
-    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
+    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard" onNew="action-stock-move-attrs-set-scale" onLoad="action-stock-move-attrs-set-scale">
     	<panel name="mainPanel" colSpan="12">
 	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>
 	        <button name="splitBtn" title="Split" onClick="action-stock-move-method-split-stock-move-lines-special" colSpan="6"/>
         </panel>
     </form>
+    
+    <action-attrs name="action-stock-move-attrs-set-scale">
+    	<attribute name="scale" for="splitQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
     
     <form name="stock-move-wizard-stock-per-day" title="Stock Availability" model="com.axelor.apps.base.db.Wizard" 
     	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"

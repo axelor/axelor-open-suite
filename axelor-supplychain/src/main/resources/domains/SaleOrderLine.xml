@@ -23,8 +23,8 @@
 
 	<string name="pickingOrderInfo" title="Picking Order Info" large="true"/>
 
-	<decimal name="reservedQty" title="Allocated qty" min="0"/>
-	<decimal name="requestedReservedQty" title="Requested reserved qty" min="0"/>
+	<decimal name="reservedQty" title="Allocated qty" precision="20" scale="10" min="0"/>
+	<decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10" min="0"/>
   <boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
 
   	<integer name="deliveryState" title="Delivery state" selection="sale.order.delivery.state" readonly="true" default="0"/>

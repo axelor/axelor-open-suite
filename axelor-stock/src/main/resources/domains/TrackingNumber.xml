@@ -11,7 +11,7 @@
 	<date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
 	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
 	<string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
-	<decimal name="counter" title="Counter"/>
+	<decimal name="counter" title="Counter" precision="20" scale="10"/>
 	
 	<unique-constraint columns="product,trackingNumberSeq"/>
 

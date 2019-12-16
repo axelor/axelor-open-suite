@@ -13,8 +13,8 @@
 		<field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')" />
 		<field name="product.code" width="120"/>
 		<field name="productName"/>
-		<field name="qty" aggregate="sum"/>
-		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
+		<field name="qty" aggregate="sum" x-scale="2"/>
+		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
     <button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -34,9 +34,9 @@
   		<field name="saleOrder.clientPartner"/>
   		<field name="product.code" width="120"/>
 	    <field name="productName"/>
-	    <field name="qty" aggregate="sum"/>
-	    <field name="deliveredQty" aggregate="sum"/>
-		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"/>
+	    <field name="qty" aggregate="sum" x-scale="2"/>
+	    <field name="deliveredQty" aggregate="sum" x-scale="2"/>
+		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
 	    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
 	    <field name="exTaxTotal" aggregate="sum"/>
@@ -614,6 +614,12 @@
 		<attribute name="scale" for="inTaxPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		
+		<attribute name="scale" for="oldQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="requestedReservedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="reservedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="deliveredQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
 	<action-attrs name="action-sale-order-line-attrs-type-select">

@@ -7,7 +7,7 @@
         <hilite strong="true" color="default" if="typeSelect != 0"/>
        	<field name="product.code" width="120"/>
         <field name="productName"/>
-        <field name="qty" aggregate="sum"/>
+        <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -29,7 +29,7 @@
   		<field name="invoice.address.addressL7Country"/>
   		<field name="product.code" title="product.code" width="120"/>
   		<field name="productName" width="170"/>
-  		<field name="qty" width="50" aggregate="sum"/>
+  		<field name="qty" width="50" aggregate="sum" x-scale="2"/>
   		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
   		<field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
   		<field name="exTaxTotal" aggregate="sum"/>
@@ -376,6 +376,8 @@
 		<attribute name="scale" for="inTaxPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 
 		<!-- Hide ATI OR depending on pack configuration -->
 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: __parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>

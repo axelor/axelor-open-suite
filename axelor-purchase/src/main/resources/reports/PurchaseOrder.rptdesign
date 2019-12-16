@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -2108,12 +2108,24 @@ where POrder.id = ?]]></xml-property>
                     <text-property name="displayName">nb_decimal_digit_for_unit_price</text-property>
                     <text-property name="heading">nb_decimal_digit_for_unit_price</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">nb_decimal_digit_for_qty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                    <text-property name="heading">nb_decimal_digit_for_qty</text-property>
+                </structure>
             </list-property>
+            <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
                         <property name="name">nb_decimal_digit_for_unit_price</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">nb_decimal_digit_for_qty</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -2127,8 +2139,16 @@ where POrder.id = ?]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">nb_decimal_digit_for_qty</property>
+                    <property name="nativeName">nb_decimal_digit_for_qty</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price
+            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price,
+nb_decimal_digit_for_qty
 from base_app_base]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -4165,7 +4185,7 @@ row["first_name"]
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <text id="4619">
+                                    <text id="4631">
                                         <property name="backgroundAttachment">scroll</property>
                                         <property name="backgroundPositionX">0%</property>
                                         <property name="backgroundPositionY">0%</property>
@@ -5193,7 +5213,7 @@ row["first_name"]
                         <detail>
                             <row id="3434">
                                 <property name="verticalAlign">top</property>
-                                <cell id="4620">
+                                <cell id="4632">
                                     <property name="backgroundAttachment">scroll</property>
                                     <property name="backgroundImageType">url</property>
                                     <property name="backgroundPositionX">0%</property>
@@ -5628,14 +5648,23 @@ row["first_name"]
                                             <cell id="4627">
                                                 <text id="4629">
                                                     <property name="fontSize">8pt</property>
+                                                    <property name="dataSet">AppBaseDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
                                                             <property name="format">all</property>
                                                             <expression name="valueExpr" type="javascript">row["isTitleLine"] == 1</expression>
                                                         </structure>
                                                     </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">nb_decimal_digit_for_qty</property>
+                                                            <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
+                                                            <property name="dataType">integer</property>
+                                                        </structure>
+                                                    </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["qty"]</VALUE-OF> ]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF> ]]></text-property>
                                                 </text>
                                             </cell>
                                             <cell id="4628">

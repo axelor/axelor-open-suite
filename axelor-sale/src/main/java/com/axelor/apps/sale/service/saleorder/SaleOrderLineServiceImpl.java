@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.PackLine;
@@ -62,6 +63,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
 
+  @Inject protected AppBaseService appBaseService;
+  
   @Inject protected AppSaleService appSaleService;
 
   @Inject protected AccountManagementService accountManagementService;
@@ -130,6 +133,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected List<SaleOrderLine> createPackLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> subLines = new ArrayList<SaleOrderLine>();
+    int qtyScale = appBaseService.getNbDecimalDigitForQty();
 
     Integer sequence = saleOrderLine.getSequence();
     if (sequence == null) {
@@ -151,7 +155,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       SaleOrderLine subLine = new SaleOrderLine();
       Product subProduct = packLine.getProduct();
       subLine.setProduct(subProduct);
-      subLine.setQty(new BigDecimal(packLine.getQuantity()).multiply(saleOrderLine.getQty()));
+      subLine.setQty(BigDecimal.valueOf(packLine.getQuantity()).multiply(saleOrderLine.getQty()).setScale(qtyScale, RoundingMode.HALF_EVEN));
       subLine.setIsSubLine(true);
       computeProductInformation(subLine, saleOrder, saleOrderLine.getPackPriceSelect());
       computeValues(saleOrder, subLine);

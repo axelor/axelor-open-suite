@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -33,6 +34,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,6 +43,8 @@ import java.util.Map;
 
 @Singleton
 public class SaleOrderLineController {
+	
+  @Inject AppBaseService appBaseService;
 
   public void compute(ActionRequest request, ActionResponse response) {
 
@@ -342,8 +346,10 @@ public class SaleOrderLineController {
 
       if (orderLines != null) {
         if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
+          int qtyScale = appBaseService.getNbDecimalDigitForQty();
+        	
           for (SaleOrderLine line : orderLines) {
-            qty = (line.getQty().divide(oldKitQty, 2, RoundingMode.HALF_EVEN)).multiply(newKitQty);
+            qty = (line.getQty().divide(oldKitQty, qtyScale, RoundingMode.HALF_EVEN)).multiply(newKitQty).setScale(qtyScale, RoundingMode.HALF_EVEN);
             priceDiscounted = saleOrderLineService.computeDiscount(line, saleOrder.getInAti());
 
             if (line.getTaxLine() != null) {
@@ -367,7 +373,7 @@ public class SaleOrderLineController {
                       taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
             }
 
-            line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+            line.setQty(qty);
             line.setPriceDiscounted(priceDiscounted);
             line.setExTaxTotal(exTaxTotal);
             line.setInTaxTotal(inTaxTotal);
@@ -376,7 +382,7 @@ public class SaleOrderLineController {
           }
         } else {
           for (SaleOrderLine line : orderLines) {
-            line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+            line.setQty(qty);
           }
         }
 

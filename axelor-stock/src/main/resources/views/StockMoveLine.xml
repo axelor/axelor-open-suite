@@ -23,21 +23,21 @@
         readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
         <field name="qty" aggregate="sum"
             onChange="action-stock-move-line-group-qty-onchange"
-            width="100px" 
+            width="100px" x-scale="2"
             readonlyIf="$get('stockMove.statusSelect') &gt; 1" />
-        <field name="realQty" aggregate="sum" width="100px" 
+        <field name="realQty" aggregate="sum" width="100px" x-scale="2"
             onChange="action-stock-move-line-group-real-qty-onchange"
             readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
         <field name="requestedReservedQty" if-module="axelor-supplychain"
-			readonly="true"
+			readonly="true" x-scale="2"
             onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty"
             if="__config__.app.getApp('supplychain').getManageStockReservation()"
             aggregate="sum"/>
 		<field name="reservedQty" if-module="axelor-supplychain"
 			onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty"
 			if="__config__.app.getApp('supplychain').getManageStockReservation()"
-			aggregate="sum" readonly="true"/>
-        <field name="qtyInvoiced" readonly="true"/>
+			aggregate="sum" readonly="true" x-scale="2"/>
+        <field name="qtyInvoiced" readonly="true" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2" width="120px"
             readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
@@ -152,7 +152,7 @@
 		<field name="product" readonly="true" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 		<field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
 		<field name="productName" readonly="true" />
-		<field name="qty" aggregate="sum" onChange="action-stock-move-line-validate-check-split-quantity"/>
+		<field name="qty" aggregate="sum" onChange="action-stock-move-line-validate-check-split-quantity" x-scale="2"/>
 		<field name="unitPriceUntaxed" x-scale="2"/>
 		<field name="unitPriceTaxed" x-scale="2" hidden="true"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
@@ -172,9 +172,9 @@
         <field name="product" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="productModel" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
         <field name="productName" required="true" />
-        <field name="qty"  aggregate="sum" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') > 1"/>
-        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
-        <field name="qtyInvoiced" readonly="true"/>
+        <field name="qty" x-scale="2" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+        <field name="qtyInvoiced" readonly="true" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -200,8 +200,8 @@
         <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="productName" />
         <field name="stockMove.partner"/>
-        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
-        <field name="qtyInvoiced" readonly="true"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+        <field name="qtyInvoiced" readonly="true" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -226,9 +226,9 @@
 		<field name="product" form-view="product-form" grid-view="product-grid" />
 		<field name="productName" />
 		<field name="stockMove.partner" />
-		<field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
-		<field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"/>
-		<field name="qtyInvoiced" readonly="true"/>
+		<field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+		<field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum" x-scale="2"/>
+		<field name="qtyInvoiced" readonly="true" x-scale="2"/>
 		<field name="unitPriceUntaxed" x-scale="2" />
 		<field name="unitPriceTaxed" hidden="true" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
@@ -563,6 +563,15 @@
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
 		<attribute name="scale" for="unitPriceUntaxed" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="wapPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		
+		<attribute name="scale" for="oldQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="realQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="qtyInvoiced" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="$availableQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="$availableQtyForProduct" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="requestedReservedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="reservedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 	
 	<action-view name="action-stock-move-line-product-default-planned" title="${fullName} plan. st. move"

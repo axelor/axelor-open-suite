@@ -52,6 +52,8 @@ public interface AppBaseService extends AppService {
   public Unit getUnit();
 
   public int getNbDecimalDigitForUnitPrice();
+  
+  public int getNbDecimalDigitForQty();
 
   public String getDefaultPartnerLanguageCode();
 

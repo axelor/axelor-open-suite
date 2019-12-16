@@ -12,14 +12,15 @@
         <field name="lineDate"/>
         <field name="reference"/>
         <field name="product"/>
-        <field name="qty"/>
+        <field name="qty" x-scale="2"/>
         <field name="unit"/>
         <field name="isInvoiced" hidden="true"/>
         <field name="isError" hidden="true"/>
     </grid>
 
     <form name="consumption-line-form" title="Consumption Line"
-          model="com.axelor.apps.contract.db.ConsumptionLine">
+          model="com.axelor.apps.contract.db.ConsumptionLine"
+          onNew="action-consumption-line-attrs-scale-and-precision" onLoad="action-consumption-line-attrs-scale-and-precision">
         <panel readonlyIf="isInvoiced" name="mainPanel">
             <field name="product" required="true" canEdit="false"
                    onChange="action-consumption-line-method-change-product"/>
@@ -31,6 +32,10 @@
             <field name="isError" readonly="true" colSpan="3"/>
         </panel>
     </form>
+    
+   	<action-attrs name="action-consumption-line-attrs-scale-and-precision">
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 
     <action-method name="action-consumption-line-method-change-product">
         <call class="com.axelor.apps.contract.web.ConsumptionLineController"

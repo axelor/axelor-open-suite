@@ -84,7 +84,7 @@
     
     <grid name="stock-move-line-supplier-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
         <field name="product" readonly="true"/>
-        <field name="shippedQty"/>
+        <field name="shippedQty" x-scale="2"/>
         <field name="unit" readonly="true"/>
 		<field name="shippedDate"/>
     </grid>

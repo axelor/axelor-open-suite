@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -238,7 +239,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         BigDecimal qty = new BigDecimal(packLine.getQuantity());
 
         if (invoiceLine.getQty() != null) {
-          qty = qty.multiply(invoiceLine.getQty()).setScale(2, RoundingMode.HALF_EVEN);
+          qty = qty.multiply(invoiceLine.getQty()).setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
         }
 
         InvoiceLineGenerator invoiceLineGenerator =

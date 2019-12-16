@@ -6,7 +6,7 @@
   <entity name="MrpForecast" lang="java">
   
 	<date name="forecastDate" title="Forecast date" required="true"/>      
-	<decimal name="qty" title="Qty"/>
+	<decimal name="qty" title="Qty" precision="20" scale="10"/>
 	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
 	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" required="true"/>

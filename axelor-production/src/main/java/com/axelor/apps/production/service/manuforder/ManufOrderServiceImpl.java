@@ -81,6 +81,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected OperationOrderService operationOrderService;
   protected ManufOrderWorkflowService manufOrderWorkflowService;
   protected ProductVariantService productVariantService;
+  protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
@@ -91,6 +92,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       OperationOrderService operationOrderService,
       ManufOrderWorkflowService manufOrderWorkflowService,
       ProductVariantService productVariantService,
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo) {
@@ -98,6 +100,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.operationOrderService = operationOrderService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
     this.productVariantService = productVariantService;
+    this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
@@ -122,7 +125,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Company company = billOfMaterial.getCompany();
 
-    BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty(), 2, RoundingMode.HALF_EVEN);
+    BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty(), appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
 
     ManufOrder manufOrder =
         this.createManufOrder(
@@ -188,7 +191,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
               .multiply(lineQty)
               .divide(
                   bomQty,
-                  Beans.get(AppProductionService.class).getNbDecimalDigitForBomQty(),
+                  appBaseService.getNbDecimalDigitForQty(),
                   RoundingMode.HALF_EVEN);
     }
     return qty;
@@ -236,7 +239,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                     .multiply(manufOrderQty)
                     .divide(
                         bomQty,
-                        appProductionService.getNbDecimalDigitForBomQty(),
+                        appBaseService.getNbDecimalDigitForQty(),
                         RoundingMode.HALF_EVEN)
                 : BigDecimal.ZERO;
 
