@@ -4,6 +4,7 @@
 ## Features
 - ACCOUNTING REPORT : add new report, bank reconciliation statement.
 - RM#23133 INVOICE : new mandatory labelling
+- Company: Companies tree view
 
 ## Improvements
 - AdvancedExportLine : Add translation for field orderByType.
