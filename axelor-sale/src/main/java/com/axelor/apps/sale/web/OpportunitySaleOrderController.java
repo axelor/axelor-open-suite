@@ -19,9 +19,11 @@ package com.axelor.apps.sale.web;
 
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
@@ -41,10 +43,11 @@ public class OpportunitySaleOrderController {
     SaleOrder saleOrder = opportunitySaleOrderService.createSaleOrderFromOpportunity(opportunity);
     response.setReload(true);
     response.setView(
-        ActionView.define("Sale order")
+        ActionView.define(I18n.get(ITranslation.SALE_QUOTATION))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form")
             .param("forceEdit", "true")
+            .param("forceTitle", "true")
             .context("_showRecord", String.valueOf(saleOrder.getId()))
             .map());
   }
