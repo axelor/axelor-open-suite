@@ -8,11 +8,11 @@
         <hilite if="[5,8,9].indexOf($get('mrpLineType.elementSelect')) != -1" strong="true" color="info"/>
         <field name="product" hidden="true"/>
         <field name="mrpLineType" width="300"/>
-        <field name="qty"/>
+        <field name="qty" x-scale="2"/>
         <field name="maturityDate" width="100"/>
-        <field name="cumulativeQty" css="bold"/>
+        <field name="cumulativeQty" css="bold" x-scale="2"/>
         <field name="product.unit"/>
-        <field name="minQty"/>
+        <field name="minQty" x-scale="2"/>
         <field name="stockLocation"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
@@ -24,7 +24,8 @@
         
     </grid>
     
-	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result">
+	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result"
+		  onNew="action-mrp-line-attrs-scale-and-precision" onLoad="action-mrp-line-attrs-scale-and-precision">
 	    <panel name="mainPanel">
 	        <field name="product" readonly="true" canEdit="false"/>
 	        <field name="mrpLineType" readonly="true"/>
@@ -47,7 +48,13 @@
             <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true" showIf="proposalGenerated"/>
             <field name="isEditedByUser"  hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5"/>
 	    </panel>
-	 </form>
+	</form>
+	 
+	<action-attrs name="action-mrp-line-attrs-scale-and-precision">
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="cumulativeQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="minQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 	 
 	<action-method name="action-mrp-line-method-generate-proposal">
 	    <call class="com.axelor.apps.supplychain.web.MrpLineController" method="generateProposal"/>

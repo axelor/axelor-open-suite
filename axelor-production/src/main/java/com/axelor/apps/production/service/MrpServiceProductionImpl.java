@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -52,6 +53,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import org.slf4j.Logger;
@@ -61,10 +63,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AppBaseService appBaseService;
+
   protected ManufOrderRepository manufOrderRepository;
 
   @Inject
   public MrpServiceProductionImpl(
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
@@ -95,6 +100,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpForecastRepository,
         stockLocationService);
 
+    this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
   }
 
@@ -293,7 +299,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               mrp,
               subProduct,
               manufProposalNeedMrpLineType,
-              reorderQty.multiply(billOfMaterial.getQty()),
+              reorderQty
+                  .multiply(billOfMaterial.getQty())
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN),
               stockLocation,
               maturityDate,
               mrpLineOriginList,

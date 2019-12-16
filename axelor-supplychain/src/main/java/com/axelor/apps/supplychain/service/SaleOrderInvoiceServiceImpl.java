@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
@@ -78,6 +79,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AppBaseService appBaseService;
+
   protected AppSupplychainService appSupplychainService;
 
   protected SaleOrderRepository saleOrderRepo;
@@ -94,6 +97,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
+      AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
@@ -102,6 +106,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       StockMoveRepository stockMoveRepository,
       SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl) {
 
+    this.appBaseService = appBaseService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
@@ -432,7 +437,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               saleOrderLine
                   .getQty()
                   .multiply(percent)
-                  .divide(new BigDecimal("100"), 2, RoundingMode.HALF_EVEN);
+                  .divide(
+                      new BigDecimal("100"),
+                      appBaseService.getNbDecimalDigitForQty(),
+                      RoundingMode.HALF_EVEN);
           qtyToInvoiceMap.put(SOrderId, realQty);
         }
         if (qtyToInvoiceMap.get(SOrderId).compareTo(saleOrderLine.getQty()) > 0) {

@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -25,6 +26,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -263,6 +265,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     StockHistoryLine stockHistoryLine = new StockHistoryLine();
     stockHistoryLine.setLabel(I18n.get("Average"));
 
+    int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
+
     int sizeOfList = stockHistoryLineList.size();
     if (sizeOfList == 0) {
       return stockHistoryLine;
@@ -274,7 +278,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setSumIncQtyPeriod(
         totalStockHistoryLine
             .getSumIncQtyPeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_EVEN));
 
     stockHistoryLine.setPriceIncStockMovePeriod(
         totalStockHistoryLine
@@ -287,7 +291,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setSumOutQtyPeriod(
         totalStockHistoryLine
             .getSumOutQtyPeriod()
-            .divide(BigDecimal.valueOf(sizeOfList), 2, RoundingMode.HALF_EVEN));
+            .divide(BigDecimal.valueOf(sizeOfList), qtyScale, RoundingMode.HALF_EVEN));
 
     stockHistoryLine.setPriceOutStockMovePeriod(
         totalStockHistoryLine

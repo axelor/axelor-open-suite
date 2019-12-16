@@ -8,7 +8,7 @@
 		<field name="createdBy"/>
  		<field name="billOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
   		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid"/>
-  		<field name="billOfMaterial.qty" aggregate="sum"/>
+  		<field name="billOfMaterial.qty" aggregate="sum" x-scale="2"/>
   		<field name="costPrice" readonly="true"/>
   		<field name="calculationTypeSelect"/>
   		<field name="calculationDate"/>
@@ -22,7 +22,8 @@
   		<field name="calculationDate"/>
     </grid>
     
-	<form name="cost-sheet-form" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" width="large">
+	<form name="cost-sheet-form" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" width="large"
+		  onNew="action-cost-sheet-attrs-set-scale" onLoad="action-cost-sheet-attrs-set-scale">
 	  <panel name="mainPanel" readonly="true">
 	    <field name="createdOn"/>
   		<field name="createdBy"/>
@@ -50,6 +51,10 @@
   		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
 	  </panel>
 	</form>
+	
+    <action-attrs name="action-cost-sheet-attrs-set-scale">
+    	<attribute name="scale" for="billOfMaterial.qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
     
     <action-method name="action-cost-sheet-method-print-cost-sheet-line-detail">
     	<call class="com.axelor.apps.production.web.CostSheetController" method="printCostSheetLineDetail"/>

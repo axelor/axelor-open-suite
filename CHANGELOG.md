@@ -24,6 +24,7 @@
 - CITY : Import automatically from Geonames files
 - MRP : Freeze proposals after manually modifying them.
 - ExtraHoursLine : Add new field 'Type' referencing new domain ExtraHoursType.
+- Added a global configuration to base app to define number of digits for quantity fields.
 
 ## Improvements
 - Remove Pack Feature from Product.

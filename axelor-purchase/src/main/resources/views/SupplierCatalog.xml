@@ -9,7 +9,7 @@
         <field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="updateDate"/>
-        <field name="minQty"/>
+        <field name="minQty" x-scale="2"/>
         <field name="price" x-scale="2" />
     </grid>
 
@@ -20,7 +20,7 @@
 		<field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="updateDate"/>
-		<field name="minQty"/>
+		<field name="minQty" x-scale="2"/>
 		<field name="price" x-scale="2" />
 	</grid>
     
@@ -60,6 +60,7 @@
 
     <action-attrs name="action-supplier-catalog-attrs-init">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="minQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="hidden" for="shippingCoefList"
 				   expr="eval: __parent__ &amp;&amp; !__parent__.defShipCoefByPartner" if="eval: __parent__._model == 'com.axelor.apps.base.db.Product'"/>
 		<attribute name="hidden" for="shippingCoefList"

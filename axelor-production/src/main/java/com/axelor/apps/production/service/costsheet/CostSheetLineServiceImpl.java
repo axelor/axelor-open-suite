@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
@@ -54,6 +55,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected CostSheetGroupRepository costSheetGroupRepository;
   protected UnitConversionService unitConversionService;
@@ -65,6 +67,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
   @Inject
   public CostSheetLineServiceImpl(
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       CostSheetGroupRepository costSheetGroupRepository,
       UnitConversionService unitConversionService,
@@ -73,6 +76,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       UnitCostCalcLineServiceImpl unitCostCalcLineServiceImpl,
       CurrencyService currencyService,
       ShippingCoefService shippingCoefService) {
+    this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.costSheetGroupRepository = costSheetGroupRepository;
     this.unitConversionService = unitConversionService;
@@ -106,7 +110,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     CostSheetLine costSheetLine = new CostSheetLine(code, name);
     costSheetLine.setBomLevel(bomLevel);
-    costSheetLine.setConsumptionQty(consumptionQty);
+    costSheetLine.setConsumptionQty(
+        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
     costSheetLine.setCostSheetGroup(costSheetGroup);
     costSheetLine.setProduct(product);
     costSheetLine.setTypeSelect(typeSelect);
@@ -226,6 +231,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       default:
         costPrice = BigDecimal.ZERO;
     }
+
+    consumptionQty =
+        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
 
     costPrice = costPrice.multiply(consumptionQty);
     costPrice =
@@ -351,7 +359,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .multiply(wasteRate)
             .divide(
                 new BigDecimal("100"),
-                appProductionService.getNbDecimalDigitForBomQty(),
+                appBaseService.getNbDecimalDigitForQty(),
                 BigDecimal.ROUND_HALF_EVEN);
 
     BigDecimal costPrice = null;
@@ -392,7 +400,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         product.getName(),
         product.getCode(),
         bomLevel,
-        qty.setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN),
+        qty,
         costPrice.setScale(
             appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN),
         product.getCostSheetGroup(),

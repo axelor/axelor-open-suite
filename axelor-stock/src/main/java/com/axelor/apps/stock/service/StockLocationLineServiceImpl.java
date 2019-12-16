@@ -554,7 +554,9 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     Unit stockLocationUnit = stockLocationLine.getUnit();
 
     if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
-      int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      int scale = appBaseService.getNbDecimalDigitForUnitPrice();
+      int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
       BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
@@ -573,7 +575,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
       BigDecimal avgQty = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
-        avgQty = oldQty.divide(currentQty, scale, RoundingMode.HALF_UP);
+        avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
       }
       BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
       updateWap(stockLocationLine, newAvgPrice.setScale(scale, RoundingMode.HALF_UP));
