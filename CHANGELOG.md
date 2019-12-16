@@ -46,3 +46,4 @@
 - Studio : Fixed selection filter issue and sequence issue.
 - StockMoveLine : Fixed empty popup issue while viewing stock move line record in form view
 - STOCK MOVE LINE : $invoiced tag display twice.
+- LEAVE TEMPLATE : changed field fromDate and toDate name to fromDateT and toDateT.
