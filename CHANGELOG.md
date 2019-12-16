@@ -1,57 +1,56 @@
 # Changelog
 
-## [Unreleased 5.2.1]
+## [5.2.1] - 2019-12-16
 ## Features
-- ACCOUNTING REPORT : add new report, bank reconciliation statement.
-- RM#23133 INVOICE : new mandatory labelling
-- Company: Companies tree view
+- ACCOUNTING REPORT: add new report, bank reconciliation statement.
 
 ## Improvements
-- AdvancedExportLine : Add translation for field orderByType.
-- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
-- MOVE : changed position of reconciliation tag in move form.
-- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
-- PRODUCT : update translation for "Service" and "Product"
-- STOCK MOVE: empty reservationDateTime on duplicate stock move
-- STOCK CONFIG : rename field name "stockLocationValue" 
-- STOCK MOVE: Update stock move's form view 
-- SALE ORDER PRINTING : rename title  "Sale order" in "Order Acknowledgement"  of report on condition
-- MOVE : Improved messages when there is an exception on trying to remove an accounting move.
-- Partner Form : change the translation of "Create sale quotation".
-- STOCK MOVE : to and from stock location set on company change.
-- STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
-- STOCK MOVE : rename title of stock-move-form buttons related to PFP
-- INVOICE : hide 'stockMoveSet' buttons of 'invoice-form'
-- STOCK MOVE: update pfp tags on stock move form
-- Invoicing project : unit conversion for "Duration adjust for customer".
-- ACCOUNTING REPORT : change the title of "General ledger 2" from the selection.
-- TAX : add column 'typeSelect' in 'tax-grid'.
-- Sale order/quotation : fix tab title when generating a quotation from an opportunity
+- INVOICE: new mandatory labelling: Head office address.
+- Company: Add tree view for companies.
+- AdvancedExportLine: Add translation for field orderByType.
+- PURCHASE REQUEST: add new columns in purchase request grid view.
+- MOVE: changed position of reconciliation tag in move form.
+- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors are used in bank statement line grid.
+- PRODUCT: update translation for "Service" and "Product".
+- STOCK MOVE: empty reservation date time on duplicate stock move.
+- STOCK MOVE: Update stock move's form view.
+- SALE ORDER PRINTING: rename title "Sale order" to "Order Acknowledgement" of report on condition.
+- MOVE: Improved messages when there is an exception on trying to remove an accounting move.
+- Partner Form: change the french translation of "Create sale quotation".
+- STOCK MOVE: empty to and from stock location set on company change.
+- STOCK MOVE: hide reserved qty when it is a supplier arrival or a customer return.
+- STOCK MOVE: rename title of stock-move-form buttons related to PFP.
+- STOCK MOVE: update pfp tags on stock move form.
+- Invoicing project: unit conversion for "Duration adjust for customer".
+- ACCOUNTING REPORT: change the title of "General ledger 2" from the selection.
+- TAX: Show type select in grid view.
+- Sale order/quotation: fix tab title when generating a quotation from an opportunity.
 
 ## Bug Fixes
-- ANALYTIC : analytic journal in analytic line is now required.
-- REFUND : avoid blocking message when ventilation of the invoice
-- MOVE : corrected display of status tag in move form.
+- ANALYTIC: analytic journal in analytic line is now required.
+- REFUND: avoid blocking message when ventilating the invoice.
+- MOVE: fix display of status tag in move form.
 - Manuf Order: fix real quantity not updating when a new line in consumed products is created.
-- INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
-- INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
-- User: find user by email using partner email address
+- INVOICE PAYMENT CANCELLATION: corrected error when boolean allow removal validate move in account configuration is true.
+- INVOICE: stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
+- User: find user by email using partner email address.
 - Invoice: fix exception during passed for payment validation.
 - Resolve NPE on stockMoveLines while displaying archived records.
-- StockMove : set readonly to/fromStockLocation if status != Draft
-- PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
-- INVOICE : replace filter of stockMoveRepo changed to invoiceSet from invoice. 
-- Invoice : fix payment button visibility issue
-- HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
-- INVOICE : Fix printing of unitPrice when invoiceLine type is title.
+- StockMove: set readonly to/fromStockLocation if status != Draft.
+- INVOICE: remove the possibility for the user to manually link a stockMove to an invoice.
+- PURCHASE ORDER LINE: isFilterOnSupplier is always true by default and can be set to false manually.
+- INVOICE: Fix error on merging two invoices.
+- Invoice: fix payment button visibility issue.
+- HR: update insert leave method for mobile app.
+- INVOICE: Fix printing of unit price when invoiceLine type is title.
 - MOVE LINE: fix amount paid display in move line form.
-- STOCK : ProductWorth computation fixed in ABCAnalysis.
-- BASE : ABC Analysis Line with qty and worth equal to 0 are now removed.
-- Fix Issues on EBICS user and partner form
-- Purchase Order: fix view budgetDistributionListPanel of purchaseOrderLine
+- STOCK: ProductWorth computation fixed in ABCAnalysis.
+- BASE: ABC Analysis Line with qty and worth equal to 0 are now removed.
+- Fix Issues on EBICS user and partner form.
+- Purchase Order: fix view budgetDistributionListPanel of purchaseOrderLine.
 - Weighted Average Price: Fix computation issue causing an error in wap price.
-- STOCK MOVE : fix the problem of partially invoice qty in "stock-move-invoicing-wizard-form"
-- STOCK CORRECTION : fixed error when qty is negative by reversing toStockLocation and fromStockLocation of created stockMove
+- STOCK MOVE: fix the problem of partially invoiced qty in invoicing wizard form.
+- STOCK CORRECTION: fixed error when qty is negative by reversing toStockLocation and fromStockLocation of created stock move.
 - MASS INVOICING STOCK MOVE: fix error when selecting stock move to invoice.
 
 ## [5.2.0] - 2019-11-29
@@ -262,5 +261,5 @@
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.1]: https://github.com/axelor/axelor-business-suite/compare/v5.2.0...dev
+[5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
