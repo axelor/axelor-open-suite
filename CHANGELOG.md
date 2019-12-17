@@ -2,7 +2,7 @@
 
 ## [Unreleased 5.2.2]
 ## Features
-- COMPANY : mass update in object
+- COMPANY : mass update enabled for some fields
 
 ## Improvements
 ## Bug Fixes
