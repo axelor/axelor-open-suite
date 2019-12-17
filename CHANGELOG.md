@@ -25,6 +25,7 @@
 - MOVE LINE: fix amount paid display in move line form.
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
 - Sale order/quotation: fix tab title when generating a quotation from an opportunity.
+- BankOrder : Fix NPE on click of confirm for International transfer
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
