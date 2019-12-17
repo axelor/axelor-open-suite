@@ -3,6 +3,7 @@
 ## [Unreleased 5.0.11]
 ## Improvements
 - INVOICE : add boolean in Accounting config and add string Head office address in "partner-form" and "invoice-form"
+- BATCH : set batchList empty on copy for BankPaymentBatch.
 
 ## Bug Fixes
 - PURCHASEORDERLINE: autofill productCode and productName when choosing a product
