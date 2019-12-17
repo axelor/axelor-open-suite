@@ -8,6 +8,7 @@
 ## Improvements
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
+- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active  
 
 ## [5.2.1] - 2019-12-16
 ## Features
