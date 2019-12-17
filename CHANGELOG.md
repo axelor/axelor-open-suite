@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.2.2]
+## Features
+- COMPANY : mass update in object
+
 ## Improvements
 ## Bug Fixes
 
