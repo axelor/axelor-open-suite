@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.2]
 ## Features
 - COMPANY : mass update enabled for some fields
+- BANKDETAILS : mass update enabled for currency and active field
 
 ## Improvements
 ## Bug Fixes
