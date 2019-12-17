@@ -11,6 +11,7 @@
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
 - BankOrder : Fix NPE on click of confirm for International transfer.
 - BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch.
+- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
 
 ## [5.2.1] - 2019-12-16
 ## Features
