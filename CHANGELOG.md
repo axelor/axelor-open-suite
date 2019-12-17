@@ -4,6 +4,7 @@
 ## Features
 - COMPANY : mass update enabled for some fields
 - BANKDETAILS : mass update enabled for currency and active field
+- PRODUCT - added tracking on code and name fields.
 
 ## Improvements
 ## Bug Fixes
