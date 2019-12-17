@@ -12,6 +12,33 @@
 		bankCerts += "</ebicsCertificate>"
 	})
 	
+	boEbicsPartnerService = ""
+	u.ebicsPartner?.boEbicsPartnerServiceList.each( {bo->
+	    boEbicsPartnerService += "<boEbicsPartnerService>"
+		boEbicsPartnerService += "  <importId>${bo.importId}</importId>"
+		boEbicsPartnerService += "  <bankOrderFileFormat>"
+		boEbicsPartnerService += "     <name>${bo.bankOrderFileFormat?.name}</name>"
+		boEbicsPartnerService += "     <orderTypeSelect>${bo.bankOrderFileFormat?.orderTypeSelect}</orderTypeSelect>"
+		boEbicsPartnerService += "     <orderFileFormatSelect>${bo.bankOrderFileFormat?.orderFileFormatSelect}</orderFileFormatSelect>"
+		boEbicsPartnerService += "     <description>${bo.bankOrderFileFormat?.description}</description>"
+		boEbicsPartnerService += "  </bankOrderFileFormat>"
+		boEbicsPartnerService += "  <ebicsCodification>${bo.ebicsCodification}</ebicsCodification>"
+		boEbicsPartnerService += "</boEbicsPartnerService>"
+	})
+
+	bsEbicsPartnerService = ""
+	u.ebicsPartner?.bsEbicsPartnerServiceList.each( {bs->
+	    bsEbicsPartnerService += "<bsEbicsPartnerService>"
+		bsEbicsPartnerService += "  <importId>${bs.importId}</importId>"
+		bsEbicsPartnerService += "  <bankStatementFileFormat>"
+		bsEbicsPartnerService += "     <name>${bs.bankStatementFileFormat?.name}</name>"
+		bsEbicsPartnerService += "     <statementFileFormatSelect>${bs.bankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>"
+		bsEbicsPartnerService += "     <description>${bs.bankStatementFileFormat?.description}</description>"
+		bsEbicsPartnerService += "  </bankStatementFileFormat>"
+		bsEbicsPartnerService += "  <ebicsCodification>${bs.ebicsCodification}</ebicsCodification>"
+		bsEbicsPartnerService += "</bsEbicsPartnerService>"
+	})
+	
 	receiverBankDetails = ""
 	u.ebicsPartner?.receiverBankDetailsSet.each( {b->
 	    receiverBankDetails += "<bankDetails>"
@@ -83,6 +110,12 @@
 			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
 			<ebicsTypeSelect>${u.ebicsPartner?.ebicsTypeSelect}</ebicsTypeSelect>
 			<testMode>${u.ebicsPartner?.testMode}</testMode>
+			<boEbicsPartnerServiceList>
+				$boEbicsPartnerService
+			</boEbicsPartnerServiceList>
+			<bsEbicsPartnerServiceList>
+				$bsEbicsPartnerService
+			</bsEbicsPartnerServiceList>
 			<pSRBankStatementFileFormat>
 				<importId>${u.ebicsPartner?.pSRBankStatementFileFormat?.importId}</importId>
 				<statementFileFormatSelect>${u.ebicsPartner?.pSRBankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>
