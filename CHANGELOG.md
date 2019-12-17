@@ -15,6 +15,7 @@
 - Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
 - BANK ORDER : corrected the possibility to generate two times the same move.
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- BUSINESS PROJECT: fix refund negative in financial report
 
 ## [5.2.1] - 2019-12-16
 ## Features
