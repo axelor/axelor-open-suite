@@ -7,6 +7,7 @@
 
 ## Improvements
 ## Bug Fixes
+- Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
 
 ## [5.2.1] - 2019-12-16
 ## Features
