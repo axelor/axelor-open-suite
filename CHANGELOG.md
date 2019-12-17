@@ -29,6 +29,7 @@
 - BankOrder : Fix NPE on click of confirm for International transfer
 - BANK ORDER : corrected the possibility to generate two times the same move.
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
