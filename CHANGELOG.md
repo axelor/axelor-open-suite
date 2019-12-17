@@ -12,6 +12,7 @@
 - MOVE : Improved messages when there is an exception on trying to remove an accounting move. 
 - STOCK MOVE : to and from stock location set on company change.
 - STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
+- BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund

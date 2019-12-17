@@ -31,6 +31,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.web.InvoicePaymentController;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchBankRepository;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankAccountRepository;
@@ -124,5 +126,7 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveRemoveService.class).to(MoveRemoveServiceBankPaymentImpl.class);
 
     bind(MoveServiceImpl.class).to(BankPaymentMoveServiceImpl.class);
+
+    bind(BankPaymentBatchRepository.class).to(BankPaymentBatchBankRepository.class);
   }
 }
