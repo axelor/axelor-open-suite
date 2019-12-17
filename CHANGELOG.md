@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.2.2]
 ## Improvements
+- SALE ORDER :change title "Description to display" of field 'description'.
+
 ## Bug Fixes
 
 ## [5.2.1] - 2019-12-16
