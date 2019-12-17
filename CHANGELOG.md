@@ -23,6 +23,9 @@
 - PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
 - HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
 - MOVE LINE: fix amount paid display in move line form.
+- Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
+- Sale order/quotation: fix tab title when generating a quotation from an opportunity.
+- BankOrder : Fix NPE on click of confirm for International transfer
 - BANK ORDER : corrected the possibility to generate two times the same move.
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
 
