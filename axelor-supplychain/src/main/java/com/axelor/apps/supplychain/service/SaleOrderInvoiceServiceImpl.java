@@ -171,7 +171,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    invoice.setNote(saleOrder.getInvoiceComments());
+    if (invoice.getCompanyBankDetails() != null
+        && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+      invoice.setNote(
+          saleOrder.getInvoiceComments()
+              + "\n"
+              + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+    } else {
+      invoice.setNote(saleOrder.getInvoiceComments());
+    }
+
     invoice.setProformaComments(saleOrder.getProformaComments());
 
     // fill default advance payment invoice
