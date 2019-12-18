@@ -16,6 +16,7 @@
 - BANK ORDER : corrected the possibility to generate two times the same move.
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
 - BUSINESS PROJECT: fix refund negative in financial report
+- Mass invoicing stock move: fix generate one invoice from multiple stock moves.
 
 ## [5.2.1] - 2019-12-16
 ## Features
