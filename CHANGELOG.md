@@ -16,6 +16,8 @@
 - BANK ORDER : corrected the possibility to generate two times the same move.
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
 - BUSINESS PROJECT: fix refund negative in financial report
+- INVOICE: now comment on invoices is made from the concatenation of comment from partner and comment from company bank details.
+- SALE ORDER: now on invoice generation from sale order action the generated invoices have their comment made from the concatenation of comment from partner and comment from company bank details.
 
 ## [5.2.1] - 2019-12-16
 ## Features
