@@ -42,6 +42,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -184,8 +185,26 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
 
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
-      invoice.setNote(saleOrder.getInvoiceComments());
-      invoice.setProformaComments(saleOrder.getProformaComments());
+      if (ObjectUtils.isEmpty(invoice.getNote())) {
+        if (invoice.getCompanyBankDetails() != null
+            && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+          invoice.setNote(
+              saleOrder.getInvoiceComments()
+                  + "\n"
+                  + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+        } else {
+          invoice.setNote(saleOrder.getInvoiceComments());
+        }
+      }
+      if (invoice.getCompanyBankDetails() != null
+          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+        invoice.setProformaComments(
+            saleOrder.getProformaComments()
+                + "\n"
+                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      } else {
+        invoice.setProformaComments(saleOrder.getProformaComments());
+      }
 
       if (invoice != null) {
         Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
