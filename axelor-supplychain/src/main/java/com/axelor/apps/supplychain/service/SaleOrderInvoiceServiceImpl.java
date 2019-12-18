@@ -55,6 +55,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -171,14 +172,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    if (invoice.getCompanyBankDetails() != null
-        && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
-      invoice.setNote(
-          saleOrder.getInvoiceComments()
-              + "\n"
-              + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-    } else {
-      invoice.setNote(saleOrder.getInvoiceComments());
+    if (ObjectUtils.isEmpty(invoice.getNote())) {
+      if (invoice.getCompanyBankDetails() != null
+          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+        invoice.setNote(
+            saleOrder.getInvoiceComments()
+                + "\n"
+                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      } else {
+        invoice.setNote(saleOrder.getInvoiceComments());
+      }
     }
 
     invoice.setProformaComments(saleOrder.getProformaComments());
