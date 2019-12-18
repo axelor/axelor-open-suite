@@ -58,7 +58,7 @@ public class StockMoveInvoiceController {
       if (context.containsKey("operationSelect")) {
         Integer operationSelect = Integer.parseInt(context.get("operationSelect").toString());
         List<Map<String, Object>> stockMoveLineListContext = null;
-        if (operationSelect == StockMoveRepository.INVOICE_PARTILLY
+        if (operationSelect == StockMoveRepository.INVOICE_PARTIALLY
             && context.containsKey("stockMoveLines")) {
           stockMoveLineListContext = (List<Map<String, Object>>) context.get("stockMoveLines");
         }
@@ -491,7 +491,7 @@ public class StockMoveInvoiceController {
       if (TotalInvoicedQty.compareTo(BigDecimal.ZERO) == 0) {
         response.setValue("operationSelect", StockMoveRepository.INVOICE_ALL);
       } else {
-        response.setValue("operationSelect", StockMoveRepository.INVOICE_PARTILLY);
+        response.setValue("operationSelect", StockMoveRepository.INVOICE_PARTIALLY);
       }
       List<Map<String, Object>> stockMoveLines =
           Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);

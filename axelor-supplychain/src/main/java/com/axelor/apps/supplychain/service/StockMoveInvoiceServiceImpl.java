@@ -96,7 +96,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       throws AxelorException {
     Invoice invoice = null;
     Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
-    if (operationSelect == StockMoveRepository.INVOICE_PARTILLY) {
+    if (operationSelect == StockMoveRepository.INVOICE_PARTIALLY) {
       for (Map<String, Object> map : stockMoveLineListContext) {
         if (map.get("qtyToInvoice") != null) {
           BigDecimal qtyToInvoiceItem = new BigDecimal(map.get("qtyToInvoice").toString());
