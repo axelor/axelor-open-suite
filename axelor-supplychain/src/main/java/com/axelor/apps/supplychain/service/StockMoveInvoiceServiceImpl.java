@@ -192,7 +192,15 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           invoice.setNote(saleOrder.getInvoiceComments());
         }
       }
-      invoice.setProformaComments(saleOrder.getProformaComments());
+      if (invoice.getCompanyBankDetails() != null
+          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+        invoice.setProformaComments(
+            saleOrder.getProformaComments()
+                + "\n"
+                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      } else {
+        invoice.setProformaComments(saleOrder.getProformaComments());
+      }
 
       if (invoice != null) {
         Set<StockMove> stockMoveSet = invoice.getStockMoveSet();

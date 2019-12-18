@@ -184,7 +184,15 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
 
-    invoice.setProformaComments(saleOrder.getProformaComments());
+    if (invoice.getCompanyBankDetails() != null
+        && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+      invoice.setProformaComments(
+          saleOrder.getProformaComments()
+              + "\n"
+              + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+    } else {
+      invoice.setProformaComments(saleOrder.getProformaComments());
+    }
 
     // fill default advance payment invoice
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
