@@ -78,8 +78,7 @@
       model="com.axelor.apps.stock.db.StockMove"
       onNew="action-method-stock-move-invoicing-wizard-onnew">
         <panel name="operationSelectPanel">
-            <field if="__repo__(StockMoveLine).all()?.filter('self.stockMove = ?1 AND self.qtyInvoiced > 0',Long.parseLong(_id.toString()))?.count() == 0" name="operationSelect" title="Operation choice" type="selection" required="true" selection="supplychain.stock.move.invoicing.wizard.select"/>
-    		<field if="__repo__(StockMoveLine).all()?.filter('self.stockMove = ?1 AND self.qtyInvoiced > 0',Long.parseLong(_id.toString()))?.count() != 0" name="operationSelect" title="Operation choice" type="selection" required="true" selection="supplychain.stock.move.invoicing.wizard.select" selection-in="[2]"/>
+            <field name="operationSelect" title="Operation choice" type="selection" required="true" selection="supplychain.stock.move.invoicing.wizard.select"/>
         </panel>
         <panel-related name="stockMoveLineListPanel" field="$stockMoveLines" canNew="false" target="com.axelor.apps.stock.db.StockMoveLine" type="one-to-many" editable="true" showIf="operationSelect == 2">
           <field name="productCode"/>

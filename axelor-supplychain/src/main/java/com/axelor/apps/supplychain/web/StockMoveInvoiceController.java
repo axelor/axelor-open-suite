@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
@@ -480,18 +479,20 @@ public class StockMoveInvoiceController {
     try {
       Long id = Long.parseLong(request.getContext().get("_id").toString());
       StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
+      StockMoveInvoiceService stockMoveInvoiceService = Beans.get(StockMoveInvoiceService.class);
 
-      BigDecimal TotalInvoicedQty =
+      BigDecimal totalInvoicedQty =
           stockMove
               .getStockMoveLineList()
               .stream()
-              .map(StockMoveLine::getQtyInvoiced)
+              .map(stockMoveInvoiceService::getNonCanceledInvoiceQty)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
-      if (TotalInvoicedQty.compareTo(BigDecimal.ZERO) == 0) {
+      if (totalInvoicedQty.compareTo(BigDecimal.ZERO) == 0) {
         response.setValue("operationSelect", StockMoveRepository.INVOICE_ALL);
       } else {
         response.setValue("operationSelect", StockMoveRepository.INVOICE_PARTIALLY);
+        response.setAttr("operationSelect", "selection-in", "[2]");
       }
       List<Map<String, Object>> stockMoveLines =
           Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
@@ -508,7 +509,7 @@ public class StockMoveInvoiceController {
       List<Map<String, Object>> stockMoveLines =
           Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
 
-      if (stockMoveLines.size() > 0) {
+      if (!stockMoveLines.isEmpty()) {
         response.setView(
             ActionView.define(I18n.get(ITranslation.INVOICING))
                 .model(StockMove.class.getName())
