@@ -63,6 +63,16 @@ public interface StockMoveInvoiceService {
 
   public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove);
 
+  /**
+   * Compute quantity in stock move line that is not invoiced (e.g. has no invoice line or a
+   * canceled invoice line). It is not the same as {@link StockMoveLine#qtyInvoiced} that takes only
+   * ventilated qty.
+   *
+   * @param stockMoveLine a stock move line
+   * @return the invoiced quantity
+   */
+  BigDecimal getNonCanceledInvoiceQty(StockMoveLine stockMoveLine);
+
   @CallMethod
   public int getStockMoveInvoiceStatus(StockMove stockMove);
 }

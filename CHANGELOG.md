@@ -7,6 +7,7 @@
 - PRODUCT - added tracking on code and name fields.
 
 ## Improvements
+- Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
@@ -18,6 +19,8 @@
 - BUSINESS PROJECT: fix refund negative in financial report
 - INVOICE: now comment on invoices is made from the concatenation of comment from partner and comment from company bank details.
 - SALE ORDER: now on invoice generation from sale order action the generated invoices have their comment made from the concatenation of comment from partner and comment from company bank details.
+- Mass invoicing stock move: fix generate one invoice from multiple stock moves.
+- SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
 
 ## [5.2.1] - 2019-12-16
 ## Features
