@@ -59,4 +59,6 @@ public interface FixedAssetService {
   public void createAnalyticOnMoveLine(
       AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine)
       throws AxelorException;
+
+  public void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
 }

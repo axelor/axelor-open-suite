@@ -30,7 +30,6 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -347,7 +346,27 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
       moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
-      JPA.save(moveLine);
+    }
+  }
+
+  @Override
+  public void updateAnalytic(FixedAsset fixedAsset) throws AxelorException {
+    if (fixedAsset.getAnalyticDistributionTemplate() != null) {
+      if (fixedAsset.getDisposalMove() != null) {
+        for (MoveLine moveLine : fixedAsset.getDisposalMove().getMoveLineList()) {
+          this.createAnalyticOnMoveLine(fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+        }
+      }
+      if (fixedAsset.getFixedAssetLineList() != null) {
+        for (FixedAssetLine fixedAssetLine : fixedAsset.getFixedAssetLineList()) {
+          if (fixedAssetLine.getDepreciationAccountMove() != null) {
+            for (MoveLine moveLine :
+                fixedAssetLine.getDepreciationAccountMove().getMoveLineList()) {
+              this.createAnalyticOnMoveLine(fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+            }
+          }
+        }
+      }
     }
   }
 }

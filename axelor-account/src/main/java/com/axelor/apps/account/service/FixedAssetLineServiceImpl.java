@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -276,7 +275,6 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
         && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
       moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
       moveLineService.computeAnalyticDistribution(moveLine);
-      JPA.save(moveLine);
     }
   }
 }
