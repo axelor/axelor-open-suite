@@ -63,4 +63,7 @@ public interface IExceptionMessage {
   static final String BATCH_INVOICING_PROJECT_1 = /*$$(*/ "Project %s" /*)*/;
 
   static final String BATCH_INVOICING_PROJECT_2 = /*$$(*/ "Generated invoicing project" /*)*/;
+
+  static final String RECORD_NONE_GENRATE = /*$$(*/
+      "No Generate Invoice from selected records" /*)*/;
 }

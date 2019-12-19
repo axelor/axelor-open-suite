@@ -5,6 +5,7 @@
 - COMPANY : mass update enabled for some fields
 - BANKDETAILS : mass update enabled for currency and active field
 - PRODUCT - added tracking on code and name fields.
+- INVOICING PROJECT : provide menu for invoicing the project from Grid.
 
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
