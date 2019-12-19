@@ -25,6 +25,7 @@
 - USER : fix the problem of 'activeTeam' issue.
 - Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
 - Contract : correct the translation of 'Fiscal positon'
+- MOVE REMOVE SERVICE : corrected error that occurred when several lines was found.
 
 ## [5.2.1] - 2019-12-16
 ## Features
