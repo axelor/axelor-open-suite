@@ -1,20 +1,20 @@
 # Changelog
 
-## [Unreleased 5.0.11]
+## [5.0.11] - 2019-12-19
 ## Improvements
-- INVOICE : add boolean in Accounting config and add string Head office address in "partner-form" and "invoice-form"
-- BATCH : set batchList empty on copy for BankPaymentBatch.
+- INVOICE: add boolean in Accounting config and add string Head office address in "partner-form" and "invoice-form".
 
 ## Bug Fixes
-- PURCHASEORDERLINE: autofill productCode and productName when choosing a product
+- PURCHASEORDERLINE: autofill productCode and productName when choosing a product.
 - Sale order/quotation: fix tab title when generating a quotation from an opportunity.
+- BATCH: Empty batchList on copy for BankPaymentBatch.
 
 ## [5.0.10] - 2019-11-27
 ## Improvements
-- YEAR : disable canEdit on company field in year-form.
-- MRP : add a try catch block in generateAllProposals method.
-- TIMESHEET : Throw an alert on timesheet validation.
-- PAYMENTMODE : form and grid views defined on bankOrderFileFormat
+- YEAR : can no longer edit a company from the year form.
+- MRP : improved exception management when generating all proposals.
+- TIMESHEET : throw an alert on timesheet validation.
+- PAYMENTMODE : form and grid views defined for bankOrderFileFormat.
 - EbicsBank : Disable canEdit on language field in ebics-bank-form
 
 ## Bug Fixes
@@ -1130,7 +1130,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.11]: https://github.com/axelor/axelor-business-suite/compare/v5.0.10...5.0-dev
+[5.0.11]: https://github.com/axelor/axelor-business-suite/compare/v5.0.10...5.0.11
 [5.0.10]: https://github.com/axelor/axelor-business-suite/compare/v5.0.9...v5.0.10
 [5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...v5.0.9
 [5.0.8]: https://github.com/axelor/axelor-business-suite/compare/v5.0.7...v5.0.8
