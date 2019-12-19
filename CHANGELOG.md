@@ -21,6 +21,7 @@
 - SALE ORDER: now on invoice generation from sale order action the generated invoices have their comment made from the concatenation of comment from partner and comment from company bank details.
 - Mass invoicing stock move: fix generate one invoice from multiple stock moves.
 - SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
+- USER : fix the problem of 'activeTeam' issue.
 
 ## [5.2.1] - 2019-12-16
 ## Features
