@@ -36,9 +36,11 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
     copy.setDeliveryDate(null);
     copy.setValidatedByUser(null);
     copy.setValidationDate(null);
-    for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
-      purchaseOrderLine.setDesiredDelivDate(null);
-      purchaseOrderLine.setEstimatedDelivDate(null);
+    if (copy.getPurchaseOrderLineList() != null) {
+      for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
+        purchaseOrderLine.setDesiredDelivDate(null);
+        purchaseOrderLine.setEstimatedDelivDate(null);
+      }
     }
     return copy;
   }
