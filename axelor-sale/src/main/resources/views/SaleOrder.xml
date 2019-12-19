@@ -1012,7 +1012,7 @@
     </action-record>
 
     <action-record name="action-sale-order-record-from-partner" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
+    	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.id)" if="_partner.isContact == false"/>
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="contactPartner" expr="eval: _partner?.contactPartnerSet?.size() == 1 ? _partner?.contactPartnerSet[0] : null" if="_partner.isContact == false"/>

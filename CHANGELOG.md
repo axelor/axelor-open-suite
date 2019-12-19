@@ -1,10 +1,28 @@
 # Changelog
 
 ## [Unreleased 5.2.2]
+## Features
+- COMPANY : mass update enabled for some fields
+- BANKDETAILS : mass update enabled for currency and active field
+- PRODUCT - added tracking on code and name fields.
+
 ## Improvements
-- SALE ORDER :change title "Description to display" of field 'description'.
+- Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
+- SALE ORDER: change title "Description to display" of field 'description'.
 
 ## Bug Fixes
+- Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
+- BankOrder : Fix NPE on click of confirm for International transfer.
+- BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch.
+- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
+- BANK ORDER : corrected the possibility to generate two times the same move.
+- BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- BUSINESS PROJECT: fix refund negative in financial report
+- INVOICE: now comment on invoices is made from the concatenation of comment from partner and comment from company bank details.
+- SALE ORDER: now on invoice generation from sale order action the generated invoices have their comment made from the concatenation of comment from partner and comment from company bank details.
+- Mass invoicing stock move: fix generate one invoice from multiple stock moves.
+- SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
+- USER : fix the problem of 'activeTeam' issue.
 
 ## [5.2.1] - 2019-12-16
 ## Features
