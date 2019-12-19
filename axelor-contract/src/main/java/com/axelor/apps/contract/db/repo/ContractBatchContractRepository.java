@@ -15,10 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.translation;
+package com.axelor.apps.contract.db.repo;
 
-public interface ITranslation {
+import com.axelor.apps.contract.db.ContractBatch;
 
-  public static final String CRM_APP_NAME = /*$$(*/ "value:CRM"; /*)*/
-  public static final String SALE_QUOTATION = /*$$(*/ "Sale quotation" /*)*/;
+public class ContractBatchContractRepository extends ContractBatchRepository {
+
+  @Override
+  public ContractBatch copy(ContractBatch entity, boolean deep) {
+    ContractBatch copy = super.copy(entity, deep);
+    copy.clearBatchList();
+    return copy;
+  }
 }
