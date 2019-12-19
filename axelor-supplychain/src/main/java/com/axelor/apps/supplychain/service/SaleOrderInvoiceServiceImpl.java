@@ -62,6 +62,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -173,14 +174,21 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
     invoice.setSaleOrder(saleOrder);
     if (ObjectUtils.isEmpty(invoice.getNote())) {
-      if (invoice.getCompanyBankDetails() != null
-          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
         invoice.setNote(
             saleOrder.getInvoiceComments()
                 + "\n"
                 + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else {
+      } else if (Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
         invoice.setNote(saleOrder.getInvoiceComments());
+      } else if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setNote(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
       }
     }
 
