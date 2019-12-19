@@ -23,6 +23,7 @@
 - Mass invoicing stock move: fix generate one invoice from multiple stock moves.
 - SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
 - USER : fix the problem of 'activeTeam' issue.
+- INVOICE : corrected the generation of comment with null display.
 
 ## [5.2.1] - 2019-12-16
 ## Features
