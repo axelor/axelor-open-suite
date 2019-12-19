@@ -305,7 +305,7 @@
 	      <panel-related name="detailLinesPanel" canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" 
                      canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
                      title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true" height="30"/>
-	      <panel name="descriptionPanel" title="Description to display" colSpan="12">
+	      <panel name="descriptionPanel" title="Comment to display" colSpan="12">
 	        <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	      </panel>
 	    </panel>

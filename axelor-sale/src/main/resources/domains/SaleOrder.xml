@@ -64,7 +64,7 @@
 	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" massUpdate="true"/>
 	
 <!-- 	Onglet description -->
-	<string name="description" title="Description to display" large="true"/>
+	<string name="description" title="Comment to display" large="true"/>
 	<string name="internalNote" title="Internal note" large="true"/>
 
 <!-- 	Onglet Commande Client -->
