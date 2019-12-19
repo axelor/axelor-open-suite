@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased 5.0.12]
+## Improvements
+## Bug Fixes
+
 ## [5.0.11] - 2019-12-19
 ## Improvements
 - INVOICE: add boolean in Accounting config and add string Head office address in "partner-form" and "invoice-form".
@@ -1130,6 +1134,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
+[Unreleased 5.0.12]: https://github.com/axelor/axelor-business-suite/compare/v5.0.11...5.0-dev
 [5.0.11]: https://github.com/axelor/axelor-business-suite/compare/v5.0.10...5.0.11
 [5.0.10]: https://github.com/axelor/axelor-business-suite/compare/v5.0.9...v5.0.10
 [5.0.9]: https://github.com/axelor/axelor-business-suite/compare/v5.0.8...v5.0.9
