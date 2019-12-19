@@ -23,6 +23,7 @@
 - Mass invoicing stock move: fix generate one invoice from multiple stock moves.
 - SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
 - USER : fix the problem of 'activeTeam' issue.
+- Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
 - Contract : correct the translation of 'Fiscal positon'
 
 ## [5.2.1] - 2019-12-16
