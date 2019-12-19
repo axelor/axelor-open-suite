@@ -25,6 +25,7 @@
 - Invoicing project : unit conversion for "Duration adjust for customer".
 - ACCOUNTING REPORT : change the title of "General ledger 2" from the selection.
 - TAX : add column 'typeSelect' in 'tax-grid'.
+- STOCK CORRECTION : change status Draft on duplicate Stock Correction
 
 ## Bug Fixes
 - ANALYTIC : analytic journal in analytic line is now required.
