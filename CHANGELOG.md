@@ -25,6 +25,7 @@
 - USER : fix the problem of 'activeTeam' issue.
 - Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
 - Contract : correct the translation of 'Fiscal positon'
+- BANK ORDER : the date field is now again read-only on bank order generated automatically.
 
 ## [5.2.1] - 2019-12-16
 ## Features
