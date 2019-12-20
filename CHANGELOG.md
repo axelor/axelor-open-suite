@@ -31,6 +31,7 @@
 - USER : fix the problem of 'activeTeam' issue.
 - Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
 - Contract : correct the translation of 'Fiscal positon'
+- MRP: Do not show mrp lines from other MRPs when not displaying products without proposals.
 
 ## [5.2.1] - 2019-12-16
 ## Features
