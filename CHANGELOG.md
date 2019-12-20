@@ -3,7 +3,9 @@
 ## [Unreleased 5.0.12]
 ## Improvements
 - ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
+
 ## Bug Fixes
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 
 ## [5.0.11] - 2019-12-19
 ## Improvements
