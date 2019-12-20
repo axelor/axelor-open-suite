@@ -11,6 +11,8 @@
 - SALE ORDER: change title "Description to display" of field 'description'.
 - ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
 - INVOICING PROJECT : added field "teamTask" in timesheet line form related to project.
+- FIXES ASSET : add analytic distribution template.
+- FIXES ASSET CATEGORY : add analytic distribution template.
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
