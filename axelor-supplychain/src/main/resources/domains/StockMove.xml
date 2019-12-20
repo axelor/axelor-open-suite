@@ -27,7 +27,7 @@
 		
 		// INVOICE
 	    public static final int INVOICE_ALL = 1;
-	    public static final int INVOICE_PARTILLY = 2;
+	    public static final int INVOICE_PARTIALLY = 2;
     ]]>
     </extra-code>
 

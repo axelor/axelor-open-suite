@@ -158,6 +158,8 @@
 	   	</extra-code>
 
 		<track on="UPDATE">
+			<field name="name"/>
+			<field name="code"/>
 			<field name="productCategory" />
 			<field name="productFamily" />
 			<field name="saleSupplySelect" />

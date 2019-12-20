@@ -292,7 +292,10 @@ public abstract class InvoiceGenerator {
 
     if (companyBankDetails != null
         && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
-      invoice.setNote(companyBankDetails.getSpecificNoteOnInvoice());
+      invoice.setNote(
+          partner.getInvoiceComments() + "\n" + companyBankDetails.getSpecificNoteOnInvoice());
+    } else {
+      invoice.setNote(partner.getInvoiceComments());
     }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
