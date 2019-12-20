@@ -53,6 +53,8 @@ public interface AppBaseService extends AppService {
 
   public int getNbDecimalDigitForUnitPrice();
 
+  public int getNbDecimalDigitForQty();
+
   public String getDefaultPartnerLanguageCode();
 
   // Conversion de devise

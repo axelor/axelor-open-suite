@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.PackLine;
@@ -59,6 +60,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected PriceListService priceListService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
+
+  @Inject protected AppBaseService appBaseService;
 
   @Inject protected AppSaleService appSaleService;
 
@@ -548,7 +551,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       soLine.setProduct(product);
       soLine.setProductName(packLine.getProductName());
       if (packLine.getQuantity() != null) {
-        soLine.setQty(packLine.getQuantity().multiply(packQty));
+        soLine.setQty(
+            packLine
+                .getQuantity()
+                .multiply(packQty)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
       }
       soLine.setUnit(packLine.getUnit());
       soLine.setTypeSelect(packLine.getTypeSelect());

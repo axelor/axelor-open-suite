@@ -12,11 +12,11 @@
 
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	<boolean name="filterOnAvailableProducts" title="Filter on available products" default="true" transient="true"/>
-	<decimal name="qty" min="0" title="Expected Qty"/>
-	<decimal name="realQty" min="0" title="Real Qty"/>
-	<decimal name="oldQty" hidden="true"/>
-	<decimal name="availableQty" title="Available qty" transient="true"/>
-	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
+	<decimal name="qty" min="0" title="Expected Qty" precision="20" scale="10"/>
+	<decimal name="realQty" min="0" title="Real Qty" precision="20" scale="10"/>
+	<decimal name="oldQty" hidden="true" precision="20" scale="10"/>
+	<decimal name="availableQty" title="Available qty" transient="true" precision="20" scale="10"/>
+	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true" precision="20" scale="10"/>
 	<string name="availableStatus" title="Availability" transient="true"/>
 	<integer name="availableStatusSelect" title="Status" transient="true" selection="stock.move.line.available.status.select"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -28,7 +28,7 @@
     <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
     
 <!--     TODO a deplacer dans Supplier management -->
-    <decimal name="shippedQty" title="Shipped qty"/>
+    <decimal name="shippedQty" title="Shipped qty" precision="20" scale="10"/>
     <date name="shippedDate" title="Shipped date"/>
     
     <many-to-one name="productModel" ref="com.axelor.apps.base.db.Product" title="Product model"/>

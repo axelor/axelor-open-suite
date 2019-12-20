@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
@@ -45,9 +46,15 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
       AppProductionService appProductionService,
       UnitConversionService unitConversionService,
       CostSheetLineService costSheetLineService,
+      AppBaseService appBaseService,
       BillOfMaterialRepository billOfMaterialRepo) {
 
-    super(appProductionService, unitConversionService, costSheetLineService, billOfMaterialRepo);
+    super(
+        appProductionService,
+        unitConversionService,
+        costSheetLineService,
+        appBaseService,
+        billOfMaterialRepo);
   }
 
   @Override

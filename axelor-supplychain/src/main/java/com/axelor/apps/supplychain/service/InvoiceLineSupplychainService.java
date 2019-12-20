@@ -134,6 +134,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
     }
+
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
     invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
     productInformation.putAll(super.fillProductInformation(invoice, invoiceLine));

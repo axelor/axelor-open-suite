@@ -42,13 +42,13 @@
 		  model="com.axelor.apps.sale.db.SaleOrderLine">
 		<field name="product.code" width="120"/>
 		<field name="productName" readonly="true"/>
-		<field name="qty" readonly="true" aggregate="sum"/>
+		<field name="qty" readonly="true" aggregate="sum" x-scale="2"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price" readonly="true" x-scale="2"/>
 		<field name="exTaxTotal" readonly="true" aggregate="sum"/>
 		<field name="amountInvoiced" readonly="true"/>
         <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
-			   readonlyIf="invoiceAll" min="0"/>
+			   readonlyIf="invoiceAll" min="0" x-scale="2"/>
         <field name="invoiceAll" title="Invoice all" type="boolean"
 			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
 	</grid>

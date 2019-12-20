@@ -23,7 +23,8 @@
     	    	<field name="activateSendingEmail" widget="boolean-switch"/>
     	    	<field name="emailAccountByUser" widget="boolean-switch"/>
     	    	<field name="productInAtiSelect"/>
-    	    	<field name="nbDecimalDigitForUnitPrice"/>
+    	    	<field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
+   	    		<field name="nbDecimalDigitForQty" colSpan="3"/>
     	    	<field name="computeMethodDiscountSelect"/>
     	    	<field name="timeLoggingPreferenceSelect"/>
     	    	<field name="dailyWorkHours"/>

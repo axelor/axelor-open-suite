@@ -10,9 +10,9 @@
 	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location" required="true"/>
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Number"/>
-	<decimal name="realQty" title="Real Qty"/>
-	<decimal name="futureQty" title="Future Qty"/>
-	<decimal name="reservedQty" title="Reserved Qty"/>
+	<decimal name="realQty" title="Real Qty" precision="20" scale="10"/>
+	<decimal name="futureQty" title="Future Qty" precision="20" scale="10"/>
+	<decimal name="reservedQty" title="Reserved Qty" precision="20" scale="10"/>
 	<many-to-one name="stockCorrectionReason" ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Reason"/>
 	<integer name="statusSelect" title="Status" selection="stock.correction.status.select" readonly="true"/>
 	<datetime name="validationDateT" title="Validation Date" readonly="true"/>

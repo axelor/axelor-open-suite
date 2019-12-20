@@ -27,7 +27,7 @@
 
     <boolean name="isEnabledForAllProducts" title="Enable the process for other products"/>
 
-    <decimal name="launchQty" title="Launch quantity"/>
+    <decimal name="launchQty" title="Launch quantity" precision="20" scale="10"/>
     <integer name="stockMoveRealizeOrderSelect" default="1" massUpdate="true"
             selection="production.manuf.order.stock.move.realize.order.select"/>
 
