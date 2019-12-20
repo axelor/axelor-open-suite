@@ -38,6 +38,9 @@
 	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
 	        	<field name="isProrataTemporis"/>
         	</panel>
+        	<panel name="analyticPanel" title="Analytic" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
+        		<field name="analyticDistributionTemplate" canEdit="false" domain="self.company = :company" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" />
+        	</panel>
         </panel-tabs>
     </form>
     

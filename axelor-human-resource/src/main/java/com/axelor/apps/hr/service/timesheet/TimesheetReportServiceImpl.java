@@ -270,13 +270,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return line;
   }
 
-  public List<Map<String, Object>> getTimesheetReportList(String TimesheetReportId) {
+  public List<Map<String, Object>> getTimesheetReportList(String timesheetReportId) {
 
     List<Map<String, Object>> list = new ArrayList<>();
     WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 5);
 
     TimesheetReport timesheetReport =
-        timesheetReportRepository.find(Long.parseLong(TimesheetReportId.toString()));
+        timesheetReportRepository.find(Long.parseLong(timesheetReportId.toString()));
     int numOfDays = timesheetReport.getFromDate().until(timesheetReport.getToDate()).getDays();
     List<LocalDate> daysRange =
         Stream.iterate(timesheetReport.getFromDate(), date -> date.plusDays(1))
@@ -291,7 +291,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       WeeklyPlanning planning = employee.getWeeklyPlanning();
 
       Integer weekNumber = 1;
-      int lastDayNumber = -1;
+      int lastDayIndex = -1;
+      int daysInWeek = 0;
       try {
         for (LocalDate date : daysRange) {
           DayPlanning dayPlanning =
@@ -299,19 +300,22 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
           if (dayPlanning == null) {
             continue;
           }
-
           int dayIndex = date.get(weekFields.dayOfWeek()) - 1;
-          if (lastDayNumber < dayIndex) {
-            lastDayNumber = dayIndex;
+          if (lastDayIndex < dayIndex) {
+            lastDayIndex = dayIndex;
+            daysInWeek++;
           } else {
-            lastDayNumber = -1;
+            lastDayIndex = -1;
+            daysInWeek = 1;
             weekNumber++;
           }
           BigDecimal weeklyWorkHours =
-              employee
-                  .getWeeklyWorkHours()
-                  .multiply(BigDecimal.valueOf((dayIndex) / 6.0))
-                  .setScale(2, RoundingMode.HALF_EVEN);
+              daysInWeek <= 5
+                  ? employee
+                      .getWeeklyWorkHours()
+                      .multiply(BigDecimal.valueOf(daysInWeek / 5.0))
+                      .setScale(2, RoundingMode.HALF_EVEN)
+                  : employee.getWeeklyWorkHours();
           Map<String, Object> map = getTimesheetMap(user, date, dailyWorkingHours);
           map.put("weeklyWorkHours", weeklyWorkHours);
           map.put("weekNumber", weekNumber.toString());
@@ -321,7 +325,6 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         System.out.println(e);
       }
     }
-
     return list;
   }
 

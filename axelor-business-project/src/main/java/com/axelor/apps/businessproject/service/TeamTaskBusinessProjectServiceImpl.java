@@ -265,7 +265,9 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
 
     teamTask = computeDefaultInformation(teamTask);
 
-    if (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
+    if (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE
+        && !teamTask.getIsTaskRefused()) {
+
       switch (teamTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
           teamTask.setToInvoice(

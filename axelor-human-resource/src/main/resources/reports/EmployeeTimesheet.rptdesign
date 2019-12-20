@@ -803,7 +803,7 @@ function onCreateCell( cellInst, reportContext )
 {
 
 	if(cellInst.getCellID() == 5637){
-		var color = null;
+		var color = 'red';
 		
 		var totalWorkingHours = cellInst.getDataValue('totalWorkingHours');
 		var totalWorkedHours = cellInst.getDataValue('workedHour_user/userName_week/weekNumber');
@@ -811,15 +811,11 @@ function onCreateCell( cellInst, reportContext )
 		
 		if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours != weekleyWorkHours) {
 			color = 'blue';
- 		}else if(totalWorkingHours != totalWorkedHours &amp;&amp; totalWorkedHours != weekleyWorkHours &amp;&amp; weekleyWorkHours!= totalWorkingHours) {
- 			color = 'red';
- 		}else if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours == weekleyWorkHours) {
- 			color = 'black';
+ 		} else if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours == weekleyWorkHours) {
+ 			color = 'black'
  		}
-		
-		if(color!=null){
-			cellInst.getStyle().setColor(color);
-		}
+ 		
+		cellInst.getStyle().setColor(color);
  	} 
 }
 ]]></method>
