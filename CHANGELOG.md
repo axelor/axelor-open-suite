@@ -7,6 +7,10 @@
 - PRODUCT - added tracking on code and name fields.
 
 ## Improvements
+- Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
+- SALE ORDER: change title "Description to display" of field 'description'.
+- ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
+- INVOICING PROJECT : added field "teamTask" in timesheet line form related to project.
 - FIXES ASSET : add analytic distribution template.
 - FIXES ASSET CATEGORY : add analytic distribution template.
 
@@ -15,6 +19,16 @@
 - BankOrder : Fix NPE on click of confirm for International transfer.
 - BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch.
 - Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
+- BANK ORDER : corrected the possibility to generate two times the same move.
+- BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- BUSINESS PROJECT: fix refund negative in financial report
+- INVOICE: now comment on invoices is made from the concatenation of comment from partner and comment from company bank details.
+- SALE ORDER: now on invoice generation from sale order action the generated invoices have their comment made from the concatenation of comment from partner and comment from company bank details.
+- Mass invoicing stock move: fix generate one invoice from multiple stock moves.
+- SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
+- USER : fix the problem of 'activeTeam' issue.
+- Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
+- Contract : correct the translation of 'Fiscal positon'
 
 ## [5.2.1] - 2019-12-16
 ## Features
