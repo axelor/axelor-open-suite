@@ -31,6 +31,7 @@
 - BANK ORDER : corrected the possibility to generate two times the same move.
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
 - Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
