@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.2]
 ## Features
+- TOOLS : added utility class for interacting with SFTP
 - COMPANY : mass update enabled for some fields
 - BANKDETAILS : mass update enabled for currency and active field
 - PRODUCT - added tracking on code and name fields.
