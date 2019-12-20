@@ -29,6 +29,7 @@
 - USER : fix the problem of 'activeTeam' issue.
 - Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
 - Contract : correct the translation of 'Fiscal positon'
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 
 ## [5.2.1] - 2019-12-16
 ## Features

@@ -193,13 +193,14 @@ public class VentilateState extends WorkflowInvoice {
   protected void checkInvoiceDate(Sequence sequence) throws AxelorException {
 
     String query =
-        "self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3 ";
+        "self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3 AND self.company = ?4 ";
     List<Object> params = Lists.newArrayList();
     params.add(InvoiceRepository.STATUS_VENTILATED);
     params.add(invoice.getInvoiceDate());
     params.add(invoice.getOperationTypeSelect());
+    params.add(invoice.getCompany());
 
-    int i = 4;
+    int i = 5;
 
     if (sequence.getMonthlyResetOk()) {
 
