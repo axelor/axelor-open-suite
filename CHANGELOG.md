@@ -9,6 +9,7 @@
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
 - SALE ORDER: change title "Description to display" of field 'description'.
+- ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
