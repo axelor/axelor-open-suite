@@ -32,6 +32,7 @@
 - Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
 - Contract : correct the translation of 'Fiscal positon'
 - MRP: Do not show mrp lines from other MRPs when not displaying products without proposals.
+- LEAVE REQUEST: No longer displays an error message when saving a leave request.
 
 ## [5.2.1] - 2019-12-16
 ## Features
