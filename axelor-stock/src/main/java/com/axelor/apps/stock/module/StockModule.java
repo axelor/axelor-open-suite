@@ -26,6 +26,8 @@ import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
+import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
+import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -103,5 +105,6 @@ public class StockModule extends AxelorModule {
     bind(StockCorrectionService.class).to(StockCorrectionServiceImpl.class);
     bind(WeightedAveragePriceService.class).to(WeightedAveragePriceServiceImpl.class);
     bind(StockHistoryService.class).to(StockHistoryServiceImpl.class);
+    bind(StockCorrectionRepository.class).to(StockCorrectionStockRepository.class);
   }
 }

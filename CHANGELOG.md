@@ -11,6 +11,7 @@
 - SALE ORDER: change title "Description to display" of field 'description'.
 - ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
 - INVOICING PROJECT : added field "teamTask" in timesheet line form related to project.
+- STOCK CORRECTION : Change status to Draft on duplicate Stock Correction
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
