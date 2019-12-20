@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.report.ITranslation;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -167,6 +168,10 @@ public class AccountingReportController {
       }
 
       logger.debug("Type selected : {}", accountingReport.getTypeSelect());
+
+      if (accountingReport.getTypeSelect() == 12 || accountingReport.getTypeSelect() == 15) {
+        response.setFlash(I18n.get(ITranslation.ACCOUNTING_REPORT_TYPE_SELECT_INFO));
+      }
 
       if ((accountingReport.getTypeSelect() >= AccountingReportRepository.EXPORT_ADMINISTRATION
           && accountingReport.getTypeSelect()

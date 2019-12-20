@@ -322,4 +322,7 @@ public interface ITranslation {
   public static final String CHEQUE_DEPOSIT_SLIP_CHEQUE_DATE = /*$$(*/
       "ChequeDepositSlip.chequeDate"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_AMOUNT = /*$$(*/ "ChequeDepositSlip.amount"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_TYPE_SELECT_INFO =
+      /*$$(*/ "Make sure that all accounting moves are validated."; /*)*/
 }
