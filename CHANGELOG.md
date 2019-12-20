@@ -13,6 +13,7 @@
 - INVOICING PROJECT : added field "teamTask" in timesheet line form related to project.
 - FIXES ASSET : add analytic distribution template.
 - FIXES ASSET CATEGORY : add analytic distribution template.
+- STOCK CORRECTION : Change status to Draft on duplicate Stock Correction
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
