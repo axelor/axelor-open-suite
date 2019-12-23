@@ -19,8 +19,10 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileTabRepository;
+import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.ValidatorService;
 import com.axelor.common.Inflector;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -55,6 +57,8 @@ public class ImportAdvancedImport {
 
   @Inject private ValidatorService validatorService;
 
+  @Inject protected ActionService actionService;
+
   @SuppressWarnings("unchecked")
   public Object importGeneral(Object bean, Map<String, Object> values)
       throws ClassNotFoundException {
@@ -63,43 +67,44 @@ public class ImportAdvancedImport {
     }
 
     FileTab fileTab = fileTabRepo.find(Long.valueOf(values.get("fileTabId").toString()));
-    boolean isTrue = false;
 
     ScriptHelper scriptHelper = new GroovyScriptHelper(new ScriptBindings(values));
 
     List<String> exprs = (List<String>) values.get("ifConditions" + fileTab.getId());
     if (!CollectionUtils.isEmpty(exprs)) {
-      isTrue = (boolean) scriptHelper.eval(String.join(" || ", exprs));
-    }
-
-    if (isTrue) {
-      return null;
-
-    } else {
-      if (((Model) bean).getId() == null) {
-        List<Property> propList = this.getProperties(bean);
-        JPA.save((Model) bean);
-        this.addJsonObjectRecord(bean, fileTab, fileTab.getMetaModel().getName(), values);
-
-        int fieldSeq = 2;
-        int btnSeq = 3;
-        for (Property prop : propList) {
-          validatorService.createCustomObjectSet(
-              fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
-          validatorService.createCustomButton(
-              fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
-
-          this.addJsonObjectRecord(
-              prop.get(bean),
-              fileTab,
-              StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
-              values);
-          fieldSeq++;
-          btnSeq++;
-        }
+      if ((boolean) scriptHelper.eval(String.join(" || ", exprs))) {
+        return null;
       }
-      return bean;
     }
+
+    if (((Model) bean).getId() == null) {
+      List<Property> propList = this.getProperties(bean);
+      JPA.save((Model) bean);
+      this.addJsonObjectRecord(bean, fileTab, fileTab.getMetaModel().getName(), values);
+
+      int fieldSeq = 2;
+      int btnSeq = 3;
+      for (Property prop : propList) {
+        validatorService.createCustomObjectSet(
+            fileTab.getClass().getName(), prop.getTarget().getName(), fieldSeq);
+        validatorService.createCustomButton(
+            fileTab.getClass().getName(), prop.getTarget().getName(), btnSeq);
+
+        this.addJsonObjectRecord(
+            prop.get(bean),
+            fileTab,
+            StringUtils.substringAfterLast(prop.getTarget().getName(), "."),
+            values);
+        fieldSeq++;
+        btnSeq++;
+      }
+    }
+
+    final String ACTIONS_TO_APPLY = "actionsToApply" + fileTab.getId();
+    if (!ObjectUtils.isEmpty(values.get(ACTIONS_TO_APPLY))) {
+      bean = actionService.apply(values.get(ACTIONS_TO_APPLY).toString(), bean);
+    }
+    return bean;
   }
 
   private List<Property> getProperties(Object bean) {
