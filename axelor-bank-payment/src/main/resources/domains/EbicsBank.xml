@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 	
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
   
@@ -23,7 +23,11 @@
 	
 	<string name="protocolSelect" title="Protocol" selection="bankpayment.ebics.bank.protocol.select" default="ssl" />
 	
-	<boolean name="useX509ExtentionForAutoSignedCert" title="Use X509 extentions for auto signed certificates" default="true"/>
+	<boolean name="useX509ExtensionBasicConstraints" title="Use X509 extension BasicConstraints" default="false"/>
+	<boolean name="useX509ExtensionSubjectKeyIdentifier" title="Use X509 extension SubjectKeyIdentifier" default="true"/>
+	<boolean name="useX509ExtensionAuthorityKeyIdentifier" title="Use X509 extension AuthorityKeyIdentifier" default="true"/>
+	<boolean name="useX509ExtensionExtendedKeyUsage" title="Use X509 extension ExtendedKeyUsage" default="false"/>
+	
 	
   </entity>
 </domain-models>

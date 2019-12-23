@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
 
 	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
 		<field name="hostId"/>
@@ -20,7 +19,12 @@
 			<field name="url" colSpan="12" pattern="http(s)?://.+" />
 			<field name="language" canEdit="false" />
 			<field name="certValidityPeriodSelect" />
-			<field name="useX509ExtentionForAutoSignedCert"/>
+			<panel name="x509ExtensionForAutoSignedCertPanel" title="X509 extensions for auto signed certificates" colSpan="12">
+				<field name="useX509ExtensionsBasicConstraints" widget="BooleanSwitch"/>
+				<field name="useX509ExtensionsSubjectKeyIdentifier" widget="BooleanSwitch"/>
+				<field name="useX509ExtensionsAuthorityKeyIdentifier" widget="BooleanSwitch"/>
+				<field name="useX509ExtensionsExtendedKeyUsage" widget="BooleanSwitch"/>
+			</panel>
 		</panel>
 
 		<panel-related name="ebicsCertificateListPanel" field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid"/>

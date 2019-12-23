@@ -15,6 +15,7 @@
 - FIXES ASSET : add analytic distribution template.
 - FIXES ASSET CATEGORY : add analytic distribution template.
 - STOCK CORRECTION : Change status to Draft on duplicate Stock Correction
+- EBICS BANK : now X509 Extensions for auto signed certification are managed independently
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
