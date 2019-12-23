@@ -2,6 +2,8 @@
 ## [Unreleased 5.2.8]
 ## Improvements
 - TIMETABLE : Invoiced lines deleted when changing some fields
+- EBICS: Display correctly hash code in certificates EBICS.
+
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
 - Purchase Request: Add missing translation.
