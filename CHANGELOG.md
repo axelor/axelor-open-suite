@@ -36,6 +36,7 @@
 - LEAVE REQUEST: No longer displays an error message when saving a leave request.
 - EBICSUSER EXPORT : Fix for "Cannot get property 'code' on null object" error.
 - Bank Payment: fix traduction
+- EBICS: Display correctly hash code in certificates EBICS.
 
 ## [5.2.1] - 2019-12-16
 ## Features
