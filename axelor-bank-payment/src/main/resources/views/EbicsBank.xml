@@ -32,6 +32,11 @@
 		<panel-dashlet name="ebicsBankDetailsPanel" hideIf="!bank" action="action-ebics-bank-view-bank-details"/>
 		
 		<panel-dashlet name="ebicsUsersPanel" action="action-ebics-bank-view-ebics-users"/>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 
 	<action-record name="action-ebics-bank-record-onchange-bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
