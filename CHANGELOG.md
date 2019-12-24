@@ -6,6 +6,9 @@
 - BANKDETAILS : mass update enabled for currency and active field
 - PRODUCT - added tracking on code and name fields.
 - PAYROLL PREPARATION - add new Payroll Preparation Export type "SILAE"
+- EBICS USER : groupBy and orderBy for grid view opened from the menu
+- INVOICE : Display PFP validator and status in invoice supplier refund grid
+- EBICSBANK : change tracking for fields.
 - Advance data import: Add action apply support
 
 ## Improvements
@@ -17,6 +20,7 @@
 - FIXES ASSET CATEGORY : add analytic distribution template.
 - STOCK CORRECTION : Change status to Draft on duplicate Stock Correction
 - EBICS BANK : now X509 Extensions for auto signed certification are managed independently
+- STOCK CORRECTION : change error message on validate
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
@@ -37,6 +41,8 @@
 - LEAVE REQUEST: No longer displays an error message when saving a leave request.
 - EBICSUSER EXPORT : Fix for "Cannot get property 'code' on null object" error.
 - Bank Payment: fix traduction
+- OPPORTUNITY: On copy clear saleOrderList
+- Fixed Asset : Fix issue of infinite value of depriciation rate
 
 ## [5.2.1] - 2019-12-16
 ## Features

@@ -140,6 +140,8 @@
 		<field name="amountRemaining" aggregate="sum"/>
 		<field name="currency" />
 		<field name="statusSelect"/>
+		<field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="pfpValidateStatusSelect" title="PFP"/>
+		<field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="pfpValidatorUser" title="PFP val."/>
 		<button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
 		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   </grid>
