@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
-import com.axelor.apps.account.report.ITranslation;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
@@ -176,10 +175,6 @@ public class AccountingReportController {
         response.setAlert(
             I18n.get(
                 "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
-      }
-
-      if (typeSelect == 12 || typeSelect == 15) {
-        response.setFlash(I18n.get(ITranslation.ACCOUNTING_REPORT_TYPE_SELECT_INFO));
       }
 
       logger.debug("Type selected : {}", typeSelect);
