@@ -28,6 +28,23 @@
 	<boolean name="useX509ExtensionAuthorityKeyIdentifier" title="Use X509 extension AuthorityKeyIdentifier" default="true"/>
 	<boolean name="useX509ExtensionExtendedKeyUsage" title="Use X509 extension ExtendedKeyUsage" default="false"/>
 	
+	<track>
+	   <field name="fullName" on="UPDATE"/>
+	   <field name="hostId" on="UPDATE"/>
+	   <field name="name" on="UPDATE"/>
+	   <field name="bank" on="UPDATE"/>
+	   <field name="fax" on="UPDATE"/>
+	   <field name="emailAddress" on="UPDATE"/>
+	   <field name="url" on="UPDATE"/>
+	   <field name="language" on="UPDATE"/>
+	   <field name="certValidityPeriodSelect" on="UPDATE"/>
+	   <field name="ebicsCertificateList" on="UPDATE"/>
+	   <field name="protocolSelect" on="UPDATE"/>
+	   <field name="useX509ExtensionBasicConstraints" on="UPDATE"/>
+	   <field name="useX509ExtensionSubjectKeyIdentifier" on="UPDATE"/>
+	   <field name="useX509ExtensionAuthorityKeyIdentifier" on="UPDATE"/>
+	   <field name="useX509ExtensionExtendedKeyUsage" on="UPDATE"/>
+	</track>
 	
   </entity>
 </domain-models>
