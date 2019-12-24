@@ -173,10 +173,6 @@ public class AccountingReportController {
                 "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
       }
 
-      if (typeSelect == 12 || typeSelect == 15) {
-        response.setFlash(I18n.get(ITranslation.ACCOUNTING_REPORT_TYPE_SELECT_INFO));
-      }
-
       logger.debug("Type selected : {}", typeSelect);
 
       if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
