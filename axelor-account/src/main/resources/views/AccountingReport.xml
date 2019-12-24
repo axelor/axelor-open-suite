@@ -34,7 +34,7 @@
 		
 		<panel sidebar="true" name="info" title="Info">
 			<button name="search" title="Search" hideIf="typeSelect == 15 || typeSelect == 12 || typeSelect == 2000" onClick="save,action-accounting-report-method-search-move-line,save" />
-			<button name="export" title="Print" icon="fa-print"	onClick="action-group-account-accounting-report-export-click" />
+			<button name="export" title="Print" icon="fa-print"	onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click" />
 			<field name="statusSelect" />
 			<field name="publicationDateTime" />
 		</panel>
@@ -256,5 +256,7 @@
 		<call class="com.axelor.apps.account.web.AccountingReportController" method="getJournalType"/>
 	</action-method>
 	
-    
+    	<action-validate name="action-account-report-alert-typeselect">
+		<alert message="Make sure that all accounting moves are validated" if="typeSelect == 12 || typeSelect == 15"/>
+    	</action-validate>
 </object-views>
