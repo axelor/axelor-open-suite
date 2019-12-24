@@ -41,6 +41,7 @@
 - EBICSUSER EXPORT : Fix for "Cannot get property 'code' on null object" error.
 - Bank Payment: fix traduction
 - OPPORTUNITY: On copy clear saleOrderList
+- Fixed Asset : Fix issue of infinite value of depriciation rate
 
 ## [5.2.1] - 2019-12-16
 ## Features
