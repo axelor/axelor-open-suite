@@ -9,6 +9,7 @@
 - EBICS USER : groupBy and orderBy for grid view opened from the menu
 - INVOICE : Display PFP validator and status in invoice supplier refund grid
 - EBICSBANK : change tracking for fields.
+- METASCHEDULE : added batchServiceSelect option for Contract Batch.
 
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
