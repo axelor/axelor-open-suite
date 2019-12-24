@@ -884,6 +884,7 @@
 "Invoice.expenseTaxAmount",,,
 "Invoice.expenseTitle",,,
 "Invoice.expenseTotalAmount",,,
+"Invoice.headOfficeAddress","Adresse du siège social",,
 "Invoice.imputedOn","imputé le",,
 "Invoice.invoiceAdvPaymentNo","FACTURE D'ACOMPTE N°",,
 "Invoice.invoiceBalanceNo","FACTURE DE SOLDE N°",,
