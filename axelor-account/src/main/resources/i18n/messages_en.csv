@@ -1067,6 +1067,7 @@
 "Invoice.expenseTaxAmount",,,
 "Invoice.expenseTitle",,,
 "Invoice.expenseTotalAmount",,,
+"Invoice.headOfficeAddress","Head Office Address",,
 "Invoice.imputedOn","imputed on",,
 "Invoice.invoiceAdvPaymentNo","ADVANCE INVOICE N°",,
 "Invoice.invoiceBalanceNo","BALANCE INVOICE N°",,
