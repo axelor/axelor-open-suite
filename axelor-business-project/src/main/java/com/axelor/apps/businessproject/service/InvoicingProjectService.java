@@ -99,6 +99,29 @@ public class InvoicingProjectService {
     Project project = invoicingProject.getProject();
     Partner customer = project.getClientPartner();
     Partner customerContact = project.getContactPartner();
+    if (invoicingProject.getSaleOrderLineSet().isEmpty()
+        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
+        && invoicingProject.getLogTimesSet().isEmpty()
+        && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectSet().isEmpty()
+        && invoicingProject.getTeamTaskSet().isEmpty()) {
+      throw new AxelorException(
+          invoicingProject,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY));
+    }
+    if (invoicingProject.getProject() == null) {
+      throw new AxelorException(
+          invoicingProject,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
+    }
+    if (invoicingProject.getProject().getClientPartner() == null) {
+      throw new AxelorException(
+          invoicingProject,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
+    }
     if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
       customerContact = customer.getContactPartnerSet().iterator().next();
     }

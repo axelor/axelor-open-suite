@@ -10,6 +10,7 @@
 - INVOICE : Display PFP validator and status in invoice supplier refund grid
 - EBICSBANK : change tracking for fields.
 - Advance data import: Add action apply support
+- INVOICING PROJECT : provide menu for invoicing project grid for mass invoicing.
 
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
