@@ -3676,6 +3676,44 @@ else {
                                 </text>
                             </cell>
                         </row>
+                        <row id="5375">
+                            <cell id="5376">
+                                <text id="5377">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["displayHeadOfficeAddress"] != true ||  row._outer["head_office_address"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.headOfficeAddress'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :  <VALUE-OF>row._outer["head_office_address"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
                     </grid>
                 </cell>
                 <cell id="3373"/>
@@ -3736,18 +3774,6 @@ row["partnerFirstName"]
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["address_str"].replace(/\n/g, "<br>")</VALUE-OF>]]></text-property>
-                    </text>
-                    <text id="5374">
-                        <property name="fontSize">11pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["displayHeadOfficeAddress"] != true</expression>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["head_office_address"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4468">
