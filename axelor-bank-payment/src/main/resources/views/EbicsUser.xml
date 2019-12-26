@@ -41,7 +41,8 @@
 		<panel name="generalInformationPanel" title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="fullName" colSpan="12" hidden="true"/>
-			<field name="name" onChange="action-ebics-user-record-set-fullname"/>
+			<field name="name" onChange="action-ebics-user-record-set-fullname" colSpan="4"/>
+			<field name="serialNumber" colSpan="2"/>
 			<field name="$changePassword" type="boolean" title="Change password" hideIf="!id" colSpan="2"/>
 			<field name="password" showIf="$changePassword || !id" colSpan="4" requiredIf="$changePassword"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
