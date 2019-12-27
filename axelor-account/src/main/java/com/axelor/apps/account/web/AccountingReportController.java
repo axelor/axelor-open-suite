@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.ITranslation;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
