@@ -33,7 +33,6 @@
 				<field name="campaignType" canEdit="false" colSpan="4"/>
 				<field name="eventStartDateT" colSpan="4"/>
 				<field name="eventEndDateT" colSpan="4"/>
-				<spacer name="campaignTypeSpacer"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
 				<field name="manageAnEventPerTarget" colSpan="4" widget="boolean-switch"/>
 				<field name="manageAttendees" colSpan="4" widget="boolean-switch"/>
