@@ -192,6 +192,16 @@ public interface StockLocationLineService {
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
 
   /**
+   * Allow to get the available qty of product for a given Tracking Number.
+   *
+   * @param stockLocation
+   * @param trackingNumber
+   * @return
+   */
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber);
+
+  /**
    * For a given line, compute the future quantity of a stock location line from its current qty and
    * planned stock move lines with the same stock location and the same product.
    *

@@ -5,6 +5,7 @@
 - BANKSTATEMENT : on copy reset statusSelect
 - GEONAME : import city form zip
 ## Bug Fixes
+- STOCKMOVE : display qty per tracking number and not total available qty for tracking number
 
 ## [5.1.14] - 2020-01-17
 ## Improvements

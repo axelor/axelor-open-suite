@@ -47,8 +47,8 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
 
           if (stockLocation != null) {
             BigDecimal availableQty =
-                stockLocationLineService.getAvailableQty(
-                    stockLocation, trackingNumber.getProduct());
+                stockLocationLineService.getTrackingNumberAvailableQty(
+                    stockLocation, trackingNumber);
 
             json.put("$availableQty", availableQty);
           }
