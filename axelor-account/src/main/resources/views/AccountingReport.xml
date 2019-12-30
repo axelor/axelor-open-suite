@@ -264,7 +264,7 @@
 		<call class="com.axelor.apps.account.web.AccountingReportController" method="getJournalType"/>
 	</action-method>
 	
-    	<action-validate name="action-account-report-alert-typeselect">
-		<alert message="Make sure that all accounting moves are validated" if="typeSelect == 12 || typeSelect == 15"/>
-    	</action-validate>
+        <action-validate name="action-account-report-alert-typeselect">
+		<alert message="Make sure that all accounting moves are validated." if="typeSelect == 12 || typeSelect == 15"/>
+        </action-validate>
 </object-views>
