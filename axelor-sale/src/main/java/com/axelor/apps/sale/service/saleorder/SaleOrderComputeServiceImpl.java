@@ -194,13 +194,17 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
           (soLine1, soLine2) -> Integer.compare(soLine1.getSequence(), soLine2.getSequence()));
 
       BigDecimal totalAmount = BigDecimal.ZERO;
+      boolean isShowTotal = false;
+      boolean isFirstTitleLine = true;
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
-          if (saleOrderLine.getIsShowTotal()) {
-            saleOrderLine.setExTaxTotal(totalAmount);
+          if (isFirstTitleLine) {
+            isFirstTitleLine = false;
+            isShowTotal = saleOrderLine.getIsShowTotal();
           } else {
-            saleOrderLine.setExTaxTotal(BigDecimal.ZERO);
+            isFirstTitleLine = true;
           }
+          saleOrderLine.setExTaxTotal(isShowTotal ? totalAmount : BigDecimal.ZERO);
           totalAmount = BigDecimal.ZERO;
         }
         if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
