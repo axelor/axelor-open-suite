@@ -48,6 +48,7 @@
 - OPPORTUNITY: On copy clear saleOrderList
 - Fixed Asset : Fix issue of infinite value of depriciation rate
 - Campaign : Fix campaign form view
+- Purchase order : remove M2O invoice field.
 
 ## [5.2.1] - 2019-12-16
 ## Features
