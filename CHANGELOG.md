@@ -12,6 +12,7 @@
 - Advance data import: Add action apply support
 - INVOICING PROJECT : provide menu for invoicing project grid for mass invoicing.
 - METASCHEDULE : added batchServiceSelect option for Contract Batch.
+- EBICS USER : Serial number.
 
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
