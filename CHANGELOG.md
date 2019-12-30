@@ -47,6 +47,7 @@
 - Bank Payment: fix traduction
 - OPPORTUNITY: On copy clear saleOrderList
 - Fixed Asset : Fix issue of infinite value of depriciation rate
+- Campaign : Fix campaign form view
 
 ## [5.2.1] - 2019-12-16
 ## Features
