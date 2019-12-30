@@ -50,6 +50,7 @@
 - Fixed Asset : Fix issue of infinite value of depriciation rate
 - Campaign : Fix campaign form view
 - Purchase order : remove M2O invoice field.
+- STOCKMOVE : display qty per tracking number and not total available qty for tracking number
 
 ## [5.2.1] - 2019-12-16
 ## Features
