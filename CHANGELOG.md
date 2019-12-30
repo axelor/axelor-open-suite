@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.2]
 ## Features
+- TOOLS : added utility class for interacting with SFTP
 - COMPANY : mass update enabled for some fields
 - BANKDETAILS : mass update enabled for currency and active field
 - PRODUCT - added tracking on code and name fields.
@@ -48,7 +49,8 @@
 - OPPORTUNITY: On copy clear saleOrderList
 - Fixed Asset : Fix issue of infinite value of depriciation rate
 - Campaign : Fix campaign form view
-- STOCKMOVE : display qty per tracking number and not total available qty for tracking number.
+- Purchase order : remove M2O invoice field.
+- STOCKMOVE : display qty per tracking number and not total available qty for tracking number
 
 ## [5.2.1] - 2019-12-16
 ## Features
