@@ -153,7 +153,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
-    float depreciationRate = 1f / numberOfDepreciation * 100f;
+    float depreciationRate = numberOfDepreciation == 0 ? 0 : 1f / numberOfDepreciation * 100f;
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
     if (fixedAsset.getComputationMethodSelect().equals("degressive")) {

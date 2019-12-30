@@ -9,6 +9,8 @@
 - EBICS USER : groupBy and orderBy for grid view opened from the menu
 - INVOICE : Display PFP validator and status in invoice supplier refund grid
 - EBICSBANK : change tracking for fields.
+- Advance data import: Add action apply support
+- INVOICING PROJECT : provide menu for invoicing project grid for mass invoicing.
 - METASCHEDULE : added batchServiceSelect option for Contract Batch.
 
 ## Improvements
@@ -42,6 +44,7 @@
 - EBICSUSER EXPORT : Fix for "Cannot get property 'code' on null object" error.
 - Bank Payment: fix traduction
 - OPPORTUNITY: On copy clear saleOrderList
+- Fixed Asset : Fix issue of infinite value of depriciation rate
 
 ## [5.2.1] - 2019-12-16
 ## Features

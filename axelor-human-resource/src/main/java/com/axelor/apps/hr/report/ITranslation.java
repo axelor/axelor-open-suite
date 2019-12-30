@@ -52,6 +52,12 @@ public class ITranslation {
       "ExpenseLine.kilometricAllowParam"; /*)*/
   public static final String EXPENSE_LINE_KILOMETRIC_EXPENSE_TYPE = /*$$(*/
       "ExpenseLine.kilometricExpenseType"; /*)*/
+  public static final String EXPENSE_LINE_TO_INVOICE = /*$$(*/
+      "ExpenseLine.toInvoice"; /*)*/
+  public static final String EXPENSE_LINE_YES = /*$$(*/
+      "ExpenseLine.yes"; /*)*/
+  public static final String EXPENSE_LINE_NO = /*$$(*/
+      "ExpenseLine.no"; /*)*/
 
   public static final String TIMESHEET_OF = /*$$(*/ "Timesheet.timesheetOf"; /*)*/
   public static final String TIMESHEET_PROJECT = /*$$(*/ "TimesheetLine.project"; /*)*/

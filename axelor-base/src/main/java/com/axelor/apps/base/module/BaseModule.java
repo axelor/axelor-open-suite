@@ -87,6 +87,8 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.ActionService;
+import com.axelor.apps.base.service.advanced.imports.ActionServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
@@ -185,6 +187,7 @@ public class BaseModule extends AxelorModule {
     bind(DataImportService.class).to(DataImportServiceImpl.class);
     bind(FileTabService.class).to(FileTabServiceImpl.class);
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
+    bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
   }
 }
