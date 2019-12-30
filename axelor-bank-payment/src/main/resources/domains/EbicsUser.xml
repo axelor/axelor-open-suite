@@ -34,6 +34,8 @@
   	 <many-to-one name="testSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory user"/>
      <many-to-one name="testBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Bank statement file format"/>
      <many-to-one name="testBankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="Bank order file format"/>
+     
+     <string name="serialNumber" title="Serial number (CORP)"/>
 	 
 	 
 	 <extra-code><![CDATA[
