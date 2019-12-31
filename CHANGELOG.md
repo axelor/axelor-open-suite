@@ -4,6 +4,7 @@
 ## Improvements
 - ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
 ## Bug Fixes
+- EBICS USER : fix for strange import - log
 
 ## [5.0.11] - 2019-12-19
 ## Improvements
