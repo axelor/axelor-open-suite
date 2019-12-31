@@ -15,6 +15,7 @@
 - METASCHEDULE : added batchServiceSelect option for Contract Batch.
 - EBICS USER : Serial number.
 - EmployeeFile : Added new date field - recordDate
+- Budget : Addition of new value for periodDurationSelect.
 
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
