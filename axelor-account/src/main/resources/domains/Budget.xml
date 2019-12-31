@@ -16,7 +16,7 @@
     <decimal name="totalAmountExpected" title="Expected total amount" precision="20" scale="2"/>
     <decimal name="totalAmountRealized" title="Realized total amount" precision="20" scale="2"/>
     <one-to-many name="budgetLineList" ref="com.axelor.apps.account.db.BudgetLine" title="Budget Lines" mappedBy="budget"/>
-  	<integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select"/>
+  	<integer name="periodDurationSelect" title="Period duration" selection="account.year.period.duration.select" default="0"/>
   	<decimal name="amountForGeneration" title="Amount for each line"/>
   	<boolean name="checkAvailableBudget" title="Check available budget"/>
   	

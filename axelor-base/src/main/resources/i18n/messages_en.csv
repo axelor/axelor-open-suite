@@ -125,6 +125,7 @@
 "Accounts Configurations",,,
 "Accounts configuration",,,
 "Action",,,
+"Action does not exists or invalid for the object(%s)",,,
 "Action name cannot be null.",,,
 "Actions",,,
 "Activate bar code generation for products",,,
