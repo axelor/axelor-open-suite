@@ -32,6 +32,7 @@
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
 - Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
 - Fixed Asset : Fix issue of infinite value of depriciation rate"
+- EBICS USER : fix for strange import - log
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
