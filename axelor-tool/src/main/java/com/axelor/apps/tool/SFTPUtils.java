@@ -103,7 +103,10 @@ public class SFTPUtils {
     return files;
   }
 
-  /** Returns an {@link InputStream} corresponding to given {@code absoluteFilePath} in remote server. */
+  /**
+   * Returns an {@link InputStream} corresponding to given {@code absoluteFilePath} in remote
+   * server.
+   */
   public static InputStream get(ChannelSftp channel, String absoluteFilePath) throws SftpException {
     return channel.get(absoluteFilePath);
   }

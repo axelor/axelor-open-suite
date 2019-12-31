@@ -51,6 +51,7 @@
 - Campaign : Fix campaign form view
 - Purchase order : remove M2O invoice field.
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
+- HR : Fix typo.
 
 ## [5.2.1] - 2019-12-16
 ## Features
