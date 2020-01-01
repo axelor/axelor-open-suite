@@ -203,10 +203,17 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
     } else {
       inTaxTotal = this.computeAmount(saleOrderLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              BigDecimal.ROUND_HALF_UP);
       companyInTaxTotal = this.getAmountInCompanyCurrency(inTaxTotal, saleOrder);
       companyExTaxTotal =
-          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+          companyInTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              BigDecimal.ROUND_HALF_UP);
     }
 
     if (saleOrderLine.getProduct() != null
@@ -254,7 +261,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal amount =
         quantity
             .multiply(price)
-            .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN);
 
     logger.debug(
         "Calcul du montant HT avec une quantité de {} pour {} : {}",

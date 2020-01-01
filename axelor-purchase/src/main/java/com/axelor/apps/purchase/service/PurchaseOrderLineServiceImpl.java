@@ -108,10 +108,17 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       companyInTaxTotal = companyExTaxTotal.add(companyExTaxTotal.multiply(taxRate));
     } else {
       inTaxTotal = computeAmount(purchaseOrderLine.getQty(), priceDiscounted);
-      exTaxTotal = inTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      exTaxTotal =
+          inTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              BigDecimal.ROUND_HALF_UP);
       companyInTaxTotal = getCompanyExTaxTotal(inTaxTotal, purchaseOrder);
       companyExTaxTotal =
-          companyInTaxTotal.divide(taxRate.add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+          companyInTaxTotal.divide(
+              taxRate.add(BigDecimal.ONE),
+              appBaseService.getNbDecimalDigitForUnitPrice(),
+              BigDecimal.ROUND_HALF_UP);
     }
 
     if (purchaseOrderLine.getProduct() != null) {
@@ -158,7 +165,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal amount =
         quantity
             .multiply(price)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+            .setScale(
+                Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
+                RoundingMode.HALF_EVEN);
 
     LOG.debug(
         "Calcul du montant HT avec une quantité de {} pour {} : {}",
