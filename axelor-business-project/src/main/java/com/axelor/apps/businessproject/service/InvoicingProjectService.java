@@ -372,19 +372,19 @@ public class InvoicingProjectService {
     taskQueryMap.put("invoicingTypePackage", TeamTaskRepository.INVOICING_TYPE_PACKAGE);
 
     if (invoicingProject.getDeadlineDate() != null) {
-      solQueryBuilder.append(" AND self.saleOrder.creationDate < :deadlineDate");
+      solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");
       solQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      polQueryBuilder.append(" AND self.purchaseOrder.orderDate < :deadlineDate");
+      polQueryBuilder.append(" AND self.purchaseOrder.orderDate <= :deadlineDate");
       polQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      logTimesQueryBuilder.append(" AND self.date < :deadlineDate");
+      logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");
       logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      expenseLineQueryBuilder.append(" AND self.expenseDate < :deadlineDate");
+      expenseLineQueryBuilder.append(" AND self.expenseDate <= :deadlineDate");
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      taskQueryBuilder.append(" AND self.taskDeadline < :deadlineDate");
+      taskQueryBuilder.append(" AND self.taskDeadline <= :deadlineDate");
       taskQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
 
