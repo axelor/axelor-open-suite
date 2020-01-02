@@ -72,6 +72,7 @@
     
         <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
     
+		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
