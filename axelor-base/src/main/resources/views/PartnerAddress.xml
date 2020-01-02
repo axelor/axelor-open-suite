@@ -12,7 +12,8 @@
 	
 	<form name="partner-address-form" title="Address" model="com.axelor.apps.base.db.PartnerAddress">
 		<panel name="mainPanel" >
-			<field name="address" canNew="true" />
+			<field name="address" canNew="true" if="!__config__.app.getApp('base').getIsSharedAddress()" canSelect="false"/>
+			<field name="address" canNew="true" if="__config__.app.getApp('base').getIsSharedAddress()" canSelect="true"/>
 			<field name="isInvoicingAddr" widget="toggle" x-icon="fa-exclamation-circle" />
 			<field name="isDeliveryAddr" widget="toggle" x-icon="fa-ban" />
 			<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" />							
