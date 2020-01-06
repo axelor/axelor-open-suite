@@ -738,7 +738,7 @@ MoveLine.account_code as accountCode,
 Journal.code as journalCode,
 MoveLine.debit as debit, 
 MoveLine.credit as credit, 
-SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
+(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
@@ -979,7 +979,7 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
+(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
@@ -1040,7 +1040,7 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
+(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
