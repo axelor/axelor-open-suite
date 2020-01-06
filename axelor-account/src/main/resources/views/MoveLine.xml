@@ -196,7 +196,7 @@
 					<field name="exportedDirectDebitOk" hidden="true" readonly="true"/>
 				</panel>
 				<panel name="secondSubOthersPanel">
-					<field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
+					<field name="bankReconciledAmount" if-module="axelor-bank-payment" readonly="true"/>
 				</panel>
 			</panel>
 			<panel-include view="incl-analytic-distribution-move-line-form"/>
@@ -299,7 +299,7 @@
 					<field name="exportedDirectDebitOk" hidden="true"  readonly="true"/>
 				</panel>
 				<panel name="secondSubOthersPanel">
-					<field name="bankReconciledAmount" if-module="axelor-bank-payment" onChange="action-account-group-move-line-check-bank-reconcile-amount-on-change"/>
+					<field name="bankReconciledAmount" if-module="axelor-bank-payment" onChange="action-account-group-move-line-check-bank-reconcile-amount-on-change" readonly="true"/>
 					<field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
 					<field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
 				</panel>
