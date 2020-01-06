@@ -738,7 +738,7 @@ MoveLine.account_code as accountCode,
 Journal.code as journalCode,
 MoveLine.debit as debit, 
 MoveLine.credit as credit, 
-SUM(BankReconciliationLine.credit + BankReconciliationLine.debit) as amountRemaining
+SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
@@ -757,7 +757,6 @@ AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select != 4
 AND AccountType.technical_type_select like 'cash'
-and BankReconciliationLine.is_posted = true
 AND BankReconciliationLine.effect_date <=  AccountingReport.date_val
 group by MoveLine.id,
 MoveLine.name,
@@ -767,7 +766,7 @@ Journal.code,
 MoveLine.debit,
 MoveLine.credit,
 concatJournal
-HAVING SUM(BankReconciliationLine.credit+BankReconciliationLine.debit) < (MoveLine.debit + MoveLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
 order by accountCode,journalCode,move_line_name
 ]]></xml-property>
         </oda-data-set>
@@ -980,7 +979,7 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-SUM(BankReconciliationLine.credit+BankReconciliationLine.debit) as amountRemaining
+SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
@@ -995,7 +994,6 @@ AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
 AND BankReconciliationLine.effect_date <=  AccountingReport.date_val
-and BankReconciliationLine.is_posted = true
 AND BankStatementLine.amount_remain_to_reconcile > 0
 group by BankStatementLine.id,
 BankStatementLine.sequence,
@@ -1005,7 +1003,7 @@ BankStatementLine.description,
 BankStatementLine.debit,
 BankStatementLine.credit,
 BankDetails.full_name 
-HAVING SUM(BankReconciliationLine.credit+BankReconciliationLine.debit) < (BankStatementLine.debit + BankStatementLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
 
 Union
 
@@ -1042,7 +1040,7 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-SUM(BankReconciliationLine.credit+BankReconciliationLine.debit) as amountRemaining
+SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
@@ -1057,7 +1055,6 @@ AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
 AND BankReconciliationLine.effect_date <=  AccountingReport.date_val
-and BankReconciliationLine.is_posted = true
 AND BankStatementLine.amount_remain_to_reconcile > 0
 AND BankStatementLine.line_type_select = 2
 group by BankStatementLine.id,
@@ -1068,7 +1065,7 @@ BankStatementLine.description,
 BankStatementLine.debit,
 BankStatementLine.credit,
 BankDetails.full_name 
-HAVING SUM(BankReconciliationLine.credit+BankReconciliationLine.debit) < (BankStatementLine.debit + BankStatementLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
 order by date
 
 ]]></xml-property>
