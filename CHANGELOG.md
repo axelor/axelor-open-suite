@@ -57,6 +57,7 @@
 - HR : Fix typo.
 - INVOICING PROJECT : Filter the records including deadlineDate.
 - MRP calculation: NPE on calculation
+- MOVE LINE : Bank reconciliation amount is now read-only.
 
 ## [5.2.1] - 2019-12-16
 ## Features
