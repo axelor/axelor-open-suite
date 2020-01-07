@@ -12,6 +12,7 @@
     <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share" scale="2" precision="20"/>
     <many-to-one name="toJustifyLeaveReason" title="Leave Reason for Leave to justify" ref="com.axelor.apps.hr.db.LeaveReason"/>
     <string name="exportCodeForExtraHours" title="Export code for extra hour management" />
+    <string name="exportCodeForDuration" title="Export code for duration" />
     
     <!-- LUNCH VOUCHERS MANAGEMENT -->
     

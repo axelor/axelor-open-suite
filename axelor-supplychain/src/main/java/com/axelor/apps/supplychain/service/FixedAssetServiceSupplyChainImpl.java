@@ -20,15 +20,22 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.FixedAssetServiceImpl;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
+
+  @Inject
+  public FixedAssetServiceSupplyChainImpl(MoveLineService moveLineService) {
+    super(moveLineService);
+  }
 
   @Transactional
   @Override

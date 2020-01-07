@@ -393,7 +393,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           this.assignProductLevel(subBillOfMaterial, level);
 
           if (subProduct.getDefaultBillOfMaterial() != null) {
-            this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
+            this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
           }
         }
       }

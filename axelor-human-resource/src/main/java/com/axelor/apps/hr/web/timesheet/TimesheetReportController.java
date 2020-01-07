@@ -25,6 +25,7 @@ import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -35,8 +36,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,10 +68,10 @@ public class TimesheetReportController {
 
   public void fillTimesheetReportReminderUsers(ActionRequest request, ActionResponse response) {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);
-    List<User> userList =
+    Set<User> reminderUserSet =
         Beans.get(TimesheetReportService.class).getUserToBeReminded(timesheetReport);
-    if (!CollectionUtils.isEmpty(userList)) {
-      response.setValue("reminderUserSet", userList.stream().collect(Collectors.toSet()));
+    if (!ObjectUtils.isEmpty(reminderUserSet)) {
+      response.setValue("reminderUserSet", reminderUserSet);
     } else {
       response.setValue("reminderUserSet", null);
       response.setNotify(I18n.get(ITranslation.TS_REPORT_FILL_NO_USER));
@@ -81,6 +81,11 @@ public class TimesheetReportController {
   public void sendTimesheetReminder(ActionRequest request, ActionResponse response)
       throws AxelorException {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);
+
+    if (ObjectUtils.isEmpty(timesheetReport.getReminderUserSet())) {
+      return;
+    }
+
     List<Message> messages = Beans.get(TimesheetReportService.class).sendReminders(timesheetReport);
     List<Long> messageIds = new ArrayList<Long>();
     messageIds.add(0L);

@@ -539,6 +539,21 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+    StockLocationLine detailStockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLine != null) {
+      availableQty = detailStockLocationLine.getCurrentQty();
+    }
+    return availableQty;
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException {

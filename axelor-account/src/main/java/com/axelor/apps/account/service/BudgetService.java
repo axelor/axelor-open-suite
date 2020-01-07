@@ -148,13 +148,13 @@ public class BudgetService {
     int c = 0;
     int loopLimit = 1000;
     while (budgetLineToDate.isBefore(toDate)) {
-      if (budgetLineNumber != 1) fromDate = fromDate.plusMonths(duration);
+      if (budgetLineNumber != 1 && duration != 0) fromDate = fromDate.plusMonths(duration);
       if (c >= loopLimit) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.BUDGET_1));
       }
       c += 1;
-      budgetLineToDate = fromDate.plusMonths(duration).minusDays(1);
+      budgetLineToDate = duration == 0 ? toDate : fromDate.plusMonths(duration).minusDays(1);
       if (budgetLineToDate.isAfter(toDate)) budgetLineToDate = toDate;
       if (fromDate.isAfter(toDate)) continue;
       BudgetLine budgetLine = new BudgetLine();
@@ -164,6 +164,7 @@ public class BudgetService {
       budgetLine.setAmountExpected(budget.getAmountForGeneration());
       budgetLineList.add(budgetLine);
       budgetLineNumber++;
+      if (duration == 0) break;
     }
     return budgetLineList;
   }

@@ -55,6 +55,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -171,8 +172,27 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    invoice.setNote(saleOrder.getInvoiceComments());
-    invoice.setProformaComments(saleOrder.getProformaComments());
+    if (ObjectUtils.isEmpty(invoice.getNote())) {
+      if (invoice.getCompanyBankDetails() != null
+          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+        invoice.setNote(
+            saleOrder.getInvoiceComments()
+                + "\n"
+                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      } else {
+        invoice.setNote(saleOrder.getInvoiceComments());
+      }
+    }
+
+    if (invoice.getCompanyBankDetails() != null
+        && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+      invoice.setProformaComments(
+          saleOrder.getProformaComments()
+              + "\n"
+              + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+    } else {
+      invoice.setProformaComments(saleOrder.getProformaComments());
+    }
 
     // fill default advance payment invoice
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -601,7 +621,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return new InvoiceGeneratorSupplyChain(saleOrder, isRefund) {
       @Override
       public Invoice generate() throws AxelorException {
-        return super.createInvoiceHeader();
+        Invoice invoice = super.createInvoiceHeader();
+        invoice.setHeadOfficeAddress(saleOrder.getClientPartner().getHeadOfficeAddress());
+        return invoice;
       }
     };
   }
@@ -917,7 +939,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     com.axelor.db.Query<StockMove> stockMoveQuery =
         stockMoveRepository
             .all()
-            .filter("self.invoice.id in (" + getIdListString(invoiceList) + ")");
+            .filter("self.invoiceSet.id in (" + getIdListString(invoiceList) + ")");
     stockMoveQuery
         .fetch()
         .forEach(

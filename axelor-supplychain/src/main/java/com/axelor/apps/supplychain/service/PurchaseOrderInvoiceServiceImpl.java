@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -54,8 +53,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   @Inject private InvoiceRepository invoiceRepo;
 
-  @Inject private PurchaseOrderRepository purchaseOrderRepo;
-
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
@@ -64,12 +61,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
-
-    if (invoice != null) {
-      purchaseOrder.setInvoice(invoice);
-      purchaseOrderRepo.save(purchaseOrder);
-    }
-
     return invoice;
   }
 

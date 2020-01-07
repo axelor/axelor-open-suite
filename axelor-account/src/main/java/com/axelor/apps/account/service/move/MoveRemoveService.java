@@ -112,33 +112,49 @@ public class MoveRemoveService {
     String errorMessage = "";
     Map<String, String> objectsLinkToMoveMap =
         archivingToolService.getObjectLinkTo(move, move.getId());
+    String moveModelError = null;
     for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
-      String modelName = entry.getKey();
-      if (!modelName.equals("MoveLine")) {
-        errorMessage +=
-            String.format(
-                I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                move.getReference(),
-                modelName);
-      }
-    }
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      Map<String, String> objectsLinkToMoveLineMap =
-          archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
-      for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
-        String modelName = entry.getKey();
-        if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
-          errorMessage +=
-              String.format(
-                  I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
-                  moveLine.getName(),
-                  modelName);
+      String modelName = I18n.get(archivingToolService.getModelTitle(entry.getKey()));
+      if (!entry.getKey().equals("MoveLine")) {
+        if (moveModelError == null) {
+          moveModelError = modelName;
+        } else {
+          moveModelError += ", " + modelName;
         }
       }
+    }
+    if (moveModelError != null) {
+      errorMessage +=
+          String.format(
+              I18n.get(IExceptionMessage.MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+              move.getReference(),
+              moveModelError);
+    }
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+
+      errorMessage += checkDaybookMoveLine(moveLine);
     }
     if (errorMessage != null && !errorMessage.isEmpty()) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage);
     }
+  }
+
+  protected String checkDaybookMoveLine(MoveLine moveLine) throws AxelorException {
+    String errorMessage = "";
+    Map<String, String> objectsLinkToMoveLineMap =
+        archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
+    for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
+      String modelName = entry.getKey();
+      if (!modelName.equals("Move") && !modelName.equals("Reconcile")) {
+        errorMessage +=
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH),
+                moveLine.getName(),
+                modelName);
+      }
+    }
+    return errorMessage;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -150,10 +166,10 @@ public class MoveRemoveService {
     return move;
   }
 
-  public boolean deleteMultiple(List<? extends Move> moveList) {
-    boolean error = false;
+  public int deleteMultiple(List<? extends Move> moveList) {
+    int errorNB = 0;
     if (moveList == null) {
-      return error;
+      return errorNB;
     }
     for (Move move : moveList) {
       try {
@@ -167,12 +183,12 @@ public class MoveRemoveService {
         }
       } catch (Exception e) {
         TraceBackService.trace(e);
-        error = true;
+        errorNB += 1;
       } finally {
         JPA.clear();
       }
     }
-    return error;
+    return errorNB;
   }
 
   @Transactional(rollbackOn = {Exception.class})

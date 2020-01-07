@@ -89,6 +89,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
+  protected BankOrderMoveService bankOrderMoveService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -99,7 +100,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
-      BankOrderLineOriginService bankOrderLineOriginService) {
+      BankOrderLineOriginService bankOrderLineOriginService,
+      BankOrderMoveService bankOrderMoveService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -109,6 +111,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
+    this.bankOrderMoveService = bankOrderMoveService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -342,6 +345,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankPaymentConfigService
         .getBankPaymentConfig(bankOrder.getSenderCompany())
         .getGenerateMoveOnBankOrderValidation()) {
+      bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }
 
@@ -368,7 +372,6 @@ public class BankOrderServiceImpl implements BankOrderService {
       sendBankOrderFile(bankOrder);
     }
     realizeBankOrder(bankOrder);
-    validatePayment(bankOrder);
   }
 
   protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException {
@@ -395,7 +398,13 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
-    Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+
+    if (!bankPaymentConfigService
+        .getBankPaymentConfig(bankOrder.getSenderCompany())
+        .getGenerateMoveOnBankOrderValidation()) {
+      bankOrderMoveService.generateMoves(bankOrder);
+      validatePayment(bankOrder);
+    }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
