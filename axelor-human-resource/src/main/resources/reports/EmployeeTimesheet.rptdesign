@@ -40,6 +40,11 @@
     <property name="Data Cube.TimesheetLineDS.x">135</property>
     <property name="Data Cube.TimesheetLineDS.y">80</property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function round(value, decimals) {
+  	return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+   	}
+	reportContext.setPersistentGlobalVariable("round", round);
+    ]]></method>
     <method name="beforeFactory"><![CDATA[var width = params["Days"].value;
 if(width > 10){
 	reportContext.getDesignHandle().findMasterPage("TSMasterPage").setProperty("width", width+"in");
@@ -269,12 +274,13 @@ timesheetReportService = TimesheetReportService.getInstance();
 timesheetList = timesheetReportService.getTimesheetReportList(reportContext.getParameterValue("TimesheetReportId")).iterator();]]></method>
             <method name="fetch"><![CDATA[if(timesheetList.hasNext()){
 node = timesheetList.next();
+var round = reportContext.getPersistentGlobalVariable("round");
 	row["date"] = node.get("date");
 	row["userName"] = node.get("userName").toString();
-	row["workedHour"] = node.get("workedHour");
-	row["workingHour"] = node.get("workingHour");
-	row["weekNumber"] = node.get("weekNumber");
-	row["weeklyWorkHours"] = node.get("weeklyWorkHours");
+	row["workedHour"] = round(node.get("workedHour"),2);
+	row["workingHour"] = round(node.get("workingHour"),2);
+	row["weekNumber"] = round(node.get("weekNumber"),2);
+	row["weeklyWorkHours"] = round(node.get("weeklyWorkHours"),2);
 	return true;
 }
 
@@ -804,10 +810,11 @@ function onCreateCell( cellInst, reportContext )
 
 	if(cellInst.getCellID() == 5637){
 		var color = 'red';
+		var round = reportContext.getPersistentGlobalVariable("round");
 		
-		var totalWorkingHours = cellInst.getDataValue('totalWorkingHours');
-		var totalWorkedHours = cellInst.getDataValue('workedHour_user/userName_week/weekNumber');
-		var weekleyWorkHours = cellInst.getDataValue('weeklyWorkHours_user/userName_Date/date');
+		var totalWorkingHours = round(cellInst.getDataValue('totalWorkingHours'),2);
+		var totalWorkedHours = round(cellInst.getDataValue('workedHour_user/userName_week/weekNumber'),2);
+		var weekleyWorkHours = round(cellInst.getDataValue('weeklyWorkHours_user/userName_Date/date'),2);
 		
 		if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours != weekleyWorkHours) {
 			color = 'blue';
