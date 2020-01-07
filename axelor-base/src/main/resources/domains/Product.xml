@@ -77,7 +77,7 @@
 			title="Manage prices for product variants" />
 
 		<many-to-one name="defaultSupplierPartner" ref="com.axelor.apps.base.db.Partner"
-			title="Default supplier" massUpdate="true" />
+			title="Default supplier" />
 
 		<one-to-many name="accountManagementList"
 			ref="com.axelor.apps.account.db.AccountManagement" mappedBy="product"
