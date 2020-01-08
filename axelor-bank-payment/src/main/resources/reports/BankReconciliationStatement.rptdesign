@@ -530,6 +530,12 @@ where AccountingReport.id = ? ]]></xml-property>
                     <text-property name="displayName">amountremaining</text-property>
                     <text-property name="heading">amountremaining</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">accountid</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">accountid</text-property>
+                    <text-property name="heading">accountid</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -609,6 +615,11 @@ where AccountingReport.id = ? ]]></xml-property>
                     <structure>
                         <property name="position">11</property>
                         <property name="name">amountremaining</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">accountid</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -693,6 +704,13 @@ where AccountingReport.id = ? ]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">accountid</property>
+                    <property name="nativeName">accountid</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DISTINCT MoveLine.id as moveLine_id, 
 MoveLine.name as move_line_name, 
@@ -704,7 +722,8 @@ MoveLine.account_code as accountCode,
 Journal.code as journalCode,
 MoveLine.debit as debit, 
 MoveLine.credit as credit, 
-MoveLine.debit + MoveLine.credit as amountRemaining
+MoveLine.debit + MoveLine.credit as amountRemaining,
+Account.id as accountId
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
@@ -721,7 +740,7 @@ AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select != 4
+AND Move.status_select not in (1,4)
 AND AccountType.technical_type_select like 'cash'
 AND MoveLine.bank_reconciled_amount != MoveLine.debit + MoveLine.credit
 
@@ -738,7 +757,8 @@ MoveLine.account_code as accountCode,
 Journal.code as journalCode,
 MoveLine.debit as debit, 
 MoveLine.credit as credit, 
-(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
+(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+Account.id as accountId
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
@@ -755,7 +775,7 @@ AND MoveLine.date_val <= AccountingReport.date_val
 AND Move.company = AccountingReport.company 
 AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
-AND Move.status_select != 4
+AND Move.status_select not in (1,4)
 AND AccountType.technical_type_select like 'cash'
 AND BankReconciliationLine.effect_date <=  AccountingReport.date_val
 group by MoveLine.id,
@@ -765,7 +785,8 @@ concatAccount,
 Journal.code,
 MoveLine.debit,
 MoveLine.credit,
-concatJournal
+concatJournal,
+accountId
 HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
 order by accountCode,journalCode,move_line_name
 ]]></xml-property>
@@ -814,6 +835,12 @@ order by accountCode,journalCode,move_line_name
                     <text-property name="displayName">amountremaining</text-property>
                     <text-property name="heading">amountremaining</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">bankdetailsid</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">bankdetailsid</text-property>
+                    <text-property name="heading">bankdetailsid</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -833,26 +860,6 @@ order by accountCode,journalCode,move_line_name
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">2</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_3</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">3</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_4</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">4</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -892,6 +899,11 @@ order by accountCode,journalCode,move_line_name
                     <structure>
                         <property name="position">7</property>
                         <property name="name">amountremaining</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">bankdetailsid</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -947,73 +959,22 @@ order by accountCode,journalCode,move_line_name
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">bankdetailsid</property>
+                    <property name="nativeName">bankdetailsid</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select BankDetails.full_name as bankdetailsfullname,
+            <xml-property name="queryText"><![CDATA[select  BankDetails.full_name as bankdetailsfullname,
 BankStatementLine.operation_date as date,
 BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-BankStatementLine.debit + BankStatementLine.credit as amountRemaining
-FROM public.account_accounting_report as AccountingReport
-LEFT JOIN public.bankpayment_bank_statement_line as BankStatementLine on (AccountingReport.id = ?)
-LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
-LEFT JOIN public.base_company_bank_details_set as CompanyBankDetailsSet on BankDetails.id = CompanyBankDetailsSet.bank_details_set
-LEFT JOIN public.base_company as Company on CompanyBankDetailsSet.base_company = Company.id
-LEFT JOIN public.bankpayment_bank_statement AS BankStatement ON BankStatementLine.bank_statement = BankStatement.id
-LEFT JOIN public.bankpayment_bank_reconciliation_line as BankReconciliationLine on BankStatementLine.id = BankReconciliationLine.bank_statement_line
-LEFT JOIN public.account_accounting_report_bank_details_set as AccountingReportBankDetailsSet on AccountingReport.id = AccountingReportBankDetailsSet.account_accounting_report
-WHERE BankReconciliationLine.id is null
-AND AccountingReport.currency = BankStatementLine.currency
-AND BankStatementLine.operation_date <= AccountingReport.date_val
-AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
-AND AccountingReport.company = Company.id
-AND BankStatementLine.debit + BankStatementLine.credit > 0
-AND BankStatementLine.amount_remain_to_reconcile > 0
-
-Union
-
-select BankDetails.full_name as bankdetailsfullname,
-BankStatementLine.operation_date as date,
-BankStatementLine.reference as reference,
-BankStatementLine.description as name,
-BankStatementLine.debit AS debit , 
-BankStatementLine.credit AS credit,
-(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
-FROM public.account_accounting_report as AccountingReport
-LEFT JOIN public.bankpayment_bank_statement_line as BankStatementLine on (AccountingReport.id = ?)
-LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
-LEFT JOIN public.base_company_bank_details_set as CompanyBankDetailsSet on BankDetails.id = CompanyBankDetailsSet.bank_details_set
-LEFT JOIN public.base_company as Company on CompanyBankDetailsSet.base_company = Company.id
-LEFT JOIN public.bankpayment_bank_statement AS BankStatement ON BankStatementLine.bank_statement = BankStatement.id
-LEFT JOIN public.bankpayment_bank_reconciliation_line as BankReconciliationLine on BankStatementLine.id = BankReconciliationLine.bank_statement_line
-LEFT JOIN public.account_accounting_report_bank_details_set as AccountingReportBankDetailsSet on AccountingReport.id = AccountingReportBankDetailsSet.account_accounting_report
-WHERE BankReconciliationLine.id is not null
-and AccountingReport.currency = BankStatementLine.currency
-AND BankStatementLine.operation_date <= AccountingReport.date_val
-AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
-AND AccountingReport.company = Company.id
-AND BankReconciliationLine.effect_date <=  AccountingReport.date_val
-AND BankStatementLine.amount_remain_to_reconcile > 0
-group by BankStatementLine.id,
-BankStatementLine.sequence,
-BankStatementLine.operation_date,
-BankStatementLine.reference,
-BankStatementLine.description,
-BankStatementLine.debit,
-BankStatementLine.credit,
-BankDetails.full_name 
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
-
-Union
-
-select  BankDetails.full_name as bankdetailsfullname,
-BankStatementLine.operation_date as date,
-BankStatementLine.reference as reference,
-BankStatementLine.description as name,
-BankStatementLine.debit AS debit , 
-BankStatementLine.credit AS credit,
-BankStatementLine.debit + BankStatementLine.credit as amountRemaining
+BankStatementLine.debit + BankStatementLine.credit as amountRemaining,
+BankDetails.id as bankDetailsId
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
@@ -1040,7 +1001,8 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining
+(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+BankDetails.id as bankDetailsId
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
@@ -1064,11 +1026,192 @@ BankStatementLine.reference,
 BankStatementLine.description,
 BankStatementLine.debit,
 BankStatementLine.credit,
-BankDetails.full_name 
+BankDetails.full_name,
+BankDetails.id
 HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
 order by date
 
 ]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InitialAccountingBalance" id="6533">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">initialamount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">initialamount</text-property>
+                    <text-property name="heading">initialamount</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">initialamount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">initialamount</property>
+                    <property name="nativeName">initialamount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT COALESCE(SUM(MoveLine.debit) - SUM(MoveLine.credit),0) as initialAmount
+FROM public.account_accounting_report as AccountingReport
+LEFT JOIN account_account as Account on (AccountingReport.id = ?)
+LEFT JOIN account_move_line as MoveLine on Account.id = MoveLine.account
+LEFT JOIN account_move as Move on MoveLine.move = Move.id
+WHERE Account.id = ?
+AND AccountingReport.currency = Move.company_currency
+AND MoveLine.date_val <= AccountingReport.date_val 
+AND Move.company = AccountingReport.company 
+AND Move.status_select not in (1,4)]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InitialBankAccountBalance" id="6534">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">initialamount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">initialamount</text-property>
+                    <text-property name="heading">initialamount</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">initialamount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">initialamount</property>
+                    <property name="nativeName">initialamount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT BankStatementLine.debit - BankStatementLine.credit as initialAmount
+FROM public.account_accounting_report as AccountingReport
+LEFT JOIN base_bank_details as BankDetails on (AccountingReport.id = ?)
+LEFT JOIN bankpayment_bank_statement_line_afb120 as BankStatementLine on BankDetails.id = BankStatementLine.bank_details
+LEFT JOIN public.base_company_bank_details_set as CompanyBankDetailsSet on BankDetails.id = CompanyBankDetailsSet.bank_details_set
+LEFT JOIN public.base_company as Company on CompanyBankDetailsSet.base_company = Company.id
+WHERE BankDetails.id = ?
+AND AccountingReport.company = Company.id
+AND AccountingReport.currency = BankStatementLine.currency
+AND BankStatementLine.operation_date <= AccountingReport.date_val
+AND BankStatementLine.line_type_select = 3
+ORDER BY  BankStatementLine.operation_date DESC,BankStatementLine.id DESC
+LIMIT 1
+
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
     </data-sets>
     <page-setup>
@@ -1812,13 +1955,21 @@ order by date
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">bankdetailsid</property>
+                                <text-property name="displayName">bankdetailsid</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["bankdetailsid"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
-                        <column id="6297"/>
+                        <column id="6297">
+                            <property name="width">8%</property>
+                        </column>
                         <column id="6465">
                             <property name="width">10%</property>
                         </column>
                         <column id="6299">
-                            <property name="width">40%</property>
+                            <property name="width">30%</property>
                         </column>
                         <column id="6300">
                             <property name="width">20%</property>
@@ -2091,6 +2242,129 @@ order by date
                                         </data>
                                     </cell>
                                 </row>
+                                <row id="6566">
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["nbLine"] == 0</expression>
+                                        </structure>
+                                    </list-property>
+                                    <cell id="6567">
+                                        <text id="6577">
+                                            <property name="fontFamily">sans-serif</property>
+                                            <property name="fontSize">10pt</property>
+                                            <property name="fontWeight">normal</property>
+                                            <property name="borderBottomStyle">none</property>
+                                            <property name="borderLeftStyle">none</property>
+                                            <property name="borderRightStyle">none</property>
+                                            <property name="borderTopStyle">none</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'BankReconciliationStatement.initialBalance'</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">message_key</property>
+                                                    <text-property name="displayName">message_key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="6568"/>
+                                    <cell id="6569"/>
+                                    <cell id="6570"/>
+                                    <cell id="6571">
+                                        <text id="6578">
+                                            <property name="fontSize">8.5pt</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="dataSet">InitialBankAccountBalance</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_2</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">row["bankdetailsid"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">initialamount</property>
+                                                    <text-property name="displayName">initialamount</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["initialamount"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["initialamount"] > 0)
+{
+	Formatter.format(row["initialamount"],"###,##0.00")
+}
+else
+{
+	Formatter.format(0,"###,##0.00")
+}
+</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="6572">
+                                        <text id="6579">
+                                            <property name="fontSize">8.5pt</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="dataSet">InitialBankAccountBalance</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_2</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">row["bankdetailsid"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">initialamount</property>
+                                                    <text-property name="displayName">initialamount</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["initialamount"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                            </list-property>
+                                            <structure name="toc"/>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["initialamount"] < 0)
+{
+	Formatter.format(Math.abs(row["initialamount"]),"###,##0.00")
+}
+else
+{
+	Formatter.format(0,"###,##0.00")
+}
+</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="6573"/>
+                                </row>
                             </header>
                             <footer>
                                 <row id="6425">
@@ -2145,8 +2419,8 @@ order by date
                                     <data id="6282">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
-                                            <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">debit</property>
@@ -2156,8 +2430,8 @@ order by date
                                     <data id="6284">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
-                                            <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">credit</property>
@@ -2167,8 +2441,8 @@ order by date
                                     <data id="6286">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
-                                            <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">amountremaining</property>
@@ -2272,6 +2546,18 @@ order by date
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <column id="5141">
@@ -2646,8 +2932,16 @@ order by date
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">accountid</property>
+                                <text-property name="displayName">accountid</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["accountid"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
-                        <column id="6361"/>
+                        <column id="6361">
+                            <property name="width">8%</property>
+                        </column>
                         <column id="6363">
                             <property name="width">15%</property>
                         </column>
@@ -3002,6 +3296,130 @@ order by date
                                         </data>
                                     </cell>
                                 </row>
+                                <row id="6556">
+                                    <property name="fontFamily">sans-serif</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["nbLine"] == 0</expression>
+                                        </structure>
+                                    </list-property>
+                                    <cell id="6557">
+                                        <text id="6575">
+                                            <property name="fontFamily">sans-serif</property>
+                                            <property name="fontSize">10pt</property>
+                                            <property name="fontWeight">normal</property>
+                                            <property name="borderBottomStyle">none</property>
+                                            <property name="borderLeftStyle">none</property>
+                                            <property name="borderRightStyle">none</property>
+                                            <property name="borderTopStyle">none</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'BankReconciliationStatement.initialBalance'</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">message_key</property>
+                                                    <text-property name="displayName">message_key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="6558"/>
+                                    <cell id="6559"/>
+                                    <cell id="6560"/>
+                                    <cell id="6561"/>
+                                    <cell id="6562"/>
+                                    <cell id="6563">
+                                        <text id="6576">
+                                            <property name="fontSize">8.5pt</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="dataSet">InitialAccountingBalance</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_2</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">row["accountid"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">initialamount</property>
+                                                    <text-property name="displayName">initialamount</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["initialamount"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["initialamount"] > 0)
+{
+	Formatter.format(row["initialamount"],"###,##0.00")
+}
+else
+{
+	Formatter.format(0,"###,##0.00")
+}
+</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="6564">
+                                        <text id="6574">
+                                            <property name="fontSize">8.5pt</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="dataSet">InitialAccountingBalance</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_2</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">row["accountid"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">initialamount</property>
+                                                    <text-property name="displayName">initialamount</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["initialamount"]</expression>
+                                                    <property name="dataType">decimal</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>
+if(row["initialamount"] < 0)
+{
+	Formatter.format(Math.abs(row["initialamount"]),"###,##0.00")
+}
+else
+{
+	Formatter.format(0,"###,##0.00")
+}
+</VALUE-OF> ]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="6565"/>
+                                </row>
                             </header>
                             <footer>
                                 <row id="6403">
@@ -3121,8 +3539,8 @@ order by date
                                     <data id="6344">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
-                                            <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">debit</property>
@@ -3132,8 +3550,8 @@ order by date
                                     <data id="6346">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
-                                            <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">credit</property>
@@ -3143,8 +3561,8 @@ order by date
                                     <data id="6348">
                                         <property name="fontSize">8.5pt</property>
                                         <structure name="numberFormat">
-                                            <property name="category">Currency</property>
-                                            <property name="pattern">###0.00{RoundingMode=HALF_UP}</property>
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
                                         <property name="resultSetColumn">amountremaining</property>
