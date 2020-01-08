@@ -61,6 +61,7 @@
 - MOVE LINE : Bank reconciliation amount is now read-only.
 - MRP forecast : Reset status on copy.
 - INVOICE : corrected the generation of comment with null display.
+- Purchase Order : Fix NPE when company is null
 
 ## [5.2.1] - 2019-12-16
 ## Features
