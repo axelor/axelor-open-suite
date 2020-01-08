@@ -34,7 +34,10 @@
 	   		</bind>
 	   		<bind node="certValidityPeriodSelect" to="certValidityPeriodSelect" />
 	   		<bind node="protocolSelect" to="protocolSelect" />
-	   		<bind node="useX509ExtentionForAutoSignedCert" to="useX509ExtentionForAutoSignedCert" />
+	   		<bind node="useX509ExtensionBasicConstraints" to="useX509ExtensionBasicConstraints" />
+	   		<bind node="useX509ExtensionSubjectKeyIdentifier" to="useX509ExtensionSubjectKeyIdentifier" />
+	   		<bind node="useX509ExtensionAuthorityKeyIdentifier" to="useX509ExtensionAuthorityKeyIdentifier" />
+	   		<bind node="useX509ExtensionExtendedKeyUsage" to="useX509ExtensionExtendedKeyUsage" />
       	</bind>
       	<bind node="boEbicsPartnerServiceList/boEbicsPartnerService" to="boEbicsPartnerServiceList">
       		<bind node="importId" to="importId" />

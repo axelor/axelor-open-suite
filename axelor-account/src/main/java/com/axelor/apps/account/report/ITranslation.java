@@ -507,4 +507,6 @@ public interface ITranslation {
   public static final String INVOICE_PAYMENT_PAYMENT_MODE = /*$$(*/
       "InvoicePayment.payment_mode"; /*)*/
   public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
+  public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
+      "Invoice.headOfficeAddress"; /*)*/
 }

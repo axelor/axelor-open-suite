@@ -2,13 +2,33 @@
 
 ## [Unreleased 5.2.2]
 ## Features
+- TOOLS : added utility class for interacting with SFTP
 - COMPANY : mass update enabled for some fields
 - BANKDETAILS : mass update enabled for currency and active field
 - PRODUCT - added tracking on code and name fields.
+- PAYROLL PREPARATION - add new Payroll Preparation Export type "SILAE"
+- EBICS USER : groupBy and orderBy for grid view opened from the menu
+- INVOICE : Display PFP validator and status in invoice supplier refund grid
+- EBICSBANK : change tracking for fields.
+- Advance data import: Add action apply support
+- INVOICING PROJECT : provide menu for invoicing project grid for mass invoicing.
+- METASCHEDULE : added batchServiceSelect option for Contract Batch.
+- EBICS USER : Serial number.
+- EmployeeFile : Added new date field - recordDate
+- Budget : Addition of new value for periodDurationSelect.
+- Product : mass update enabled for defaultSupplierPartner field.
 
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
 - SALE ORDER: change title "Description to display" of field 'description'.
+- ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
+- INVOICING PROJECT : added field "teamTask" in timesheet line form related to project.
+- FIXES ASSET : add analytic distribution template.
+- FIXES ASSET CATEGORY : add analytic distribution template.
+- STOCK CORRECTION : Change status to Draft on duplicate Stock Correction
+- EBICS BANK : now X509 Extensions for auto signed certification are managed independently
+- STOCK CORRECTION : change error message on validate
+- EBICS USER : replacing Listener object with ImporterListener for EbicsUser Import.
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
@@ -23,6 +43,22 @@
 - Mass invoicing stock move: fix generate one invoice from multiple stock moves.
 - SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
 - USER : fix the problem of 'activeTeam' issue.
+- Purchase Order: Fix NPE on copy of purchaseOrder when it have empty purchaseOrderLineList.
+- Contract : correct the translation of 'Fiscal positon'
+- MRP: Do not show mrp lines from other MRPs when not displaying products without proposals.
+- LEAVE REQUEST: No longer displays an error message when saving a leave request.
+- EBICSUSER EXPORT : Fix for "Cannot get property 'code' on null object" error.
+- Bank Payment: fix traduction
+- OPPORTUNITY: On copy clear saleOrderList
+- Fixed Asset : Fix issue of infinite value of depriciation rate
+- Campaign : Fix campaign form view
+- Purchase order : remove M2O invoice field.
+- STOCKMOVE : display qty per tracking number and not total available qty for tracking number
+- HR : Fix typo.
+- INVOICING PROJECT : Filter the records including deadlineDate.
+- MRP calculation: NPE on calculation
+- MOVE LINE : Bank reconciliation amount is now read-only.
+- MRP forecast : Reset status on copy.
 - INVOICE : corrected the generation of comment with null display.
 
 ## [5.2.1] - 2019-12-16
