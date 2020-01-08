@@ -58,6 +58,7 @@
 - INVOICING PROJECT : Filter the records including deadlineDate.
 - MRP calculation: NPE on calculation
 - MOVE LINE : Bank reconciliation amount is now read-only.
+- MRP forecast : Reset status on copy.
 
 ## [5.2.1] - 2019-12-16
 ## Features
