@@ -204,25 +204,25 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           invoice.setNote(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
         }
       }
-      
+
       if (ObjectUtils.isEmpty(invoice.getProformaComments())) {
-          if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
-              && invoice.getCompanyBankDetails() != null
-              && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-            invoice.setProformaComments(
-                saleOrder.getProformaComments()
-                    + "\n"
-                    + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-          } else if (Strings.isNullOrEmpty(saleOrder.getProformaComments())
-              && invoice.getCompanyBankDetails() != null
-              && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-            invoice.setProformaComments(saleOrder.getProformaComments());
-          } else if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
-              && invoice.getCompanyBankDetails() != null
-              && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-            invoice.setProformaComments(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-          }
+        if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+            && invoice.getCompanyBankDetails() != null
+            && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+          invoice.setProformaComments(
+              saleOrder.getProformaComments()
+                  + "\n"
+                  + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+        } else if (Strings.isNullOrEmpty(saleOrder.getProformaComments())
+            && invoice.getCompanyBankDetails() != null
+            && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+          invoice.setProformaComments(saleOrder.getProformaComments());
+        } else if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+            && invoice.getCompanyBankDetails() != null
+            && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+          invoice.setProformaComments(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
         }
+      }
 
       if (invoice != null) {
         Set<StockMove> stockMoveSet = invoice.getStockMoveSet();

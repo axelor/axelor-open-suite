@@ -974,8 +974,6 @@ InvoiceSet.length > 0))"
     	<field name="project" expr="eval: null"/>
     	<field name="purchaseOrder" expr="eval: null"/>
     	<field name="partnerTaxNbr" expr="eval: partner?.taxNbr"/>
-    	<field name="proformaComments" expr="eval: partner?.proformaComments"/>
-    	<field name="note" expr="eval: partner?.invoiceComments"/>
       <field name="headOfficeAddress" expr="eval: partner?.headOfficeAddress"/>
     </action-record>
 
@@ -1011,7 +1009,8 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
+		<field name="note" expr="eval: (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
+		<field name="proformaComments" expr="eval: (partner?.proformaComments ? partner.proformaComments + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
