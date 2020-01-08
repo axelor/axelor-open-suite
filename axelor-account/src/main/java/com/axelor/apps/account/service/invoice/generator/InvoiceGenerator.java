@@ -290,12 +290,22 @@ public abstract class InvoiceGenerator {
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
-    if (companyBankDetails != null
+    if (partner != null
+        && !Strings.isNullOrEmpty(partner.getInvoiceComments())
+        && companyBankDetails != null
         && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
       invoice.setNote(
           partner.getInvoiceComments() + "\n" + companyBankDetails.getSpecificNoteOnInvoice());
-    } else {
+    } else if (partner != null
+        && Strings.isNullOrEmpty(partner.getInvoiceComments())
+        && companyBankDetails != null
+        && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
       invoice.setNote(partner.getInvoiceComments());
+    } else if (partner != null
+        && !Strings.isNullOrEmpty(partner.getInvoiceComments())
+        && companyBankDetails != null
+        && Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
+      invoice.setNote(companyBankDetails.getSpecificNoteOnInvoice());
     }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());

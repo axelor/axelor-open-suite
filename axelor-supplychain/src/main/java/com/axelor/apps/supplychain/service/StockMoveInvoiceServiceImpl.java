@@ -48,6 +48,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -186,25 +187,42 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
       if (ObjectUtils.isEmpty(invoice.getNote())) {
-        if (invoice.getCompanyBankDetails() != null
-            && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
+        if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+            && invoice.getCompanyBankDetails() != null
+            && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
           invoice.setNote(
               saleOrder.getInvoiceComments()
                   + "\n"
                   + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-        } else {
+        } else if (Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+            && invoice.getCompanyBankDetails() != null
+            && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
           invoice.setNote(saleOrder.getInvoiceComments());
+        } else if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+            && invoice.getCompanyBankDetails() != null
+            && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+          invoice.setNote(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
         }
       }
-      if (invoice.getCompanyBankDetails() != null
-          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
-        invoice.setProformaComments(
-            saleOrder.getProformaComments()
-                + "\n"
-                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else {
-        invoice.setProformaComments(saleOrder.getProformaComments());
-      }
+      
+      if (ObjectUtils.isEmpty(invoice.getProformaComments())) {
+          if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+              && invoice.getCompanyBankDetails() != null
+              && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+            invoice.setProformaComments(
+                saleOrder.getProformaComments()
+                    + "\n"
+                    + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+          } else if (Strings.isNullOrEmpty(saleOrder.getProformaComments())
+              && invoice.getCompanyBankDetails() != null
+              && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+            invoice.setProformaComments(saleOrder.getProformaComments());
+          } else if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+              && invoice.getCompanyBankDetails() != null
+              && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+            invoice.setProformaComments(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+          }
+        }
 
       if (invoice != null) {
         Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
