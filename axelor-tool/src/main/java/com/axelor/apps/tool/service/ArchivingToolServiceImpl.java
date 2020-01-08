@@ -150,6 +150,6 @@ public class ArchivingToolServiceImpl implements ArchivingToolService {
     FindModelWithobjectFieldQuery.setParameter(
         "viewtName", modelName.replaceAll("([a-z])([A-Z])", "$1-$2").toLowerCase() + "-form");
     List<String> modelNameList = FindModelWithobjectFieldQuery.getResultList();
-    return  !ObjectUtils.isEmpty(modelNameList)?(String)modelNameList.get(0):modelName;
+    return !ObjectUtils.isEmpty(modelNameList) ? (String) modelNameList.get(0) : modelName;
   }
 }
