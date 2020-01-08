@@ -140,6 +140,8 @@
 		<field name="amountRemaining" aggregate="sum"/>
 		<field name="currency" />
 		<field name="statusSelect"/>
+		<field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="pfpValidateStatusSelect" title="PFP"/>
+		<field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="pfpValidatorUser" title="PFP val."/>
 		<button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
 		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   </grid>
@@ -365,8 +367,8 @@ InvoiceSet.length > 0))"
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
-        <field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
-        <field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
+        		<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
+        		<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" hidden="true"/>
@@ -1009,7 +1011,7 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
+		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">

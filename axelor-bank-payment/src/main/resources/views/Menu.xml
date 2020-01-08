@@ -213,7 +213,7 @@
 		
 	<action-view name="account.conf.ebics.ebics.user" title="Ebics users"
 		model="com.axelor.apps.bankpayment.db.EbicsUser" >
-		<view type="grid" name="ebics-user-grid" />
+		<view type="grid" name="ebics-user-group-grid" />
 		<view type="form" name="ebics-user-form"/>
 	</action-view>
 	

@@ -160,7 +160,6 @@
 				<field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" hideIf="statusSelect &lt; 3">
-				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
 				<panel-dashlet name="POInvoicesPanel" action="action-view-show-invoices-from-purchase-order" title="Invoices" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3" colSpan="12"/>
 			</panel>
 

@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -112,16 +113,19 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     }
 
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-
-      generateMoves(bankOrderLine);
+      if (ObjectUtils.isEmpty(bankOrderLine.getBankOrderLineOriginList())) {
+        generateMoves(bankOrderLine);
+      }
     }
   }
 
   protected void generateMoves(BankOrderLine bankOrderLine) throws AxelorException {
 
-    bankOrderLine.setSenderMove(generateSenderMove(bankOrderLine));
-
-    if (partnerTypeSelect == BankOrderRepository.PARTNER_TYPE_COMPANY) {
+    if (bankOrderLine.getSenderMove() == null) {
+      bankOrderLine.setSenderMove(generateSenderMove(bankOrderLine));
+    }
+    if (partnerTypeSelect == BankOrderRepository.PARTNER_TYPE_COMPANY
+        && bankOrderLine.getReceiverMove() == null) {
       bankOrderLine.setReceiverMove(generateReceiverMove(bankOrderLine));
     }
   }

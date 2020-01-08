@@ -7,6 +7,7 @@
 		  title="Expense lines"
 		  model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-kilometric-allowance-record-default">
+		<hilite if="untaxedAmount == 0" color="danger"/>
 		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150" onChange="action-expense-line-attrs-project-on-change"/>
 		<field name="expenseProduct" canView="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
@@ -22,6 +23,7 @@
 	
 	<grid name="expense-line-kilometric-grid" title="Kilometric Allowances" model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-expense-line-method-fill-kilometric-expense-product">
+		<hilite if="untaxedAmount == 0" color="danger"/>
   		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" grid-view="project-grid" width="120"/>
         <field name="expenseDate" title="Date" width="95"
         	onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>

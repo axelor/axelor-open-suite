@@ -207,11 +207,7 @@
 		<option value="2">BBAN</option>
 	</selection>
 
-	<!-- TODO: move this selection to account module and create a copy here
-		 (ie. base.year.period.duration.select) That time also rename references
-		 of this selection in Charts.xml of CRM, Purchase, Stock modules.
-	 -->	
-	<selection name="account.year.period.duration.select">
+	<selection name="base.year.period.duration.select">
 		<option value="1">1 Month</option>
 		<option value="2">2 Months</option>
 		<option value="3">3 Months</option>

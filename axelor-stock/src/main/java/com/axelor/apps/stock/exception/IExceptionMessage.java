@@ -203,5 +203,5 @@ public interface IExceptionMessage {
       "Incorrect product for stock correction" /*)*/;
 
   public static final String STOCK_CORRECTION_2 = /*$$(*/
-      "No stock move generated.Please verify stock correction details." /*)*/;
+      "No stock correction needed, current quantity in stock equals real quantity." /*)*/;
 }

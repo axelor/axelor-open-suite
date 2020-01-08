@@ -68,4 +68,17 @@ public class FixedAssetController {
 
     response.setCanClose(true);
   }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+
+      Beans.get(FixedAssetService.class).updateAnalytic(fixedAsset);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

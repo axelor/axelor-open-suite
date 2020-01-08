@@ -435,4 +435,13 @@
 		<option value='2'>Closure</option>
 	</selection>
 
+   <selection name="account.year.period.duration.select">
+      <option value="0">One time global period</option>
+      <option value="1">1 Month</option>
+      <option value="2">2 Months</option>
+      <option value="3">3 Months</option>
+      <option value="6">6 Months</option>
+      <option value="12">1 Year</option>
+   </selection>
+
 </object-views>

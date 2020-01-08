@@ -58,6 +58,8 @@ import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.MrpForecastManagementRepository;
+import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
@@ -218,5 +220,6 @@ public class SupplychainModule extends AxelorModule {
     bind(ProjectedStockService.class).to(ProjectedStockServiceImpl.class);
     bind(FixedAssetServiceImpl.class).to(FixedAssetServiceSupplyChainImpl.class);
     bind(StockMoveLineStockRepository.class).to(StockMoveLineSupplychainRepository.class);
+    bind(MrpForecastRepository.class).to(MrpForecastManagementRepository.class);
   }
 }
