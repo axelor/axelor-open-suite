@@ -29,6 +29,7 @@
 - STOCK CORRECTION : change error message on validate
 - EBICS USER : replacing Listener object with ImporterListener for EbicsUser Import.
 - STOCK MOVE : Add default supplier partner in mrp line grid
+- STOCK MOVE: Maximized pop up of projected stock and counter
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
