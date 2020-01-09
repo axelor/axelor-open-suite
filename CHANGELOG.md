@@ -66,6 +66,7 @@
 - Purchase Order : Fix NPE when company is null
 - SALE ORDER LINE : Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
 - Stock Move mass invoicing: improve performance when selecting stock moves in wizard.
+- Cut-off batch: filter already invoiced stock move to improve batch performance.
 
 ## [5.2.1] - 2019-12-16
 ## Features

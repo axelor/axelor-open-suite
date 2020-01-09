@@ -151,7 +151,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     String queryStr =
-        " self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
+        "self.invoicingStatusSelect != :stockMoveInvoiced "
+            + "AND self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
             + "AND self.typeSelect = :stockMoveType ";
 
     if (company != null) {
@@ -162,6 +163,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         stockMoverepository
             .all()
             .filter(queryStr)
+            .bind("stockMoveInvoiced", StockMoveRepository.STATUS_INVOICED)
             .bind("stockMoveStatusRealized", StockMoveRepository.STATUS_REALIZED)
             .bind("stockMoveType", stockMoveTypeSelect)
             .bind("moveDate", moveDate);
