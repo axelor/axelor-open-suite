@@ -16,6 +16,7 @@
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
         <field name="partner"/>
+  		<field name="product.defaultSupplierPartner"/>
         <field name="proposalGenerated" hidden="true"/>
         <button name="generateProposalBtn" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
         <field name="mrpLineType.elementSelect" hidden="true"/>

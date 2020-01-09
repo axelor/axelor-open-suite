@@ -12,6 +12,33 @@
 		bankCerts += "</ebicsCertificate>"
 	})
 	
+	boEbicsPartnerService = ""
+	u.ebicsPartner?.boEbicsPartnerServiceList.each( {bo->
+	    boEbicsPartnerService += "<boEbicsPartnerService>"
+		boEbicsPartnerService += "  <importId>${bo.importId}</importId>"
+		boEbicsPartnerService += "  <bankOrderFileFormat>"
+		boEbicsPartnerService += "     <name>${bo.bankOrderFileFormat?.name}</name>"
+		boEbicsPartnerService += "     <orderTypeSelect>${bo.bankOrderFileFormat?.orderTypeSelect}</orderTypeSelect>"
+		boEbicsPartnerService += "     <orderFileFormatSelect>${bo.bankOrderFileFormat?.orderFileFormatSelect}</orderFileFormatSelect>"
+		boEbicsPartnerService += "     <description>${bo.bankOrderFileFormat?.description}</description>"
+		boEbicsPartnerService += "  </bankOrderFileFormat>"
+		boEbicsPartnerService += "  <ebicsCodification>${bo.ebicsCodification}</ebicsCodification>"
+		boEbicsPartnerService += "</boEbicsPartnerService>"
+	})
+
+	bsEbicsPartnerService = ""
+	u.ebicsPartner?.bsEbicsPartnerServiceList.each( {bs->
+	    bsEbicsPartnerService += "<bsEbicsPartnerService>"
+		bsEbicsPartnerService += "  <importId>${bs.importId}</importId>"
+		bsEbicsPartnerService += "  <bankStatementFileFormat>"
+		bsEbicsPartnerService += "     <name>${bs.bankStatementFileFormat?.name}</name>"
+		bsEbicsPartnerService += "     <statementFileFormatSelect>${bs.bankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>"
+		bsEbicsPartnerService += "     <description>${bs.bankStatementFileFormat?.description}</description>"
+		bsEbicsPartnerService += "  </bankStatementFileFormat>"
+		bsEbicsPartnerService += "  <ebicsCodification>${bs.ebicsCodification}</ebicsCodification>"
+		bsEbicsPartnerService += "</bsEbicsPartnerService>"
+	})
+	
 	receiverBankDetails = ""
 	u.ebicsPartner?.receiverBankDetailsSet.each( {b->
 	    receiverBankDetails += "<bankDetails>"
@@ -28,9 +55,9 @@
 		receiverBankDetails += "<fullName>${b.fullName}</fullName>"
 		receiverBankDetails += "<active>${b.active}</active>"
 		receiverBankDetails += "<bankAddress>"
-		receiverBankDetails += "<code>${b.bankAddress.code}</code>"
-		receiverBankDetails += "<address>${b.bankAddress.address}</address>"
-		receiverBankDetails += "<label>${b.bankAddress.label}</label>"
+		receiverBankDetails += "<code>${b.bankAddress?.code}</code>"
+		receiverBankDetails += "<address>${b.bankAddress?.address}</address>"
+		receiverBankDetails += "<label>${b.bankAddress?.label}</label>"
 		receiverBankDetails += "</bankAddress>"
 		receiverBankDetails += "</bankDetails>"
 	})
@@ -50,9 +77,9 @@
 		bankDetails += "<fullName>${b.fullName}</fullName>"
 		bankDetails += "<active>${b.active}</active>"
 		bankDetails += "<bankAddress>"
-		bankDetails += "<code>${b.bankAddress.code}</code>"
-		bankDetails += "<address>${b.bankAddress.address}</address>"
-		bankDetails += "<label>${b.bankAddress.label}</label>"
+		bankDetails += "<code>${b.bankAddress?.code}</code>"
+		bankDetails += "<address>${b.bankAddress?.address}</address>"
+		bankDetails += "<label>${b.bankAddress?.label}</label>"
 		bankDetails += "</bankAddress>"
 		bankDetails += "</bankDetails>"
 	})
@@ -83,6 +110,12 @@
 			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
 			<ebicsTypeSelect>${u.ebicsPartner?.ebicsTypeSelect}</ebicsTypeSelect>
 			<testMode>${u.ebicsPartner?.testMode}</testMode>
+			<boEbicsPartnerServiceList>
+				$boEbicsPartnerService
+			</boEbicsPartnerServiceList>
+			<bsEbicsPartnerServiceList>
+				$bsEbicsPartnerService
+			</bsEbicsPartnerServiceList>
 			<pSRBankStatementFileFormat>
 				<importId>${u.ebicsPartner?.pSRBankStatementFileFormat?.importId}</importId>
 				<statementFileFormatSelect>${u.ebicsPartner?.pSRBankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>
@@ -110,7 +143,10 @@
 				<language>${u.ebicsPartner?.ebicsBank?.language?.code}</language>
 				<protocolSelect>${u.ebicsPartner?.ebicsBank?.protocolSelect}</protocolSelect>
 				<certValidityPeriodSelect>${u.ebicsPartner?.ebicsBank?.certValidityPeriodSelect}</certValidityPeriodSelect>
-				<useX509ExtentionForAutoSignedCert>${u.ebicsPartner?.ebicsBank?.useX509ExtentionForAutoSignedCert}</useX509ExtentionForAutoSignedCert>
+				<useX509ExtensionBasicConstraints>${u.ebicsPartner?.ebicsBank?.useX509ExtensionBasicConstraints}</useX509ExtensionBasicConstraints>
+				<useX509ExtensionSubjectKeyIdentifier>${u.ebicsPartner?.ebicsBank?.useX509ExtensionSubjectKeyIdentifier}</useX509ExtensionSubjectKeyIdentifier>
+				<useX509ExtensionAuthorityKeyIdentifier>${u.ebicsPartner?.ebicsBank?.useX509ExtensionAuthorityKeyIdentifier}</useX509ExtensionAuthorityKeyIdentifier>
+				<useX509ExtensionExtendedKeyUsage>${u.ebicsPartner?.ebicsBank?.useX509ExtensionExtendedKeyUsage}</useX509ExtensionExtendedKeyUsage>
 				<bank>
 					<bankName>${u.ebicsPartner?.ebicsBank?.bank.bankName}</bankName>
 					<code>${u.ebicsPartner?.ebicsBank?.bank.code}</code>

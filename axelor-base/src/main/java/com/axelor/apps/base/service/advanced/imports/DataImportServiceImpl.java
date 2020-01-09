@@ -213,6 +213,7 @@ public class DataImportServiceImpl implements DataImportService {
       inputList.add(csvInput);
       importContext.put("ifConditions" + fileTab.getId(), ifList);
       importContext.put("jsonContextValues" + fileTab.getId(), createJsonContext(fileTab));
+      importContext.put("actionsToApply" + fileTab.getId(), fileTab.getActions());
     }
     return inputList;
   }

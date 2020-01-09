@@ -55,12 +55,14 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -171,8 +173,43 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    invoice.setNote(saleOrder.getInvoiceComments());
-    invoice.setProformaComments(saleOrder.getProformaComments());
+    if (ObjectUtils.isEmpty(invoice.getNote())) {
+      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setNote(
+            saleOrder.getInvoiceComments()
+                + "\n"
+                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      } else if (Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setNote(saleOrder.getInvoiceComments());
+      } else if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setNote(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      }
+    }
+    
+    if (ObjectUtils.isEmpty(invoice.getProformaComments())) {
+        if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+            && invoice.getCompanyBankDetails() != null
+            && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+          invoice.setProformaComments(
+              saleOrder.getProformaComments()
+                  + "\n"
+                  + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+        } else if (Strings.isNullOrEmpty(saleOrder.getProformaComments())
+            && invoice.getCompanyBankDetails() != null
+            && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+          invoice.setProformaComments(saleOrder.getProformaComments());
+        } else if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+            && invoice.getCompanyBankDetails() != null
+            && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+          invoice.setProformaComments(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+        }
+      }
 
     // fill default advance payment invoice
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {

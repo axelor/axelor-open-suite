@@ -21,7 +21,6 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
-import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.exception.AxelorException;
@@ -68,6 +67,8 @@ public class PayrollPreparationController {
     response.setValue("employeeBonusMgtLineList", payrollPreparation.getEmployeeBonusMgtLineList());
     response.setValue("lunchVoucherNumber", payrollPreparation.getLunchVoucherNumber());
     response.setValue("lunchVoucherMgtLineList", payrollPreparation.getLunchVoucherMgtLineList());
+    response.setValue("employeeBonusAmount", payrollPreparation.getEmployeeBonusAmount());
+    response.setValue("extraHoursNumber", payrollPreparation.getExtraHoursNumber());
   }
 
   public void fillInPayrollPreparationLeaves(ActionRequest request, ActionResponse response)
@@ -89,12 +90,9 @@ public class PayrollPreparationController {
         Beans.get(PayrollPreparationRepository.class)
             .find(request.getContext().asType(PayrollPreparation.class).getId());
 
-    if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD) {
-      response.setExportFile(
-          payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation));
-    } else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_NIBELIS) {
-      response.setExportFile(
-          payrollPreparationService.exportNibelisPayrollPreparation(payrollPreparation));
+    String file = payrollPreparationService.exportPayrollPreparation(payrollPreparation);
+    if (file != null) {
+      response.setExportFile(file);
     }
     payrollPreparationService.closePayPeriodIfExported(payrollPreparation);
 
