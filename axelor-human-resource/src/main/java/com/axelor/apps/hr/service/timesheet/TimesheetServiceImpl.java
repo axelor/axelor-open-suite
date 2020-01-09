@@ -1103,7 +1103,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       } else if (appTimesheet.getCreateLinesForLeaves()) {
         LeaveRequest leave = leaveService.getLeave(user, date);
         if (leave != null) {
-          BigDecimal hours = leaveService.computeDuration(leave);
+          BigDecimal hours = leaveService.computeDuration(leave, date, date);
           if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
               == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             hours = hours.multiply(dayValueInHours);
