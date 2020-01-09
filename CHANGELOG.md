@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased 5.2.3]
+## Improvements
+## Bug Fixes
+
 ## [5.2.2] - 2020-01-09
 ## Features
 - TOOLS: added utility class for interacting with SFTP.
@@ -329,6 +333,7 @@
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[Unreleased 5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...dev
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
