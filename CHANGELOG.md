@@ -16,6 +16,7 @@
 - EBICS USER : Serial number.
 - EmployeeFile : Added new date field - recordDate
 - Budget : Addition of new value for periodDurationSelect.
+- SALE ORDER/PURCHASE ORDER : add button "Back to confirmed order" and "Back to validated order" respectively
 
 ## Improvements
 - Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
