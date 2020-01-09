@@ -65,6 +65,7 @@
 - INVOICE : corrected the generation of comment with null display.
 - Purchase Order : Fix NPE when company is null
 - SALE ORDER LINE : Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
+- Stock Move mass invoicing: improve performance when selecting stock moves in wizard.
 
 ## [5.2.1] - 2019-12-16
 ## Features
