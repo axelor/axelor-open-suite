@@ -1,5 +1,73 @@
 # Changelog
 
+## [5.2.2] - 2020-01-09
+## Features
+- TOOLS: added utility class for interacting with SFTP.
+- PAYROLL PREPARATION: add new Payroll Preparation Export type "SILAE".
+- Advance data import: Add action apply support.
+
+## Improvements
+- COMPANY: mass update enabled for some fields.
+- BANKDETAILS: mass update enabled for currency and active field.
+- PRODUCT: added tracking on code and name fields.
+- EBICS USER : Group and sort by bank and partner in grid view.
+- INVOICE: Display PFP validator and status in invoice supplier refund grid.
+- EBICSBANK: Set tracking for all fields on update.
+- METASCHEDULE : added batchServiceSelect option for Contract Batch.
+- INVOICING PROJECT: provide menu for invoicing project grid for mass invoicing.
+- EBICS USER: Add field serial number (CORP).
+- EmployeeFile: Add new date field to store the date of latest upload.
+- SALE ORDER/PURCHASE ORDER: add button "Back to confirmed order" and "Back to validated order" respectively.
+- Budget: Addition of new value for periodDurationSelect.
+- Stock move invoicing: when generating an invoice, the user can now only select quantity not present in generated invoices.
+- SALE ORDER: change title "Description to display" of field 'description'.
+- ACCOUNTING REPORT: display popup message on click of 'exportBtn'.
+- INVOICING PROJECT: added field "teamTask" in timesheet line form related to project.
+- FIXES ASSET: add analytic distribution template.
+- FIXES ASSET CATEGORY: add analytic distribution template.
+- STOCK CORRECTION: Change status to draft on copy.
+- EBICS BANK: now X509 Extensions for auto signed certification are managed independently.
+- STOCK CORRECTION: change error message on validate.
+- EBICS USER: replacing Listener object with ImporterListener for EbicsUser Import.
+- STOCK MOVE: Add default supplier partner in mrp line grid.
+- STOCK MOVE: Maximized pop up of projected stock and counter.
+- STOCK MOVE: store invoicing status in database.
+
+## Bug Fixes
+- Ebics User: resolve error getting on export and modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
+- BankOrder: Fix NPE on click of confirm for International transfer.
+- BATCH: empty link to batch on copy for BankPaymentBatch and ContractBatch.
+- Invoice Payment: resolve invoice amount due update when the generate accounting move option is not active.
+- BANK ORDER: corrected the possibility to generate the same move twice.
+- BANK ORDER: corrected the behavior of bank order, now bank order moves can be generated on validation or realization.
+- BUSINESS PROJECT: fix negative refund in financial report.
+- INVOICE: now comment on invoices is made from the concatenation of comment from partner and comment from company bank details.
+- SALE ORDER: now on invoice generation from sale order action the generated invoices have their comment made from the concatenation of comment from partner and comment from company bank details.
+- Mass invoicing stock move: fix generate one invoice from multiple stock moves.
+- SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
+- USER: fix NPE on user creation when active team is null.
+- Purchase Order: Fix NPE on copy of purchaseOrder when it has an empty purchaseOrderLineList.
+- Contract: correct the translation of 'Fiscal positon'.
+- MRP: Do not show mrp lines from other MRPs when not displaying products without proposals.
+- LEAVE REQUEST: No longer displays an error message when saving a leave request.
+- EBICSUSER EXPORT: Fix for "Cannot get property 'code' on null object" error.
+- Bank Payment: fix translation.
+- OPPORTUNITY: On copy, clear sale order list.
+- Fixed Asset: Fix issue of infinite value of depreciation rate.
+- Campaign: Fix campaign form view.
+- Purchase order: remove M2O invoice field.
+- STOCKMOVE: display qty per tracking number and not total available qty for tracking number.
+- HR: Fix typo.
+- INVOICING PROJECT: Filter the records including deadlineDate.
+- MRP calculation: fix NPE on calculation.
+- MOVE LINE: Bank reconciliation amount is now read-only.
+- MRP forecast: Reset status on copy.
+- INVOICE: corrected the generation of comment with null display.
+- Purchase Order: Fix NPE when company is null.
+- SALE ORDER LINE: Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
+- Stock Move mass invoicing: improve performance when selecting stock moves in wizard.
+- Cut-off batch: filter already invoiced stock move to improve batch performance.
+
 ## [5.2.1] - 2019-12-16
 ## Features
 - ACCOUNTING REPORT: add new report, bank reconciliation statement.
@@ -261,5 +329,6 @@
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
