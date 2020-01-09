@@ -181,9 +181,5 @@
       <attribute name="readonly" for="typeSelect" expr="true"/>
       <attribute name="readonly" for="company" expr="true"/>
     </action-attrs>
-    
-    <action-record name="action-supplychain-stock-move-record-set-invoice-status" model="com.axelor.apps.stock.db.StockMove">
-    	<field name="$invoiceStatus" expr="call: com.axelor.apps.supplychain.service.StockMoveInvoiceService:getStockMoveInvoiceStatus(__self__)"/>
-    </action-record>
 
 </object-views>

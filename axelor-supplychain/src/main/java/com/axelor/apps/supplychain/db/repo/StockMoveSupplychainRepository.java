@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import java.math.BigDecimal;
 
 public class StockMoveSupplychainRepository extends StockMoveManagementRepository {
@@ -38,6 +39,7 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
       }
     }
     copy.setReservationDateTime(null);
+    copy.setInvoicingStatusSelect(StockMoveRepository.STATUS_NOT_INVOICED);
 
     return copy;
   }

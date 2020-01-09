@@ -31,6 +31,7 @@
 - EBICS USER : replacing Listener object with ImporterListener for EbicsUser Import.
 - STOCK MOVE : Add default supplier partner in mrp line grid
 - STOCK MOVE: Maximized pop up of projected stock and counter
+- STOCK MOVE: store invoicing status in database.
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
