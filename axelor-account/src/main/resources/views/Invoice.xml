@@ -940,7 +940,7 @@ InvoiceSet.length > 0))"
 
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
 		<field name="inAti" expr="eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
-										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4" if="company"/>
 	</action-record>
 
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
@@ -1026,7 +1026,7 @@ InvoiceSet.length > 0))"
 	</action-record>
 
 	<action-record name="action-invoice-record-set-dummy-field-language" model="com.axelor.apps.account.db.Invoice">
-		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language"/>
+		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language" if="company"/>
 	</action-record>
 
     <!-- ACTION ATTRS -->

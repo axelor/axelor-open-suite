@@ -453,12 +453,12 @@
 
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="inAti" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
-    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
+    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4" if="company"/>
     </action-record>
 
     <action-record name="action-purchase-order-dispaly-price" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest"/>
-    	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
+    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest" if="company"/>
+    	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest" if="company"/>
     </action-record>
 
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
