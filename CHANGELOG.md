@@ -6,6 +6,8 @@
 
 ## Bug Fixes
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
+- EBICS USER : fix for strange import - log
+- LEAVE REQUEST: Updated calendar filter
 
 ## [5.0.11] - 2019-12-19
 ## Improvements

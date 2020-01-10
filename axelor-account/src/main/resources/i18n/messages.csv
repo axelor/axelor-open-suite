@@ -884,6 +884,7 @@
 "Invoice.expenseTaxAmount",,,
 "Invoice.expenseTitle",,,
 "Invoice.expenseTotalAmount",,,
+"Invoice.headOfficeAddress",,,
 "Invoice.imputedOn",,,
 "Invoice.invoiceAdvPaymentNo",,,
 "Invoice.invoiceBalanceNo",,,
