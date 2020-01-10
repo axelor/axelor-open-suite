@@ -2,6 +2,7 @@
 
 ## [Unreleased 5.2.3]
 ## Improvements
+- BANKSTATEMENT : import multiple records in a single line.
 - Stock move line : now displays an (untaxed) valuated unit price in company currency.
 
 ## Bug Fixes
