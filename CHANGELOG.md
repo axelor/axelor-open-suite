@@ -4,6 +4,7 @@
 ## Improvements
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
+- BUSINESS PROJECT : resolve 'column reference "month" is ambiguous' error in Financial Report.
 
 ## [5.2.2] - 2020-01-09
 ## Features

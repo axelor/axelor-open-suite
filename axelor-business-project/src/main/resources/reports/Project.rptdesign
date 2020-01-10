@@ -2264,7 +2264,7 @@ left join project_project project on (project.id = SOL.project)
 left join project_project parent_project on (parent_project.id = project.parent_project)
 where (SO.status_select = 3 or SO.status_select = 4) 
 and (project.id = ? or (project.parent_project = ? and parent_project.is_show_phases_elements = true ))
-group by month
+group by to_char(SO.order_date,'YYYY-MM')
 union
 select to_char(task.task_end_date,'YYYY-MM') as month, 0 as costs, 
 case
