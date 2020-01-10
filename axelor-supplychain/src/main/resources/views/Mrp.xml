@@ -92,7 +92,7 @@
 		<domain>
 			(self.mrp.displayProductWithoutProposal = true AND self.mrp.id = :_mrpId)
 				OR
-			(self.mrp.displayProductWithoutProposal = false AND self.product.id IN (select m.product from MrpLine as m where m.mrp.id = :_mrpId AND m.mrpLineType.elementSelect in (:_proposalElementSelect)))
+			(self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.product.id IN (select m.product from MrpLine as m where m.mrp.id = :_mrpId AND m.mrpLineType.elementSelect in (:_proposalElementSelect)))
 		</domain>
 		<context name="_mrpId" expr="eval: __this__.id"/>
 		<context name="_proposalElementSelect" expr="eval: [__repo__(MrpLineType).ELEMENT_PURCHASE_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL,__repo__(MrpLineType).ELEMENT_MANUFACTURING_PROPOSAL_NEED]"/>

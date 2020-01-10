@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -270,13 +270,13 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return line;
   }
 
-  public List<Map<String, Object>> getTimesheetReportList(String TimesheetReportId) {
+  public List<Map<String, Object>> getTimesheetReportList(String timesheetReportId) {
 
     List<Map<String, Object>> list = new ArrayList<>();
     WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 5);
 
     TimesheetReport timesheetReport =
-        timesheetReportRepository.find(Long.parseLong(TimesheetReportId.toString()));
+        timesheetReportRepository.find(Long.parseLong(timesheetReportId.toString()));
     int numOfDays = timesheetReport.getFromDate().until(timesheetReport.getToDate()).getDays();
     List<LocalDate> daysRange =
         Stream.iterate(timesheetReport.getFromDate(), date -> date.plusDays(1))
@@ -288,30 +288,35 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     for (User user : users) {
       Employee employee = user.getEmployee();
       BigDecimal dailyWorkingHours = employee.getDailyWorkHours();
-      WeeklyPlanning planning = employee.getWeeklyPlanning();
+      WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
 
       Integer weekNumber = 1;
-      int lastDayNumber = -1;
+      int lastDayIndex = -1;
+      int daysInWeek = 0;
       try {
         for (LocalDate date : daysRange) {
-          DayPlanning dayPlanning =
-              Beans.get(WeeklyPlanningService.class).findDayPlanning(planning, date);
+          DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
           if (dayPlanning == null) {
             continue;
           }
-
           int dayIndex = date.get(weekFields.dayOfWeek()) - 1;
-          if (lastDayNumber < dayIndex) {
-            lastDayNumber = dayIndex;
+          if (lastDayIndex < dayIndex) {
+            lastDayIndex = dayIndex;
+            if (weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date) != 0) {
+              daysInWeek++;
+            }
           } else {
-            lastDayNumber = -1;
+            lastDayIndex = -1;
+            daysInWeek = 1;
             weekNumber++;
           }
           BigDecimal weeklyWorkHours =
-              employee
-                  .getWeeklyWorkHours()
-                  .multiply(BigDecimal.valueOf((dayIndex) / 6.0))
-                  .setScale(2, RoundingMode.HALF_EVEN);
+              daysInWeek <= 5
+                  ? employee
+                      .getWeeklyWorkHours()
+                      .multiply(BigDecimal.valueOf(daysInWeek / 5.00))
+                      .setScale(2, RoundingMode.HALF_EVEN)
+                  : employee.getWeeklyWorkHours();
           Map<String, Object> map = getTimesheetMap(user, date, dailyWorkingHours);
           map.put("weeklyWorkHours", weeklyWorkHours);
           map.put("weekNumber", weekNumber.toString());
@@ -321,7 +326,6 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
         System.out.println(e);
       }
     }
-
     return list;
   }
 
@@ -355,7 +359,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     BigDecimal worksHour =
         employeeService
             .getDaysWorksInPeriod(employee, date, date)
-            .multiply(employee.getDailyWorkHours());
+            .multiply(employee.getDailyWorkHours())
+            .setScale(2, RoundingMode.HALF_EVEN);
     if (isPublicHoliday) {
       worksHour = worksHour.add(dailyWorkingHours);
     }
@@ -372,7 +377,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .mapToDouble(ehl -> Double.parseDouble(ehl.getQty().toString()))
             .sum();
     worksHour = worksHour.add(new BigDecimal(extraHours));
-    return worksHour;
+    return worksHour.setScale(2, RoundingMode.HALF_EVEN);
   }
 
   private BigDecimal getTotalWeekWorksHours(
@@ -382,7 +387,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     BigDecimal worksHour =
         employeeService
             .getDaysWorksInPeriod(employee, fromDate, toDate)
-            .multiply(employee.getDailyWorkHours());
+            .multiply(employee.getDailyWorkHours())
+            .setScale(2, RoundingMode.HALF_EVEN);
     worksHour = worksHour.add(publicHolidays.multiply(employee.getDailyWorkHours()));
     double extraHours =
         extraHoursLineRepository
@@ -398,7 +404,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .mapToDouble(ehl -> Double.parseDouble(ehl.getQty().toString()))
             .sum();
     worksHour = worksHour.add(new BigDecimal(extraHours));
-    return worksHour;
+    return worksHour.setScale(2, RoundingMode.HALF_EVEN);
   }
 
   private BigDecimal getTotalWorkedHours(
@@ -418,7 +424,10 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .fetch();
 
     Duration totalDuration = timesheetLineService.computeTotalDuration(timesheetLineList);
-    totalHours = new BigDecimal(totalDuration.getSeconds()).divide(BigDecimal.valueOf(3600));
+    totalHours =
+        new BigDecimal(totalDuration.getSeconds())
+            .divide(BigDecimal.valueOf(3600))
+            .setScale(2, RoundingMode.HALF_EVEN);
 
     if (isPublicHoliday) {
       totalHours = totalHours.add(dailyWorkingHours);
@@ -426,7 +435,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       totalHours = totalHours.add(getLeaveHours(user, date, dailyWorkingHours));
     }
 
-    return totalHours;
+    return totalHours.setScale(2, RoundingMode.HALF_EVEN);
   }
 
   private BigDecimal getTotalWeekWorkedHours(
@@ -448,12 +457,15 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
             .fetch();
 
     Duration totalDuration = timesheetLineService.computeTotalDuration(timesheetLineList);
-    totalHours = new BigDecimal(totalDuration.toHours());
+    totalHours =
+        new BigDecimal(totalDuration.getSeconds())
+            .divide(BigDecimal.valueOf(3600))
+            .setScale(2, RoundingMode.HALF_EVEN);
     totalHours = totalHours.add(publicHolidays.multiply(employee.getDailyWorkHours()));
     totalHours =
         totalHours.add(getWeekLeaveHours(user, fromDate, toDate, employee.getDailyWorkHours()));
 
-    return totalHours;
+    return totalHours.setScale(2, RoundingMode.HALF_EVEN);
   }
 
   private BigDecimal getLeaveHours(User user, LocalDate date, BigDecimal dailyWorkingHours)

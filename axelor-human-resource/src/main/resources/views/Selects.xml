@@ -148,6 +148,7 @@
 	<selection name="hr.batch.payroll.preparation.export.type.select">
 		<option value="1">Standard</option>
 		<option value="2">Nibelis</option>
+		<option value="3">Silae</option>
 	</selection>
 	
 	<selection name="hr.employee.marital.status">

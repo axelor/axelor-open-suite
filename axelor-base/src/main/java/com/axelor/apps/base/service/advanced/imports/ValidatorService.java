@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -84,6 +84,8 @@ public class ValidatorService {
 
   @Inject private FileTabRepository fileTabRepo;
 
+  @Inject private ActionService actionService;
+
   @Inject private DataReaderFactory dataReaderFactory;
 
   @Inject private LogService logService;
@@ -161,6 +163,7 @@ public class ValidatorService {
       this.validateSearchFields(fileTab);
       this.validateObjectRequiredFields(fileTab);
       this.validateFieldAndData(reader, sheet, fileTab, isConfig, isTabConfig, tabConfigRowCount);
+      this.validateActions(fileTab);
 
       if (fileTab.getValidationLog() != null) {
         fileTab.setValidationLog(null);
@@ -719,6 +722,19 @@ public class ValidatorService {
         logService.addLog(
             IExceptionMessage.ADVANCED_IMPORT_LOG_9, getField(fileField) + "(" + type + ")", line);
       }
+    }
+  }
+
+  private void validateActions(FileTab fileTab) {
+    String actions = fileTab.getActions();
+    if (StringUtils.isBlank(actions)) {
+      return;
+    }
+    if (!actionService.validate(actions)) {
+      logService.addLog(
+          LogService.COMMON_KEY,
+          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getMetaModel().getName()),
+          1);
     }
   }
 

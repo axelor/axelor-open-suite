@@ -53,5 +53,10 @@
 	<selection name="account.analytic.move.line.type.select" id="contract.account.analytic.move.line.type.select">
 		<option value="4">Forecast (contract)</option>
 	</selection>
+	
+	<selection name="meta.schedule.batch.service.select" id="contract.meta.schedule.batch.service.select">
+		<option value="com.axelor.apps.contract.batch.service.BatchContractService">com.axelor.apps.contract.batch.service.BatchContractService</option>
+	</selection>
+	
 
 </object-views>

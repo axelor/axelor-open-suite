@@ -41,7 +41,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">17</value>
+                <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -523,6 +523,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <text-property name="displayName">amount_remaining</text-property>
                     <text-property name="heading">amount_remaining</text-property>
                 </structure>
+                 <structure>
+		    <property name="columnName">invoice_comments</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">invoice_comments</text-property>
+                    <text-property name="heading">invoice_comments</text-property>
+                </structure>
                 <structure>
                     <property name="columnName">proforma_comments</property>
                     <property name="alias">proforma_comments</property>
@@ -803,6 +809,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                         <property name="name">displayHeadOfficeAddress</property>
                         <property name="dataType">integer</property>
                     </structure>
+		    <structure>
+			<property name="position">50</property>
+                        <property name="name">invoice_comments</property>
+			<property name="dataType">string</property>
+		    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1150,6 +1161,13 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+		<structure>
+		    <property name="position">50</property>
+                    <property name="name">invoice_comments</property>
+                    <property name="nativeName">invoice_comments</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+		</structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
 	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path, 
@@ -1198,6 +1216,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 	Invoice.subscription_to_date,
 	Invoice.amount_remaining,
 	Invoice.proforma_comments,
+	Partner.invoice_comments,
 	Invoice.head_office_address,
 	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress"
 from account_invoice as Invoice 
@@ -1344,12 +1363,14 @@ where Invoice.id = ?]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">message_key</property>
+                    <property name="alias">message_key</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">message_key</text-property>
                     <text-property name="heading">message_key</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">translation</property>
+                    <property name="alias">translation</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">translation</text-property>
                     <text-property name="heading">translation</text-property>
@@ -1397,14 +1418,12 @@ where Invoice.id = ?]]></xml-property>
                     <property name="name">message_key</property>
                     <property name="nativeName">message_key</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">translation</property>
                     <property name="nativeName">translation</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
@@ -4043,6 +4062,44 @@ else {
                                 </text>
                             </cell>
                         </row>
+                        <row id="5610">
+                            <cell id="5611">
+                                <text id="5612">
+                                    <property name="marginLeft">2pt</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row._outer["displayHeadOfficeAddress"] != true || row._outer["head_office_address"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Invoice.headOfficeAddress'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["head_office_address"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
                     </grid>
                 </cell>
                 <cell id="3373"/>
@@ -4103,18 +4160,6 @@ row["partnerFirstName"]
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["address_str"].replace(/\n/g, "<br>")</VALUE-OF>]]></text-property>
-                    </text>
-                    <text id="5609">
-                        <property name="fontSize">11pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["displayHeadOfficeAddress"] != true</expression>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["head_office_address"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4468">
@@ -5749,6 +5794,12 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                     <property name="name">proforma_comments</property>
                     <text-property name="displayName">proforma_comments</text-property>
                     <expression name="expression" type="javascript">dataSetRow["proforma_comments"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+		<structure>
+		   <property name="name">invoice_comments</property>
+                    <text-property name="displayName">invoice_comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["invoice_comments"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -7527,7 +7578,8 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">(row._outer["note"] == null || row._outer["note"] == "" || (row._outer["note"] != null &amp;&amp; params["ReportType"].value == 1)) &amp;&amp;
+                                                <expression name="valueExpr" type="javascript">(row._outer["note"] == null || row._outer["note"] == "") &amp;&amp;
+(row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "" || (row._outer["invoice_comments"] != null &amp;&amp; params["ReportType"].value == 1)) &amp;&amp;
 (row._outer["proforma_comments"] == null || row._outer["proforma_comments"] == "" || (row._outer["proforma_comments"] != null &amp;&amp; params["ReportType"].value != 1))</expression>
                                             </structure>
                                         </list-property>
@@ -7574,9 +7626,12 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                                         <property name="fontStyle">normal</property>
                                         <property name="pageBreakAfter">avoid</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(params["ReportType"].value != 1) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>";</VALUE-OF>
-<VALUE-OF format="HTML">
-     if(params["ReportType"].value == 1) row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
+if(params["ReportType"].value == 1) 
+	row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+else
+	if(row["note"] != null ) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>";
+	else row["invoice_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
@@ -7916,6 +7971,12 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                     <property name="name">proforma_comments</property>
                     <text-property name="displayName">proforma_comments</text-property>
                     <expression name="expression" type="javascript">dataSetRow["proforma_comments"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+		<structure>
+                    <property name="name">invoice_comments</property>
+                    <text-property name="displayName">invoice_comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["invoice_comments"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
