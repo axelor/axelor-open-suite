@@ -92,7 +92,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       // End date, useful only for consolidation
       tabInformations[3] = timesheetLine.getDate();
       tabInformations[4] =
-          timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+          timesheetLine.getDurationForCustomer() != null
               ? this.computeDurationForCustomer(timesheetLine)
               : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
@@ -118,7 +118,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
           tabInformations[4] =
               ((BigDecimal) tabInformations[4])
                   .add(
-                      timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+                      timesheetLine.getDurationForCustomer() != null
                           ? this.computeDurationForCustomer(timesheetLine)
                           : timesheetLine.getHoursDuration());
         } else {
