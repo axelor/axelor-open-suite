@@ -876,7 +876,10 @@ public class MrpServiceImpl implements MrpService {
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE),
-        I18n.get(MetaStore.getSelectionItem("supplychain.mrp.line.element.select",Integer.toString(elementSelect)).getTitle()));
+        I18n.get(
+            MetaStore.getSelectionItem(
+                    "supplychain.mrp.line.element.select", Integer.toString(elementSelect))
+                .getTitle()));
   }
 
   protected StockLocationLine getStockLocationLine(Product product, StockLocation stockLocation) {
