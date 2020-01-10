@@ -40,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -47,6 +48,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -271,14 +273,16 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       switch (teamTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
           teamTask.setToInvoice(
-              appBusinessProject.getPreTaskStatusSet() != null
-                  && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
+              !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPreTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
           teamTask.setToInvoice(
-              appBusinessProject.getPostTaskStatusSet() != null
-                  && appBusinessProject.getPostTaskStatusSet().contains(teamTask.getStatus()));
+              !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPostTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
           break;
       }
     } else {
