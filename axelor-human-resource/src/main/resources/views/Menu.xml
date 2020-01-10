@@ -171,7 +171,7 @@
 	</action-method>
 
 	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
-		title="Leaves calendar" action="action-leave-request-method-leave-calendar" />
+		title="Leaves calendar" action="action.leave.request.method.leave.calendar" />
 
 	<action-method name="action.leave.request.method.leave.calendar">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveCalendar"/>
