@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.2.3]
 ## Improvements
+- BANKSTATEMENT : import multiple records in a single line.
+
 ## Bug Fixes
 
 ## [5.2.2] - 2020-01-09
