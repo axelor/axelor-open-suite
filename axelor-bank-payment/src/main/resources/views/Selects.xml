@@ -237,5 +237,9 @@
 		<option value="1">Automatic</option>
 		<option value="2">Import</option>
 	</selection>
+	
+	<selection name='accounting.report.type.select' id="bank.paymennt.accounting.report.type.select">
+		<option order="3000" value="3000">Bank reconciliation statement</option>
+	</selection>
 
 </object-views>

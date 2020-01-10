@@ -61,8 +61,8 @@
   	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>
   	<decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
   	<decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
-	<integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
-	
+	<integer name="typeSelect" title="Type" selection="line.type.select"/>
+
 	<boolean name="isShowTotal" title="Show Total"/>
 	<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
 	

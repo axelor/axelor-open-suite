@@ -491,7 +491,7 @@
 		title="Users/Companies" order="25" />
 
 	<menuitem name="admin-root-user-user" parent="admin-root-user"
-		title="Users" action="action-auth-users" />
+		title="Users" action="action-auth-users" order="1"/>
 
 	<action-view id="base-action-auth-users" name="action-auth-users" title="Users" model="com.axelor.auth.db.User">
 		<view type="grid" name="user-grid" />
@@ -501,7 +501,14 @@
 	</action-view>
 
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
-		title="Companies" action="admin.root.base.company" />
+		title="Companies" action="admin.root.base.company" order="2"/>
+		
+    <menuitem title="Company tree" name="admin-root-user-company-tree"
+        parent="admin-root-user" action="action-company-view-tree" order="3"/>
+        
+    <action-view name="action-company-view-tree" title="Company tree">
+        <view type="tree" name="company-tree"/>
+    </action-view>
 
 	<action-view name="admin.root.base.company" title="Companies"
 		model="com.axelor.apps.base.db.Company" >
@@ -512,7 +519,7 @@
 	</action-view>
 
 	<menuitem name="admin-root-user-configuration" parent="admin-root-user"
-		title="Configuration" icon="fa-cog"/>
+		title="Configuration" icon="fa-cog" order="4"/>
 
 	<menuitem name="company-department-all" parent="admin-root-user-configuration"
     	title="Departments"

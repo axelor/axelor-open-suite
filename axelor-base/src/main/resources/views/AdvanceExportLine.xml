@@ -8,7 +8,6 @@
    		<field name="title"/>
    		<field name="targetField"/>
         <field name="orderBy"/>
-        <field name="orderByType" hideIf="!orderBy"/>
   	</grid>
   
   	<form name="advanced-export-line-form" title="Advanced export line" model="com.axelor.apps.base.db.AdvancedExportLine" onNew="action-advanced-export-line-record-set-current-domain"

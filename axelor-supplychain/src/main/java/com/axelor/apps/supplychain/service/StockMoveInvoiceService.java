@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
@@ -63,6 +62,21 @@ public interface StockMoveInvoiceService {
 
   public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove);
 
-  @CallMethod
-  public int getStockMoveInvoiceStatus(StockMove stockMove);
+  /**
+   * Compute quantity in stock move line that is not invoiced (e.g. has no invoice line or a
+   * canceled invoice line). It is not the same as {@link StockMoveLine#qtyInvoiced} that takes only
+   * ventilated qty.
+   *
+   * @param stockMoveLine a stock move line
+   * @return the invoiced quantity
+   */
+  BigDecimal getNonCanceledInvoiceQty(StockMoveLine stockMoveLine);
+
+  /**
+   * Compute invoicing status select field in a stock move from the field {@link
+   * StockMoveLine#qtyInvoiced} in stock move lines and set it in the stock move.
+   *
+   * @param stockMove a stock move
+   */
+  void computeStockMoveInvoicingStatus(StockMove stockMove);
 }

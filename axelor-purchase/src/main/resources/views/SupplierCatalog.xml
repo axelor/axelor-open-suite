@@ -71,7 +71,7 @@
 		<attribute name="hidden" for="shippingCoefList"
 				   expr="eval: __parent__ &amp;&amp; !__parent__.defShipCoefByPartner" if="eval: __parent__._model == 'com.axelor.apps.base.db.Product'"/>
 		<attribute name="hidden" for="shippingCoefList"
-				   expr="eval: product &amp;&amp; !product.defShipCoefByPartner" if="eval __parent__._model != 'com.axelor.apps.base.db.Product'"/>
+				   expr="eval: product &amp;&amp; !product.defShipCoefByPartner" if="eval: __parent__._model != 'com.axelor.apps.base.db.Product'"/>
 	</action-attrs>
         
 </object-views>

@@ -691,7 +691,7 @@
 	
 	<chart onInit="action.crm.chart.default.month.value.6m" name="chart.created.leads.per.month" title="Created leads per month">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="base.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">  
 	  SELECT

@@ -211,11 +211,7 @@
 		<option value="2">BBAN</option>
 	</selection>
 
-	<!-- TODO: move this selection to account module and create a copy here
-		 (ie. base.year.period.duration.select) That time also rename references
-		 of this selection in Charts.xml of CRM, Purchase, Stock modules.
-	 -->	
-	<selection name="account.year.period.duration.select">
+	<selection name="base.year.period.duration.select">
 		<option value="1">1 Month</option>
 		<option value="2">2 Months</option>
 		<option value="3">3 Months</option>
@@ -474,7 +470,7 @@
 		<option value="3">New</option>
 		<option value="4">Ignore/Empty</option>
   	</selection>
-	
+  
 	<selection name="file.field.for.select.use.select">
 		<option value="0">Titles</option>
 		<option value="1">Values</option>
@@ -495,5 +491,10 @@
 		<option value="asc">Ascending</option>
 		<option value="desc">Descending</option>
 	</selection>	
+
+    <selection name="line.type.select">
+        <option value="0">Standard</option>
+        <option value="1">Title</option>
+    </selection>
 
 </object-views>

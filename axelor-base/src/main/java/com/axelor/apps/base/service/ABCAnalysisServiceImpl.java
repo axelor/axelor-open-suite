@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -218,7 +218,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
         abcAnalysisLine -> {
           abcAnalysisLine = abcAnalysisLineRepository.find(abcAnalysisLine.getId());
           if (abcAnalysisLine.getDecimalWorth().compareTo(BigDecimal.ZERO) == 0
-              || abcAnalysisLine.getDecimalQty().compareTo(BigDecimal.ZERO) == 0) {
+              && abcAnalysisLine.getDecimalQty().compareTo(BigDecimal.ZERO) == 0) {
             abcAnalysisLineRepository.remove(
                 abcAnalysisLineRepository.find(abcAnalysisLine.getId()));
           }
@@ -273,16 +273,23 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   private void computePercentage(ABCAnalysisLine abcAnalysisLine) {
-    BigDecimal qty =
-        abcAnalysisLine
-            .getDecimalQty()
-            .multiply(BigDecimal.valueOf(100))
-            .divide(totalQty, 3, RoundingMode.HALF_EVEN);
-    BigDecimal worth =
-        abcAnalysisLine
-            .getDecimalWorth()
-            .multiply(BigDecimal.valueOf(100))
-            .divide(totalWorth, 3, RoundingMode.HALF_EVEN);
+    BigDecimal qty = BigDecimal.ZERO;
+    if (totalQty.compareTo(BigDecimal.ZERO) > 0) {
+      qty =
+          abcAnalysisLine
+              .getDecimalQty()
+              .multiply(BigDecimal.valueOf(100))
+              .divide(totalQty, 3, RoundingMode.HALF_EVEN);
+    }
+
+    BigDecimal worth = BigDecimal.ZERO;
+    if (totalWorth.compareTo(BigDecimal.ZERO) > 0) {
+      worth =
+          abcAnalysisLine
+              .getDecimalWorth()
+              .multiply(BigDecimal.valueOf(100))
+              .divide(totalWorth, 3, RoundingMode.HALF_EVEN);
+    }
 
     incCumulatedQty(qty);
     incCumulatedWorth(worth);

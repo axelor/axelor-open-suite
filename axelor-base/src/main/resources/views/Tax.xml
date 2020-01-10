@@ -6,6 +6,7 @@
     <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code">
         <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
         <field name="name"/>
+        <field name="typeSelect" if-module="axelor-account" if="__config__.app.isApp('account')"/>
     </grid>
     
 	<form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large">

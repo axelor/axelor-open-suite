@@ -305,7 +305,7 @@
 	      <panel-related name="detailLinesPanel" canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" 
                      canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
                      title="Details Lines" readonlyIf="clientPartner == null" colSpan="12" field="saleOrderLineList" form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence" onChange="action-sale-order-line-change-group" canMove="true" height="30"/>
-	      <panel name="descriptionPanel" title="Description to display" colSpan="12">
+	      <panel name="descriptionPanel" title="Comment to display" colSpan="12">
 	        <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 	      </panel>
 	    </panel>
@@ -400,6 +400,7 @@
 	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrderBtn" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
 	    <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
+	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder" name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="action-sale-order-attrs-set-status-to-confirmed,save"/>
 	    <field name="message" hidden="true" type="string"/>
 	    <field name="amountInvoiced" hidden="true"/>
 	    <button if="__config__.app.getApp('sale').getEnableConfigurator()" name="addLineFromConfiguratorBtn" title="Add Line from Configurator" showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
@@ -1012,7 +1013,7 @@
     </action-record>
 
     <action-record name="action-sale-order-record-from-partner" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval: _partner" if="_partner.isContact == false"/>
+    	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.id)" if="_partner.isContact == false"/>
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="contactPartner" expr="eval: _partner?.contactPartnerSet?.size() == 1 ? _partner?.contactPartnerSet[0] : null" if="_partner.isContact == false"/>
@@ -1426,4 +1427,7 @@
   	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateAdvancePaymentInvoice"/>
   </action-method>
   
+  	<action-attrs name="action-sale-order-attrs-set-status-to-confirmed">
+  		<attribute name="value" for="statusSelect" expr="eval: __repo__(SaleOrder).STATUS_ORDER_CONFIRMED"/>
+  	</action-attrs>
 </object-views>

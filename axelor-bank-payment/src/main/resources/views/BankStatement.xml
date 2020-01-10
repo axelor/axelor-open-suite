@@ -44,7 +44,12 @@
             </panel>
             <panel-dashlet name="bankStatementLinesPanel" action="action-bank-statement-view-bank-statement-lines" colSpan="12" height="500" canSearch="true" hideIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
             <panel-dashlet name="bankStatementLinesAfb120Panel" action="action-bank-statement-view-bank-statement-lines-afb-120" colSpan="12" height="500" canSearch="true" showIf="bankStatementFileFormat.statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0"/>
-        </panel>
+		    <label name="infoLabel" title="Initial balance" colSpan="12" css="btn-info"/>
+		    <label name="primaryLabel" title="Final balance" colSpan="12" css="btn-primary"/>
+		    <label name="sucessLabel" title="Reconciled bank statement line" colSpan="12" css="btn-success"/>
+		    <label name="warningLabel" title="Partially reconciled bank statement line" colSpan="12" css="btn-warning"/>
+		    <label name="dangerLabel" title="Unreconciled bank statement line" colSpan="12" css="btn-danger"/>        
+		</panel>
 	</form>
 	
 	<action-view name="account-bank-statement-view-bank-statement-lines"

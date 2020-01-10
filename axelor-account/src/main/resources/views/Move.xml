@@ -94,12 +94,12 @@
 		</panel>
 		
 		<panel>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
-			<field name="$viewerTags" colSpan="12" readonly="true" showTitle="false">
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<field name="$reconcileTags" colSpan="12" hidden="true" readonly="true" showTitle="false">
                     <viewer depends="moveLineList">
                         <![CDATA[
-                            <h4 class="text-right">
+                            <h4 class="text-left">
 						 		<span class="label label-info" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;"  x-translate>It is not possible to edit the amount of a reconciled and/or lettered accounting move line.</span>
                             </h4>
                         ]]>
@@ -224,7 +224,6 @@
     <action-validate name="action-move-validate-check-date-of-reversion">
       <error message="Reverse move date should not be prior to the original move date (${LocalDate.parse(_moveDate).format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))})."
       		if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))"/>
-      <error message="Please select an earlier date or equal to today's date" if="LocalDate.parse(dateOfReversion).isAfter(__date__)"/>
     </action-validate>
 
    	<!-- ACTION RECORD -->

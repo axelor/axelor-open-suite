@@ -1496,7 +1496,7 @@ AND Asset.company = AccountingReport.company]]></xml-property>
             <property name="headerHeight">0in</property>
             <page-footer>
                 <grid id="4631">
-                    <property name="width">27.887083333333333cm</property>
+                    <property name="width">100%</property>
                     <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -1572,7 +1572,7 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="width">1.6in</property>
                     </column>
                     <column id="4632">
-                        <property name="width">15.531041666666667cm</property>
+                        <property name="width">19.531cm</property>
                     </column>
                     <column id="4633">
                         <property name="verticalAlign">middle</property>
@@ -1712,8 +1712,48 @@ AND Asset.company = AccountingReport.company]]></xml-property>
         </simple-master-page>
     </page-setup>
     <body>
+        <text id="4001">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">14pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="borderBottomStyle">none</property>
+            <property name="borderLeftStyle">none</property>
+            <property name="borderRightStyle">none</property>
+            <property name="borderTopStyle">none</property>
+            <property name="marginBottom">10pt</property>
+            <property name="textAlign">center</property>
+            <property name="dataSet">TranslateDS</property>
+            <list-property name="paramBindings">
+                <structure>
+                    <property name="paramName">param_1</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">'AccountingReportType17.title'</value>
+                    </simple-property-list>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">message_key</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">translation</property>
+                    <text-property name="displayName">translation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+        </text>
         <grid id="491">
-            <property name="width">11.1in</property>
+            <property name="marginTop">0pt</property>
+            <property name="marginLeft">140pt</property>
+            <property name="marginBottom">10pt</property>
+            <property name="marginRight">40pt</property>
+            <property name="width">100%</property>
             <property name="dataSet">AccountingReportDS</property>
             <list-property name="visibility"/>
             <list-property name="boundDataColumns">
@@ -1790,60 +1830,11 @@ AND Asset.company = AccountingReport.company]]></xml-property>
             <column id="495">
                 <property name="width">33%</property>
             </column>
-            <row id="1246">
-                <property name="height">0.3020833333333333in</property>
-                <cell id="1247">
-                    <property name="colSpan">6</property>
-                    <property name="rowSpan">1</property>
-                    <text id="4001">
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="fontSize">14pt</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
-                        <property name="textAlign">center</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'AccountingReportType17.title'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
-            <row id="549">
-                <property name="height">0.1in</property>
-                <cell id="550"/>
-                <cell id="3062"/>
-                <cell id="4117"/>
-                <cell id="4128"/>
-                <cell id="552"/>
-                <cell id="553"/>
-            </row>
             <row id="496">
                 <property name="height">0.2604166666666667in</property>
                 <cell id="497">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4192">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1852,7 +1843,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1879,15 +1871,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3063">
                     <text id="554">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["company_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4118">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4222">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1896,7 +1891,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1923,15 +1919,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="4129">
                     <text id="4223">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["year_name"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="499">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4196">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1940,7 +1939,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1967,10 +1967,11 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="500">
                     <text id="555">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["period_name"]</VALUE-OF>]]></text-property>
                     </text>
@@ -1979,6 +1980,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
             <row id="501">
                 <property name="height">0.26in</property>
                 <cell id="502">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4210">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -1987,7 +1990,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2014,15 +2018,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="3064">
                     <text id="4219">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4119">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4195">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -2031,7 +2038,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2058,15 +2066,18 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="4130">
                     <text id="556">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="504">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
                     <text id="4197">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">10pt</property>
@@ -2075,7 +2086,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">right</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2102,31 +2114,14 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="505">
                     <text id="557">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="marginLeft">2pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
                     </text>
-                </cell>
-            </row>
-            <row id="4211">
-                <property name="height">0.26in</property>
-                <cell id="4212"/>
-                <cell id="4213"/>
-                <cell id="4215"/>
-                <cell id="4216"/>
-                <cell id="4217"/>
-                <cell id="4218"/>
-            </row>
-            <row id="544">
-                <property name="pageBreakAfter">auto</property>
-                <property name="pageBreakBefore">auto</property>
-                <property name="pageBreakInside">auto</property>
-                <cell id="545">
-                    <property name="colSpan">6</property>
-                    <property name="rowSpan">1</property>
                 </cell>
             </row>
         </grid>
@@ -2403,13 +2398,13 @@ row["disposal_value"];
                 <property name="width">1.28125in</property>
             </column>
             <column id="5541">
-                <property name="width">1.28125in</property>
+                <property name="width">0.8in</property>
             </column>
             <column id="5412">
-                <property name="width">0.8020833333333334in</property>
+                <property name="width">0.67in</property>
             </column>
             <column id="5413">
-                <property name="width">0.63in</property>
+                <property name="width">0.58in</property>
             </column>
             <column id="5415">
                 <property name="width">0.7916666666666666in</property>
@@ -2485,6 +2480,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5314">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
                                 <structure>
@@ -2523,6 +2519,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5316">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -2571,6 +2568,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5321">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2609,6 +2607,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5323">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2647,6 +2646,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5329">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2685,6 +2685,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5325">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2723,6 +2724,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5327">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2762,6 +2764,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5331">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2800,6 +2803,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5333">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2838,6 +2842,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5335">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2877,6 +2882,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5337">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2916,6 +2922,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5339">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2954,6 +2961,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5343">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -2993,6 +3001,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5341">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -3031,6 +3040,7 @@ row["disposal_value"];
                         <property name="borderTopStyle">none</property>
                         <text id="5478">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="marginTop">2pt</property>
                             <property name="marginBottom">2pt</property>
@@ -3104,6 +3114,7 @@ row["disposal_value"];
                             <property name="rowSpan">1</property>
                             <text id="5352">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="textAlign">right</property>
                                 <property name="contentType">html</property>
@@ -3114,6 +3125,7 @@ row["disposal_value"];
                             <property name="fontWeight">bold</property>
                             <data id="5424">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
                                 <property name="borderRightStyle">none</property>
@@ -3129,6 +3141,7 @@ row["disposal_value"];
                         <cell id="5355">
                             <data id="5425">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
@@ -3146,6 +3159,7 @@ row["disposal_value"];
                             <property name="fontWeight">bold</property>
                             <data id="5426">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
                                 <property name="borderRightStyle">none</property>
@@ -3162,6 +3176,7 @@ row["disposal_value"];
                             <property name="fontWeight">bold</property>
                             <data id="5427">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
                                 <property name="borderRightStyle">none</property>
@@ -3177,6 +3192,7 @@ row["disposal_value"];
                         <cell id="5361">
                             <text id="5460">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
@@ -3190,6 +3206,7 @@ row["disposal_value"];
                         <cell id="5557">
                             <text id="5563">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
@@ -3203,6 +3220,7 @@ row["disposal_value"];
                         <cell id="5362">
                             <text id="5461">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="borderBottomStyle">none</property>
                                 <property name="borderLeftStyle">none</property>
@@ -3215,6 +3233,7 @@ row["disposal_value"];
                         </cell>
                         <cell id="5363">
                             <label id="5497">
+                                <property name="fontSize">9pt</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
@@ -3228,6 +3247,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                             </label>
                             <data id="5564">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
                                 <property name="fontWeight">bold</property>
                                 <structure name="numberFormat">
                                     <property name="category">Custom</property>
@@ -3254,6 +3274,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5369">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">reference</property>
                         </data>
                     </cell>
@@ -3264,6 +3285,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5371">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">asset_name</property>
                         </data>
                     </cell>
@@ -3274,6 +3296,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5377">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <structure name="dateTimeFormat">
                                 <property name="category">Short Date</property>
                                 <property name="pattern">Short Date</property>
@@ -3288,9 +3311,10 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <text id="5570">
                             <property name="fontFamily">sans-serif</property>
-                            <property name="fontWeight">bold</property>
-                            <property name="marginTop">2pt</property>
-                            <property name="marginBottom">2pt</property>
+                            <property name="fontSize">9pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginBottom">0pt</property>
                             <property name="textAlign">left</property>
                             <property name="dataSet">TranslateDS</property>
                             <list-property name="paramBindings">
@@ -3326,6 +3350,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5375">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="resultSetColumn">duration</property>
                         </data>
                     </cell>
@@ -3336,6 +3361,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <text id="5379">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<value-of format="#,##0.00">if(row['acquisition_date'] <=  row['date_from']){row['gross_value']}</value-of>
@@ -3349,6 +3375,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <text id="5381">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<value-of format="#,##0.00">if(row['acquisition_date'] >=  row['date_from'] &amp;&amp; row['acquisition_date'] <=  row['date_to']){row['gross_value']}</value-of>
@@ -3362,6 +3389,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <text id="5383">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<value-of format="#,##0.00">if(row['disposal_date'] >=  row['date_from'] &amp;&amp; row['disposal_date'] <=  row['date_to']){row['disposal_value']}</value-of>
@@ -3375,6 +3403,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5457">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">#,##0.00</property>
@@ -3390,6 +3419,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5431">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">#,##0.00</property>
@@ -3428,6 +3458,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5455">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">#,##0.00</property>
@@ -3473,6 +3504,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5454">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">#,##0.00</property>
@@ -3518,6 +3550,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderTopStyle">none</property>
                         <data id="5479">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
                                 <property name="pattern">#,##0.00</property>
@@ -3540,6 +3573,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="rowSpan">1</property>
                         <label id="5527">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">right</property>
                             <text-property name="text">Final Total : </text-property>
@@ -3548,6 +3582,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5401">
                         <data id="5507">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
@@ -3560,6 +3595,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5402">
                         <data id="5509">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
@@ -3572,6 +3608,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5403">
                         <data id="5510">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
@@ -3584,6 +3621,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5404">
                         <data id="5511">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
@@ -3596,6 +3634,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5405">
                         <text id="5529">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -3609,6 +3648,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5559">
                         <text id="5565">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -3622,6 +3662,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5406">
                         <text id="5530">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -3635,6 +3676,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                     <cell id="5407">
                         <data id="5566">
                             <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>

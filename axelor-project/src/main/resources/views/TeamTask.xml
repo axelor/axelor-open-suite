@@ -503,12 +503,6 @@
 		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 1"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: true" if="invoicingType == 1"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: false" if="invoicingType != 1"/>
-		<attribute name="value" for="product" expr="eval: null" if="invoicingType == 2"/>
-		<attribute name="value" for="quantity" expr="eval: null" if="invoicingType == 2"/>
-		<attribute name="value" for="unit" expr="eval: null" if="invoicingType == 2"/>
-		<attribute name="value" for="unitPrice" expr="eval: null" if="invoicingType == 2"/>
-		<attribute name="value" for="currency" expr="eval: null" if="invoicingType == 2"/>
-		<attribute name="value" for="exTaxTotal" expr="eval: null" if="invoicingType == 2"/>
 	</action-attrs>
 	
 	<action-attrs name="action-team-task-attrs-assginment-customer">

@@ -34,7 +34,7 @@
 	    <field name="stockRuleMessageTemplate"/>
 	  </panel>
 	  <panel name="stockLocationValuePanel" title="Stock location value">
-		<field name="stockLocationValue" />
+		<field name="stockValuationTypeSelect" />
 	  </panel>
 	  <panel name="customsInfoPanel" title="Customs">
 	  	<field name="customsMassUnit" domain="self.unitTypeSelect = 1"/>

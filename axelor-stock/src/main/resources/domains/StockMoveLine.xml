@@ -61,7 +61,7 @@
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
     <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />
-    <integer name="lineTypeSelect" title="Type" selection="sale.order.line.type.select"/>
+    <integer name="lineTypeSelect" title="Type" selection="line.type.select"/>
 
     <enum name="regime" ref="com.axelor.apps.stock.db.Regime"/>
     <enum name="natureOfTransaction" ref="com.axelor.apps.stock.db.NatureOfTransaction"/>

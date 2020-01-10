@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -382,6 +382,8 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_LOG_8 = /*$$(*/
       "Missing data for required fields" /*)*/;
   public static final String ADVANCED_IMPORT_LOG_9 = /*$$(*/ "Invalid type of data" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_10 = /*$$(*/
+      "Action does not exists or invalid for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_RESET = /*$$(*/
       "Reset imported data successfully" /*)*/;
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;

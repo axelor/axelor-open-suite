@@ -36,9 +36,12 @@
     	<hilite if="statusSelect == 4 || statusSelect == 5 || statusSelect == 6" color="success"/>
     	<hilite if="statusSelect == 7" color="warning"  />
     	<hilite if="statusSelect == 8" color="danger"/>
+        <field name="company"/>
     	<field name="purchaseRequestSeq"/>
         <field name="supplierUser"/>
         <field name="stockLocation"/>
+        <field name="createdOn"/>
+        <field name="createdBy"/>
         <field name="statusSelect"/>
     </grid>
 

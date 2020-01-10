@@ -111,9 +111,9 @@
 			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" />
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-			    <field name="requestedReservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
-					<field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed"/>
+			<field name="requestedReservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+		    <field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
         	<field name="unitPriceTaxed" hidden="true"/>
 			<field name="wapPrice" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
@@ -397,7 +397,12 @@
 		<action name="action-stock-move-line-attrs-hide-avg-price"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
         <action name="action-stock-move-picking-is-edit-attrs"/>
+        <action name="action-stock-move-line-hide-reserved-qty-attrs"/>
 	</action-group>
+	
+	<action-attrs name="action-stock-move-line-hide-reserved-qty-attrs">
+	    <attribute name="hidden" for="reservedQty,requestedReservedQty" expr="eval: __parent__?.typeSelect == 3 || stockMove?.typeSelect == 3"/>
+	</action-attrs>
 	
 	<action-group name="action-stock-move-line-group-all-onload">
 		<action name="action-stock-move-line-attrs"/>
@@ -480,6 +485,7 @@
 
 	<action-record name="action-stock-move-line-record-qty" model="com.axelor.apps.stock.db.StockMoveLine">
 		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect &lt;= 2"/>
+		<field name="realQty" expr="eval: qty" if="stockMove?.statusSelect &lt;= 2"/>
 	</action-record>
 	
     <action-method name="action-stock-move-line-set-product-info">

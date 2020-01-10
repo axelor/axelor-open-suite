@@ -80,6 +80,7 @@
 		  	<panel name="exportsPanel" title="Exports" >
 		  		<field name="exportCodeForLunchVoucherManagement" />
 		  		<field name="exportCodeForExtraHours" />
+		  		<field name="exportCodeForDuration"/>
 		  	</panel>
         <panel name="dpaePanel" title="DPAE">
           <field name="enableDPAE" widget="BooleanSwitch"/>

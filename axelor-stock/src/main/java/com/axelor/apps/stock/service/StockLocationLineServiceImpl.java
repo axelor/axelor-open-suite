@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -534,6 +534,21 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     BigDecimal availableQty = BigDecimal.ZERO;
     if (stockLocationLine != null) {
       availableQty = stockLocationLine.getCurrentQty();
+    }
+    return availableQty;
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+    StockLocationLine detailStockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLine != null) {
+      availableQty = detailStockLocationLine.getCurrentQty();
     }
     return availableQty;
   }

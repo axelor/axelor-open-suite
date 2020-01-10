@@ -40,6 +40,11 @@
     <property name="Data Cube.TimesheetLineDS.x">135</property>
     <property name="Data Cube.TimesheetLineDS.y">80</property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function round(value, decimals) {
+  	return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+   	}
+	reportContext.setPersistentGlobalVariable("round", round);
+    ]]></method>
     <method name="beforeFactory"><![CDATA[var width = params["Days"].value;
 if(width > 10){
 	reportContext.getDesignHandle().findMasterPage("TSMasterPage").setProperty("width", width+"in");
@@ -176,7 +181,7 @@ if(width > 10){
                 <structure>
                     <property name="position">2</property>
                     <property name="name">date</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">date</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -239,7 +244,7 @@ if(width > 10){
                     <structure>
                         <property name="position">2</property>
                         <property name="name">date</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -265,16 +270,17 @@ if(width > 10){
             </structure>
             <property name="dataSource">SrcDataSource</property>
             <method name="open"><![CDATA[importPackage(Packages.com.axelor.apps.hr.service.timesheet);
-packageClass = new Packages.com.axelor.apps.hr.service.timesheet.TimesheetReportServiceImpl();
-timesheetList = packageClass.getTimesheetReportList(reportContext.getParameterValue("TimesheetReportId")).iterator();]]></method>
+timesheetReportService = TimesheetReportService.getInstance();
+timesheetList = timesheetReportService.getTimesheetReportList(reportContext.getParameterValue("TimesheetReportId")).iterator();]]></method>
             <method name="fetch"><![CDATA[if(timesheetList.hasNext()){
 node = timesheetList.next();
-	row["date"] = node.get("date").toString();
+var round = reportContext.getPersistentGlobalVariable("round");
+	row["date"] = node.get("date");
 	row["userName"] = node.get("userName").toString();
-	row["workedHour"] = node.get("workedHour");
-	row["workingHour"] = node.get("workingHour");
-	row["weekNumber"] = node.get("weekNumber");
-	row["weeklyWorkHours"] = node.get("weeklyWorkHours");
+	row["workedHour"] = round(node.get("workedHour"),2);
+	row["workingHour"] = round(node.get("workingHour"),2);
+	row["weekNumber"] = round(node.get("weekNumber"),2);
+	row["weeklyWorkHours"] = round(node.get("weeklyWorkHours"),2);
 	return true;
 }
 
@@ -757,6 +763,10 @@ return false;]]></method>
                                         <extended-item extensionName="CrosstabCell" id="5626">
                                             <property name="content">
                                                 <data name="date" id="5628">
+                                                    <structure name="dateTimeFormat">
+                                                        <property name="category">Custom</property>
+                                                        <property name="pattern">dd-MM-yyyy</property>
+                                                    </structure>
                                                     <property name="textAlign">center</property>
                                                     <property name="resultSetColumn">date</property>
                                                 </data>
@@ -799,23 +809,20 @@ function onCreateCell( cellInst, reportContext )
 {
 
 	if(cellInst.getCellID() == 5637){
-		var color = null;
+		var color = 'red';
+		var round = reportContext.getPersistentGlobalVariable("round");
 		
-		var totalWorkingHours = cellInst.getDataValue('totalWorkingHours');
-		var totalWorkedHours = cellInst.getDataValue('workedHour_user/userName_week/weekNumber');
-		var weekleyWorkHours = cellInst.getDataValue('weeklyWorkHours_user/userName_Date/date');
+		var totalWorkingHours = round(cellInst.getDataValue('totalWorkingHours'),2);
+		var totalWorkedHours = round(cellInst.getDataValue('workedHour_user/userName_week/weekNumber'),2);
+		var weekleyWorkHours = round(cellInst.getDataValue('weeklyWorkHours_user/userName_Date/date'),2);
 		
 		if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours != weekleyWorkHours) {
 			color = 'blue';
- 		}else if(totalWorkingHours != totalWorkedHours &amp;&amp; totalWorkedHours != weekleyWorkHours &amp;&amp; weekleyWorkHours!= totalWorkingHours) {
- 			color = 'red';
- 		}else if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours == weekleyWorkHours) {
- 			color = 'black';
+ 		} else if(totalWorkingHours == totalWorkedHours &amp;&amp; totalWorkedHours == weekleyWorkHours) {
+ 			color = 'black'
  		}
-		
-		if(color!=null){
-			cellInst.getStyle().setColor(color);
-		}
+ 		
+		cellInst.getStyle().setColor(color);
  	} 
 }
 ]]></method>
@@ -843,7 +850,7 @@ function onCreateCell( cellInst, reportContext )
                 <structure>
                     <property name="name">date</property>
                     <expression name="expression">dimension["Date"]["date"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="dataType">date</property>
                 </structure>
                 <structure>
                     <property name="name">workedHour_user/userName_Date/date</property>

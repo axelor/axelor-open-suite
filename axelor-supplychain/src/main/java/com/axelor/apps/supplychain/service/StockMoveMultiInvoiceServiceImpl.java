@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,6 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
@@ -46,17 +45,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
@@ -392,33 +388,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceGenerator.populate(invoice, invoiceLineList);
 
     invoiceRepository.save(invoice);
-    if (invoice.getExTaxTotal().signum() < 0) {
-      Invoice refund = transformToRefund(invoice);
-      stockMoveList.forEach(
-          stockMove -> {
-            if (stockMove.getInvoiceSet() != null) {
-              stockMove.getInvoiceSet().add(refund);
-            } else {
-              Set<Invoice> invoiceSet = new HashSet<>();
-              invoiceSet.add(refund);
-              stockMove.setInvoiceSet(invoiceSet);
-            }
-          });
-      invoiceRepository.remove(invoice);
-      return Optional.of(refund);
-    } else {
-      stockMoveList.forEach(
-          stockMove -> {
-            if (stockMove.getInvoiceSet() != null) {
-              stockMove.getInvoiceSet().add(invoice);
-            } else {
-              Set<Invoice> invoiceSet = new HashSet<>();
-              invoiceSet.add(invoice);
-              stockMove.setInvoiceSet(invoiceSet);
-            }
-          });
-      return Optional.of(invoice);
-    }
+    invoice = toPositivePriceInvoice(invoice);
+    stockMoveList.forEach(invoice::addStockMoveSetItem);
+    return Optional.of(invoice);
   }
 
   @Override
@@ -505,33 +477,19 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceGenerator.populate(invoice, invoiceLineList);
 
     invoiceRepository.save(invoice);
+    invoice = toPositivePriceInvoice(invoice);
+    stockMoveList.forEach(invoice::addStockMoveSetItem);
+    return Optional.of(invoice);
+  }
+
+  /** For any invoice, if ex tax total is negative, returns the corresponding refund invoice. */
+  protected Invoice toPositivePriceInvoice(Invoice invoice) throws AxelorException {
     if (invoice.getExTaxTotal().signum() < 0) {
       Invoice refund = transformToRefund(invoice);
-      stockMoveList.forEach(
-          stockMove -> {
-            if (stockMove.getInvoiceSet() != null) {
-              stockMove.getInvoiceSet().add(refund);
-            } else {
-              Set<Invoice> invoiceSet = new HashSet<>();
-              invoiceSet.add(refund);
-              stockMove.setInvoiceSet(invoiceSet);
-            }
-          });
-
       invoiceRepository.remove(invoice);
-      return Optional.of(refund);
+      return refund;
     } else {
-      stockMoveList.forEach(
-          stockMove -> {
-            if (stockMove.getInvoiceSet() != null) {
-              stockMove.getInvoiceSet().add(invoice);
-            } else {
-              Set<Invoice> invoiceSet = new HashSet<>();
-              invoiceSet.add(invoice);
-              stockMove.setInvoiceSet(invoiceSet);
-            }
-          });
-      return Optional.of(invoice);
+      return invoice;
     }
   }
 
@@ -677,13 +635,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected void checkIfAlreadyInvoiced(StockMove stockMove) throws AxelorException {
     if (stockMove.getInvoiceSet() != null
         && stockMove
-                .getStockMoveLineList()
-                .stream()
-                .map(StockMoveLine::getQtyInvoiced)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO)
-                .compareTo(BigDecimal.ZERO)
-            == 0) {
+            .getInvoiceSet()
+            .stream()
+            .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         templateMessage = IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;

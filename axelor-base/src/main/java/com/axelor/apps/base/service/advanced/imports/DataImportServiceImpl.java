@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -213,6 +213,7 @@ public class DataImportServiceImpl implements DataImportService {
       inputList.add(csvInput);
       importContext.put("ifConditions" + fileTab.getId(), ifList);
       importContext.put("jsonContextValues" + fileTab.getId(), createJsonContext(fileTab));
+      importContext.put("actionsToApply" + fileTab.getId(), fileTab.getActions());
     }
     return inputList;
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -191,6 +191,16 @@ public interface StockLocationLineService {
    * @return
    */
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
+
+  /**
+   * Allow to get the available qty of product for a given Tracking Number.
+   *
+   * @param stockLocation
+   * @param trackingNumber
+   * @return
+   */
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber);
 
   /**
    * For a given line, compute the future quantity of a stock location line from its current qty and

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,9 +52,11 @@ public interface IExceptionMessage {
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
-      "This move %s can not be archive because it is linked to another piece named %s." /*)*/;
+      "This move %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
-      "This move line %s can not be archive because it is linked to another piece named %s." /*)*/;
+      "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/

@@ -103,6 +103,7 @@
 	onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title" width="large">
 		<panel name="overviewPanel" title="Overview">
 			<field name="user" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+			<field name="teamTask"/>
 			<field name="date" />
 			<field name="product" requiredIf="toInvoice" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 			<field name="duration" width="62%" colSpan="3" onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
