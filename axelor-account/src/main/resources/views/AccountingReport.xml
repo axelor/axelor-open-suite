@@ -36,7 +36,7 @@
 		
 		<panel sidebar="true" name="infoPanel" title="Info">
 			<button name="searchBtn" title="Search" hideIf="!typeSelect || [12,15,16,17,2000,2001,3000].indexOf(typeSelect) != -1" onClick="save,action-accounting-report-method-search-move-line,save" />
-			<button name="exportBtn" title="Print" icon="fa-print"	onClick="action-group-account-accounting-report-export-click" />
+			<button name="exportBtn" title="Print" icon="fa-print"	onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click" />
 			<field name="statusSelect" />
 			<field name="publicationDateTime" />
 		</panel>
@@ -270,4 +270,8 @@
    <action-method name="action-accounting-report-method-set-bank-details-domain">
      <call class="com.axelor.apps.bankpayment.web.AccountingReportController" method="setBankDetailsDomain"/>
    </action-method>
+
+    <action-validate name="action-account-report-alert-typeselect">
+		<alert message="Make sure that all accounting moves are validated." if="typeSelect == 12 || typeSelect == 15"/>
+    </action-validate>
 </object-views>

@@ -28,6 +28,8 @@
 	<many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account" title="Charge account" required="true"/>
 	<many-to-one name="depreciationAccount" ref="com.axelor.apps.account.db.Account" title="Depreciation account" required="true"/>
 	
+	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+	
   </entity>
  
 </domain-models>

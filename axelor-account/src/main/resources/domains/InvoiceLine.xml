@@ -48,7 +48,7 @@
         
         <many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
 
-        <integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
+        <integer name="typeSelect" title="Type" selection="line.type.select"/>
         <boolean name="isSubLine" title="Sub line" readonly="true"/>
         <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
         <decimal name="totalPack" title="Total for pack lines"/>
