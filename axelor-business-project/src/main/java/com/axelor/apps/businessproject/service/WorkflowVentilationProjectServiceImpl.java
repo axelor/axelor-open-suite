@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,6 +34,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
@@ -60,7 +61,8 @@ public class WorkflowVentilationProjectServiceImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       AppSupplychainService appSupplychainService,
       InvoicingProjectRepository invoicingProjectRepo,
-      TimesheetLineRepository timesheetLineRepo) {
+      TimesheetLineRepository timesheetLineRepo,
+      StockMoveInvoiceService stockMoveInvoiceService) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -70,7 +72,8 @@ public class WorkflowVentilationProjectServiceImpl
         saleOrderRepository,
         purchaseOrderRepository,
         accountingSituationSupplychainService,
-        appSupplychainService);
+        appSupplychainService,
+        stockMoveInvoiceService);
     this.invoicingProjectRepo = invoicingProjectRepo;
     this.timesheetLineRepo = timesheetLineRepo;
   }

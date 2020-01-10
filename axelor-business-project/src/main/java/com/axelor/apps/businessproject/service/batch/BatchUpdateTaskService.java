@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -86,8 +86,10 @@ public class BatchUpdateTaskService extends AbstractBatch {
             .all()
             .filter(
                 filter
+                    + " AND self.project.isBusinessProject = :isBusinessProject "
                     + " AND self.project.toInvoice = :invoiceable "
                     + "AND self.toInvoice = :toInvoice")
+            .bind("isBusinessProject", true)
             .bind("invoiceable", true)
             .bind("toInvoice", false)
             .order("id");

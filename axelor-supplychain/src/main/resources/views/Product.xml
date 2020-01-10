@@ -75,6 +75,7 @@
      <view type="form" name="supplychain-stock-details-by-product-form"/>
      <view-param name="popup" value="true"/>
      <view-param name="popup-save" value="false"/>
+     <view-param name="popup.maximized" value="true"/>
      <context name="_product" expr="eval:__self__"/>
   </action-view>
 
@@ -82,6 +83,7 @@
      <view type="form" name="supplychain-stock-details-by-product-form"/>
      <view-param name="popup" value="true"/>
      <view-param name="popup-save" value="false"/>
+     <view-param name="popup.maximized" value="true"/>
      <context name="_product" expr="eval:product"/>
      <context name="_stockLocation" expr="eval:saleOrder?.stockLocation"/>
      <context name="_company" expr="eval:saleOrder?.company"/>
@@ -97,6 +99,7 @@
      <view type="form" name="stock-move-line-all-form"/>
      <view-param name="popup" value="true"/>
      <view-param name="popup-save" value="false"/>
+     <view-param name="popup.maximized" value="true"/>
      <domain>self.reservedQty > 0 and self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
@@ -113,6 +116,7 @@
     <view type="form" name="stock-move-line-all-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
     <domain>self.stockMove.statusSelect = :statusSelectList
       AND self.product.id = :productId
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
@@ -129,6 +133,7 @@
     <view type="form" name="stock-move-line-all-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
     <domain>self.stockMove.statusSelect = :statusSelect
       AND self.product.id = :productId
       AND (self.stockMove.toStockLocation.id IN :location OR 0 IN :location)
