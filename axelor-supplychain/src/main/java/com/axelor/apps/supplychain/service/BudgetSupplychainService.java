@@ -27,9 +27,10 @@ import com.axelor.apps.account.db.repo.BudgetLineRepository;
 import com.axelor.apps.account.db.repo.BudgetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.BudgetService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -61,8 +62,8 @@ public class BudgetSupplychainService extends BudgetService {
               .filter(
                   "self.budget.id = ?1 AND self.purchaseOrderLine.purchaseOrder.statusSelect in (?2,?3)",
                   budget.getId(),
-                  IPurchaseOrder.STATUS_VALIDATED,
-                  IPurchaseOrder.STATUS_FINISHED)
+                  PurchaseOrderRepository.STATUS_VALIDATED,
+                  PurchaseOrderRepository.STATUS_FINISHED)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         LocalDate orderDate =
@@ -110,6 +111,29 @@ public class BudgetSupplychainService extends BudgetService {
       }
     }
     return budget.getBudgetLineList();
+  }
+
+  public void computeBudgetDistributionSumAmount(
+      BudgetDistribution budgetDistribution, LocalDate computeDate) {
+
+    if (budgetDistribution.getBudget() != null
+        && budgetDistribution.getBudget().getBudgetLineList() != null
+        && computeDate != null) {
+      List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
+      BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
+
+      for (BudgetLine budgetLine : budgetLineList) {
+        LocalDate fromDate = budgetLine.getFromDate();
+        LocalDate toDate = budgetLine.getToDate();
+
+        if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
+          BigDecimal amount =
+              budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted());
+          budgetAmountAvailable = budgetAmountAvailable.add(amount);
+        }
+      }
+      budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
+    }
   }
 
   @Override

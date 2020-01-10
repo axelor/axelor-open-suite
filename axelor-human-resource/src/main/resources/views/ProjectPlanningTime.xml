@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="project-planning-time-grid" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="plannedHours" />
 		<field name="project"/>
+		<field name="task"/>
+		<field name="user"/>		
 		<field name="date"/>
-        <field name="user"/>
-        <field name="task"/>
-        <field name="plannedHours" />
-        <field name="realHours"/>
+		<field name="startTime"/>
+		<field name="endTime"/>
         <field name="isIncludeInTurnoverForecast"/>
         <button name="updateIsIncludeInTurnoverForecastBtn" title="Update include in turonver forecast" icon="fa-check-circle" onClick="action-project-planning-time-method-update-is-include-in-turnover-forecast" />
     </grid>
@@ -17,17 +18,18 @@
 	    <field name="project"/>
 	    <field name="task"/>
 	    <field name="plannedHours" />
-	    <field name="realHours"/>
     </grid>
     
-    <form name="project-planning-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default">
+    <form name="project-planning-time-form" title="Planned time" model="com.axelor.apps.project.db.ProjectPlanningTime" onNew="action-project-planning-time-attrs-default" onSave="action-project-planning-time-validate-check-start-time-end-time">
 		<panel name="mainPanel">
-			<field name="date" />
-			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>		
+			<field name="plannedHours" onChange="action-project-planning-time-record-planned-hours-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="project" readonly="true"/>
 			<field name="task" domain="self.project = :project" canEdit="false" />
-			<field name="plannedHours" />
-			<field name="realHours"/>
+			<field name="user" onSelect="action-project-planning-time-attrs-project-domain" canEdit="false" onChange="action-project-planning-time-attrs-user-change"/>
+			<field name="date" />
+			<spacer name="dateSpacer" colSpan="6"/>
+			<field name="startTime" requiredIf="endTime" onChange="action-project-planning-time-record-start-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
+			<field name="endTime" requiredIf="startTime" onChange="action-project-planning-time-record-end-time-onchange,action-project-planning-time-validate-check-start-time-end-time"/>
 			<field name="product"  canEdit="false" onSelect="action-project-planning-time-attrs-domain-product" widget="SuggestBox" form-view="product-form" grid-view="product-grid" required="true"/>
 			<field name="isIncludeInTurnoverForecast"/>
             <field name="description" colSpan="12" widget="html"/>
@@ -56,18 +58,18 @@
 		</panel>
 	</form>	
 	
-	<action-view name="action-project-view-add-multiple-project-planning-time" title="Project planning time" model="com.axelor.apps.base.db.Wizard">
+	<action-view name="action-project-view-add-multiple-project-planning-time" title="Planned Time Planning" model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="project-planning-time-wizard-form"/>
 		<view-param name="show-confirm" value="false"/>
 		<view-param name="show-toolbar" value="false"/>
 		<view-param name="popup" value="reload"/>
+		<view-param name="forceTitle" value="true"/>
 		<context name="_task" expr="eval:__self__" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__.project" if="_model == 'com.axelor.team.db.TeamTask'"/>
 		<context name="_project" expr="eval:__self__" if="_model == 'com.axelor.apps.project.db.Project'"/>
 	</action-view>
 	
-	
-	<action-view name="action-project-dashlet-project-planning-time" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-project-dashlet-project-planning-time" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="grid" name="project-planning-time-grid"/>
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="true"/>
@@ -77,27 +79,24 @@
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
 	</action-view>
 	
-	<action-view name="action-project-view-project-planning-time-add-new" title="Project planning time" model="com.axelor.apps.project.db.ProjectPlanningTime">
+	<action-view name="action-project-view-project-planning-time-add-new" title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
 		<view type="form" name="project-planning-time-form"/>
 		<view-param name="popup" value="reload"/>
 		<view-param name="show-toolbar" value="false"/>
+		<view-param name="forceTitle" value="true"/>
 		<context name="_project" expr="eval:__self__"/>
+		<context name="_timePlannedPopup" expr="eval: true"/>
 	</action-view>
-	
+  
 	<action-attrs name="action-project-planning-time-attrs-domain-product">
 		<attribute name="domain" expr="eval:project == null || __repo__(Project).find(project.id).productSet?.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet)&quot;" for="product"/>
-	</action-attrs>
-	
-	<action-attrs name="action-planning-time-attr-update-planned-hours">
-		<attribute name="value" for="totalPlannedHrs" expr="eval: projectPlanningTimeList.collect{it->it.plannedHours}.sum()" />
-		<attribute name="value" for="totalRealHrs" expr="eval: projectPlanningTimeList.collect{it->it.realHours}.sum()" />
 	</action-attrs>
 	
 	<action-attrs name="action-project-planning-time-attrs-project-domain">
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).find(project.id).membersUserSet.collect{it->it.id}).join(',')})&quot;" 
 	   for="userSet,user" if="project != null"/>
 	   <attribute name="domain" expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.statusSelect in (1,2)').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;" 
-	   for="userSet"  if="project == null"/>
+	   for="userSet" if="project == null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-planning-time-attrs-user-change">
@@ -108,11 +107,15 @@
 		<attribute name="value" for="task" expr="eval:_task"/>
 		<attribute name="value" for="project" expr="eval:_project"/>
 		<attribute name="value" for="userSet" expr="eval:_project.membersUserSet" if="_project != null"/>
-
+		<attribute name="value" for="user" expr="eval:__user__" if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet"/>
+		<attribute name="value" for="product" expr="eval: __user__.employee.product" if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet &amp;&amp; __user__.employee"/>
+		
+		<attribute name="value" for="date" expr="#{__date__}"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
 		<attribute name="value" for="project" expr="eval:_parent?.project" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
 		<attribute name="value" for="task" expr="eval:_parent" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
-		<attribute name="readonly" for="task" expr="eval:true" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
-		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
+		<attribute name="readonly" for="task" expr="eval:true" if="_parent?._model == 'com.axelor.team.db.TeamTask' || _task"/>
+		<attribute name="value" for="product" expr="eval: __user__.employee.product" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet &amp;&amp; __user__.employee"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-remove">
@@ -123,7 +126,7 @@
 		<attribute name="value" for="$projectPlanningTimeSet" expr="eval:null"/>
 		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
 		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.project.id = :id&quot;" if="!isShowPhasesElements"/>
-		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.project.id = :id OR self.project.parentProject.id = :id&quot;" if="isShowPhasesElements"/>
+		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;(self.project.id = :id OR self.project.parentProject.id = :id)&quot;" if="isShowPhasesElements"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-cancel-remove">
@@ -152,5 +155,24 @@
 	<action-validate name="action-project-validate-remove-project-planning-time">
 		<alert message="Are you sure wants to remove selected lines?"/>
 	</action-validate>
+	
+	<action-record name="action-project-planning-time-record-planned-hours-onchange" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="startTime" expr="eval: endTime.minusMinutes((long)(plannedHours.doubleValue()*60))" if="!startTime &amp;&amp; endTime &amp;&amp; plannedHours"/>
+		<field name="endTime" expr="eval: startTime.plusMinutes((long)(plannedHours.doubleValue()*60))" if="startTime &amp;&amp; plannedHours &amp;&amp; plannedHours.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) &lt; 1"/>
+	</action-record>
+	
+	<action-record name="action-project-planning-time-record-start-time-onchange" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="plannedHours" expr="eval: java.time.Duration.between(startTime , endTime).toMinutes()/60l" if="startTime &amp;&amp; endTime &amp;&amp; !plannedHours"/>
+		<field name="endTime" expr="eval: startTime.plusMinutes((long)(plannedHours.doubleValue()*60))" if="startTime &amp;&amp; plannedHours &amp;&amp; plannedHours.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) &lt; 1"/>
+	</action-record>
+	
+	<action-record name="action-project-planning-time-record-end-time-onchange" model="com.axelor.apps.project.db.ProjectPlanningTime">
+		<field name="plannedHours" expr="eval: java.time.Duration.between(startTime , endTime).toMinutes()/60l" if="startTime &amp;&amp; endTime &amp;&amp; !plannedHours"/>
+		<field name="startTime" expr="eval: endTime.minusMinutes((long)(plannedHours.doubleValue()*60))" if="endTime &amp;&amp; plannedHours"/>
+	</action-record>
+	
+	<action-validate name="action-project-planning-time-validate-check-start-time-end-time">
+  		<error message="Planning line cannot be in two different days" if="eval: startTime &amp;&amp; plannedHours &amp;&amp; (plannedHours.add(new BigDecimal(startTime.getHour()+(startTime.getMinute()/60))).compareTo(new BigDecimal(24)) ==1  || (endTime &amp;&amp; endTime.isBefore(startTime)) || plannedHours &gt; 24)" />
+  	</action-validate>
 	
 </object-views>

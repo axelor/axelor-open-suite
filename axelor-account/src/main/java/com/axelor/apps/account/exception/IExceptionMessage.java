@@ -41,10 +41,22 @@ public interface IExceptionMessage {
   static final String MOVE_VALIDATION_NOT_OK = /*$$(*/
       "Error in move validation, please check the log" /*)*/;
   static final String MOVE_VALIDATION_OK = /*$$(*/ "Moves validated successfully" /*)*/;
-  static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/
-      "You can't remove this record, because the move %s has already been validated" /*)*/;
+  static final String MOVE_ARCHIVE_NOT_OK = /*$$(*/ "You can't archive this move %s" /*)*/;
+  static final String MOVE_REMOVE_NOT_OK = /*$$(*/ "You can't remove this move %s" /*)*/;
+  static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
-  static final String NO_MOVE_TO_ARCHIVE = /*$$(*/ "Please select 'Draft' moves" /*)*/;
+  static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
+      "Please select 'Draft' or 'Daybook' or 'Canceled' moves" /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
+      "Move(s) has been removed or archived successfully" /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
+      "Error in move deleting or archiving, please check the log" /*)*/;
+  static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move %s can not be archived because it is linked to another piece named %s." /*)*/;
+  static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
+      "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
@@ -159,18 +171,21 @@ public interface IExceptionMessage {
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 
-  static final String MOVE_2 = /*$$(*/ "You must select a journal for the move" /*)*/;
-  static final String MOVE_3 = /*$$(*/ "You must select a company for the move" /*)*/;
-  static final String MOVE_4 = /*$$(*/ "You must select a period for the move" /*)*/;
+  static final String MOVE_2 = /*$$(*/ "You must select a journal for the move %s" /*)*/;
+  static final String MOVE_3 = /*$$(*/ "You must select a company for the move %s" /*)*/;
+  static final String MOVE_4 = /*$$(*/ "You must select a period for the move %s" /*)*/;
   static final String MOVE_5 = /*$$(*/
       "Journal %s does not have any account move sequence configured" /*)*/;
   static final String MOVE_6 = /*$$(*/ "Move account sens %s can't be determined" /*)*/;
   static final String MOVE_7 = /*$$(*/
       "Account move %s has a total debit different than total credit : %s <> %s" /*)*/;
-  static final String MOVE_8 = /*$$(*/ "A move cannot be empty" /*)*/;
-  static final String MOVE_9 = /*$$(*/ "Tax is mandatory for the account %s" /*)*/;
+  static final String MOVE_8 = /*$$(*/ "The move %s cannot be empty" /*)*/;
+  static final String MOVE_9 = /*$$(*/
+      "Tax is mandatory for the account %s on the move line %s" /*)*/;
   static final String MOVE_10 = /*$$(*/
-      "Analytic distribution template is mandatory for the account %s." /*)*/;
+      "Analytic distribution template is mandatory for the account %s on the move line %s." /*)*/;
+  static final String MOVE_11 = /*$$(*/
+      "An analytic distribution is set in move line %s but the account used do not allow analytic distribution" /*)*/;
   static final String MOVE_VALIDATION_FISCAL_PERIOD_CLOSED = /*$$(*/
       "Accounting move can not be validated because its fiscal period is closed." /*)*/;
 
@@ -207,6 +222,8 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a reconciliation sequence for the company %s" /*)*/;
   static final String RECONCILE_7 = /*$$(*/
       "Reconciliation : Selected moves lines must concern the same company. Reconcile : %s company \n Debit move line : %s company \n Credit move line : %s company" /*)*/;
+  static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
+      "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
 
   /** Reimbursement service and controller */
   static final String REIMBURSEMENT_1 = /*$$(*/
@@ -314,6 +331,15 @@ public interface IExceptionMessage {
 
   /** Batch realize fixed asset lines */
   static final String BATCH_REALIZED_FIXED_ASSET_LINE = /*$$(*/ "Realized fixed asset lines" /*)*/;
+
+  /** Batch close / open the year account */
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_REPORT_TITLE = /*$$(*/
+      "Report for close/open annual accounts batch:" /*)*/;
+
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_SINGULAR = /*$$(*/
+      "%d account treated successfully," /*)*/;
+  static final String BATCH_CLOSE_OPEN_ANNUAL_ACCOUNT_DONE_PLURAL = /*$$(*/
+      "%d accounts treated successfully," /*)*/;
 
   /** Cfonb export service */
   static final String CFONB_EXPORT_1 = /*$$(*/
@@ -445,6 +471,12 @@ public interface IExceptionMessage {
       "%s : You must configure a factor credit account for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_42 = /*$$(*/
       "%s : You must configure a factor debit account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_43 = /*$$(*/
+      "%s : You must configure a year opening account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_44 = /*$$(*/
+      "%s : You must configure a year closure account for the company %s" /*)*/;
+  static final String ACCOUNT_CONFIG_45 = /*$$(*/
+      "%s : You must configure a reported balance journal for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
@@ -489,37 +521,6 @@ public interface IExceptionMessage {
       "%s : You must configure a CFONB TIP and cheque TIP code for the company %s" /*)*/;
   static final String CFONB_CONFIG_16 = /*$$(*/
       "%s : You must configure a CFONB TIP code for the company %s" /*)*/;
-
-  /** Paybox config service */
-  static final String PAYBOX_CONFIG_1 = /*$$(*/
-      "%s : You must configure Paybox for the company %s" /*)*/;
-
-  static final String PAYBOX_CONFIG_2 = /*$$(*/
-      "%s : You must add a site number for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_3 = /*$$(*/
-      "%s : You must add a rank number for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_4 = /*$$(*/
-      "%s : You must add a transaction devise for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_5 = /*$$(*/
-      "%s : You must add a variables to return by Paybox's list for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_6 = /*$$(*/
-      "%s : You must add a returned URL from Paybox once payment is done for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_7 = /*$$(*/
-      "%s : You must add a returned URL from Paybox once payment is refused for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_8 = /*$$(*/
-      "%s : You must add a returned URL from Paybox once payment is canceled for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_9 = /*$$(*/
-      "%s : You must add an intern id for Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_10 = /*$$(*/
-      "%s : You must select an algorithm hashing type used when calculating the footprint for the configuration of Paybox %s" /*)*/;
-  static final String PAYBOX_CONFIG_11 = /*$$(*/
-      "%s : You must add a calculated signature with secret key for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_12 = /*$$(*/
-      "%s : You must add an environment URL for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_13 = /*$$(*/
-      "%s : You must add a Paybox public key's path for the Paybox's configuration %s" /*)*/;
-  static final String PAYBOX_CONFIG_14 = /*$$(*/
-      "%s : You must add a Axelor back-office email for Paybox for Paybox's configuration %s" /*)*/;
 
   /** Payer quality service */
   static final String PAYER_QUALITY_1 = /*$$(*/
@@ -571,6 +572,8 @@ public interface IExceptionMessage {
       "The sale order must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_PROJECT = /*$$(*/
       "The project must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
+      "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
   /** Invoice line generator */
   static final String INVOICE_LINE_GENERATOR_1 = /*$$(*/
@@ -648,20 +651,8 @@ public interface IExceptionMessage {
   String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH = /*$$(*/
       "Sum of advance payments amounts is higher than the total of this invoice." /*)*/;
 
-  /** Paybox service and controller */
-  static final String PAYBOX_1 = /*$$(*/
-      "%s : You must configure an amount paid for the payment entry %s." /*)*/;
-
-  static final String PAYBOX_2 = /*$$(*/
-      "%s : The amount paid for the CB payment entry can't be higher than payer's balance." /*)*/;
-  static final String PAYBOX_3 = /*$$(*/
+  static final String PAYMENT_AMOUNT_EXCEEDING = /*$$(*/
       "%s : Caution - You can't pay for an amount higher than selected invoices" /*)*/;
-  static final String PAYBOX_4 = /*$$(*/ "%s : You must add an email for partner %s." /*)*/;
-  static final String PAYBOX_5 = /*$$(*/ "Paybox payment" /*)*/;
-  static final String PAYBOX_6 = /*$$(*/ "Payment realized" /*)*/;
-  static final String PAYBOX_7 = /*$$(*/ "Payment failed" /*)*/;
-  static final String PAYBOX_8 = /*$$(*/ "Payment canceled" /*)*/;
-  static final String PAYBOX_9 = /*$$(*/ "Paybox's informations feedback incorrect" /*)*/;
 
   /** Payment mode service */
   static final String PAYMENT_MODE_1 = /*$$(*/ "Associated account not configured" /*)*/;
@@ -680,8 +671,6 @@ public interface IExceptionMessage {
   static final String PAYMENT_VOUCHER_CONTROL_2 = /*$$(*/ "%s : There's no line to pay." /*)*/;
   static final String PAYMENT_VOUCHER_CONTROL_3 = /*$$(*/
       "%s : You must add a journal and a treasury account into payment mode." /*)*/;
-  static final String PAYMENT_VOUCHER_CONTROL_4 = /*$$(*/
-      "%s : Payment's amount (%s) is different than Paybox's collected amount (%s)" /*)*/;
 
   /** Payment voucher load service */
   static final String PAYMENT_VOUCHER_LOAD_1 = /*$$(*/ "%s : You must add an amount paid." /*)*/;
@@ -778,6 +767,15 @@ public interface IExceptionMessage {
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
 
+  /** User */
+  static final String USER_PFP_VALIDATOR_COMPANY_SET_NOT_EQUAL = /*$$(*/
+      "%s has not exaclty the same internal companies as %s." /*)*/;
+
+  static final String USER_PFP_VALIDATOR_UPDATED = /*$$(*/
+      "Pfp validator changed successfully" /*)*/;
+  static final String USER_PFP_VALIDATOR_NO_RELATED_ACCOUNTING_SITUATION = /*$$(*/
+      "No Accounting Situation related to %s." /*)*/;
+
   /* Check refunds */
   String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
       "Note: there are existing not imputed client refunds."; /*)*/
@@ -789,7 +787,14 @@ public interface IExceptionMessage {
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_2 = /*$$(*/
       "Disposal date shouldn't be after the next planned depreciation date. Please realize all depreciations that happened before the disposal." /*)*/;
 
+  /* MOVE REVERSE*/
+  static final String REVERSE_DATE_SELECT_UNKNOW_TYPE = /*$$(*/
+      "There is no reverse date select value of value %d" /*)*/;
+
   /*Check not lettered advance move lines*/
   public static final String INVOICE_NOT_LETTERED_SUPPLIER_ADVANCE_MOVE_LINES = /*$$(*/
       "There is at least one advance payment or payment that can be imputed to this invoice." /*)*/;
+
+  static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
+      "Please set a reported balance date on fiscal year" /*)*/;
 }

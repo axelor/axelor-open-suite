@@ -19,15 +19,22 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Map;
 
 public class TimesheetHRRepository extends TimesheetRepository {
 
   @Inject private TimesheetService timesheetService;
+  @Inject private TimesheetLineService timesheetLineService;
+  @Inject private ProjectRepository projectRepository;
 
   @Override
   public Timesheet save(Timesheet timesheet) {
@@ -52,5 +59,26 @@ public class TimesheetHRRepository extends TimesheetRepository {
     }
 
     return obj;
+  }
+
+  @Override
+  public void remove(Timesheet entity) {
+
+    if (entity.getStatusSelect() == TimesheetRepository.STATUS_VALIDATED
+        && entity.getTimesheetLineList() != null) {
+
+      timesheetService.setTeamTaskTotalRealHrs(entity.getTimesheetLineList(), false);
+
+      Map<Project, BigDecimal> projectTimeSpentMap =
+          timesheetLineService.getProjectTimeSpentMap(entity.getTimesheetLineList());
+      Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
+
+      while (projectIterator.hasNext()) {
+        Project project = projectIterator.next();
+        project.setTimeSpent(project.getTimeSpent().subtract(projectTimeSpentMap.get(project)));
+        projectRepository.save(project);
+      }
+    }
+    super.remove(entity);
   }
 }

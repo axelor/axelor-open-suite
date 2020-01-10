@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
     <module name="auth" package="com.axelor.auth.db"/>
 
-    <entity name="Group" cachable="true">
+    <entity name="Group" cacheable="true">
 
 		<boolean name="technicalStaff" help="Specify whether the members of this group are technical staff." massUpdate="true"/>
 		<string name="navigation" selection="select.user.navigation" massUpdate="true"/>

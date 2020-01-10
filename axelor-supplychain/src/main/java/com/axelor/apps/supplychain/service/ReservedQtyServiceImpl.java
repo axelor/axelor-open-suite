@@ -618,11 +618,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     BigDecimal qtyLeftToBeAllocated =
         stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-    return qtyLeftToBeAllocated.min(requestedReservedQty);
+    return qtyLeftToBeAllocated.min(requestedReservedQty).max(BigDecimal.ZERO);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
       throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
@@ -668,7 +668,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateRequestedReservedQty(SaleOrderLine saleOrderLine, BigDecimal newReservedQty)
       throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
@@ -919,17 +919,22 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void requestQty(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
       return;
     }
     saleOrderLine.setIsQtyRequested(true);
+    if (saleOrderLine.getQty().signum() < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
+    }
     this.updateRequestedReservedQty(saleOrderLine, saleOrderLine.getQty());
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelReservation(SaleOrderLine saleOrderLine) throws AxelorException {
     if (saleOrderLine.getProduct() == null || !saleOrderLine.getProduct().getStockManaged()) {
       return;

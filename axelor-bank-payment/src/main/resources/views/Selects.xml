@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<selection name="bankpayment.bank.reconciliation.type.select">
@@ -236,6 +236,10 @@
 		<option value="0">Entry</option>
 		<option value="1">Automatic</option>
 		<option value="2">Import</option>
+	</selection>
+	
+	<selection name='accounting.report.type.select' id="bank.paymennt.accounting.report.type.select">
+		<option order="3000" value="3000">Bank reconciliation statement</option>
 	</selection>
 
 </object-views>

@@ -54,6 +54,17 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
   void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
 
   /**
+   * Create a query to find sale order line of a product of a specific/all company and a
+   * specific/all stock location
+   *
+   * @param productId
+   * @param companyId
+   * @param stockLocationId
+   * @return the query.
+   */
+  String getSaleOrderLineListForAProduct(Long productId, Long companyId, Long stockLocationId);
+
+  /**
    * check qty when modifying saleOrderLine which is invoiced or delivered
    *
    * @param saleOrderLine

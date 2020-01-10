@@ -137,7 +137,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
    * @param jsonIndicators
    */
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generate(
       Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
       throws AxelorException {
@@ -145,7 +145,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateProduct(
       Configurator configurator, JsonContext jsonAttributes, JsonContext jsonIndicators)
       throws AxelorException {
@@ -179,7 +179,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     Beans.get(ProductRepository.class).save(product);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void addLineToSaleOrder(
       Configurator configurator,

@@ -163,7 +163,7 @@ public class OperationOrderStockMoveService {
    * @param operationOrder
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void partialFinish(OperationOrder operationOrder) throws AxelorException {
     ManufOrderStockMoveService manufOrderStockMoveService =
         Beans.get(ManufOrderStockMoveService.class);

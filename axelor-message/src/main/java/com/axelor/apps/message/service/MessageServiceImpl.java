@@ -25,6 +25,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.JpaSupport;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
@@ -46,26 +47,26 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageServiceImpl implements MessageService {
+public class MessageServiceImpl extends JpaSupport implements MessageService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private MetaAttachmentRepository metaAttachmentRepository;
   protected MessageRepository messageRepository;
 
   private ExecutorService executor = Executors.newCachedThreadPool();
+  private static final int ENTITY_FIND_TIMEOUT = 10000;
+  private static final int ENTITY_FIND_INTERVAL = 200;
 
   @Inject
   public MessageServiceImpl(
@@ -75,7 +76,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Message createMessage(
       String model,
       int id,
@@ -103,7 +104,6 @@ public class MessageServiceImpl implements MessageService {
             id,
             null,
             0,
-            ZonedDateTime.now().toLocalDateTime(),
             false,
             MessageRepository.STATUS_DRAFT,
             subject,
@@ -124,7 +124,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles) {
 
     Preconditions.checkNotNull(message.getId());
@@ -147,7 +147,6 @@ public class MessageServiceImpl implements MessageService {
       long relatedTo1SelectId,
       String relatedTo2Select,
       long relatedTo2SelectId,
-      LocalDateTime sentDate,
       boolean sentByEmail,
       int statusSelect,
       String subject,
@@ -160,10 +159,10 @@ public class MessageServiceImpl implements MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount) {
 
-    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet(),
-        bccEmailAddressSet = Sets.newHashSet(),
-        toEmailAddressSet = Sets.newHashSet(),
-        ccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
 
     if (mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL) {
       if (replyToEmailAddressList != null) {
@@ -210,6 +209,7 @@ public class MessageServiceImpl implements MessageService {
 
   public Message sendMessage(Message message) throws AxelorException {
     try {
+      message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
         return sendByMail(message);
       } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {
@@ -217,13 +217,13 @@ public class MessageServiceImpl implements MessageService {
       } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_CHAT) {
         return sendToUser(message);
       }
-    } catch (MessagingException | IOException e) {
+    } catch (MessagingException e) {
       TraceBackService.trace(e);
     }
     return message;
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendToUser(Message message) {
 
     if (message.getRecipientUser() == null) {
@@ -239,7 +239,7 @@ public class MessageServiceImpl implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendByMail(Message message) {
 
     log.debug("Sent mail");
@@ -249,9 +249,8 @@ public class MessageServiceImpl implements MessageService {
     return messageRepository.save(message);
   }
 
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
-  public Message sendByEmail(Message message)
-      throws MessagingException, IOException, AxelorException {
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
     EmailAccount mailAccount = message.getMailAccount();
 
@@ -269,10 +268,10 @@ public class MessageServiceImpl implements MessageService {
             mailAccountService.getDecryptPassword(mailAccount.getPassword()),
             mailAccountService.getSecurity(mailAccount));
 
-    List<String> replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet()),
-        toRecipients = this.getEmailAddresses(message.getToEmailAddressSet()),
-        ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet()),
-        bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
+    List<String> replytoRecipients = this.getEmailAddresses(message.getReplyToEmailAddressSet());
+    List<String> toRecipients = this.getEmailAddresses(message.getToEmailAddressSet());
+    List<String> ccRecipients = this.getEmailAddresses(message.getCcEmailAddressSet());
+    List<String> bccRecipients = this.getEmailAddresses(message.getBccEmailAddressSet());
 
     if (toRecipients.isEmpty() && ccRecipients.isEmpty() && bccRecipients.isEmpty()) {
       throw new AxelorException(
@@ -316,32 +315,43 @@ public class MessageServiceImpl implements MessageService {
       mailBuilder.attach(metaFile.getFileName(), MetaFiles.getPath(metaFile).toString());
     }
 
-    // Make sure message can be found in sending thread below.
-    JPA.flush();
+    getEntityManager().flush();
 
     // send email using a separate process to avoid thread blocking
     executor.submit(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() {
-            try {
-              mailBuilder.send();
-              Message updateMessage = messageRepository.find(message.getId());
-              JPA.em().getTransaction().begin();
-              updateMessage.setSentByEmail(true);
-              updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
-              updateMessage.setSentDateT(LocalDateTime.now());
-              updateMessage.setSenderUser(AuthUtils.getUser());
-              messageRepository.save(updateMessage);
-              JPA.em().getTransaction().commit();
-            } catch (Exception e) {
-              TraceBackService.trace(e);
-            }
-            return true;
+        () -> {
+          try {
+            final Message updateMessage = findMessage(message);
+            mailBuilder.send();
+            inTransaction(
+                () -> {
+                  updateMessage.setSentByEmail(true);
+                  updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
+                  updateMessage.setSentDateT(LocalDateTime.now());
+                  updateMessage.setSenderUser(AuthUtils.getUser());
+                  messageRepository.save(updateMessage);
+                });
+          } catch (Exception e) {
+            TraceBackService.trace(e);
           }
+          return true;
         });
 
     return message;
+  }
+
+  private Message findMessage(Message message) throws InterruptedException, TimeoutException {
+    Message foundMessage;
+    final long startTime = System.currentTimeMillis();
+
+    while ((foundMessage = messageRepository.find(message.getId())) == null) {
+      if (System.currentTimeMillis() - startTime > ENTITY_FIND_TIMEOUT) {
+        throw new TimeoutException(String.format("Cannot find message: %s", message));
+      }
+      Thread.sleep(ENTITY_FIND_INTERVAL);
+    }
+
+    return foundMessage;
   }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {
@@ -378,7 +388,7 @@ public class MessageServiceImpl implements MessageService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional(rollbackOn = {Exception.class})
   public Message regenerateMessage(Message message) throws Exception {
     Preconditions.checkNotNull(
         message.getTemplate(),

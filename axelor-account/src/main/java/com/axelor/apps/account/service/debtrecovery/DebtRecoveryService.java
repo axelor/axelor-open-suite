@@ -370,7 +370,7 @@ public class DebtRecoveryService {
     return accountingSituation.getDebtRecovery();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public DebtRecovery createDebtRecovery(AccountingSituation accountingSituation) {
     DebtRecovery debtRecovery = new DebtRecovery();
     debtRecovery.setAccountingSituation(accountingSituation);
@@ -390,7 +390,7 @@ public class DebtRecoveryService {
    * @throws ClassNotFoundException
    * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public boolean debtRecoveryGenerate(Partner partner, Company company)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, IOException {
@@ -424,7 +424,6 @@ public class DebtRecoveryService {
         }
 
         debtRecovery.setCompany(Beans.get(CompanyRepository.class).find(company.getId()));
-        debtRecovery.setPartnerFullName(partner.getFullName());
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 

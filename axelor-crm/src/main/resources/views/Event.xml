@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event" orderBy="-startDateTime">
     	<hilite color="primary" if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
@@ -70,9 +70,9 @@
 			<button name="acceptBtn" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
 		</toolbar>
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-			  <item title="Create opportunity" action="save,action-event-view-create-opportunity"/>
-			  <item title="Create event" action="save,action-event-view-create-event"/>
+			<menu name="eventToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+			  <item name="createOpportunityItem" title="Create opportunity" action="save,action-event-view-create-opportunity"/>
+			  <item name="createEventItem" title="Create event" action="save,action-event-view-create-event"/>
 			</menu>
 		</menubar>
 		<panel colSpan="12" name="meetingGeneralPanel">
@@ -220,8 +220,9 @@
     </action-method>
 
     <action-view name="dashlet.meeting" title="Meetings" model="com.axelor.apps.crm.db.Event">
-        <view type="grid" name="meeting-grid" />
-        <view type="form" name="meeting-form" />
+        <view type="grid" name="event-grid" />
+        <view type="form" name="event-form" />
+        <domain>self.typeSelect = 2</domain>
     </action-view>
 
     <action-method name="action-event-method-add-email-guest">
@@ -324,6 +325,7 @@
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
     	<action name="action-event-method-add-guest"/>
+    	<action name="action-event-record-event-from-opportunity" if="_opportunity != null"/>
     </action-group>
 
     <action-group name="action-event-type-select-onchange-group">
@@ -393,6 +395,14 @@
     	<field name="team" expr="eval: _lead.team"/>
     	<field name="partner" expr="eval: _lead.partner"/>
     </action-record>
+    
+    <action-record name="action-event-record-event-from-opportunity" model="com.axelor.apps.crm.db.Event">
+    	<field name="lead" expr="eval: _opportunity.lead"/>
+    	<field name="partner" expr="eval: _opportunity.partner"/>
+    	<field if="_opportunity.id != null" name="relatedToSelect" expr="eval:'com.axelor.apps.crm.db.Opportunity'"/>
+    	<field name="relatedToSelectId" expr="eval: _opportunity.id"/>
+    </action-record>
+    
     
     <action-record model="com.axelor.apps.crm.db.Event" name="action-event-record-event-from-sale-order">
 	    <field name="partner" expr="eval:_partner?.id != null ? __repo__(Partner).find(_partner.id) : _partner"/>

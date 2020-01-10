@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -29,6 +29,38 @@
     <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
     
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+  	
+  	<extra-code>
+		<![CDATA[
+		
+		//COST TYPE SELECT
+        public static final int COST_TYPE_PER_HOUR = 1;
+        public static final int COST_TYPE_PER_CYCLE = 2;
+        public static final int COST_TYPE_PER_PIECE = 3;
+			
+	    //WORK CENTER TYPE SELECT
+        public static final int WORK_CENTER_TYPE_HUMAN = 1;
+        public static final int WORK_CENTER_TYPE_MACHINE = 2;
+        public static final int WORK_CENTER_TYPE_BOTH = 3;
+        
+		]]>
+	</extra-code>
     
+    <track>
+    	<field name="name"/>
+    	<field name="code"/>
+    	<field name="machine"/>
+    	<field name="workCenterTypeSelect"/>
+    	<field name="minCapacityPerCycle"/>
+    	<field name="maxCapacityPerCycle"/>
+    	<field name="durationPerCycle"/>
+    	<field name="isRevaluationAtActualPrices"/>
+    	<field name="product"/>
+    	<field name="costTypeSelect"/>
+    	<field name="costAmount"/>
+    	<field name="parentWorkCenter"/>
+    	<field name="operationOrder"/>
+    	<field name="costSheetGroup"/>
+    </track>
   </entity>
 </domain-models>

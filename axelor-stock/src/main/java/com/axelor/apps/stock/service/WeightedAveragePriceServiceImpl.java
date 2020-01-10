@@ -24,7 +24,6 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -46,7 +45,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void computeAvgPriceForProduct(Product product) {
 
     BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);

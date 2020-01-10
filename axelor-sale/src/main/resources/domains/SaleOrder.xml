@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -10,16 +10,17 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company"/>
 	<string name="fullName" namecolumn="true"/>
   	<string name="saleOrderSeq"  title="Internal Number" readonly="true"/>
-  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true" title="Currency" massUpdate="true"/>
+  	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
   	<string name="externalReference" title="Customer reference"/>
   	<date name="creationDate" title="Creation date" required="true" readonly="true"/>
   	<datetime name="confirmationDateTime" title="Confirmation date" readonly="true"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 	<boolean name="blockedOnCustCreditExceed" title="Blocked"/>
 	<boolean name="manualUnblock" title="Manual Unblock"/>
+	<string name="title" title="Title"/>
 	
 <!--   	Onglet Coordonnées client -->
-  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Customer" massUpdate="true"/>
+  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" massUpdate="true"/>
   	<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer contact"/>
   	<many-to-one name="mainInvoicingAddress" ref="com.axelor.apps.base.db.Address" title="Main/Invoicing address"/>
 
@@ -44,7 +45,7 @@
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
 	<decimal name="advanceTotal" title="Advance payment total" scale="2" precision="20" readonly="true"/>
-	<decimal name="amountToBeSpreadOverTheTimetable" title="Amount to be spread over the timetable" scale="2" precision="20" readonly="true"/>
+	<decimal name="amountToBeSpreadOverTheTimetable" title="Amount to be spread over the timetable" scale="2" precision="20" readonly="true" copy="false"/>
     
     <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
   	<decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
@@ -63,7 +64,7 @@
 	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" massUpdate="true"/>
 	
 <!-- 	Onglet description -->
-	<string name="description" title="Description to display" large="true"/>
+	<string name="description" title="Comment to display" large="true"/>
 	<string name="internalNote" title="Internal note" large="true"/>
 
 <!-- 	Onglet Commande Client -->
@@ -90,7 +91,7 @@
 	
 	<one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment" mappedBy="saleOrder" title="Advance Payments"/>
 	<boolean name="advancePaymentNeeded" title="Advance payment needed"/>
-	<decimal name="advancePaymentAmount" title="Advance payment amount"/>
+	<decimal name="advancePaymentAmountNeeded" title="Advance payment amount needed"/>
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
@@ -119,6 +120,12 @@
 	<string name="subscriptionComment" title="Comment" large="true" />
 	<string name="subscriptionText" title="Subscription text to display" large="true" />
 
+	<string name="invoiceComments" title="Comment to display on invoice" large="true"/>
+	<string name="deliveryComments" title="Comment to display on delivery" large="true"/>
+	<string name="pickingOrderComments" title="Comment to display on picking order" large="true"/>
+	
+	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
+	
  	<unique-constraint columns="saleOrderSeq,company"/>
 
     <extra-code>

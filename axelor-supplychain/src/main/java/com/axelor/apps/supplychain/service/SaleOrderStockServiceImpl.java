@@ -97,7 +97,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!this.isSaleOrderWithProductsToDeliver(saleOrder)) {
@@ -187,9 +187,16 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     SupplyChainConfig supplychainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
-    if (supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
+
+    if (supplychainConfig.getDefaultEstimatedDate() != null
+        && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
+    } else if (supplychainConfig.getDefaultEstimatedDate()
+            == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(
+          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     stockMoveService.plan(stockMove);
@@ -299,7 +306,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
     setReservationDateTime(stockMove, saleOrder);
-
+    stockMove.setNote(saleOrder.getDeliveryComments());
+    stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }

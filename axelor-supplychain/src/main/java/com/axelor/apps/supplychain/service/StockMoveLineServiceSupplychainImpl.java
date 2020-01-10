@@ -42,6 +42,9 @@ import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -399,5 +402,19 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return false;
     }
     return true;
+  }
+
+  @Override
+  public void setInvoiceStatus(StockMoveLine stockMoveLine) {
+    if (stockMoveLine.getQtyInvoiced().compareTo(BigDecimal.ZERO) == 0) {
+      stockMoveLine.setAvailableStatus(I18n.get("Not invoiced"));
+      stockMoveLine.setAvailableStatusSelect(3);
+    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == -1) {
+      stockMoveLine.setAvailableStatus(I18n.get("Partially invoiced"));
+      stockMoveLine.setAvailableStatusSelect(4);
+    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == 0) {
+      stockMoveLine.setAvailableStatus(I18n.get("Invoiced"));
+      stockMoveLine.setAvailableStatusSelect(1);
+    }
   }
 }

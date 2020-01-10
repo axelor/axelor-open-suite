@@ -19,6 +19,7 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -27,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -45,6 +47,7 @@ import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -54,9 +57,12 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.ThrowConsumer;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -68,6 +74,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -75,6 +82,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,7 +235,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validateAndVentilate(Invoice invoice) throws AxelorException {
     validate(invoice);
     ventilate(invoice);
@@ -240,7 +248,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Invoice invoice) throws AxelorException {
 
     log.debug("Validation de la facture");
@@ -263,7 +271,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void ventilate(Invoice invoice) throws AxelorException {
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
@@ -309,7 +317,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     invoiceRepo.save(invoice);
     if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
-      Beans.get(InvoicePrintService.class).printAndSave(invoice);
+      Beans.get(InvoicePrintService.class)
+          .printAndSave(
+              invoice,
+              InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
+              ReportSettings.FORMAT_PDF,
+              null);
     }
   }
 
@@ -320,7 +333,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException {
 
     log.debug("Annulation de la facture {}", invoice.getInvoiceId());
@@ -408,7 +421,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    * @throws AxelorException
    */
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException {
 
     log.debug("Créer un avoir pour la facture {}", new Object[] {invoice.getInvoiceId()});
@@ -452,7 +465,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company company,
@@ -840,6 +853,75 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
 
     return true;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void refusalToPay(
+      Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
+    invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
+    invoice.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate());
+    invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
+    invoice.setReasonOfRefusalToPayStr(
+        reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
+
+    invoiceRepo.save(invoice);
+  }
+
+  @Override
+  public User getPfpValidatorUser(Invoice invoice) {
+
+    AccountingSituation accountingSituation =
+        Beans.get(AccountingSituationService.class)
+            .getAccountingSituation(invoice.getPartner(), invoice.getCompany());
+    if (accountingSituation == null) {
+      return null;
+    }
+    return accountingSituation.getPfpValidatorUser();
+  }
+
+  @Override
+  public String getPfpValidatorUserDomain(Invoice invoice) {
+
+    User pfpValidatorUser = getPfpValidatorUser(invoice);
+    if (pfpValidatorUser == null) {
+      return "self.id in (0)";
+    }
+    List<SubstitutePfpValidator> substitutePfpValidatorList =
+        pfpValidatorUser.getSubstitutePfpValidatorList();
+    List<User> validPfpValidatorUserList = new ArrayList<>();
+    StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate();
+
+    validPfpValidatorUserList.add(pfpValidatorUser);
+
+    for (SubstitutePfpValidator substitutePfpValidator : substitutePfpValidatorList) {
+      LocalDate substituteStartDate = substitutePfpValidator.getSubstituteStartDate();
+      LocalDate substituteEndDate = substitutePfpValidator.getSubstituteEndDate();
+
+      if (substituteStartDate == null) {
+        if (substituteEndDate == null || substituteEndDate.isAfter(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        }
+      } else {
+        if (substituteEndDate == null && substituteStartDate.isBefore(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        } else if (substituteStartDate.isBefore(todayDate)
+            && substituteEndDate.isAfter(todayDate)) {
+          validPfpValidatorUserList.add(substitutePfpValidator.getSubstitutePfpValidatorUser());
+        }
+      }
+    }
+
+    pfpValidatorUserDomain
+        .append("(")
+        .append(
+            validPfpValidatorUserList
+                .stream()
+                .map(pfpValidator -> pfpValidator.getId().toString())
+                .collect(Collectors.joining(",")))
+        .append(")");
+    return pfpValidatorUserDomain.toString();
   }
 
   protected boolean checkEnablePDFGenerationOnVentilation(Invoice invoice) throws AxelorException {

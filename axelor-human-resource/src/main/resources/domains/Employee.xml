@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="Employee" cachable="true">
+  <entity name="Employee" cacheable="true">
       
       <one-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" mappedBy="employee"/>
-      <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Contact"/>
+      <one-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Contact"/>
       <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20" />
       <string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" massUpdate="true"/>
       <decimal name="weeklyWorkHours" title="Weekly work hours" scale="2" precision="20" />
@@ -18,7 +18,7 @@
       <boolean name="external" title="External" />
       <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
       <one-to-many name="leaveLineList" title="Leave List" ref="com.axelor.apps.hr.db.LeaveLine" mappedBy="employee"/>
-      <boolean name="negativeValueLeave" title="Allow Negative Value for Leaves"/>
+      <boolean name="negativeValueLeave" title="Allow negative value for leaves"/>
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Default Activity Product"/>
       <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
       <one-to-many name="employmentContractList" ref="com.axelor.apps.hr.db.EmploymentContract" title="Employment contracts" mappedBy="employee"/>
@@ -26,11 +26,17 @@
       <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
       <date name="birthDate" title="Birth date" />
       <string name="maritalStatus" title="Marital status" selection="hr.employee.marital.status"/>
+    <many-to-one name="cityOfBirth" title="City of birth" ref="com.axelor.apps.base.db.City"/>
+    <many-to-one name="citizenship" title="Citizenship" ref="com.axelor.apps.base.db.Citizenship"/>
+    <many-to-one name="departmentOfBirth" title="Department of birth" ref="com.axelor.apps.base.db.Department" help="For foreign-born employees, please enter the code 99"/>
+    <many-to-one name="countryOfBirth" title="Country of birth" ref="com.axelor.apps.base.db.Country"/>
+    <string name="sexSelect" title="Sex" selection="employee.hr.sex.select"/>
       <string name="fixedProPhone" title="Work fixed phone"/>
       <string name="mobileProPhone" title="Work mobile phone"/>
       <string name="phoneAtCustomer" title="Phone at the customer"/>
       <string name="emergencyContact" title="Emergency contact"/>
       <string name="emergencyNumber" title="Phone"/>
+      <string name="emergencyContactRelationship" title="Emergency contact relationship"/>
       <date name="dateOfHire" title="Date of hire" />
       <date name="seniorityDate" title="Seniority date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
@@ -39,7 +45,7 @@
       <string name="socialSecurityNumber"  title="Social security number" encrypted="true"/>
       <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance" title="Employee advances" readonly="true" mappedBy="employee" />
       <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format" selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select" massUpdate="true"/>
-      <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch Voucher Advances" mappedBy="employee" orphanRemoval="true"/>
+      <one-to-many name="lunchVoucherAdvanceList" ref="com.axelor.apps.hr.db.LunchVoucherAdvance" title="Lunch voucher advances" mappedBy="employee" orphanRemoval="true"/>
       <one-to-many name="kilometricLogList" ref="com.axelor.apps.hr.db.KilometricLog" mappedBy="employee"/>
       <decimal name="bonusCoef" title="Coefficient for bonus" />
       <string name="exportCode" title="Export code"/>
@@ -48,17 +54,31 @@
       <string name="companyCbDetails" title="Company credit card details"/>
       <string name="name" title="Name" search="contactPartner">
            <![CDATA[
-	       		if(contactPartner != null) { return contactPartner.getFullName(); }
-	       		return null;
+	       		if(contactPartner != null && contactPartner.getFullName() != null) { return contactPartner.getFullName(); }
+	       		return "";
 	       ]]>
 	       
       </string>
-      
+
+    <!-- New employee wizard -->
+    <integer name="stepByStepSelect" title="Step by step" selection="hr.employee.form.step.by.step.select" default="1"/>
+    <!-- END OF New employee wizard -->
+
+    <!-- DPAE -->
+    <one-to-many name="dpaeList" title="DPAEs" ref="com.axelor.apps.hr.db.DPAE" mappedBy="employee"/>
+    <one-to-many name="employeeFileList" title="Files" ref="com.axelor.apps.hr.db.EmployeeFile" mappedBy="employee" />		
+
+	<string name="maidenName" title="Maiden name"/>
+	<string name="maritalName" title="Marital name"/>
+
       <extra-code>
    		<![CDATA[
    			public static final String TIME_PREFERENCE_DAYS = "days";
    			public static final String TIME_PREFERENCE_HOURS = "hours";
    			public static final String TIME_PREFERENCE_MINUTES = "minutes";
+
+   			public static final String SEX_F = "F";
+   			public static final String SEX_M = "M";
    		]]>
    	</extra-code>
       

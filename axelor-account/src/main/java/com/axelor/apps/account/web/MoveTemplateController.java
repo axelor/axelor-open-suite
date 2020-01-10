@@ -27,12 +27,12 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
@@ -47,17 +47,11 @@ public class MoveTemplateController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject protected MoveTemplateService moveTemplateService;
-
-  @Inject protected MoveTemplateRepository moveTemplateRepo;
-
-  @Inject protected MoveTemplateTypeRepository moveTemplateTypeRepo;
-
   public void checkValidity(ActionRequest request, ActionResponse response) {
     MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-    moveTemplate = moveTemplateRepo.find(moveTemplate.getId());
+    moveTemplate = Beans.get(MoveTemplateRepository.class).find(moveTemplate.getId());
 
-    boolean valid = moveTemplateService.checkValidity(moveTemplate);
+    boolean valid = Beans.get(MoveTemplateService.class).checkValidity(moveTemplate);
 
     if (valid) {
       response.setReload(true);
@@ -75,13 +69,16 @@ public class MoveTemplateController {
       HashMap<String, Object> moveTemplateTypeMap =
           (HashMap<String, Object>) context.get("moveTemplateType");
       MoveTemplateType moveTemplateType =
-          moveTemplateTypeRepo.find(Long.parseLong(moveTemplateTypeMap.get("id").toString()));
+          Beans.get(MoveTemplateTypeRepository.class)
+              .find(Long.parseLong(moveTemplateTypeMap.get("id").toString()));
 
       HashMap<String, Object> moveTemplateMap =
           (HashMap<String, Object>) context.get("moveTemplate");
       MoveTemplate moveTemplate = null;
       if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
-        moveTemplate = moveTemplateRepo.find(Long.parseLong(moveTemplateMap.get("id").toString()));
+        moveTemplate =
+            Beans.get(MoveTemplateRepository.class)
+                .find(Long.parseLong(moveTemplateMap.get("id").toString()));
       }
 
       List<HashMap<String, Object>> dataList =
@@ -104,8 +101,8 @@ public class MoveTemplateController {
       if ((dataList != null && !dataList.isEmpty())
           || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
         List<Long> moveList =
-            moveTemplateService.generateMove(
-                moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
+            Beans.get(MoveTemplateService.class)
+                .generateMove(moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
         if (moveList != null && !moveList.isEmpty()) {
           response.setView(
               ActionView.define(I18n.get(IExceptionMessage.MOVE_TEMPLATE_3))

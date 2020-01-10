@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="ebics-bank-grid" title="Ebics bank" model="com.axelor.apps.bankpayment.db.EbicsBank">
 		<field name="hostId"/>
@@ -17,9 +17,14 @@
 			<field name="emailAddress" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 			<field name="protocolSelect" required="true" />
 			<field name="url" colSpan="12" pattern="http(s)?://.+" />
-			<field name="language" />
+			<field name="language" canEdit="false" />
 			<field name="certValidityPeriodSelect" />
-			<field name="useX509ExtentionForAutoSignedCert"/>
+			<panel name="x509ExtensionForAutoSignedCertPanel" title="X509 extensions for auto signed certificates" colSpan="12">
+				<field name="useX509ExtensionsBasicConstraints" widget="BooleanSwitch"/>
+				<field name="useX509ExtensionsSubjectKeyIdentifier" widget="BooleanSwitch"/>
+				<field name="useX509ExtensionsAuthorityKeyIdentifier" widget="BooleanSwitch"/>
+				<field name="useX509ExtensionsExtendedKeyUsage" widget="BooleanSwitch"/>
+			</panel>
 		</panel>
 
 		<panel-related name="ebicsCertificateListPanel" field="ebicsCertificateList" form-view="ebics-certificate-form" grid-view="ebics-certificate-grid"/>
@@ -27,6 +32,11 @@
 		<panel-dashlet name="ebicsBankDetailsPanel" hideIf="!bank" action="action-ebics-bank-view-bank-details"/>
 		
 		<panel-dashlet name="ebicsUsersPanel" action="action-ebics-bank-view-ebics-users"/>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
 
 	<action-record name="action-ebics-bank-record-onchange-bank" model="com.axelor.apps.bankpayment.db.EbicsBank">

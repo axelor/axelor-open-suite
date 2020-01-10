@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -78,6 +78,9 @@
     <long name="originId" title="Origin Id" />
     <string name="origin" readonly="true" title="Origin"/>
 	<boolean name="availabilityRequest" title="Availability request"/>
+
+    <many-to-one name="stockCorrectionReason" ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Correction Reason"/>
+
 	<boolean name="pickingIsEdited" title="Picking order is edited"/>
 	<date name="pickingEditDate" title="Picking order edit date"/>
     <enum name="modeOfTransport" ref="com.axelor.apps.stock.db.ModeOfTransport"/>
@@ -88,6 +91,7 @@
 
     <many-to-one name="reversionOriginStockMove" title="Origin stock move" ref="com.axelor.apps.stock.db.StockMove"/>
     
+    <string name="pickingOrderComments" title="Comment to display on picking order" large="true"/>
     <unique-constraint columns="stockMoveSeq,company"/>
     
     <extra-code><![CDATA[
@@ -118,6 +122,7 @@
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
 	
 		public static final String ORIGIN_INVENTORY = "com.axelor.apps.stock.db.Inventory";
+		public static final String ORIGIN_STOCK_CORRECTION = "com.axelor.apps.stock.db.StockCorrection";
 	]]></extra-code>
 	
 	<track>

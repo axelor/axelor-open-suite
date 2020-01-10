@@ -26,12 +26,15 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.WapHistory;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.db.repo.WapHistoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -53,14 +56,32 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject protected StockLocationLineRepository stockLocationLineRepo;
+  protected StockLocationLineRepository stockLocationLineRepo;
 
-  @Inject protected StockRulesService stockRulesService;
+  protected StockRulesService stockRulesService;
 
-  @Inject protected StockMoveLineRepository stockMoveLineRepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
+
+  protected AppBaseService appBaseService;
+
+  protected WapHistoryRepository wapHistoryRepo;
+
+  @Inject
+  public StockLocationLineServiceImpl(
+      StockLocationLineRepository stockLocationLineRepo,
+      StockRulesService stockRulesService,
+      StockMoveLineRepository stockMoveLineRepository,
+      AppBaseService appBaseService,
+      WapHistoryRepository wapHistoryRepo) {
+    this.stockLocationLineRepo = stockLocationLineRepo;
+    this.stockRulesService = stockRulesService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
+    this.appBaseService = appBaseService;
+    this.wapHistoryRepo = wapHistoryRepo;
+  }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -98,7 +119,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateLocation(
       StockLocation stockLocation,
       Product product,
@@ -230,7 +251,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateDetailLocation(
       StockLocation stockLocation,
       Product product,
@@ -518,7 +539,22 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+    StockLocationLine detailStockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLine != null) {
+      availableQty = detailStockLocationLine.getCurrentQty();
+    }
+    return availableQty;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException {
 
@@ -555,7 +591,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         avgQty = oldQty.divide(currentQty, scale, RoundingMode.HALF_UP);
       }
       BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
-      stockLocationLine.setAvgPrice(newAvgPrice.setScale(scale, RoundingMode.HALF_UP));
+      updateWap(stockLocationLine, newAvgPrice.setScale(scale, RoundingMode.HALF_UP));
     }
     return stockLocationLine;
   }
@@ -654,5 +690,70 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
     }
     return stockMoveLineQuery.fetch();
+  }
+
+  @Override
+  public String getStockLocationLineListForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.stockLocation.typeSelect != "
+            + StockLocationRepository.TYPE_VIRTUAL;
+
+    if (companyId != 0L) {
+      query += " AND self.stockLocation.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        StockLocation stockLocation =
+            Beans.get(StockLocationRepository.class).find(stockLocationId);
+        List<StockLocation> stockLocationList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocation(stockLocation, false);
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
+          query +=
+              " AND self.stockLocation.id IN ("
+                  + StringTool.getIdListString(stockLocationList)
+                  + ") ";
+        }
+      }
+    }
+    return query;
+  }
+
+  @Override
+  public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId) {
+    String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
+    query +=
+        " AND (self.currentQty != 0 OR self.futureQty != 0) "
+            + " AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)";
+    return query;
+  }
+
+  @Override
+  public String getRequestedReservedQtyForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+    String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
+    query += " AND self.requestedReservedQty > 0";
+    return query;
+  }
+
+  @Override
+  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap) {
+    updateWap(stockLocationLine, wap, null);
+  }
+
+  @Override
+  public void updateWap(
+      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine) {
+    stockLocationLine.setAvgPrice(wap);
+    wapHistoryRepo.save(
+        new WapHistory(
+            stockLocationLine,
+            appBaseService.getTodayDate(),
+            wap,
+            stockLocationLine.getCurrentQty(),
+            stockLocationLine.getUnit(),
+            stockMoveLine));
   }
 }

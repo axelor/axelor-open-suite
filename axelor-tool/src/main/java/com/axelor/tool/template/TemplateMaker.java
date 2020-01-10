@@ -27,10 +27,10 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.rpc.Resource;
-import com.beust.jcommander.internal.Maps;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,6 +91,14 @@ public class TemplateMaker {
   public void setContext(Model model, Map<String, Object> map, String nameInContext) {
     Preconditions.checkNotNull(model);
     this.context = makeContext(nameInContext, model, map);
+  }
+
+  public void addContext(String nameInContext, Object object) {
+    if (this.context == null) {
+      this.context = Maps.newHashMap();
+    }
+
+    this.context.put(nameInContext, object);
   }
 
   private Map<String, Object> makeContext(

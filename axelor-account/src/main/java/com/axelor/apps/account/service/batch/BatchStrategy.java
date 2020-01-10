@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.account.service.batch;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
@@ -47,6 +49,7 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
@@ -168,6 +171,24 @@ public abstract class BatchStrategy extends AbstractBatch {
     accountingReport.addBatchSetItem(batchRepo.find(batch.getId()));
 
     incrementDone();
+  }
+
+  protected void updateAccount(Account account) {
+
+    account.addBatchSetItem(batchRepo.find(batch.getId()));
+
+    incrementDone();
+  }
+
+  protected void updateAccountMove(Move move, boolean incrementDone) {
+
+    move.addBatchSetItem(Beans.get(BatchRepository.class).find(batch.getId()));
+
+    if (incrementDone) {
+      incrementDone();
+    } else {
+      checkPoint();
+    }
   }
 
   public void testAccountingBatchBankDetails(AccountingBatch accountingBatch)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	  
 	  
 		
@@ -691,7 +691,7 @@
 	
 	<chart onInit="action.crm.chart.default.month.value.6m" name="chart.created.leads.per.month" title="Created leads per month">
 	  <search-fields>
-	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
+	    <field type="string" name="monthSelect" title="Historical Period" selection="base.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">  
 	  SELECT

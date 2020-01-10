@@ -76,7 +76,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<AccountingSituation> createAccountingSituation(Partner partner)
       throws AxelorException {
     Set<Company> companySet = partner.getCompanySet();
@@ -93,7 +93,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public AccountingSituation createAccountingSituation(Partner partner, Company company)
       throws AxelorException {
     AccountingSituation accountingSituation = new AccountingSituation();
@@ -135,7 +135,8 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
     }
 
     for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
-      if (accountingSituation.getCompany().equals(company)) {
+      if (accountingSituation.getCompany() != null
+          && accountingSituation.getCompany().equals(company)) {
         return accountingSituation;
       }
     }
@@ -144,7 +145,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createPartnerAccounts(AccountingSituation situation) throws AxelorException {
     AccountConfig accountConfig = situation.getCompany().getAccountConfig();
     int creationMode;

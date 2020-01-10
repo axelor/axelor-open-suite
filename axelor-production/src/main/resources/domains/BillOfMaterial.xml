@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -34,7 +34,6 @@
      	
     <string name="note" large="true"/>
 
-    
     <extra-code><![CDATA[
 
     	// STATUS SELECT
@@ -44,5 +43,26 @@
     	public static final int STATUS_OBSOLETE = 4;
 
     ]]></extra-code>
+
+    <track>
+    	<field name="name"/>
+    	<field name="product"/>
+    	<field name="qty"/>
+    	<field name="priority"/>
+    	<field name="defineSubBillOfMaterial"/>
+    	<field name="unit"/>
+    	<field name="prodProcess"/>
+    	<field name="costPrice"/>
+    	<field name="company"/>
+    	<field name="hasNoManageStock"/>
+    	<field name="personalized"/>
+    	<field name="wasteRate"/>
+    	<field name="statusSelect"/>
+    	<field name="workshopStockLocation"/>
+    	<field name="fullName"/>
+    	<field name="versionNumber"/>
+    	<field name="originalBillOfMaterial"/>
+    	<field name="note"/>
+    </track>
   </entity>
 </domain-models>

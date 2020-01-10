@@ -20,7 +20,6 @@ package com.axelor.apps.marketing.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.Campaign;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
 
@@ -34,21 +33,21 @@ public interface CampaignService {
 
   public void generateTargets(Campaign campaign);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void inviteAllTargets(Campaign campaign);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void inviteSelectedTargets(Campaign campaign, Campaign campaignContext);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addParticipatingTargets(Campaign campaign, Campaign campaignContext);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addNotParticipatingTargets(Campaign campaign, Campaign campaignContext);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void markLeadPresent(Campaign campaign, Lead lead);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void markPartnerPresent(Campaign campaign, Partner partner);
 }

@@ -32,7 +32,7 @@ public class IndicatorGeneratorService {
 
   @Inject private IndicatorGeneratorRepository indicatorGeneratorRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public String run(IndicatorGenerator indicatorGenerator) throws AxelorException {
 
     String log = "";

@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="quality-control-grid" title="Quality controls" model="com.axelor.apps.quality.db.QualityControl">
+		<toolbar>
+			<button name="sendEmailBtn" title="Send email" onClick="action-quality-control-method-send-email"/>
+		</toolbar>
 		<field name="reference" width="120"/>
-		<field name="product"/>
-		<field name="qualityProcess"/>
+		<field name="name"/>
+		<field name="project"/>
 		<field name="team"/>
 		<field name="responsible"/>
 	</grid>
 	
 	<calendar name="quality-control-calendar" title="Quality control calendar" mode="month" colorBy="statusSelect" 
     	eventStart="startDate" eventStop="endDate" eventLength="1" model="com.axelor.apps.quality.db.QualityControl">
-    	<field name="fullName"/>
+    	<field name="reference"/>
  	</calendar>
 	
 	<form name="quality-control-form" title="Quality controls" model="com.axelor.apps.quality.db.QualityControl" onNew="action-quality-control-group-onnew-actions" onLoad="action-quality-control-group-onload-actions">
-		<panel name="statusSelectPanel" title="Status">
+		<menubar>
+			<menu title="Tools">
+				<item title="Print" action="save,action-quality-control-method-print" showIf="statusSelect == 6"/>
+				<item title="Send email" action="save,action-quality-control-method-send-email" showIf="statusSelect == 6"/>
+			</menu>
+		</menubar>
+		<panel name="mainPanel" title="Status" showTitle="false">
 			<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12" />
-		</panel>
-		<panel name="detailsPanel">
-			<field name="reference"/>
-			<field name="product"/>
-			<field name="qualityProcess"/>
-			<field name="team" domain="self.typeSelect = 'quality'"/>
+			<field name="reference" showTitle="false" colSpan="12" css="label-bold bold large"/>
+			<field name="name"/>
+			<field name="project" required="true" onChange="action-quality-control-record-set-printing-setting-on-project-change"/>
 			<field name="responsible"/>
+			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
 			<field name="deadLineDate"/>
@@ -33,29 +40,51 @@
 			<button name="planBtn" title="Plan" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-quality-control-record-status-planned,save"/>
 			<button name="startBtn" title="Start" showIf="statusSelect == 3 || statusSelect == 5" onClick="save,action-quality-control-record-status-in-progress,save"/>
 			<button name="pauseBtn" title="Pause" showIf="statusSelect == 4" onClick="save,action-quality-control-record-status-pause,save"/>
-			<button name="finishBtn" title="Finish" showIf="statusSelect == 4" onClick="save,action-quality-control-record-status-finish,save"/>
+			<button name="finishBtn" title="Finish" showIf="statusSelect == 4" onClick="action-quality-control-group-status-finish"/>
 			<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 3 || statusSelect == 4" onClick="save,action-quality-control-record-status-canceled,save"/>
 		</panel>
-		<panel name="controlPointPanel">
-			<panel-related name="controlPointListPanel" field="controlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" onChange="action-quality-control-attrs-readonly-plan-button" onNew="save"/>
+		<panel name="listsPanel">
+			<panel-related name="controlPointListPanel" field="controlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" onChange="action-quality-control-attrs-readonly-plan-button" onNew="save" orderBy="sequence" canMove="true"/>
+			<panel-related name="optionalControlPointListPanel" field="optionalControlPointList" colSpan="12" grid-view="control-point-grid" form-view="control-point-form" hidden="true"/>
+			<panel-related name="qualityCorrectiveActionListPanel" field="qualityCorrectiveActionList" colSpan="12" grid-view="quality-corrective-action-grid" form-view="quality-corrective-action-form"/>
+			<field name="inspectorSignature" widget="Image"/>
+			<field name="customerSignature" widget="Image"/>
 		</panel>
-		<panel name="controlPointsPanel" sidebar="true">
-			<button name="preFillControlPointsBtn" title="Pre-fill control points" onClick="save,action-quality-control-method-pre-fill-operations" showIf="statusSelect == 1"/>
+		<panel name="controlPointsPanel" sidebar="true" hideIf="statusSelect == 2 || statusSelect == 6">
+			<button name="chooseQualityProcessBtn" title="Choose quality process" onClick="save,action-quality-control-view-quality-process" showIf="statusSelect == 1"/>
+			<button name="addOptionalControlPointsBtn" title="Add optional control points" onClick="save,action-quality-control-view-optional-control-points"/>
 			<button name="editControlPointsBtn" title="Edit control points" onClick="action-quality-control-method-open-control-points"/>
+		</panel>
+		<panel name="configPanel" title="Configuration">
+			<field name="printingSettings" canEdit="false"/>
 		</panel>
 		<panel-mail name="mailPanel">
 		  <mail-messages />
 	   	</panel-mail>
 	</form>	
-	
+
+	<form name="wizard-quality-process-form" title="Choose quality process" model="com.axelor.apps.base.db.Wizard">
+		<panel name="wizardPanel">
+			<field name="qualityProcess" title="Quality process" type="many-to-one" target="com.axelor.apps.quality.db.QualityProcess"/>
+			<button name="preFillControlPointsBtn" colSpan="4" title="Pre-fill control points" readonlyIf="qualityProcess == null" onClick="action-quality-control-method-pre-fill-operations"/>
+		</panel>
+	</form>
+
+	<form name="wizard-optional-control-points-form" title="Add optional control points" model="com.axelor.apps.base.db.Wizard">
+		<panel name="wizardPanel">
+			<field name="optionalControlPointSet" title="Optional control points" type="many-to-many" target="com.axelor.apps.quality.db.ControlPoint" domain="self.optionalQualityControl = :_qualityControl" canNew="false" colSpan="12"/>
+			<button name="preFillControlPointsBtn" colSpan="4" title="Pre-fill control points" readonlyIf="optionalControlPointSet == null" onClick="action-quality-control-method-pre-fill-operations-from-optionals"/>
+		</panel>
+	</form>
+
 	<kanban columnBy="statusSelect" sequenceBy="sequence"
 	 name="quality-control-kanban" title="Quality control" model="com.axelor.apps.quality.db.QualityControl">
-		<field name="fullName"/>
+		<field name="reference"/>
 		<field name="team"/>
 		<field name="responsible"/>
 		<template>
             <![CDATA[
-            <h4>{{fullName}}</h4>
+            <h4>{{reference}}</h4>
             <div class="card-body">{{team.name}}</div>
             <div class="card-body">{{responsible.name}}</div>
     		]]>
@@ -65,19 +94,21 @@
 	
 	<action-group name="action-quality-control-group-onnew-actions">
 		<action name="action-quality-control-record-default"/>
-		<action name="action-quality-control-attrs-hide-quality-control-on-grid"/>
 		<action name="action-quality-control-attrs-readonly-plan-button"/>
 	</action-group>
 	
 	<action-group name="action-quality-control-group-onload-actions">
-		<action name="action-quality-control-attrs-hide-quality-control-on-grid"/>
 		<action name="action-quality-control-attrs-readonly-plan-button"/>
 	</action-group>
-    
-    <action-attrs name="action-quality-control-attrs-hide-quality-control-on-grid">
-		<attribute name="hidden" for="controlPointList.qualityControl" expr="true"/>
-	</action-attrs>
-    
+
+	<action-group name="action-quality-control-group-status-finish">
+		<action name="save"/>
+		<action name="action-quality-control-validate-control-points-on-finish"/>
+		<action name="action-quality-control-record-status-finish"/>
+		<action name="save"/>
+		<action name="action-quality-control-method-send-email" if="__config__.app.getApp('quality').getAutomaticMail()"/>
+	</action-group>
+
 	<action-record name="action-quality-control-record-default" model="com.axelor.apps.quality.db.QualityControl">
 		<field name="statusSelect" expr="eval: 1"/>
 	</action-record>
@@ -113,7 +144,49 @@
     <action-attrs name="action-quality-control-attrs-readonly-plan-button">
 		<attribute name="readonly" expr="eval:controlPointList == null || controlPointList.isEmpty()" for="planBtn"/>
     </action-attrs>
-	
+
+	<action-view name="action-quality-control-view-quality-process" title="Choose quality process" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-quality-process-form"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="width" value="800"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<context name="_qualityControl" expr="eval:__self__"/>
+	</action-view>
+
+	<action-view name="action-quality-control-view-optional-control-points" title="Add optional control points" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-optional-control-points-form"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="width" value="800"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<context name="_qualityControl" expr="eval:__self__"/>
+	</action-view>
+
+    <action-method name="action-quality-control-method-pre-fill-operations-from-optionals">
+		<call class="com.axelor.apps.quality.web.QualityControlController" method="preFillOperationsFromOptionals"/>
+    </action-method>
+
+    <action-method name="action-quality-control-method-print">
+		<call class="com.axelor.apps.quality.web.QualityControlController" method="printQualityControl"/>
+    </action-method>
+
+    <action-method name="action-quality-control-method-send-email">
+    	<call class="com.axelor.apps.quality.web.QualityControlController" method="sendEmail"/>
+    </action-method>
+
+	<action-validate name="action-quality-control-validate-control-points-on-finish">
+		<error message="Please complete all control points" if="controlPointList != null &amp;&amp; controlPointList.any{it?.statusSelect != 2}"/>
+	</action-validate>
+
+	<action-record name="action-quality-control-record-set-printing-setting-on-project-change" model="com.axelor.apps.quality.db.QualityControl">
+		<field name="printingSettings" expr="eval: project?.company?.printingSettings" if="project != null &amp;&amp; project?.company != null"/>
+	</action-record>
+
 	<search-filters name="quality-control-filters" model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
 		<filter title="My quality controls">
 			<domain>self.responsible.user.id = :_userId</domain>

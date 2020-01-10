@@ -18,7 +18,7 @@
 package com.axelor.apps.bankpayment.service.batch;
 
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ public class BatchDirectDebitMonthlyPaymentSchedule extends BatchDirectDebitPaym
         findBatch();
         batchBankPaymentService.createBankOrderFromMonthlyPaymentScheduleLines(batch);
       } catch (Exception e) {
-        TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.DIRECT_DEBIT, batch.getId());
         logger.error(e.getLocalizedMessage());
       }
     }

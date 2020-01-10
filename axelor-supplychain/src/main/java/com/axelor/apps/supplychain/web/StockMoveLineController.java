@@ -19,17 +19,15 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class StockMoveLineController {
-
-  @Inject private StockMoveLineRepository stockMoveLineRepo;
 
   public void getProductPrice(ActionRequest request, ActionResponse response) {
 
@@ -113,7 +111,7 @@ public class StockMoveLineController {
 
     if (titleMoveLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
       if (titleMoveLine.getId() != null) {
-        StockMoveLine line = stockMoveLineRepo.find(titleMoveLine.getId());
+        StockMoveLine line = Beans.get(StockMoveLineRepository.class).find(titleMoveLine.getId());
         if (line.getQty().compareTo(BigDecimal.ZERO) != 0) {
           oldKitQty = line.getQty();
         }
@@ -143,7 +141,7 @@ public class StockMoveLineController {
 
     if (titleMoveLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
       if (titleMoveLine.getId() != null) {
-        StockMoveLine line = stockMoveLineRepo.find(titleMoveLine.getId());
+        StockMoveLine line = Beans.get(StockMoveLineRepository.class).find(titleMoveLine.getId());
         if (line.getQty().compareTo(BigDecimal.ZERO) != 0) {
           oldKitQty = line.getQty();
         }

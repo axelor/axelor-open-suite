@@ -39,7 +39,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -53,14 +52,6 @@ import java.util.TreeSet;
 
 @Singleton
 public class StockMoveLineController {
-
-  @Inject protected StockMoveLineService stockMoveLineService;
-
-  @Inject protected StockMoveLineRepository stockMoveLineRepo;
-
-  @Inject protected StockLocationRepository stockLocationRepo;
-
-  @Inject protected StockLocationLineService stocklocationLineService;
 
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
@@ -76,7 +67,7 @@ public class StockMoveLineController {
         return;
       }
     }
-    stockMoveLine = stockMoveLineService.compute(stockMoveLine, stockMove);
+    stockMoveLine = Beans.get(StockMoveLineService.class).compute(stockMoveLine, stockMove);
     response.setValue("valuatedUnitPrice", stockMoveLine.getValuatedUnitPrice());
   }
 
@@ -98,7 +89,8 @@ public class StockMoveLineController {
         return;
       }
 
-      stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
+      Beans.get(StockMoveLineService.class)
+          .setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
       response.setValues(stockMoveLine);
     } catch (Exception e) {
       stockMoveLine = new StockMoveLine();
@@ -136,7 +128,8 @@ public class StockMoveLineController {
       ArrayList<LinkedHashMap<String, Object>> trackingNumbers =
           (ArrayList<LinkedHashMap<String, Object>>) context.get("trackingNumbers");
 
-      stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMoveLine, trackingNumbers);
+      Beans.get(StockMoveLineService.class)
+          .splitStockMoveLineByTrackingNumber(stockMoveLine, trackingNumbers);
       response.setCanClose(true);
     }
   }
@@ -182,7 +175,7 @@ public class StockMoveLineController {
     StockMoveLine stockMoveLineContext = context.asType(StockMoveLine.class);
     StockMoveLine stockMoveLine = null;
     if (stockMoveLineContext.getId() != null) {
-      stockMoveLine = stockMoveLineRepo.find(stockMoveLineContext.getId());
+      stockMoveLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLineContext.getId());
       if (stockMoveLineContext.getProduct() != null
           && !stockMoveLineContext.getProduct().equals(stockMoveLine.getProduct())) {
         stockMoveLine = stockMoveLineContext;
@@ -198,15 +191,15 @@ public class StockMoveLineController {
       Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
 
       stockLocation =
-          stockLocationRepo.find(
-              Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
+          Beans.get(StockLocationRepository.class)
+              .find(Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
 
     } else if (stockMoveLine.getStockMove() != null) {
       stockLocation = stockMoveLine.getStockMove().getFromStockLocation();
     }
 
     if (stockLocation != null) {
-      stockMoveLineService.updateAvailableQty(stockMoveLine, stockLocation);
+      Beans.get(StockMoveLineService.class).updateAvailableQty(stockMoveLine, stockLocation);
       response.setValue("$availableQty", stockMoveLine.getAvailableQty());
       response.setValue("$availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
     }
@@ -219,13 +212,14 @@ public class StockMoveLineController {
         context.getParent() != null
             ? context.getParent().asType(StockMove.class)
             : stockMoveLine.getStockMove();
-    String domain = stockMoveLineService.createDomainForProduct(stockMoveLine, stockMove);
+    String domain =
+        Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
     response.setAttr("product", "domain", domain);
   }
 
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-    stockMoveLineService.setAvailableStatus(stockMoveLine);
+    Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
     response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
     response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
   }
@@ -253,7 +247,7 @@ public class StockMoveLineController {
     }
 
     List<TrackingNumber> trackingNumberList =
-        stockMoveLineService.getAvailableTrackingNumbers(stockMoveLine, stockMove);
+        Beans.get(StockMoveLineService.class).getAvailableTrackingNumbers(stockMoveLine, stockMove);
     if (trackingNumberList == null || trackingNumberList.isEmpty()) {
       return;
     }
@@ -261,9 +255,10 @@ public class StockMoveLineController {
     SortedSet<Map<String, Object>> trackingNumbers =
         new TreeSet<Map<String, Object>>(
             Comparator.comparing(m -> (String) m.get("trackingNumberSeq")));
+    StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
     for (TrackingNumber trackingNumber : trackingNumberList) {
       StockLocationLine detailStockLocationLine =
-          stocklocationLineService.getDetailLocationLine(
+          stockLocationLineService.getDetailLocationLine(
               stockMove.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
       BigDecimal availableQty =
           detailStockLocationLine != null

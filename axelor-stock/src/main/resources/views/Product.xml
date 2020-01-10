@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <action-record name="action-product-set-stock" model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
-        <field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null)" if="__config__.app.isApp('stock')" />
-        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null)" if="__config__.app.isApp('stock')" />
-        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null)" if="__config__.app.isApp('supplychain')" />
+        <field name="$realQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null,null)" if="__config__.app.isApp('stock')" />
+        <field name="$futureQtyBtn" expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null,null)" if="__config__.app.isApp('stock')" />
+        <field name="$reservedQtyBtn" expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null,null)" if="__config__.app.isApp('supplychain')" />
     </action-record>
     
     <action-record name="action-product-record-service-stock-managed" model="com.axelor.apps.base.db.Product">
@@ -105,5 +105,12 @@
 	<action-record name="action-stock-product-record-stock-managed-onchange" model="com.axelor.apps.base.db.Product">
 		<field name="excludeFromMrp" expr="eval: !stockManaged"/>
 	</action-record>
+
+	<action-view name="action-stock-view-stock-rule" title="Stock rule" model="com.axelor.apps.stock.db.StockRules">
+		<view type="grid" name="stock-rule-product-grid"/>
+		<view type="form" name="stock-rules-form"/>
+		<domain>self.product.id = :_id</domain>
+		<context name="_id" expr="eval: id"/>
+	</action-view>
 
 </object-views>

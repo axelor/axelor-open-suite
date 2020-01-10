@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="quality-corrective-action-grid" title="Corrective actions" model="com.axelor.apps.quality.db.QualityCorrectiveAction" edit-icon="true">
+		<field name="name" width="200"/>
+		<field name="details" width="650"/>
+		<field name="isApplicable" width="150"/>
+	</grid>
+
+	<grid name="quality-corrective-action-model-grid" title="Corrective actions" model="com.axelor.apps.quality.db.QualityCorrectiveAction" edit-icon="true">
+		<field name="name"/>
+		<field name="details"/>
+	</grid>
+
+	<form name="quality-corrective-action-form" title="Corrective actions" model="com.axelor.apps.quality.db.QualityCorrectiveAction">
+		<panel name="mainPanel">
+			<field name="name" colSpan="8"/>
+			<field name="isApplicable" colSpan="4" widget="boolean-switch"/>
+			<field name="details" colSpan="12" widget="html"/>
+		</panel>
+	</form>
+
+	<form name="quality-corrective-action-model-form" title="Corrective actions" model="com.axelor.apps.quality.db.QualityCorrectiveAction">
+		<panel name="mainPanel">
+			<field name="name"/>
+			<field name="details" colSpan="12" widget="html"/>
+		</panel>
+	</form>
+
+</object-views>

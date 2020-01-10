@@ -19,6 +19,7 @@ package com.axelor.apps.hr.web;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.report.IReport;
@@ -27,21 +28,25 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
 @Singleton
 public class EmployeeController {
 
-  @Inject private EmployeeService employeeService;
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void showAnnualReport(ActionRequest request, ActionResponse response)
       throws JSONException, NumberFormatException, AxelorException {
@@ -72,26 +77,68 @@ public class EmployeeController {
   public void setEmployeeSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 
     Employee employee = request.getContext().asType(Employee.class);
-    Map<String, String> urlMap =
-        employeeService.getSocialNetworkUrl(
-            employee.getContactPartner().getName(), employee.getContactPartner().getFirstName());
-    response.setAttr("contactPartner.googleLabel", "title", urlMap.get("google"));
-    response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
-    response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+    if (employee.getContactPartner() != null) {
+      Map<String, String> urlMap =
+          Beans.get(EmployeeService.class)
+              .getSocialNetworkUrl(
+                  employee.getContactPartner().getName(),
+                  employee.getContactPartner().getFirstName());
+      response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
+      response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
+      response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
+      response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+    }
   }
 
   public void setContactSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 
     Partner partnerContact = request.getContext().asType(Partner.class);
     Map<String, String> urlMap =
-        employeeService.getSocialNetworkUrl(
-            partnerContact.getName(), partnerContact.getFirstName());
-    response.setAttr("googleLabel", "title", urlMap.get("google"));
+        Beans.get(EmployeeService.class)
+            .getSocialNetworkUrl(partnerContact.getName(), partnerContact.getFirstName());
     response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
     response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
     response.setAttr("youtubeLabel", "title", urlMap.get("youtube"));
+  }
+
+  public void printEmployeePhonebook(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    User user = AuthUtils.getUser();
+
+    String name = I18n.get("Employee PhoneBook");
+
+    String fileLink =
+        ReportFactory.createReport(IReport.EMPLOYEE_PHONEBOOK, name + "-${date}")
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("UserId", user.getId())
+            .generate()
+            .getFileLink();
+
+    LOG.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  public void generateNewDPAE(ActionRequest request, ActionResponse response) {
+    Employee employee = request.getContext().asType(Employee.class);
+    employee = Beans.get(EmployeeRepository.class).find(employee.getId());
+
+    try {
+      Long dpaeId = Beans.get(EmployeeService.class).generateNewDPAE(employee);
+
+      ActionViewBuilder builder =
+          ActionView.define(I18n.get("DPAE"))
+              .model(DPAE.class.getName())
+              .add("grid", "dpae-grid")
+              .add("form", "dpae-form")
+              .context("_showRecord", dpaeId);
+      response.setView(builder.map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+
+    response.setReload(true);
   }
 }

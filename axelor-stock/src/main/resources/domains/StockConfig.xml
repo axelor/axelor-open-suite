@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockConfig" lang="java" cachable="true">
+  <entity name="StockConfig" lang="java" cacheable="true">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
@@ -25,6 +25,10 @@
     <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization" default="false"/>
     <many-to-one name="plannedStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
     <many-to-one name="realStockMoveMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+
+    <boolean name="logisticalFormAutomaticEmail" title="Send email when saving logistical form" default="false"/>
+    <many-to-one name="logisticalFormMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+
     <one-to-many name="freightCarrierCustomerAccountNumberList" ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber" title="Customer account numbers to carriers" mappedBy="stockConfig"/>
 
     <string name="conformityCertificateTitle" title="Certificate of conformity title" translatable="true"/>
@@ -45,11 +49,12 @@
 	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing"/>
 	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing"/>
 	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"/>
-	<integer name="stockLocationValue" title="Stock location value on form view" selection="stock.stock.location.value.type" />
+	<integer name="stockValuationTypeSelect" title="Stock location value on form view" selection="stock.stock.location.value.type" />
 
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
 	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
-	
+	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+
 	<track>
 		<field name="company" on="UPDATE"/>
 		
@@ -87,8 +92,11 @@
 		<field name="pickingOrderPrintingDetailed" on="UPDATE"/>
 		<field name="isDisplaySaleValueInPrinting" on="UPDATE"/>
 		<field name="isDisplayAccountingValueInPrinting" on="UPDATE"/>
+		<field name="isDisplayAgPriceInPrinting" on="UPDATE"/>
+		<field name="stockValuationTypeSelect" on="UPDATE"/>
 		
 		<field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
+		<field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
 	</track>
   </entity>
   

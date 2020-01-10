@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="contract-template-grid" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
-       <field name="name"/>
-       <field name="targetTypeSelect"/>
-       <field name="company"/>
-    </grid>
+	<grid name="contract-template-grid" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
+		<field name="name"/>
+		<field name="targetTypeSelect"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	</grid>
 
     <form name="contract-template-form" title="Contract template" model="com.axelor.apps.contract.db.ContractTemplate" width="large" onNew="action-contract-template-record-default-record-onnew" readonlyIf="statusSelect == 3">
         <panel name="mainPanel">

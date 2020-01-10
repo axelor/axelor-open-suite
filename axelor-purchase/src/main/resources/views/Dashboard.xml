@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 <!--   	Purchase Buyer Dashboard -->
 	
@@ -41,21 +41,21 @@
     	<context name="_active_company" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
-	<action-view name="dashlet.my.purchase.per.product.family.volume" title="My purchased qty by product family"
+	<action-view name="dashlet.my.purchase.per.product.family.volume" title="My purchased qty by product accounting family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.per.product.family.volume"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
-	<action-view name="dashlet.my.purchase.amount.per.product.family" title="My purchased amount by product family"
+	<action-view name="dashlet.my.purchase.amount.per.product.family" title="My purchased amount by product accounting family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.amount.per.product.family"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
-	<action-view name="dashlet.purchase.amount.per.product.family" title="Purchased amount by product family"
+	<action-view name="dashlet.purchase.amount.per.product.family" title="Purchased amount by product accounting family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.purchase.amount.per.product.family"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
@@ -107,19 +107,19 @@
 		<domain>self.statusSelect = 3</domain>
 	</action-view>
 	
-	<action-view name="dashlet.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by family">
+	<action-view name="dashlet.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by accounting family">
 	  <view type="chart" name="chart.purchase.order.volume.by.buyer.by.family"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 
 	</action-view>
 	
-	<action-view name="dashlet.purchase.order.amount.by.family" title="Purchased amount by family">
+	<action-view name="dashlet.purchase.order.amount.by.family" title="Purchased amount by accounting family">
 	  <view type="chart" name="chart.purchase.order.amount.by.family"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 
 	</action-view>
 	
-	<action-view name="dashlet.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by family">
+	<action-view name="dashlet.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by accounting family">
 	  <view type="chart" name="chart.purchase.order.amount.distribution.by.family"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 

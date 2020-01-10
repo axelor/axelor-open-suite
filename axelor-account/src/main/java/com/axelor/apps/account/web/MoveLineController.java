@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -24,6 +25,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -141,7 +143,7 @@ public class MoveLineController {
     List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
 
     try {
-      if (idList != null) {
+      if (idList != null && !idList.isEmpty()) {
         MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
         for (Integer id : idList) {
           if (id != null) {
@@ -191,6 +193,14 @@ public class MoveLineController {
       response.setValues(moveLine);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void filterPartner(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().getParent().asType(Move.class);
+    if (move != null) {
+      String domain = Beans.get(MoveService.class).filterPartner(move);
+      response.setAttr("partner", "domain", domain);
     }
   }
 }

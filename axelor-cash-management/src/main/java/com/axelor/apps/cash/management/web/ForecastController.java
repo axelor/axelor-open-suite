@@ -23,17 +23,14 @@ import com.axelor.apps.cash.management.service.ForecastService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 
 public class ForecastController {
-
-  @Inject protected ForecastService forecastService;
 
   public void generate(ActionRequest request, ActionResponse response) {
     ForecastGenerator forecastGenerator = request.getContext().asType(ForecastGenerator.class);
     forecastGenerator =
         Beans.get(ForecastGeneratorRepository.class).find(forecastGenerator.getId());
-    forecastService.generate(forecastGenerator);
+    Beans.get(ForecastService.class).generate(forecastGenerator);
     response.setReload(true);
   }
 }

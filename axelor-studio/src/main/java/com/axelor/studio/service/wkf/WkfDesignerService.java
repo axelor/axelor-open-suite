@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.service.wkf;
 
+import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.Inflector;
 import com.axelor.inject.Beans;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,9 +181,9 @@ public class WkfDesignerService {
 
     Map<String, WkfNode> nodeMap = new HashMap<>();
     if (instance != null) {
-      List<WkfNode> nodes =
+      List<WkfNode> wkfNodes =
           wkfNodeRepository.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
-      for (WkfNode node : nodes) {
+      for (WkfNode node : wkfNodes) {
         nodeMap.put(node.getXmlId(), node);
         nodeSequences.add(node.getSequence());
       }
@@ -198,9 +198,9 @@ public class WkfDesignerService {
 
     Map<String, WkfTransition> transitionMap = new HashMap<>();
     if (instance != null) {
-      List<WkfTransition> transitions =
+      List<WkfTransition> wkfTransitions =
           wkfTransitionRepo.all().filter("self.wkf.id = ?1", instance.getId()).fetch();
-      for (WkfTransition transition : transitions) {
+      for (WkfTransition transition : wkfTransitions) {
         transitionMap.put(transition.getXmlId(), transition);
       }
     }
@@ -218,14 +218,15 @@ public class WkfDesignerService {
    * @throws SAXException
    * @throws Exception
    */
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Wkf processXml(Wkf instance)
       throws ParserConfigurationException, SAXException, IOException {
 
     this.instance = instance;
     String bpmnXml = instance.getBpmnXml();
     if (bpmnXml != null) {
-      DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      DocumentBuilder db =
+          Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
       InputSource is = new InputSource();
       is.setCharacterStream(new StringReader(bpmnXml));
 

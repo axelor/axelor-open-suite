@@ -23,26 +23,33 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 public interface MoveService {
 
-  public MoveLineService getMoveLineService();
+  MoveLineService getMoveLineService();
 
-  public MoveCreateService getMoveCreateService();
+  MoveCreateService getMoveCreateService();
 
-  public MoveValidateService getMoveValidateService();
+  MoveValidateService getMoveValidateService();
 
-  public MoveRemoveService getMoveRemoveService();
+  MoveRemoveService getMoveRemoveService();
 
-  public MoveToolService getMoveToolService();
+  MoveToolService getMoveToolService();
 
-  public ReconcileService getReconcileService();
+  ReconcileService getReconcileService();
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Move createMove(Invoice invoice) throws AxelorException;
+  /**
+   * Créer une écriture comptable propre à la facture.
+   *
+   * @param invoice
+   * @param consolidate
+   * @return
+   * @throws AxelorException
+   */
+  Move createMove(Invoice invoice) throws AxelorException;
 
   /**
    * Méthode permettant d'employer les trop-perçus 2 cas : - le compte des trop-perçus est le même
@@ -53,7 +60,7 @@ public interface MoveService {
    * @return
    * @throws AxelorException
    */
-  public Move createMoveUseExcessPaymentOrDue(Invoice invoice) throws AxelorException;
+  Move createMoveUseExcessPaymentOrDue(Invoice invoice) throws AxelorException;
 
   /**
    * Méthode permettant d'employer les dûs sur l'avoir On récupère prioritairement les dûs
@@ -66,18 +73,27 @@ public interface MoveService {
    * @return
    * @throws AxelorException
    */
-  public Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException;
+  Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException;
 
-  public void createMoveUseExcessPayment(Invoice invoice) throws AxelorException;
+  void createMoveUseExcessPayment(Invoice invoice) throws AxelorException;
 
-  public Move createMoveUseDebit(
+  Move createMoveUseDebit(
       Invoice invoice, List<MoveLine> debitMoveLines, MoveLine invoiceCustomerMoveLine)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
-  public Move generateReverse(Move move) throws AxelorException;
+  Move generateReverse(
+      Move move,
+      boolean isAutomaticReconcile,
+      boolean isAutomaticAccounting,
+      boolean isUnreconcileOriginalMove,
+      LocalDate dateOfReversion)
+      throws AxelorException;
 
-  public MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
+  MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException;
 
   public Map<String, Object> computeTotals(Move move);
+
+  public String filterPartner(Move move);
+
+  Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException;
 }

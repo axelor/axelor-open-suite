@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -9,7 +9,7 @@
 
   	<string name="fullName" namecolumn="true">
   	<![CDATA[
-  		if(purchaseOrderSeq==null && supplierPartner == null){
+  		if(purchaseOrderSeq==null){
   			return " ";
   		}
   		return purchaseOrderSeq + "-" + supplierPartner.getName();
@@ -58,8 +58,8 @@
 	
 	<many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank"/>
 	
-	<boolean name="priceDisplay" title="Display price on requested purchase printing"/>
-  	
+	<boolean name="displayPriceOnQuotationRequest" title="Display price on requested purchase printing"/>
+    
   	<string name="priceRequest" title="Message for requesting prices" large="true"/>
 
 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
@@ -67,6 +67,30 @@
 
   	<unique-constraint columns="purchaseOrderSeq,company"/>
   	
+  	<extra-code>
+   		<![CDATA[
+   		  /** Static purchase order status select */
+		  public static final int STATUS_DRAFT = 1;
+		
+		  public static final int STATUS_REQUESTED = 2;
+		  public static final int STATUS_VALIDATED = 3;
+		  public static final int STATUS_FINISHED = 4;
+		  public static final int STATUS_CANCELED = 5;
+		
+		  /** Static purchase order receipt status select */
+		  public static final int STATE_NOT_RECEIVED = 1;
+		
+		  public static final int STATE_PARTIALLY_RECEIVED = 2;
+		  public static final int STATE_RECEIVED = 3;
+		
+		  /** Static invoicing type select */
+		  public static final int INVOICING_FREE = 1;
+		
+		  public static final int INVOICING_BY_DELIVERY = 2;
+		  public static final int INVOICING_PER_ORDER = 3;
+   		]]>
+   	</extra-code>
+	  
 	<track>
       <field name="purchaseOrderSeq" />
       <field name="supplierPartner" />

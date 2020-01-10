@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -37,5 +39,24 @@ public class ContractLineController {
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
     }
+  }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+    Context parentContext = request.getContext().getParent();
+    Contract contract = null;
+
+    if (parentContext.get("_model").equals(Contract.class.getCanonicalName())) {
+      contract = parentContext.asType(Contract.class);
+    } else if (parentContext.getParent() != null
+        && parentContext.getParent().get("_model").equals(Contract.class.getCanonicalName())) {
+      contract = parentContext.getParent().asType(Contract.class);
+    }
+
+    contractLine =
+        Beans.get(ContractLineService.class)
+            .createAnalyticDistributionWithTemplate(contractLine, contract);
+    response.setValue("analyticMoveLineList", contractLine.getAnalyticMoveLineList());
   }
 }

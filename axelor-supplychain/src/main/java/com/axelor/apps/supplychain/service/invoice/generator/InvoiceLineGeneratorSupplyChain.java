@@ -40,7 +40,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -256,6 +255,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
+      invoiceLine.setBudgetDistributionSumAmount(
+          purchaseOrderLine.getBudgetDistributionSumAmount());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       if (product != null && isAccountRequired()) {
@@ -288,6 +289,14 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
               this.price,
               appBaseService.getNbDecimalDigitForUnitPrice(),
               product);
+      this.price =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  stockMoveLine.getStockMove().getCompany().getCurrency(),
+                  stockMoveLine.getStockMove().getPartner().getCurrency(),
+                  this.price,
+                  stockMoveLine.getStockMove().getRealDate())
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       this.inTaxPrice =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
@@ -295,6 +304,14 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
               this.inTaxPrice,
               appBaseService.getNbDecimalDigitForUnitPrice(),
               product);
+      this.inTaxPrice =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  stockMoveLine.getStockMove().getCompany().getCurrency(),
+                  stockMoveLine.getStockMove().getPartner().getCurrency(),
+                  this.inTaxPrice,
+                  stockMoveLine.getStockMove().getRealDate())
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
@@ -308,12 +325,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   }
 
   public void assignOriginElements(InvoiceLine invoiceLine) throws AxelorException {
-
-    if (!Beans.get(AppSupplychainService.class)
-        .getAppSupplychain()
-        .getManageInvoicedAmountByLine()) {
-      return;
-    }
 
     StockMove stockMove = null;
     if (stockMoveLine != null) {
@@ -365,6 +376,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(budgetDistributionIt.getBudget());
       budgetDistribution.setAmount(budgetDistributionIt.getAmount());
+      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
   }

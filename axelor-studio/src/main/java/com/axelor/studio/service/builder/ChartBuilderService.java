@@ -21,6 +21,7 @@ import com.axelor.common.Inflector;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -492,6 +493,7 @@ public class ChartBuilderService {
     return null;
   }
 
+  @CallMethod
   public String getDefaultTarget(MetaField metaField) {
 
     if (metaField.getRelationship() == null) {
@@ -501,6 +503,7 @@ public class ChartBuilderService {
     return filterSqlService.getDefaultTarget(metaField.getName(), metaField.getTypeName())[0];
   }
 
+  @CallMethod
   public String getDefaultTarget(MetaJsonField metaJsonField) {
 
     if (!"many-to-one,one-to-one,json-many-to-one".contains(metaJsonField.getType())) {
@@ -520,6 +523,7 @@ public class ChartBuilderService {
         .getDefaultTarget(metaJsonField.getName(), metaJsonField.getTargetModel())[0];
   }
 
+  @CallMethod
   public String getTargetType(Object object, String target) {
 
     if (target == null) {

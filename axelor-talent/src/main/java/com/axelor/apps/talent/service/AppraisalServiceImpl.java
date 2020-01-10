@@ -18,6 +18,7 @@
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -48,7 +49,7 @@ public class AppraisalServiceImpl implements AppraisalService {
 
   @Inject private MessageService messageService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void send(Appraisal appraisal)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
@@ -110,7 +111,7 @@ public class AppraisalServiceImpl implements AppraisalService {
     appraisalRepo.save(appraisal);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public Set<Long> createAppraisals(
       Appraisal appraisalTemplate, Set<Employee> employees, Boolean send)
@@ -126,6 +127,12 @@ public class AppraisalServiceImpl implements AppraisalService {
     for (Employee employee : employees) {
       Appraisal appraisal = appraisalRepo.copy(appraisalTemplate, false);
       appraisal.setEmployee(employee);
+      if (appraisal.getCompany() == null) {
+        EmploymentContract employmentContract = employee.getMainEmploymentContract();
+        if (employmentContract != null) {
+          appraisal.setCompany(employmentContract.getPayCompany());
+        }
+      }
       appraisal.setIsTemplate(false);
       appraisal = appraisalRepo.save(appraisal);
       if (send != null && send) {

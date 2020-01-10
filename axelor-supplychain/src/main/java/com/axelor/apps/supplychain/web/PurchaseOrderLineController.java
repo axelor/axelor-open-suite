@@ -18,19 +18,17 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class PurchaseOrderLineController {
-
-  @Inject protected PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychainImpl;
 
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -38,7 +36,8 @@ public class PurchaseOrderLineController {
 
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       purchaseOrderLine =
-          purchaseOrderLineServiceSupplychainImpl.computeAnalyticDistribution(purchaseOrderLine);
+          Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+              .computeAnalyticDistribution(purchaseOrderLine);
       response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
     }
   }
@@ -48,8 +47,20 @@ public class PurchaseOrderLineController {
     PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
 
     purchaseOrderLine =
-        purchaseOrderLineServiceSupplychainImpl.createAnalyticDistributionWithTemplate(
-            purchaseOrderLine);
+        Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+            .createAnalyticDistributionWithTemplate(purchaseOrderLine);
     response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+
+    Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+        .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
+
+    response.setValue(
+        "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
   }
 }

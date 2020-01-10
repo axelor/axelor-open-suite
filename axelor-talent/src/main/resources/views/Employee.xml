@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<form name="talent-employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee">
-		<panel name="skillsPanel" title="Skills" if="__config__.app.isApp('training')">
-			<field name="trainingSkillSet" colSpan="12" />
-			<field name="experienceSkillSet" colSpan="12" />
-			<field name="skillSet" colSpan="12" />
-		</panel>
-		<panel name="trainingPanel" title="Training" if="__config__.app.isApp('training')">
-			<panel-dashlet name="employeeTrainingRegisterPanel" action="action-dashlet-employee-training-register" colSpan="12"/>
-			<panel-dashlet name="employeeTrainingPerCategoryPanel" action="chart:chart.employee.training.per.category"  colSpan="12"/>
-		</panel>
-		<panel name="appraisalPanel" title="Appraisal" if="__config__.app.isApp('appraisal')">
-			<panel-dashlet name="employeeAppraisalSentPanel" action="action-dashlet-employee-appraisal-sent" colSpan="12"/>
-		</panel>
-	</form>
-	
+  <form name="talent-employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee">
+    <panel name="skillsPanel" title="Skills" if="__config__.app.isApp('training')">
+      <field name="trainingSkillSet" colSpan="12"/>
+      <field name="experienceSkillSet" colSpan="12"/>
+      <field name="skillSet" colSpan="12"/>
+    </panel>
+
+    <panel name="trainingPanel" title="Training" if="__config__.app.isApp('training')">
+      <panel-dashlet name="employeeTrainingRegisterPanel" action="action-dashlet-employee-training-register" colSpan="12"/>
+      <panel-dashlet name="employeeTrainingPerCategoryPanel" action="chart:chart.employee.training.per.category"  colSpan="12"/>
+    </panel>
+
+    <panel name="appraisalPanel" title="Appraisal" if="__config__.app.isApp('appraisal')">
+      <panel-dashlet name="employeeAppraisalSentPanel" action="action-dashlet-employee-appraisal-sent" colSpan="12"/>
+    </panel>
+  </form>
 	<action-view name="action-dashlet-employee-training-register" title="Training Register" model="com.axelor.apps.talent.db.TrainingRegister">
 		<view type="grid" name="training-register-grid"/>
 		<view type="form" name="training-register-form"/>
@@ -28,5 +30,5 @@
 		<view type="form" name="appraisal-form"/>
 		<domain>self.employee = :__self__</domain>
 	</action-view>
-	
+
 </object-views>

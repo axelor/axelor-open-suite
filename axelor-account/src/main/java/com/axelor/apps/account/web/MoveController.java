@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -36,26 +37,21 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 @Singleton
 public class MoveController {
 
-  @Inject protected MoveService moveService;
-
-  @Inject protected MoveRepository moveRepo;
-
   public void validate(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
-
+    move = Beans.get(MoveRepository.class).find(move.getId());
     try {
-      moveService.getMoveValidateService().validate(move);
+      Beans.get(MoveService.class).getMoveValidateService().validate(move);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -72,7 +68,7 @@ public class MoveController {
         response.setValue(
             "period",
             Beans.get(PeriodService.class)
-                .rightPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+                .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
       } else {
         response.setValue("period", null);
       }
@@ -82,11 +78,17 @@ public class MoveController {
   }
 
   public void generateReverse(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-
     try {
-      Move newMove = moveService.generateReverse(moveRepo.find(move.getId()));
+      Context context = request.getContext();
+
+      Move move = context.asType(Move.class);
+      move = Beans.get(MoveRepository.class).find(move.getId());
+
+      Map<String, Object> assistantMap =
+          Beans.get(ExtractContextMoveService.class)
+              .getMapFromMoveWizardGenerateReverseForm(context);
+
+      Move newMove = Beans.get(MoveService.class).generateReverse(move, assistantMap);
       if (newMove != null) {
         response.setView(
             ActionView.define(I18n.get("Account move"))
@@ -94,6 +96,7 @@ public class MoveController {
                 .param("forceEdit", "true")
                 .context("_showRecord", newMove.getId().toString())
                 .map());
+        response.setCanClose(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -106,7 +109,7 @@ public class MoveController {
     if (moveIds != null && !moveIds.isEmpty()) {
 
       List<? extends Move> moveList =
-          moveRepo
+          Beans.get(MoveRepository.class)
               .all()
               .filter(
                   "self.id in ?1 AND self.statusSelect NOT IN (?2, ?3)",
@@ -116,7 +119,8 @@ public class MoveController {
               .order("date")
               .fetch();
       if (!moveList.isEmpty()) {
-        boolean error = moveService.getMoveValidateService().validateMultiple(moveList);
+        boolean error =
+            Beans.get(MoveService.class).getMoveValidateService().validateMultiple(moveList);
         if (error) response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_NOT_OK));
         else {
           response.setFlash(I18n.get(IExceptionMessage.MOVE_VALIDATION_OK));
@@ -126,56 +130,87 @@ public class MoveController {
     } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVES_SELECTED));
   }
 
-  // change move status to Archived=true
   public void deleteMove(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      Move move = request.getContext().asType(Move.class);
+      MoveRepository moveRepository = Beans.get(MoveRepository.class);
+      move = moveRepository.find(move.getId());
 
-    Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
+      move = moveRepository.find(move.getId());
+      this.removeOneMove(move, response);
+
+      if (!move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+        response.setView(
+            ActionView.define("Moves")
+                .model(Move.class.getName())
+                .add("grid", "move-grid")
+                .add("form", "move-form")
+                .map());
+        response.setCanClose(true);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  protected void removeOneMove(Move move, ActionResponse response) throws Exception {
+    MoveService moveService = Beans.get(MoveService.class);
 
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-      moveRepo.remove(move);
+      moveService.getMoveRemoveService().deleteMove(move);
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+      moveService.getMoveRemoveService().archiveDaybookMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-      response.setView(
-          ActionView.define("Moves")
-              .model(Move.class.getName())
-              .add("grid", "move-grid")
-              .add("form", "move-grid")
-              .map());
-      response.setCanClose(true);
-    } else {
-      try {
-        moveRepo.remove(move);
-      } catch (Exception e) {
-        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-      }
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
+      moveService.getMoveRemoveService().archiveMove(move);
+      response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
     }
   }
 
   @SuppressWarnings("unchecked")
   public void deleteMultipleMoves(ActionRequest request, ActionResponse response) {
-
-    List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
-    if (!moveIds.isEmpty()) {
-      List<? extends Move> moveList =
-          moveRepo
-              .all()
-              .filter(
-                  "self.id in ?1 AND self.statusSelect = ?2 AND (self.archived = false or self.archived = null)",
-                  moveIds,
-                  MoveRepository.STATUS_NEW)
-              .fetch();
-      if (!moveList.isEmpty()) {
-        moveService.getMoveRemoveService().deleteMultiple(moveList);
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
-        response.setReload(true);
-      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
-    } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_ARCHIVE));
+    try {
+      List<Long> moveIds = (List<Long>) request.getContext().get("_ids");
+      if (!moveIds.isEmpty()) {
+        List<? extends Move> moveList =
+            Beans.get(MoveRepository.class)
+                .all()
+                .filter(
+                    "self.id in ?1 AND self.statusSelect in (?2,?3,?4) AND (self.archived = false or self.archived = null)",
+                    moveIds,
+                    MoveRepository.STATUS_NEW,
+                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_CANCELED)
+                .fetch();
+        if (!moveList.isEmpty()) {
+          if (moveList.size() == 1) {
+            this.removeOneMove(moveList.get(0), response);
+          } else {
+            int errorNB =
+                Beans.get(MoveService.class).getMoveRemoveService().deleteMultiple(moveList);
+            if (errorNB > 0) {
+              response.setFlash(
+                  String.format(
+                      I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB), errorNB));
+            } else {
+              response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OR_REMOVE_OK));
+              response.setReload(true);
+            }
+          }
+        } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+      } else response.setFlash(I18n.get(IExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void printMove(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
+    move = Beans.get(MoveRepository.class).find(move.getId());
 
     String moveName = move.getReference().toString();
 
@@ -209,11 +244,11 @@ public class MoveController {
   public void updateInDayBookMode(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
-    move = moveRepo.find(move.getId());
+    move = Beans.get(MoveRepository.class).find(move.getId());
 
     try {
       if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-        moveService.getMoveValidateService().updateInDayBookMode(move);
+        Beans.get(MoveService.class).getMoveValidateService().updateInDayBookMode(move);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -223,7 +258,7 @@ public class MoveController {
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
-    Map<String, Object> values = moveService.computeTotals(move);
+    Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
     response.setValues(values);
   }
 
@@ -233,27 +268,36 @@ public class MoveController {
     if (move.getMoveLineList() != null
         && !move.getMoveLineList().isEmpty()
         && move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
-      moveService.getMoveLineService().autoTaxLineGenerate(move);
+      Beans.get(MoveService.class).getMoveLineService().autoTaxLineGenerate(move);
       response.setValue("moveLineList", move.getMoveLineList());
     }
   }
 
   public void filterPartner(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
-    String domain = "self.isContact = false AND :company member of self.companySet";
-    if (move.getJournal() != null
-        && !Strings.isNullOrEmpty(move.getJournal().getCompatiblePartnerTypeSelect())) {
-      domain += " AND (";
-      String[] partnerSet = move.getJournal().getCompatiblePartnerTypeSelect().split(", ");
-      String lastPartner = partnerSet[partnerSet.length - 1];
-      for (String partner : partnerSet) {
-        domain += "self." + partner + " = true";
-        if (!partner.equals(lastPartner)) {
-          domain += " OR ";
+    if (move != null) {
+      String domain = Beans.get(MoveService.class).filterPartner(move);
+      response.setAttr("partner", "domain", domain);
+    }
+  }
+
+  public void isHiddenMoveLineListViewer(ActionRequest request, ActionResponse response) {
+
+    Move move = request.getContext().asType(Move.class);
+    boolean isHidden = true;
+    try {
+      if (move.getMoveLineList() != null
+          && move.getStatusSelect() < MoveRepository.STATUS_VALIDATED) {
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
+              || moveLine.getReconcileGroup() != null) {
+            isHidden = false;
+          }
         }
       }
-      domain += ")";
+      response.setAttr("$reconcileTags", "hidden", isHidden);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("partner", "domain", domain);
   }
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
   <entity sequential="true" name="PurchaseOrderLineTax" lang="java">
   
   	<many-to-one name="purchaseOrder" ref="PurchaseOrder" title="Purchase order"/>
-  	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="V.A.T."/>
+  	<many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>
-    <decimal name="taxTotal" scale="2" precision="20" title="Amount"/>
+    <decimal name="taxTotal" scale="2" precision="20" title="Amount Tax"/>
     <decimal name="inTaxTotal" scale="2" precision="20" title="Amount A.T.I."/>
     <boolean name="reverseCharged"/>
 

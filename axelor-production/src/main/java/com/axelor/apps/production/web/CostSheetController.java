@@ -21,9 +21,11 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,6 +44,11 @@ public class CostSheetController {
           ReportFactory.createReport(IReport.COST_SHEET, name + "-${date}")
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam("CostSheetId", costSheetId)
+              .addParam(
+                  "manageCostSheetGroup",
+                  Beans.get(AppProductionService.class)
+                      .getAppProduction()
+                      .getManageCostSheetGroup())
               .addParam("BaseUrl", AppSettings.get().getBaseURL())
               .generate()
               .getFileLink();

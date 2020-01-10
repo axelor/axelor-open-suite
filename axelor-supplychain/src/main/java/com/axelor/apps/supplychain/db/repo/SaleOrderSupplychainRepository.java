@@ -43,14 +43,16 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     copy.setAmountInvoiced(null);
     copy.setStockMoveList(null);
 
-    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-      saleOrderLine.setDeliveryState(null);
-      saleOrderLine.setDeliveredQty(null);
-      saleOrderLine.setAmountInvoiced(null);
-      saleOrderLine.setInvoiced(null);
-      saleOrderLine.setInvoicingDate(null);
-      saleOrderLine.setIsInvoiceControlled(null);
-      saleOrderLine.setReservedQty(BigDecimal.ZERO);
+    if (copy.getSaleOrderLineList() != null) {
+      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+        saleOrderLine.setDeliveryState(null);
+        saleOrderLine.setDeliveredQty(null);
+        saleOrderLine.setAmountInvoiced(null);
+        saleOrderLine.setInvoiced(null);
+        saleOrderLine.setInvoicingDate(null);
+        saleOrderLine.setIsInvoiceControlled(null);
+        saleOrderLine.setReservedQty(BigDecimal.ZERO);
+      }
     }
 
     return copy;

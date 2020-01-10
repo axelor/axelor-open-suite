@@ -20,22 +20,19 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.base.db.Year;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class YearController {
 
-  @Inject private YearServiceAccountImpl yearServiceAccountImpl;
-
   public void close(ActionRequest request, ActionResponse response) {
-
     Year year = request.getContext().asType(Year.class);
 
     try {
-      yearServiceAccountImpl.closeYear(year);
+      Beans.get(YearServiceAccountImpl.class).closeYearProcess(year);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -46,17 +43,8 @@ public class YearController {
     Year year = request.getContext().asType(Year.class);
 
     try {
-      yearServiceAccountImpl.adjust(year);
+      Beans.get(YearServiceAccountImpl.class).adjust(year);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void generatePeriods(ActionRequest request, ActionResponse response) {
-    try {
-      Year year = request.getContext().asType(Year.class);
-      response.setValue("periodList", yearServiceAccountImpl.generatePeriods(year));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

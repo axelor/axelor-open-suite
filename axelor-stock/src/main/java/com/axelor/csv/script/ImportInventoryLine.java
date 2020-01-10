@@ -40,7 +40,7 @@ public class ImportInventoryLine {
 
   @Inject private AppBaseService appBaseService;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object importInventoryLine(Object bean, Map<String, Object> values)
       throws AxelorException {
 
@@ -54,6 +54,8 @@ public class ImportInventoryLine {
     BigDecimal qtyByTracking = BigDecimal.ONE;
 
     BigDecimal realQtyRemaning = inventoryLine.getRealQty();
+
+    inventoryLineService.compute(inventoryLine, inventoryLine.getInventory());
 
     TrackingNumber trackingNumber;
 
@@ -90,6 +92,8 @@ public class ImportInventoryLine {
                 inventoryLine.getCurrentQty(),
                 inventoryLine.getRack(),
                 trackingNumber);
+
+        inventoryLineNew.setUnit(inventoryLine.getProduct().getUnit());
 
         if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
           inventoryLineNew.setRealQty(realQtyRemaning);

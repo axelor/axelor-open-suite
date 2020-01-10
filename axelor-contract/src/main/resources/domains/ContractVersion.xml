@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="contract" package="com.axelor.apps.contract.db" />
 
@@ -8,6 +8,7 @@
 
 		<integer name="statusSelect" title="Status" selection="contract.version.status.select" default="1" required="true" copy="false"/>
 		<integer name="invoicingMomentSelect" selection="contract.version.invoicing.moment.select" title="Invoicing moment" default="1"/>
+		<integer name="numberOfDays" title="Number of days"/>
 
 		<string name="description" title="Description" multiline="true" large="true" />
 
@@ -25,6 +26,7 @@
 		<boolean name="engagementStartFromVersion" title="Engagement start from version"/>
 		<boolean name="isWithPriorNotice" title="With prior notice"/>
 		<boolean name="isConsumptionBeforeEndDate" title="Only invoice consumption before Invoice period end Date" />
+		<boolean name="isConsumptionManagement" title="Consumption management" default="false"/>
 
 		<date name="supposedActivationDate" title="Supposed activation date" copy="false"/>
 		<date name="activationDate" title="Activation date" copy="false"/>
@@ -49,7 +51,7 @@
 		<string name="fullName" namecolumn="true">
 			<![CDATA[
 	  		String fullName = "";
-	  		if(contract != null )  {
+	  		if(contract != null && contract.getName() != null)  {
 				fullName += contract.getName();
 				if (contract.getVersionNumber() != null && contract.getVersionNumber() != 0){
 					fullName += " " +  contract.getVersionNumber();
@@ -68,6 +70,8 @@
 
             public static final int END_INVOICING_MOMENT = 1;
             public static final int BEGIN_INVOICING_MOMENT = 2;
+            public static final int END_INVOICING_MOMENT_PLUS = 3;
+            public static final int BEGIN_INVOICING_MOMENT_PLUS = 4;
 		]]></extra-code>
 
 	</entity>

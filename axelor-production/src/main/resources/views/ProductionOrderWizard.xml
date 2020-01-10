@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     
     <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
@@ -12,7 +12,8 @@
 			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-material-grid"
 			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"
 			onChange="action-production-order-wizard-record-product"/>
-			<field name="_startDate" title="Planned start date" widget="dateTime" />
+			<field name="_startDate" title="Planned start date" widget="dateTime" colSpan="3"/>
+			<field name="_endDate" title="Planned end date" widget="dateTime" colSpan="3"/>
 			<button name="validateBtn" title="Validate" onClick="action-production-order-wizard-method-validate"/>
 		</panel>
 	</form>

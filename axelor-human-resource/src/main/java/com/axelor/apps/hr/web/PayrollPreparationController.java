@@ -21,24 +21,18 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
-import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 
 @Singleton
 public class PayrollPreparationController {
-
-  @Inject protected PayrollPreparationService payrollPreparationService;
-
-  @Inject protected PayrollPreparationRepository payrollPreparationRepo;
 
   public void generateFromEmploymentContract(ActionRequest request, ActionResponse response) {
 
@@ -48,8 +42,8 @@ public class PayrollPreparationController {
             .find(new Long(request.getContext().get("_idEmploymentContract").toString()));
 
     response.setValues(
-        payrollPreparationService.generateFromEmploymentContract(
-            payrollPreparation, employmentContract));
+        Beans.get(PayrollPreparationService.class)
+            .generateFromEmploymentContract(payrollPreparation, employmentContract));
   }
 
   public void fillInPayrollPreparation(ActionRequest request, ActionResponse response)
@@ -57,7 +51,7 @@ public class PayrollPreparationController {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
 
     List<PayrollLeave> payrollLeaveList =
-        payrollPreparationService.fillInPayrollPreparation(payrollPreparation);
+        Beans.get(PayrollPreparationService.class).fillInPayrollPreparation(payrollPreparation);
 
     response.setValue("extraHoursLineList", payrollPreparation.getExtraHoursLineList());
     response.setValue("$payrollLeavesList", payrollLeaveList);
@@ -73,6 +67,8 @@ public class PayrollPreparationController {
     response.setValue("employeeBonusMgtLineList", payrollPreparation.getEmployeeBonusMgtLineList());
     response.setValue("lunchVoucherNumber", payrollPreparation.getLunchVoucherNumber());
     response.setValue("lunchVoucherMgtLineList", payrollPreparation.getLunchVoucherMgtLineList());
+    response.setValue("employeeBonusAmount", payrollPreparation.getEmployeeBonusAmount());
+    response.setValue("extraHoursNumber", payrollPreparation.getExtraHoursNumber());
   }
 
   public void fillInPayrollPreparationLeaves(ActionRequest request, ActionResponse response)
@@ -80,7 +76,7 @@ public class PayrollPreparationController {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
 
     List<PayrollLeave> payrollLeaveList =
-        payrollPreparationService.fillInLeaves(payrollPreparation);
+        Beans.get(PayrollPreparationService.class).fillInLeaves(payrollPreparation);
 
     response.setValue("$payrollLeavesList", payrollLeaveList);
   }
@@ -88,15 +84,15 @@ public class PayrollPreparationController {
   public void exportPayrollPreparation(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 
+    PayrollPreparationService payrollPreparationService =
+        Beans.get(PayrollPreparationService.class);
     PayrollPreparation payrollPreparation =
-        payrollPreparationRepo.find(request.getContext().asType(PayrollPreparation.class).getId());
+        Beans.get(PayrollPreparationRepository.class)
+            .find(request.getContext().asType(PayrollPreparation.class).getId());
 
-    if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD) {
-      response.setExportFile(
-          payrollPreparationService.exportSinglePayrollPreparation(payrollPreparation));
-    } else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_NIBELIS) {
-      response.setExportFile(
-          payrollPreparationService.exportNibelisPayrollPreparation(payrollPreparation));
+    String file = payrollPreparationService.exportPayrollPreparation(payrollPreparation);
+    if (file != null) {
+      response.setExportFile(file);
     }
     payrollPreparationService.closePayPeriodIfExported(payrollPreparation);
 

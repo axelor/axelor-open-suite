@@ -117,7 +117,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder createBankOrder(Batch batch)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
@@ -146,7 +146,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder createBankOrderFromPaymentScheduleLines(Batch batch)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
@@ -181,7 +181,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     return bankOrder;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createBankOrders(Batch batch, Collection<PaymentScheduleLine> paymentScheduleLines)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
@@ -202,7 +202,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void createBankOrders(Batch batch, Reconcile reconcile)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
@@ -226,7 +226,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BankOrder createBankOrderFromMonthlyPaymentScheduleLines(Batch batch)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 

@@ -23,7 +23,7 @@ import com.google.inject.persist.Transactional;
 
 public interface LunchVoucherAdvanceService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void onNewAdvance(LunchVoucherAdvance lunchVoucherAdvance) throws AxelorException;
 
   public int useAdvance(LunchVoucherAdvance lunchVoucherAdvance, int qty) throws AxelorException;

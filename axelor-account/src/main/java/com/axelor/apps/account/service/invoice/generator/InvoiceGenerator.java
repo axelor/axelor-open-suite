@@ -200,6 +200,7 @@ public abstract class InvoiceGenerator {
     if (accountingSituation != null) {
       invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
       invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+      invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
 
     if (paymentCondition == null) {
@@ -214,12 +215,6 @@ public abstract class InvoiceGenerator {
 
     if (mainInvoicingAddress == null) {
       mainInvoicingAddress = Beans.get(PartnerService.class).getInvoicingAddress(partner);
-    }
-    if (mainInvoicingAddress == null && partner.getIsCustomer()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
 
     invoice.setAddress(mainInvoicingAddress);
@@ -284,20 +279,23 @@ public abstract class InvoiceGenerator {
           companyBankDetails = accountingSituation.getCompanyInBankDetails();
         }
       }
-      if (companyBankDetails == null) {
-        companyBankDetails = company.getDefaultBankDetails();
-        List<BankDetails> allowedBDs =
-            Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-        if (!allowedBDs.contains(companyBankDetails)) {
-          companyBankDetails = null;
-        }
+    }
+    if (companyBankDetails == null) {
+      companyBankDetails = company.getDefaultBankDetails();
+      List<BankDetails> allowedBDs =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (!allowedBDs.contains(companyBankDetails)) {
+        companyBankDetails = null;
       }
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
     if (companyBankDetails != null
         && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
-      invoice.setNote(companyBankDetails.getSpecificNoteOnInvoice());
+      invoice.setNote(
+          partner.getInvoiceComments() + "\n" + companyBankDetails.getSpecificNoteOnInvoice());
+    } else {
+      invoice.setNote(partner.getInvoiceComments());
     }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
