@@ -171,15 +171,11 @@
 	</action-method>
 
 	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calendar" />
+		title="Leaves calendar" action="action-leave-request-method-leave-calendar" />
 
-	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
-		model="com.axelor.apps.base.db.ICalendarEvent" >
-		<view type="calendar" name="calendar-all"/>
-		<view type="grid" name="calendar-event-grid"/>
-		<view type="form" name="calendar-event-form"/>
-		<domain>self.typeSelect = 4</domain>
-	</action-view>
+	<action-method name="action.leave.request.method.leave.calendar">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveCalendar"/>
+	</action-method>
 
 	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave to justify" action="leave.request.to.justify"/>
 

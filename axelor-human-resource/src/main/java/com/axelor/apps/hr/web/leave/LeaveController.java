@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.web.leave;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -154,6 +155,36 @@ public class LeaveController {
     }
 
     response.setView(actionView.map());
+  }
+
+  public void leaveCalendar(ActionRequest request, ActionResponse response) {
+    try {
+
+      User user = AuthUtils.getUser();
+      Employee employee = user.getEmployee();
+
+      ActionViewBuilder actionView =
+          ActionView.define(I18n.get("Leaves calendar"))
+              .model(ICalendarEvent.class.getName())
+              .add("calendar", "calendar-event-leave-request")
+              .add("grid", "calendar-event-grid")
+              .add("form", "calendar-event-form");
+
+      actionView.domain(
+          "self.typeSelect = 4 AND self.id IN (SELECT leaveRequest.icalendarEvent FROM LeaveRequest leaveRequest WHERE leaveRequest.statusSelect = 3");
+
+      if (employee == null || !employee.getHrManager()) {
+        actionView
+            .domain(
+                actionView.get().getDomain()
+                    + " AND leaveRequest.user.employee.managerUser = :_user")
+            .context("_user", user);
+      }
+      actionView.domain(actionView.get().getDomain() + ")");
+      response.setView(actionView.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void showSubordinateLeaves(ActionRequest request, ActionResponse response) {
