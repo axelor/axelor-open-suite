@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
+- LEAVE REQUEST: Updated calendar filter.
 
 ## [5.2.2] - 2020-01-09
 ## Features
