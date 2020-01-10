@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.tool.service;
 
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import java.util.HashMap;
@@ -148,6 +149,7 @@ public class ArchivingToolServiceImpl implements ArchivingToolService {
                     + " WHERE view.name like :viewtName");
     FindModelWithobjectFieldQuery.setParameter(
         "viewtName", modelName.replaceAll("([a-z])([A-Z])", "$1-$2").toLowerCase() + "-form");
-    return (String) FindModelWithobjectFieldQuery.getSingleResult();
+    List<String> modelNameList = FindModelWithobjectFieldQuery.getResultList();
+    return !ObjectUtils.isEmpty(modelNameList) ? (String) modelNameList.get(0) : modelName;
   }
 }

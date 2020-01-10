@@ -8,6 +8,7 @@
 - INVOICE PARTIAL: take in consideration refund
 - LEAVE REQUEST: Updated calendar filter.
 - Forecast recap: Displaying selected value's title instead of value on error message.
+- MOVE REMOVE SERVICE : corrected error that occurred when several lines were found.
 
 ## [5.2.2] - 2020-01-09
 ## Features
