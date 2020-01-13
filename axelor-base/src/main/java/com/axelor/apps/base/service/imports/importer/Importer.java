@@ -108,10 +108,10 @@ public abstract class Importer {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_2));
     }
 
-    File workspace = createFinalWorkspace(configuration.getDataMetaFile());
+    File fileWorkspace = createFinalWorkspace(configuration.getDataMetaFile());
     ImportHistory importHistory =
-        process(bind.getAbsolutePath(), workspace.getAbsolutePath(), importContext);
-    deleteFinalWorkspace(workspace);
+        process(bind.getAbsolutePath(), fileWorkspace.getAbsolutePath(), importContext);
+    deleteFinalWorkspace(fileWorkspace);
 
     return importHistory;
   }
@@ -166,7 +166,6 @@ public abstract class Importer {
   protected void unZip(File file, File directory) throws IOException {
 
     File extractFile = null;
-    FileOutputStream fileOutputStream = null;
     try (ZipFile zipFile = new ZipFile(file); ) {
       Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
@@ -185,11 +184,11 @@ public abstract class Importer {
             extractFile.createNewFile();
           }
 
-          fileOutputStream = new FileOutputStream(extractFile);
-          while ((bytesRead = entryInputStream.read(buffer)) != -1) {
-            fileOutputStream.write(buffer, 0, bytesRead);
+          try (FileOutputStream fileOutputStream = new FileOutputStream(extractFile)) {
+            while ((bytesRead = entryInputStream.read(buffer)) != -1) {
+              fileOutputStream.write(buffer, 0, bytesRead);
+            }
           }
-
           if (Files.getFileExtension(extractFile.getName()).equals("xlsx")) {
             importExcel(extractFile);
           }
@@ -213,13 +212,11 @@ public abstract class Importer {
     ImportHistory importHistory =
         new ImportHistory(AuthUtils.getUser(), configuration.getDataMetaFile());
     File logFile = File.createTempFile("importLog", ".log");
-    FileWriter writer = null;
-    try {
-      writer = new FileWriter(logFile);
+
+    try (FileWriter writer = new FileWriter(logFile)) {
       writer.write(listener.getImportLog());
-    } finally {
-      writer.close();
     }
+
     MetaFile logMetaFile =
         metaFiles.upload(
             new FileInputStream(logFile),

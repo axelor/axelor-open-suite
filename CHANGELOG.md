@@ -12,6 +12,7 @@
 - BANK ORDER : the date field is now again read-only on bank order generated automatically.
 - ExportDbObjectService : Use of try-with-resources for "FileWritter".
 - DataImportServiceImpl : Use of try-with-resources for "ZipInputStream" and "FileOutputStream".
+- Importer : Use of try-with-resources for "FileOutputStream".
 
 ## [5.2.2] - 2020-01-09
 ## Features
