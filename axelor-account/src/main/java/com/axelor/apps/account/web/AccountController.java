@@ -68,7 +68,7 @@ public class AccountController {
     }
   }
 
-  public void analyticDistributionAuthorizedBacameFalse(
+  public void analyticDistributionAuthorizedBecameFalse(
       ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);

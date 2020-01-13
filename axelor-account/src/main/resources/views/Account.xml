@@ -187,7 +187,7 @@
     </action-method>
     
     <action-method name="action-account-analytic-distribution-authorized-bacame-false-method">
-		<call class="com.axelor.apps.account.web.AccountController" method="analyticDistributionAuthorizedBacameFalse"/>
+		<call class="com.axelor.apps.account.web.AccountController" method="analyticDistributionAuthorizedBecameFalse"/>
 	</action-method>
 	
 	<action-method name="action-account-analytic-distribution-required-on-invoice-lines-bacame-true-method">
