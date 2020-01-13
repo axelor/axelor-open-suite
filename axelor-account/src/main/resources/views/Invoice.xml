@@ -740,13 +740,8 @@ InvoiceSet.length > 0))"
     </grid>
 
 	<!-- VIEW LITE  -->
-    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-    	<toolbar>
-        	<button name="newBtn" title="" hidden="true"/>
-    		<button name="saveBtn" title="" hidden="true"/>
-    		<button name="copyBtn" title="" hidden="true"/>
-    		<button name="deleteBtn" title="" hidden="true"/>
-		</toolbar>
+    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" 
+    	canNew="false" canDelete="false" canSave="false">
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect"/>
