@@ -3,14 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="trace-back-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack" orderBy="-id">
+    <grid name="trace-back-grid" title="TraceBack" model="com.axelor.exception.db.TraceBack" orderBy="-id" 
+    	canDelete="false" canNew="false" canSave="false" canEdit="false" >
        	<toolbar>
-		    <button name="newBtn" title="" hidden="true"/>
-		    <button name="editBtn" title="" hidden="true"/>
-		    <button name="saveBtn" title="" hidden="true"/>
-		    <button name="deleteBtn" title="" hidden="true"/>
-		    <button name="copyBtn" title="" hidden="true"/>
-		    <button name="cancelBtn" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true" onClick=""/>
 		</toolbar>
 		<hilite color="danger" if="typeSelect == 0" />
         <field name="id"/>
@@ -22,14 +18,10 @@
         <field name="exception"/>
     </grid>
     
-    <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack" onLoad="action-trace-back-load">
+    <form name="trace-back-form" title="TraceBack" model="com.axelor.exception.db.TraceBack" onLoad="action-trace-back-load"
+    	canNew="false" canEdit="false" canSave="false" canCopy="false" canDelete="false">
     	<toolbar>
-		    <button name="newBtn" title="" hidden="true"/>
-		    <button name="editBtn" title="" hidden="true"/>
-		    <button name="saveBtn" title="" hidden="true"/>
-		    <button name="deleteBtn" title="" hidden="true"/>
-		    <button name="copyBtn" title="" hidden="true"/>
-		    <button name="cancelBtn" title="" hidden="true"/>
+		    <button name="cancel" title="" hidden="true" onClick=""/>
 		</toolbar>
 		<panel name="mainPanel" sidebar="true">
 	        <field name="date"/>
