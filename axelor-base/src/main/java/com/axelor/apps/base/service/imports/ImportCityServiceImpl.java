@@ -182,10 +182,8 @@ public class ImportCityServiceImpl implements ImportCityService {
   @Override
   public MetaFile downloadZip(String downloadFileName) throws Exception {
 
-    ZipFile zipFile;
     File downloadFile = null;
     File cityTextFile = null;
-    FileWriter writer;
     File tempDir = null;
     MetaFile metaFile = null;
 
@@ -200,38 +198,35 @@ public class ImportCityServiceImpl implements ImportCityService {
       FileUtils.copyURLToFile(url, downloadFile);
 
       LOG.debug("path for downloaded zip file : " + downloadFile.getPath());
-      zipFile = new ZipFile(downloadFile.getPath());
+      try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
+          FileWriter writer = new FileWriter(cityTextFile)) {
 
-      Enumeration<? extends ZipEntry> entries = zipFile.entries();
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-      while (entries.hasMoreElements()) {
-        ZipEntry entry = entries.nextElement();
+        while (entries.hasMoreElements()) {
+          ZipEntry entry = entries.nextElement();
 
-        if (entry.getName().equals(downloadFileName.replace("zip", "txt"))) {
-          BufferedReader stream =
-              new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
+          if (entry.getName().equals(downloadFileName.replace("zip", "txt"))) {
+            BufferedReader stream =
+                new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
 
-          String line;
-          StringBuffer buffer = new StringBuffer();
+            String line;
+            StringBuffer buffer = new StringBuffer();
 
-          while ((line = stream.readLine()) != null) {
-            buffer.append(line + "\n");
+            while ((line = stream.readLine()) != null) {
+              buffer.append(line + "\n");
+            }
+
+            cityTextFile.createNewFile();
+
+            writer.flush();
+            writer.write(buffer.toString().replace("\"", ""));
+
+            LOG.debug("Length of file : " + cityTextFile.length());
+            break;
           }
-
-          cityTextFile.createNewFile();
-
-          writer = new FileWriter(cityTextFile);
-
-          writer.flush();
-          writer.write(buffer.toString().replace("\"", ""));
-          writer.close();
-
-          LOG.debug("Length of file : " + cityTextFile.length());
-          break;
         }
       }
-      zipFile.close();
-
       metaFile = metaFiles.upload(cityTextFile);
       FileUtils.forceDelete(tempDir);
 

@@ -51,3 +51,5 @@
 - LEAVE TEMPLATE : changed field fromDate and toDate name to fromDateT and toDateT.
 - MRP : Fix error while generating all proposals.
 - UI : Addition of onClick attributes in buttons.
+- ImportCityServiceImpl : Use of try-with-resource for ZipFile and FileWriter.
+
