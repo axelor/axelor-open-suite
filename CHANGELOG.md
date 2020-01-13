@@ -35,6 +35,7 @@
 - Fixed Asset : Fix issue of infinite value of depriciation rate"
 - EBICS USER : fix for strange import - log
 - LEAVE REQUEST: Updated calendar filter.
+- SUBROGATION RELEASE / INVOICE : corrected npe.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
