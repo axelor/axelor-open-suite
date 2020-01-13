@@ -15,19 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.contract.db.repo;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.repo.ProductStockRepository;
-import java.math.BigDecimal;
+import com.axelor.apps.contract.db.ContractBatch;
 
-public class ProductProductionRepository extends ProductStockRepository {
+public class ContractBatchContractRepository extends ContractBatchRepository {
 
   @Override
-  public Product copy(Product product, boolean deep) {
-    Product copy = super.copy(product, deep);
-    copy.setDefaultBillOfMaterial(null);
-    copy.setLastProductionPrice(BigDecimal.ZERO);
+  public ContractBatch copy(ContractBatch entity, boolean deep) {
+    ContractBatch copy = super.copy(entity, deep);
+    copy.clearBatchList();
     return copy;
   }
 }

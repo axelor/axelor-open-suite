@@ -86,7 +86,7 @@ public class ProjectController {
   public void printProject(ActionRequest request, ActionResponse response) throws AxelorException {
     Project project = request.getContext().asType(Project.class);
 
-    String name = I18n.get("Project") + " " + project.getCode();
+    String name = I18n.get("Project") + " " + (project.getCode() != null ? project.getCode() : "");
 
     String fileLink =
         ReportFactory.createReport(IReport.PROJECT, name + "-${date}")

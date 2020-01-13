@@ -1,18 +1,99 @@
 # Changelog
 
-## [Unreleased 5.1.12]
+## [Unreleased 5.1.14]
 ## Features
-- AVAILABILITY REQUEST : Addition of button on grid-view to view sale order lines.
+- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
+- RM#23133 INVOICE : new mandatory labelling
 
 ## Improvements
-- STOCK : Changed type select french translation
-- Expense : Modify report content.
+- MOVE : changed position of reconciliation tag in move form.
+- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
+- STOCK MOVE: empty reservationDateTime on duplicate stock move
+- MOVE : Improved messages when there is an exception on trying to remove an accounting move. 
+- STOCK MOVE : to and from stock location set on company change.
+- STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
+- BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch
+- ACCOUNTING REPORT : display popup message on click of 'exportBtn'
+- SALE ORDER LINE : Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
 
 ## Bug Fixes
-- Studio : removed includeInCost field from json field form view
-- STOCK : status and state
-- MOVE LINE : fix error in amount of reverse move line.
+- INVOICE PARTIAL: take in consideration refund
+- REFUND : avoid blocking message when ventilation of the invoice
+- MOVE : corrected display of status tag in move form.
+- Manuf Order: fix real quantity not updating when a new line in consumed products is created.
+- INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
+- INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
+- PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
+- HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
+- MOVE LINE: fix amount paid display in move line form.
+- Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
+- Sale order/quotation: fix tab title when generating a quotation from an opportunity.
+- BankOrder : Fix NPE on click of confirm for International transfer
+- BANK ORDER : corrected the possibility to generate two times the same move.
+- BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
+- Fixed Asset : Fix issue of infinite value of depriciation rate"
+- EBICS USER : fix for strange import - log
+- LEAVE REQUEST: Updated calendar filter.
 - MOVE LINE : in reverse process, analytic is now copy from origin move line to reverse move line.
+
+## [5.1.13] - 2019-11-29
+## Improvements
+- DEBT RECOVERY: disable canNew for debt recovery.
+- STOCK MOVE: remove filter.
+- Stock Location: hide stock location valuation in stock location report if disabled in form view.
+- STOCK MOVE GRID: change column order.
+- OPPORTUNITY: Display description on popup in kanban-view.
+- Reports: In all reports set header and footer heights parameters according to print settings.
+
+## Bug Fixes
+- Check duplicate: make case-insensitive query.
+- Sale Order: allocate a full sale order does not try to allocate already delivered lines.
+- Project: Fix computation of time spent on removal of validated timesheet.
+- ADDRESS: reduced space between addresses in partner-form.
+- Code Refactor for TemplateRuleService file.
+- Fix NPE in bank order file upload.
+- Invoice Generation: allow to validate supplier invoice without address.
+- StockRule: Fix script error on deleting product.
+- Lead: fix issue when generating partner without required fields.
+- StockLocation: fix always dirty form view.
+- INVOICE LINE: fixed hidden budget panel in invoice line.
+- StockMove: In error message prevent showing multiple times the same product name.
+
+## [5.1.12] - 2019-11-19
+## Features
+- AVAILABILITY REQUEST: Addition of button on grid-view to view stock move lines.
+- Stock Move: Addition of button to view stockMoveLines on grid-view.
+
+## Improvements
+- Expense: New design for expense report.
+- Add name attributes on all menus and menu items.
+- PROJECT: Fix financial report to follow the Axelor report guidelines.
+- STOCK LOCATION PRINTING: new printing without financial data.
+- STOCK MOVE LINE: Design improvement of Stock Move panel.
+- TOOL,STUDIO: Disable XML external entity (XXE) processing.
+- HRBatch: stopped generation of payrollPreparation with employmentContract having status 'closed'
+- ACCOUNT CONFIG/ACCOUNTING REPORT: add new field line minimum in account configuration used in accounting report for new message that appears before generation if the minimum of lines is found.
+- PRICE LIST: get lower price for same qty for same product.
+
+## Bug Fixes
+- STOCK : Changed type select french translation
+- ACCOUNTING: generate taxlines translation.
+- AnalyticMoveLine: fix amount calculation.
+- Studio: removed includeInCost field from json field form view.
+- STOCK MOVE LINE: Change title for available status to avoid having the same label as stock move status.
+- MOVE LINE: fix error in amount of reverse move line.
+- ImportProduct: fix 'image' null variable access.
+- INVOICE GENERATION: add control when there is no address.
+- StockRules: Fix tracking 'userIdealQty' to 'useIdealQty'.
+- COPY OF PRODUCT: do not copy lastproductionprice value.
+- Invoice: add header and footer height parameter on PrintSetting object.
+- ACCOUNTING REPORT: corrected result of search button in function of the report.
+- MOVE LINE: reconciled or lettered move lines are now read only.
+- MOVE: displays if a move line is reconciled or lettered.
+- STOCK: email alert on stock rules should not block the process of validation of the stock move.
+- BankReconciliation: Fix query error when loading bank statement in bank reconciliation form.
+
 
 ## [5.1.11] - 2019-11-05
 ## Improvements
@@ -1443,7 +1524,9 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...dev
+[5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...5.1-dev
+[5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
+[5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
 [5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
 [5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
 [5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9

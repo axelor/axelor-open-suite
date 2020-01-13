@@ -111,13 +111,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
     }
 
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
             == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
   }
 
   @Override

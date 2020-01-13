@@ -26,13 +26,13 @@
 
 	<grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner" orderBy="name">
 	 	<menubar>
-	        <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Contact PhoneBook" action="action-print-phonebook"/>
-	            <item title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+	        <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+	            <item name="contactPhoneBookItem" title="Contact PhoneBook" action="action-print-phonebook"/>
+	            <item name="companyPhoneBookItem" title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
 	        </menu>
-	        <menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
-	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+	        <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	            <item name="checkDuplicateItem" title="Check Duplicate" action="action-general-check-duplicate-records"/>
+	            <item name="mergeDuplicatedItem" title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
 	    <field name="partnerSeq" width="120"/>
@@ -51,13 +51,13 @@
 
 	<grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner" orderBy="name">
 	    <menubar>
-	        <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Contact PhoneBook" action="action-print-phonebook"/>
-	            <item title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+	        <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+	            <item name="contactPhoneBookItem" title="Contact PhoneBook" action="action-print-phonebook"/>
+	            <item  name="companyPhoneBookItem" title="Company phoneBook" action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
 	        </menu>
-	        <menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Check Duplicate" action="action-general-check-duplicate-records"/>
-	            <item title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+	        <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	            <item name="checkDuplicateItem" title="Check Duplicate" action="action-general-check-duplicate-records"/>
+	            <item name="mergeDuplicatedItem" title="Merge duplicated" action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 	        </menu>
 	    </menubar>
 	    <field name="partnerSeq" width="120" />
@@ -115,8 +115,8 @@
 
 	<form name="incl-event-actions-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
+			<menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="sendEmailItem" title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
 			</menu>
 		</menubar>
 	</form>
@@ -129,9 +129,9 @@
             <button name="showMapBtn" title="Map" icon="fa-map-marker" onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
         </toolbar>
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
-				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
+            <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="envelopeItem" title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
+				<item name="customerSituationItem" title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isCustomer == true"  if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -241,17 +241,21 @@
 				</panel>
 				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
-						<editor x-show-titles="false" >
-							<label title="The following address is invalid. Please use '+' button to create a new one :" colSpan="12" css="label-bold" name="addressHelperLabel" hidden="true" showIf="address == null || address.addressL4 == null" />
-							<field name="address.addressL4" hidden="true"/>
-							<panel colSpan="12" stacked="true" css="field-append">
-								<field name="address" form-view="address-form" grid-view="address-grid" canNew="true"/>
-								<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt" hideIf="$readonly()"/>
-								<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart" hideIf="$readonly()"/>
-								<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" hideIf="$readonly()"  />
-							</panel>
-						</editor>
+						<editor x-show-titles="false">            
+          					<panel colSpan="12"  css="field-append">
+           						<label colSpan="12"  title="The following address is invalid. Please use '+' button to create a new one :" showIf="address == null || address.addressL4 == null" hidden="true" css="label-bold" name="addressHelperLabel"/>              
+                				<panel colSpan="12" stacked="true" css="field-append">
+                					<field name="address" form-view="address-form" grid-view="address-grid" canNew="true"/>
+                					<field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()" x-icon="fa-list-alt" />
+                					<field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()" x-icon="fa-shopping-cart" />
+                					<field name="isDefaultAddr" widget="toggle" hideIf="$readonly()" x-icon="fa-star-o"  />
+                					<field name="address.addressL4" hidden="true"/>
+              					</panel>
+          					</panel>           
+          				</editor>
 					</field>
+					<spacer/>
+					<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"  colSpan="12"/>
 				</panel>
 				<panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
@@ -420,9 +424,9 @@
 			<button name="convertToIndividualPartnerBtn" title="Convert into an individual partner" icon="fa-user" onClick="action-convert-into-individual-partner,close" showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
 		</toolbar>
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
-				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
+            <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="envelopeItem" title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
+				<item name="customerSituationItem" title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -619,9 +623,9 @@
 		  onNew="action-partner-employee-record-default"
 		  onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url" onSave="save,action-partner-method-set-user-partner">
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-				<item title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
-				<item title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
+            <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="envelopeItem" title="Envelope" action="save,action-partner-method-show-envelope" readonlyIf="id == null"/>
+				<item name="customerSituationItem" title="Customer Situation" action="save,action-partner-method-show-client-situation" readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account"/>
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />

@@ -447,6 +447,10 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType16.acquisition_date"; /*)*/
   public static final String ACCOUNTING_REPORT_16_GROSS_VALUE =
       /*$$(*/ "AccountingReportType16.gross_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_LINEAR =
+      /*$$(*/ "linear"; /*)*/
+  public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_DIGRESSIVE =
+      /*$$(*/ "degressive"; /*)*/
 
   public static final String ACCOUNTING_REPORT_17_TITLE =
       /*$$(*/ "AccountingReportType17.title"; /*)*/
@@ -495,4 +499,6 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.year_start_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION_CHARGE =
       /*$$(*/ "AccountingReportType17.depreciation_charge"; /*)*/
+  public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
+      "Invoice.headOfficeAddress"; /*)*/
 }
