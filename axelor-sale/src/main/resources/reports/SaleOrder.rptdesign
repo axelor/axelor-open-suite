@@ -4423,7 +4423,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row._outer["displayEstimDelivDateOnPrinting"]</expression>
+                                    <expression name="valueExpr" type="javascript">!row._outer["displayEstimDelivDateOnPrinting"] || row._outer["status_select"] == 1 || row._outer["status_select"] == 2</expression>
                                 </structure>
                             </list-property>
                             <property name="width">8%</property>
