@@ -35,6 +35,7 @@
 - Fixed Asset : Fix issue of infinite value of depriciation rate"
 - EBICS USER : fix for strange import - log
 - LEAVE REQUEST: Updated calendar filter.
+- FIXED ASSET : Fix computation and generation of fixed asset lines for FixedAssetCategory='Linear'
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
