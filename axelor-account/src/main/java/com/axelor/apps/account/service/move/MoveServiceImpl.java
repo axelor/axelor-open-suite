@@ -541,7 +541,7 @@ public class MoveServiceImpl implements MoveService {
         origineMoveLine.getAnalyticDistributionTemplate());
     for (AnalyticMoveLine origineAnalyticMoveLine : origineMoveLine.getAnalyticMoveLineList()) {
       AnalyticMoveLine copyAnalyticMoveLine =
-          analyticMoveLineRepository.copy(origineAnalyticMoveLine, true);
+          analyticMoveLineRepository.copy(origineAnalyticMoveLine, false);
       copyAnalyticMoveLine.setMoveLine(reverseMoveLine);
       reverseMoveLine.addAnalyticMoveLineListItem(copyAnalyticMoveLine);
     }
