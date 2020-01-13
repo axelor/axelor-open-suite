@@ -11,6 +11,7 @@
 - MOVE REMOVE SERVICE : corrected error that occurred when several lines were found.
 - BANK ORDER : the date field is now again read-only on bank order generated automatically.
 - ExportDbObjectService : Use of try-with-resources for "FileWritter".
+- DataImportServiceImpl : Use of try-with-resources for "ZipInputStream" and "FileOutputStream".
 
 ## [5.2.2] - 2020-01-09
 ## Features
