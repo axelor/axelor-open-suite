@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -151,7 +151,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public SaleOrder mergeSaleOrders(
       List<SaleOrder> saleOrderList,
       Currency currency,
@@ -223,14 +223,36 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   }
 
   @Override
-  @Transactional
-  public SaleOrder createSaleOrder(SaleOrder context) {
+  @Transactional(rollbackOn = {Exception.class})
+  public SaleOrder createSaleOrder(
+      SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
+      throws AxelorException {
     SaleOrder copy = saleOrderRepo.copy(context, true);
+    copy.setCreationDate(appSaleService.getTodayDate());
+    copy.setCurrency(wizardCurrency);
+    copy.setPriceList(wizardPriceList);
+
+    saleOrderService.computeEndOfValidityDate(copy);
+
+    this.updateSaleOrderLineList(copy);
+
+    saleOrderComputeService.computeSaleOrder(copy);
+
     copy.setTemplate(false);
     copy.setTemplateUser(null);
-    copy.setCreationDate(appSaleService.getTodayDate());
-    saleOrderService.computeEndOfValidityDate(copy);
+
     return copy;
+  }
+
+  public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        Beans.get(SaleOrderLineService.class)
+            .fillPrice(saleOrderLine, saleOrder, saleOrderLine.getPackPriceSelect());
+        Beans.get(SaleOrderLineService.class).computeValues(saleOrder, saleOrderLine);
+      }
+    }
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.studio.service.wkf;
 
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -42,7 +43,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.script.SimpleBindings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,8 @@ public class WkfTrackingService {
    * @param status Current wkfStatus of record.
    * @throws ClassNotFoundException
    */
-  public void track(Object object) {
+  @CallMethod
+  public void track(Long wkfId, Object object) {
 
     if (object != null) {
 
@@ -104,7 +105,7 @@ public class WkfTrackingService {
       } else {
         ctx = new Context(model.getId(), object.getClass());
       }
-
+      ctx.put("wkfId", wkfId);
       WkfTracking wkfTracking = getWorkflowTracking(ctx, object.getClass().getName());
 
       if (wkfTracking == null) {
@@ -155,28 +156,7 @@ public class WkfTrackingService {
       model = jsonModel;
     }
 
-    List<Wkf> wkfs = wkfRepo.all().filter("self.model = ?1", model).fetch();
-
-    if (wkfs.isEmpty()) {
-      log.debug("Workflow not found for model: {}", model);
-      return null;
-    }
-
-    Wkf wkf = null;
-
-    if (wkfs.size() > 1) {
-      for (Wkf w : wkfs) {
-        if (ctx.get(w.getJsonField()) != null) {
-          wkf = w;
-          break;
-        }
-      }
-      if (wkf == null) {
-        return null;
-      }
-    } else {
-      wkf = wkfs.get(0);
-    }
+    Wkf wkf = wkfRepo.find((Long) ctx.get("wkfId"));
 
     WkfTracking wkfTracking =
         wkfTrackingRepo

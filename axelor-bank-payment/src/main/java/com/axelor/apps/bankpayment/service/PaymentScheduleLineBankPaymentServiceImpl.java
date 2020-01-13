@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -104,7 +104,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void reject(
       PaymentScheduleLine paymentScheduleLine, InterbankCodeLine rejectionReason, boolean represent)
       throws AxelorException {
@@ -161,14 +161,16 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     return interbankCodeLineRepo.findByCode("A3");
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Move createRejectionMove(PaymentScheduleLine paymentScheduleLine)
       throws AxelorException {
     MoveValidateService moveValidateService = moveService.getMoveValidateService();
     MoveLineService moveLineService = moveService.getMoveLineService();
 
     Move advanceOrPaymentMove = paymentScheduleLine.getAdvanceOrPaymentMove();
-    Move rejectionMove = moveService.generateReverse(advanceOrPaymentMove);
+    Move rejectionMove =
+        moveService.generateReverse(
+            advanceOrPaymentMove, true, true, false, advanceOrPaymentMove.getDate());
     rejectionMove.setRejectOk(true);
     moveValidateService.validate(rejectionMove);
 
@@ -180,7 +182,7 @@ public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLi
     return rejectionMove;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void cancelInvoicePayments(PaymentScheduleLine paymentScheduleLine)
       throws AxelorException {
     MoveLineService moveLineService = moveService.getMoveLineService();

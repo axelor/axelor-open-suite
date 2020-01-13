@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.studio.web;
 
 import com.axelor.common.Inflector;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.rpc.ActionRequest;
@@ -25,13 +26,10 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.db.repo.ActionBuilderRepository;
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActionBuilderController {
-
-  @Inject private MetaViewRepository metaViewRepo;
 
   private Inflector inflector;
 
@@ -66,7 +64,7 @@ public class ActionBuilderController {
       viewName = "custom-model-" + model + "-" + type;
     }
 
-    MetaView view = metaViewRepo.findByName(viewName);
+    MetaView view = Beans.get(MetaViewRepository.class).findByName(viewName);
     if (view == null) {
       return;
     }

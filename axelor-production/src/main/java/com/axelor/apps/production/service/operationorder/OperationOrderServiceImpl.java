@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -75,7 +75,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -90,7 +90,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,
@@ -432,7 +432,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException {
     this.updateDiffProdProductList(operationOrder);

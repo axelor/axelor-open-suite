@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -61,12 +60,6 @@ import org.slf4j.LoggerFactory;
 public class EventController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject private EventRepository eventRepo;
-
-  @Inject private EventService eventService;
-
-  @Inject ICalendarEventService iCalendarEventService;
 
   public void computeFromStartDateTime(ActionRequest request, ActionResponse response) {
 
@@ -144,18 +137,18 @@ public class EventController {
       throws AxelorException {
 
     Event event = request.getContext().asType(Event.class);
-    Event persistEvent = eventRepo.find(event.getId());
+    Event persistEvent = Beans.get(EventRepository.class).find(event.getId());
     persistEvent.setStatusSelect(event.getStatusSelect());
-    eventService.saveEvent(persistEvent);
+    Beans.get(EventService.class).saveEvent(persistEvent);
   }
 
   public void saveEventTicketStatusSelect(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Event event = request.getContext().asType(Event.class);
-    Event persistEvent = eventRepo.find(event.getId());
+    Event persistEvent = Beans.get(EventRepository.class).find(event.getId());
     persistEvent.setStatusSelect(event.getStatusSelect());
-    eventService.saveEvent(persistEvent);
+    Beans.get(EventService.class).saveEvent(persistEvent);
   }
 
   public void viewMap(ActionRequest request, ActionResponse response) {
@@ -207,15 +200,17 @@ public class EventController {
   @SuppressWarnings("rawtypes")
   public void assignToMeEvent(ActionRequest request, ActionResponse response) {
 
+    EventRepository eventRepository = Beans.get(EventRepository.class);
+
     if (request.getContext().get("id") != null) {
-      Event event = eventRepo.find((Long) request.getContext().get("id"));
+      Event event = eventRepository.find((Long) request.getContext().get("id"));
       event.setUser(AuthUtils.getUser());
-      eventService.saveEvent(event);
+      Beans.get(EventService.class).saveEvent(event);
     } else if (!((List) request.getContext().get("_ids")).isEmpty()) {
       for (Event event :
-          eventRepo.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
+          eventRepository.all().filter("id in ?1", request.getContext().get("_ids")).fetch()) {
         event.setUser(AuthUtils.getUser());
-        eventService.saveEvent(event);
+        Beans.get(EventService.class).saveEvent(event);
       }
     }
     response.setReload(true);
@@ -225,14 +220,14 @@ public class EventController {
       throws AxelorException {
     try {
       Event event = request.getContext().asType(Event.class);
-      event = eventRepo.find(event.getId());
-      eventService.manageFollowers(event);
+      event = Beans.get(EventRepository.class).find(event.getId());
+      Beans.get(EventService.class).manageFollowers(event);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateRecurrentEvents(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
@@ -242,14 +237,14 @@ public class EventController {
             Event.class,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.EVENT_SAVED));
-      Event event = eventRepo.find(eventId);
+      Event event = Beans.get(EventRepository.class).find(eventId);
 
       RecurrenceConfigurationRepository confRepo =
           Beans.get(RecurrenceConfigurationRepository.class);
       RecurrenceConfiguration conf = event.getRecurrenceConfiguration();
       if (conf != null) {
         conf = confRepo.save(conf);
-        eventService.generateRecurrentEvents(event, conf);
+        Beans.get(EventService.class).generateRecurrentEvents(event, conf);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -257,73 +252,83 @@ public class EventController {
   }
 
   @Transactional
-  public void deleteThis(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteThis(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
-    Event event = eventRepo.find(eventId);
-    Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
+    EventRepository eventRepository = Beans.get(EventRepository.class);
+    Event event = eventRepository.find(eventId);
+    Event child =
+        eventRepository.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
     if (child != null) {
       child.setParentEvent(event.getParentEvent());
     }
-    eventRepo.remove(event);
+    eventRepository.remove(event);
     response.setCanClose(true);
     response.setReload(true);
   }
 
   @Transactional
-  public void deleteNext(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteNext(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
-    Event event = eventRepo.find(eventId);
-    Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
+    EventRepository eventRepository = Beans.get(EventRepository.class);
+    Event event = eventRepository.find(eventId);
+    Event child =
+        eventRepository.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
     while (child != null) {
       child.setParentEvent(null);
-      eventRepo.remove(event);
+      eventRepository.remove(event);
       event = child;
-      child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
+      child = eventRepository.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
     }
     response.setCanClose(true);
     response.setReload(true);
   }
 
   @Transactional
-  public void deleteAll(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void deleteAll(ActionRequest request, ActionResponse response) {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
-    Event event = eventRepo.find(eventId);
-    Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
+    EventRepository eventRepository = Beans.get(EventRepository.class);
+    Event event = eventRepository.find(eventId);
+    Event child =
+        eventRepository.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
     Event parent = event.getParentEvent();
     while (child != null) {
       child.setParentEvent(null);
-      eventRepo.remove(event);
+      eventRepository.remove(event);
       event = child;
-      child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
+      child = eventRepository.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
     }
     while (parent != null) {
       Event nextParent = parent.getParentEvent();
-      eventRepo.remove(parent);
+      eventRepository.remove(parent);
       parent = nextParent;
     }
     response.setCanClose(true);
     response.setReload(true);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void changeAll(ActionRequest request, ActionResponse response) throws AxelorException {
     Long eventId = new Long(request.getContext().getParent().get("id").toString());
-    Event event = eventRepo.find(eventId);
+    EventRepository eventRepository = Beans.get(EventRepository.class);
+    Event event = eventRepository.find(eventId);
 
-    Event child = eventRepo.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
+    Event child =
+        eventRepository.all().filter("self.parentEvent.id = ?1", event.getId()).fetchOne();
     Event parent = event.getParentEvent();
     child.setParentEvent(null);
     Event eventDeleted = child;
-    child = eventRepo.all().filter("self.parentEvent.id = ?1", eventDeleted.getId()).fetchOne();
+    child =
+        eventRepository.all().filter("self.parentEvent.id = ?1", eventDeleted.getId()).fetchOne();
     while (child != null) {
       child.setParentEvent(null);
-      eventRepo.remove(eventDeleted);
+      eventRepository.remove(eventDeleted);
       eventDeleted = child;
-      child = eventRepo.all().filter("self.parentEvent.id = ?1", eventDeleted.getId()).fetchOne();
+      child =
+          eventRepository.all().filter("self.parentEvent.id = ?1", eventDeleted.getId()).fetchOne();
     }
     while (parent != null) {
       Event nextParent = parent.getParentEvent();
-      eventRepo.remove(parent);
+      eventRepository.remove(parent);
       parent = nextParent;
     }
 
@@ -331,7 +336,7 @@ public class EventController {
     RecurrenceConfigurationRepository confRepo = Beans.get(RecurrenceConfigurationRepository.class);
     conf = confRepo.save(conf);
     event.setRecurrenceConfiguration(conf);
-    event = eventRepo.save(event);
+    event = eventRepository.save(event);
     if (conf.getRecurrenceType() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -424,23 +429,25 @@ public class EventController {
     }
     switch (recurrenceType) {
       case 1:
-        eventService.addRecurrentEventsByDays(
-            event, periodicity, endType, repetitionsNumber, endDate);
+        Beans.get(EventService.class)
+            .addRecurrentEventsByDays(event, periodicity, endType, repetitionsNumber, endDate);
         break;
 
       case 2:
-        eventService.addRecurrentEventsByWeeks(
-            event, periodicity, endType, repetitionsNumber, endDate, daysCheckedMap);
+        Beans.get(EventService.class)
+            .addRecurrentEventsByWeeks(
+                event, periodicity, endType, repetitionsNumber, endDate, daysCheckedMap);
         break;
 
       case 3:
-        eventService.addRecurrentEventsByMonths(
-            event, periodicity, endType, repetitionsNumber, endDate, monthRepeatType);
+        Beans.get(EventService.class)
+            .addRecurrentEventsByMonths(
+                event, periodicity, endType, repetitionsNumber, endDate, monthRepeatType);
         break;
 
       case 4:
-        eventService.addRecurrentEventsByYears(
-            event, periodicity, endType, repetitionsNumber, endDate);
+        Beans.get(EventService.class)
+            .addRecurrentEventsByYears(event, periodicity, endType, repetitionsNumber, endDate);
         break;
 
       default:
@@ -452,18 +459,20 @@ public class EventController {
   }
 
   public void applyChangesToAll(ActionRequest request, ActionResponse response) {
-    Event thisEvent = eventRepo.find(new Long(request.getContext().get("_idEvent").toString()));
-    Event event = eventRepo.find(thisEvent.getId());
+    EventRepository eventRepository = Beans.get(EventRepository.class);
+    Event thisEvent =
+        eventRepository.find(new Long(request.getContext().get("_idEvent").toString()));
+    Event event = eventRepository.find(thisEvent.getId());
 
-    eventService.applyChangesToAll(event);
+    Beans.get(EventService.class).applyChangesToAll(event);
     response.setCanClose(true);
     response.setReload(true);
   }
 
   public void computeRecurrenceName(ActionRequest request, ActionResponse response) {
     RecurrenceConfiguration recurrConf = request.getContext().asType(RecurrenceConfiguration.class);
-
-    response.setValue("recurrenceName", eventService.computeRecurrenceName(recurrConf));
+    response.setValue(
+        "recurrenceName", Beans.get(EventService.class).computeRecurrenceName(recurrConf));
   }
 
   public void setCalendarDomain(ActionRequest request, ActionResponse response) {
@@ -503,9 +512,10 @@ public class EventController {
   public void addGuest(ActionRequest request, ActionResponse response) {
     Event event = request.getContext().asType(Event.class);
     try {
-      EmailAddress emailAddress = eventService.getEmailAddress(event);
+      EmailAddress emailAddress = Beans.get(EventService.class).getEmailAddress(event);
       if (emailAddress != null) {
-        response.setValue("attendees", iCalendarEventService.addEmailGuest(emailAddress, event));
+        response.setValue(
+            "attendees", Beans.get(ICalendarEventService.class).addEmailGuest(emailAddress, event));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

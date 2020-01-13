@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Journal;
@@ -27,6 +28,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
@@ -50,8 +52,15 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
 
   @Inject private MoveRepository moveRepo;
 
+  protected MoveLineService moveLineService;
+
+  @Inject
+  public FixedAssetLineServiceImpl(MoveLineService moveLineService) {
+    this.moveLineService = moveLineService;
+  }
+
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void realize(FixedAssetLine fixedAssetLine) throws AxelorException {
 
     generateMove(fixedAssetLine);
@@ -78,7 +87,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     fixedAssetLineRepo.save(fixedAssetLine);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   private void generateMove(FixedAssetLine fixedAssetLine) throws AxelorException {
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
 
@@ -128,6 +137,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
               date);
       moveLines.add(debitMoveLine);
 
+      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), debitMoveLine);
+
       // Creating accounting debit move line
       MoveLine creditMoveLine =
           new MoveLine(
@@ -146,6 +157,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
               date);
       moveLines.add(creditMoveLine);
 
+      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
+
       move.getMoveLineList().addAll(moveLines);
     }
 
@@ -155,7 +168,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateDisposalMove(FixedAssetLine fixedAssetLine) throws AxelorException {
 
     FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
@@ -203,6 +216,9 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
               date);
       moveLines.add(chargeAccountDebitMoveLine);
 
+      this.addAnalyticToMoveLine(
+          fixedAsset.getAnalyticDistributionTemplate(), chargeAccountDebitMoveLine);
+
       // Creating accounting debit move line for deprecation account
       MoveLine deprecationAccountDebitMoveLine =
           new MoveLine(
@@ -220,6 +236,9 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
               BigDecimal.ZERO,
               date);
       moveLines.add(deprecationAccountDebitMoveLine);
+
+      this.addAnalyticToMoveLine(
+          fixedAsset.getAnalyticDistributionTemplate(), deprecationAccountDebitMoveLine);
 
       // Creating accounting credit move line
       MoveLine creditMoveLine =
@@ -239,11 +258,23 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
               date);
       moveLines.add(creditMoveLine);
 
+      this.addAnalyticToMoveLine(fixedAsset.getAnalyticDistributionTemplate(), creditMoveLine);
+
       move.getMoveLineList().addAll(moveLines);
     }
 
     moveRepo.save(move);
 
     fixedAsset.setDisposalMove(move);
+  }
+
+  @Transactional
+  protected void addAnalyticToMoveLine(
+      AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine) {
+    if (analyticDistributionTemplate != null
+        && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
+      moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+      moveLineService.computeAnalyticDistribution(moveLine);
+    }
   }
 }

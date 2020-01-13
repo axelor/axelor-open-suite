@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,6 +48,15 @@ public interface TranslationService {
    * @param key
    */
   String getTranslation(String key, String language);
+
+  /**
+   * Get the translation key of the given message.
+   *
+   * @param value
+   * @param language
+   * @return
+   */
+  String getTranslationKey(String message, String language);
 
   /**
    * Get the translation of the given value key.

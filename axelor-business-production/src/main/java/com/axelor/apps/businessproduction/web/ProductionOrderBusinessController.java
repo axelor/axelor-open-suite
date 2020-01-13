@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,25 +21,21 @@ import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServic
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ProductionOrderBusinessController {
-
-  @Inject ProductionOrderRepository productionOrderRepo;
-
-  @Inject ProductionOrderSaleOrderServiceBusinessImpl productionOrderSaleOrderServiceBusinessImpl;
 
   public void generateSaleOrder(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     ProductionOrder productionOrder = request.getContext().asType(ProductionOrder.class);
 
-    productionOrderSaleOrderServiceBusinessImpl.createSaleOrder(
-        productionOrderRepo.find(productionOrder.getId()));
+    Beans.get(ProductionOrderSaleOrderServiceBusinessImpl.class)
+        .createSaleOrder(Beans.get(ProductionOrderRepository.class).find(productionOrder.getId()));
 
     response.setReload(true);
   }

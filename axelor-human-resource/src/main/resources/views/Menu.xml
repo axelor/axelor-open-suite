@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
 	     icon-background="#84429f"/>
@@ -50,7 +50,13 @@
 	    <view type="form" name="employee-bonus-mgt-form"/>
 	</action-view>
 
-	<menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration" icon="fa-cog"/>
+  <menuitem name="hr-employee-dpae" title="DPAEs" parent="hr-root-emp-mgt" action="employee.dpae.all" if="__user__.activeCompany?.hrConfig?.enableDPAE"/>
+  <action-view name="employee.dpae.all" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
+    <view type="grid" name="dpae-grid"/>
+    <view type="form" name="dpae-form"/>
+  </action-view>
+
+  <menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration" icon="fa-cog"/>
 
 	<menuitem name="hr-conf-product-activity" parent="hr-root-emp-mgt-conf" title="Product Activities" action="conf.product.activity"/>
 
@@ -138,7 +144,14 @@
     	<view type="grid" name="weekly-planning-grid"/>
 	    <view type="form" name="weekly-planning-form"/>
 	</action-view>
-
+ 
+    <menuitem name="hr-root-emp-mgt-conf-file-type" parent="hr-root-emp-mgt-conf" title="File types" action="hr.root.emp.mgt.conf.file.type"/>
+    
+    <action-view name="hr.root.emp.mgt.conf.file.type" title="File types" model="com.axelor.apps.base.db.FileType">
+    	<view type="grid" name="file-type-grid"/>
+	    <view type="form" name="file-type-form"/>
+	</action-view>
+  
 	<!-- Leave App -->
 	<menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')" icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="5"/>
 
@@ -172,15 +185,11 @@
 	</action-method>
 
 	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calendar" />
+		title="Leaves calendar" action="action.leave.request.method.leave.calendar" />
 
-	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
-		model="com.axelor.apps.base.db.ICalendarEvent" >
-		<view type="calendar" name="calendar-event-leave-request"/>
-		<view type="grid" name="calendar-event-grid"/>
-		<view type="form" name="calendar-event-form"/>
-		<domain>self.typeSelect = 4</domain>
-	</action-view>
+	<action-method name="action.leave.request.method.leave.calendar">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveCalendar"/>
+	</action-method>
 
 	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave to justify" action="leave.request.to.justify"/>
 
@@ -320,6 +329,22 @@
 	<action-method name="time.sheet.timer">
 		<call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController" method="editTimesheetTimer"/>
 	</action-method>
+
+	<menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root" action="action.timesheet.view.timesheet.report"
+		if="__config__.app.isApp('timesheet')" order="6"/>
+
+	<action-view name="action.timesheet.view.timesheet.report" model="com.axelor.apps.hr.db.TimesheetReport" title="Timesheet report">
+		<view name="timesheet-report-grid" type="grid" />
+		<view name="timesheet-report-form" type="form" />
+	</action-view>
+
+	<menuitem title="Timesheet reminder" name="time-sheet-reminder" parent="timesheet-root" action="action.timesheet.view.timesheet.reminder"
+		if="__config__.app.isApp('timesheet')" order="6"/>
+
+	<action-view name="action.timesheet.view.timesheet.reminder" model="com.axelor.apps.hr.db.TimesheetReminder" title="Timesheet reminder">
+		<view name="timesheet-reminder-grid" type="grid" />
+		<view name="timesheet-reminder-form" type="form" />
+	</action-view>
 
 	<!-- Extra hours app -->
 	<menuitem name="extra-hours-root" parent="hr-root" if="__config__.app.isApp('exthrs')" title="Extra hours" icon="fa-hourglass-end" icon-background="#84429f" order="20"/>

@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-  <grid model="com.axelor.apps.supplychain.db.DeclarationOfExchanges" title="Declarations of exchanges"
-    name="declaration-of-exchanges-grid" orderBy="createdOn" onNew="action-declaration-of-exchanges-onnew">
-    <field name="company" canEdit="false"/>
-    <field name="country"
-      domain="self IN (SELECT sl.address.addressL7Country FROM StockLocation sl WHERE sl.company = :company)"
+  <grid model="com.axelor.apps.supplychain.db.DeclarationOfExchanges" title="Declarations of exchanges" name="declaration-of-exchanges-grid"
+    orderBy="createdOn" onNew="action-declaration-of-exchanges-onnew">
+    <field name="company" canEdit="false" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="country" domain="self IN (SELECT sl.address.addressL7Country FROM StockLocation sl WHERE sl.company = :company)"
       canEdit="false"/>
     <field name="fiscalYear" domain="self.company = :company AND self.typeSelect = :YEAR_TYPE_FISCAL"
       onChange="action-declaration-of-exchanges-fiscal-year-onchange" canEdit="false"/>
-    <field name="period"
-      domain="self.year = :fiscalYear OR :fiscalYear IS NULL AND self.year.company = :company AND self.year.typeSelect = :YEAR_TYPE_FISCAL"
+    <field name="period" domain="self.year = :fiscalYear OR :fiscalYear IS NULL AND self.year.company = :company AND self.year.typeSelect = :YEAR_TYPE_FISCAL"
       onChange="action-declaration-of-exchanges-period-onchange" canEdit="false"/>
     <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange"/>
-    <field name="stockMoveTypeSelect"
-      selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
+    <field name="stockMoveTypeSelect" selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
       readonlyIf="productTypeSelect == 'service'"/>
     <field name="formatSelect" selection-in="['pdf', 'csv']"/>
     <field name="createdOn"/>

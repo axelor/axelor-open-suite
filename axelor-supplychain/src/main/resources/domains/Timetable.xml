@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
   
   <entity name="Timetable" lang="java">
 	
-	<decimal name="amount" title="Amount"/>
+	<string name="title" namecolumn="true"/>
+	<decimal name="amount" title="Amount" min="0"/>
+	<decimal name="percentage" scale="2" precision="5" max="100" min="0"/>
+	<boolean name="invoiced"/>
 	<date name="estimatedDate" title="Date"/>
 	<string name="comments" title="Comments" large="true"/>
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
 	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder"/>
-	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Qty" default="1"/>
-  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-  	<string name="productName" title="Product name"/>
 	<many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice"/>
 	
   </entity>

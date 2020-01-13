@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -52,15 +52,14 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,
       boolean isToInvoice,
       WorkCenter workCenter,
       WorkCenter machineWorkCenter,
-      ProdProcessLine prodProcessLine)
-      throws AxelorException {
+      ProdProcessLine prodProcessLine) {
 
     logger.debug(
         "Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());

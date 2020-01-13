@@ -28,3 +28,4 @@
 27;"TECH";"Technical";5;"false";"false";;"false";"true";;"1";1;
 28;"IRRECOV";"Irrecoverables";4;"false";"false";"Irrecoverable";"false";"false";;"1";1;109
 29;"EXP";"Employees Travel expenses";4;"false";"false";"Expense";"true";"false";;"1";1;180
+30;"RBLA";"Reported Balance";5;"false";"false";;"false";"false";;"1";1;181

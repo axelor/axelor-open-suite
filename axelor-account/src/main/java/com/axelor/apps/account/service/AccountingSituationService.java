@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.util.List;
 
 public interface AccountingSituationService {
@@ -93,5 +94,6 @@ public interface AccountingSituationService {
    * @param partner
    * @return
    */
+  @CallMethod
   BankDetails getCompanySalesBankDetails(Company company, Partner partner);
 }

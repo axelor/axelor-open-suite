@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,14 +22,10 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.db.repo.YearRepository;
-import com.axelor.apps.base.service.PeriodService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -47,7 +43,7 @@ public class MoveCancelService {
     this.moveRepository = moveRepository;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Move move) throws AxelorException {
 
     if (move == null) {
@@ -65,10 +61,8 @@ public class MoveCancelService {
       }
     }
 
-    Period period =
-        Beans.get(PeriodService.class)
-            .getPeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL);
-    if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+    if (move.getPeriod() == null
+        || move.getPeriod().getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
       throw new AxelorException(
           move,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

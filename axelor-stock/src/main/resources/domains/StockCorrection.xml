@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="StockCorrection" lang="java">
+
+	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock Location" required="true"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
+	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Number"/>
+	<decimal name="realQty" title="Real Qty"/>
+	<decimal name="futureQty" title="Future Qty"/>
+	<decimal name="reservedQty" title="Reserved Qty"/>
+	<many-to-one name="stockCorrectionReason" ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Reason"/>
+	<integer name="statusSelect" title="Status" selection="stock.correction.status.select" readonly="true"/>
+	<datetime name="validationDateT" title="Validation Date" readonly="true"/>
+
+	<extra-code><![CDATA[
+
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.BudgetService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
@@ -57,6 +58,11 @@ public class CancelState extends WorkflowInvoice {
     }
 
     setStatus();
+    if (Beans.get(AccountConfigService.class)
+        .getAccountConfig(invoice.getCompany())
+        .getIsManagePassedForPayment()) {
+      setPfpStatus();
+    }
 
     budgetService.updateBudgetLinesFromInvoice(invoice);
 
@@ -81,5 +87,10 @@ public class CancelState extends WorkflowInvoice {
     invoice.setMove(null);
 
     Beans.get(MoveCancelService.class).cancel(move);
+  }
+
+  protected void setPfpStatus() {
+    invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+    invoice.setDecisionPfpTakenDate(null);
   }
 }

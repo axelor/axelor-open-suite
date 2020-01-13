@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,11 +33,15 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
     super.save(teamTask);
 
     teamTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(teamTask));
-    teamTask.setTotalRealHrs(projectPlanningTimeService.getTaskRealHrs(teamTask));
 
     Project project = teamTask.getProject();
     project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
-    project.setTotalRealHrs(projectPlanningTimeService.getProjectRealHrs(project));
+
+    Project parentProject = project.getParentProject();
+    if (parentProject != null) {
+      parentProject.setTotalPlannedHrs(
+          projectPlanningTimeService.getProjectPlannedHrs(parentProject));
+    }
 
     return teamTask;
   }
@@ -49,6 +53,13 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
     super.remove(teamTask);
 
     project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
-    project.setTotalRealHrs(projectPlanningTimeService.getProjectRealHrs(project));
+  }
+
+  @Override
+  public TeamTask copy(TeamTask entity, boolean deep) {
+    entity.setTotalPlannedHrs(null);
+    entity.setTotalRealHrs(null);
+    entity.setProjectPlanningTimeList(null);
+    return super.copy(entity, deep);
   }
 }

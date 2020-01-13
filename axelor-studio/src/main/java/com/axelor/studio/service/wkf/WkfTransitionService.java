@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -110,7 +110,7 @@ class WkfTransitionService {
 
     List<ActionAttrs.Attribute> fields = new ArrayList<ActionAttrs.Attribute>();
 
-    Integer buttonSeq = -100;
+    Integer buttonSeq = wkfService.wkfSequence - 46;
 
     for (WkfTransition transition : wkfService.workflow.getTransitions()) {
 
@@ -126,6 +126,10 @@ class WkfTransitionService {
       String filters = getFilters(transition.getConditions());
       if (filters != null) {
         condition += " && (" + filters + ")";
+      }
+
+      if (wkfService.applyCondition != null) {
+        condition += " && " + wkfService.applyCondition;
       }
 
       if (transition.getIsButton()) {
@@ -186,7 +190,7 @@ class WkfTransitionService {
     String title = transition.getButtonTitle();
     //    String name = wkfService.inflector.camelize(source + "-" + title, true);
     // FIXME:Have to check if its working with import export of workflow.
-    String name = "transition" + transition.getId();
+    String name = wkfService.wkfId + "Transition" + transition.getId();
     if (name.equals("save") || name.equals("cancel") || name.equals("back")) {
       name = "wkf" + name;
     }
@@ -254,8 +258,8 @@ class WkfTransitionService {
     actions.add(actionName);
     xml = getActionXML(actionName, attrs);
     metaService.updateMetaAction(actionName, "action-record", xml, null);
-    // actions.add("save");
-    //		actions.add(WkfTrackingService.ACTION_TRACK);
+    //    actions.add("save");
+    //    actions.add(wkfService.trackingAction);
 
     String successMsg = transition.getSuccessMsg();
     if (successMsg != null) {
@@ -266,7 +270,8 @@ class WkfTransitionService {
     }
     actions.add("save");
     actions.add("action-group-" + wkfService.wkfId);
-    actions.add("save");
+    //    actions.add("save");
+    //    actions.add(wkfService.trackingAction);
 
     return Joiner.on(",").join(actions);
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.rpc.ActionRequest;
@@ -24,16 +25,11 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.service.builder.MenuBuilderService;
-import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class MenuBuilderController {
-
-  @Inject private MetaMenuRepository metaMenuRepo;
-
-  @Inject private MenuBuilderService menuBuilderService;
 
   @SuppressWarnings("unchecked")
   public void fetchMenu(ActionRequest request, ActionResponse response) {
@@ -46,7 +42,7 @@ public class MenuBuilderController {
       values = getEmptyMenu();
     } else {
       Long menuId = Long.parseLong(existingMenu.get("id").toString());
-      values = getMenu(metaMenuRepo.find(menuId));
+      values = getMenu(Beans.get(MetaMenuRepository.class).find(menuId));
     }
 
     response.setValues(values);
@@ -77,7 +73,7 @@ public class MenuBuilderController {
 
     if (menu.getAction() != null && menu.getAction().getType().contentEquals("action-view")) {
       Optional<ActionBuilder> actionBuilderOpt =
-          menuBuilderService.createActionBuilder(menu.getAction());
+          Beans.get(MenuBuilderService.class).createActionBuilder(menu.getAction());
       actionBuilderOpt.ifPresent(
           actionBuilder -> {
             values.put("actionBuilder", actionBuilder);

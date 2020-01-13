@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="weekly-planning-grid" title="Weekly Planning" model="com.axelor.apps.base.db.WeeklyPlanning">
 		<field name="name"/>
@@ -11,13 +11,14 @@
 		  onSave="com.axelor.apps.base.web.weeklyplanning.WeeklyPlanningController:checkPlanning">
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="bonusCoef" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
-			<field name="leaveCoef" if-module="axelor-human-resource" />
+			<field name="typeSelect" if-module="axelor-production" if="__config__.app.isApp('production')" required="true"/>
+			<field name="bonusCoef" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" hideIf="typeSelect == 2"/>
+			<field name="leaveCoef" if-module="axelor-human-resource" hideIf="typeSelect == 2"/>
 		</panel>
 	    <panel-related name="weekDaysPanel" field="weekDays" editable="true" grid-view="day-planning-grid" form-view="day-planning-form"/>
 	</form>
 	
-	<grid name="day-planning-grid" title="Day" model="com.axelor.apps.base.db.DayPlanning" editable="true" orderBy="id">
+	<grid name="day-planning-grid" title="Day" model="com.axelor.apps.base.db.DayPlanning" editable="true" canMove="true" orderBy="sequence">
 		<field name="name" readonly="true"/>
 		<field name="morningFrom"/>
 		<field name="morningTo"/>

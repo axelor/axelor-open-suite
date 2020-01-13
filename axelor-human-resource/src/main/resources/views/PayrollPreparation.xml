@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="payroll-preparation-grid" title="Payroll preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
-		 <field name="employee"/>
-		 <field name="company" grid-view="company-grid" form-view="company-form"/>
-		 <field name="period" grid-view="period-hr-grid" form-view="period-hr-form" canEdit="false" canView="false"/>
-		 <field name="exported" />
+		<field name="employee"/>
+		<field name="company" grid-view="company-grid" form-view="company-form" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="period" grid-view="period-hr-grid" form-view="period-hr-form" canEdit="false" canView="false"/>
+		<field name="exported" />
 	</grid>
 	
     <form name="payroll-preparation-form" title="Payroll preparation" model="com.axelor.apps.hr.db.PayrollPreparation" onNew="action-payroll-preparation-group-on-new">

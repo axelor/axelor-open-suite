@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+    <grid name="supplychain-stock-location-line-grid" title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product"
+    	canNew="false" canDelete="false">
+        <field name="product" width="300"/>	
+        <field name="product.unit"  width="100"/>  
+        <field name="stockLocation.company" width="120"/>
+        <field name="stockLocation.name" title="Stock location"/>
+        <field name="stockLocation.parentStockLocation.name" title="Parent Stock location"/>
+        <field name="currentQty" width="150"/> 
+        <field name="futureQty" title="Future quantity" width="150"/>
+        <field name="reservedQty" width="150"/>
+        <field name="requestedReservedQty" width="150"/>
+    </grid>
+	
+	<action-view name="action-stock-location-line-view-by-product" title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine">
+    	<view type="grid" name="supplychain-stock-location-line-grid"/>
+        <view type="form" name="stock-location-line-form"/>
+    	<domain>self.product.id = :productId AND self.stockLocation.typeSelect != 3 
+      AND (self.stockLocation.isNotInCalculStock = false OR self.stockLocation.isNotInCalculStock IS NULL)
+      AND (0 IN :location OR self.stockLocation.id IN :location)
+      AND (:companyId IS NULL OR self.stockLocation.company.id = :companyId)
+      AND (self.currentQty != 0 OR self.futureQty != 0 OR self.reservedQty != 0 OR self.requestedReservedQty != 0)</domain>
+    	<context name="productId" expr="eval: product?.id"/>
+        <context name="location" expr="eval: __stockLocationIdList"/>
+        <context name="companyId" expr="eval: company?.id "/>
+    </action-view>
+    
+</object-views>	

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
@@ -46,6 +47,8 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -53,6 +56,7 @@ import javax.mail.MessagingException;
 import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
+import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +64,7 @@ import org.slf4j.LoggerFactory;
 public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;
+  @Inject private MetaFiles metaFiles;
 
   public static final String DEFAULT_LOCALE = "en";
 
@@ -168,6 +173,24 @@ public class UserServiceImpl implements UserService {
     }
 
     return company.getLogo();
+  }
+
+  @Override
+  public String getUserActiveCompanyLogoLink() {
+
+    final Company company = this.getUserActiveCompany();
+
+    if (company == null) {
+      return null;
+    }
+
+    MetaFile logo = company.getLogo();
+
+    if (logo == null) {
+      return null;
+    }
+
+    return metaFiles.getDownloadLink(logo, company);
   }
 
   @Override
@@ -304,7 +327,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {
@@ -361,5 +384,43 @@ public class UserServiceImpl implements UserService {
   @Override
   public String getPasswordPatternDescription() {
     return I18n.get(PATTERN_DESCRIPTION);
+  }
+
+  @Override
+  public boolean verifyCurrentUserPassword(String password) {
+
+    if (!StringUtils.isBlank(password)) {
+      final User current = AuthUtils.getUser();
+      final AuthService authService = AuthService.getInstance();
+
+      if (authService.match(password, current.getPassword())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateRandomPasswordForUsers(List<Long> userIds) {
+    AuthService authService = Beans.get(AuthService.class);
+    LocalDateTime todayDateTime =
+        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+
+    for (Long userId : userIds) {
+      User user = userRepo.find(userId);
+      String password = this.generateRandomPassword().toString();
+      user.setTransientPassword(password);
+      password = authService.encrypt(password);
+      user.setPassword(password);
+      user.setPasswordUpdatedOn(todayDateTime);
+      userRepo.save(user);
+    }
+
+    // Update login date in session so that user changing own password doesn't get logged out.
+    if (userIds.contains(getUserId())) {
+      Session session = AuthUtils.getSubject().getSession();
+      session.setAttribute("loginDate", todayDateTime);
+    }
   }
 }

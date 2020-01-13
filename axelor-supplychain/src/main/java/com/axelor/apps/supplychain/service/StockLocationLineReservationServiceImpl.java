@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,7 +32,7 @@ public class StockLocationLineReservationServiceImpl
     implements StockLocationLineReservationService {
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void allocateAll(StockLocationLine stockLocationLine) throws AxelorException {
     // qty to allocate is the minimum value between requested and current qty subtracted by reserved
     // qty
@@ -52,7 +52,7 @@ public class StockLocationLineReservationServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void deallocateAll(StockLocationLine stockLocationLine) throws AxelorException {
     List<StockMoveLine> stockMoveLineList =
         Beans.get(StockMoveLineRepository.class)

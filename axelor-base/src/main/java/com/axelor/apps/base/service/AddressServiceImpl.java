@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,11 +18,15 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
+import com.axelor.apps.base.db.Street;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.CityRepository;
+import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -55,6 +59,8 @@ public class AddressServiceImpl implements AddressService {
   @Inject protected AddressRepository addressRepo;
   @Inject protected com.axelor.apps.tool.address.AddressTool ads;
   @Inject protected MapService mapService;
+  @Inject protected CityRepository cityRepository;
+  @Inject protected StreetRepository streetRepository;
 
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
@@ -96,7 +102,7 @@ public class AddressServiceImpl implements AddressService {
     header.add("CodeINSEE");
 
     csv.writeNext(header.toArray(new String[header.size()]));
-    List<String> items = new ArrayList<String>();
+    List<String> items = new ArrayList<>();
     for (Address a : addresses) {
 
       items.add(a.getId() != null ? a.getId().toString() : "");
@@ -178,7 +184,7 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
       throws AxelorException, JSONException {
     Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
@@ -192,7 +198,7 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
       throws AxelorException, JSONException {
     Preconditions.checkNotNull(address, I18n.get(IExceptionMessage.ADDRESS_CANNOT_BE_NULL));
@@ -275,5 +281,38 @@ public class AddressServiceImpl implements AddressService {
     }
 
     return addressString.toString();
+  }
+
+  @Override
+  public void autocompleteAddress(Address address) {
+    String zip = address.getZip();
+    if (zip == null) {
+      return;
+    }
+    Country country = address.getAddressL7Country();
+
+    List<City> cities =
+        cityRepository
+            .all()
+            .filter("self.zip = :zip AND self.country = :country")
+            .bind("zip", zip)
+            .bind("country", country)
+            .fetch();
+    City city = cities.size() == 1 ? cities.get(0) : null;
+    address.setCity(city);
+    address.setAddressL6(city != null ? zip + " " + city.getName() : null);
+
+    List<Street> streets =
+        streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
+    if (streets.size() == 1) {
+      Street street = streets.get(0);
+      address.setStreet(street);
+      String name = street.getName();
+      String num = address.getStreetNumber();
+      address.setAddressL4(num != null ? num + " " + name : name);
+    } else {
+      address.setStreet(null);
+      address.setAddressL4(null);
+    }
   }
 }

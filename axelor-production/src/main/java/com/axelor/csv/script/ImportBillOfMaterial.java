@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,7 +34,7 @@ public class ImportBillOfMaterial {
 
   @Inject BillOfMaterialRepository bomRepo;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Object computeCostPrice(Object bean, Map values) throws AxelorException {
     if (bean == null) {
       return bean;
@@ -42,7 +42,7 @@ public class ImportBillOfMaterial {
     assert bean instanceof BillOfMaterial;
     BillOfMaterial bom = (BillOfMaterial) bean;
     bom = bomRepo.save(bom);
-    costSheetService.computeCostPrice(bom);
+    costSheetService.computeCostPrice(bom, CostSheetService.ORIGIN_BILL_OF_MATERIAL, null);
     billOfMaterialService.updateProductCostPrice(bom);
     return bom;
   }

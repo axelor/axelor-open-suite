@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,6 +52,17 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLineList
    */
   void updateDeliveryStates(List<SaleOrderLine> saleOrderLineList);
+
+  /**
+   * Create a query to find sale order line of a product of a specific/all company and a
+   * specific/all stock location
+   *
+   * @param productId
+   * @param companyId
+   * @param stockLocationId
+   * @return the query.
+   */
+  String getSaleOrderLineListForAProduct(Long productId, Long companyId, Long stockLocationId);
 
   /**
    * check qty when modifying saleOrderLine which is invoiced or delivered

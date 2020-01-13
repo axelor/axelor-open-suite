@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 
-	<entity name="ControlPoint" lang="java" cachable="true">
+	<entity name="ControlPoint" lang="java" cacheable="true">
 		<integer name="statusSelect" selection="quality.control.points.status.select"/>
 		<many-to-one name="qualityControl" ref="QualityControl" title="Quality control" />
+		<many-to-one name="optionalQualityControl" ref="QualityControl"/>
 		<string name="name" title="Control point name" required="true"/>
-		<integer name="priority" title="Priority"/>
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" />
-		<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" required="true" />
 		<many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee" title="quality.responsible" />
-		<integer name="controlTypeSelect" title="Control type" selection="quality.control.points.control.type.select"/>
-		<integer name="testTypeSelect" title="Test type" selection="quality.control.points.test.type.select" />
 		<decimal name="controlFrequency" title="Control Frequency"/>
-		<string name="instructions" title="Instructions"/>
 		<string name="notes" title="Notes"/>
-		<string name="messageIfFailure" title="Message if failure"/>
 		<date name="controlPointDate" title="Date"/>
+		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint" mappedBy="controlPoint"/>
+		<integer name="sequence" title="Sequence"/>
+		<many-to-one name="controlPointType" title="Type" ref="com.axelor.apps.quality.db.ControlPointType" required="true"/>
+
+		<extra-code>
+			<![CDATA[
+				public static final int STATUS_ON_HOLD = 1;
+			]]>
+		</extra-code>
 	</entity>
 
 </domain-models>

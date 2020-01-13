@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
   
 <!--     IMPORT DU PACKAGE 'AUTH' -->
 
@@ -52,8 +52,6 @@
 		<bind column="members" to="members" search="self.code in :members" eval="members.split('\\|') as List" />
 	</input>
 
-	<input file="base_keyword.csv" separator=";" type="com.axelor.apps.base.db.Keyword" search="self.importId = :importId"  />
-	
 	<input file="base_source.csv" separator=";" type="com.axelor.apps.base.db.Source" search="self.code = :code"/>
 
     <input file="base_economicArea.csv" separator=";" type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>
@@ -216,6 +214,10 @@
 
     <input file="meta_metaTranslation.csv" separator=";" type="com.axelor.meta.db.MetaTranslation"
       search="self.key = :key AND self.language = :language"/>
+      
+    <input file="base_citizenship.csv" separator=";" type="com.axelor.apps.base.db.Citizenship"/>
+    
+    <input file="base_fileType.csv" type="com.axelor.apps.base.db.FileType" separator=";" />
 
 </csv-inputs>
 

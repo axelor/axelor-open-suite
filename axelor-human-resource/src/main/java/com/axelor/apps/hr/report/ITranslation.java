@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,6 +52,9 @@ public class ITranslation {
       "ExpenseLine.kilometricAllowParam"; /*)*/
   public static final String EXPENSE_LINE_KILOMETRIC_EXPENSE_TYPE = /*$$(*/
       "ExpenseLine.kilometricExpenseType"; /*)*/
+  public static final String EXPENSE_LINE_TO_INVOICE = /*$$(*/ "ExpenseLine.toInvoice"; /*)*/
+  public static final String EXPENSE_LINE_YES = /*$$(*/ "ExpenseLine.yes"; /*)*/
+  public static final String EXPENSE_LINE_NO = /*$$(*/ "ExpenseLine.no"; /*)*/
 
   public static final String TIMESHEET_OF = /*$$(*/ "Timesheet.timesheetOf"; /*)*/
   public static final String TIMESHEET_PROJECT = /*$$(*/ "TimesheetLine.project"; /*)*/
@@ -83,4 +86,14 @@ public class ITranslation {
   public static final String LUNCH_VOUCHER_SIGNATURE = /*$$(*/ "LunchVoucher.signature"; /*)*/
 
   public static final String EDITOR_ADD_LINE = /*$$(*/ "Add a line"; /*)*/
+
+  public static final String PHONE_BOOK_COMPANY_PHONE_BOOK = /*$$(*/
+      "Phonebook.employeePhonebook"; /*)*/
+
+  public static final String EMPLOYEE_TIMESHEET_FROM_DATE = /*$$(*/
+      "EmployeeTimesheet.fromDate"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_TO_DATE = /*$$(*/ "EmployeeTimesheet.toDate"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_USER = /*$$(*/ "EmployeeTimesheet.user"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_WEEK_TOTAL = /*$$(*/
+      "EmployeeTimesheet.weekTotal"; /*)*/
 }

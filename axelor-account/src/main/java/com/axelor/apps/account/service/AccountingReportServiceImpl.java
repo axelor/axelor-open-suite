@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
@@ -31,12 +32,14 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -373,14 +376,14 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setStatus(AccountingReport accountingReport) {
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_VALIDATED);
     accountingReportRepo.save(accountingReport);
   }
 
   /** @param accountingReport */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void setPublicationDateTime(AccountingReport accountingReport) {
     accountingReport.setPublicationDateTime(appBaseService.getTodayDateTime());
     accountingReportRepo.save(accountingReport);
@@ -478,7 +481,28 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return this.getDebitBalance().subtract(this.getDebitBalanceType4());
   }
 
+  public void testReportedDateField(LocalDate reportedDate) throws AxelorException {
+    if (reportedDate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.CLOSE_NO_REPORTED_BALANCE_DATE));
+    }
+  }
+
   @Override
+  public String getReportFileLink(AccountingReport accountingReport, String name)
+      throws AxelorException {
+    return ReportFactory.createReport(
+            String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()),
+            name + "-${date}")
+        .addParam("AccountingReportId", accountingReport.getId())
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addFormat(accountingReport.getExportTypeSelect())
+        .toAttach(accountingReport)
+        .generate()
+        .getFileLink();
+  }
+
   public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
 
     AccountConfig accountConfig =

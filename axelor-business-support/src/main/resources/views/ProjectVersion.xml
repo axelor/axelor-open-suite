@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="project-version-grid" title="Project.version" model="com.axelor.apps.businesssupport.db.ProjectVersion">
+		<field name="title"/>
+		<field name="project"/>
+		<field name="statusSelect"/>
+		<field name="testingServerDate"/>
+	</grid>
+
+	<form name="project-version-form" title="Project.version" model="com.axelor.apps.businesssupport.db.ProjectVersion" width="large" onNew="action-business-support-attrs-project-default">
+		<panel name="mainPanel">
+			<field name="title" colSpan="12"/>
+			<field name="project" grid-view="project-grid" form-view="project-form" onSelect="action-version-attrs-project-domain"/>
+			<field name="statusSelect"/>
+			<field name="testingServerDate"/>
+			<field name="productionServerDate"/>
+			<field name="content" widget="HTML" colSpan="12"/>
+		</panel>
+		<panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+			<panel-dashlet name="taskDashletPanel" title="Ticket associated" action="action-dashlet-version-view-show-task" colSpan="12"/>
+		</panel>
+	</form>
+	
+	<action-attrs name="action-version-attrs-project-domain">
+		<attribute name="domain" for="project" expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;"/>
+	</action-attrs>
+
+</object-views>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+   
+	<grid name="advanced-import-grid" title="Advanced imports" model="com.axelor.apps.base.db.AdvancedImport">
+		<field name="name"/>
+		<field name="importFile"/>
+		<field name="isConfigInFile"/>
+		<field name="isHeader"/>
+		<field name="statusSelect"/>
+	</grid>
+    
+	<form name="advanced-import-form" title="Advanced import" model="com.axelor.apps.base.db.AdvancedImport" width="large" onNew="action-advanced-import-record-onnew">
+		<panel name="mainPanel">
+			<panel name="headPanel" colSpan="12">
+				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+			</panel>
+			<field name="name" colSpan="5"/>
+		    <field name="importFile" widget="binary-link" onChange="action-advanced-import-record-set-values" colSpan="4"/>
+		    <field name="attachment" widget="binary-link" onChange="action-advanced-import-record-set-values" colSpan="3"/>
+		    <field name="languageSelect"/>
+		    <field name="fileSeparator" showIf="fileExtension == 'csv'" requiredIf="fileExtension == 'csv'"/>
+		    <panel name="detailPanel" readonlyIf="statusSelect == 1" colSpan="12">
+			    <field name="isConfigInFile" widget="boolean-switch" onChange="action-advanced-import-record-onchange-config"/>
+			    <field name="isFileTabConfigAdded" widget="boolean-switch" hideIf="!isConfigInFile"/>
+			    <field name="isHeader" readonlyIf="isConfigInFile" widget="boolean-switch" colSpan="3"/>
+			    <field name="isValidateValue" widget="boolean-switch" colSpan="3"/>
+			    <field name="nbOfFirstLineIgnore" readonlyIf="isConfigInFile"/>
+			    <field name="errorLog" widget="binary-link"/>
+			</panel>
+			<field name="fileExtension" hidden="true"/>
+		</panel>
+	  	<panel-related colSpan="12" field="fileTabList" form-view="file-tab-form" grid-view="file-tab-grid" readonlyIf="statusSelect == 1" canMove="true" orderBy="sequence"/>
+	  	<panel sidebar="true">
+			<button name="applyBtn" title="Apply" onClick="action-advanced-import-validate-filetab,save,action-advanced-import-method-apply" hideIf="statusSelect == 1"/>
+			<button name="validateBtn" title="Validate" onClick="save,action-advanced-import-method-validate,save" showIf="fileTabList.length &gt; 0 &amp;&amp; statusSelect == 0"/>
+			<button name="importBtn" title="Import" onClick="save,action-advanced-import-method-import,save" showIf="statusSelect == 1"/>
+			<button name="resetImportBtn" title="Reset import" onClick="save,action-advanced-import-method-reset-import" showIf="statusSelect == 1"/>
+			<button name="draftBtn" title="Reset to draft" onClick="action-advanced-import-record-set-values,save" showIf="statusSelect == 1"/>
+	  	</panel>
+	</form>
+	
+	<action-method name="action-advanced-import-method-apply">
+		<call class="com.axelor.apps.base.web.AdvancedImportController" method="apply"/>
+	</action-method>
+	
+	<action-method name="action-advanced-import-method-validate">
+		<call class="com.axelor.apps.base.web.AdvancedImportController" method="validate"/>
+	</action-method>
+	
+	<action-method name="action-advanced-import-method-import">
+		<call class="com.axelor.apps.base.web.AdvancedImportController" method="importData"/>
+	</action-method>
+	
+	<action-method name="action-advanced-import-method-reset-import">
+		<call class="com.axelor.apps.base.web.AdvancedImportController" method="resetImport"/>
+	</action-method>
+	
+	<action-validate name="action-advanced-import-validate-filetab">
+		<alert message="You will lost all configuration. Are you sure ?" if="fileTabList != null &amp;&amp; fileTabList.size > 0"/>
+	</action-validate>
+	
+	<action-record name="action-advanced-import-record-set-values" model="com.axelor.apps.base.db.AdvancedImport">
+		<field name="statusSelect" expr="eval: 0"/>
+		<field name="fileExtension" expr="eval: com.google.common.io.Files.getFileExtension(importFile.fileName)" if="importFile != null"/>
+	</action-record>
+	
+	<action-record name="action-advanced-import-record-onnew" model="com.axelor.apps.base.db.AdvancedImport">
+		<field name="languageSelect" expr="eval: __user__.language"/>
+	</action-record>
+	
+	<action-record name="action-advanced-import-record-onchange-config" model="com.axelor.apps.base.db.AdvancedImport">
+		<field name="nbOfFirstLineIgnore" expr="0" if="isConfigInFile"/>
+		<field name="isHeader" expr="eval: true" if="isConfigInFile"/>
+	</action-record>
+	
+</object-views>

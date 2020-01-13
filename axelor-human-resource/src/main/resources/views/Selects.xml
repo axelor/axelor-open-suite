@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<selection name="hrs.expenses.status.select">
 		<option value="1">Draft</option>
@@ -94,6 +94,12 @@
 		<option value="3">Payroll preparation generation</option>
 		<option value="4">Payroll preparation export</option>
 		<option value="5">Leave Management Reset</option>
+		<option value="6">Export des salariés</option>
+        <option value="7">Email reminder for timesheets</option>
+	</selection>
+	
+	<selection name="hr.batch.employment.contract.export.type.select">
+		<option value="1">SILAE</option>
 	</selection>
 	
 	<selection name="hr.expense.company.cb.payment">
@@ -142,6 +148,7 @@
 	<selection name="hr.batch.payroll.preparation.export.type.select">
 		<option value="1">Standard</option>
 		<option value="2">Nibelis</option>
+		<option value="3">Silae</option>
 	</selection>
 	
 	<selection name="hr.employee.marital.status">
@@ -167,10 +174,28 @@
 	<selection id="hr.object.data.config.model.select" name="object.data.config.model.select">
 		<option value="com.axelor.apps.hr.db.Employee">Employee</option>
 	</selection>
+
+	  <selection name="hr.employee.form.step.by.step.select">
+	    <option value="1">Basic information</option>
+	    <option value="2">Employment contract</option>
+	    <option value="3">Leaves and timesheets</option>
+	    <option value="4">User creation</option>
+	    <option value="5">Finished</option>
+	  </selection>
+	
+	  <selection name="employee.hr.sex.select">
+	    <option value="F">F</option>
+	    <option value="M">M</option>
+	  </selection>
     
     <selection name="hr.leave.reason.unit.select">
         <option value="1">Days</option>
         <option value="2">Hours</option>
+    </selection>
+
+    <selection name="hr.employee.timesheet.report.type.select">
+        <option value="1">All</option>
+        <option value="2">Only missing</option>
     </selection>
 
 </object-views>

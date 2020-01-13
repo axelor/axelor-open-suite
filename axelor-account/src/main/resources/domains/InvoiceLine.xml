@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
     <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -42,12 +42,13 @@
 
         <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
         <one-to-many name="budgetDistributionList" ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution" mappedBy="invoiceLine"/>
+        <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 
         <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account"/>
         
         <many-to-one name="fixedAssetCategory" ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"/>
 
-        <integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
+        <integer name="typeSelect" title="Type" selection="line.type.select"/>
         <boolean name="isSubLine" title="Sub line" readonly="true"/>
         <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
         <decimal name="totalPack" title="Total for pack lines"/>

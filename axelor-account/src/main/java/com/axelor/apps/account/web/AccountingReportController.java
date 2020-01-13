@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
@@ -25,11 +24,9 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,7 +36,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -51,9 +47,6 @@ public class AccountingReportController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject AccountingReportService accountingReportService;
-
-  @Inject AccountingReportRepository accountingReportRepo;
   /**
    * @param request
    * @param response
@@ -61,9 +54,10 @@ public class AccountingReportController {
   public void searchMoveLine(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
     try {
-      accountingReport = accountingReportRepo.find(accountingReport.getId());
+      accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
 
       String query = accountingReportService.getMoveLineList(accountingReport);
       BigDecimal debitBalance = accountingReportService.getDebitBalance();
@@ -140,7 +134,7 @@ public class AccountingReportController {
   public void replayExport(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = accountingReportRepo.find(accountingReport.getId());
+    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
     MoveLineExportService moveLineExportService = Beans.get(MoveLineExportService.class);
 
     try {
@@ -157,7 +151,8 @@ public class AccountingReportController {
   public void printExportMoveLine(ActionRequest request, ActionResponse response) {
 
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    accountingReport = accountingReportRepo.find(accountingReport.getId());
+    accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
+    AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
     try {
 
@@ -211,15 +206,7 @@ public class AccountingReportController {
                 + " "
                 + accountingReport.getRef();
 
-        String fileLink =
-            ReportFactory.createReport(
-                    String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelect), name + "-${date}")
-                .addParam("AccountingReportId", accountingReport.getId())
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addFormat(accountingReport.getExportTypeSelect())
-                .toAttach(accountingReport)
-                .generate()
-                .getFileLink();
+        String fileLink = accountingReportService.getReportFileLink(accountingReport, name);
 
         logger.debug("Printing " + name);
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,9 +32,9 @@ import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -42,7 +42,6 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,12 +49,6 @@ import java.util.Map;
 
 @Singleton
 public class InvoiceController {
-
-  @Inject private AppSupplychainService appSupplychainService;
-
-  @Inject protected SaleOrderInvoiceProjectServiceImpl saleOrderInvoiceProjectServiceImpl;
-
-  @Inject private InvoiceRepository invoiceRepo;
 
   // Generate single invoice from several
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -187,9 +180,7 @@ public class InvoiceController {
       fieldErrors.append(I18n.get(IExceptionMessage.INVOICE_MERGE_ERROR_PARTNER));
     }
 
-    if (commonSaleOrder == null
-        && !appSupplychainService.getAppSupplychain().getManageInvoicedAmountByLine()
-        && saleOrderIsNull == false) {
+    if (commonSaleOrder == null && saleOrderIsNull == false) {
       if (fieldErrors.length() > 0) {
         fieldErrors.append("<br/>");
       }
@@ -278,17 +269,18 @@ public class InvoiceController {
 
     try {
       Invoice invoice =
-          saleOrderInvoiceProjectServiceImpl.mergeInvoice(
-              invoiceList,
-              commonCompany,
-              commonCurrency,
-              commonPartner,
-              commonContactPartner,
-              commonPriceList,
-              commonPaymentMode,
-              commonPaymentCondition,
-              commonSaleOrder,
-              commonProject);
+          Beans.get(SaleOrderInvoiceProjectServiceImpl.class)
+              .mergeInvoice(
+                  invoiceList,
+                  commonCompany,
+                  commonCurrency,
+                  commonPartner,
+                  commonContactPartner,
+                  commonPriceList,
+                  commonPaymentMode,
+                  commonPaymentCondition,
+                  commonSaleOrder,
+                  commonProject);
       if (invoice != null) {
         // Open the generated invoice in a new tab
         response.setView(
@@ -311,20 +303,24 @@ public class InvoiceController {
     Invoice invoice =
         Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
 
-    List<String> reportInfo =
-        Beans.get(InvoiceServiceProjectImpl.class)
-            .editInvoiceAnnex(invoice, invoice.getId().toString(), false);
+    try {
+      List<String> reportInfo =
+          Beans.get(InvoiceServiceProjectImpl.class)
+              .editInvoiceAnnex(invoice, invoice.getId().toString(), false);
 
-    if (reportInfo == null || reportInfo.isEmpty()) {
-      return;
+      if (reportInfo == null || reportInfo.isEmpty()) {
+        return;
+      }
+
+      response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = invoiceRepo.find(invoice.getId());
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       invoiceLine.setProject(invoice.getProject());

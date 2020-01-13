@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.IEvent;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.auth.AuthUtils;
@@ -48,7 +47,7 @@ public class EventManagementRepository extends EventRepository {
       case 2: // metting
         break;
       case 3: // task s
-        entity.setStatusSelect(IEvent.STATUS_NOT_STARTED);
+        entity.setStatusSelect(EventRepository.STATUS_NOT_STARTED);
         break;
     }
     return super.copy(entity, deep);
@@ -101,7 +100,15 @@ public class EventManagementRepository extends EventRepository {
   }
 
   public void remove(Event entity, boolean removeRemote) {
+
     try {
+
+      if (entity.getCalendar() == null && Strings.isNullOrEmpty(entity.getUid())) {
+        //     Not a synchronized event
+        super.remove(entity);
+        return;
+      }
+
       User user = AuthUtils.getUser();
       List<Long> calendarIdlist = Beans.get(CalendarService.class).showSharedCalendars(user);
       if (calendarIdlist.isEmpty() || !calendarIdlist.contains(entity.getCalendar().getId())) {

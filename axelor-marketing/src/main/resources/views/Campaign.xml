@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
         <field name="name"/>
@@ -33,7 +33,6 @@
 				<field name="campaignType" canEdit="false" colSpan="4"/>
 				<field name="eventStartDateT" colSpan="4"/>
 				<field name="eventEndDateT" colSpan="4"/>
-				<spacer name="campaignTypeSpacer"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
 				<field name="manageAnEventPerTarget" colSpan="4" widget="boolean-switch"/>
 				<field name="manageAttendees" colSpan="4" widget="boolean-switch"/>
@@ -61,11 +60,11 @@
 				<field name="generateEventPerPartnerOrLead" widget="inline-checkbox" colSpan="12"/>
 				<field name="team" onChange="action-campaign-attrs-team-value-fill" hideIf="generateEventPerPartnerOrLead" />
 				<field name="eventUser" hideIf="generateEventPerPartnerOrLead" onChange="action-campaign-record-set-team" onSelect="action-campaign-attrs-eventuser-domain" />
-				<field name="subject" />
+				<field name="subject" requiredIf="manageAnEventPerTarget"/>
 				<field name="eventTypeSelect" domain="self.value IN ('0','1','2','3')"  placeholder="Event Type" required="true" />
-				<field name="eventStartDateTime" />
+				<field name="eventStartDateTime" requiredIf="manageAnEventPerTarget"/>
 				<field name="duration" widget="duration" x-big="true" />
-				<button name="generateEventsBtn" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" />
+				<button name="generateEventsBtn" title="Generate Events" colSpan="3" onClick="action-campaign-alert-event-user,save,action-campaign-method-generate-events" readonlyIf="duration == 0"/>
 			</panel>
 			<panel name="targetsToContactPanel" title="Targets to contact" showIf="manageAnEventPerTarget">
 				<button name="openPlannedEventsBtn" title="Open planned events" colSpan="3" onClick="dashlet.target.to.contact.planned"/>

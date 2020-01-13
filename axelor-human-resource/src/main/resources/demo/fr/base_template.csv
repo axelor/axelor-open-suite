@@ -1,0 +1,8 @@
+"importId";"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+25;"Timesheet Reminder";"TimesheetReminder";2;;;;"true";;"Feuilles de temps à compléter";"<p>Bonjour $TimesheetReminder.employee.name$, </p><br>
+<p>Nous vous remercions de bien vouloir compléter vos feuilles de temps dès que possibles. Vous trouverez ci-dessous les informations manquantes :</p>
+$TimesheetReminder.timesheetReminderLineList : { it | 
+   </p><p>Pour la semaine du $it.fromDate;format=""dd-MM-yyyy""$ au $it.toDate; format=""dd-MM-yyyy""$ , vous avez déclarez&nbsp;&nbsp;$it.workHour$&nbsp;heures alors que vous auriez du déclarer $it.requiredHours$ (don't forget pro rata) heures.&nbsp;</p>
+}$
+Merci de bien vouloir compléter/corriger vos feuilles de temps dans les meilleurs délais.
+";"$TimesheetReminder.employee.contactPartner.emailAddress.address$";;;2

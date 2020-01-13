@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,11 +32,11 @@ import java.util.List;
 
 public class YearServiceImpl implements YearService {
 
-  protected YearRepository yearRepo;
+  protected YearRepository yearRepository;
 
   @Inject
-  public YearServiceImpl(YearRepository yearRepo) {
-    this.yearRepo = yearRepo;
+  public YearServiceImpl(YearRepository yearRepository) {
+    this.yearRepository = yearRepository;
   }
 
   public List<Period> generatePeriods(Year year) throws AxelorException {
@@ -81,7 +81,7 @@ public class YearServiceImpl implements YearService {
   @Override
   public Year getYear(LocalDate date, Company company) {
 
-    return yearRepo
+    return yearRepository
         .all()
         .filter("self.company = ?1 AND self.fromDate < ?2 AND self.toDate >= ?2", company, date)
         .fetchOne();

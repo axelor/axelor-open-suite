@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="business-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<field name="fullName"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" />
 		<field name="fromDate" />
 		<field name="toDate" />
@@ -44,6 +44,10 @@
 		<field name="fromDate" expr="eval: __date__"/>
 		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
+	
+	<action-attrs name="action-project-attrs-set-invoicing-sequence">
+		<attribute name="value" for="invoicingSequenceSelect" expr="eval: null"/>
+	</action-attrs>
 	
 	<action-method name="action-project-method-get-partner-data">
 		<call class="com.axelor.apps.businessproject.web.ProjectController" method="getPartnerData"/>
@@ -184,6 +188,13 @@
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
     </action-view>
     
+   <action-view name="action-project-dashlet-analytic-move-lines" model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines">
+  		<view name="analytic-move-line-grid" type="grid"/>
+  		<view name="analytic-move-line-form" type="form"/>
+ 		<domain>self.project.id = :id</domain>
+		<context name="id" expr="eval:id"/>
+	</action-view>
+	 
     <action-view name="action-project-view-show-confirmed-purchase-order-lines" title="Purchase Order Lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
         <view type="grid" name="purchase-order-line-project-grid"/>
         <view type="form" name="purchase-order-line-project-form"/>

@@ -1,86 +1,86 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
-    	<toolbar>
-    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
-    		<button name="planBtn" title="Plan" onClick="action-manuf-order-method-plan"/>
-    	</toolbar>
-    	<hilite color="danger" if="prioritySelect == 4"/>
-  		<hilite color="warning" if="prioritySelect == 3"/>
-  		<hilite color="primary" if="prioritySelect == 2"/>
-  		<hilite color="info" if="prioritySelect == 1"/>
-  		<field name="prioritySelect" hidden="true"/>
-        <field name="manufOrderSeq" width="120"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
-        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
-        <field name="prodProcess.outsourcing"/>
-        <field name="plannedStartDateT"/>
-        <field name="plannedEndDateT"/>
-        <field name="realStartDateT"/>
-        <field name="realEndDateT"/>
-        <field name="statusSelect"/>
-        <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-   		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
-   		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel" readonlyIf="statusSelect == 2"/>
-   		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
-    </grid>
+  <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
+		<toolbar>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+			<button name="planBtn" title="Plan" onClick="action-manuf-order-method-plan"/>
+		</toolbar>
+		<hilite color="danger" if="prioritySelect == 4"/>
+		<hilite color="warning" if="prioritySelect == 3"/>
+		<hilite color="primary" if="prioritySelect == 2"/>
+		<hilite color="info" if="prioritySelect == 1"/>
+    <field name="prioritySelect" hidden="true"/>
+		<field name="manufOrderSeq" width="120"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
+		<field name="product" form-view="product-form" grid-view="product-grid"/>
+		<field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
+		<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+		<field name="prodProcess.outsourcing"/>
+		<field name="plannedStartDateT"/>
+		<field name="plannedEndDateT"/>
+		<field name="realStartDateT"/>
+		<field name="realEndDateT"/>
+		<field name="statusSelect"/>
+		<button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+		<button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
+		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel" readonlyIf="statusSelect == 2"/>
+		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+  </grid>
     
-     <grid name="manuf-order-business-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
-    	<toolbar>
-    		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
-    	</toolbar>
-    	<field name="productionOrder" width="120"/>
-        <field name="manufOrderSeq" width="120"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
-        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
-        <field name="prodProcess.outsourcing"/>
-        <field name="plannedStartDateT"/>
-        <field name="plannedEndDateT"/>
-        <field name="realStartDateT"/>
-        <field name="realEndDateT"/>
-        <field name="statusSelect"/>
-        <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
-        <button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-   		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
-   		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
-   		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel" readonlyIf="statusSelect == 2"/>
-   		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
-    </grid>
+  <grid name="manuf-order-business-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
+    <toolbar>
+      <button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+    </toolbar>
+    <field name="productionOrder" width="120"/>
+		<field name="manufOrderSeq" width="120"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="product" form-view="product-form" grid-view="product-grid"/>
+		<field name="billOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form"/>
+		<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+		<field name="prodProcess.outsourcing"/>
+		<field name="plannedStartDateT"/>
+		<field name="plannedEndDateT"/>
+		<field name="realStartDateT"/>
+		<field name="realEndDateT"/>
+		<field name="statusSelect"/>
+		<button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-plan" readonlyIf="statusSelect >= 3"/>
+		<button name="startBtn" icon="fa-play" onClick="action-manuf-order-method-start-or-resume" readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+		<button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause" readonlyIf="statusSelect != 4"/>
+		<button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish" readonlyIf="statusSelect != 4"/>
+		<button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel" readonlyIf="statusSelect == 2"/>
+		<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+  </grid>
     
-    <grid name="manuf-order-invoicing-project-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
-    	<field name="productionOrder" width="120"/>
-        <field name="manufOrderSeq" width="120"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
-        <field name="plannedStartDateT"/>
-        <field name="realStartDateT"/>
-        <field name="statusSelect"/>
-    </grid>
+  <grid name="manuf-order-invoicing-project-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder">
+    <field name="productionOrder" width="120"/>
+    <field name="manufOrderSeq" width="120"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+    <field name="plannedStartDateT"/>
+    <field name="realStartDateT"/>
+    <field name="statusSelect"/>
+  </grid>
     
-    <grid name="manuf-order-time-tracking-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder" >
-        <field name="productionOrder" width="120" />
-        <field name="manufOrderSeq" width="120"/>
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-        <field name="product" form-view="product-form" grid-view="product-grid"/>
-        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
-        <field name="plannedEndDateT"/>
-        <field name="realEndDateT"/>
-        <field name="endTimeDifference">
-        	<hilite color="danger" if="endTimeDifference &gt; 0"/>
-        	<hilite color="success" if="endTimeDifference &lt;= 0"/>
-        </field>
-    </grid>
+  <grid name="manuf-order-time-tracking-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" groupBy="productionOrder" >
+	  <field name="productionOrder" width="120" />
+	  <field name="manufOrderSeq" width="120"/>
+	  <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	  <field name="product" form-view="product-form" grid-view="product-grid"/>
+	  <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
+	  <field name="plannedEndDateT"/>
+	  <field name="realEndDateT"/>
+	  <field name="endTimeDifference">
+	  	<hilite color="danger" if="endTimeDifference &gt; 0"/>
+	  	<hilite color="success" if="endTimeDifference &lt;= 0"/>
+	  </field>
+  </grid>
 
 	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits"
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
@@ -149,6 +149,7 @@
 				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
+					<field name="$totalPlannedDuration" title="Total Planned Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
 					<field name="cancelReason" hidden="true"/>
 					<field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
 						<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
@@ -157,6 +158,7 @@
 				<panel name="realDatesPanel" title="Real dates" showIf="statusSelect &gt; 3">
 					<field name="realStartDateT" title="Start date"/>
 					<field name="realEndDateT" title="End date"/>
+					<field name="$totalRealDuration" title="Total Real Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
 				</panel>
 			</panel>
 			<panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
@@ -478,6 +480,8 @@
 
 	<action-attrs name="action-manuf-order-attrs-price-digits">
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="value" for="$totalPlannedDuration" expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
+		<attribute name="value" for="$totalRealDuration" expr="eval: operationOrderList.collect{it->it.realDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
 	</action-attrs>
 
 	<action-validate name="action-manuf-order-validate-planned-end-date"

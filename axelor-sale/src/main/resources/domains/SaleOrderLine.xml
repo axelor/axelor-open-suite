@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -62,7 +62,7 @@
   	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>
   	<decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
   	<decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
-	<integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
+	<integer name="typeSelect" title="Type" selection="line.type.select"/>
 	<many-to-one name="parentLine" ref="com.axelor.apps.sale.db.SaleOrderLine" />
   	<one-to-many name="subLineList" ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentLine" title="Pack lines"/>
   	<decimal name="totalPack" title="Total for pack lines"/>

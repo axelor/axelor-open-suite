@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="employee-bonus-mgt-grid" title="Employee bonus management" model="com.axelor.apps.hr.db.EmployeeBonusMgt" >
-		<field name="company" />
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="payPeriod" canEdit="false" canView="false"/>
 		<field name="leavePeriod" canEdit="false" canView="false"/>
 		<field name="employeeBonusType" />
 		<field name="baseAmount" />
 		<field name="statusSelect" />
-    </grid>
+  </grid>
 
     <form name="employee-bonus-mgt-form" title="Employee bonus management" model="com.axelor.apps.hr.db.EmployeeBonusMgt" onNew="action-employee-bonus-mgt-record-default">
 	    <toolbar>

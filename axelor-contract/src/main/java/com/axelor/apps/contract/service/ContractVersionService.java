@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,7 +31,7 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be waiting.
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   void waiting(ContractVersion version) throws AxelorException;
 
   /**
@@ -40,7 +40,7 @@ public interface ContractVersionService {
    * @param version of the contract will be waiting.
    * @param date of waiting.
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   void waiting(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
@@ -48,7 +48,7 @@ public interface ContractVersionService {
    *
    * @param version of te contract will be ongoing.
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   void ongoing(ContractVersion version) throws AxelorException;
 
   /**
@@ -57,7 +57,7 @@ public interface ContractVersionService {
    * @param version of the contract will be ongoing.
    * @param date of activation.
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**

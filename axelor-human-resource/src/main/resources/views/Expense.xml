@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<hilite color="danger" if="statusSelect == 5"/>
 		<hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
 		<hilite color="warning" if="statusSelect == 2"/>
 		<field name="expenseSeq" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -28,7 +28,7 @@
 		<hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
 		<hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
 		<field name="expenseSeq" width="120"/>
-		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" canEdit="false" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="sentDate"/>
 		<field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
@@ -132,7 +132,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="generalExpenseLineListPanel" field="generalExpenseLineList" title="General expenses" readonlyIf="statusSelect &gt; 1" colSpan="12"
-				editable="true" form-view="general-expense-line-form" grid-view="general-expense-line-grid" onChange="action-expense-method-compute,action-expense-method-update-moveDate-and-period" />
+				editable="true" form-view="expense-line-form" grid-view="expense-line-grid" onChange="action-expense-method-compute,action-expense-method-update-moveDate-and-period" />
 			<panel-related name="kilometricExpenseLineListPanel" field="kilometricExpenseLineList" title="Kilometric Allowances" readonlyIf="statusSelect &gt; 1" colSpan="12" showIf="!setMultipleUsers"
 				editable="true" form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid" onChange="action-expense-method-compute"/>
 			<panel-related name="employeeAdvanceUsageListPanel" showIf="!setMultipleUsers &amp;&amp; employeeAdvanceUsageList &amp;&amp; employeeAdvanceUsageList.length" field="employeeAdvanceUsageList" title="Employee advance list" readonly="false" canNew="false" canSelect="false" canEdit="true" editable="true" form-view="employee-advance-usage-expense-form" grid-view="employee-advance-usage-expense-grid" />

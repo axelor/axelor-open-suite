@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -90,6 +90,8 @@ public interface ITranslation {
       "Invoice.supplierPartnerSeq"; /*)*/
   public static final String INVOICE_CUSTOMER_TAX_NUMBER = /*$$(*/
       "Invoice.customerTaxNumber"; /*)*/
+  public static final String INVOICE_AMOUNT_REMAINING = /*$$(*/ "Invoice.amountRemaining"; /*)*/
+  public static final String INVOICE_PROFORMA_INVOICE = /*$$(*/ "Invoice.proformaInvoice"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
@@ -447,6 +449,10 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType16.acquisition_date"; /*)*/
   public static final String ACCOUNTING_REPORT_16_GROSS_VALUE =
       /*$$(*/ "AccountingReportType16.gross_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_LINEAR =
+      /*$$(*/ "linear"; /*)*/
+  public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_DIGRESSIVE =
+      /*$$(*/ "degressive"; /*)*/
 
   public static final String ACCOUNTING_REPORT_17_TITLE =
       /*$$(*/ "AccountingReportType17.title"; /*)*/
@@ -495,4 +501,12 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.year_start_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION_CHARGE =
       /*$$(*/ "AccountingReportType17.depreciation_charge"; /*)*/
+
+  public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
+  public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/
+  public static final String INVOICE_PAYMENT_PAYMENT_MODE = /*$$(*/
+      "InvoicePayment.payment_mode"; /*)*/
+  public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
+  public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
+      "Invoice.headOfficeAddress"; /*)*/
 }

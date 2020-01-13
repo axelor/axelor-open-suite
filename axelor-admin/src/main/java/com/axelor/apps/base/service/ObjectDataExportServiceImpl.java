@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -67,8 +68,12 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
   @Override
   public MetaFile export(
-      ObjectDataConfig objectDataConfig, Long recordId, String language, String format)
+      ObjectDataConfig objectDataConfig, ObjectDataConfigExport objDataConfigExport)
       throws AxelorException {
+
+    Long recordId = objDataConfigExport.getModelSelectId();
+    String language = objDataConfigExport.getLangSelect();
+    String format = objDataConfigExport.getExportFormatSelect();
 
     try {
       logger.debug(

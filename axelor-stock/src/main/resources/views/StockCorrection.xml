@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+    <grid name="stock-correction-grid" title="Stock Corrections" model="com.axelor.apps.stock.db.StockCorrection">
+		<field name="stockLocation"/>
+		<field name="product"/>
+		<field name="trackingNumber"/>
+		<field name="realQty"/>
+		<field name="futureQty"/>
+		<field name="reservedQty"/>
+		<field name="validationDateT"/>
+		<field name="stockCorrectionReason"/>
+		<field name="statusSelect"/>
+    </grid>
+
+    <form name="stock-correction-form" title="Stock Correction" model="com.axelor.apps.stock.db.StockCorrection"
+		onNew="action-stock-correction-onnew-group">
+		<panel name="mainPanel">
+			<panel name="statusSelectPanel" colSpan="8">
+				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+			</panel>
+			<panel name="actionsPanel" colSpan="4">
+				<button name="validateBtn" title="Validate" icon="fa-check" showIf="statusSelect == 1" onClick="action-group-stock-correction-validate-click" colSpan="12"/>
+				<button name="showGeneratedStockMoveBtn" title="Show Generated Stock Move" showIf="statusSelect == 2" colSpan="12" onClick="action-stock-correction-method-show-generated-stock-move"/>
+			</panel>
+		</panel>
+		<panel name="stockCorrectionDetailsPanel" readonlyIf="statusSelect == 2">
+			<field name="stockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form"/>
+			<field name="product" canEdit="false" onSelect="action-stock-correction-on-select-product" onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid" form-view="product-form"/>
+			<field name="trackingNumber" canEdit="false" onSelect="action-stock-correction-on-select-tracking-number" onChange="action-stock-correction-method-set-deault-qtys"/>
+			<spacer name="trackingNumberSpacer"/>
+			<field name="realQty" colSpan="4"/>
+			<field name="futureQty" colSpan="4"/>
+			<field name="reservedQty" colSpan="4"/>
+		</panel>
+		<panel name="stockCorrectionReasonPanel" sidebar="true" readonlyIf="statusSelect == 2">
+			<field name="stockCorrectionReason" canEdit="false" colSpan="12"/>
+			<field name="validationDateT"/>
+		</panel>
+    </form>
+
+    <action-group name="action-stock-correction-onnew-group">
+		<action name="action-stock-correction-record-new"/>
+		<action name="action-stock-correction-method-set-default-details" if="_stockLocationLineId"/>
+    </action-group>
+
+    <action-group name="action-group-stock-correction-validate-click">
+		<action name="save"/>
+		<action name="action-stock-correction-method-validate"/>
+		<action name="save"/>
+    </action-group>
+
+    <action-record name="action-stock-correction-record-new" model="com.axelor.apps.stock.db.StockCorrection">
+		<field name="statusSelect" expr="1"/>
+    </action-record>
+
+	<action-attrs name="action-stock-correction-on-select-product">
+		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self IN (SELECT p FROM StockLocation s JOIN s.stockLocationLineList sl JOIN sl.product p WHERE s = :stockLocation)&quot;" if="stockLocation != null"/>
+    </action-attrs>
+
+    <action-attrs name="action-stock-correction-on-select-tracking-number">
+		<attribute name="domain" for="trackingNumber" expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || product == null"/>
+		<attribute name="domain" for="trackingNumber" expr="eval: &quot; self IN(SELECT tn FROM StockLocation s JOIN s.detailsStockLocationLineList dsl JOIN dsl.trackingNumber tn WHERE s = :stockLocation AND dsl.product = :product) &quot;" if="stockLocation != null &amp;&amp; product != null"/>
+    </action-attrs>
+
+	<action-method name="action-stock-correction-method-set-default-details">
+		<call class="com.axelor.apps.stock.web.StockCorrectionController" method="setDefaultDetails"/>
+	</action-method>
+
+    <action-method name="action-stock-correction-method-set-deault-qtys">
+		<call class="com.axelor.apps.stock.web.StockCorrectionController" method="setDefaultQtys"/>
+    </action-method>
+
+    <action-method name="action-stock-correction-method-validate">
+		<call class="com.axelor.apps.stock.web.StockCorrectionController" method="validate"/>
+    </action-method>
+
+   <action-method name="action-stock-correction-method-show-generated-stock-move">
+       <call class="com.axelor.apps.stock.web.StockCorrectionController" method="showGeneratedStockMove"/>
+   </action-method>
+
+</object-views>

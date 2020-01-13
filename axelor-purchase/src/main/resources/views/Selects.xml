@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -38,6 +38,10 @@
 	<selection name="sequence.generic.code.select" id="purchase.sequence.generic.code.select">
 		<option value="purchaseOrder">Purchase order</option>
 		<option value="PurchaseRequest">Purchase request</option>
+	</selection>
+
+	<selection name="abc.analysis.type.select" id="purchase.abc.analysis.type.select">
+		<option value="com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl">Purchase</option>
 	</selection>
 	
 </object-views>

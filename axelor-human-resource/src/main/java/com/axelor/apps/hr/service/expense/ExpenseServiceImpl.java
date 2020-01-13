@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -230,7 +230,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
@@ -255,7 +255,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Expense expense) throws AxelorException {
 
     Employee employee = expense.getUser().getEmployee();
@@ -291,6 +291,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDate(appAccountService.getTodayDate());
+
     if (expense.getUser().getPartner() != null) {
       PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
       expense.setPaymentMode(paymentMode);
@@ -315,7 +316,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Expense expense) throws AxelorException {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
@@ -341,7 +342,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move ventilate(Expense expense) throws AxelorException {
 
     Move move = null;
@@ -440,7 +441,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               expense.getExpenseSeq(),
               expenseLine.getComments() != null
                   ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
-                  : null);
+                  : "");
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
@@ -484,7 +485,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException {
     Move move = expense.getMove();
     if (move == null) {
@@ -526,7 +527,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
 
     expense.setPaymentDate(appAccountService.getTodayDate());

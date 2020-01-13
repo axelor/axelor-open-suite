@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,7 +39,7 @@ import com.axelor.apps.tool.QueryBuilder;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -67,7 +67,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
         findBatch();
         batchBankPaymentService.createBankOrderFromPaymentScheduleLines(batch);
       } catch (Exception e) {
-        TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.DIRECT_DEBIT, batch.getId());
         logger.error(e.getLocalizedMessage());
       }
     }
@@ -202,7 +202,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
               paymentScheduleLine, companyBankDetails, directDebitPaymentMode);
           incrementDone(paymentScheduleLine);
         } catch (Exception e) {
-          TraceBackService.trace(e, IException.DIRECT_DEBIT, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.DIRECT_DEBIT, batch.getId());
           incrementAnomaly(paymentScheduleLine);
           break;
         }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import com.axelor.apps.cash.management.db.repo.ForecastRecapLineRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
 import com.axelor.apps.cash.management.report.IReport;
+import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.hr.db.Employee;
@@ -984,13 +985,15 @@ public class ForecastRecapService {
     forecastRecap.setForecastRecapLineList(forecastRecapLines);
   }
 
-  public String getURLForecastRecapPDF(ForecastRecap forecastRecap) throws AxelorException {
-    String title = I18n.get("ForecastRecap");
-    title += forecastRecap.getId();
+  public String getForecastRecapFileLink(Long forecastRecapId, String reportType)
+      throws AxelorException {
+    String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
+    title += forecastRecapId;
 
     return ReportFactory.createReport(IReport.FORECAST_RECAP, title + "-${date}")
-        .addParam("ForecastRecapId", forecastRecap.getId().toString())
+        .addParam("ForecastRecapId", forecastRecapId.toString())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addFormat(reportType)
         .generate()
         .getFileLink();
   }

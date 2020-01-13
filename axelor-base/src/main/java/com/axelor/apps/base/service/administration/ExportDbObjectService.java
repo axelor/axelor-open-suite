@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.administration;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.apps.tool.xml.XPathParse;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.inject.Beans;
@@ -232,26 +233,26 @@ public class ExportDbObjectService {
 
   public static String getActionViewType(String xml) {
 
-    DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory domFactory = Beans.get(XPathParse.class).getDocumentBuilderFactory();
     domFactory.setNamespaceAware(true); // never forget this!
     DocumentBuilder builder;
 
     try {
       builder = domFactory.newDocumentBuilder();
       File tempXml = File.createTempFile("Temp", "xml");
-      FileWriter fw = new FileWriter(tempXml);
-      fw.write(xml);
-      fw.close();
-      Document doc = builder.parse(new FileInputStream(tempXml));
-      Node child = doc.getFirstChild();
-      NodeList chs = child.getChildNodes();
-      for (Integer i = 0; i < chs.getLength(); i++) {
-        if (chs.item(i).getNodeName().equals("view")) {
-          NamedNodeMap attributes = chs.item(i).getAttributes();
-          return attributes.getNamedItem("type").getNodeValue();
+      try (FileWriter fw = new FileWriter(tempXml) ) {
+        fw.write(xml);
+        Document doc = builder.parse(new FileInputStream(tempXml));
+        Node child = doc.getFirstChild();
+        NodeList chs = child.getChildNodes();
+        for (Integer i = 0; i < chs.getLength(); i++) {
+          if (chs.item(i).getNodeName().equals("view")) {
+            NamedNodeMap attributes = chs.item(i).getAttributes();
+            return attributes.getNamedItem("type").getNodeValue();
+          }
         }
+        return "";
       }
-      return "";
     } catch (Exception e) {
       log.error(e.getMessage());
     }

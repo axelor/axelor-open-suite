@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,7 @@ import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.db.JPA;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -80,13 +80,13 @@ public class BatchOutgoingStockMoveInvoicing extends AbstractBatch {
       for (StockMove stockMove : stockMoveList) {
         try {
           stockMoveInvoiceService.createInvoiceFromSaleOrder(
-              stockMove, saleRepo.find(stockMove.getOriginId()));
+              stockMove, saleRepo.find(stockMove.getOriginId()), null);
           incrementDone();
         } catch (Exception e) {
           incrementAnomaly();
           anomalyList.add(stockMove.getId());
           query.setParameter("anomalyList", anomalyList);
-          TraceBackService.trace(e, IException.INVOICE_ORIGIN, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
           e.printStackTrace();
           break;
         }

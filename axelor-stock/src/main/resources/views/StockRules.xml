@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,product.code,useCaseSelect">
         <toolbar>
@@ -18,8 +18,7 @@
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
     </grid>
-
-    <grid name="stock-rule-product-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,useCaseSelect">
+<grid name="stock-rule-product-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,useCaseSelect">
     	<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="minQty" aggregate="min"/>
         <field name="idealQty" aggregate="min"/>
@@ -28,17 +27,17 @@
 		<field name="useCaseSelect"/>
         <field name="orderAlertSelect"/>
     </grid>
-
     <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     	onNew="action-stock-rules-record-new" width="large">
 		<panel name="mainPanel" >
         	<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false" colSpan="3"/>
 	    	<field name="product" canEdit="false" onChange="action-stock-rules-record-product-change" domain="self.productTypeSelect = 'storable' and self.stockManaged = true " form-view="product-form" grid-view="product-grid" colSpan="3"/>
         	<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
-        	<field name="typeSelect" showIf="useCaseSelect == 2" colSpan="3" requiredIf="useCaseSelect == 2"/>   
+        	<field name="typeSelect" showIf="useCaseSelect == 2" colSpan="3" requiredIf="useCaseSelect == 2"/>
 	    	<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]" colSpan="3"/>
+            <field name="stockRuleMessageTemplate" colSpan="3" showIf="useCaseSelect == 2 &amp;&amp; orderAlertSelect == 1"/>
 	    	<field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid" showIf="orderAlertSelect == 1" colSpan="3"/>
-	    	<field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" showIf="orderAlertSelect == 1" colSpan="3"/>             
+	    	<field name="team" canEdit="false" form-view="team-form" grid-view="team-grid" showIf="orderAlertSelect == 1" colSpan="3"/>
         	<panel name="quantitiesPanel" title="Quantities" colSpan="6">
 	        	<field name="minQty" colSpan="6" onChange="action-stock-rules-minqty-change" validIf="$number(minQty) >= 0"/>
 	        	<field name="reOrderQty" colSpan="6" validIf="$number(reOrderQty) >= 0"/>
@@ -48,7 +47,7 @@
 				<field name="maxQty" showIf="useMaxQty" colSpan="6" onChange="action-stock-rules-maxqty-change" validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)"/>
 			</panel>
 			<field name="product.procurementMethodSelect" hidden="true"/>
-		</panel>		
+		</panel>
 		<panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
 	    	<mail-followers/>
@@ -84,15 +83,19 @@
 	
 	<action-record name="action-stock-rules-record-product-change"
 		model="com.axelor.apps.stock.db.StockRules">
-		<field name="orderAlertSelect" expr="eval: 1" if="product.procurementMethodSelect == 'buyAndProduce' &amp;&amp; useCaseSelect != 1"/>
-		<field name="orderAlertSelect" expr="eval: 3" if="product.procurementMethodSelect == 'buyAndProduce' &amp;&amp; useCaseSelect == 1"/>
-		<field name="orderAlertSelect" expr="eval: 2" if="product.procurementMethodSelect == 'buy'"/>
-		<field name="orderAlertSelect" expr="eval: 3" if="product.procurementMethodSelect == 'produce'"/>
+		<field name="orderAlertSelect" expr="eval: 1" if="product?.procurementMethodSelect == 'buyAndProduce' &amp;&amp; useCaseSelect != 1"/>
+		<field name="orderAlertSelect" expr="eval: 3" if="product?.procurementMethodSelect == 'buyAndProduce' &amp;&amp; useCaseSelect == 1"/>
+		<field name="orderAlertSelect" expr="eval: 2" if="product?.procurementMethodSelect == 'buy'"/>
+		<field name="orderAlertSelect" expr="eval: 3" if="product?.procurementMethodSelect == 'produce'"/>
 	</action-record>
 	
 	<action-record name="action-stock-rules-record-useCaseSelect-change"
 		model="com.axelor.apps.stock.db.StockRules">
 		<field name="orderAlertSelect" expr="eval: null" if="useCaseSelect == 1 &amp;&amp; orderAlertSelect == 1"/>
+	</action-record>
+
+	<action-record name="action-stock-rules-record-set-stock-rule-message-template" model="com.axelor.apps.stock.db.StockRules">
+		<field name="stockRuleMessageTemplate" expr="eval: __repo__(StockConfig).all().filter('self.company.id = ?1',__this__.stockLocation?.company?.id).fetchOne()?.getStockRuleMessageTemplate()" if="!stockRuleMessageTemplate"/>
 	</action-record>
 
 </object-views>
