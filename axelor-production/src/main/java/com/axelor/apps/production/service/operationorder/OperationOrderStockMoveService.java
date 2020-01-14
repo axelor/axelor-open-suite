@@ -71,7 +71,7 @@ public class OperationOrderStockMoveService {
 
       for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
 
-        StockMoveLine stockMoveLine = this._createStockMoveLine(prodProduct, stockMove);
+        this._createStockMoveLine(prodProduct, stockMove);
       }
 
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -133,7 +133,6 @@ public class OperationOrderStockMoveService {
         prodProduct.getProduct().getName(),
         prodProduct.getProduct().getDescription(),
         prodProduct.getQty(),
-        prodProduct.getProduct().getCostPrice(),
         prodProduct.getProduct().getCostPrice(),
         prodProduct.getUnit(),
         stockMove,

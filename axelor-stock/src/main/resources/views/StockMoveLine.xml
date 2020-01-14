@@ -37,10 +37,9 @@
 			onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty"
 			if="__config__.app.getApp('supplychain').getManageStockReservation()"
 			aggregate="sum" readonly="true"/>
-        <field name="qtyInvoiced" readonly="true"/>
-        <field name="unitPriceUntaxed" x-scale="2" width="120px"
-            readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
-        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+		<field name="qtyInvoiced" readonly="true"/>
+		<field name="valuatedUnitPrice" x-scale="2" width="120px"
+			readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"
             width="70px"
             readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
@@ -113,10 +112,9 @@
 			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" />
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-	        <field name="unitPriceUntaxed"/>
 			<field name="requestedReservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
-		    <field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
-        	<field name="unitPriceTaxed" hidden="true"/>
+			<field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+	        <field name="valuatedUnitPrice"/>
 			<field name="wapPrice" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
@@ -153,8 +151,7 @@
 		<field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
 		<field name="productName" readonly="true" />
 		<field name="qty" aggregate="sum" onChange="action-stock-move-line-validate-check-split-quantity"/>
-		<field name="unitPriceUntaxed" x-scale="2"/>
-		<field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+		<field name="valuatedUnitPrice" x-scale="2"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="conformitySelect" readonly="true"/>
@@ -174,9 +171,8 @@
         <field name="productName" required="true" />
         <field name="qty"  aggregate="sum" onChange="action-stock-move-line-group-qty-onchange" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
-        <field name="qtyInvoiced" readonly="true"/>
-        <field name="unitPriceUntaxed" x-scale="2"/>
-        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+		<field name="qtyInvoiced" readonly="true"/>
+        <field name="valuatedUnitPrice" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
         <field name="conformitySelect"/>
@@ -201,9 +197,8 @@
         <field name="productName" />
         <field name="stockMove.partner"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
-        <field name="qtyInvoiced" readonly="true"/>
-        <field name="unitPriceUntaxed" x-scale="2"/>
-        <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+		<field name="qtyInvoiced" readonly="true"/>
+        <field name="valuatedUnitPrice" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
    		<field name="stockMove.origin" width="120"/>
@@ -229,8 +224,7 @@
 		<field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" />
 		<field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"/>
 		<field name="qtyInvoiced" readonly="true"/>
-		<field name="unitPriceUntaxed" x-scale="2" />
-		<field name="unitPriceTaxed" hidden="true" />
+		<field name="valuatedUnitPrice" x-scale="2" />
 		<field name="unit" form-view="unit-form" grid-view="unit-grid" />
 		<field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="stockMove.origin" width="120"/>
@@ -295,7 +289,7 @@
 				</viewer>
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
-	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="valuatedUnitPrice" readonlyIf="$get('stockMove.statusSelect') > 1"/>
        		<field name="unitPriceTaxed" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
@@ -561,7 +555,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
-		<attribute name="scale" for="unitPriceUntaxed" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="valuatedUnitPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="wapPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	

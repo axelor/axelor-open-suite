@@ -151,7 +151,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
             product.getDescription(),
             diff.abs(),
             product.getCostPrice(),
-            product.getCostPrice(),
             product.getUnit(),
             stockMove,
             StockMoveLineService.TYPE_NULL,

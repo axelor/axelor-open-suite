@@ -20,11 +20,14 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -105,8 +108,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String productName,
       String description,
       BigDecimal quantity,
-      BigDecimal unitPrice,
-      BigDecimal companyUnitPriceUntaxed,
+      BigDecimal valuatedUnitPrice,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -117,17 +119,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (product != null) {
 
       StockMoveLine stockMoveLine =
-          generateStockMoveLineConvertingUnitPrice(
+          createStockMoveLine(
               product,
               productName,
               description,
               quantity,
-              unitPrice,
-              companyUnitPriceUntaxed,
+              valuatedUnitPrice,
               unit,
               stockMove,
-              taxed,
-              taxRate);
+              null);
       TrackingNumberConfiguration trackingNumberConfiguration =
           product.getTrackingNumberConfiguration();
 
@@ -135,60 +135,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           stockMoveLine, stockMove, product, trackingNumberConfiguration, type);
     } else {
       return this.createStockMoveLine(
-          product,
-          productName,
-          description,
-          quantity,
-          BigDecimal.ZERO,
-          BigDecimal.ZERO,
-          companyUnitPriceUntaxed,
-          unit,
-          stockMove,
-          null);
+          product, productName, description, quantity, BigDecimal.ZERO, unit, stockMove, null);
     }
-  }
-
-  protected StockMoveLine generateStockMoveLineConvertingUnitPrice(
-      Product product,
-      String productName,
-      String description,
-      BigDecimal quantity,
-      BigDecimal unitPrice,
-      BigDecimal companyUnitPriceUntaxed,
-      Unit unit,
-      StockMove stockMove,
-      boolean taxed,
-      BigDecimal taxRate)
-      throws AxelorException {
-    BigDecimal unitPriceUntaxed;
-    BigDecimal unitPriceTaxed;
-    if (taxed) {
-      unitPriceTaxed =
-          unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-      unitPriceUntaxed =
-          unitPrice.divide(
-              taxRate.add(BigDecimal.ONE),
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              RoundingMode.HALF_UP);
-    } else {
-      unitPriceUntaxed =
-          unitPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-      unitPriceTaxed =
-          unitPrice
-              .multiply(taxRate.add(BigDecimal.ONE))
-              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-    }
-    return this.createStockMoveLine(
-        product,
-        productName,
-        description,
-        quantity,
-        unitPriceUntaxed,
-        unitPriceTaxed,
-        companyUnitPriceUntaxed,
-        unit,
-        stockMove,
-        null);
   }
 
   @Override
@@ -317,9 +265,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String productName,
       String description,
       BigDecimal quantity,
-      BigDecimal unitPriceUntaxed,
-      BigDecimal unitPriceTaxed,
-      BigDecimal companyUnitPriceUntaxed,
+      BigDecimal valuatedUnitPrice,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
@@ -331,11 +277,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setDescription(description);
     stockMoveLine.setQty(quantity);
     stockMoveLine.setRealQty(quantity);
-    stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
-    stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
-    stockMoveLine.setCompanyUnitPriceUntaxed(companyUnitPriceUntaxed);
+    stockMoveLine.setValuatedUnitPrice(valuatedUnitPrice);
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -411,9 +355,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             stockMoveLine.getProductName(),
             stockMoveLine.getDescription(),
             qty,
-            stockMoveLine.getUnitPriceUntaxed(),
-            stockMoveLine.getUnitPriceTaxed(),
-            stockMoveLine.getCompanyUnitPriceUntaxed(),
+            stockMoveLine.getValuatedUnitPrice(),
             stockMoveLine.getUnit(),
             stockMoveLine.getStockMove(),
             trackingNumber);
@@ -495,7 +437,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal newPrice =
         stockMoveLine.getWapPrice() != null
             ? stockMoveLine.getWapPrice()
-            : stockMoveLine.getCompanyUnitPriceUntaxed();
+            : stockMoveLine.getValuatedUnitPrice();
     BigDecimal newAvgPrice;
     if (oldAvgPrice == null
         || oldQty == null
@@ -798,25 +740,63 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
-    BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
+    BigDecimal valuatedUnitPrice = BigDecimal.ZERO;
+
     if (stockMoveLine.getProduct() != null && stockMove != null) {
+      Currency fromCurrency = stockMove.getCompany().getCurrency();
+
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-        unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
+        valuatedUnitPrice = stockMoveLine.getProduct().getSalePrice();
+        fromCurrency = stockMoveLine.getProduct().getSaleCurrency();
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-        unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
+        valuatedUnitPrice = stockMoveLine.getProduct().getPurchasePrice();
+        fromCurrency = stockMoveLine.getProduct().getPurchaseCurrency();
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMove.getFromStockLocation() != null
           && stockMove.getFromStockLocation().getTypeSelect()
               != StockLocationRepository.TYPE_VIRTUAL) {
-        unitPriceUntaxed =
+        valuatedUnitPrice =
             computeFromStockLocation(stockMoveLine, stockMove.getFromStockLocation());
+
+        stockMoveLine.setValuatedUnitPrice(valuatedUnitPrice);
+        return stockMoveLine;
       } else {
-        unitPriceUntaxed = stockMoveLine.getProduct().getCostPrice();
+        valuatedUnitPrice = stockMoveLine.getProduct().getCostPrice();
+
+        stockMoveLine.setValuatedUnitPrice(valuatedUnitPrice);
+        return stockMoveLine;
+      }
+
+      if (stockMove.getPartner() != null) {
+        if (stockMoveLine.getProduct().getInAti()) {
+          valuatedUnitPrice =
+              valuatedUnitPrice.divide(
+                  Beans.get(AccountManagementService.class)
+                      .getTaxLine(
+                          appBaseService.getTodayDate(),
+                          stockMoveLine.getProduct(),
+                          stockMove.getCompany(),
+                          stockMove.getPartner().getFiscalPosition(),
+                          (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING))
+                      .getValue()
+                      .add(BigDecimal.ONE),
+                  2,
+                  BigDecimal.ROUND_HALF_UP);
+        }
+
+        valuatedUnitPrice =
+            Beans.get(CurrencyService.class)
+                .getAmountCurrencyConvertedAtDate(
+                    fromCurrency,
+                    stockMove.getCompany().getCurrency(),
+                    valuatedUnitPrice,
+                    appBaseService.getTodayDate());
+      } else {
+        valuatedUnitPrice = stockMoveLine.getProduct().getCostPrice();
       }
     }
-    stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
-    stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
-    stockMoveLine.setCompanyUnitPriceUntaxed(unitPriceUntaxed);
+
+    stockMoveLine.setValuatedUnitPrice(valuatedUnitPrice);
     return stockMoveLine;
   }
 

@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -43,6 +44,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /** Classe de création de ligne de facture abstraite. */
@@ -169,7 +171,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.taxLine = purchaseOrderLine.getTaxLine();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
     } else if (stockMoveLine != null) {
-      this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
+      this.price = stockMoveLine.getValuatedUnitPrice();
+
       Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
 
       if (saleOrPurchaseUnit != null
@@ -178,15 +181,35 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         this.qty =
             unitConversionService.convert(
                 this.unit, saleOrPurchaseUnit, qty, qty.scale(), stockMoveLine.getProduct());
-        this.priceDiscounted =
+        this.price =
             unitConversionService.convert(
                 this.unit,
                 saleOrPurchaseUnit,
-                this.priceDiscounted,
+                this.price,
                 appBaseService.getNbDecimalDigitForUnitPrice(),
                 product);
         this.unit = saleOrPurchaseUnit;
       }
+
+      this.price =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  stockMoveLine.getStockMove().getCompany().getCurrency(),
+                  stockMoveLine.getStockMove().getPartner().getCurrency(),
+                  this.price,
+                  stockMoveLine.getStockMove().getRealDate())
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+      this.taxLine =
+          accountManagementService.getTaxLine(
+              appAccountService.getTodayDate(),
+              product,
+              invoice.getCompany(),
+              invoice.getPartner().getFiscalPosition(),
+              InvoiceToolService.isPurchase(invoice));
+      this.inTaxPrice = this.price.add(this.price.multiply(this.taxLine.getValue()));
+      this.priceDiscounted = invoice.getInAti() ? this.inTaxPrice : this.price;
+      this.discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
+      this.discountAmount = BigDecimal.ZERO;
     }
   }
 
@@ -256,8 +279,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     } else if (stockMoveLine != null) {
 
-      this.price = stockMoveLine.getUnitPriceUntaxed();
-      this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
+      this.price = stockMoveLine.getValuatedUnitPrice();
+      this.inTaxPrice = stockMoveLine.getValuatedUnitPrice();
 
       this.price =
           unitConversionService.convert(
@@ -266,6 +289,14 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
               this.price,
               appBaseService.getNbDecimalDigitForUnitPrice(),
               product);
+      this.price =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  stockMoveLine.getStockMove().getCompany().getCurrency(),
+                  stockMoveLine.getStockMove().getPartner().getCurrency(),
+                  this.price,
+                  stockMoveLine.getStockMove().getRealDate())
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       this.inTaxPrice =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
@@ -273,6 +304,14 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
               this.inTaxPrice,
               appBaseService.getNbDecimalDigitForUnitPrice(),
               product);
+      this.inTaxPrice =
+          currencyService
+              .getAmountCurrencyConvertedAtDate(
+                  stockMoveLine.getStockMove().getCompany().getCurrency(),
+                  stockMoveLine.getStockMove().getPartner().getCurrency(),
+                  this.inTaxPrice,
+                  stockMoveLine.getStockMove().getRealDate())
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);

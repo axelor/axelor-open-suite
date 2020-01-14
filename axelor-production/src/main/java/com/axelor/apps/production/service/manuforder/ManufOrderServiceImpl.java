@@ -452,7 +452,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           prodProduct.getProduct().getDescription(),
           prodProduct.getQty(),
           prodProduct.getProduct().getCostPrice(),
-          prodProduct.getProduct().getCostPrice(),
           prodProduct.getUnit(),
           wasteStockMove,
           StockMoveLineService.TYPE_WASTE_PRODUCTIONS,

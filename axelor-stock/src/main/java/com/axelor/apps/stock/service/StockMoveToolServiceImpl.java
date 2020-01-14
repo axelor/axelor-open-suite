@@ -79,7 +79,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         exTaxTotal =
             exTaxTotal.add(
-                stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
+                stockMoveLine.getRealQty().multiply(stockMoveLine.getValuatedUnitPrice()));
       }
     }
     return exTaxTotal.setScale(2, RoundingMode.HALF_UP);

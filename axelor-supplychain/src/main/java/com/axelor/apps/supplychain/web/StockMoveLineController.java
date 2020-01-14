@@ -169,8 +169,7 @@ public class StockMoveLineController {
 
     if (subLines != null) {
       for (StockMoveLine line : subLines) {
-        line.setUnitPriceTaxed(BigDecimal.ZERO);
-        line.setUnitPriceUntaxed(BigDecimal.ZERO);
+        line.setValuatedUnitPrice(BigDecimal.ZERO);
       }
     }
     response.setValue("subLineList", subLines);

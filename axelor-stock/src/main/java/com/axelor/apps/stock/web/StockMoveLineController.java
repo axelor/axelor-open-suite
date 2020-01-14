@@ -68,9 +68,7 @@ public class StockMoveLineController {
       }
     }
     stockMoveLine = Beans.get(StockMoveLineService.class).compute(stockMoveLine, stockMove);
-    response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
-    response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
-    response.setValue("companyUnitPriceUntaxed", stockMoveLine.getCompanyUnitPriceUntaxed());
+    response.setValue("valuatedUnitPrice", stockMoveLine.getValuatedUnitPrice());
   }
 
   public void setProductInfo(ActionRequest request, ActionResponse response) {

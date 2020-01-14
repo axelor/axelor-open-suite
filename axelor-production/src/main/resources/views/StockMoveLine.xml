@@ -11,8 +11,7 @@
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
     <field name="qty" title="Consumed quantity" />
-    <field name="unitPriceUntaxed" x-scale="2" />
-    <field name="unitPriceTaxed" x-scale="2" hidden="true" />
+    <field name="valuatedUnitPrice" x-scale="2" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
     <field name="trackingNumber" form-view="tracking-number-form"
 		grid-view="tracking-number-grid"
@@ -36,8 +35,7 @@
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
     <field name="qty" title="Produced quantity" />
-    <field name="unitPriceUntaxed" x-scale="2" />
-    <field name="unitPriceTaxed" x-scale="2" hidden="true" />
+    <field name="valuatedUnitPrice" x-scale="2" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
     <field name="trackingNumber" form-view="tracking-number-form"
 		grid-view="tracking-number-grid"
@@ -69,8 +67,7 @@
       <field name="productName" required="true" />
       <field name="qty" onChange="action-stock-move-line-group-qty-onchange"
         title="Consumed quantity" />
-      <field name="unitPriceUntaxed" />
-      <field name="unitPriceTaxed" hidden="true" />
+      <field name="valuatedUnitPrice" />
       <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid" />
       <field name="trackingNumber" onChange="action-stock-move-line-record-product"
         form-view="tracking-number-form" grid-view="tracking-number-grid"

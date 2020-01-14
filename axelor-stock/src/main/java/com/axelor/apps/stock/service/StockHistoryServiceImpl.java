@@ -150,7 +150,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setPriceIncStockMovePeriod(
         stockMoveLineList
             .stream()
-            .map(StockMoveLine::getCompanyUnitPriceUntaxed)
+            .map(StockMoveLine::getValuatedUnitPrice)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO));
   }
@@ -178,7 +178,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     stockHistoryLine.setPriceOutStockMovePeriod(
         stockMoveLineList
             .stream()
-            .map(StockMoveLine::getCompanyUnitPriceUntaxed)
+            .map(StockMoveLine::getValuatedUnitPrice)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO));
   }

@@ -87,13 +87,6 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
       "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
 
-  /** Stock move line service */
-  static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
-      "Missing link to sale order line (from sale order id = %s) for stock move line %s" /*)*/;
-
-  static final String STOCK_MOVE_MISSING_PURCHASE_ORDER = /*$$(*/
-      "Missing purchase order with id %s for stock move line %s" /*)*/;
-
   /** Batch Invoicing */
   static final String BATCH_INVOICING_1 = /*$$(*/ "Subscription invoice generation report :" /*)*/;
 
