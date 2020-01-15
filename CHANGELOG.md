@@ -36,6 +36,7 @@
 - EBICS USER : fix for strange import - log
 - LEAVE REQUEST: Updated calendar filter.
 - SUBROGATION RELEASE / INVOICE : corrected npe.
+- FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
