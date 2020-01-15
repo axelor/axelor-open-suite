@@ -30,6 +30,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -61,8 +62,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public FixedAsset generateAndcomputeLines(FixedAsset fixedAsset) {
-
-    BigDecimal depreciationValue = this.computeDepreciationValue(fixedAsset);
+    boolean isLinear = fixedAsset.getComputationMethodSelect().equals("linear");
+    BigDecimal depreciationValue = this.computeDepreciationValue(fixedAsset, isLinear);
     BigDecimal cumulativeValue = depreciationValue;
     LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
     LocalDate acquisitionDate = fixedAsset.getAcquisitionDate();
@@ -72,7 +73,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     int counter = 1;
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     numberOfDepreciation--;
-
     while (depreciationDate.isBefore(endDate)) {
       FixedAssetLine fixedAssetLine = new FixedAssetLine();
       fixedAssetLine.setStatusSelect(FixedAssetLineRepository.STATUS_PLANNED);
@@ -83,10 +83,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
 
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
-      if (counter == numberOfDepreciation) {
+      if ((!isLinear && counter == numberOfDepreciation)
+          || (isLinear && (isProrataTemporis && counter == numberOfDepreciation + 1)
+              || (!isProrataTemporis && counter == numberOfDepreciation))) {
         depreciationValue = fixedAssetLine.getResidualValue();
         cumulativeValue = cumulativeValue.add(depreciationValue);
-        depreciationDate = depreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth());
+
+        depreciationDate =
+            DateTool.plusMonths(depreciationDate, fixedAsset.getPeriodicityInMonth());
         if (isProrataTemporis) {
           endDate =
               depreciationDate.minusDays(
@@ -108,13 +112,16 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           }
         } else {
           depreciationValue =
-              this.computeDepreciation(fixedAsset, fixedAssetLine.getResidualValue(), false);
+              this.computeDepreciation(
+                  fixedAsset, fixedAssetLine.getResidualValue(), false, isLinear);
         }
-        depreciationDate = depreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth());
+        depreciationDate =
+            DateTool.plusMonths(depreciationDate, fixedAsset.getPeriodicityInMonth());
       } else {
         depreciationValue =
-            this.computeDepreciation(fixedAsset, fixedAsset.getResidualValue(), false);
-        depreciationDate = depreciationDate.plusMonths(fixedAsset.getPeriodicityInMonth());
+            this.computeDepreciation(fixedAsset, fixedAsset.getResidualValue(), false, isLinear);
+        depreciationDate =
+            DateTool.plusMonths(depreciationDate, fixedAsset.getPeriodicityInMonth());
       }
       depreciationValue = depreciationValue.setScale(scale, RoundingMode.HALF_EVEN);
       cumulativeValue =
@@ -124,9 +131,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return fixedAsset;
   }
 
-  private BigDecimal computeDepreciationValue(FixedAsset fixedAsset) {
+  private BigDecimal computeDepreciationValue(FixedAsset fixedAsset, boolean isLinear) {
     BigDecimal depreciationValue = BigDecimal.ZERO;
-    depreciationValue = this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), true);
+    depreciationValue =
+        this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), true, isLinear);
     return depreciationValue;
   }
 
@@ -146,11 +154,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   private BigDecimal computeDepreciation(
-      FixedAsset fixedAsset, BigDecimal residualValue, boolean isFirstYear) {
+      FixedAsset fixedAsset, BigDecimal residualValue, boolean isFirstYear, boolean isLinear) {
 
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     int numberOfDepreciation =
-        fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
+        !isLinear && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
     float depreciationRate = numberOfDepreciation == 0 ? 0 : 1f / numberOfDepreciation * 100f;
