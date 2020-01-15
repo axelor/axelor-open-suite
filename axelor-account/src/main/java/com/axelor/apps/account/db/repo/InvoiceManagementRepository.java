@@ -88,10 +88,18 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     try {
       if (context.get("_model") != null
           && context.get("_model").toString().contains("SubrogationRelease")) {
-        long id = (long) context.get("id");
-        SubrogationRelease subrogationRelease =
-            Beans.get(SubrogationReleaseRepository.class).find(id);
-        json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
+        if (context.get("id") != null) {
+          long id = (long) context.get("id");
+          SubrogationRelease subrogationRelease =
+              Beans.get(SubrogationReleaseRepository.class).find(id);
+          if (subrogationRelease != null && subrogationRelease.getStatusSelect() != null) {
+            json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
+          } else {
+            json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
+          }
+        }
+      } else {
+        json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
