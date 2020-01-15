@@ -240,7 +240,7 @@ public class ExportDbObjectService {
     try {
       builder = domFactory.newDocumentBuilder();
       File tempXml = File.createTempFile("Temp", "xml");
-      try (FileWriter fw = new FileWriter(tempXml) ) {
+      try (FileWriter fw = new FileWriter(tempXml)) {
         fw.write(xml);
         Document doc = builder.parse(new FileInputStream(tempXml));
         Node child = doc.getFirstChild();
