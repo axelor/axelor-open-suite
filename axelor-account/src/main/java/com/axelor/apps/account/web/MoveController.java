@@ -305,7 +305,7 @@ public class MoveController {
   public void checkRemoveLines(ActionRequest request, ActionResponse response) {
     try {
       Move moveView = request.getContext().asType(Move.class);
-      Move moveBD = moveRepo.find(moveView.getId());
+      Move moveBD = Beans.get(MoveRepository.class).find(moveView.getId());
       List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
       for (MoveLine moveLineBD : moveBD.getMoveLineList()) {
         if (!moveView.getMoveLineList().contains(moveLineBD)) {
