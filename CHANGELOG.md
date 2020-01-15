@@ -15,6 +15,7 @@
 - Advanced Import : Fix config line import
 - MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
 - SUBROGATION RELEASE / INVOICE : corrected npe.
+- INVOICE : add specific note of company bank details on invoice report.
 
 ## [5.2.2] - 2020-01-09
 ## Features
