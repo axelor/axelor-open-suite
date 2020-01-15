@@ -13,7 +13,8 @@
 - STOCK MOVE : to and from stock location set on company change.
 - STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
 - BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch
-- BUSINESS PROJECT: Fix financial report refund in negative
+- ACCOUNTING REPORT : display popup message on click of 'exportBtn'
+- SALE ORDER LINE : Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
@@ -30,6 +31,11 @@
 - BankOrder : Fix NPE on click of confirm for International transfer
 - BANK ORDER : corrected the possibility to generate two times the same move.
 - BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
+- Fixed Asset : Fix issue of infinite value of depriciation rate"
+- EBICS USER : fix for strange import - log
+- LEAVE REQUEST: Updated calendar filter.
+- BUSINESS PROJECT: Fix financial report refund in negative.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
