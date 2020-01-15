@@ -1,5 +1,4 @@
 # Changelog
-
 ## [Unreleased 5.2.3]
 ## Improvements
 - BANKSTATEMENT : import multiple records in a single line.
@@ -14,6 +13,7 @@
 - DataImportServiceImpl : Use of try-with-resources for "ZipInputStream" and "FileOutputStream".
 - Importer : Use of try-with-resources for "FileOutputStream".
 - Advanced Import : Fix config line import
+- MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
 - SUBROGATION RELEASE / INVOICE : corrected npe.
 
 ## [5.2.2] - 2020-01-09
