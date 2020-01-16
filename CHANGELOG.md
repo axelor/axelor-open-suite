@@ -37,6 +37,7 @@
 - LEAVE REQUEST: Updated calendar filter.
 - SUBROGATION RELEASE / INVOICE : corrected npe.
 - FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
+- INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
