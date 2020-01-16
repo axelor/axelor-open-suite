@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -32,6 +33,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -46,15 +49,19 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
   protected InvoiceRepository invoiceRepo;
   protected MoveToolService moveToolService;
+  protected InvoicePaymentRepository invoicePaymentRepo;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public InvoicePaymentToolServiceImpl(
-      InvoiceRepository invoiceRepo, MoveToolService moveToolService) {
+      InvoiceRepository invoiceRepo,
+      MoveToolService moveToolService,
+      InvoicePaymentRepository invoicePaymentRepo) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
+    this.invoicePaymentRepo = invoicePaymentRepo;
   }
 
   @Override
@@ -174,5 +181,21 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       }
     }
     return moveLines;
+  }
+
+  /**
+   * Method who check if the payment is possible before validation
+   *
+   * @param invoicePayment the invoice payment to test
+   * @throws AxelorException
+   */
+  public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException {
+    if (invoicePayment.getInvoice() != null
+        && invoicePayment.getInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
+          invoicePayment.getInvoice().getInvoiceId());
+    }
   }
 }

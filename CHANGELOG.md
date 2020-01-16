@@ -17,6 +17,7 @@
 - MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
 - SUBROGATION RELEASE / INVOICE : corrected npe.
 - FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
+- INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.2.2] - 2020-01-09
 ## Features

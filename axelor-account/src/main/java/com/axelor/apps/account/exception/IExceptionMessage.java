@@ -799,4 +799,7 @@ public interface IExceptionMessage {
 
   static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
       "Please set a reported balance date on fiscal year" /*)*/;
+
+  public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
+      "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
 }

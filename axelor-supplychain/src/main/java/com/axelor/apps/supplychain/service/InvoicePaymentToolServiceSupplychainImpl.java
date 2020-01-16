@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
@@ -32,8 +33,10 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
 
   @Inject
   public InvoicePaymentToolServiceSupplychainImpl(
-      InvoiceRepository invoiceRepo, MoveToolService moveToolService) {
-    super(invoiceRepo, moveToolService);
+      InvoiceRepository invoiceRepo,
+      MoveToolService moveToolService,
+      InvoicePaymentRepository invoicePaymentRepo) {
+    super(invoiceRepo, moveToolService, invoicePaymentRepo);
   }
 
   @Override
