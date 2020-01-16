@@ -59,6 +59,7 @@
 - StockLocation: fix always dirty form view.
 - INVOICE LINE: fixed hidden budget panel in invoice line.
 - StockMove: In error message prevent showing multiple times the same product name.
+- BUSINESS PROJECT : resolve 'column reference "month" is ambiguous' error in Financial Report.
 
 ## [5.1.12] - 2019-11-19
 ## Features
