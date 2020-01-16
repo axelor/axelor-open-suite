@@ -22,10 +22,10 @@
     <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
-		<field name="operationSubTypeSelect" widget="160"/>
+		<field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
     <field name="exTaxTotal" aggregate="sum" width="120"/>
@@ -55,10 +55,10 @@
 		<hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 		<hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
-		<field name="operationSubTypeSelect" widget="160"/>
+		<field name="operationSubTypeSelect" width="160"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
@@ -89,7 +89,7 @@
 		<hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
@@ -127,7 +127,7 @@
 	  <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	  <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
 		<field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="supplierInvoiceNb"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
