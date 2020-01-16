@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -21,6 +21,11 @@
 	
 	<selection name="iterritory.city.type.select">
 		<option value="geonames">Geonames</option>
+	</selection>
+	
+	<selection name="base.city.auto.import.type.select">
+		<option value="FR.zip">France</option>
+		<option value="allCountries.zip">All Countries</option>
 	</selection>
 
 	<selection name="partner.title.type.select">
@@ -127,6 +132,11 @@
 		<option value="2">Open street map</option>
 	</selection>
 	
+	<selection name="base.app.base.osm.routing.api.select">
+		<option value="1">YOUR navigation</option>
+		<option value="2">OSRM</option>
+	</selection>
+	
 	<selection name="base.app.base.currency.api.select">
 		<option value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
 	</selection>
@@ -201,11 +211,7 @@
 		<option value="2">BBAN</option>
 	</selection>
 
-	<!-- TODO: move this selection to account module and create a copy here
-		 (ie. base.year.period.duration.select) That time also rename references
-		 of this selection in Charts.xml of CRM, Purchase, Stock modules.
-	 -->	
-	<selection name="account.year.period.duration.select">
+	<selection name="base.year.period.duration.select">
 		<option value="1">1 Month</option>
 		<option value="2">2 Months</option>
 		<option value="3">3 Months</option>
@@ -465,7 +471,7 @@
 		<option value="3">New</option>
 		<option value="4">Ignore/Empty</option>
   	</selection>
-	
+  
 	<selection name="file.field.for.select.use.select">
 		<option value="0">Titles</option>
 		<option value="1">Values</option>
@@ -481,5 +487,15 @@
 	  <option value="2">Analyzing</option>
       <option value="3">Finished</option>
   </selection>
+
+	<selection name="order.by.type">
+		<option value="asc">Ascending</option>
+		<option value="desc">Descending</option>
+	</selection>	
+
+    <selection name="line.type.select">
+        <option value="0">Standard</option>
+        <option value="1">Title</option>
+    </selection>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,16 +18,19 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
-import com.axelor.apps.project.db.ProjectCategory;
+import com.axelor.apps.project.db.TeamTaskCategory;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class TeamTaskController {
+
+  @Inject private TeamTaskBusinessProjectService businessProjectService;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
@@ -82,16 +85,13 @@ public class TeamTaskController {
 
   public void onChangeCategory(ActionRequest request, ActionResponse response) {
     TeamTask task = request.getContext().asType(TeamTask.class);
-    ProjectCategory projectCategory = task.getProjectCategory();
-    if (projectCategory == null) {
-      return;
+    TeamTaskCategory teamTaskCategory = task.getTeamTaskCategory();
+    task = businessProjectService.resetTeamTaskValues(task);
+    if (teamTaskCategory != null) {
+      task = businessProjectService.computeDefaultInformation(task);
     }
 
-    task.setTeamTaskInvoicing(projectCategory.getTeamTaskInvoicing());
-    task = Beans.get(TeamTaskBusinessProjectService.class).computeDefaultInformation(task);
-
-    if (task.getTeamTaskInvoicing()
-        && task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
+    if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
       task.setToInvoice(true);
     }
     response.setValues(task);

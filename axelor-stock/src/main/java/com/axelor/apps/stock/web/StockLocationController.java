@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,6 +70,7 @@ public class StockLocationController {
         stockLocationId != null ? stockLocationRepository.find(new Long(stockLocationId)) : null;
     String locationIds = "";
 
+    String printType = (String) context.get("printingType");
     String exportType = (String) context.get("exportTypeSelect");
 
     @SuppressWarnings("unchecked")
@@ -108,11 +109,16 @@ public class StockLocationController {
                 : I18n.get("Stock location(s)");
       }
 
+      if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
+        response.setNotify(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
+      }
+
       String fileLink =
           ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
               .addParam("StockLocationId", locationIds)
               .addParam("Locale", language)
               .addFormat(exportType)
+              .addParam("PrintType", printType)
               .generate()
               .getFileLink();
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 	
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
   
@@ -34,6 +34,8 @@
   	 <many-to-one name="testSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory user"/>
      <many-to-one name="testBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Bank statement file format"/>
      <many-to-one name="testBankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="Bank order file format"/>
+     
+     <string name="serialNumber" title="Serial number (CORP)"/>
 	 
 	 
 	 <extra-code><![CDATA[

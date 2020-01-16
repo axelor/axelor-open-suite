@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -26,8 +26,8 @@
   	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order"/>
   	<integer name="sequence" title="Seq."/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Qty" default="1"/>
-  	<decimal name="oldQty" hidden="true"/>
+  	<decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
+  	<decimal name="oldQty" hidden="true" precision="20" scale="10"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal / line"/>
   	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
   	<decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
@@ -48,7 +48,7 @@
   	  	
   	<date name="estimatedDelivDate" title="Estimated shipping date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
-	<decimal name="deliveredQty" title="Delivered quantity"/>
+	<decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
   	
 <!-- 	Margins -->
 	<decimal name="subTotalCostPrice" title="SubTotal cost price"/>
@@ -61,8 +61,8 @@
   	<decimal name="companyCostPrice" title="Unit cost price in company currency" hidden="true"/>
   	<decimal name="companyInTaxTotal" title="Total A.T.I. in company currency" hidden="true"/>
   	<decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
-	<integer name="typeSelect" title="Type" selection="sale.order.line.type.select"/>
-	
+	<integer name="typeSelect" title="Type" selection="line.type.select"/>
+
 	<boolean name="isShowTotal" title="Show Total"/>
 	<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
 	

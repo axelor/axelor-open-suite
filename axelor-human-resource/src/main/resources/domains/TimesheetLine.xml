@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -15,7 +15,7 @@
       <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
 	  <decimal name="hoursDuration" title="Duration"/>
 	  <decimal name="duration" title="Duration"/>
-	  <decimal name="durationForCustomer" title="Duration adjust for customer"/>
+	  <decimal name="durationForCustomer" title="Duration adjust for customer" nullable="true"/>
       <string name="comments" large="true"/>
       <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>

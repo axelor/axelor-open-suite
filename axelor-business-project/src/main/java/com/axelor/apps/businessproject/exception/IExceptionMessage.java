@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,8 +27,6 @@ public interface IExceptionMessage {
   static final String FOLDER_TEMPLATE = /*$$(*/ "You must add a sale order template" /*)*/;
   static final String INVOICING_PROJECT_EMPTY = /*$$(*/
       "You haven't select any element to invoice" /*)*/;
-  static final String INVOICING_PROJECT_USER = /*$$(*/
-      "The project/task selected doesn't have any responsible" /*)*/;
   static final String INVOICING_PROJECT_PROJECT = /*$$(*/ "You must select a project/task" /*)*/;
   static final String INVOICING_PROJECT_PROJECT_PARTNER = /*$$(*/
       "There is no customer for this project/task" /*)*/;

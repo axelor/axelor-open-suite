@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.manuforder;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -62,12 +63,16 @@ public class ManufOrderStockMoveService {
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ManufOrderStockMoveService(
-      StockMoveService stockMoveService, StockMoveLineService stockMoveLineService) {
+      StockMoveService stockMoveService,
+      StockMoveLineService stockMoveLineService,
+      AppBaseService appBaseService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
+    this.appBaseService = appBaseService;
   }
 
   public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
@@ -646,6 +651,11 @@ public class ManufOrderStockMoveService {
     BigDecimal manufOrderQty = manufOrder.getQty();
     BigDecimal prodProductQty = prodProduct.getQty();
 
-    return qtyToUpdate.multiply(prodProductQty).divide(manufOrderQty, 2, RoundingMode.HALF_EVEN);
+    int scale = appBaseService.getNbDecimalDigitForQty();
+
+    return qtyToUpdate
+        .multiply(prodProductQty)
+        .setScale(scale, RoundingMode.HALF_EVEN)
+        .divide(manufOrderQty, scale, RoundingMode.HALF_EVEN);
   }
 }

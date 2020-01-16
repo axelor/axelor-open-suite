@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,13 +55,13 @@ public class BatchInvoicingProjectService extends AbstractBatch {
       TraceBackService.trace(e);
     }
 
-    List<Map<String, Object>> generatedInvoicingProjectList = new ArrayList<Map<String, Object>>();
+    List<Object> generatedInvoicingProjectList = new ArrayList<Object>();
 
     List<Project> projectList =
         projectRepo
             .all()
             .filter(
-                "self.isInvoiceable = ?1 AND self.statusSelect NOT IN (?2)",
+                "self.toInvoice = ?1 AND self.statusSelect NOT IN (?2)",
                 true,
                 ProjectRepository.STATE_CANCELED,
                 ProjectRepository.STATE_FINISHED)

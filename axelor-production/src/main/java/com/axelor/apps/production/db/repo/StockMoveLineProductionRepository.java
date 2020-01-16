@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,9 +18,9 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
+import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 
-public class StockMoveLineProductionRepository extends StockMoveLineStockRepository {
+public class StockMoveLineProductionRepository extends StockMoveLineSupplychainRepository {
 
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {

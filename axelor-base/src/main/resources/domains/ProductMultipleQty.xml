@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
   <entity name="ProductMultipleQty" lang="java">
 
     <string name="name" title="Name"/>
-    <decimal name="multipleQty" title="Multiple qty"/>
+    <decimal name="multipleQty" title="Multiple qty" precision="20" scale="10"/>
     <many-to-one name="saleProduct" ref="com.axelor.apps.base.db.Product" title="Sale product"/>
     <many-to-one name="purchaseProduct" ref="com.axelor.apps.base.db.Product" title="Purchase product"/>
   	

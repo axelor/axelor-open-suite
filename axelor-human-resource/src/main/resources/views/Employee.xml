@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
 		 <toolbar>
@@ -321,9 +321,10 @@
       <panel name="employeeFileListPanel" title="Files" colSpan="12">
         <field name="employeeFileList" showTitle="false" colSpan="12">
           <editor colSpan="12" x-viewer="true" x-show-on-new="true" x-layout="table">          
-            <field name="fileType" colSpan="4" onChange="action-record-set-expiration-date"/>
-			<field name="metaFile" widget="binary-link" colSpan="4"/>	
-			<field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="4"/>	
+            <field name="fileType" colSpan="3" onChange="action-record-set-expiration-date"/>
+			<field name="metaFile" widget="binary-link" colSpan="3" onChange="action-record-set-record-date"/>
+			<field name="recordDate" colSpan="3" readonly="true"/>	
+			<field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>	
             <field name="fileType.hasExpirationDate" hidden="true" />
           </editor>
         </field>

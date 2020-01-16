@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -170,6 +170,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
+    this.udpatePaymentTax(reconcile);
     if (updateInvoicePayments) {
       this.updateInvoicePayments(reconcile);
     }
@@ -323,25 +324,43 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   public void updateInvoicePayments(Reconcile reconcile) throws AxelorException {
 
-    Move debitMove = reconcile.getDebitMoveLine().getMove();
-    Move creditMove = reconcile.getCreditMoveLine().getMove();
+    MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+    MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+    Move debitMove = debitMoveLine.getMove();
+    Move creditMove = creditMoveLine.getMove();
     Invoice debitInvoice = debitMove.getInvoice();
     Invoice creditInvoice = creditMove.getInvoice();
     BigDecimal amount = reconcile.getAmount();
 
-    if (debitInvoice != null) {
+    if (debitInvoice != null
+        && debitMoveLine.getAccount().getUseForPartnerBalance()
+        && creditMoveLine.getAccount().getUseForPartnerBalance()) {
       InvoicePayment debitInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(debitInvoice, amount, creditMove);
-      moveLineService.generateTaxPaymentMoveLineList(
-          debitInvoicePayment, reconcile.getCreditMoveLine());
       debitInvoicePayment.setReconcile(reconcile);
     }
-    if (creditInvoice != null) {
+    if (creditInvoice != null
+        && debitMoveLine.getAccount().getUseForPartnerBalance()
+        && creditMoveLine.getAccount().getUseForPartnerBalance()) {
       InvoicePayment creditInvoicePayment =
           invoicePaymentCreateService.createInvoicePayment(creditInvoice, amount, debitMove);
-      moveLineService.generateTaxPaymentMoveLineList(
-          creditInvoicePayment, reconcile.getDebitMoveLine());
       creditInvoicePayment.setReconcile(reconcile);
+    }
+  }
+
+  protected void udpatePaymentTax(Reconcile reconcile) throws AxelorException {
+    Move debitMove = reconcile.getDebitMoveLine().getMove();
+    Move creditMove = reconcile.getCreditMoveLine().getMove();
+    Invoice debitInvoice = debitMove.getInvoice();
+    Invoice creditInvoice = creditMove.getInvoice();
+
+    if (debitInvoice != null && creditInvoice == null) {
+      moveLineService.generateTaxPaymentMoveLineList(
+          reconcile.getCreditMoveLine(), debitInvoice, reconcile);
+    }
+    if (creditInvoice != null && debitInvoice == null) {
+      moveLineService.generateTaxPaymentMoveLineList(
+          reconcile.getDebitMoveLine(), creditInvoice, reconcile);
     }
   }
 
@@ -396,9 +415,22 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.updatePartnerAccountingSituation(reconcile);
     this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
-
+    this.reverseTaxPaymentMoveLines(reconcile);
     // Update reconcile group
     Beans.get(ReconcileGroupService.class).remove(reconcile);
+  }
+
+  protected void reverseTaxPaymentMoveLines(Reconcile reconcile) throws AxelorException {
+    Move debitMove = reconcile.getDebitMoveLine().getMove();
+    Move creditMove = reconcile.getCreditMoveLine().getMove();
+    Invoice debitInvoice = debitMove.getInvoice();
+    Invoice creditInvoice = creditMove.getInvoice();
+    if (debitInvoice == null) {
+      moveLineService.reverseTaxPaymentMoveLines(reconcile.getDebitMoveLine(), reconcile);
+    }
+    if (creditInvoice == null) {
+      moveLineService.reverseTaxPaymentMoveLines(reconcile.getCreditMoveLine(), reconcile);
+    }
   }
 
   public void updateInvoicePaymentsCanceled(Reconcile reconcile) throws AxelorException {

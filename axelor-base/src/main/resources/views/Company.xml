@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
   <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
 	  <field name="name"/>
@@ -80,6 +80,32 @@
 	  	</panel-tabs>
    	</form>
     
+    <tree name="company-tree" title="Companies">
+    
+       <column name="name" type="string"/>
+       <column name="code" type="string"/>
+       <column name="address" type="reference"/>
+       
+       <node model="com.axelor.apps.base.db.Company" domain="self.parent IS NULL" onClick="action-company-form-view" >
+         <field name="name" as="name"/>
+         <field name="code" as="code"/>
+         <field name="address" as="address"/>
+       </node>
+       
+       <node model="com.axelor.apps.base.db.Company" parent="parent" onClick="action-company-form-view" draggable="true">
+         <field name="name" as="name"/>
+         <field name="code" as="code"/>
+         <field name="address" as="address"/>
+       </node>
+       
+    </tree>
+    
+    <action-view name="action-company-form-view" title="Companies" model="com.axelor.apps.base.db.Company">
+       <view type="grid" name="company-grid"/>
+       <view type="form" name="company-form"/>
+       <context name="_showRecord" expr="eval: id"/>
+    </action-view>
+	
 	<action-attrs name="action-company-attrs-default-bank-details-domain">
 		<attribute name="domain" for="defaultBankDetails" if="bankDetailsSet &amp;&amp; !bankDetailsSet.isEmpty()"
 				   expr="eval: &quot;self.id IN (${bankDetailsSet.collect{it.id}.join(',')})&quot;"/>

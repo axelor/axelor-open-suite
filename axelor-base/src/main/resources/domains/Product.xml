@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
@@ -113,7 +113,7 @@
 		<decimal name="height" title="Height" default="0" />
 		<decimal name="diameter" title="Diameter" />
 		<decimal name="articleVolume" title="Article volume" />
-		<decimal name="economicManufOrderQty" title="Economic manuf. qty"/>
+		<decimal name="economicManufOrderQty" title="Economic manuf. qty" precision="20" scale="10"/>
 		
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
 
@@ -157,6 +157,8 @@
 	   	</extra-code>
 
 		<track on="UPDATE">
+			<field name="name"/>
+			<field name="code"/>
 			<field name="productCategory" />
 			<field name="productFamily" />
 			<field name="saleSupplySelect" />

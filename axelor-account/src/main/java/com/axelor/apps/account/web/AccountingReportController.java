@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
@@ -25,11 +24,9 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.base.db.App;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -169,6 +166,12 @@ public class AccountingReportController {
         return;
       }
 
+      if (accountingReportService.isThereTooManyLines(accountingReport)) {
+        response.setAlert(
+            I18n.get(
+                "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
+      }
+
       logger.debug("Type selected : {}", typeSelect);
 
       if ((typeSelect >= AccountingReportRepository.EXPORT_ADMINISTRATION
@@ -203,15 +206,7 @@ public class AccountingReportController {
                 + " "
                 + accountingReport.getRef();
 
-        String fileLink =
-            ReportFactory.createReport(
-                    String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelect), name + "-${date}")
-                .addParam("AccountingReportId", accountingReport.getId())
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addFormat(accountingReport.getExportTypeSelect())
-                .toAttach(accountingReport)
-                .generate()
-                .getFileLink();
+        String fileLink = accountingReportService.getReportFileLink(accountingReport, name);
 
         logger.debug("Printing " + name);
 

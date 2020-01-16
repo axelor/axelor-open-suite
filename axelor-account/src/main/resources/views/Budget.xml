@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
 		<field name="name"/>
@@ -35,7 +35,7 @@
 		    <field name="fromDate" readonlyIf="statusSelect == 2"/>
 		    <field name="toDate" readonlyIf="statusSelect == 2"/>
 		</panel>
-		<panel name="periodsGenerationAssistantPanel" title="Periods generation assistant" colSpan="12" canCollapse="true" collapseIf="id" showIf="statusSelect == 1">
+		<panel name="periodsGenerationAssistantPanel" title="Periods generation assistant" colSpan="12" showIf="statusSelect == 1">
 			<field name="periodDurationSelect" colSpan="4"/>
 			<field name="amountForGeneration" colSpan="4"/>
 			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-group-account-budget-generateperiod-click" colSpan="4"/>
@@ -72,7 +72,7 @@
     
     <action-validate name="action-budget-validate-generate-period">
 	    <error message="To generate periods, please fill in the limits of the budget." if="fromDate == null || toDate == null" />
-	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null || periodDurationSelect == 0"/>
+	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null"/>
 	    <alert message="Warning, existing lines will be deleted, do you wish to continue?" if="budgetLineList != null &amp;&amp; !budgetLineList.empty"/>
 	</action-validate>
     

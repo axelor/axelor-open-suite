@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <!-- VUE GENERALE -->
 
   <grid name="invoice-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
    	<menubar>
-	    <menu title="Reports" icon="fa-files-o" showTitle="true">
-	      <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+	    <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+	      <item name="printInvoicesItem" title="Print invoices" action="action-invoice-method-show-invoice"/>
 	  	</menu>
-     	<menu title="Tools" icon="fa-wrench" showTitle="true">
-	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	      <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
-	      <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
+     	<menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	      <item name="validateSelectedInvoicesItem" title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	      <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	      <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
+	      <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
 	    </menu>
 	</menubar>
    	<hilite color="primary" if="statusSelect == 1"/>
@@ -39,15 +39,15 @@
 
   <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
 	<menubar>
-      <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+        <item name="printInvoicesItem" title="Print invoices" action="action-invoice-method-show-invoice"/>
 	  </menu>
-	  <menu title="Tools" icon="fa-wrench" showTitle="true">
-	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	      <item title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
-	      <item title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
-	      <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
+	  <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	      <item name="validateSelectedInvoicesItem" title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	      <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	      <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices" action="action-invoice-mergecustinvoices" />
+	      <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines" action="action-customer-invoice-line-menu" />
+	      <item name="paySelectedInvoicesItem" title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
 		</menu>
 		</menubar>
 		<hilite color="primary" if="statusSelect == 1"/>
@@ -73,14 +73,14 @@
 
   <grid name="invoice-supplier-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <menubar>
-      <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+        <item name="printInvoicesItem" title="Print invoices" action="action-invoice-method-show-invoice"/>
 			</menu>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-				<item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-				<item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
-				<item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+			<menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="validateSelectedInvoicesItem" title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+				<item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+				<item name="paySelectedInvoicesItem" title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
+				<item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
 				<item title="See budget distribution lines" action="action-invoice-see-budget-distribution-lines"/>
 			</menu>
 		</menubar>
@@ -111,14 +111,14 @@
 
   <grid name="invoice-supplier-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <menubar>
-      <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+      <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+        <item name="printInvoicesItem" title="Print invoices" action="action-invoice-method-show-invoice"/>
       </menu>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-	      <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	      <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	      <item title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
-          <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+			<menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	      <item name="validateSelectedInvoicesItem" title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	      <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	      <item name="paySelectedInvoicesItem" title="Pay selected invoices" action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
+          <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
           <item title="See budget distribution lines" action="action-invoice-see-budget-overview-lines"/>
       </menu>
 		</menubar>
@@ -140,20 +140,22 @@
 		<field name="amountRemaining" aggregate="sum"/>
 		<field name="currency" />
 		<field name="statusSelect"/>
+		<field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="pfpValidateStatusSelect" title="PFP"/>
+		<field if="__config__.app.getApp('account').getActivatePassedForPayment()" name="pfpValidatorUser" title="PFP val."/>
 		<button name="showInvoiceBtn" title="Print" icon="fa-print" onClick="action-invoice-method-show-invoice"/>
 		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   </grid>
 
     <grid name="invoice-light-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     	<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print invoices" action="action-invoice-method-show-invoice"/>
+            <menu name="invoiceReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+	            <item name="printInvoicesItem" title="Print invoices" action="action-invoice-method-show-invoice"/>
 	     	</menu>
 			<menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
-	            <item title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
-	            <item title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
-	            <item title="Generate subscriptions invoices" action="action-supplychain-method-generate-subscription-invoice" if="__config__.app.isApp('supplychain')"/>
+	            <item name="validateSelectedInvoicesItem" title="Validate selected invoices" action="action-invoice-method-mass-validation" prompt="Are you sure you want to validate all selected invoices ?" />
+	            <item name="ventilateSelectedInvoicesItem" title="Ventilate selected invoices" action="action-invoice-method-mass-ventilation" prompt="Are you sure you want to ventilate all selected invoices ?" if="!__config__.app.getApp('invoice').isVentilationSkipped"/>
+	            <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines" action="action-supplier-invoice-line-menu" />
+	            <item name="generateSubscriptionsInvoicesItem" title="Generate subscriptions invoices" action="action-supplychain-method-generate-subscription-invoice" if="__config__.app.isApp('supplychain')"/>
 	     	</menu>
 		</menubar>
     	<hilite color="primary" if="statusSelect == 1"/>
@@ -195,8 +197,8 @@
 		</toolbar>
 
         <menubar>
-            <menu title="Tools" icon="fa-wrench" showTitle="true">
-                <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
+            <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+                <item name="sendEmailItem" title="Send email" action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
             </menu>
         </menubar>
 
@@ -233,10 +235,9 @@
 	                <viewer>
 	                    <![CDATA[
 	                        <h4 class="text-right">
-	                            <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.operationTypeSelect == 1 || record.operationTypeSelect == 2 )  && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 1">Awaiting PFP</span>
-							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.operationTypeSelect == 1 || record.operationTypeSelect == 2 ) && ( record.statusSelect == 2 || record.statusSelect == 3 )  && record.pfpValidateStatusSelect == 2">PFP validated</span>
-							<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && ( record.operationTypeSelect == 1 || record.operationTypeSelect == 2 ) && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 3">Litigation</span>
-
+                                    <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInRefund && record.operationTypeSelect == 2 ))  && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 1">Awaiting PFP</span>
+                                    <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInRefund && record.operationTypeSelect == 2 )) && ( record.statusSelect == 2 || record.statusSelect == 3 )  && record.pfpValidateStatusSelect == 2">PFP validated</span>
+                                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.company.accountConfig.isManagePassedForPayment && (record.operationTypeSelect == 1 || (record.company.accountConfig.isManagePFPInRefund && record.operationTypeSelect == 2 ))  && ( record.statusSelect == 2 || record.statusSelect == 3 ) && record.pfpValidateStatusSelect == 3">Litigation</span>
 	                        </h4>
 	                    ]]>
 	                </viewer>
@@ -316,7 +317,7 @@
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 " if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
-				<panel-related field="stockMoveSet" readonlyIf="statusSelect == 2 || statusSelect == 3" colSpan="12" grid-view="stock-move-grid" form-view="stock-move-form" onNew="action-group-stock-stockmove-onnew" onSelect="action-invoice-attrs-domain-stock-move" domain="self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect &gt; 1"/>
+				<panel-related field="stockMoveSet" readonlyIf="statusSelect == 2 || statusSelect == 3" colSpan="12" grid-view="stock-move-grid" form-view="stock-move-form" onNew="action-group-stock-stockmove-onnew" onSelect="action-invoice-attrs-domain-stock-move" domain="self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect &gt; 1" canNew="false" canSelect="false"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
 				<field name="project" onSelect="action-invoice-attrs-domain-project" form-view="project-form" grid-view="project-grid" colSpan="6"/>
@@ -334,6 +335,7 @@
 					<field name="usherPassageOk" showIf="statusSelect == 3 &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)" onChange="save,com.axelor.apps.account.web.InvoiceController:usherProcess"/>
 					<field name="oldMove" readonly="true" showIf="oldMove" form-view="move-form" grid-view="move-grid"/>
 					<field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
+					<field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
 				</panel>
 				<panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"  colSpan="12" showTitle="false">
 					<button name="createRefundBtn" title="Generate refund" colSpan="3" showIf="statusSelect != 1" onClick="save,action-invoice-method-create-refund,save" />
@@ -365,7 +367,8 @@ InvoiceSet.length > 0))"
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
-				<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
+        		<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
+        		<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
 				<field name="displayTimesheetOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="displayExpenseOnPrinting" if-module="axelor-business-project" hidden="true"/>
 				<field name="$language" title="Language" type="many-to-one" target="com.axelor.apps.base.db.Language" hidden="true"/>
@@ -405,7 +408,7 @@ InvoiceSet.length > 0))"
 				</panel>
 			</panel>
 			<panel name="invoicePaymentPanel" title="Payments details" showIf="statusSelect != 1">
-				<panel name="pfpValidationPanel" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 )">
+				<panel name="pfpValidationPanel" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))">
 					<field name="pfpValidateStatusSelect" hidden="true" colSpan="4"/>
 					<field name="reasonOfRefusalToPayStr" readonly="true" showIf="reasonOfRefusalToPay  &amp;&amp; reasonOfRefusalToPayStr &amp;&amp; pfpValidateStatusSelect == 3" colSpan="12" css="red">
 						<viewer><![CDATA[{{record.reasonOfRefusalToPayStr}}]]></viewer>
@@ -418,6 +421,7 @@ InvoiceSet.length > 0))"
 					<field name="reasonOfRefusalToPay"/>
 					<field name="company.accountConfig"/>
 					<field name="company.accountConfig.isManagePassedForPayment"/>
+					<field name="company.accountConfig.isManagePFPInRefund"/>
 				</panel>
 			</panel>
             <panel name="budgetPanel" title="Budget" showIf="operationTypeSelect == 1 &amp;&amp; statusSelect >= 2 &amp;&amp; statusSelect &lt; 4">
@@ -435,21 +439,21 @@ InvoiceSet.length > 0))"
         <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
-            <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-validate"/>
+            <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
             <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
-            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
-            <button name="passedForPaymentValidationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; [1,3].includes(pfpValidateStatusSelect)" title="Passed for payment validation" onClick="action-invoice-group-pfp-validate" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-            <button name="refusalToPayBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1" title="Refusal to pay" onClick="save,action-invoice-view-refusal-to-pay" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+            <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>
+            <button name="passedForPaymentValidationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 )) &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; [1,3].includes(pfpValidateStatusSelect)" title="Passed for payment validation" onClick="action-invoice-group-pfp-validate" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+            <button name="refusalToPayBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; $isValidPfpValidatorUser &amp;&amp; (operationTypeSelect == 1 || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))  &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; pfpValidateStatusSelect == 1" title="Refusal to pay" onClick="save,action-invoice-view-refusal-to-pay" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
             <button name="cancelBtn" hidden="true" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
             <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save,action-account-invoice-onload-group"/>
-            <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (!company.accountConfig.isManagePassedForPayment || (( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; pfpValidateStatusSelect == 2))" colSpan="12" onClick="action-invoice-group-add-invoice-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
-            <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (!company.accountConfig.isManagePassedForPayment || (( operationTypeSelect == 1 || operationTypeSelect == 2 ) &amp;&amp; pfpValidateStatusSelect == 2))" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+            <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))" colSpan="12" onClick="action-invoice-group-add-invoice-payment" if="!__config__.app.getApp('account').paymentVouchersOnInvoice"/>
+            <button name="addPaymentBtn" title="Register payment" showIf="(statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)) &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments &amp;&amp; (operationTypeSelect == 3 || operationTypeSelect == 4 || !company.accountConfig.isManagePassedForPayment || ( (operationTypeSelect == 1 || (!company.accountConfig.isManagePFPInRefund || (company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2 ))) &amp;&amp; pfpValidateStatusSelect == 2))" colSpan="12" onClick="save,action-invoice-view-register-payment-voucher" if="__config__.app.getApp('account').paymentVouchersOnInvoice"/>
             <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6" canView="false"/>
 			<field name="validatedDate" hidden="true" showIf="validatedDate" colSpan="6"/>
-			<field name="pfpValidatorUser" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1" readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" onSelect="action-invoice-method-domain-pfp-validator-user-on-select" onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user" canEdit="false"/>
-			<panel colSpan="6">
-				<field name="decisionPfpTakenDate" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2)  &amp;&amp; decisionPfpTakenDate" colSpan="12"/>
-				<button name="sendPfpNotifyEmailBtn" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="(company.accountConfig.isManagePassedForPayment &amp;&amp;  (operationTypeSelect == 1 || operationTypeSelect == 2)) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1" colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
+			<field name="pfpValidatorUser" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; statusSelect &gt; 1" readonlyIf="pfpValidateStatusSelect != 1" colSpan="6" onSelect="action-invoice-method-domain-pfp-validator-user-on-select" onChange="action-invoice-method-hide-send-email-pfp-btn,action-invoice-attrs-is-valid-pfp-validator-user" canEdit="false"/>
+			<panel name="pfpEmailPanel" if="__config__.app.getApp('account').getActivatePassedForPayment()" colSpan="6">
+				<field name="decisionPfpTakenDate" hidden="true"  showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; decisionPfpTakenDate" colSpan="12"/>
+				<button name="sendPfpNotifyEmailBtn" hidden="true" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) &amp;&amp; pfpValidatorUser &amp;&amp; pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; statusSelect &gt; 1" colSpan="12" title="Send a notify email" onClick="save,action-send-by-email-with-template"/>
 			</panel>
 			<field name="ventilatedByUser" hidden="true" showIf="ventilatedByUser" colSpan="6" canView="false"/>
 			<field name="ventilatedDate" hidden="true" showIf="ventilatedDate" colSpan="6"/>
@@ -642,7 +646,7 @@ InvoiceSet.length > 0))"
 		</panel-stack>
 
 	    <panel sidebar="true" name="actionsPanel" title="Actions" >
-	        <button name="validateBtn" title="Validate" showIf="statusSelect == 1" onClick="save,action-invoice-method-validate"/>
+	        <button name="validateBtn" title="Validate" showIf="statusSelect == 1" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
 	        <button name="ventilateBtn" title="Ventilate" showIf="statusSelect == 2" onClick="save,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
 	        <button name="cancelBtn" title="Cancel" onClick="save,action-invoice-method-cancel,save" prompt="Are you sure you want to cancel the invoice ?"/>
 	        <button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="save,action-invoice-record-draft,save"/>
@@ -736,13 +740,8 @@ InvoiceSet.length > 0))"
     </grid>
 
 	<!-- VIEW LITE  -->
-    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-    	<toolbar>
-        	<button name="newBtn" title="" hidden="true"/>
-    		<button name="saveBtn" title="" hidden="true"/>
-    		<button name="copyBtn" title="" hidden="true"/>
-    		<button name="deleteBtn" title="" hidden="true"/>
-		</toolbar>
+    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" 
+    	canNew="false" canDelete="false" canSave="false">
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect"/>
@@ -752,6 +751,7 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
+		<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
 		<field name="invoiceId" width="120"/>
 		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
@@ -759,6 +759,8 @@ InvoiceSet.length > 0))"
 		<field name="dueDate" />
 		<field name="inTaxTotal" />
 		<field name="currency" />
+		<field name="$subrogationStatusSelect" hidden="true"/>
+		<field name="amountRemaining" hidden="true"/>
 	</grid>
 
     <!-- CUSTOMER INVOICES MERGE  -->
@@ -828,8 +830,8 @@ InvoiceSet.length > 0))"
       <action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
       <action name="action-account-invoice-atts-suppier-invoice-nbr"/>
       <action name="action-invoice-method-check-partner-bank-details-list"/>
-      <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
-    	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
+      <action name="action-invoice-attrs-is-valid-pfp-validator-user" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
+    	<action name="action-invoice-method-hide-send-email-pfp-btn" if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2)) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
     </action-group>
 
@@ -860,7 +862,7 @@ InvoiceSet.length > 0))"
 			<action name="action-invoice-record-interco-supplychain"/>
 			<action name="action-invoice-method-check-partner-bank-details-list"/>
 			<action name="action-invoice-method-set-pfp-validator-user"
-        if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; ( operationTypeSelect == 1 || operationTypeSelect == 2)) "/>
+        if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) ) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
     </action-group>
 
@@ -907,7 +909,7 @@ InvoiceSet.length > 0))"
     	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
     	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     </action-attrs>
-    
+
     <action-attrs name="action-invoice-attrs-domain-stock-move">
       <attribute name="domain" for="stockMoveSet" expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 2&quot;" if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
       <attribute name="domain" for="stockMoveSet" expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 3&quot;" if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
@@ -925,7 +927,7 @@ InvoiceSet.length > 0))"
 
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
 		<field name="inAti" expr="eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
-										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4" if="company"/>
 	</action-record>
 
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
@@ -961,6 +963,7 @@ InvoiceSet.length > 0))"
     	<field name="partnerTaxNbr" expr="eval: partner?.taxNbr"/>
     	<field name="proformaComments" expr="eval: partner?.proformaComments"/>
     	<field name="note" expr="eval: partner?.invoiceComments"/>
+      <field name="headOfficeAddress" expr="eval: partner?.headOfficeAddress"/>
     </action-record>
 
     <action-record name="action-invoice-record-reset-suboperationtype" model="com.axelor.apps.account.db.Invoice">
@@ -995,7 +998,7 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
+		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
@@ -1010,7 +1013,7 @@ InvoiceSet.length > 0))"
 	</action-record>
 
 	<action-record name="action-invoice-record-set-dummy-field-language" model="com.axelor.apps.account.db.Invoice">
-		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language"/>
+		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language" if="company"/>
 	</action-record>
 
     <!-- ACTION ATTRS -->
@@ -1034,7 +1037,7 @@ InvoiceSet.length > 0))"
 	</action-method>
 
 	<action-attrs name="action-invoice-attrs-collapse-irrecoverable-group">
-		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverablestatusSelect == null || irrecoverablestatusSelect == 0"/>
+		<attribute name="collapse" for="irrecoverableGroup" expr="eval: irrecoverableStatusSelect == null || irrecoverableStatusSelect == 0"/>
 	</action-attrs>
 
 	<action-attrs name="action-invoice-attrs-change-total-title">
@@ -1121,7 +1124,11 @@ InvoiceSet.length > 0))"
 	<action-validate name="action-validate-send-email-remove-access-for-client">
 		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
     </action-validate>
-    
+
+    <action-validate name="action-validate-invoice-ckeck-invoice-line-tax-list">
+    	<alert message="There is no taxes on this invoice. Do you want to proceed ?" if="invoiceLineTaxList == null || invoiceLineTaxList.isEmpty()"/>
+    </action-validate>
+
 	<!-- ACTION METHOD -->
 
 	<action-method name="action-method-invoice-address-str" model="com.axelor.apps.account.db.Invoice">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <grid name="supplier-catalog-grid" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog">
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -9,7 +9,7 @@
         <field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="updateDate"/>
-        <field name="minQty"/>
+        <field name="minQty" x-scale="2"/>
         <field name="price" x-scale="2" />
     </grid>
 
@@ -20,7 +20,7 @@
 		<field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="updateDate"/>
-		<field name="minQty"/>
+		<field name="minQty" x-scale="2"/>
 		<field name="price" x-scale="2" />
 	</grid>
     
@@ -60,6 +60,7 @@
 
     <action-attrs name="action-supplier-catalog-attrs-init">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="minQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="hidden" for="shippingCoefList"
 				   expr="eval: __parent__ &amp;&amp; !__parent__.defShipCoefByPartner" if="eval: __parent__._model == 'com.axelor.apps.base.db.Product'"/>
 		<attribute name="hidden" for="shippingCoefList"
@@ -70,7 +71,7 @@
 		<attribute name="hidden" for="shippingCoefList"
 				   expr="eval: __parent__ &amp;&amp; !__parent__.defShipCoefByPartner" if="eval: __parent__._model == 'com.axelor.apps.base.db.Product'"/>
 		<attribute name="hidden" for="shippingCoefList"
-				   expr="eval: product &amp;&amp; !product.defShipCoefByPartner" if="eval __parent__._model != 'com.axelor.apps.base.db.Product'"/>
+				   expr="eval: product &amp;&amp; !product.defShipCoefByPartner" if="eval: __parent__._model != 'com.axelor.apps.base.db.Product'"/>
 	</action-attrs>
         
 </object-views>

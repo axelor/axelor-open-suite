@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,19 +17,29 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
+import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -78,6 +88,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.buildQuery(accountingReport);
 
+    return this.buildDomainFromQuery();
+  }
+
+  protected String buildDomainFromQuery() {
     int i = 1;
 
     String domainQuery = this.query;
@@ -106,18 +120,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     log.debug("domainQuery : {}", domainQuery);
-
     return domainQuery;
   }
 
   public String buildQuery(AccountingReport accountingReport) throws AxelorException {
-    query = "";
-    paramNumber = 1;
-    params = new ArrayList<Object>();
 
-    this.query = "";
-    this.params.clear();
-    this.paramNumber = 1;
+    this.initQuery();
 
     if (accountingReport.getCompany() != null) {
       this.addParams("self.move.company = ?%d", accountingReport.getCompany());
@@ -173,14 +181,47 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_AGED_BALANCE) {
+      this.addParams("self.account is null or self.account.reconcileOk = 'true'");
       this.addParams("self.amountRemaining > 0 AND self.debit > 0");
     }
 
-    if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_PARNER_BALANCE) {
+    if (accountingReport.getTypeSelect()
+        == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
       this.addParams("self.account.useForPartnerBalance = 'true'");
     }
 
+    if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_BALANCE) {
+      this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+    }
+
+    if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_CASH_PAYMENTS) {
+      this.addParams("self.move.paymentMode.typeSelect = ?%d", PaymentModeRepository.TYPE_CASH);
+      this.addParams("self.credit > 0");
+      this.addParams("self.account is null or self.account.reconcileOk = 'true'");
+    }
+
+    if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES) {
+      this.addParams(
+          "self.account = ?%d",
+          Beans.get((AccountConfigService.class))
+              .getAccountConfig(accountingReport.getCompany())
+              .getCashPositionVariationAccount());
+    }
+
+    if (accountingReport.getTypeSelect()
+        == AccountingReportRepository.REPORT_VAT_STATEMENT_INVOICE) {
+      this.addParams("self.taxLine is not null");
+      this.addParams("self.taxLine.tax.typeSelect = ?%d", TaxRepository.TAX_TYPE_DEBIT);
+    }
+
     this.addParams("self.move.ignoreInAccountingOk = 'false'");
+
+    this.addParams(
+        "(self.move.statusSelect = "
+            + MoveRepository.STATUS_DAYBOOK
+            + " OR self.move.statusSelect = "
+            + MoveRepository.STATUS_VALIDATED
+            + ")");
 
     // FOR EXPORT ONLY :
 
@@ -204,9 +245,24 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       }
     }
 
+    if (accountingReport.getTypeSelect() >= AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER
+        && accountingReport.getDisplayOnlyNotCompletelyLetteredMoveLines()) {
+      this.addParams("self.amountRemaining > 0");
+    }
+
     log.debug("Query : {}", this.query);
 
     return this.query;
+  }
+
+  protected void initQuery() {
+    query = "";
+    paramNumber = 1;
+    params = new ArrayList<Object>();
+
+    this.query = "";
+    this.params.clear();
+    this.paramNumber = 1;
   }
 
   public String addParams(String paramQuery, Object param) {
@@ -431,5 +487,195 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.CLOSE_NO_REPORTED_BALANCE_DATE));
     }
+  }
+
+  @Override
+  public String getReportFileLink(AccountingReport accountingReport, String name)
+      throws AxelorException {
+    return ReportFactory.createReport(
+            String.format(IReport.ACCOUNTING_REPORT_TYPE, accountingReport.getTypeSelect()),
+            name + "-${date}")
+        .addParam("AccountingReportId", accountingReport.getId())
+        .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addFormat(accountingReport.getExportTypeSelect())
+        .toAttach(accountingReport)
+        .generate()
+        .getFileLink();
+  }
+
+  public boolean isThereTooManyLines(AccountingReport accountingReport) throws AxelorException {
+
+    AccountConfig accountConfig =
+        Beans.get(AccountConfigService.class).getAccountConfig(accountingReport.getCompany());
+    Integer lineMinBeforeLongReportGenerationMessageNumber =
+        accountConfig.getLineMinBeforeLongReportGenerationMessageNumber();
+    if (lineMinBeforeLongReportGenerationMessageNumber != null
+        && lineMinBeforeLongReportGenerationMessageNumber > 0) {
+      Integer typeSelect = accountingReport.getTypeSelect();
+      long count = 0;
+      if (typeSelect > 0 && typeSelect <= AccountingReportRepository.REPORT_GENERAL_LEDGER2) {
+        count =
+            Beans.get(MoveLineRepository.class)
+                .all()
+                .filter(this.getMoveLineList(accountingReport))
+                .count();
+      } else if (typeSelect == AccountingReportRepository.REPORT_VAT_STATEMENT_RECEIVED) {
+        count =
+            Beans.get(TaxPaymentMoveLineRepository.class)
+                .all()
+                .filter(this.getTaxPaymentMoveLineList(accountingReport))
+                .count();
+
+      } else if (typeSelect == AccountingReportRepository.REPORT_ACQUISITIONS) {
+        count =
+            Beans.get(FixedAssetRepository.class)
+                .all()
+                .filter(this.getFixedAssetList(accountingReport))
+                .count();
+        count +=
+            JPA.em()
+                .createQuery(
+                    "Select invoiceLine FROM InvoiceLine invoiceLine LEFT JOIN FixedAsset fixedAsset on fixedAsset.invoiceLine = invoiceLine.id WHERE invoiceLine.fixedAssets = true and fixedAsset.invoiceLine is null ")
+                .getResultList()
+                .size();
+      } else if (typeSelect == AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION) {
+        count =
+            Beans.get(FixedAssetRepository.class)
+                .all()
+                .filter(this.getFixedAssetList(accountingReport))
+                .count();
+      } else if (typeSelect == AccountingReportRepository.REPORT_ANALYTIC_BALANCE) {
+        count =
+            Beans.get(AnalyticMoveLineRepository.class)
+                .all()
+                .filter(this.getAnalyticMoveLineList(accountingReport))
+                .count();
+      } else {
+        return false;
+      }
+      return count > lineMinBeforeLongReportGenerationMessageNumber;
+    } else {
+      return false;
+    }
+  }
+
+  protected String getAnalyticMoveLineList(AccountingReport accountingReport) {
+    this.buildAnalyticMoveLineQuery(accountingReport);
+    return this.buildDomainFromQuery();
+  }
+
+  protected void buildAnalyticMoveLineQuery(AccountingReport accountingReport) {
+    this.initQuery();
+
+    this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+
+    if (accountingReport.getJournal() != null) {
+      this.addParams("self.moveLine.move.journal = ?%d", accountingReport.getJournal());
+    }
+
+    if (accountingReport.getDateFrom() != null) {
+      this.addParams("self.date >= ?%d", accountingReport.getDateFrom());
+    }
+
+    if (accountingReport.getDateTo() != null) {
+      this.addParams("self.date <= ?%d", accountingReport.getDateTo());
+    }
+
+    this.addParams("self.date <= ?%d", accountingReport.getDate());
+
+    if (accountingReport.getAnalyticJournal() != null) {
+      this.addParams("self.analyticJournal = ?%d", accountingReport.getAnalyticJournal());
+    }
+
+    this.addParams("self.typeSelect = ?%d", AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+
+    this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
+
+    this.addParams(
+        "(self.moveLine.move.statusSelect = "
+            + MoveRepository.STATUS_DAYBOOK
+            + " OR self.moveLine.move.statusSelect = "
+            + MoveRepository.STATUS_VALIDATED
+            + ")");
+
+    log.debug("Query : {}", this.query);
+  }
+
+  protected String getFixedAssetList(AccountingReport accountingReport) {
+    this.buildFixedAssetQuery(accountingReport);
+    return this.buildDomainFromQuery();
+  }
+
+  protected void buildFixedAssetQuery(AccountingReport accountingReport) {
+    this.initQuery();
+    this.addParams(
+        "(self.statusSelect = "
+            + FixedAssetRepository.STATUS_VALIDATED
+            + " OR self.statusSelect = "
+            + FixedAssetRepository.STATUS_DEPRECIATED
+            + ")");
+    if (accountingReport.getTypeSelect() == AccountingReportRepository.REPORT_ACQUISITIONS) {
+      if (accountingReport.getDateFrom() != null) {
+        this.addParams("self.acquisitionDate >= ?%d", accountingReport.getDateFrom());
+      }
+
+      if (accountingReport.getDateTo() != null) {
+        this.addParams("self.acquisitionDate <= ?%d", accountingReport.getDateTo());
+      }
+    }
+    if (accountingReport.getTypeSelect()
+        == AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION) {
+      this.query += " OR ( self.statusSelect = " + FixedAssetRepository.STATUS_TRANSFERRED + " ";
+      if (accountingReport.getDateFrom() != null) {
+        this.addParams("self.disposalDate >= ?%d", accountingReport.getDateFrom());
+      }
+
+      if (accountingReport.getDateTo() != null) {
+        this.addParams("self.disposalDate <= ?%d", accountingReport.getDateTo());
+      }
+      this.query += " ) ";
+    }
+
+    log.debug("Query : {}", this.query);
+  }
+
+  protected String getTaxPaymentMoveLineList(AccountingReport accountingReport) {
+    this.buildTaxPaymentQuery(accountingReport);
+
+    return this.buildDomainFromQuery();
+  }
+
+  protected String buildTaxPaymentQuery(AccountingReport accountingReport) {
+    this.initQuery();
+
+    if (accountingReport.getCompany() != null) {
+      this.addParams("self.moveLine.move.company = ?%d", accountingReport.getCompany());
+    }
+
+    if (accountingReport.getCurrency() != null) {
+      this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+    }
+
+    if (accountingReport.getDateFrom() != null) {
+      this.addParams("self.moveLine.date >= ?%d", accountingReport.getDateFrom());
+    }
+
+    if (accountingReport.getDateTo() != null) {
+      this.addParams("self.moveLine.date <= ?%d", accountingReport.getDateTo());
+    }
+
+    this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
+
+    this.addParams(
+        "(self.moveLine.move.statusSelect = "
+            + MoveRepository.STATUS_DAYBOOK
+            + " OR self.moveLine.move.statusSelect = "
+            + MoveRepository.STATUS_VALIDATED
+            + ")");
+
+    this.addParams("self.originTaxLine.tax.typeSelect = ?%d", TaxRepository.TAX_TYPE_COLLECTION);
+
+    log.debug("Query : {}", this.query);
+    return this.query;
   }
 }

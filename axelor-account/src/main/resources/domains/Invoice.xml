@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -126,6 +128,9 @@
     
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
+    
+    <many-to-one name="subrogationRelease" ref="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"/>
+    <many-to-one name="subrogationReleaseMove" ref="com.axelor.apps.account.db.Move" title="Subrogation release Move"/>
 	
 	<date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
 	<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
@@ -134,6 +139,8 @@
 	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
+
+  <string name="headOfficeAddress" title="Head office address"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

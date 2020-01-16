@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
@@ -145,6 +145,7 @@
 		<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
 		<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
 		<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
+		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
 		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
 		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices" help="Short legal note to be displayed on sale invoices"/>
 
@@ -155,8 +156,13 @@
 		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 		
 		<boolean name="isManagePassedForPayment" title="Passed for payment"/>
+		<boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
 
-		<finder-method name="findByCompany" using="company"/>
+		<!-- Account Report -->
+		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of line minimum before long report generation message appear" min="0" help="value 0 is equal to no message"  default="10000"/>
+
+
+    <finder-method name="findByCompany" using="company"/>
 
 		<extra-code><![CDATA[
 	
@@ -293,6 +299,8 @@
 
 		<field name="invoiceAutomaticMail" on="UPDATE"/>
 		<field name="invoiceMessageTemplate" on="UPDATE"/>
+		
+		<field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
 	</track>
 
 	</entity>

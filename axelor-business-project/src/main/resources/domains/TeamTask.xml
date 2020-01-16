@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="project" package="com.axelor.team.db"/>
 
@@ -14,16 +14,17 @@
 		<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
 		<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
 		<integer name="invoicingType" selection="business.team.task.invoicing.type.select" title="Invoicing Type"/>
-		<boolean name="teamTaskInvoicing" title="Task Invoicing"/>
 		<boolean name="isPaid" title="Paid"/>
 		<many-to-one name="customerReferral" ref="com.axelor.auth.db.User" title="Customer referral"/>
 		<many-to-one name="saleOrderLine" title="Related sale order line" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
 		<many-to-one name="invoiceLine" title="Related Invoice line" ref="com.axelor.apps.account.db.InvoiceLine"/>
+		<boolean name="isTaskRefused" title="Refused"/>
 		
 		<extra-code>
 			<![CDATA[
 				public static final Integer INVOICING_TYPE_TIME_SPENT= 1;
 				public static final Integer INVOICING_TYPE_PACKAGE = 2;
+				public static final Integer INVOICING_TYPE_NO_INVOICING = 3;
 	        ]]>
 		</extra-code>
 		

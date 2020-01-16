@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.apps.purchase.db.PurchaseRequestLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
@@ -29,6 +30,7 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,12 +76,13 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
       throws AxelorException {
 
+    List<PurchaseOrderLine> purchaseOrderLineList = new ArrayList<PurchaseOrderLine>();
     Map<String, PurchaseOrder> purchaseOrderMap = new HashMap<>();
 
     for (PurchaseRequest purchaseRequest : purchaseRequests) {
-      Product product = purchaseRequest.getProduct();
-      String key = groupBySupplier ? getPurchaseOrderGroupBySupplierKey(purchaseRequest) : null;
       PurchaseOrder purchaseOrder;
+
+      String key = groupBySupplier ? getPurchaseOrderGroupBySupplierKey(purchaseRequest) : null;
       if (key != null && purchaseOrderMap.containsKey(key)) {
         purchaseOrder = purchaseOrderMap.get(key);
       } else {
@@ -87,32 +90,37 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
         key = key == null ? purchaseRequest.getId().toString() : key;
         purchaseOrderMap.put(key, purchaseOrder);
       }
-      PurchaseOrderLine purchaseOrderLine =
-          groupByProduct && purchaseOrder != null
-              ? getPoLineByProduct(product, purchaseOrder)
-              : null;
 
       if (purchaseOrder == null) {
         purchaseOrder = createPurchaseOrder(purchaseRequest);
       }
-      if (purchaseOrderLine == null) {
+
+      for (PurchaseRequestLine purchaseRequestLine : purchaseRequest.getPurchaseRequestLineList()) {
+        PurchaseOrderLine purchaseOrderLine = new PurchaseOrderLine();
+        Product product = purchaseRequestLine.getProduct();
+
+        purchaseOrderLine =
+            groupByProduct && purchaseOrder != null
+                ? getPoLineByProduct(product, purchaseOrder)
+                : null;
+
         purchaseOrderLine =
             purchaseOrderLineService.createPurchaseOrderLine(
                 purchaseOrder,
                 product,
-                purchaseRequest.getNewProduct()
-                    ? purchaseRequest.getProductTitle()
+                purchaseRequestLine.getNewProduct()
+                    ? purchaseRequestLine.getProductTitle()
                     : product.getName(),
-                purchaseRequest.getNewProduct() ? null : product.getDescription(),
-                purchaseRequest.getQuantity(),
-                purchaseRequest.getUnit());
+                purchaseRequestLine.getNewProduct() ? null : product.getDescription(),
+                purchaseRequestLine.getQuantity(),
+                purchaseRequestLine.getUnit());
         purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
-      } else {
-        purchaseOrderLine.setQty(purchaseOrderLine.getQty().add(purchaseRequest.getQuantity()));
+        purchaseOrderLineList.add(purchaseOrderLine);
+        purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
       }
-      purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+      purchaseOrder.getPurchaseOrderLineList().addAll(purchaseOrderLineList);
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
-      purchaseOrderLineRepo.save(purchaseOrderLine);
+      purchaseOrderRepo.save(purchaseOrder);
     }
     List<PurchaseOrder> purchaseOrders =
         purchaseOrderMap.values().stream().collect(Collectors.toList());

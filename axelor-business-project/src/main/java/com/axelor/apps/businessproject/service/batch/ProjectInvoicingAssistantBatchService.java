@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch;
 import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -94,14 +95,32 @@ public class ProjectInvoicingAssistantBatchService extends AbstractBatchService 
     return _map;
   }
 
+  @SuppressWarnings("unchecked")
   public static void updateJsonObject(
-      Batch batch,
-      List<Map<String, Object>> recordList,
-      String field,
-      Map<String, Object> contextValues) {
+      Batch batch, List<Object> recordList, String field, Map<String, Object> contextValues) {
 
     JsonContext jsonContext = (JsonContext) contextValues.get("jsonContext");
-    jsonContext.put(field, recordList);
+    List<Object> dataList = recordList;
+
+    if (jsonContext.containsKey(field)) {
+      dataList =
+          ((List<Object>) jsonContext.get(field))
+              .stream()
+              .map(
+                  obj -> {
+                    if (Mapper.toMap(EntityHelper.getEntity(obj)).get("id") != null) {
+                      Map<String, Object> idMap = new HashMap<String, Object>();
+                      idMap.put("id", Mapper.toMap(EntityHelper.getEntity(obj)).get("id"));
+                      return idMap;
+                    }
+                    return obj;
+                  })
+              .collect(Collectors.toList());
+
+      dataList.addAll(recordList);
+    }
+
+    jsonContext.put(field, dataList);
     Context context = (Context) contextValues.get("context");
     batch.setAttrs(context.get("attrs").toString());
   }

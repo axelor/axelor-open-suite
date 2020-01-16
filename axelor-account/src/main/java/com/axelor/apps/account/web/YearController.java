@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,16 +45,6 @@ public class YearController {
     try {
       Beans.get(YearServiceAccountImpl.class).adjust(year);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void generatePeriods(ActionRequest request, ActionResponse response) {
-    try {
-      Year year = request.getContext().asType(Year.class);
-      response.setValue(
-          "periodList", Beans.get(YearServiceAccountImpl.class).generatePeriods(year));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

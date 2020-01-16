@@ -3,6 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
   
+  <grid model="com.axelor.meta.db.MetaAction" title="All Action" name="studio-meta-action-grid" groupBy="appBuilder">
+      <field name="name"/>
+      <field name="type"/>
+      <field name="model"/>
+      <field name="module"/>
+      <field name="priority"/>
+      <field name="appBuilder" hidden="true"/>
+  </grid>
+
   <form model="com.axelor.meta.db.MetaAction" title="All Action" name="meta-action-form" id="studio-meta-action-form" extension="true">
   
 	<extend target="//panel[@title='Overview']">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -265,10 +265,10 @@ public class StockLocationServiceImpl implements StockLocationService {
     Query query =
         JPA.em()
             .createQuery(
-                "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockLocationValue = 1) THEN "
-                    + "(self.avgPrice)  WHEN (location.company.stockConfig.stockLocationValue = 2) THEN "
+                "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockValuationTypeSelect = 1) THEN "
+                    + "(self.avgPrice)  WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN "
                     + "CASE WHEN (self.product.costTypeSelect = 3) THEN (self.avgPrice) ELSE (self.product.costPrice) END "
-                    + "WHEN (location.company.stockConfig.stockLocationValue = 3) THEN "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN "
                     + "(self.product.salePrice) ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
                     + "LEFT JOIN StockLocation AS location "
@@ -277,7 +277,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     query.setParameter("id", stockLocation.getId());
 
     List<?> result = query.getResultList();
-    return result.get(0) == null
+    return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
         : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
   }
@@ -293,5 +293,16 @@ public class StockLocationServiceImpl implements StockLocationService {
           stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList());
     }
     return stockLocationListId;
+  }
+
+  @Override
+  public boolean isConfigMissing(StockLocation stockLocation, int printType) {
+
+    StockConfig stockConfig = stockLocation.getCompany().getStockConfig();
+    return printType == StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA
+        && (stockConfig == null
+            || (!stockConfig.getIsDisplayAccountingValueInPrinting()
+                && !stockConfig.getIsDisplayAgPriceInPrinting()
+                && !stockConfig.getIsDisplaySaleValueInPrinting()));
   }
 }

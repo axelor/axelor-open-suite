@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="studio-meta-json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" onNew="action-studio-set-meta-json-field-defaults" 
 	onLoad="action-studio-meta-json-field-attrs-on-load">
@@ -16,7 +16,6 @@
 	      <field name="defaultValue" />
 	      <field name="help" />
 	      <field name="sequence" />
-	      <field name="includedInCost" widget="inline-checkbox" />
 	      <field name="model" hidden="true" />
 	      <field name="modelField" hidden="true" />
 	      <field name="jsonModel" hidden="true"/>
@@ -31,6 +30,9 @@
 					<mail-messages limit="4"/>
 				</panel-mail>
 			</insert>
+		</extend>
+		<extend target="/">
+			<attribute name="onSave" value="action-studio-json-field-method-json-field-tracking"/>
 		</extend>
     </form>
 
@@ -71,4 +73,8 @@
     	<attribute name="readonly" for="appBuilder" expr="eval: _parent?._model == 'com.axelor.studio.db.Wkf'"/>
     </action-attrs>
     
+    <action-method name="action-studio-json-field-method-json-field-tracking">
+       <call class="com.axelor.studio.web.MetaJsonFieldController" method="trackJsonField"/>
+    </action-method>
+
 </object-views>

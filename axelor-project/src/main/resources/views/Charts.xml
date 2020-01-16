@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<chart name="chart.daily.planned.charge.in.month.per.project" title="Daily planned charge in a month per project">
+		<dataset type="jpql"> 
+  <![CDATA[
+   select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project
+ FROM Project p
+ INNER JOIN ProjectPlanningTime t ON t.project = p.id
+ INNER JOIN User u ON t.user = u.id   
+ INNER JOIN Employee e ON u.employee = e.id 
+ WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ GROUP BY p.id
+  ]]>
+  </dataset>
+		<category key="project" title="Project"/>
+		<series key="charge" type="bar" title="Planned charge"/>
+	</chart>
+	
+	<chart name="chart.daily.planned.charge.in.month.per.employee" title="Daily planned charge in a month per employee">
+		<dataset type="jpql"> 
+  <![CDATA[
+   select sum(e.hourlyRate*t.plannedHours) as charge, p.name as project , e.name as employee
+ FROM Project p
+ INNER JOIN ProjectPlanningTime t ON t.project = p.id
+ INNER JOIN User u ON t.user = u.id   
+ INNER JOIN Employee e ON u.employee = e.id 
+ WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ GROUP BY p.id,e.id
+  ]]>
+  </dataset>
+		<category key="employee" title="Employee"/>
+		<series key="charge" type="bar" title="Planned charge"/>
+	</chart>
+	
+	<chart name="chart.average.daily.planned.charge.in.month.per.employee" title="Daily planned charge in a month in an average per employee">
+		<dataset type="jpql"> 
+  <![CDATA[
+   select avg(e.hourlyRate*t.plannedHours) as charge , e.name as employee
+ FROM Project p
+ INNER JOIN ProjectPlanningTime t ON t.project = p.id
+ INNER JOIN User u ON t.user = u.id   
+ INNER JOIN Employee e ON u.employee = e.id 
+ WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ GROUP BY e.id
+  ]]>
+  </dataset>
+		<category key="employee" title="Employee"/>
+		<series key="charge" type="bar" title="Planned charge"/>
+	</chart>
+
+</object-views>

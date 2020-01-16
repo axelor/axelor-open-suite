@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -11,7 +11,7 @@
   	
   	<one-to-many name="operationOrderList" ref="com.axelor.apps.production.db.OperationOrder" mappedBy="manufOrder" title="Operation orders" orderBy="priority"/>
   
-  	<decimal name="qty" title="Qty" initParam="true"/>
+  	<decimal name="qty" title="Qty" initParam="true" precision="20" scale="10"/>
   
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" initParam="true"/>
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />

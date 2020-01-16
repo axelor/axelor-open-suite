@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -12,7 +12,7 @@
     <many-to-one name="bank" title="BIC (Bank Identifier)" ref="com.axelor.apps.base.db.Bank" required="true"/>
     <many-to-one name="bankAddress" title="SWIFT address" ref="com.axelor.apps.base.db.BankAddress"/>
     <string name="iban" title="IBAN / BBAN" required="true"/>
-    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
     <string name="bankCode" title="Bank Code" max="255"/>
     <string name="sortCode" title="Sort Code" max="255"/>
     <string name="accountNbr" title="Account Number" max="255" />
@@ -45,7 +45,7 @@
             return str;
         ]]>
     </string>
-    <boolean name="active" title="Active" default="true"/>
+    <boolean name="active" title="Active" default="true" massUpdate="true"/>
     <string name="code" />
 
 	<finder-method name="findDefaultByPartner" using="partner"

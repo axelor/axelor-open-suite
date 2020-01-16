@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<grid name="accepted-purchase-request-grid" title="All requests accepted" model="com.axelor.apps.purchase.db.PurchaseRequest" edit-icon="true">
 		<toolbar>
 			<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard"/>
 		</toolbar>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="product" />
-		<field name="newProduct" />
-		<field name="unit" />
-		<field name="quantity" />
-		<field name="statusSelect"/>
+		<field  name="statusSelect"/>
 	</grid>
     
 	<grid name="sent-purchase-request-grid" title="All requests sent" model="com.axelor.apps.purchase.db.PurchaseRequest">
@@ -20,11 +16,7 @@
 			<button name="acceptRequestBtn" title="Accept and generate PO" onClick="action-purchase-request-method-accept-request"/>
 		</toolbar>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="product" />
-		<field name="newProduct" />
-		<field name="unit" />
-		<field name="quantity" />
-		<field name="statusSelect"/>
+		<field  name="statusSelect"/>
 	</grid>
     
 	<grid name="my-current-cart-purchase-request-grid" title="My Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
@@ -32,11 +24,7 @@
 			<button name="confirmMyCartBtn" title="Confirm my cart" onClick="action-purchase-request-method-confirm-cart"/>
 		</toolbar>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="product" />
-		<field name="newProduct" />
-		<field name="unit" />
-		<field name="quantity" />
-		<field name="statusSelect"/>
+		<field  name="statusSelect"/>
 	</grid>
     
     <grid name="purchase-request-grid" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
@@ -48,13 +36,12 @@
     	<hilite if="statusSelect == 4 || statusSelect == 5 || statusSelect == 6" color="success"/>
     	<hilite if="statusSelect == 7" color="warning"  />
     	<hilite if="statusSelect == 8" color="danger"/>
+        <field name="company"/>
     	<field name="purchaseRequestSeq"/>
-        <field name="product" />
-        <field name="newProduct" />
-        <field name="unit" />
-        <field name="quantity" />
         <field name="supplierUser"/>
         <field name="stockLocation"/>
+        <field name="createdOn"/>
+        <field name="createdBy"/>
         <field name="statusSelect"/>
     </grid>
 
@@ -75,17 +62,10 @@
 		</panel>
 		<panel name="mainPanel" readonlyIf="!$contains([1,2],statusSelect)">
 			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" onChange="action-purchase-request-group-company-onchange"/>
-			<field name="newProduct" widget="boolean-switch" colSpan="2"
-				colOffset="4" hideIf="statusSelect &gt; 2 &amp;&amp; !newProduct" />
-			<field name="product" colSpan="3" form-view="product-form"
-				grid-view="product-grid" hideIf="newProduct" requiredIf="!newProduct"
-				onChange="action-purchase-request-product-on-change" canEdit="false"/>
-			<field name="productTitle" colSpan="3" showIf="newProduct" requiredIf="newProduct"/>
-			<field name="unit" colSpan="3" canEdit="false"/>
-			<field name="quantity" colSpan="3" />
-			<panel-related field="purchaseOrderSet" canEdit="false" canNew="false" colSpan="12"/>
+      <panel-related field="purchaseOrderSet" canEdit="false" canNew="false" colSpan="12"/>
 			<field name="$product" hidden="true" />
 		</panel>
+		<panel-related field="purchaseRequestLineList" form-view="purchase-request-line-form" grid-view="purchase-request-line-grid"/>
 		<panel-tabs name="descriptionPanelTab">
 			<panel name="descriptionPanel" title="Description">
 				<field name="description" colSpan="12" widget="html"
@@ -149,20 +129,10 @@
     </action-attrs>
 	
 	<action-record name="action-purchase-request-record-default" model="com.axelor.apps.purchase.db.PurchaseRequest">
-		<field name="company"  expr="eval:__user__.activeCompany"/>
-		<field name="quantity" expr="eval:1" />
-		<field name="product" expr="eval:_product" />
-		<field name="supplierUser" expr="eval:_product.defaultSupplierPartner" if="_product != null"/>
-		<field name="unit" expr="eval:_product.purchasesUnit" if="_product != null &amp;&amp; _product.purchasesUnit != null"/>		
-		<field name="unit" expr="eval:_product.unit" if="_product != null &amp;&amp; _product.purchasesUnit == null"/>		
+		<field name="company" expr="eval:__user__.activeCompany"/>
+		<field name="supplierUser" expr="eval:__repo__(Product).find(_product?.id)?.getDefaultSupplierPartner()" if="_product"/>
 	</action-record>
-	
-	<action-record name="action-purchase-request-product-on-change" model="com.axelor.apps.purchase.db.PurchaseRequest">
-		<field name="supplierUser" expr="eval:product.defaultSupplierPartner" if="product != null"/>
-		<field name="unit" expr="eval:product.purchasesUnit" if="product != null &amp;&amp; product.purchasesUnit != null"/>		
-		<field name="unit" expr="eval:product.unit" if="product != null &amp;&amp; product.purchasesUnit == null"/>	
-	</action-record>
-	
+
 	<!-- update status -->
 	<action-record name="action-purchase-request-set-status-requested" model="com.axelor.apps.purchase.db.PurchaseRequest">
     	<field name="statusSelect" expr="eval:2"/>

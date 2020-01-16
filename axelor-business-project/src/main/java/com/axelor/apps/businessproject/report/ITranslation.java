@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,6 +45,7 @@ public interface ITranslation {
   public static final String PROJECT_TURNOVER = /*$$(*/ "Project.turnover"; /*)*/
   public static final String PROJECT_SALES_INVOICE = /*$$(*/ "Project.salesInvoice"; /*)*/
   public static final String PROJECT_INVOICE_NUMBER = /*$$(*/ "Project.invoiceNumber"; /*)*/
+  public static final String PROJECT_SUB_TYPE = /*$$(*/ "Project.subType"; /*)*/
   public static final String PROJECT_AMOUNT = /*$$(*/ "Project.amount"; /*)*/
   public static final String PROJECT_PURCHASE = /*$$(*/ "Project.purchase"; /*)*/
   public static final String PROJECT_EXPENSE = /*$$(*/ "Project.expense"; /*)*/
@@ -60,10 +61,13 @@ public interface ITranslation {
   public static final String PROJECT_TOTAL = /*$$(*/ "Project.total"; /*)*/
   public static final String PROJECT_RESULT = /*$$(*/ "Project.result"; /*)*/
   public static final String PROJECT_CHART_TITLE = /*$$(*/ "Project.turnoverAndCostPerMonth"; /*)*/
-
   public static final String PROJECT_MANUAL_ELEMENT = /*$$(*/ "Project.manualElement"; /*)*/
   public static final String PROJECT_MANUAL_ELEMENT_TITLE = /*$$(*/
       "Project.manualElementTitle"; /*)*/
+  public static final String PROJECT_REPORT_TITLE_FOR_PLANIFICATION_AND_COST = /*$$(*/
+      "Project planification and costs"; /*)*/
+  public static final String PROJECT_REPORT_TITLE_FOR_FINANCIAL = /*$$(*/
+      "Projects financial report"; /*)*/
 
   public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/
       "Invoice.purchaseInvoiceNoAnnex"; /*)*/
@@ -80,6 +84,7 @@ public interface ITranslation {
   public static final String INVOICE_TIMESHEET_USER = /*$$(*/ "Invoice.timesheetUser"; /*)*/
   public static final String INVOICE_TIMESHEET_ACTIVITY = /*$$(*/ "Invoice.timesheetActivity"; /*)*/
   public static final String INVOICE_TIMESHEET_DURATION = /*$$(*/ "Invoice.timesheetDuration"; /*)*/
+  public static final String INVOICE_SUPPLIER_REFERENCE = /*$$(*/ "Invoice.supplierReference"; /*)*/
 
   public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/
       "Invoice.expenseTotalAmount"; /*)*/

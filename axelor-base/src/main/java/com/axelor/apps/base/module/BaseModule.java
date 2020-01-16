@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -87,6 +87,10 @@ import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
+import com.axelor.apps.base.service.YearService;
+import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.ActionService;
+import com.axelor.apps.base.service.advanced.imports.ActionServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportService;
 import com.axelor.apps.base.service.advanced.imports.AdvancedImportServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.DataImportService;
@@ -150,6 +154,7 @@ public class BaseModule extends AxelorModule {
     bind(MailServiceMessageImpl.class).to(MailServiceBaseImpl.class);
     bind(AddressRepository.class).to(AddressBaseRepository.class);
     bind(YearRepository.class).to(YearBaseRepository.class);
+    bind(YearService.class).to(YearServiceImpl.class);
     bind(AppServiceImpl.class).to(AppBaseServiceImpl.class);
     bind(AppService.class).to(AppServiceImpl.class);
     bind(BankService.class).to(BankServiceImpl.class);
@@ -185,6 +190,7 @@ public class BaseModule extends AxelorModule {
     bind(DataImportService.class).to(DataImportServiceImpl.class);
     bind(FileTabService.class).to(FileTabServiceImpl.class);
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
+    bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
   }
 }

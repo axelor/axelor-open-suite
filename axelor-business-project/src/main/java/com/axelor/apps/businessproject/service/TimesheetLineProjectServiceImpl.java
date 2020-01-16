@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,20 +71,12 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
         timesheetLine.getTeamTask() != null
             ? teamTaskaRepo.find(timesheetLine.getTeamTask().getId())
             : null;
-    Boolean toInvoice;
-    if (teamTask == null && project == null) {
-      toInvoice = null;
-    } else if (teamTask != null) {
-      toInvoice =
-          teamTask.getTeamTaskInvoicing()
-              ? (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT
-                  ? true
-                  : (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE
-                      ? false
-                      : null))
-              : false;
-    } else {
-      toInvoice = project.getIsInvoicingTimesheet() ? true : false;
+
+    Boolean toInvoice = false;
+    if (teamTask != null) {
+      toInvoice = teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT;
+    } else if (project != null) {
+      toInvoice = project.getIsInvoicingTimesheet();
     }
     timesheetLine.setToInvoice(toInvoice);
     return timesheetLine;

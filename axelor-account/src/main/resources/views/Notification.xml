@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid model="com.axelor.apps.account.db.Notification" title="Notifications"
 		name="notification-grid" orderBy="-paymentDate,-subrogationRelease">
@@ -29,6 +29,7 @@
 		<panel sidebar="true" name="actionsPanel">
 			<button name="validateBtn" title="Validate"
 				onClick="save,action-notification-validate" hideIf="statusSelect > 1" />
+			<button name="displayMoveLines" title="See Move Lines" onClick="action-notification-display-move-lines-view" showIf="statusSelect == 2"/>
 		</panel>
 	</form>
 
@@ -53,6 +54,11 @@
 	<action-method name="action-notification-validate">
 		<call class="com.axelor.apps.account.web.NotificationController"
 			method="validate" />
+	</action-method>
+	
+	<action-method name="action-notification-display-move-lines-view">
+		<call class="com.axelor.apps.account.web.NotificationController"
+			method="displayMoveLines" />
 	</action-method>
 
 </object-views>

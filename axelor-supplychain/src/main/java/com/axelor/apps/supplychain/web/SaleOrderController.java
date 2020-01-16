@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -66,6 +66,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -267,7 +268,6 @@ public class SaleOrderController {
    */
   @SuppressWarnings(value = "unchecked")
   public void generateInvoice(ActionRequest request, ActionResponse response) {
-
     Context context = request.getContext();
     try {
       SaleOrder saleOrder = context.asType(SaleOrder.class);
@@ -276,8 +276,10 @@ public class SaleOrderController {
       BigDecimal amountToInvoice =
           new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
 
-      Beans.get(SaleOrderInvoiceService.class)
-          .displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, amountToInvoice, isPercent);
+      SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
+
+      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
+          saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
@@ -294,13 +296,31 @@ public class SaleOrderController {
         }
       }
 
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      // Information to send to the service to handle an invoicing on timetables
+      List<Long> timetableIdList = new ArrayList<>();
+      ArrayList<LinkedHashMap<String, Object>> uninvoicedTimetablesList =
+          (context.get("uninvoicedTimetablesList") != null)
+              ? (ArrayList<LinkedHashMap<String, Object>>) context.get("uninvoicedTimetablesList")
+              : null;
+      if (uninvoicedTimetablesList != null && !uninvoicedTimetablesList.isEmpty()) {
 
-      SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
+        for (LinkedHashMap<String, Object> timetable : uninvoicedTimetablesList) {
+          if (timetable.get("toInvoice") != null && (boolean) timetable.get("toInvoice")) {
+            timetableIdList.add(Long.parseLong(timetable.get("id").toString()));
+          }
+        }
+      }
+
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
       Invoice invoice =
           saleOrderInvoiceService.generateInvoice(
-              saleOrder, operationSelect, amountToInvoice, isPercent, qtyToInvoiceMap);
+              saleOrder,
+              operationSelect,
+              amountToInvoice,
+              isPercent,
+              qtyToInvoiceMap,
+              timetableIdList);
 
       if (invoice != null) {
         response.setCanClose(true);
@@ -820,6 +840,7 @@ public class SaleOrderController {
                   SaleOrderRepository.INVOICE_ADVANCE_PAYMENT,
                   amountToInvoice,
                   isPercent,
+                  null,
                   null);
 
       if (invoice != null) {

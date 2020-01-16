@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	
 	<menuitem name="menu-products-dashboard-1" parent="referential-report"  if="__config__.app.isApp('supplychain')"
@@ -132,6 +132,15 @@
 		<domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
 	
+	<menuitem name="sale-configuration-timetable-template" title="Timetable templates" 
+		parent="sc-root-sale-conf" action="sale.conf.timetable.template"/>
+	
+	<action-view name="sale.conf.timetable.template" title="Timetable templates" 
+		model="com.axelor.apps.supplychain.db.TimetableTemplate">
+		<view type="grid" name="timetable-template-grid"/>
+		<view type="form" name="timetable-template-form"/>
+	</action-view>
+	
 	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
 		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
 	
@@ -158,8 +167,9 @@
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = :_isReversion</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_isReversion" expr="eval: false"/>
 		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
 	</action-view>
   

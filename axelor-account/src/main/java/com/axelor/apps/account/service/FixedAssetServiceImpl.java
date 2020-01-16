@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,14 +18,17 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -48,6 +51,13 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   @Inject FixedAssetRepository fixedAssetRepo;
 
   @Inject FixedAssetLineService fixedAssetLineService;
+
+  protected MoveLineService moveLineService;
+
+  @Inject
+  public FixedAssetServiceImpl(MoveLineService moveLineService) {
+    this.moveLineService = moveLineService;
+  }
 
   @Override
   public FixedAsset generateAndcomputeLines(FixedAsset fixedAsset) {
@@ -143,7 +153,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
-    float depreciationRate = 1f / numberOfDepreciation * 100f;
+    float depreciationRate = numberOfDepreciation == 0 ? 0 : 1f / numberOfDepreciation * 100f;
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
     if (fixedAsset.getComputationMethodSelect().equals("degressive")) {
@@ -243,14 +253,14 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         && disposalDate.isAfter(previousPlannedLine.getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_2);
+          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_2));
     }
 
     if (previousRealizedLine != null
         && disposalDate.isBefore(previousRealizedLine.getDepreciationDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1);
+          I18n.get(IExceptionMessage.FIXED_ASSET_DISPOSAL_DATE_ERROR_1));
     }
 
     if (disposalAmount.compareTo(BigDecimal.ZERO) != 0) {
@@ -325,5 +335,38 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset.getGrossValue().subtract(fixedAssetLine.getCumulativeDepreciation()));
     fixedAsset.addFixedAssetLineListItem(fixedAssetLine);
     return fixedAssetLine;
+  }
+
+  @Override
+  @Transactional
+  public void createAnalyticOnMoveLine(
+      AnalyticDistributionTemplate analyticDistributionTemplate, MoveLine moveLine)
+      throws AxelorException {
+    if (analyticDistributionTemplate != null
+        && moveLine.getAccount().getAnalyticDistributionAuthorized()) {
+      moveLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+      moveLine = moveLineService.createAnalyticDistributionWithTemplate(moveLine);
+    }
+  }
+
+  @Override
+  public void updateAnalytic(FixedAsset fixedAsset) throws AxelorException {
+    if (fixedAsset.getAnalyticDistributionTemplate() != null) {
+      if (fixedAsset.getDisposalMove() != null) {
+        for (MoveLine moveLine : fixedAsset.getDisposalMove().getMoveLineList()) {
+          this.createAnalyticOnMoveLine(fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+        }
+      }
+      if (fixedAsset.getFixedAssetLineList() != null) {
+        for (FixedAssetLine fixedAssetLine : fixedAsset.getFixedAssetLineList()) {
+          if (fixedAssetLine.getDepreciationAccountMove() != null) {
+            for (MoveLine moveLine :
+                fixedAssetLine.getDepreciationAccountMove().getMoveLineList()) {
+              this.createAnalyticOnMoveLine(fixedAsset.getAnalyticDistributionTemplate(), moveLine);
+            }
+          }
+        }
+      }
+    }
   }
 }

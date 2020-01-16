@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
   <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
 		<toolbar>
@@ -81,14 +81,14 @@
 	  </field>
   </grid>
 
-	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits"
+	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision"
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
-	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits" width="large">
+	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-	            <item title="Print" action="save,action-manuf-order-method-print" showIf="statusSelect > 1" />
-	            <item title="Print Production Process" action="save,action-production-process-method-print"  />
+            <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+	            <item name="printItem" title="Print" action="save,action-manuf-order-method-print" showIf="statusSelect > 1" />
+	            <item name="printProductionProcessItem" title="Print Production Process" action="save,action-production-process-method-print"  />
 	        </menu>
 		</menubar>
 		<panel name="mainPanel">
@@ -215,14 +215,16 @@
 		
 	</form>
 	
-	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder">
+	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder"
+		  onNew="action-manuf-order-attrs-scale-and-precision" onLoad="action-manuf-order-attrs-scale-and-precision">
 		<panel name="mainPanel">
 			<field name="qty" min="1" colSpan="8"/>
 			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-planned-qty,close"/>
 		</panel>
 	</form>
 
-	<form title="Update real quantities (Components and FP)" name="popup-manuf-order-form-update-real-qty" model="com.axelor.apps.production.db.ManufOrder">
+	<form title="Update real quantities (Components and FP)" name="popup-manuf-order-form-update-real-qty" model="com.axelor.apps.production.db.ManufOrder"
+		  onNew="action-manuf-order-attrs-scale-and-precision" onLoad="action-manuf-order-attrs-scale-and-precision">
 		<panel name="mainPanel">
 			<field name="$qtyToUpdate" title="Qty" min="0" type="decimal" colSpan="8"/>
 			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-real-qty,close"/>
@@ -307,6 +309,12 @@
 	
 	<action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
 	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
+	</action-attrs>
+	
+    <action-attrs name="action-manuf-order-attrs-scale-and-precision">
+    	<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="$qtyToUpdate" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="product.economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
     <action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">

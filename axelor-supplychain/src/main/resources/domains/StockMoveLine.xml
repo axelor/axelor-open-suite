@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="stock" package="com.axelor.apps.stock.db" />
 
@@ -12,10 +12,10 @@
 		<many-to-one name="purchaseOrderLine"
 			ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line" />
 
-		<decimal name="reservedQty" title="Allocated Qty" />
-		<decimal name="requestedReservedQty" title="Requested reserved qty"/>
+		<decimal name="reservedQty" title="Allocated Qty" precision="20" scale="10"/>
+		<decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10"/>
 		
-		<decimal name="qtyInvoiced" title="Invoiced Qty"/>
+		<decimal name="qtyInvoiced" title="Invoiced Qty" precision="20" scale="10"/>
 
 		<finder-method name="findAllBySaleOrder"
 			using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,7 +79,7 @@ public class ProjectController {
   public void printProject(ActionRequest request, ActionResponse response) throws AxelorException {
     Project project = request.getContext().asType(Project.class);
 
-    String name = I18n.get("Project") + " " + project.getCode();
+    String name = I18n.get("Project") + " " + (project.getCode() != null ? project.getCode() : "");
 
     String fileLink =
         ReportFactory.createReport(IReport.PROJECT, name + "-${date}")

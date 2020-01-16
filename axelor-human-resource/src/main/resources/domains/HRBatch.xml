@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -60,6 +60,7 @@
 		//PAYROLL PREPARATION EXPORT TYPE SELECT
 		public static final int EXPORT_TYPE_STANDARD = 1;
 		public static final int EXPORT_TYPE_NIBELIS = 2;
+		public static final int EXPORT_TYPE_SILAE = 3;
 
 		//EMPLOYMENT CONTRACT EXPORT TYPE SELECT
 		public static final int EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE = 1;

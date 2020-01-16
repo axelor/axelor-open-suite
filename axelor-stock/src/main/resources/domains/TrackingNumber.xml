@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -11,7 +11,7 @@
 	<date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
 	<date name="perishableExpirationDate" title="Perishable expiration date" readonly="true"/>
 	<string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
-	<decimal name="counter" title="Counter"/>
+	<decimal name="counter" title="Counter" precision="20" scale="10"/>
 	
 	<unique-constraint columns="product,trackingNumberSeq"/>
 

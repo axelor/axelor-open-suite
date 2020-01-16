@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
     <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results" groupBy="product" sortable="false" orderBy="product.code,maturityDate,mrpLineType.typeSelect,mrpLineType.sequence,id">
         <hilite if="isEditedByUser" color="danger" strong="true"/>
         <hilite if="[5,8,9].indexOf($get('mrpLineType.elementSelect')) != -1" strong="true" color="info"/>
         <field name="product" hidden="true"/>
         <field name="mrpLineType" width="300"/>
-        <field name="qty"/>
+        <field name="qty" x-scale="2"/>
         <field name="maturityDate" width="100"/>
-        <field name="cumulativeQty" css="bold"/>
+        <field name="cumulativeQty" css="bold" x-scale="2"/>
         <field name="product.unit"/>
-        <field name="minQty"/>
+        <field name="minQty" x-scale="2"/>
         <field name="stockLocation"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
         <field name="partner"/>
+  		<field name="product.defaultSupplierPartner"/>
         <field name="proposalGenerated" hidden="true"/>
         <button name="generateProposalBtn" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
         <field name="mrpLineType.elementSelect" hidden="true"/>
         <field name="isEditedByUser" hidden="true"/>
     </grid>
     
-	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result">
+	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result"
+		  onNew="action-mrp-line-attrs-scale-and-precision" onLoad="action-mrp-line-attrs-scale-and-precision">
 	    <panel name="mainPanel">
 	        <field name="product" readonly="true" canEdit="false"/>
 	        <field name="mrpLineType" readonly="true"/>
@@ -47,7 +49,13 @@
             <field name="isEditedByUser"  hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
             <field name="mrp.mrpTypeSelect" hidden="true"/>
 	    </panel>
-	 </form>
+	</form>
+	 
+	<action-attrs name="action-mrp-line-attrs-scale-and-precision">
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="cumulativeQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="minQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 	 
 	<action-method name="action-mrp-line-method-generate-proposal">
 	    <call class="com.axelor.apps.supplychain.web.MrpLineController" method="generateProposal"/>

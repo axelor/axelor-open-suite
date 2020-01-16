@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,12 +46,17 @@ public class PriceListService {
 
   @Inject protected AppBaseService appBaseService;
 
-  public PriceListLine getPriceListLine(Product product, BigDecimal qty, PriceList priceList) {
+  public PriceListLine getPriceListLine(
+      Product product, BigDecimal qty, PriceList priceList, BigDecimal price) {
 
     PriceListLine priceListLine = null;
+    List<PriceListLine> priceListLineList = null;
+
+    BigDecimal tempDiscountPrevious = null;
+    BigDecimal tempDiscountCurrent = null;
 
     if (product != null && priceList != null) {
-      priceListLine =
+      priceListLineList =
           Beans.get(PriceListLineRepository.class)
               .all()
               .filter(
@@ -59,9 +64,10 @@ public class PriceListService {
                   product,
                   qty,
                   priceList.getId())
-              .fetchOne();
-      if (priceListLine == null && product.getProductCategory() != null) {
-        priceListLine =
+              .fetch();
+      if ((priceListLineList == null || priceListLineList.isEmpty())
+          && product.getProductCategory() != null) {
+        priceListLineList =
             priceListLineRepo
                 .all()
                 .filter(
@@ -69,10 +75,25 @@ public class PriceListService {
                     product.getProductCategory(),
                     qty,
                     priceList.getId())
-                .fetchOne();
+                .fetch();
       }
     }
 
+    if (priceListLineList != null && !priceListLineList.isEmpty()) {
+      if (priceListLineList.size() > 1) {
+        for (PriceListLine tempPriceListLine : priceListLineList) {
+          tempDiscountCurrent = this.getUnitPriceDiscounted(tempPriceListLine, price);
+
+          if (tempDiscountPrevious == null
+              || tempDiscountPrevious.compareTo(tempDiscountCurrent) == 1) {
+            tempDiscountPrevious = tempDiscountCurrent;
+            priceListLine = tempPriceListLine;
+          }
+        }
+      } else {
+        priceListLine = priceListLineList.get(0);
+      }
+    }
     return priceListLine;
   }
 

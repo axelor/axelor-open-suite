@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
   <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="name"/>
@@ -15,7 +15,7 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
           onNew="action-prod-process-group-on-new"
-          onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-hide-outsourcing"
+          onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-hide-outsourcing,action-prod-process-attrs-scale-and-precision"
           onSave="action-prod-process-method-validate-prod-process" width="large">
 
     	<toolbar>
@@ -66,12 +66,22 @@
             <field name="versionNumber" colSpan="3" />
             <field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
  		</panel>            
+    
+    	<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail> 
     </form>
+    
+    <action-attrs name="action-prod-process-attrs-scale-and-precision">
+    	<attribute name="scale" for="launchQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 
-  <action-group name="action-prod-process-group-on-new">
-    <action name="action-prod-process-record-set-default-company"/>
-    <action name="action-prod-process-record-set-realize-order-select"/>
-  </action-group>
+	<action-group name="action-prod-process-group-on-new">
+		<action name="action-prod-process-record-set-default-company"/>
+		<action name="action-prod-process-record-set-realize-order-select"/>
+		<action name="action-prod-process-attrs-scale-and-precision"/>
+	</action-group>
     
     <action-attrs name="action-prod-process-attrs-hide-outsourcing">
     	<attribute name="hidden" for="prodProcessLineList.outsourcing" expr="eval:!__this__.outsourcing"/>

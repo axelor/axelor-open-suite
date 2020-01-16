@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.service.StudioMetaService;
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import java.util.stream.Collectors;
 
 public class MetaJsonModelController {
 
@@ -52,17 +54,47 @@ public class MetaJsonModelController {
     response.setView(builder.map());
   }
 
-  public void createFieldTracking(ActionRequest request, ActionResponse response) {
+  public void trackJsonField(ActionRequest request, ActionResponse response) {
     try {
       MetaJsonModel jsonModel = request.getContext().asType(MetaJsonModel.class);
 
-      if (jsonModel.getId() == null && jsonModel.getFields() == null) {
+      String jsonFieldTracking =
+          request.getContext().get("jsonFieldTracking") != null
+              ? request.getContext().get("jsonFieldTracking").toString()
+              : "";
+
+      if (!jsonFieldTracking.isEmpty()) {
+        Beans.get(StudioMetaService.class)
+            .trackingFields(jsonModel, jsonFieldTracking, "Field added");
+        response.setValue("$jsonFieldTracking", null);
         return;
       }
 
-      String jsonFieldTracking = Beans.get(StudioMetaService.class).createFieldTracking(jsonModel);
-      response.setValue("jsonFieldTracking", jsonFieldTracking);
+      Beans.get(StudioMetaService.class).trackJsonField(jsonModel);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setJsonFieldTracking(ActionRequest request, ActionResponse response) {
+
+    try {
+      MetaJsonModel jsonModel = request.getContext().asType(MetaJsonModel.class);
+
+      if (jsonModel.getId() != null || CollectionUtils.isEmpty(jsonModel.getFields())) {
+        response.setValue("$jsonFieldTracking", null);
+        return;
+      }
+
+      String jsonFields =
+          jsonModel
+              .getFields()
+              .stream()
+              .map(list -> list.getName())
+              .collect(Collectors.joining(", "));
+
+      response.setValue("$jsonFieldTracking", jsonFields);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

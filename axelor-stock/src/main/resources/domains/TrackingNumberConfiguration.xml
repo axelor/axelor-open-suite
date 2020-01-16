@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -21,9 +21,9 @@
 	<boolean name="hasProductAutoSelectTrackingNbr"  title="Auto select product tracking Nbr."/>
 	<integer name="productAutoTrackingNbrOrderSelect"  title="Auto product tracking Nbr. order" selection="tracking.number.configuration.tracking.number.order.select"/>
 
-	<decimal name="saleQtyByTracking"  title="Sale Qty by tracking"/>
-	<decimal name="purchaseQtyByTracking"  title="Purchase Qty by tracking"/>
-	<decimal name="productionQtyByTracking"  title="Production Qty by tracking"/>
+	<decimal name="saleQtyByTracking"  title="Sale Qty by tracking" precision="20" scale="10"/>
+	<decimal name="purchaseQtyByTracking"  title="Purchase Qty by tracking" precision="20" scale="10"/>
+	<decimal name="productionQtyByTracking"  title="Production Qty by tracking" precision="20" scale="10"/>
 	
 	<many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
 

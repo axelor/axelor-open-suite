@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,4 +22,6 @@ public interface IExceptionMessage {
   static final String FORECAST_COMPANY = /*$$(*/ "Please select a company" /*)*/;
   static final String FORCAST_RECAP_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for ForcastRecap" /*)*/;
+  static final String FORECAST_RECAP_MISSING_FORECAST_RECAP_LINE_TYPE = /*$$(*/
+      "No move type found for element : %s" /*)*/;
 }

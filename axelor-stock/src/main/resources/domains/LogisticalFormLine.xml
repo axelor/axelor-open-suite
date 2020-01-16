@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
     <module name="stock" package="com.axelor.apps.stock.db" />
 
@@ -9,7 +9,7 @@
         <integer name="sequence" title="Seq." />
         <integer name="typeSelect" title="Type" selection="logistical.form.line.type.select" required="true" />
         <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine" />
-        <decimal name="qty" nullable="true" />
+        <decimal name="qty" nullable="true" precision="20" scale="10" />
         <integer name="parcelPalletNumber" title="Parcel/pallet number" nullable="true" />
         <decimal name="grossMass" nullable="true" precision="19" scale="2" />
         <string name="dimensions" title="Dimensions (cm)" nullable="true" />

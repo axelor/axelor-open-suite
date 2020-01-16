@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     
     <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
-    onNew="action-production-order-wizard-record-default,action-production-order-wizard-record-default-bom">
+    onNew="action-production-order-wizard-record-default,action-production-order-wizard-record-default-bom,action-production-order-wizard-attrs-scale">
 		<panel name="mainPanel">
 			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" canEdit="false" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid"/>
 			<field name="qty" widget="decimal" title="Quantity"/>
@@ -42,6 +42,10 @@
     <action-method name="action-production-order-wizard-method-validate">
 		<call class="com.axelor.apps.production.web.ProductionOrderWizardController" method="validate"/>
     </action-method>
+    
+    <action-attrs name="action-production-order-wizard-attrs-scale">
+    	<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
     
     <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
 		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.defineSubBillOfMaterial = true&quot;" if="product"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,18 +25,22 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectCategory;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.TeamTaskCategory;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.TeamTaskProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -44,6 +48,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +121,8 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       return teamTask;
     }
 
-    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList);
+    PriceListLine priceListLine =
+        this.getPriceListLine(teamTask, priceList, teamTask.getUnitPrice());
     Map<String, Object> discounts =
         priceListService.getReplacedPriceAndDiscounts(
             priceList, priceListLine, teamTask.getUnitPrice());
@@ -139,10 +145,10 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     teamTask.setPriceDiscounted(BigDecimal.ZERO);
   }
 
-  private PriceListLine getPriceListLine(TeamTask teamTask, PriceList priceList) {
+  private PriceListLine getPriceListLine(TeamTask teamTask, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        teamTask.getProduct(), teamTask.getQuantity(), priceList);
+        teamTask.getProduct(), teamTask.getQuantity(), priceList, price);
   }
 
   @Override
@@ -250,7 +256,6 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     nextTeamTask.setDiscountAmount(teamTask.getDiscountAmount());
     nextTeamTask.setPriceDiscounted(teamTask.getPriceDiscounted());
     nextTeamTask.setInvoicingType(teamTask.getInvoicingType());
-    nextTeamTask.setTeamTaskInvoicing(teamTask.getTeamTaskInvoicing());
     nextTeamTask.setCustomerReferral(teamTask.getCustomerReferral());
   }
 
@@ -258,72 +263,105 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
   @Override
   public TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject) {
 
-    switch (teamTask.getProject().getInvoicingSequenceSelect()) {
-      case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-        teamTask.setToInvoice(
-            appBusinessProject.getPreTaskStatusSet() != null
-                && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
-        if (teamTask.getToInvoice()) {
-          teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
-        }
-        break;
+    teamTask = computeDefaultInformation(teamTask);
 
-      case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-        teamTask.setToInvoice(
-            appBusinessProject.getPostTaskStatusSet() != null
-                && appBusinessProject.getPostTaskStatusSet().contains(teamTask.getStatus()));
-        break;
+    if (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE
+        && !teamTask.getIsTaskRefused()) {
+
+      switch (teamTask.getProject().getInvoicingSequenceSelect()) {
+        case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
+          teamTask.setToInvoice(
+              !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPreTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
+          break;
+
+        case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
+          teamTask.setToInvoice(
+              !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPostTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
+          break;
+      }
+    } else {
+      teamTask.setToInvoice(
+          teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT);
     }
 
-    if (teamTask.getToInvoice()) {
-      teamTask = computeDefaultInformation(teamTask);
-      teamTask = teamTaskRepo.save(teamTask);
-    }
-    return teamTask;
+    return teamTaskRepo.save(teamTask);
   }
 
   @Override
   public TeamTask computeDefaultInformation(TeamTask teamTask) {
 
-    ProjectCategory projectCategory = teamTask.getProjectCategory();
-    if (projectCategory == null) {
-      return teamTask;
-    }
-
-    teamTask.setInvoicingType(
-        teamTask.getInvoicingType() == 0
-            ? projectCategory.getDefaultInvoicingType()
-            : teamTask.getInvoicingType());
-
-    if (teamTask.getProduct() == null) {
-      teamTask.setProduct(projectCategory.getDefaultProduct());
-    }
-
     Product product = teamTask.getProduct();
-    if (product == null) {
-      return teamTask;
-    }
+    if (product != null) {
+      teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+      if (teamTask.getUnitPrice() == null
+          || teamTask.getUnitPrice().compareTo(BigDecimal.ZERO) == 0) {
+        teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
+      }
+    } else {
+      TeamTaskCategory teamTaskCategory = teamTask.getTeamTaskCategory();
+      if (teamTaskCategory == null) {
+        return teamTask;
+      }
 
-    if (teamTask.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
-      teamTask.setQuantity(BigDecimal.ONE);
+      teamTask.setInvoicingType(teamTaskCategory.getDefaultInvoicingType());
+      teamTask.setProduct(teamTaskCategory.getDefaultProduct());
+      product = teamTask.getProduct();
+      if (product == null) {
+        return teamTask;
+      }
+      teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
     }
-    if (teamTask.getUnit() == null) {
-      teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
-    }
-    if (teamTask.getUnitPrice().compareTo(BigDecimal.ZERO) == 0) {
-      teamTask.setUnitPrice(product.getSalePrice());
-    }
+    teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
+    teamTask.setCurrency(product.getSaleCurrency());
+    teamTask.setQuantity(teamTask.getBudgetedTime());
 
-    Project project = teamTask.getProject();
-    if (teamTask.getCurrency() == null) {
-      teamTask.setCurrency(
-          project.getCurrency() == null
-              ? project.getClientPartner().getCurrency() == null
-                  ? project.getCompany().getCurrency()
-                  : project.getClientPartner().getCurrency()
-              : project.getCurrency());
-    }
+    teamTask = this.updateDiscount(teamTask);
     teamTask = this.compute(teamTask);
+    return teamTask;
+  }
+
+  private BigDecimal computeUnitPrice(TeamTask teamTask) {
+    Product product = teamTask.getProduct();
+    BigDecimal unitPrice = product.getSalePrice();
+
+    PriceList priceList =
+        Beans.get(PartnerPriceListService.class)
+            .getDefaultPriceList(
+                teamTask.getProject().getClientPartner(), PriceListRepository.TYPE_SALE);
+    if (priceList == null) {
+      return unitPrice;
+    }
+
+    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList, unitPrice);
+    Map<String, Object> discounts =
+        priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, unitPrice);
+
+    if (discounts == null) {
+      return unitPrice;
+    } else {
+      unitPrice =
+          priceListService.computeDiscount(
+              unitPrice,
+              (Integer) discounts.get("discountTypeSelect"),
+              (BigDecimal) discounts.get("discountAmount"));
+    }
+    return unitPrice;
+  }
+
+  @Override
+  public TeamTask resetTeamTaskValues(TeamTask teamTask) {
+    teamTask.setProduct(null);
+    teamTask.setInvoicingType(null);
+    teamTask.setToInvoice(null);
+    teamTask.setQuantity(null);
+    teamTask.setUnit(null);
+    teamTask.setUnitPrice(null);
+    teamTask.setCurrency(null);
+    teamTask.setExTaxTotal(null);
     return teamTask;
   }
 }

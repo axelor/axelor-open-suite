@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -591,17 +591,6 @@ public class TimesheetController {
           Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet));
       response.setValue("timeLoggingPreferenceSelect", timesheet.getTimeLoggingPreferenceSelect());
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void generateLinesFromRealisePlanning(ActionRequest request, ActionResponse response) {
-    try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
-      Beans.get(TimesheetService.class).generateLinesFromRealisedProjectPlanning(timesheet);
-      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
