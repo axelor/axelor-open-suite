@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.3]
+## Features
+- Invoice : Removal of companyBankDetails comment in invoice form.
+
 ## Improvements
 - BANKSTATEMENT : import multiple records in a single line.
 - Opportunity : Set sale order defaults on new.
