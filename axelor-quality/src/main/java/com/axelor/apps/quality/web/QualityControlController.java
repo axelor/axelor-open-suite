@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,13 +26,17 @@ import com.axelor.apps.quality.db.repo.QualityProcessRepository;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
+import com.axelor.rpc.Context;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,13 +45,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 @Singleton
 public class QualityControlController {
-
-  @Inject private QualityControlRepository qualityControlRepo;
-
-  @Inject private QualityControlService qualityControlService;
 
   /**
    * Open control point in new tab from quality control.
@@ -87,9 +88,10 @@ public class QualityControlController {
         Beans.get(QualityProcessRepository.class)
             .find(((Integer) qualityProcessMap.get("id")).longValue());
     QualityControl qualityControl =
-        qualityControlRepo.find(((Integer) qualityControlMap.get("id")).longValue());
+        Beans.get(QualityControlRepository.class)
+            .find(((Integer) qualityControlMap.get("id")).longValue());
 
-    qualityControlService.preFillOperations(qualityControl, qualityProcess);
+    Beans.get(QualityControlService.class).preFillOperations(qualityControl, qualityProcess);
 
     response.setCanClose(true);
   }
@@ -117,9 +119,11 @@ public class QualityControlController {
     LinkedHashMap<String, Object> qualityControlMap =
         (LinkedHashMap<String, Object>) request.getContext().get("_qualityControl");
     QualityControl qualityControl =
-        qualityControlRepo.find(((Integer) qualityControlMap.get("id")).longValue());
+        Beans.get(QualityControlRepository.class)
+            .find(((Integer) qualityControlMap.get("id")).longValue());
 
-    qualityControlService.preFillOperationsFromOptionals(qualityControl, optionalControlPointList);
+    Beans.get(QualityControlService.class)
+        .preFillOperationsFromOptionals(qualityControl, optionalControlPointList);
 
     response.setCanClose(true);
   }
@@ -137,5 +141,41 @@ public class QualityControlController {
             .printQualityControl(qualityControl, ReportSettings.FORMAT_PDF);
 
     response.setView(ActionView.define(title).add("html", fileLink).map());
+  }
+
+  @SuppressWarnings("unchecked")
+  public void sendEmail(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      QualityControlService qualityControlService = Beans.get(QualityControlService.class);
+
+      if (!ObjectUtils.isEmpty(context.get("_ids"))) {
+        List<Long> idList =
+            Lists.transform(
+                (List) context.get("_ids"),
+                new Function<Object, Long>() {
+                  @Nullable
+                  @Override
+                  public Long apply(@Nullable Object input) {
+                    return Long.parseLong(input.toString());
+                  }
+                });
+
+        QualityControlRepository qualityControlRepo = Beans.get(QualityControlRepository.class);
+
+        for (Long id : idList) {
+          QualityControl qualityControl = qualityControlRepo.find(id);
+          if (qualityControl.getStatusSelect() == QualityControlRepository.STATUS_FINISHED) {
+            qualityControlService.sendEmail(qualityControl);
+          }
+        }
+      } else if (!ObjectUtils.isEmpty(context.get("id"))) {
+        QualityControl qualityControl = context.asType(QualityControl.class);
+        qualityControlService.sendEmail(qualityControl);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,7 +27,6 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
@@ -38,17 +37,6 @@ import org.slf4j.LoggerFactory;
 public class ConfiguratorCreatorController {
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private ConfiguratorCreatorRepository configuratorCreatorRepo;
-  private ConfiguratorCreatorService configuratorCreatorService;
-
-  @Inject
-  public ConfiguratorCreatorController(
-      ConfiguratorCreatorRepository configuratorCreatorRepo,
-      ConfiguratorCreatorService configuratorCreatorService) {
-    this.configuratorCreatorRepo = configuratorCreatorRepo;
-    this.configuratorCreatorService = configuratorCreatorService;
-  }
-
   /**
    * Called from the configurator creator form on formula changes
    *
@@ -57,7 +45,9 @@ public class ConfiguratorCreatorController {
    */
   public void updateAndActivate(ActionRequest request, ActionResponse response) {
     ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-    creator = configuratorCreatorRepo.find(creator.getId());
+    ConfiguratorCreatorService configuratorCreatorService =
+        Beans.get(ConfiguratorCreatorService.class);
+    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
     configuratorCreatorService.updateAttributes(creator);
     configuratorCreatorService.updateIndicators(creator);
     configuratorCreatorService.activate(creator);
@@ -72,7 +62,9 @@ public class ConfiguratorCreatorController {
    */
   public void configure(ActionRequest request, ActionResponse response) {
     ConfiguratorCreator creator = request.getContext().asType(ConfiguratorCreator.class);
-    creator = configuratorCreatorRepo.find(creator.getId());
+    ConfiguratorCreatorService configuratorCreatorService =
+        Beans.get(ConfiguratorCreatorService.class);
+    creator = Beans.get(ConfiguratorCreatorRepository.class).find(creator.getId());
     User currentUser = AuthUtils.getUser();
     configuratorCreatorService.authorizeUser(creator, currentUser);
     try {

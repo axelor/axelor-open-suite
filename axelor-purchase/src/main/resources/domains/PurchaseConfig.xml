@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -24,13 +24,13 @@
   		<field name="company" on="UPDATE"/>
   		<field name="purchaseOrderInAtiSelect" on="UPDATE"/>
   		<field name="purchaseOrderSupplierBox" on="UPDATE"/>
-  		<field name="priceDisplay" on="UPDATE"/>
   		<field name="displayBuyerOnPrinting" on="UPDATE"/>
   		<field name="displayProductCodeOnPrinting" on="UPDATE"/>
   		<field name="displayTaxDetailOnPrinting" on="UPDATE"/>
   		<field name="displaySupplierCodeOnPrinting" on="UPDATE"/>
   		<field name="displayProductDetailOnPrinting" on="UPDATE"/>
   		<field name="priceRequest" on="UPDATE"/>
+  		<field name="isAnalyticDistributionRequired" on="UPDATE"/>
   	</track>
   </entity>
   

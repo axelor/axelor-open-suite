@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -68,7 +68,8 @@ public interface ProjectGeneratorFactory {
         return Beans.get(ProjectGeneratorFactoryTaskTemplate.class);
       default:
         throw new AxelorException(
-            TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.FACTORY_NO_FOUND));
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.FACTORY_NO_FOUND));
     }
   }
 

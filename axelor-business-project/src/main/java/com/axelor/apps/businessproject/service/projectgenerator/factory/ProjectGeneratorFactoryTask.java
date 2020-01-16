@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,19 +62,19 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   }
 
   @Override
-  @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsProject(true);
     project.setIsBusinessProject(true);
-    return projectRepository.save(project);
+    return project;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
   public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
       throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
+    projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       boolean isTaskGenerated =
@@ -92,17 +92,15 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
             teamTaskBusinessProjectService.create(saleOrderLine, project, project.getAssignedTo());
 
         if (saleOrder.getToInvoiceViaTask()) {
-          task.setTeamTaskInvoicing(true);
-          task.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+          task.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
         }
 
         task.setTaskDate(startDate.toLocalDate());
         task.setUnitPrice(product.getSalePrice());
         task.setExTaxTotal(saleOrderLine.getExTaxTotal());
-        if (project.getTeamTaskInvoicing()
-            && project.getInvoicingType() == ProjectRepository.INVOICING_TYPE_PACKAGE) {
+        if (project.getIsInvoicingTimesheet()) {
           task.setToInvoice(true);
-        } else if (project.getTeamTaskInvoicing()) {
+        } else {
           task.setToInvoice(false);
         }
         teamTaskRepository.save(task);

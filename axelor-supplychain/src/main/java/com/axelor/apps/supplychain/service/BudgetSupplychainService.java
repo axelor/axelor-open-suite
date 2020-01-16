@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -72,7 +72,8 @@ public class BudgetSupplychainService extends BudgetService {
           for (BudgetLine budgetLine : budget.getBudgetLineList()) {
             LocalDate fromDate = budgetLine.getFromDate();
             LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
+            if ((fromDate != null && toDate != null)
+                && (fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
                 && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
               budgetLine.setAmountCommitted(
                   budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));

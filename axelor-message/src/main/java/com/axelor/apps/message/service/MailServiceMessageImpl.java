@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -132,19 +132,13 @@ public class MailServiceMessageImpl extends MailServiceImpl {
       super.fetch();
     } else {
       final MailReader reader = getMailReader(emailAccount);
-      if (reader == null) {
-        return;
-      }
       final AuditableRunner runner = Beans.get(AuditableRunner.class);
       runner.run(
-          new Runnable() {
-            @Override
-            public void run() {
-              try {
-                fetch(reader);
-              } catch (Exception e) {
-                log.error("Unable to fetch messages", e);
-              }
+          () -> {
+            try {
+              fetch(reader);
+            } catch (Exception e) {
+              log.error("Unable to fetch messages", e);
             }
           });
     }
@@ -162,9 +156,6 @@ public class MailServiceMessageImpl extends MailServiceImpl {
 
     final Model related = findEntity(message);
     final MailSender sender = getMailSender(emailAccount);
-    if (sender == null) {
-      return;
-    }
 
     final Set<String> recipients = recipients(message, related);
     if (recipients.isEmpty()) {
@@ -215,13 +206,9 @@ public class MailServiceMessageImpl extends MailServiceImpl {
 
   private MailSender getMailSender(EmailAccount emailAccount) {
 
-    if (senderAccount == null) {
-      senderAccount = emailAccount;
-      sender = null;
-    } else if (senderAccount.getId() != emailAccount.getId()) {
-      senderAccount = emailAccount;
-      sender = null;
-    } else if (senderAccount.getVersion() != emailAccount.getVersion()) {
+    if (senderAccount == null
+        || !senderAccount.getId().equals(emailAccount.getId())
+        || !senderAccount.getVersion().equals(emailAccount.getVersion())) {
       senderAccount = emailAccount;
       sender = null;
     }
@@ -236,13 +223,9 @@ public class MailServiceMessageImpl extends MailServiceImpl {
 
   private MailReader getMailReader(EmailAccount emailAccount) {
 
-    if (readerAccount == null) {
-      readerAccount = emailAccount;
-      reader = null;
-    } else if (readerAccount.getId() != emailAccount.getId()) {
-      readerAccount = emailAccount;
-      reader = null;
-    } else if (readerAccount.getVersion() != emailAccount.getVersion()) {
+    if (readerAccount == null
+        || !readerAccount.getId().equals(emailAccount.getId())
+        || !readerAccount.getVersion().equals(emailAccount.getVersion())) {
       readerAccount = emailAccount;
       reader = null;
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -44,7 +44,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -100,8 +100,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -234,17 +233,6 @@ row["amount_remaining"]/row["countmoveline"]
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
-                    <property name="isOptional">false</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-                <structure>
-                    <property name="name">param_2</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">2</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
@@ -445,7 +433,7 @@ row["amount_remaining"]/row["countmoveline"]
 AccountingReport.ref, MoveLine.credit, MoveLine.debit,
 Invoice.invoice_id as invoice_name, InvoiceReconciled.invoice_id as "invoice_reconciled_name",  
 ReportedBalanceLine.amount as "ReportedBalanceAmount", YYear.reported_balance_date, 
-AccountingReport.date_from, Reconcile.amount as amountReconciled, MoveLine.amount_remaining, MoveLine2.countMoveLine     
+AccountingReport.date_from, Reconcile.amount as amountReconciled, MoveLine.amount_remaining, count(Reconcile.id) as countMoveLine   
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
@@ -465,29 +453,6 @@ left outer join public.account_reconcile as Reconcile on (Reconcile.credit_move_
 left outer join public.account_move_line as MoveLineReconciled on (Reconcile.debit_move_line = MoveLineReconciled.id)
 left outer join public.account_move as MoveReconciled on (MoveLineReconciled.move = MoveReconciled.id)
 left outer join public.account_invoice as InvoiceReconciled on (MoveReconciled.invoice = InvoiceReconciled.id)
-left outer join (select count(Reconcile2.id) as countMoveLine, MoveLine2.id as mlid 
-				from public.account_accounting_report as AccountingReport2 
-				left outer join public.account_move_line as MoveLine2 on (AccountingReport2.id = ?)
-				left outer join public.account_move as Move2 on (Move2.id = MoveLine2.move)
-				left outer join public.account_reconcile as Reconcile2 on (Reconcile2.credit_move_line = MoveLine2.id)
-				
-				left outer join public.account_account as MoveLineAccount2 on (MoveLine2.account  = MoveLineAccount2.id )
-				left outer join public.base_partner as Partner2 on (MoveLine2.partner  = Partner2.id)
-
-				left outer join public.account_accounting_report_account_set as AccountSet2 on (AccountSet2.account_accounting_report = AccountingReport2.id)
-				left outer join public.account_accounting_report_partner_set as PartnerSet2 on (PartnerSet2.account_accounting_report = AccountingReport2.id)
-				
-				where 
-				(AccountingReport2.date_from IS NULL OR MoveLine2.date_val >= AccountingReport2.date_from) AND 
-				(AccountingReport2.date_to IS NULL OR MoveLine2.date_val <= AccountingReport2.date_to) AND
-				MoveLine2.date_val <= AccountingReport2.date_val and 
-				Move2.company = AccountingReport2.company AND
-				(AccountSet2.account_set IS NULL OR AccountSet2.account_set = MoveLineAccount2.id) AND
-				(PartnerSet2.partner_set IS NULL OR PartnerSet2.partner_set = Partner2.id) AND
-				MoveLineAccount2.reconcile_ok = true AND 
-				Move2.ignore_in_accounting_ok = false  AND (Move2.status_select = 3 OR Move2.status_select = 2) AND Reconcile2.status_select = 2
-				
-				group by MoveLine2.id) as MoveLine2 on (MoveLine2.mlid = MoveLine.id)  
 where 
 (AccountingReport.currency = Move.company_currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND 
@@ -498,8 +463,14 @@ Move.company = AccountingReport.company AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 MoveLineAccount.reconcile_ok = true 
 AND Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
-
-]]></xml-property>
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+group by MoveLine.name,MoveLine.partner_full_name,MoveLine.partner_seq,AccountingReport.ref,MoveLine.credit,MoveLine.debit,Invoice.invoice_id,
+InvoiceReconciled.invoice_id,ReportedBalanceLine.amount,YYear.reported_balance_date,AccountingReport.date_from,Reconcile.amount,MoveLine.amount_remaining]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>

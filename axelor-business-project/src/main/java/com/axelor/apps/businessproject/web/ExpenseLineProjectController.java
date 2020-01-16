@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,21 +24,15 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ExpenseLineProjectController {
-
-  @Inject private ExpenseLineProjectService expenseLineProjectService;
-
-  @Inject private ProjectRepository projectRepository;
-
-  @Inject private ExpenseLineRepository expenseLineRepo;
 
   /**
    * Set project from context selected lines
@@ -49,9 +43,8 @@ public class ExpenseLineProjectController {
   public void setProject(ActionRequest request, ActionResponse response) {
 
     try {
-
       Project project = request.getContext().asType(Project.class);
-      project = projectRepository.find(project.getId());
+      project = Beans.get(ProjectRepository.class).find(project.getId());
 
       setProject(request, response, project);
 
@@ -73,7 +66,7 @@ public class ExpenseLineProjectController {
               .stream()
               .map(it -> Long.parseLong(it.get("id").toString()))
               .collect(Collectors.toList());
-      expenseLineProjectService.setProject(lineIds, project);
+      Beans.get(ExpenseLineProjectService.class).setProject(lineIds, project);
       response.setAttr("$expenseLineSet", "hidden", true);
       response.setAttr("addSelectedExpenseLinesBtn", "hidden", true);
       response.setAttr("unlinkSelectedExpenseLinesBtn", "hidden", true);
@@ -108,11 +101,12 @@ public class ExpenseLineProjectController {
    */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
+    ExpenseLineRepository expenseLineRepository = Beans.get(ExpenseLineRepository.class);
     try {
       ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-      expenseLine = expenseLineRepo.find(expenseLine.getId());
+      expenseLine = expenseLineRepository.find(expenseLine.getId());
       expenseLine.setToInvoice(!expenseLine.getToInvoice());
-      expenseLineRepo.save(expenseLine);
+      expenseLineRepository.save(expenseLine);
       response.setValue("toInvoice", expenseLine.getToInvoice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

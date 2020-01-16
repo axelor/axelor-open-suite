@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="invoicing-project-grid" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+	<menubar>
+		<menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+			<item name="invoiceAllSelectedBusinessAffairs" action="action-invoicing-project-method-generate-invoice" title="Invoice all selected business affairs" prompt="Are you sure you want to generate invoices for all selected affairs ?"/>
+		</menu>
+	</menubar>
     <field name="invoice" width="120"/>
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
 		<field name="deadlineDate"/>
@@ -11,10 +16,7 @@
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject"
-		onNew="action-invoicing-project-group-on-new" onLoad="action-invoicing-project-attrs-title-project" width="large">
-		<toolbar>
-  			<button name="deleteBtn" hidden="true" showIf="invoice == null" title="Delete"/>
-  		</toolbar>
+		onNew="action-invoicing-project-group-on-new" onLoad="action-invoicing-project-attrs-title-project" width="large" canDelete="!invoice">
 
 		<panel name="mainPanel">
 		  <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12" readonly="true"/>

@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
 	<entity name="Project" cacheable="true">
         
   		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
-		<integer name="invoicingType" selection="project.invoicing.type.select" title="Invoicing Type" />
+		<integer name="invoicingSequenceSelect" title="Invoicing sequence" selection="business.project.invoicing.sequence.select"/>
 		<string name="invoicingComment" title="Invoicing comment" large="true" />
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
@@ -44,16 +44,18 @@
 		
 		<boolean name="isBusinessProject" title="Business project" />
 
+		<boolean name="toInvoice" title="To invoice"/>
+		<boolean name="isInvoicingTimesheet" title="Invoicing timesheet"/>
 		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
-		<boolean name="teamTaskInvoicing" title="Tasks Invoicing"/>
 
 		<many-to-one name="customerAddress" title="Address" ref="com.axelor.apps.base.db.Address"/>
 	 	<extra-code><![CDATA[
 		
 		   	// TYPE SELECT
-			public static final int INVOICING_TYPE_TIME_BASED = 1;
-			public static final int INVOICING_TYPE_PACKAGE = 2;
+		   	public static final int INVOICING_SEQ_EMPTY = 0;
+			public static final int INVOICING_SEQ_INVOICE_PRE_TASK = 1;
+			public static final int INVOICING_SEQ_INVOICE_POST_TASK = 2;
 		
    			public static final int TASK_PER_LINE_ALONE = 1;
    			public static final int TASK_PER_LINE_PHASE = 2;

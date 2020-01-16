@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Company" lang="java" cacheable="true">
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
-    <many-to-one name="address" ref="Address" title="Address"/>  <!-- A supprimer si Partner sur company  -->  
+    <many-to-one name="address" ref="Address" title="Address" massUpdate="true"/>  <!-- A supprimer si Partner sur company  -->  
     
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <many-to-one name="parent" ref="Company" title="Parent company"/>
+    <many-to-one name="parent" ref="Company" title="Parent company" massUpdate="true"/>
     <one-to-many name="companyDepartmentList" title="Company departments" ref="com.axelor.apps.base.db.CompanyDepartment" mappedBy="company"/>
 
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
 
-   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
    	<decimal name="customerPaymentDelay" title="Customers payment delay (Average in days)"/>
 	<decimal name="supplierPaymentDelay" title="Suppliers payment delay (Average in days)"/>
 
@@ -25,15 +25,16 @@
 	<many-to-one name="defaultBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Account"/>
 	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
 
-  	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings"/>
+  	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings" massUpdate="true"/>
   	
-  	<integer name="defaultPartnerTypeSelect" title="Partner Type" selection="company.partner.type.select" default="1"/>
+  	<integer name="defaultPartnerTypeSelect" title="Partner Type" selection="company.partner.type.select" default="1" massUpdate="true"/>
 
     <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names"/>
     <one-to-many name="tradingNamePrintingSettingsList" ref="com.axelor.apps.base.db.TradingNamePrintingSettings" mappedBy="company"/>
     
-   	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" />
-    <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning"/>
+   	<many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" massUpdate="true"/>
+    <many-to-one name="publicHolidayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
+    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language" massUpdate="true"/>
 
     <integer name="width" title="Width" min="0"/>
     <integer name="height" title="Height" help="Maximum height should be 60 px." min="0" max="60"/>

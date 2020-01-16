@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -12,12 +14,13 @@
     <string name="rejectType" title="Reject type"/>
     <string name="name" title="Label">
     	<![CDATA[
-    	if (incidentTypeSelect != 0){
+    	if (incidentTypeSelect != 0 && rejectType != null){
     		return "Rejet ("+rejectType+")";
     	}
-		else {
+		else if(debtRecoveryLevel != null && debtRecoveryLevel.getName() != null ) {
 			return "Relance "+debtRecoveryLevel.getName();
 		}
+         return "";
 	    ]]>
     </string>
   

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
  	
    <input file="ebics-user.xml" root="ebics-users" >
-  	<bind node="ebics-user" type="com.axelor.apps.bankpayment.db.EbicsUser"  call="com.axelor.apps.bankpayment.ebics.script.EbicsUserImport:importEbicsUser">
+	<bind node="ebics-user" type="com.axelor.apps.bankpayment.db.EbicsUser"  call="com.axelor.apps.bankpayment.ebics.script.EbicsUserImport:importEbicsUser">
       <bind node="name" to="name" />
       <bind node="userId" to="userId" />
       <bind node="password" to="password" />
@@ -25,6 +25,7 @@
 	   		<bind node="language" to="language" search="self.code = :code"/>
 	   		<bind node="bank" to="bank" search="self.code = :code"  update="false">
 	   			<bind node="code" to="code" />
+                <bind node="bankDetailsTypeSelect" to="bankDetailsTypeSelect"/>
 	   			<bind node="bankName" to="bankName" />
 	   		</bind>
 	   		<bind node="ebicsCertificateList/ebicsCertificate" to="ebicsCertificateList" search="self.typeSelect = :bankCertType and self.ebicsBank.hostId = :hostId" >
@@ -33,13 +34,29 @@
 	   		</bind>
 	   		<bind node="certValidityPeriodSelect" to="certValidityPeriodSelect" />
 	   		<bind node="protocolSelect" to="protocolSelect" />
-	   		<bind node="useX509ExtentionForAutoSignedCert" to="useX509ExtentionForAutoSignedCert" />
+	   		<bind node="useX509ExtensionBasicConstraints" to="useX509ExtensionBasicConstraints" />
+	   		<bind node="useX509ExtensionSubjectKeyIdentifier" to="useX509ExtensionSubjectKeyIdentifier" />
+	   		<bind node="useX509ExtensionAuthorityKeyIdentifier" to="useX509ExtensionAuthorityKeyIdentifier" />
+	   		<bind node="useX509ExtensionExtendedKeyUsage" to="useX509ExtensionExtendedKeyUsage" />
       	</bind>
-      	<bind node="bankStatementFileFormatSet/bankStatementFileFormat" to="bankStatementFileFormatSet" search="self.name = :bankStatementFileFormatName">
+      	<bind node="boEbicsPartnerServiceList/boEbicsPartnerService" to="boEbicsPartnerServiceList">
       		<bind node="importId" to="importId" />
-      		<bind node="statementFileFormatSelect" to="statementFileFormatSelect" />
-      		<bind node="name" to="name" alias="bankStatementFileFormatName" />
-      		<bind node="description" to="description" />
+      		<bind node="bankOrderFileFormat" to="bankOrderFileFormat" search="self.name = :name" update="true">
+      			<bind node="name" to="name" alias="name"/>
+      			<bind node="orderTypeSelect" to="orderTypeSelect"/>
+      			<bind node="orderFileFormatSelect" to="orderFileFormatSelect"/>
+      			<bind node="description" to="description"/>
+      		</bind>
+      		<bind node="ebicsCodification" to="ebicsCodification" />
+      	</bind>
+      	<bind node="bsEbicsPartnerServiceList/bsEbicsPartnerService" to="bsEbicsPartnerServiceList">
+      		<bind node="importId" to="importId" />
+      		<bind node="bankStatementFileFormat" to="bankStatementFileFormat" search="self.name = :name" update="true">
+      			<bind node="name" to="name" alias="name"/>
+      			<bind node="statementFileFormatSelect" to="statementFileFormatSelect"/>
+      			<bind node="description" to="description"/>
+      		</bind>
+      		<bind node="ebicsCodification" to="ebicsCodification" />
       	</bind>
       	<bind node="pSRBankStatementFileFormat" to="pSRBankStatementFileFormat" search="self.name = :pSRBsankStatementFileFormatName">
       		<bind node="importId" to="importId" />
@@ -102,19 +119,20 @@
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'encryption'" />
       	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null" />
-      </bind> 
+      </bind>
       <bind to="x002Certificate" node="x002Certificate">
       	<bind node="pem" to="pemString" />
       	<bind to="typeSelect" eval="'authentication'" />
       	<bind node="privateKey" to="privateKey" eval="privateKey != null ? org.apache.commons.codec.binary.Base64.decodeBase64(privateKey) : null"/>
       </bind>
-      <bind node="ebicsRequestLogList/requestLog" to="ebicsRequestLogList">
-   		<bind node="requestType" to="requestType" />
-   		<bind node="requestTime" to="requestTime" />
-   		<bind node="responseCode" to="responseCode" />
-   		<bind node="requestTraceText" to="requestTraceText" />
-   		<bind node="responseTraceText" to="responseTraceText" />
-      </bind>
+    </bind>
+    <bind node="ebicsRequestLogList/ebicsRequestLog" type="com.axelor.apps.bankpayment.db.EbicsRequestLog">
+        <bind node="ebicsUser" to="ebicsUser" search="self.userId = :ebicsUser" create="false"/>
+        <bind node="requestType" to="requestType" />
+        <bind node="requestTime" to="requestTime" />
+        <bind node="responseCode" to="responseCode" />
+        <bind node="requestTraceText" to="requestTraceText" />
+        <bind node="responseTraceText" to="responseTraceText" />
     </bind>
   </input> 
     	

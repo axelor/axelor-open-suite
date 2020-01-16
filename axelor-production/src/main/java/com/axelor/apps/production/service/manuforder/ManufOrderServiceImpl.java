@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -82,6 +82,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected OperationOrderService operationOrderService;
   protected ManufOrderWorkflowService manufOrderWorkflowService;
   protected ProductVariantService productVariantService;
+  protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
@@ -92,6 +93,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       OperationOrderService operationOrderService,
       ManufOrderWorkflowService manufOrderWorkflowService,
       ProductVariantService productVariantService,
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo) {
@@ -99,6 +101,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.operationOrderService = operationOrderService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
     this.productVariantService = productVariantService;
+    this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
@@ -186,10 +189,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       qty =
           manufOrderQty
               .multiply(lineQty)
-              .divide(
-                  bomQty,
-                  Beans.get(AppProductionService.class).getNbDecimalDigitForBomQty(),
-                  RoundingMode.HALF_EVEN);
+              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
     }
     return qty;
   }
@@ -236,9 +236,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                     .getQty()
                     .multiply(manufOrderQty)
                     .divide(
-                        bomQty,
-                        appProductionService.getNbDecimalDigitForBomQty(),
-                        RoundingMode.HALF_EVEN)
+                        bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
                 : BigDecimal.ZERO;
 
         manufOrder.addToProduceProdProductListItem(
@@ -475,6 +473,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
     updateRealQty(manufOrder, manufOrder.getQty());
+    LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
+    manufOrderWorkflowService.updatePlannedDates(
+        manufOrder,
+        plannedStartDateT != null
+            ? plannedStartDateT
+            : appProductionService.getTodayDateTime().toLocalDateTime());
 
     manufOrderRepo.save(manufOrder);
   }

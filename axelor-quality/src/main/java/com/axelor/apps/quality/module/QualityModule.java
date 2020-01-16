@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,6 +24,8 @@ import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.QualityControlServiceImpl;
+import com.axelor.apps.quality.service.app.AppQualityService;
+import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
 
 public class QualityModule extends AxelorModule {
 
@@ -32,5 +34,6 @@ public class QualityModule extends AxelorModule {
     bind(QualityControlService.class).to(QualityControlServiceImpl.class);
     bind(QualityAlertRepository.class).to(QualityAlertManagementRepository.class);
     bind(QualityControlRepository.class).to(QualityControlManagementRepository.class);
+    bind(AppQualityService.class).to(AppQualityServiceImpl.class);
   }
 }

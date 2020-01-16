@@ -527,7 +527,7 @@ Company.height as logo_height,
 Company.width as logo_width,
 Company.name as company_name, BOM.name as bom_name, BOM.version_number,
 Product.full_name as product_name,
-BOM.qty, Unit.name as unit_name, ProdProcess.name as prod_process
+BOM.qty, Unit.label_to_printing as unit_name, ProdProcess.name as prod_process
 FROM production_bill_of_material AS BOM
 LEFT JOIN base_company AS Company ON (Company.id = BOM.company)
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
@@ -808,7 +808,7 @@ WHERE BOM.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 	BOM_Line.priority, 
 		BOM_Line.qty, 
-		Unit.name as unit_name, 
+		Unit.label_to_printing as unit_name, 
 		BOM.is_specific as bomline_specific,
 		Product.full_name as product_name,  
 		BOM.has_no_manage_stock as manage_stock, 
@@ -1167,6 +1167,7 @@ WHERE BOM_Line.parent = ? order by Product.name]]></xml-property>
                                 </cell>
                             </row>
                             <row id="4309">
+                                <property name="textAlign">left</property>
                                 <property name="height">1.5610416666666669cm</property>
                                 <cell id="4310">
                                     <text id="4082">
@@ -1204,7 +1205,9 @@ WHERE BOM_Line.parent = ? order by Product.name]]></xml-property>
                                     <text id="4312">
                                         <property name="marginTop">1pt</property>
                                         <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
+                                        <property name="paddingRight">1pt</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="display">inline</property>
                                         <property name="dataSet">TranslateDS</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -1229,7 +1232,38 @@ WHERE BOM_Line.parent = ? order by Product.name]]></xml-property>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["unit_name"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
+                                    </text>
+                                    <text id="4386">
+                                        <property name="marginTop">1pt</property>
+                                        <property name="marginRight">75pt</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="display">inline</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["unit_name"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -1780,8 +1814,31 @@ WHERE BOM_Line.parent = ? order by Product.name]]></xml-property>
                                             <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">row["unit_name"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">message_key</property>
+                                                    <text-property name="displayName">message_key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["unit_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4372">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,12 +27,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -48,20 +50,24 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceServiceI
 
   @Inject
   public SaleOrderInvoiceProjectServiceImpl(
+      AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
       InvoiceService invoiceService,
       AppBusinessProjectService appBusinessProjectService,
       StockMoveRepository stockMoveRepository,
-      SaleOrderLineService saleOrderLineService) {
+      SaleOrderLineService saleOrderLineService,
+      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl) {
     super(
+        appBaseService,
         appSupplychainService,
         saleOrderRepo,
         invoiceRepo,
         invoiceService,
         saleOrderLineService,
-        stockMoveRepository);
+        stockMoveRepository,
+        saleOrderWorkflowServiceImpl);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 

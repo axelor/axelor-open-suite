@@ -12,6 +12,6 @@
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" required="true"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<many-to-one name="parent" ref="com.axelor.apps.production.db.BillOfMaterial" title="Parent BOM" />
-  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Bill Of Material"/>
+  	<many-to-one name="billOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Bill of Materials"/>
   </entity>
 </domain-models>

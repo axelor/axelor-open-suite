@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,7 +31,7 @@ import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -95,7 +95,8 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
         createBankStatementLine(structuredContentLine, sequence++);
       } catch (Exception e) {
         TraceBackService.trace(
-            new Exception(String.format("Line %s : %s", sequence, e), e), IException.IMPORT);
+            new Exception(String.format("Line %s : %s", sequence, e), e),
+            ExceptionOriginRepository.IMPORT);
         findBankStatement();
       } finally {
         if (sequence % 10 == 0) {

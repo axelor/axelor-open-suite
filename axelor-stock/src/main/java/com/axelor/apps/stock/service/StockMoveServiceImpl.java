@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -305,6 +305,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveRepo.save(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getPlannedStockMoveAutomaticMail() != null
         && stockMove.getPlannedStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getPlannedStockMoveMessageTemplate());
     }
@@ -381,6 +382,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     String newStockSeq = null;
     stockMoveLineService.checkTrackingNumber(stockMove);
     stockMoveLineService.checkConformitySelection(stockMove);
+    if (stockMove.getFromStockLocation().getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      stockMove.getStockMoveLineList().forEach(stockMoveLineService::fillRealizeWapPrice);
+    }
     checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);
@@ -409,32 +413,30 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setRealDate(appBaseService.getTodayDate());
     resetMasses(stockMove);
 
-    try {
-      if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
-        if (newStockMove.isPresent()) {
+    if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
+      Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
+      if (newStockMove.isPresent()) {
+        newStockSeq = newStockMove.get().getStockMoveSeq();
+      }
+    }
+
+    if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
+      Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
+      if (newStockMove.isPresent()) {
+        if (newStockSeq != null) {
+          newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
+        } else {
           newStockSeq = newStockMove.get().getStockMoveSeq();
         }
       }
-
-      if (stockMove.getIsWithReturnSurplus() && mustBeSplit(stockMove.getStockMoveLineList())) {
-        Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
-        if (newStockMove.isPresent()) {
-          if (newStockSeq != null) {
-            newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
-          } else {
-            newStockSeq = newStockMove.get().getStockMoveSeq();
-          }
-        }
-      }
-    } finally {
-      computeMasses(stockMove);
-      stockMoveRepo.save(stockMove);
     }
+    computeMasses(stockMove);
+    stockMoveRepo.save(stockMove);
 
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
       partnerProductQualityRatingService.calculate(stockMove);
     } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+        && stockMove.getRealStockMoveAutomaticMail() != null
         && stockMove.getRealStockMoveAutomaticMail()) {
       sendMailForStockMove(stockMove, stockMove.getRealStockMoveMessageTemplate());
     }
@@ -467,8 +469,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     try {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
     } catch (Exception e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
+      //      throw new AxelorException(
+      //          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
+      LOG.error(e.getMessage());
     }
   }
 
@@ -625,7 +628,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLines = MoreObjects.firstNonNull(stockMoveLines, Collections.emptyList());
     StockMove newStockMove = stockMoveRepo.copy(stockMove, false);
-
+    // In copy OriginTypeSelect set null.
+    newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
       if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0) {

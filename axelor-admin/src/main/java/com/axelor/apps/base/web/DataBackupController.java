@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,22 +19,21 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.service.app.DataBackupService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import java.io.IOException;
 
 public class DataBackupController {
 
-  @Inject DataBackupService dataBackupService;
-
   public void CreateBackUp(ActionRequest req, ActionResponse res) throws IOException {
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);
-    dataBackupService.createBackUp(dataBackup);
+    Beans.get(DataBackupService.class).createBackUp(dataBackup);
     res.setReload(true);
   }
 
   public void RestoreBackUp(ActionRequest req, ActionResponse res) throws IOException {
+    DataBackupService dataBackupService = Beans.get(DataBackupService.class);
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);
     if (dataBackupService.SeuencesExist()) {
       res.setError("Remove all Sequences And MrpLineTypes to restore backup");

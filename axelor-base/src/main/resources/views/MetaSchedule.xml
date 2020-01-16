@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-  <grid name="meta-schedule-grid" id="base-meta-schedule-grid" title="Schedules" model="com.axelor.meta.db.MetaSchedule" editable="true">
+  <grid name="meta-schedule-grid" id="base-meta-schedule-grid" title="Schedules" model="com.axelor.meta.db.MetaSchedule">
     <field name="name" />
     <field name="job" selection="meta.schedule.job.select" />
     <field name="cron" />
     <field name="active" />
   </grid>
 
-  <form name="meta-schedule-form" id="base-meta-schedule-form" title="Schedule" model="com.axelor.meta.db.MetaSchedule">
-    <panel name="overviewPanel" title="Overview">
-      <field name="name"/>
-      <field name="active"/>
-      <field name="description" colSpan="12"/>
-      <field name="job" colSpan="12" selection="meta.schedule.job.select"/>
-      <field name="cron" colSpan="12"/>
-      <button-group colSpan="4" name="actionsBtnGroup">
-        <button name="validateBtn" title="Validate" onClick="com.axelor.quartz.JobRunner:validate(cron)"/>
-        <button name="restartBtn" title="Restart jobs..." prompt="This may terminate any running jobs. Are you sure you want to continue?" onClick="com.axelor.quartz.JobRunner:restart()"/>
-      </button-group>
-    </panel>
-
-   	<panel name="batchPanel" title="Batch" showIf="job == 'com.axelor.apps.base.job.BatchJob'">
-    	<field name="batchServiceSelect" title="Service"/>
-    	<field name="batchCode" title="Code"/>
-   	</panel>
-
-    <panel-related name="paramsPanel" field="params" grid-view="meta-schedule-param-grid" form-view="meta-schedule-param-form"/>
-
-  </form>
+  <form id="base-meta-schedule-form" name="meta-schedule-form" title="Schedule" model="com.axelor.meta.db.MetaSchedule" extension="true">
+  
+      <extend target="//field[@name='job']">
+         <attribute name="selection" value="meta.schedule.job.select"/>
+      </extend>
+      
+      <extend target="//panel[@title='Overview']">
+        <insert position="after">
+          <panel name="batchPanel" title="Batch" showIf="job == 'com.axelor.apps.base.job.BatchJob'">
+            <field name="batchServiceSelect" title="Service"/>
+            <field name="batchCode" title="Code"/>
+          </panel>
+        </insert>
+      </extend>
+      
+      <extend target="//panel-related[@field='params']">
+         <attribute name="grid-view" value="meta-schedule-param-grid"/>
+         <attribute name="form-view" value="meta-schedule-param-form"/>
+         <attribute name="editable" value="false"/>
+      </extend>
+  
+      <extend target="//panel-related[@field='params']/field[@name='name']">
+        <attribute name="hidden" value="true"/>
+      </extend>
+  
+      <extend target="//panel-related[@field='params']/field[@name='value']">
+       <attribute name="hidden" value="true"/>
+      </extend>
+      
+    </form>
 
 </object-views>

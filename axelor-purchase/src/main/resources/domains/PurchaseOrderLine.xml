@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -25,7 +25,7 @@
   	<many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order"/>
   	<integer name="sequence" title="Seq."/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-  	<decimal name="qty" title="Qty" default="1"/>
+  	<decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
   	<string name="productName" title="Displayed Product name" required="true" translatable="true"/>
 	<string name="productCode" title="Supplier code"/>
   	<decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
@@ -40,7 +40,7 @@
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
   	
   	<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="3"/>
+  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0" />
   	
   	<boolean name="isOrdered" title="Ordered"/>
   	  	
@@ -48,7 +48,7 @@
   	
 	<date name="estimatedDelivDate" title="Estim. receipt date"/>
 	<date name="desiredDelivDate" title="Desired receipt date"/>
-	<decimal name="receivedQty" title="Received quantity"/>
+	<decimal name="receivedQty" title="Received quantity" precision="20" scale="10"/>
 	  
 	<string name="supplierComment" title="Supplier Comment"/>
   	<boolean name="fixedAssets" title="Fixed Assets"/>

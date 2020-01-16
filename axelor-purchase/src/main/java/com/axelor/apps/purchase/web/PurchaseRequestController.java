@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,11 +26,11 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,12 +38,8 @@ import java.util.stream.Collectors;
 @Singleton
 public class PurchaseRequestController {
 
-  @Inject private PurchaseRequestRepository purchaseRequestRepo;
-
-  @Inject private PurchaseRequestService purchaseRequestService;
-
   public void confirmCart(ActionRequest request, ActionResponse response) {
-    purchaseRequestService.confirmCart();
+    Beans.get(PurchaseRequestService.class).confirmCart();
     response.setReload(true);
   }
 
@@ -57,9 +53,12 @@ public class PurchaseRequestController {
 
     if (!requestIds.isEmpty()) {
       List<PurchaseRequest> purchaseRequests =
-          purchaseRequestRepo.all().filter("self.id in (?1)", requestIds).fetch();
+          Beans.get(PurchaseRequestRepository.class)
+              .all()
+              .filter("self.id in (?1)", requestIds)
+              .fetch();
 
-      purchaseRequestService.acceptRequest(purchaseRequests);
+      Beans.get(PurchaseRequestService.class).acceptRequest(purchaseRequests);
 
       response.setReload(true);
     }
@@ -75,7 +74,10 @@ public class PurchaseRequestController {
     if (requestIds != null && !requestIds.isEmpty()) {
       try {
         List<PurchaseRequest> purchaseRequests =
-            purchaseRequestRepo.all().filter("self.id in (?1)", requestIds).fetch();
+            Beans.get(PurchaseRequestRepository.class)
+                .all()
+                .filter("self.id in (?1)", requestIds)
+                .fetch();
         List<String> purchaseRequestSeqs =
             purchaseRequests
                 .stream()
@@ -90,7 +92,8 @@ public class PurchaseRequestController {
         }
         response.setCanClose(true);
         List<PurchaseOrder> purchaseOrderList =
-            purchaseRequestService.generatePo(purchaseRequests, groupBySupplier, groupByProduct);
+            Beans.get(PurchaseRequestService.class)
+                .generatePo(purchaseRequests, groupBySupplier, groupByProduct);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(
                     String.format(

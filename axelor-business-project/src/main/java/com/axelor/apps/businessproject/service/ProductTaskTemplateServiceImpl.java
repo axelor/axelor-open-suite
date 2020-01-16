@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,8 +71,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
         if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
           task.setToInvoice(true);
-          task.setTeamTaskInvoicing(true);
-          task.setInvoicingType(TeamTaskRepository.INVOICE_TYPE_PACKAGE);
+          task.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
         }
         tasks.add(teamTaskRepository.save(task));
 

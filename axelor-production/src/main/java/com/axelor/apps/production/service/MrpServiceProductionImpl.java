@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
@@ -53,6 +54,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import org.slf4j.Logger;
@@ -62,10 +64,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AppBaseService appBaseService;
+
   protected ManufOrderRepository manufOrderRepository;
 
   @Inject
   public MrpServiceProductionImpl(
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
@@ -96,6 +101,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpForecastRepository,
         stockLocationService);
 
+    this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
   }
 
@@ -295,7 +301,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               mrp,
               subProduct,
               manufProposalNeedMrpLineType,
-              reorderQty.multiply(billOfMaterialLine.getQty()),
+              reorderQty
+                  .multiply(billOfMaterialLine.getQty())
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN),
               stockLocation,
               maturityDate,
               mrpLineOriginList,
@@ -396,7 +404,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
 
           if (subProduct.getDefaultBillOfMaterial() != null) {
-            this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
+            this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
           }
         }
       }

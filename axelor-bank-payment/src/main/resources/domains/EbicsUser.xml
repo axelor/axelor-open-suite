@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 	
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
   
@@ -28,13 +28,14 @@
  	 <many-to-one name="e002Certificate" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificate (e002)" />
  	 <many-to-one name="x002Certificate" ref="com.axelor.apps.bankpayment.db.EbicsCertificate" title="Certificate (x002)" />
 
-	 <one-to-many name="ebicsRequestLogList" ref="com.axelor.apps.bankpayment.db.EbicsRequestLog" title="Request log" mappedBy="ebicsUser"/>
 	 
 	 <many-to-one name="testDataFile" ref="com.axelor.meta.db.MetaFile" title="Test data file"/>
  	 <many-to-one name="testSignatureFile" ref="com.axelor.meta.db.MetaFile" title="Test signature file"/>
   	 <many-to-one name="testSignatoryEbicsUser" ref="com.axelor.apps.bankpayment.db.EbicsUser" title="Signatory user"/>
      <many-to-one name="testBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Bank statement file format"/>
      <many-to-one name="testBankOrderFileFormat" ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="Bank order file format"/>
+     
+     <string name="serialNumber" title="Serial number (CORP)"/>
 	 
 	 
 	 <extra-code><![CDATA[

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface SaleOrderStockService {
 
@@ -66,4 +67,12 @@ public interface SaleOrderStockService {
    * @throws AxelorException
    */
   void fullyUpdateDeliveryState(SaleOrder saleOrder) throws AxelorException;
+
+  /**
+   * Find the sale order linked to the stock move.
+   *
+   * @param stockMove a stock move
+   * @return the found sale order, or an empty optional if no sale order was found.
+   */
+  Optional<SaleOrder> findSaleOrder(StockMove stockMove);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.service.CipherService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.mail.ImapAccount;
 import com.axelor.mail.MailConstants;
@@ -137,7 +138,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 
   @Override
   public void checkMailAccountConfiguration(EmailAccount mailAccount)
-      throws AxelorException, Exception {
+      throws AxelorException, MessagingException {
 
     com.axelor.mail.MailAccount account = getMailAccount(mailAccount);
 
@@ -321,7 +322,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 
   @Transactional(rollbackOn = {Exception.class})
   public Message createMessage(EmailAccount mailAccount, MailParser parser, Date date)
-      throws MessagingException, IOException {
+      throws MessagingException {
 
     Message message = new Message();
 
@@ -361,7 +362,7 @@ public class MailAccountServiceImpl implements MailAccountService {
 
   private Set<EmailAddress> getEmailAddressSet(List<InternetAddress> addresses) {
 
-    Set<EmailAddress> addressSet = new HashSet<EmailAddress>();
+    Set<EmailAddress> addressSet = new HashSet<>();
 
     if (addresses == null) {
       return addressSet;
@@ -388,7 +389,7 @@ public class MailAccountServiceImpl implements MailAccountService {
         InputStream stream = source.getInputStream();
         metaFiles.attach(stream, source.getName(), message);
       } catch (IOException e) {
-        e.printStackTrace();
+        TraceBackService.trace(e);
       }
     }
   }

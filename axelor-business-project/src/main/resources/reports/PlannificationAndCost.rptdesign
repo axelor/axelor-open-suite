@@ -850,8 +850,8 @@ group by emp.id,emp.name;]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select sum(ppt.real_hours) as total_hours,
-       sum(ppt.real_hours * emp.hourly_rate) as emp_cost,
+            <xml-property name="queryText"><![CDATA[select sum(ppt.planned_hours) as total_hours,
+       sum(ppt.planned_hours * emp.hourly_rate) as emp_cost,
        date_trunc('month',ppt.date_val) as month_val,
        to_char(ppt.date_val,'yyyy-mm') as month_text
 from project_project_planning_time ppt

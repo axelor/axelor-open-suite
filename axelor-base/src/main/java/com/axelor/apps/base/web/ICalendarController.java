@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,16 +45,13 @@ import net.fortuna.ical4j.data.ParserException;
 @Singleton
 public class ICalendarController {
 
-  @Inject private ICalendarService calendarService;
-
-  @Inject private MetaFiles metaFiles;
-
   public void exportCalendar(ActionRequest request, ActionResponse response)
       throws IOException, ParseException {
     ICalendar cal = request.getContext().asType(ICalendar.class);
     Path tempPath = MetaFiles.createTempFile(cal.getName(), ".ics");
-    calendarService.export(cal, tempPath.toFile());
-    metaFiles.attach(new FileInputStream(tempPath.toFile()), cal.getName() + ".ics", cal);
+    Beans.get(ICalendarService.class).export(cal, tempPath.toFile());
+    Beans.get(MetaFiles.class)
+        .attach(new FileInputStream(tempPath.toFile()), cal.getName() + ".ics", cal);
     response.setReload(true);
   }
 
@@ -74,7 +70,7 @@ public class ICalendarController {
       cal = new ICalendar();
     }
     File data = MetaFiles.getPath(imp.getDataMetaFile()).toFile();
-    calendarService.load(cal, data);
+    Beans.get(ICalendarService.class).load(cal, data);
     response.setCanClose(true);
     response.setReload(true);
   }
@@ -96,7 +92,7 @@ public class ICalendarController {
   public void testConnect(ActionRequest request, ActionResponse response) {
     try {
       ICalendar cal = request.getContext().asType(ICalendar.class);
-      calendarService.testConnect(cal);
+      Beans.get(ICalendarService.class).testConnect(cal);
       response.setValue("isValid", true);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -109,7 +105,7 @@ public class ICalendarController {
       throws MalformedURLException, ICalendarException {
     ICalendar cal = request.getContext().asType(ICalendar.class);
     cal = Beans.get(ICalendarRepository.class).find(cal.getId());
-    calendarService.sync(cal, false, 0);
+    Beans.get(ICalendarService.class).sync(cal, false, 0);
     response.setReload(true);
   }
 
@@ -118,8 +114,8 @@ public class ICalendarController {
     if (request.getContext().get("newPassword") != null)
       response.setValue(
           "password",
-          calendarService.getCalendarEncryptPassword(
-              request.getContext().get("newPassword").toString()));
+          Beans.get(ICalendarService.class)
+              .getCalendarEncryptPassword(request.getContext().get("newPassword").toString()));
   }
 
   public void showMyEvents(ActionRequest request, ActionResponse response) {

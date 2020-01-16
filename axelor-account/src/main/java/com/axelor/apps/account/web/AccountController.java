@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,18 +23,14 @@ import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 
 @Singleton
 public class AccountController {
-
-  @Inject private AccountRepository accountRepository;
-
-  @Inject private AccountService accountService;
 
   public void computeBalance(ActionRequest request, ActionResponse response) {
     try {
@@ -42,10 +38,11 @@ public class AccountController {
       if (account.getId() == null) {
         return;
       }
-      account = accountRepository.find(account.getId());
+      account = Beans.get(AccountRepository.class).find(account.getId());
 
       BigDecimal balance =
-          accountService.computeBalance(account, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
+          Beans.get(AccountService.class)
+              .computeBalance(account, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
 
       if (balance.compareTo(BigDecimal.ZERO) >= 0) {
         response.setAttr("$balanceBtn", "title", I18n.get(ITranslation.ACCOUNT_DEBIT_BALANCE));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,9 +25,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,23 +35,20 @@ import java.util.Map;
 @Singleton
 public class AlarmEngineBatchController {
 
-  @Inject private AlarmEngineBatchService alarmEngineBatchService;
-
-  @Inject private AlarmEngineBatchRepository alarmEngineBatchRepo;
-
   public void launch(ActionRequest request, ActionResponse response) {
 
     AlarmEngineBatch alarmEngineBatch = request.getContext().asType(AlarmEngineBatch.class);
-    alarmEngineBatch = alarmEngineBatchRepo.find(alarmEngineBatch.getId());
+    alarmEngineBatch = Beans.get(AlarmEngineBatchRepository.class).find(alarmEngineBatch.getId());
 
-    response.setFlash(alarmEngineBatchService.run(alarmEngineBatch).getComments());
+    response.setFlash(Beans.get(AlarmEngineBatchService.class).run(alarmEngineBatch).getComments());
     response.setReload(true);
   }
 
   // WS
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    AlarmEngineBatch alarmEngineBatch = alarmEngineBatchRepo.findByCode("code");
+    AlarmEngineBatch alarmEngineBatch =
+        Beans.get(AlarmEngineBatchRepository.class).findByCode("code");
 
     if (alarmEngineBatch == null) {
       TraceBackService.trace(
@@ -62,7 +59,8 @@ public class AlarmEngineBatchController {
                   + request.getContext().get("code")));
     } else {
       Map<String, Object> mapData = new HashMap<String, Object>();
-      mapData.put("anomaly", alarmEngineBatchService.run(alarmEngineBatch).getAnomaly());
+      mapData.put(
+          "anomaly", Beans.get(AlarmEngineBatchService.class).run(alarmEngineBatch).getAnomaly());
       response.setData(mapData);
     }
   }

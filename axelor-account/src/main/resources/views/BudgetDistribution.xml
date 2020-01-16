@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="budget-distribution-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
         <field name="budget" domain="self.statusSelect = 2"/>
         <field name="budgetAmountAvailable" readonly="true"/>
         <field name="amount" aggregate="sum"/>
     </grid>
-    
+
+	<grid name="invoice-budget-distribution-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
+		<field name="budget"/>
+		<field name="invoiceLine.product"/>
+		<field name="budgetAmountAvailable"/>
+		<field name="amount"/>
+	</grid>
+
+	<grid name="invoice-budget-distribution-complete-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
+		<field name="budget"/>
+		<field name="invoiceLine.product"/>
+		<field name="budgetAmountAvailable"/>
+		<field name="invoiceLine.invoice"/>
+		<field name="invoiceLine.invoice.validatedDate"/>
+		<field name="amount"/>
+	</grid>
+
     <form name="budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
        <panel name="mainPanel" >
 	   		<field name="budget" required="true" domain="self.statusSelect = 2"/>
@@ -19,7 +35,63 @@
        </panel>
     </form>
 
-	<action-attrs name="action-budget-distribution-attrs-budget-amount-available">
+	<form name="invoice-budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
+		<panel name="mainPanel" >
+			<field name="budget" readonly="true"/>
+			<field name="invoiceLine.product" readonly="true"/>
+			<field name="budgetAmountAvailable" readonly="true"/>
+			<field name="amount" readonly="true"/>
+			<field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+			<field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+		</panel>
+	</form>
+
+	<form name="invoice-budget-distribution-complete-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
+		<panel name="mainPanel" >
+			<field name="budget" readonly="true"/>
+			<field name="invoiceLine.product" readonly="true"/>
+			<field name="invoiceLine.invoice" readonly="true"/>
+			<field name="invoiceLine.invoice.validatedDate" readonly="true"/>
+			<field name="budgetAmountAvailable" readonly="true"/>
+			<field name="amount" readonly="true"/>
+			<field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
+			<field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+		</panel>
+	</form>
+
+    <grid name="budget-distribution-grid-purchase-order-line-grid" title="Committed lines" model="com.axelor.apps.account.db.BudgetDistribution">
+        <field name="purchaseOrderLine.purchaseOrder"/>
+        <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+        <field name="purchaseOrderLine.product"/>
+        <field name="amount"/>
+    </grid>
+
+    <form name="budget-distribution-grid-purchase-order-line-form" title="Committed line" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
+        <panel name="mainPanel" readonly="true">
+            <field name="purchaseOrderLine.purchaseOrder"/>
+            <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
+            <field name="purchaseOrderLine.product"/>
+            <field name="amount"/>
+        </panel>
+    </form>
+
+    <grid name="budget-distribution-grid-invoice-line-grid" title="Realized lines" model="com.axelor.apps.account.db.BudgetDistribution">
+        <field name="invoiceLine.invoice"/>
+        <field name="invoiceLine.invoice.invoiceDate"/>
+        <field name="invoiceLine.product"/>
+        <field name="amount"/>
+    </grid>
+
+    <form name="budget-distribution-grid-invoice-line-form" title="Realized line" model="com.axelor.apps.account.db.BudgetDistribution" width="large">
+        <panel name="mainPanel" readonly="true">
+            <field name="invoiceLine.invoice"/>
+            <field name="invoiceLine.invoice.invoiceDate"/>
+            <field name="invoiceLine.product"/>
+            <field name="amount"/>
+        </panel>
+    </form>
+
+    <action-attrs name="action-budget-distribution-attrs-budget-amount-available">
 		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining to be incurred')" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine'"/>
 		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')" if="_parent?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
 
@@ -29,5 +101,21 @@
 
 		<attribute name="value" for="$currencySymbol" expr="eval:__parent__?.company?.currency?.symbol" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || _parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
 	</action-attrs>
+
+	<action-view name="action-budget-distribution-view-budget-distribution" title="Budget distribution"
+				 model="com.axelor.apps.account.db.BudgetDistribution">
+		<view type="grid" name="invoice-budget-distribution-grid"/>
+		<view type="form" name="invoice-budget-distribution-form"/>
+		<view-param name="limit" value="200"/>
+		<domain>self.invoiceLine.invoice.id = :_invoiceId</domain>
+		<context name="_invoiceId" expr="eval: __this__.id"/>
+	</action-view>
+
+	<action-view name="action-invoice-see-budget-distribution-lines" title="See budget distribution lines"
+				 model="com.axelor.apps.account.db.BudgetDistribution">
+		<view type="grid" name="invoice-budget-distribution-complete-grid"/>
+		<view type="form" name="invoice-budget-distribution-complete-form"/>
+		<domain>self.invoiceLine.invoice.statusSelect in (2,3)</domain>
+	</action-view>
 
 </object-views>

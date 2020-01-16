@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
     <grid name="mrp-forecast-grid" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecasts" orderBy="-forecastDate,product.code">
         <hilite if="$moment(forecastDate) &lt; $moment(todayDate)" color="danger"/>
      	<field name="id" title="Ref"/>
        	<field name="forecastDate"/>
        	<field name="product"/>
-        <field name="qty" aggregate="sum"/>
+        <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="unit"/>
        	<field name="stockLocation"/>
        	<field name="partner"/>
        	<field name="statusSelect"/>
     </grid>
     
-	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast" width="large">
+	<form name="mrp-forecast-form" model="com.axelor.apps.supplychain.db.MrpForecast" title="MRP forecast" width="large"
+		  onNew="action-mrp-forecast-attrs-scale-and-precision" onLoad="action-mrp-forecast-attrs-scale-and-precision">
 		<panel name="mainPanel">
 			<panel name="statusSelectPanel" colSpan="8">
 				<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
@@ -46,6 +47,10 @@
 	 	<field name="unit" expr="eval: product?.salesUnit" if="product?.salesUnit != null"/>
 	 	<field name="unit" expr="eval: product?.unit" if="product?.salesUnit == null"/>
 	 </action-record>
+	 
+ 	<action-attrs name="action-mrp-forecast-attrs-scale-and-precision">
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 
 	 <action-attrs name="action-mrp-forecast-attrs-confirm-btn-on-click">
 	 	<attribute name="value" for="statusSelect" expr="eval: 2"/>

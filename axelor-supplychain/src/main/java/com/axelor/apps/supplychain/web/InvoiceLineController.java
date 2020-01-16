@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,20 +21,18 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class InvoiceLineController {
-
-  @Inject private InvoiceLineService invoiceLineService;
 
   public List<InvoiceLine> updateQty(
       List<InvoiceLine> invoiceLines, BigDecimal oldKitQty, BigDecimal newKitQty, Invoice invoice)
@@ -48,10 +46,18 @@ public class InvoiceLineController {
     BigDecimal priceDiscounted = BigDecimal.ZERO;
     BigDecimal taxRate = BigDecimal.ZERO;
 
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+
+    int scale = appBaseService.getNbDecimalDigitForQty();
+
     if (invoiceLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (InvoiceLine line : invoiceLines) {
-          qty = (line.getQty().divide(oldKitQty, 2, RoundingMode.HALF_EVEN)).multiply(newKitQty);
+          qty =
+              (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_EVEN))
+                  .multiply(newKitQty)
+                  .setScale(scale, RoundingMode.HALF_EVEN);
           priceDiscounted = invoiceLineService.computeDiscount(line, invoice.getInAti());
 
           if (line.getTaxLine() != null) {
@@ -70,7 +76,7 @@ public class InvoiceLineController {
           companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
           companyInTaxTotal = invoiceLineService.getCompanyExTaxTotal(inTaxTotal, invoice);
 
-          line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+          line.setQty(qty);
           line.setExTaxTotal(exTaxTotal);
           line.setCompanyExTaxTotal(companyExTaxTotal);
           line.setInTaxTotal(inTaxTotal);
@@ -80,7 +86,7 @@ public class InvoiceLineController {
         }
       } else {
         for (InvoiceLine line : invoiceLines) {
-          line.setQty(qty.setScale(2, RoundingMode.HALF_EVEN));
+          line.setQty(qty);
         }
       }
     }

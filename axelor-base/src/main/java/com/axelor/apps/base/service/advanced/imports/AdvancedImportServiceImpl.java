@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,28 +25,52 @@ import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.readers.DataReaderFactory;
 import com.axelor.apps.base.service.readers.DataReaderService;
+import com.axelor.common.Inflector;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.rpc.JsonContext;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AdvancedImportServiceImpl implements AdvancedImportService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static final String forSelectUseValues = "values";
+  private static final String forSelectUseTitles = "titles";
+  private static final String forSelectUseTranslatedTitles = "translated titles";
+
+  private Inflector inflector = Inflector.getInstance();
+
+  private List<String> searchFieldList = new ArrayList<>();
+
+  private boolean isTabWithoutConfig = false;
 
   @Inject private MetaModelRepository metaModelRepo;
 
@@ -60,11 +84,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   @Inject private FileFieldRepository fileFieldRepository;
 
-  private static final String forSelectUseValues = "values";
-  private static final String forSelectUseTitles = "titles";
-  private static final String forSelectUseTranslatedTitles = "translated titles";
-  private List<String> searchFieldList;
-  private boolean isTabWithoutConfig = false;
+  @Inject private DataImportService dataImportService;
 
   @Override
   public boolean apply(AdvancedImport advancedImport)
@@ -106,6 +126,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     int linesToIgnore = advancedImport.getNbOfFirstLineIgnore();
     int tabConfigRowCount = 0;
     int startIndex = isConfig ? 0 : linesToIgnore;
+    int fileTabSequence = 1;
 
     for (String sheet : sheets) {
       int totalLines = reader.getTotalLines(sheet);
@@ -115,6 +136,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       FileTab fileTab = new FileTab();
       fileTab.setName(sheet);
+      fileTab.setSequence(fileTabSequence);
+      fileTabSequence++;
 
       String[] objectRow = reader.read(sheet, startIndex, 0);
       if (objectRow == null) {
@@ -174,7 +197,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       this.setFileTabConfig(row, fileTab, rowIndex);
 
     } else if ((StringUtils.containsIgnoreCase(row[0], "Object")
-            || StringUtils.contains(row[1], "Object"))
+            || (row.length > 1 && StringUtils.contains(row[1], "Object")))
         && !isConfig) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -182,7 +205,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     } else if (isConfig
         && (!StringUtils.containsIgnoreCase(row[0], "Object")
-            && !StringUtils.contains(row[1], "Object"))) {
+            && (row.length > 1 && !StringUtils.contains(row[1], "Object")))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.ADVANCED_IMPORT_4));
@@ -194,7 +217,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
           fileTab.getName());
     }
 
-    if ((StringUtils.isBlank(row[0]) && StringUtils.isBlank(row[1]) && linesToIgnore == 0)) {
+    if ((StringUtils.isBlank(row[0])
+        && (row.length > 1 && StringUtils.isBlank(row[1]))
+        && linesToIgnore == 0)) {
       return false;
     }
 
@@ -492,7 +517,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
     if (Strings.isNullOrEmpty(importType)) {
       if (value.contains(".")) {
-        return FileFieldRepository.IMPORT_TYPE_FIND;
+        return FileFieldRepository.IMPORT_TYPE_NEW;
       }
       return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }
@@ -512,7 +537,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       default:
         if (value.contains(".")) {
-          return FileFieldRepository.IMPORT_TYPE_FIND;
+          return FileFieldRepository.IMPORT_TYPE_NEW;
         }
         return FileFieldRepository.IMPORT_TYPE_DIRECT;
     }
@@ -535,35 +560,34 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   protected void setFileTabConfig(String row[], FileTab fileTab, int rowIndex)
       throws AxelorException {
 
-    searchFieldList = new ArrayList<String>();
-    String objName = row[rowIndex].split("\\:")[1].trim();
-    MetaModel model = metaModelRepo.findByName(objName);
+    final String KEY_OBJECT = "object";
+    final String KEY_IMPORT_TYPE = "importtype";
+    final String KEY_SEARCH_FIELD_SET = "searchfieldset";
+    final String KEY_ACTIONS = "actions";
+    final List<String> KEY_LIST =
+        Arrays.asList(KEY_IMPORT_TYPE, KEY_OBJECT, KEY_SEARCH_FIELD_SET, KEY_ACTIONS);
+    Map<String, String> tabConfigDataMap = getTabConfigDataMap(row, KEY_LIST);
+
+    MetaModel model = metaModelRepo.findByName(tabConfigDataMap.get(KEY_OBJECT));
     fileTab.setMetaModel(model);
 
-    if (row.length >= 2 && StringUtils.containsIgnoreCase(row[rowIndex + 1], "importType")) {
-      String type = row[rowIndex + 1].split("\\:")[1].trim();
+    if (tabConfigDataMap.containsKey(KEY_IMPORT_TYPE)) {
 
-      if (!type.equals(null)) {
+      Integer importType = this.getImportType(null, tabConfigDataMap.get(KEY_IMPORT_TYPE));
+      fileTab.setImportType(importType);
 
-        fileTab.setImportType(this.getImportType(null, type));
-
-        if (!fileTab.getImportType().equals(FileFieldRepository.IMPORT_TYPE_NEW)) {
-          if (StringUtils.containsIgnoreCase(row[rowIndex + 2], "searchFieldSet")) {
-            String searchFieldtype = row[rowIndex + 2].split("\\:")[1].trim();
-            String[] searchFieldArr = searchFieldtype.split("\\,");
-
-            for (String search : searchFieldArr) {
-              searchFieldList.add(search);
-            }
-          } else {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
-                fileTab.getName());
-          }
+      if (importType != FileFieldRepository.IMPORT_TYPE_NEW) {
+        if (!tabConfigDataMap.containsKey(KEY_SEARCH_FIELD_SET)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
+              fileTab.getName());
         }
+        searchFieldList = Arrays.asList(tabConfigDataMap.get(KEY_SEARCH_FIELD_SET).split("\\,"));
       }
     }
+
+    fileTab.setActions(tabConfigDataMap.get(KEY_ACTIONS));
   }
 
   protected void setFileFieldConfig(String[] row, Integer i, FileField fileField) {
@@ -625,7 +649,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       String sheet, DataReaderService reader, int totalLines, String[] objectRow) {
 
     int tabConfigRowCount = 0;
-    if (objectRow[0] == null && StringUtils.containsIgnoreCase(objectRow[1], "Object")) {
+    if (objectRow[0] == null
+        && (objectRow.length > 1 && StringUtils.containsIgnoreCase(objectRow[1], "Object"))) {
       int linesForTab;
       for (linesForTab = 3; linesForTab < totalLines; linesForTab++) {
         if (reader.read(sheet, linesForTab, 0)[0] != null) {
@@ -643,5 +668,216 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   public Mapper getMapper(String modelFullName) throws ClassNotFoundException {
     Class<? extends Model> klass = (Class<? extends Model>) Class.forName(modelFullName);
     return Mapper.of(klass);
+  }
+
+  @Override
+  public boolean resetImport(AdvancedImport advancedImport) throws ClassNotFoundException {
+    List<FileTab> fileTabList = advancedImport.getFileTabList();
+    Beans.get(ValidatorService.class).sortFileTabList(fileTabList);
+
+    boolean isResetValue = resetRelationalFields(fileTabList);
+    if (isResetValue) {
+      removeRecords(fileTabList);
+    }
+    return isResetValue;
+  }
+
+  @SuppressWarnings("unchecked")
+  public boolean resetRelationalFields(List<FileTab> fileTabList) throws ClassNotFoundException {
+
+    boolean isResetValue = false;
+
+    for (FileTab fileTab : fileTabList) {
+
+      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
+      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+
+      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
+      if (CollectionUtils.isEmpty(recordList)) {
+        continue;
+      }
+      isResetValue = true;
+
+      Class<? extends Model> modelKlass =
+          (Class<? extends Model>) Class.forName(fileTab.getMetaModel().getFullName());
+      this.resetPropertyValue(modelKlass, recordList);
+      this.resetSubPropertyValue(modelKlass, jsonContext);
+    }
+    return isResetValue;
+  }
+
+  @Transactional
+  private void resetPropertyValue(Class<? extends Model> klass, List<Object> recordList)
+      throws ClassNotFoundException {
+
+    JpaRepository<? extends Model> modelRepo = JpaRepository.of(klass);
+
+    for (Property prop : Mapper.of(klass).getProperties()) {
+      if (prop.getTarget() == null || prop.isRequired()) {
+        continue;
+      }
+
+      for (Object obj : recordList) {
+        Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+        Long id = Long.valueOf(recordMap.get("id").toString());
+        Object bean = modelRepo.find(id);
+        if (bean != null) {
+          prop.set(bean, null);
+        }
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void resetSubPropertyValue(Class<? extends Model> klass, JsonContext jsonContext)
+      throws ClassNotFoundException {
+
+    for (Property prop : Mapper.of(klass).getProperties()) {
+      if (prop.getTarget() == null || prop.isRequired()) {
+        continue;
+      }
+
+      String simpleModelName = StringUtils.substringAfterLast(prop.getTarget().getName(), ".");
+      String field = inflector.camelize(simpleModelName, true) + "Set";
+
+      if (!jsonContext.containsKey(field)) {
+        continue;
+      }
+
+      List<Object> recordList = (List<Object>) jsonContext.get(field);
+
+      Class<? extends Model> modelKlass =
+          (Class<? extends Model>) Class.forName(prop.getTarget().getName());
+
+      this.resetPropertyValue(modelKlass, recordList);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void removeRecords(List<FileTab> fileTabList) throws ClassNotFoundException {
+
+    for (FileTab fileTab : fileTabList) {
+
+      String targetModelName = fileTab.getMetaModel().getFullName();
+
+      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(fileTab);
+      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
+      String fieldName = inflector.camelize(fileTab.getMetaModel().getName(), true) + "Set";
+
+      List<Object> recordList = (List<Object>) jsonContext.get(fieldName);
+      if (CollectionUtils.isEmpty(recordList)) {
+        continue;
+      }
+
+      Class<? extends Model> modelKlass = (Class<? extends Model>) Class.forName(targetModelName);
+      removeRecord(fileTab, modelKlass, recordList, fileTabList);
+      removeSubRecords(modelKlass, jsonContext);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public void removeRecord(
+      FileTab fileTab,
+      Class<? extends Model> modelKlass,
+      List<Object> recordList,
+      List<FileTab> fileTabList)
+      throws ClassNotFoundException {
+
+    JpaRepository<? extends Model> modelRepo = JpaRepository.of(modelKlass);
+
+    for (FileTab tab : fileTabList) {
+
+      Map<String, Object> jsonContextMap = dataImportService.createJsonContext(tab);
+      JsonContext jsonContext = (JsonContext) jsonContextMap.get("jsonContext");
+      String fieldName = inflector.camelize(tab.getMetaModel().getName(), true) + "Set";
+
+      List<Object> recList = (List<Object>) jsonContext.get(fieldName);
+      if (CollectionUtils.isEmpty(recList)) {
+        continue;
+      }
+
+      Class<? extends Model> klass =
+          (Class<? extends Model>) Class.forName(tab.getMetaModel().getFullName());
+
+      Property[] props = Mapper.of(klass).getProperties();
+
+      for (Property prop : props) {
+        if (prop.getTarget() != null && prop.getTarget() == modelKlass && prop.isRequired()) {
+          removeRecord(tab, klass, recList, fileTabList);
+        }
+      }
+    }
+
+    String ids =
+        recordList
+            .stream()
+            .map(
+                obj -> {
+                  Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+                  return recordMap.get("id").toString();
+                })
+            .collect(Collectors.joining(","));
+
+    modelRepo.all().filter("self.id IN (" + ids + ")").delete();
+    fileTab.setAttrs(null);
+
+    LOG.debug("Reset imported data : {}", modelKlass.getSimpleName());
+  }
+
+  @SuppressWarnings("unchecked")
+  @Transactional
+  public void removeSubRecords(Class<? extends Model> klass, JsonContext jsonContext)
+      throws ClassNotFoundException {
+
+    for (Property prop : Mapper.of(klass).getProperties()) {
+      if (prop.getTarget() == null || prop.isCollection()) {
+        continue;
+      }
+
+      String simpleModelName = StringUtils.substringAfterLast(prop.getTarget().getName(), ".");
+      String field = inflector.camelize(simpleModelName, true) + "Set";
+
+      if (!jsonContext.containsKey(field)) {
+        continue;
+      }
+
+      List<Object> recList = (List<Object>) jsonContext.get(field);
+
+      String ids =
+          recList
+              .stream()
+              .map(
+                  obj -> {
+                    Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
+                    return recordMap.get("id").toString();
+                  })
+              .collect(Collectors.joining(","));
+
+      JpaRepository<? extends Model> modelRepo =
+          JpaRepository.of((Class<? extends Model>) Class.forName(prop.getTarget().getName()));
+
+      modelRepo.all().filter("self.id IN (" + ids + ")").delete();
+    }
+  }
+
+  protected Map<String, String> getTabConfigDataMap(String row[], List<String> keys) {
+    Map<String, String> tabConfigDataMap = new HashMap<>();
+    for (String data : row) {
+      if (StringUtils.isBlank(data)) {
+        continue;
+      }
+
+      String[] keyValue = data.split("\\:");
+      if (keyValue.length != 2) {
+        continue;
+      }
+      String key = keyValue[0].replaceAll("(^\\h*)|(\\h*$)", "").trim().toLowerCase();
+      if (keys.contains(key)) {
+        tabConfigDataMap.put(key, keyValue[1].trim());
+      }
+    }
+    return tabConfigDataMap;
   }
 }

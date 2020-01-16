@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	
 	<grid name="sale-order-line-project-grid" title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
@@ -12,7 +12,7 @@
         <field name="saleOrder.creationDate"/>
         <field name="product.code" width="120"/>
         <field name="productName" readonly="true"/>
-        <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
+        <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true" x-scale="2"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
         <field name="amountInvoiced" />
         <field name="saleOrder.currency"/>

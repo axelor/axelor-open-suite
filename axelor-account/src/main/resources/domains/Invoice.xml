@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -45,8 +47,6 @@
   	<one-to-many name="invoicePaymentList" ref="com.axelor.apps.account.db.InvoicePayment" title ="Payments" mappedBy="invoice"/>
     <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true" title="Ventilated by"/>
-
-    
     
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice" title="Invoice Lines" />
@@ -128,12 +128,19 @@
     
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
+    
+    <many-to-one name="subrogationRelease" ref="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"/>
+    <many-to-one name="subrogationReleaseMove" ref="com.axelor.apps.account.db.Move" title="Subrogation release Move"/>
 	
 	<date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
 	<many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User" title="PFP Validator"/>
 	<integer name="pfpValidateStatusSelect" title="Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
 	<many-to-one name="reasonOfRefusalToPay" title="Reason of refusal to pay" ref="com.axelor.apps.base.db.CancelReason"/>
 	<string name="reasonOfRefusalToPayStr" title="Reason of refusal to pay" large="true"/>
+	
+	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
+
+  <string name="headOfficeAddress" title="Head office address"/>
 
   	<unique-constraint columns="invoiceId,company"/>
 

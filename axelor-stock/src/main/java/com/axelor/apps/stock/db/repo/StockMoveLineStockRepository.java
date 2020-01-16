@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -41,7 +41,6 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
     StockMove stockMove = stockMoveLine.getStockMove();
 
     if (stockMove == null
-        || stockMove.getStatusSelect() > StockMoveRepository.STATUS_PLANNED
         || (stockMove.getFromStockLocation() != null
             && stockMove.getFromStockLocation().getTypeSelect()
                 == StockLocationRepository.TYPE_VIRTUAL)) {
@@ -49,14 +48,15 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
       return super.populate(json, context);
     }
 
-    Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
-    json.put(
-        "availableStatus",
-        stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
-            ? stockMoveLine.getAvailableStatus()
-            : null);
-    json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
-
+    if (stockMove.getStatusSelect() < StockMoveRepository.STATUS_REALIZED) {
+      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      json.put(
+          "availableStatus",
+          stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
+              ? stockMoveLine.getAvailableStatus()
+              : null);
+      json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
+    }
     return super.populate(json, context);
   }
 }

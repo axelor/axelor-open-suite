@@ -14,3 +14,4 @@
 "
 "axelor-sale";"SaleConfig";"sale-config-form";"saleOrderClientBox";"It offers the possibility to personalize a customer box with information of your choice on the printing of quotations/orders thanks to a field html."
 "axelor-sale";"SaleConfig";"sale-config-form";"saleOrderLegalNote";"You can enter here legal note that will appear on the prints of your orders."
+"axelor-sale";"SaleOrder";"sale-order-form";"versionNumber";"Version number for the order. It increases when clicking on the ""new version"" button of a ""Requested"" order. "

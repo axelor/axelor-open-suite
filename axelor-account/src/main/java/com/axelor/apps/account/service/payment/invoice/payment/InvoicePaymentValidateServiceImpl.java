@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -111,13 +112,13 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
     }
 
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
             == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
   }
 
   @Override
@@ -167,7 +168,24 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       }
       customerAccount = invoiceMoveLine.getAccount();
     }
-
+    String origin = invoicePayment.getInvoice().getInvoiceId();
+    if (invoicePayment.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE
+        || invoicePayment.getPaymentMode().getTypeSelect()
+            == PaymentModeRepository.TYPE_IPO_CHEQUE) {
+      origin = invoicePayment.getChequeNumber() != null ? invoicePayment.getChequeNumber() : origin;
+    } else if (invoicePayment.getPaymentMode().getTypeSelect()
+        == PaymentModeRepository.TYPE_BANK_CARD) {
+      origin =
+          invoicePayment.getInvoicePaymentRef() != null
+              ? invoicePayment.getInvoicePaymentRef()
+              : origin;
+    }
+    if (invoicePayment.getInvoice().getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoicePayment.getInvoice().getOperationTypeSelect()
+            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      origin = invoicePayment.getInvoice().getSupplierInvoiceNb();
+    }
     Move move =
         moveService
             .getMoveCreateService()
@@ -190,8 +208,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             null,
             1,
-            invoicePayment.getInvoicePaymentRef(),
-            null));
+            origin,
+            invoicePayment.getDescription()));
 
     MoveLine customerMoveLine =
         moveLineService.createMoveLine(
@@ -203,9 +221,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             paymentDate,
             null,
             2,
-            invoicePayment.getInvoicePaymentRef(),
-            null);
-    customerMoveLine.setTaxAmount(invoice.getTaxTotal());
+            origin,
+            invoicePayment.getDescription());
 
     move.addMoveLineListItem(customerMoveLine);
 

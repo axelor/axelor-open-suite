@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <grid name="stock-correction-grid" title="Stock Corrections" model="com.axelor.apps.stock.db.StockCorrection">
 		<field name="stockLocation"/>
 		<field name="product"/>
 		<field name="trackingNumber"/>
-		<field name="realQty"/>
-		<field name="futureQty"/>
-		<field name="reservedQty"/>
+		<field name="realQty" x-scale="2"/>
+		<field name="futureQty" x-scale="2"/>
+		<field name="reservedQty" x-scale="2"/>
 		<field name="validationDateT"/>
 		<field name="stockCorrectionReason"/>
 		<field name="statusSelect"/>
     </grid>
 
     <form name="stock-correction-form" title="Stock Correction" model="com.axelor.apps.stock.db.StockCorrection"
-		onNew="action-stock-correction-onnew-group">
+		onNew="action-stock-correction-onnew-group" onLoad="action-stock-correction-attrs-scale">
 		<panel name="mainPanel">
 			<panel name="statusSelectPanel" colSpan="8">
 				<field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
@@ -44,6 +44,7 @@
     <action-group name="action-stock-correction-onnew-group">
 		<action name="action-stock-correction-record-new"/>
 		<action name="action-stock-correction-method-set-default-details" if="_stockLocationLineId"/>
+		<action name="action-stock-correction-attrs-scale"/>
     </action-group>
 
     <action-group name="action-group-stock-correction-validate-click">
@@ -64,6 +65,12 @@
     <action-attrs name="action-stock-correction-on-select-tracking-number">
 		<attribute name="domain" for="trackingNumber" expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || product == null"/>
 		<attribute name="domain" for="trackingNumber" expr="eval: &quot; self IN(SELECT tn FROM StockLocation s JOIN s.detailsStockLocationLineList dsl JOIN dsl.trackingNumber tn WHERE s = :stockLocation AND dsl.product = :product) &quot;" if="stockLocation != null &amp;&amp; product != null"/>
+    </action-attrs>
+    
+    <action-attrs name="action-stock-correction-attrs-scale">
+    	<attribute name="scale" for="realQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    	<attribute name="scale" for="futureQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    	<attribute name="scale" for="reservedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     </action-attrs>
 
 	<action-method name="action-stock-correction-method-set-default-details">

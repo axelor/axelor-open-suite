@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ProdProduct" lang="java">
 
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" initParam="true"/>  	
-  	<decimal name="qty" title="Qty" initParam="true"/>
+  	<decimal name="qty" title="Qty" initParam="true" precision="20" scale="10"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" initParam="true"/>
   	
 <!--   	Contreparties - Non affiché  -->
@@ -27,8 +27,8 @@
   	<many-to-one name="toConsumeProdProcessLine" ref="com.axelor.apps.production.db.ProdProcessLine"/>
 
     <!--Used for showing diff-->
-		<decimal name="plannedQty" title="Planned Qty"/>
-		<decimal name="realQty" title="Real Qty"/>
+		<decimal name="plannedQty" title="Planned Qty" precision="20" scale="10"/>
+		<decimal name="realQty" title="Real Qty" precision="20" scale="10"/>
 
   	
   </entity>

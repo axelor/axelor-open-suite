@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
    
 
 	<grid name="bank-order-line-bank-to-bank-grid" title="Bank Order lines"
@@ -18,6 +18,9 @@
 		<field name="bankOrder.confirmationDateTime"/>
 		<field name="bankOrder.senderCompany"/>
 		<field name="bankOrder.statusSelect"/>
+		<field name="$pieceReferenceList" title="Piece references"/>
+		<field name="$pieceDateList" title="Piece dates"/>
+		<field name="$pieceDueDateList" title="Piece due dates"/>
 	</grid>
 
 	<grid name="bank-order-line-grid" title="Bank Order lines"
@@ -34,6 +37,9 @@
 		<field name="bankOrder.confirmationDateTime"/>
 		<field name="bankOrder.senderCompany"/>
 		<field name="bankOrder.statusSelect"/>
+		<field name="$pieceReferenceList" title="Piece references"/>
+		<field name="$pieceDateList" title="Piece dates"/>
+		<field name="$pieceDueDateList" title="Piece due dates"/>
 	</grid>
 
 	<!-- TODO -->

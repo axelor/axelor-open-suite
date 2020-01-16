@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,6 +27,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
@@ -44,14 +45,16 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
       PurchaseOrderRepository purchaseOrderRepo,
       TemplateRepository templateRepo,
       TemplateMessageService templateMessageService,
-      MessageRepository messageRepo) {
+      MessageRepository messageRepo,
+      StockConfigRepository stockConfigRepo) {
     super(
         stockRuleRepo,
         purchaseOrderLineService,
         purchaseOrderRepo,
         templateRepo,
         templateMessageService,
-        messageRepo);
+        messageRepo,
+        stockConfigRepo);
   }
 
   public void generateOrder(
@@ -67,7 +70,9 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
     if (stockRules == null) {
       return;
     }
-    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
+    if (stockRules
+        .getOrderAlertSelect()
+        .equals(StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)) {
       this.generateProductionOrder(product, qty, stockLocationLine, type, stockRules);
     } else {
       this.generatePurchaseOrder(product, qty, stockLocationLine, type);
@@ -93,6 +98,9 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
       BigDecimal qtyToProduce = this.getQtyToOrder(qty, stockLocationLine, type, stockRules);
       Beans.get(ProductionOrderService.class)
           .generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
+      if (stockRules.getAlert()) {
+        this.generateAndSendMessage(stockRules);
+      }
     }
   }
 }

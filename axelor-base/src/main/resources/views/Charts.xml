@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<action-record model="com.axelor.apps.base.db.AppBase" name="action.base.chart.set.date.6m">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
@@ -123,6 +123,45 @@
 		</dataset>
 	  <category key="_industry_sector" type="text" title="Industry Sector"/>
 	  <series key="_total_partner" type="donut" title="Partners"/>
+	</chart>
+	
+	<chart onInit="action.base.chart.set.date.6m" name="chart.customers.with.first.sale.order" title="New customers with first sale order">
+	   <search-fields>
+		 <field name="fromDate" title="From Date" type="date" x-required="true" />
+		 <field name="toDate" title="To Date" type="date" x-required="true" />
+	   </search-fields>
+	   <dataset type="jpql">
+	    <![CDATA[
+          
+          SELECT
+             COUNT(*) as customers,
+             ' ' as title
+          FROM
+             Partner self                          
+          WHERE
+             self.isCustomer = true             
+             AND EXISTS (
+                 FROM
+                   SaleOrder so
+                 WHERE
+                   so.clientPartner = self
+                   AND so.confirmationDateTime IS NOT NULL
+                   AND DATE(so.confirmationDateTime) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+                   AND (so.statusSelect = 3 OR so.statusSelect = 4)
+                   AND NOT EXISTS(
+                       FROM
+                          SaleOrder so2
+                       WHERE
+                          so2.clientPartner = self
+                          AND so2.confirmationDateTime IS NOT NULL
+                          AND so2 != so
+                          AND so2.confirmationDateTime < so.confirmationDateTime
+                          AND (so2.statusSelect = 3 OR so2.statusSelect = 4)))
+                             		
+		]]>
+	   </dataset>
+	   <category key="title" type="text" />
+	   <series key="customers" type="bar" />
 	</chart>
 
 	

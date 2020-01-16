@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -33,6 +34,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
@@ -45,6 +47,8 @@ public class WorkflowVentilationProjectServiceImpl
 
   private InvoicingProjectRepository invoicingProjectRepo;
 
+  private TimesheetLineRepository timesheetLineRepo;
+
   @Inject
   public WorkflowVentilationProjectServiceImpl(
       AccountConfigService accountConfigService,
@@ -56,7 +60,9 @@ public class WorkflowVentilationProjectServiceImpl
       PurchaseOrderRepository purchaseOrderRepository,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       AppSupplychainService appSupplychainService,
-      InvoicingProjectRepository invoicingProjectRepo) {
+      InvoicingProjectRepository invoicingProjectRepo,
+      TimesheetLineRepository timesheetLineRepo,
+      StockMoveInvoiceService stockMoveInvoiceService) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -66,8 +72,10 @@ public class WorkflowVentilationProjectServiceImpl
         saleOrderRepository,
         purchaseOrderRepository,
         accountingSituationSupplychainService,
-        appSupplychainService);
+        appSupplychainService,
+        stockMoveInvoiceService);
     this.invoicingProjectRepo = invoicingProjectRepo;
+    this.timesheetLineRepo = timesheetLineRepo;
   }
 
   @Override
@@ -86,6 +94,14 @@ public class WorkflowVentilationProjectServiceImpl
       }
       for (TimesheetLine timesheetLine : invoicingProject.getLogTimesSet()) {
         timesheetLine.setInvoiced(true);
+
+        if (timesheetLine.getTeamTask() == null) {
+          continue;
+        }
+
+        timesheetLine
+            .getTeamTask()
+            .setInvoiced(this.checkInvoicedTimesheetLines(timesheetLine.getTeamTask()));
       }
       for (ExpenseLine expenseLine : invoicingProject.getExpenseLineSet()) {
         expenseLine.setInvoiced(true);
@@ -100,5 +116,16 @@ public class WorkflowVentilationProjectServiceImpl
       invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);
       invoicingProjectRepo.save(invoicingProject);
     }
+  }
+
+  private boolean checkInvoicedTimesheetLines(TeamTask teamTask) {
+
+    long timesheetLineCnt =
+        timesheetLineRepo
+            .all()
+            .filter("self.teamTask.id = ?1 AND self.invoiced = ?2", teamTask.getId(), false)
+            .count();
+
+    return timesheetLineCnt == 0;
   }
 }

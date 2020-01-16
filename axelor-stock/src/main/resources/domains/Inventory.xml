@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -10,7 +10,9 @@
   	<string name="inventorySeq" title="Inventory N°" readonly="true" namecolumn="true"/>
   	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location" required="true"/>
     <integer name="statusSelect" title="Status" selection="inventory.status.select" readonly="true"/>
-  	<datetime name="dateT" title="Date" required="true" tz="true"/>
+	<datetime name="plannedStartDateT" title="Planned Start Date" tz="true"/>
+	<datetime name="plannedEndDateT" title="Planned End Date" tz="true"/>
+	<string name="inventoryTitle" title="Inventory Title"/>
   	<string name="description" title="Description" large="true"/>
   	<one-to-many name="inventoryLineList" ref="com.axelor.apps.stock.db.InventoryLine" mappedBy="inventory" title="Inventory lines"/>
   	<string name="formatSelect" title="File Format" selection="inventory.export.format.select"/>
@@ -40,6 +42,12 @@
 		public static final int STATUS_COMPLETED = 4;
 		public static final int STATUS_VALIDATED = 5;
 		public static final int STATUS_CANCELED = 6;
+		
+		//FORMAT SELECT
+		public static final String FORMAT_PDF = "pdf";
+		public static final String FORMAT_XLSX = "xlsx";
+		public static final String FORMAT_CSV = "csv";
+		public static final String FORMAT_ODS = "ods";
 
 	]]></extra-code>
   	

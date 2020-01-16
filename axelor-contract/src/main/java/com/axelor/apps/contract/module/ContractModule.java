@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,8 @@ package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
+import com.axelor.apps.contract.db.repo.ContractBatchContractRepository;
+import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
@@ -38,5 +40,6 @@ public class ContractModule extends AxelorModule {
     bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
     bind(ContractLineService.class).to(ContractLineServiceImpl.class);
     bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
+    bind(ContractBatchRepository.class).to(ContractBatchContractRepository.class);
   }
 }

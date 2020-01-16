@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,10 +29,10 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -42,16 +42,6 @@ import java.util.Map;
 
 @Singleton
 public class ProductionOrderController {
-
-  @Inject ProductionOrderService productionOrderService;
-
-  @Inject private BillOfMaterialRepository billOfMaterialRepo;
-
-  @Inject private ProductionOrderRepository productionOrderRepo;
-
-  @Inject private ProductRepository productRepo;
-
-  @Inject private AppBaseService appBaseService;
 
   @SuppressWarnings("unchecked")
   public void addManufOrder(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -66,7 +56,8 @@ public class ProductionOrderController {
     } else {
       Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
       BillOfMaterial billOfMaterial =
-          billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
+          Beans.get(BillOfMaterialRepository.class)
+              .find(((Integer) bomContext.get("id")).longValue());
 
       BigDecimal qty = new BigDecimal(context.get("qty").toString());
 
@@ -74,7 +65,9 @@ public class ProductionOrderController {
 
       if (context.get("product") != null) {
         Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-        product = productRepo.find(((Integer) productContext.get("id")).longValue());
+        product =
+            Beans.get(ProductRepository.class)
+                .find(((Integer) productContext.get("id")).longValue());
       } else {
         product = billOfMaterial.getProduct();
       }
@@ -86,22 +79,24 @@ public class ProductionOrderController {
                 (CharSequence) context.get("_startDate"),
                 DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
       } else {
-        startDateT = appBaseService.getTodayDateTime();
+        startDateT = Beans.get(AppBaseService.class).getTodayDateTime();
       }
 
       ProductionOrder productionOrder =
-          productionOrderRepo.find(Long.parseLong(request.getContext().get("_id").toString()));
+          Beans.get(ProductionOrderRepository.class)
+              .find(Long.parseLong(request.getContext().get("_id").toString()));
 
       if (billOfMaterial.getProdProcess() != null) {
-        productionOrderService.addManufOrder(
-            productionOrder,
-            product,
-            billOfMaterial,
-            qty,
-            startDateT.toLocalDateTime(),
-            null,
-            productionOrder.getSaleOrder(),
-            ManufOrderService.ORIGIN_TYPE_OTHER);
+        Beans.get(ProductionOrderService.class)
+            .addManufOrder(
+                productionOrder,
+                product,
+                billOfMaterial,
+                qty,
+                startDateT.toLocalDateTime(),
+                null,
+                productionOrder.getSaleOrder(),
+                ManufOrderService.ORIGIN_TYPE_OTHER);
       } else {
         response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));
       }

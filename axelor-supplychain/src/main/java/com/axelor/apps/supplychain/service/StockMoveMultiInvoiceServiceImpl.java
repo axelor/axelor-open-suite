@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,7 +93,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       for (StockMove stockMove : stockMoveList) {
         offset++;
         try {
-          Invoice invoice = stockMoveInvoiceService.createInvoice(stockMove);
+          Invoice invoice = stockMoveInvoiceService.createInvoice(stockMove, 0, null);
           if (invoice != null) {
             invoiceIdList.add(invoice.getId());
           }
@@ -378,7 +378,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     for (StockMove stockMoveLocal : stockMoveList) {
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList());
+              invoice, stockMoveLocal.getStockMoveLineList(), null);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
@@ -388,15 +388,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceGenerator.populate(invoice, invoiceLineList);
 
     invoiceRepository.save(invoice);
-    if (invoice.getExTaxTotal().signum() < 0) {
-      Invoice refund = transformToRefund(invoice);
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(refund));
-      invoiceRepository.remove(invoice);
-      return Optional.of(refund);
-    } else {
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
-      return Optional.of(invoice);
-    }
+    invoice = toPositivePriceInvoice(invoice);
+    stockMoveList.forEach(invoice::addStockMoveSetItem);
+    return Optional.of(invoice);
   }
 
   @Override
@@ -473,7 +467,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     for (StockMove stockMoveLocal : stockMoveList) {
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList());
+              invoice, stockMoveLocal.getStockMoveLineList(), null);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
@@ -483,14 +477,19 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceGenerator.populate(invoice, invoiceLineList);
 
     invoiceRepository.save(invoice);
+    invoice = toPositivePriceInvoice(invoice);
+    stockMoveList.forEach(invoice::addStockMoveSetItem);
+    return Optional.of(invoice);
+  }
+
+  /** For any invoice, if ex tax total is negative, returns the corresponding refund invoice. */
+  protected Invoice toPositivePriceInvoice(Invoice invoice) throws AxelorException {
     if (invoice.getExTaxTotal().signum() < 0) {
       Invoice refund = transformToRefund(invoice);
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(refund));
       invoiceRepository.remove(invoice);
-      return Optional.of(refund);
+      return refund;
     } else {
-      stockMoveList.forEach(stockMove -> stockMove.setInvoice(invoice));
-      return Optional.of(invoice);
+      return invoice;
     }
   }
 
@@ -634,8 +633,11 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
   /** This method will throw an exception if the given stock move is already invoiced. */
   protected void checkIfAlreadyInvoiced(StockMove stockMove) throws AxelorException {
-    if (stockMove.getInvoice() != null
-        && stockMove.getInvoice().getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
+    if (stockMove.getInvoiceSet() != null
+        && stockMove
+            .getInvoiceSet()
+            .stream()
+            .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         templateMessage = IExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;

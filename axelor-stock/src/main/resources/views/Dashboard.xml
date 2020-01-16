@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	
 	<action-view title="Customer deliveries by country" name="dashlet.stockMove.nbr.delivery.by.country">
@@ -104,7 +104,7 @@
 	
 	<action-view title="Production Stock Move in Planned" model="com.axelor.apps.stock.db.StockMove" name="dashlet.production.stock.move.in.planned">
 	    <view type="grid" name="stock-move-in-grid"/>
-	    <view type="form"/>
+	    <view type="form" name="stock-move-form"/>
 		<domain>(self.inManufOrder IS NOT NULL AND self.inManufOrder.statusSelect = 3) OR (self.inOperationOrder IS NOT NULL and self.inOperationOrder.statusSelect = 3)</domain>
 	</action-view>
 	
@@ -116,7 +116,7 @@
 	
 	<action-view title="Production stock move in realized" model="com.axelor.apps.stock.db.StockMove" name="dashlet.production.stock.move.in.realized">
 	    <view type="grid" name="stock-move-in-grid"/>
-	    <view type="form"/>
+	    <view type="form" name="stock-move-form"/>
 		<domain>(self.inManufOrder IS NOT NULL AND self.inManufOrder.statusSelect = 6) OR (self.inOperationOrder IS NOT NULL and self.inOperationOrder.statusSelect = 6)</domain>
 	</action-view>
 	

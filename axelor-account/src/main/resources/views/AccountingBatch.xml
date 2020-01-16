@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
 		<field name="actionSelect" />
@@ -86,10 +86,16 @@
 	    <button name="moveLineExportBatchBtn" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
 	    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 	    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-method-action-fixed-asset-lines-realize" colSpan="12"/>
-	    <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-method-action-close-annual-accounts" colSpan="12"/>
+	    <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
 	</panel>
 </form>
 
+    <!-- ACTION GROUP -->
+	<action-group name="action-accounting-batch-group-close-annual-accounts">
+		<action name="action-accounting-batch-validate-batchlist-not-empty"/>
+		<action name="action-accounting-batch-method-action-close-annual-accounts"/>
+	</action-group>
+    
     
     <!-- ACTION RECORD -->
     <action-record name="action-accounting-batch-record-on-new" model="com.axelor.apps.account.db.AccountingBatch">
@@ -140,6 +146,10 @@
 		<call class="com.axelor.apps.account.web.AccountingBatchController" method="actionCloseAnnualAccounts"/>
 	</action-method>
 	
+	<!-- ACTION VALIDATE -->
+	<action-validate name="action-accounting-batch-validate-batchlist-not-empty">
+   		<alert message="The batch to close the annual accounts has already ran. Are you sure you want to continue ?" if="eval: batchList &amp;&amp; !batchList?.empty" />
+   	</action-validate>
 
     <!-- ACTION ATTRS -->
     

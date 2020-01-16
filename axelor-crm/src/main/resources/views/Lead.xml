@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
       <!--
@@ -10,13 +10,13 @@
       </toolbar>
       -->
       <menubar>
-        <menu title="Reports" icon="fa-files-o">
-          <item title="Print" action="action-crm-lead-method-print"/>
+        <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
+          <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
         </menu>
-        <menu title="Tools" icon="fa-wrench">
-          <item title="Assign to me" action="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
-          <item title="Check duplicate" action="action-general-check-duplicate-records"/>
-          <item title="Import leads" action="action-crm-method-lead-import-leads"/>
+        <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
+          <item name="assignToMeItem" title="Assign to me" action="com.axelor.apps.crm.web.EventController:assignToMeLead"/>
+          <item name="checkDuplicateItem" title="Check duplicate" action="action-general-check-duplicate-records"/>
+          <item name="importLeadsItem" title="Import leads" action="action-crm-method-lead-import-leads"/>
         </menu>
       </menubar>
     	<hilite color="warning" if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
@@ -44,13 +44,13 @@
 		onSave="action-crm-lead-method-check-name">
 
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-			  <item title="Print" action="save,action-crm-lead-method-print"/>
+            <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+			  <item name="printItem" title="Print" action="save,action-crm-lead-method-print"/>
 			</menu>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-			  <item title="Schedule Event" action="save,action-lead-view-schedule-event"/>
-			  <item title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
-			  <item title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 5" action="save,action-send-by-email-with-template"/>
+			<menu name="leadToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+			  <item name="scheduleEventItem" title="Schedule Event" action="save,action-lead-view-schedule-event"/>
+			  <item name="createOpportunityItem" title="Create opportunity" action="save,action-lead-view-create-opportunity"/>
+			  <item name="sendEmailItem" title="Send email" readonlyIf="statusSelect == 4 || statusSelect == 5" action="save,action-send-by-email-with-template"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel" >
@@ -97,7 +97,7 @@
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5">
 					<editor x-show-titles="false">
 						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
-						<field name="jobTitle" colSpan="6" placeholder="Function"/>
+						<field name="jobTitleFunction" colSpan="6" placeholder="Function"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>

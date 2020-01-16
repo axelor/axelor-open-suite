@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<grid name="fixed-asset-category-grid" title="Fixed asset categories" model="com.axelor.apps.account.db.FixedAssetCategory" orderBy="company,fixedAssetType,name">
 		<field name="name"/>
@@ -37,6 +37,9 @@
         		<field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
 	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
 	        	<field name="isProrataTemporis"/>
+        	</panel>
+        	<panel name="analyticPanel" title="Analytic" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()">
+        		<field name="analyticDistributionTemplate" canEdit="false" domain="self.company = :company" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" />
         	</panel>
         </panel-tabs>
     </form>

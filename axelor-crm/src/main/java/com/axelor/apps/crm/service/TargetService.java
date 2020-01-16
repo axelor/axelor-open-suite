@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,13 +17,11 @@
  */
 package com.axelor.apps.crm.service;
 
-import com.axelor.apps.base.db.ITarget;
-import com.axelor.apps.crm.db.IEvent;
-import com.axelor.apps.crm.db.IOpportunity;
 import com.axelor.apps.crm.db.Target;
 import com.axelor.apps.crm.db.TargetConfiguration;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.TargetConfigurationRepository;
 import com.axelor.apps.crm.db.repo.TargetRepository;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.auth.db.User;
@@ -49,7 +47,8 @@ public class TargetService {
 
   public void createsTargets(TargetConfiguration targetConfiguration) throws AxelorException {
 
-    if (targetConfiguration.getPeriodTypeSelect() == ITarget.NONE) {
+    if (targetConfiguration.getPeriodTypeSelect()
+        == TargetConfigurationRepository.PERIOD_TYPE_NONE) {
       Target target =
           this.createTarget(
               targetConfiguration,
@@ -111,13 +110,13 @@ public class TargetService {
   public LocalDate getNextDate(int periodTypeSelect, LocalDate date) {
 
     switch (periodTypeSelect) {
-      case ITarget.NONE:
+      case TargetConfigurationRepository.PERIOD_TYPE_NONE:
         return date;
-      case ITarget.MONTHLY:
+      case TargetConfigurationRepository.PERIOD_TYPE_MONTHLY:
         return date.plusMonths(1);
-      case ITarget.WEEKLY:
+      case TargetConfigurationRepository.PERIOD_TYPE_WEEKLY:
         return date.plusWeeks(1);
-      case ITarget.DAILY:
+      case TargetConfigurationRepository.PERIOD_TYPE_DAILY:
         return date.plusDays(1);
 
       default:
@@ -163,7 +162,7 @@ public class TargetService {
               .createQuery(
                   "select SUM(op.amount) FROM Opportunity as op WHERE op.user = ?1 AND op.salesStageSelect = ?2 AND op.createdOn >= ?3 AND op.createdOn <= ?4 ");
       q.setParameter(1, user);
-      q.setParameter(2, IOpportunity.STAGE_CLOSED_WON);
+      q.setParameter(2, OpportunityRepository.SALES_STAGE_CLOSED_WON);
       q.setParameter(3, fromDateTime);
       q.setParameter(4, toDateTime);
 
@@ -174,7 +173,7 @@ public class TargetService {
               .all()
               .filter(
                   "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
-                  IEvent.CALL,
+                  EventRepository.TYPE_CALL,
                   user,
                   fromDateTime,
                   toDateTime)
@@ -187,7 +186,7 @@ public class TargetService {
               .all()
               .filter(
                   "self.typeSelect = ?1 AND self.user = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-                  IEvent.MEETING,
+                  EventRepository.TYPE_MEETING,
                   user,
                   fromDateTime,
                   toDateTime)
@@ -217,7 +216,7 @@ public class TargetService {
                   user,
                   fromDateTime,
                   toDateTime,
-                  IOpportunity.STAGE_CLOSED_WON)
+                  OpportunityRepository.SALES_STAGE_CLOSED_WON)
               .count();
 
       target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
@@ -228,7 +227,7 @@ public class TargetService {
               .createQuery(
                   "select SUM(op.amount) FROM Opportunity as op WHERE op.team = ?1 AND op.salesStageSelect = ?2  AND op.createdOn >= ?3 AND op.createdOn <= ?4 ");
       q.setParameter(1, team);
-      q.setParameter(2, IOpportunity.STAGE_CLOSED_WON);
+      q.setParameter(2, OpportunityRepository.SALES_STAGE_CLOSED_WON);
       q.setParameter(3, fromDateTime);
       q.setParameter(4, toDateTime);
 
@@ -239,7 +238,7 @@ public class TargetService {
               .all()
               .filter(
                   "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4 AND self.callTypeSelect = 2",
-                  IEvent.CALL,
+                  EventRepository.TYPE_CALL,
                   team,
                   fromDateTime,
                   toDateTime)
@@ -252,7 +251,7 @@ public class TargetService {
               .all()
               .filter(
                   "self.typeSelect = ?1 AND self.team = ?2 AND self.startDateTime >= ?3 AND self.endDateTime <= ?4",
-                  IEvent.MEETING,
+                  EventRepository.TYPE_MEETING,
                   team,
                   fromDateTime,
                   toDateTime)
@@ -282,7 +281,7 @@ public class TargetService {
                   team,
                   fromDateTime,
                   toDateTime,
-                  IOpportunity.STAGE_CLOSED_WON)
+                  OpportunityRepository.SALES_STAGE_CLOSED_WON)
               .count();
 
       target.setOpportunityCreatedWon(opportunityCreatedWon.intValue());
