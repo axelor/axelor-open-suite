@@ -189,6 +189,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
    * @param invoicePayment the invoice payment to test
    * @throws AxelorException
    */
+  @Override
   public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException {
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
