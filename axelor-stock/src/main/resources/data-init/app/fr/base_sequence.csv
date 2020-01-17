@@ -1,4 +1,4 @@
-"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+"importId";"codeSelect";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 200;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Serveur Classique";1;4;"F4";;1;1
 201;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Classique Pack";1;4;"F2";;1;1
 202;"productTrackingNumber";"Sequence de numéro de suivi pour le produit Imprimante Jet d’encre";1;4;"A5";;1;1

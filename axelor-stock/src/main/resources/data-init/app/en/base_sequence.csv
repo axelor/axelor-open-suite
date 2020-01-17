@@ -1,4 +1,4 @@
-"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+"importId";"codeSelect";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 200;"trackingNumberSeqForClassicServeur";"Tracking number sequence for classic serveur";1;4;"F4";;1;1
 201;"trackingNumberSeqForClassicPack";"Tracking number sequence for classic pack";1;4;"F2";;1;1
 202;"trackingNumberSeqForInkjetPrinter";"Tracking number sequence for inkjet printer";1;4;"A5";;1;1

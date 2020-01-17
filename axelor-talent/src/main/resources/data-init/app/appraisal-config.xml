@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
 	
-	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.code = :code" call="com.axelor.csv.script.SequenceScript:computeFullname">
+	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.codeSelect = :codeSelect" call="com.axelor.csv.script.SequenceScript:computeFullname">
     	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>

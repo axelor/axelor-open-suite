@@ -4,7 +4,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 
 	<grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
 		<field name="name"/>
-		<field name="code"/>
+		<field name="codeSelect"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="prefixe"/>
 		<field name="suffixe"/>
@@ -19,7 +19,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
                     <field name="name" showTitle="false" colSpan="6" css="label-bold bold large" placeholder="Name" onChange="action-sequence-method-compute-fullname"/>
                 </editor>
             </field>
-			<field name="code" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
+			<field name="codeSelect" onChange="action-sequence-attrs,action-method-sequence-document-concerned-onchange"/>
 			<field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" readonlyIf="$popup() &amp;&amp; company"/>
 		</panel>
 		<panel name="tipsPanel" title="Tips" sidebar="true" itemSpan="12">
@@ -78,8 +78,8 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 	</action-record>
     
     <action-attrs name="action-sequence-attrs">
-		<attribute name="hidden" for="company" expr="eval: code in ['partner','productTrackingNumber','product']"/>
-		<attribute name="required" for="company" expr="eval: !(code in ['partner','productTrackingNumber','product','bankOrder'])"/>
+		<attribute name="hidden" for="company" expr="eval: codeSelect in ['partner','productTrackingNumber','product']"/>
+		<attribute name="required" for="company" expr="eval: !(codeSelect in ['partner','productTrackingNumber','product','bankOrder'])"/>
     </action-attrs>
 
     <action-validate name="action-sequence-validate">
