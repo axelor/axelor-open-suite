@@ -8,6 +8,7 @@
 - BANKSTATEMENT : import multiple records in a single line.
 - Opportunity : Set sale order defaults on new.
 - Typos on PurchaseRequestLine
+- Message : Improved performance when generating mail messages from templates. 
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
