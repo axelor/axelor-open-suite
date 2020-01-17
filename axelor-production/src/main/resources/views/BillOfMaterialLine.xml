@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid model="com.axelor.apps.production.db.BillOfMaterialLine"
+		title="BOM Lines" name="bill-of-material-line-grid">
+		<field name="priority" />
+		<field name="product" />
+		<field name="qty" x-scale="2"/>
+		<field name="hasNoManageStock"/>
+		<field name="billOfMaterial" />
+	</grid>
+	
+	<form name="bill-of-material-line-form" title="BOM Line" model="com.axelor.apps.production.db.BillOfMaterialLine" onLoad="action-bill-of-material-line-attrs-set-qty-scale" onNew="action-bill-of-material-line-default-record,action-bill-of-material-line-attrs-set-qty-scale">
+	  <panel name="mainPanel">
+	    <field name="product" onChange="action-bom-line-record-on-product-change" domain="self.stockManaged='true'" form-view="product-form" grid-view="product-grid"/>
+	    <field name="qty" colSpan="3" x-scale="2"/>
+	    <field name="unit" readonlyIf="billOfMaterial != null" colSpan="3" canEdit="false" required="true"/>
+	    <field name="billOfMaterial" readonlyIf="product == null" canNew="true" canEdit="billOfMaterial.isSpecific" onChange="action-bom-line-record-on-bom-change" onSelect="action-bill-of-material-line-attrs-bom-domain-onselect"/>
+	    <field name="priority"/>
+	    <field name="billOfMaterial.isSpecific"/>
+	    <field name="hasNoManageStock"/>
+	  </panel>
+	</form>
+
+	<action-attrs name="action-bill-of-material-line-attrs-bom-domain-onselect">
+		<attribute name="domain" for="billOfMaterial"
+			expr="eval: &quot; self.product=:product AND (self.isSpecific IS NULL OR self.isSpecific = false) &quot;" />
+	</action-attrs>
+	
+	<action-attrs name="action-bill-of-material-line-attrs-set-qty-scale">
+    	<attribute name="scale" for="qty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
+    </action-attrs>
+
+	<action-record name="action-bill-of-material-line-default-record"
+		model="com.axelor.apps.production.db.BillOfMaterial">
+		<field name="qty" expr="1" />
+		<field name="priority" if="__parent__?.billOfMaterialLineList?.size() > 0"
+			expr="eval:__parent__?.billOfMaterialLineList?.max{ it.getPriority() }?.getPriority() + 10" />
+	</action-record>
+	
+	<action-record name="action-bom-line-record-on-product-change" 
+		model="com.axelor.apps.production.db.BillOfMaterial">
+		<field name="unit" expr="eval: product?.unit"/>	
+		<field name="billOfMaterial" expr="eval: null"/>
+	</action-record>
+	
+	<action-record name="action-bom-line-record-on-bom-change" 
+		model="com.axelor.apps.production.db.BillOfMaterial">
+		<field name="product" expr="eval: billOfMaterial.product" if="billOfMaterial != null"/>
+		<field name="unit" expr="eval: billOfMaterial.unit" if="billOfMaterial != null"/>	
+	</action-record>
+	
+	<action-attrs name="action-bom-line-attrs-on-bom-change" 
+		model="com.axelor.apps.production.db.BillOfMaterial">
+		<attribute name="canEdit" for="billOfMaterial" expr="eval: billOfMaterial?.isSpecific ? true : false"/>	
+	</action-attrs>
+
+</object-views>

@@ -6,13 +6,14 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="TempBomTree" lang="java">
-  	<many-to-one name="bom" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOM" />
-  	<many-to-one name="parentBom" ref="com.axelor.apps.production.db.BillOfMaterial" title="Parent BOM" />
+  	<long name="bomId" title="BOM" />
+  	<long name="bomLineId" title="Component" />
   	<many-to-one name="parent" ref="com.axelor.apps.production.db.TempBomTree" title="Parent" />
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" precision="20" scale="10"/>
   	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
+    <integer name="priority" title="Priority"/>
   </entity>
   
 </domain-models>

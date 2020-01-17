@@ -593,7 +593,7 @@
 	<action-view name="action-product-view-show-bill-of-material" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
-		<domain>self.product.id = :productId AND self.defineSubBillOfMaterial = true</domain>
+		<domain>self.product.id = :productId</domain>
 		<context name="productId" expr="eval: id"/>
 	</action-view>
 	

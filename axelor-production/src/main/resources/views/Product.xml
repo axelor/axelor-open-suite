@@ -29,15 +29,15 @@
 		model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
-		<domain>self.billOfMaterialSet.product.id = :id</domain>
+		<domain>self.billOfMaterialLineList.product.id = :id</domain>
 	</action-view>
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
-		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.defineSubBillOfMaterial = true&quot;"/>
+		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) &quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-readonly-create-production-order">
-		<attribute name="readonly" for="createProductionOrderBtn" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2) AND self.defineSubBillOfMaterial = true', parentProduct?.id, id).fetch().isEmpty()"/>
+		<attribute name="readonly" for="createProductionOrderBtn" expr="eval: __repo__(BillOfMaterial).all().filter('(self.product.id = ?1 OR self.product.id = ?2)', parentProduct?.id, id).fetch().isEmpty()"/>
 	</action-attrs>
 	
     <action-record name="action-product-record-default-production" model="com.axelor.apps.base.db.Product" if-module="axelor-production">

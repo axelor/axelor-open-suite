@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ManufOrder;
@@ -297,9 +298,9 @@ public class CostSheetServiceImpl implements CostSheetService {
       UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
-    if (billOfMaterial.getBillOfMaterialSet() != null) {
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
-      for (BillOfMaterial billOfMaterialLine : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
         Product product = billOfMaterialLine.getProduct();
 
@@ -316,24 +317,25 @@ public class CostSheetServiceImpl implements CostSheetService {
                   origin,
                   unitCostCalculation);
 
-          BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
+          if (billOfMaterialLine.getBillOfMaterial() != null) {
 
-          if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
-            costSheetLineService.createConsumedProductWasteCostSheetLine(
-                company,
-                product,
-                billOfMaterialLine.getUnit(),
-                bomLevel,
-                parentCostSheetLine,
-                billOfMaterialLine.getQty(),
-                wasteRate,
-                origin,
-                unitCostCalculation);
-          }
+            BigDecimal wasteRate = billOfMaterialLine.getBillOfMaterial().getWasteRate();
 
-          if (billOfMaterialLine.getDefineSubBillOfMaterial()) {
+            if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
+              costSheetLineService.createConsumedProductWasteCostSheetLine(
+                  company,
+                  product,
+                  billOfMaterialLine.getUnit(),
+                  bomLevel,
+                  parentCostSheetLine,
+                  billOfMaterialLine.getQty(),
+                  wasteRate,
+                  origin,
+                  unitCostCalculation);
+            }
+            
             this._computeCostPrice(
-                company, billOfMaterialLine, bomLevel, costSheetLine, origin, unitCostCalculation);
+                company, billOfMaterialLine.getBillOfMaterial(), bomLevel, costSheetLine, origin, unitCostCalculation);
           }
         }
       }

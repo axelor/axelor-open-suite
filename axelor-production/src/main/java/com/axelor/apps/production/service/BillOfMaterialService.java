@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.AxelorException;
@@ -50,7 +51,7 @@ public interface BillOfMaterialService {
       throws AxelorException;
 
   @Transactional(rollbackOn = {Exception.class})
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial);
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial) throws AxelorException;
 
   @Transactional
   public void setBillOfMaterialAsDefault(BillOfMaterial billOfMaterial);
@@ -64,6 +65,6 @@ public interface BillOfMaterialService {
 
   String computeName(BillOfMaterial bom);
 
-  void addRawMaterials(
+  List<BillOfMaterialLine> addRawMaterials(
       long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials);
 }

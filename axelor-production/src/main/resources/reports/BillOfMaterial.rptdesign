@@ -22,6 +22,26 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
+        </structure>
     </list-property>
     <property name="units">cm</property>
     <property name="layoutPreference">auto layout</property>
@@ -34,6 +54,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">7</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -64,6 +87,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/abs-wip</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -76,6 +102,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -88,6 +117,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">lmdpdlaa</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -147,7 +179,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs-wip</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -263,12 +297,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
@@ -287,42 +323,49 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">company_name</property>
+                    <property name="alias">company_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company_name</text-property>
                     <text-property name="heading">company_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">bom_name</property>
+                    <property name="alias">bom_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">bom_name</text-property>
                     <text-property name="heading">bom_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">version_number</property>
+                    <property name="alias">version_number</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">version_number</text-property>
                     <text-property name="heading">version_number</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">product_name</property>
+                    <property name="alias">product_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_name</text-property>
                     <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">qty</property>
+                    <property name="alias">qty</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
                     <text-property name="heading">qty</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">unit_name</property>
+                    <property name="alias">unit_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">unit_name</text-property>
                     <text-property name="heading">unit_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">prod_process</property>
+                    <property name="alias">prod_process</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">prod_process</text-property>
                     <text-property name="heading">prod_process</text-property>
@@ -613,42 +656,48 @@ WHERE BOM.id = ?]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">priority</property>
+                    <property name="alias">priority</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">priority</text-property>
                     <text-property name="heading">priority</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">product_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_name</text-property>
-                    <text-property name="heading">product_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">sub_bom</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">sub_bom</text-property>
-                    <text-property name="heading">sub_bom</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">manage_stock</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">manage_stock</text-property>
-                    <text-property name="heading">manage_stock</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">qty</property>
+                    <property name="alias">qty</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
                     <text-property name="heading">qty</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">unit_name</property>
+                    <property name="alias">unit_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">unit_name</text-property>
                     <text-property name="heading">unit_name</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">bomline_specific</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">bomline_specific</text-property>
+                    <text-property name="heading">bomline_specific</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_name</property>
+                    <property name="alias">product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">manage_stock</property>
+                    <property name="alias">manage_stock</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">manage_stock</text-property>
+                    <text-property name="heading">manage_stock</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">prod_process</property>
+                    <property name="alias">prod_process</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">prod_process</text-property>
                     <text-property name="heading">prod_process</text-property>
@@ -657,11 +706,13 @@ WHERE BOM.id = ?]]></xml-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
+                    <property name="paramName">BillOfMaterialId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -673,28 +724,28 @@ WHERE BOM.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">product_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">sub_bom</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">manage_stock</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
                         <property name="name">qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">3</property>
                         <property name="name">unit_name</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">bomline_specific</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">product_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">manage_stock</property>
+                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -714,38 +765,38 @@ WHERE BOM.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">product_name</property>
-                    <property name="nativeName">product_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">sub_bom</property>
-                    <property name="nativeName">sub_bom</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">manage_stock</property>
-                    <property name="nativeName">manage_stock</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">3</property>
                     <property name="name">unit_name</property>
                     <property name="nativeName">unit_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">bomline_specific</property>
+                    <property name="nativeName">bomline_specific</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">product_name</property>
+                    <property name="nativeName">product_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">manage_stock</property>
+                    <property name="nativeName">manage_stock</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
@@ -755,14 +806,19 @@ WHERE BOM.id = ?]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT BOM.priority, Product.full_name as product_name, BOM.define_sub_bill_of_material as sub_bom, BOM.has_no_manage_stock as manage_stock,
-BOM.qty, Unit.label_to_printing as unit_name, ProdProcess.name as prod_process
-FROM production_bill_of_material AS BOM
-LEFT JOIN base_product as Product ON (Product.id = BOM.product)
-LEFT JOIN base_unit AS Unit ON (Unit.id = BOM.unit)
+            <xml-property name="queryText"><![CDATA[SELECT 	BOM_Line.priority, 
+		BOM_Line.qty, 
+		Unit.label_to_printing as unit_name, 
+		BOM.is_specific as bomline_specific,
+		Product.full_name as product_name,  
+		BOM.has_no_manage_stock as manage_stock, 
+		ProdProcess.name as prod_process
+FROM production_bill_of_material_line AS BOM_Line
+LEFT JOIN production_bill_of_material AS BOM ON (BOM.id = BOM_Line.bill_of_material) 
+LEFT JOIN base_product AS Product ON (Product.id = BOM_Line.product)
+LEFT JOIN base_unit AS Unit ON (Unit.id = BOM_Line.unit)
 LEFT JOIN production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
-LEFT JOIN production_bill_of_material_bill_of_material_set AS BOMSET ON (BOMSET.bill_of_material_set = BOM.id)
-WHERE BOMSET.production_bill_of_material = ? order by Product.name]]></xml-property>
+WHERE BOM_Line.parent = ? order by Product.name]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -1311,16 +1367,17 @@ WHERE BOMSET.production_bill_of_material = ? order by Product.name]]></xml-prope
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">sub_bom</property>
-                                    <text-property name="displayName">sub_bom</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sub_bom"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
                                     <property name="name">manage_stock</property>
                                     <text-property name="displayName">manage_stock</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["manage_stock"]</expression>
                                     <property name="dataType">integer</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">specific</property>
+                                    <text-property name="displayName">specific</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["bomline_specific"]</expression>
+                                    <property name="dataType">boolean</property>
+                                    <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
                             <column id="4358">
@@ -1556,7 +1613,7 @@ WHERE BOMSET.production_bill_of_material = ? order by Product.name]]></xml-prope
                                                 <structure>
                                                     <property name="paramName">param_1</property>
                                                     <simple-property-list name="expression">
-                                                        <value type="javascript">"BOM.defineSubBillOfMaterial"</value>
+                                                        <value type="javascript">"BOM.isSpecific"</value>
                                                     </simple-property-list>
                                                 </structure>
                                             </list-property>
@@ -1798,6 +1855,7 @@ WHERE BOMSET.production_bill_of_material = ? order by Product.name]]></xml-prope
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <text id="4381">
+                                            <property name="fontFamily">sans-serif</property>
                                             <property name="fontSize">9pt</property>
                                             <property name="fontWeight">normal</property>
                                             <property name="textAlign">center</property>
@@ -1816,12 +1874,13 @@ WHERE BOMSET.production_bill_of_material = ? order by Product.name]]></xml-prope
                                                     <property name="dataType">string</property>
                                                 </structure>
                                             </list-property>
+                                            <structure name="toc"/>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["sub_bom"] == 0 &amp;&amp; params["Locale"].value == 'en'){ 
+                                            <text-property name="content"><![CDATA[<VALUE-OF>if((row._outer["specific"] == false || row._outer["specific"] == null) &amp;&amp; params["Locale"].value == 'en'){ 
 	'No'
-}else if(row._outer["sub_bom"] == 0 &amp;&amp; params["Locale"].value == 'fr'){ 
+}else if((row._outer["specific"] == 0 || row._outer["specific"] == null) &amp;&amp; params["Locale"].value == 'fr'){ 
 	'Non' 
-}else if(row._outer["sub_bom"] != 0 &amp;&amp; params["Locale"].value == 'en'){
+}else if(row._outer["specific"] != 0 &amp;&amp; params["Locale"].value == 'en'){
 	'Yes'
 }else {
 	'Oui'

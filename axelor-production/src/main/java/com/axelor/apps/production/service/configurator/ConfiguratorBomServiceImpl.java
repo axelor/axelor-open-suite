@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -139,9 +140,18 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
+
+        BillOfMaterialLine billOfMaterialLine = new BillOfMaterialLine();
+
         BillOfMaterial childBom =
             generateBillOfMaterial(confBomChild, attributes, level, generatedProduct);
-        billOfMaterial.addBillOfMaterialSetItem(childBom);
+
+        billOfMaterialLine.setBillOfMaterial(childBom);
+        billOfMaterialLine.setProduct(childBom.getProduct());
+        billOfMaterialLine.setQty(childBom.getQty());
+        billOfMaterialLine.setParent(billOfMaterial);
+
+        billOfMaterial.addBillOfMaterialLineListItem(billOfMaterialLine);
       }
     }
 

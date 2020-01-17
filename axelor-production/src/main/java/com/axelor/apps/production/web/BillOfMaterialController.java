@@ -20,6 +20,7 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
+import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
@@ -131,7 +132,7 @@ public class BillOfMaterialController {
             .model(BillOfMaterial.class.getName())
             .add("form", "bill-of-material-form")
             .add("grid", "bill-of-material-grid")
-            .domain("self.defineSubBillOfMaterial = true AND self.personalized = false")
+            .domain("self.personalized = false")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
   }
@@ -172,14 +173,19 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
     billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-    TempBomTree tempBomTree = Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial);
+    try {
 
-    response.setView(
-        ActionView.define(I18n.get("Bill of materials"))
-            .model(TempBomTree.class.getName())
-            .add("tree", "bill-of-material-tree")
-            .context("_tempBomTreeId", tempBomTree.getId())
-            .map());
+      TempBomTree tempBomTree = Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial);
+
+      response.setView(
+          ActionView.define(I18n.get("Bill of materials"))
+              .model(TempBomTree.class.getName())
+              .add("tree", "bill-of-material-tree")
+              .context("_tempBomTreeId", tempBomTree.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
@@ -211,10 +217,10 @@ public class BillOfMaterialController {
           (ArrayList<LinkedHashMap<String, Object>>) request.getContext().get("rawMaterials");
 
       if (rawMaterials != null && !rawMaterials.isEmpty()) {
-        Beans.get(BillOfMaterialService.class)
-            .addRawMaterials(billOfMaterial.getId(), rawMaterials);
-
-        response.setReload(true);
+        response.setValue(
+            "billOfMaterialLineList",
+            Beans.get(BillOfMaterialService.class).addRawMaterials(billOfMaterial.getId(), rawMaterials));
+        response.setValue("$rawMaterials", new ArrayList<LinkedHashMap<String, Object>>());
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

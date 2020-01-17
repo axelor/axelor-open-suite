@@ -26,13 +26,12 @@
 	<input file="production_prodProcessLine.csv" separator=";" type="com.axelor.apps.production.db.ProdProcessLine"/>
 
 	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId">
-		<bind column="billOfMaterials" to="billOfMaterialSet" search="self.importId in :billOfMaterials" eval="billOfMaterials ? billOfMaterials.split('\\|') as List : [0]"/>
 		<bind to="fullName" column="name"/>
 	</input>
-	
-	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportBillOfMaterial:computeCostPrice">
-		<bind column="billOfMaterials" to="billOfMaterialSet" search="self.importId in :billOfMaterials" eval="billOfMaterials ? billOfMaterials.split('\\|') as List : [0]"/>
-	</input>
+
+	<input file="production_billOfMaterialLine.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterialLine" search="self.importId = :importId"/>
+
+	<input file="production_billOfMaterial.csv" separator=";" type="com.axelor.apps.production.db.BillOfMaterial" search="self.importId = :importId" update="true" call="com.axelor.csv.script.ImportBillOfMaterial:computeCostPrice"/>
 	
 	<input file="production_productionConfig.csv" separator=";" type="com.axelor.apps.production.db.ProductionConfig" search="self.importId = :importId"/>
 	<input file="stock_stockConfig.csv" separator=";" type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId"/>

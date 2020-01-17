@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
@@ -406,8 +407,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
    */
   protected void assignProductLevel(BillOfMaterial billOfMaterial, int level) {
 
-    if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()
+    if (billOfMaterial.getBillOfMaterialLineList() == null
+        || billOfMaterial.getBillOfMaterialLineList().isEmpty()
         || level > 100) {
 
       Product subProduct = billOfMaterial.getProduct();
@@ -419,12 +420,18 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
       level = level + 1;
 
-      for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine subBillOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
-        Product subProduct = subBillOfMaterial.getProduct();
+        Product subProduct = subBillOfMaterialLine.getProduct();
 
         if (this.productMap.containsKey(subProduct.getId())) {
-          this.assignProductLevel(subBillOfMaterial, level);
+          
+          if (subBillOfMaterialLine.getBillOfMaterial() == null || level > 100) {
+            log.debug("Add of the sub product : {} for the level : {} ", subProduct.getFullName(), level);
+            this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
+          } else {
+            this.assignProductLevel(subBillOfMaterialLine.getBillOfMaterial(), level);
+          }
 
           if (hasValidBillOfMaterial(subProduct)) {
             this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);

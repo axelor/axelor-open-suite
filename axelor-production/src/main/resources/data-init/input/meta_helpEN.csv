@@ -8,7 +8,7 @@
 "axelor-production";"ProdProcessLine";"prod-process-line-form";"toConsumeProdProductList";"If the ""Manage the consumption by phase"" box is checked for the production process, this table enables to specify the list of products needed to complete the phase. "
 "axelor-production";"BillOfMaterial";"bill-of-material-form";"computeCostPrice";"This button calculated the production costs of the product attached to the bill of material, based on sub-products and raw materials which have been used, and use of workstations for the corresponding production range. "
 "axelor-production";"BillOfMaterial";"bill-of-material-form";"updateProductCostPrice";"This button allows you to update the cost price compared to the last calculation. Indeed, the prices of raw materials and labor can evolve and it becomes necessary to update the cost more or less regularly."
-"axelor-production";"BillOfMaterial";"bill-of-material-line-form";"hasNoManageStock";"Tick this box to indicate that stocks will not be managed on this line. During production, no stock movement will be generated on this BOM line."
+"axelor-production";"BillOfMaterialLine";"bill-of-material-line-form";"hasNoManageStock";"Tick this box to indicate that stocks will not be managed on this line. During production, no stock movement will be generated on this BOM line."
 "axelor-production";"BillOfMaterial";"bill-of-material-line-form";"priority";"Specifies a priority for the BOM line."
 "axelor-production";"WorkCenter";"work-center-form";"machine";"For work stations including a machine, this field indicates the default machine. "
 "axelor-production";"WorkCenter";"work-center-form";"minCapacityPerCycle";"Minimum production capacity per machine cycle."

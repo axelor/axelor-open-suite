@@ -139,8 +139,7 @@ public interface ITranslation {
   public static final String BILL_OF_MATERIAL_VERSION_NUMBER = /*$$(*/ "BOM.versionNumber"; /*)*/
   public static final String BILL_OF_MATERIAL_COMPONENTS = /*$$(*/ "BOM.billOfMaterialList"; /*)*/
   public static final String BILL_OF_MATERIAL_PRIORITY = /*$$(*/ "BOM.priority"; /*)*/
-  public static final String BILL_OF_MATERIAL_DEFINE_SUB_BOM = /*$$(*/
-      "BOM.defineSubBillOfMaterial"; /*)*/
+  public static final String BILL_OF_MATERIAL_IS_SPECIFIC = /*$$(*/ "BOM.isSpecific"; /*)*/
   public static final String BILL_OF_MATERIAL_HAS_NO_MANAGE_STOCK = /*$$(*/
       "BOM.hasNoManageStock"; /*)*/
 

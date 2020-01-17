@@ -76,8 +76,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-production-order-wizard-attrs-bill-of-material-dummy-domain">
-		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;(self.product = ${product?.parentProduct?.id} OR self.product = ${product.id}) AND self.defineSubBillOfMaterial = true &quot;" if="product"/>
-		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;self.defineSubBillOfMaterial = true &quot;" if="!product"/>
+		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot;(self.product = ${product?.parentProduct?.id} OR self.product = ${product.id}) &quot;" if="product"/>
+		<attribute name="domain" for="$billOfMaterial" expr="eval: &quot; true &quot;" if="!product"/>
 	</action-attrs>
     
    	<action-method name="action-production-order-method-add-manuf-order">

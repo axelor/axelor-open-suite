@@ -48,8 +48,8 @@
     </action-attrs>
     
     <action-attrs name="action-production-order-wizard-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) AND self.defineSubBillOfMaterial = true&quot;" if="product"/>
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;self.defineSubBillOfMaterial = true&quot;" if="!product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product.id}) &quot;" if="product"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; true &quot;" if="!product"/>
 	</action-attrs>
     
     

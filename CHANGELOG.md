@@ -39,6 +39,7 @@
 - Studio: Added restriction for model and model field names, allowed only alphanumberic characters
 - Studio: Disable 'Visible in grid' option for spacer
 - STOCK MOVE LINE : display invoiced status at same place as avalable tag
+- BillOfMaterials : Components are now handled by a new entity "Bill of Materials Line" to improve ease of process and solve a few anomalies, especially on BoM duplication.
 
 ## Bug Fixes
 - Fix injection error during test
@@ -52,4 +53,5 @@
 - MRP : Fix error while generating all proposals.
 - UI : Addition of onClick attributes in buttons.
 - ImportCityServiceImpl : Use of try-with-resource for ZipFile and FileWriter.
+
 

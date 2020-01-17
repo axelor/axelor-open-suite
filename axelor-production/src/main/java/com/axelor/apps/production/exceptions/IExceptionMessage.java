@@ -111,6 +111,10 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS = /*$$(*/
       "Too many recursive calls to import the bill of material configurator." /*)*/;
 
+  /** Deleting tree of all sub boms recursively */
+  String TEMP_BOM_TREE_ABORT_RECURSION = /*$$(*/
+      "An error occured while cleaning up invalid bills of materials sub-trees. Process was aborted after reaching sub-tree of depth 100." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 

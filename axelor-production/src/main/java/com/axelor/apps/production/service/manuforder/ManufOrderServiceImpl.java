@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -125,16 +126,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Company company = billOfMaterial.getCompany();
 
-    BigDecimal qty =
-        qtyRequested.divide(
-            billOfMaterial.getQty(),
-            appBaseService.getNbDecimalDigitForQty(),
-            RoundingMode.HALF_EVEN);
-
     ManufOrder manufOrder =
         this.createManufOrder(
             product,
-            qty,
+            qtyRequested,
             priority,
             IS_TO_INVOICE,
             company,
@@ -161,10 +156,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     BigDecimal bomQty = billOfMaterial.getQty();
 
-    if (billOfMaterial.getBillOfMaterialSet() != null) {
+    if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
-      for (BillOfMaterial billOfMaterialLine :
-          getSortedBillsOfMaterials(billOfMaterial.getBillOfMaterialSet())) {
+      for (BillOfMaterialLine billOfMaterialLine :
+          getSortedBillsOfMaterialLines(billOfMaterial.getBillOfMaterialLineList())) {
 
         if (!billOfMaterialLine.getHasNoManageStock()) {
 
@@ -198,15 +193,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return qty;
   }
 
-  private List<BillOfMaterial> getSortedBillsOfMaterials(
-      Collection<BillOfMaterial> billsOfMaterials) {
+  private List<BillOfMaterialLine> getSortedBillsOfMaterialLines(
+      Collection<BillOfMaterialLine> billsOfMaterialsLines) {
 
-    billsOfMaterials = MoreObjects.firstNonNull(billsOfMaterials, Collections.emptyList());
-    return billsOfMaterials
+    billsOfMaterialsLines =
+        MoreObjects.firstNonNull(billsOfMaterialsLines, Collections.emptyList());
+    return billsOfMaterialsLines
         .stream()
         .sorted(
-            Comparator.comparing(BillOfMaterial::getPriority)
-                .thenComparing(Comparator.comparing(BillOfMaterial::getId)))
+            Comparator.comparing(BillOfMaterialLine::getPriority)
+                .thenComparing(Comparator.comparing(BillOfMaterialLine::getId)))
         .collect(Collectors.toList());
   }
 

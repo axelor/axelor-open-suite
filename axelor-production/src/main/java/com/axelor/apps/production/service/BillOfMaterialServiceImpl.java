@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
@@ -42,10 +43,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,8 +58,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Inject private TempBomTreeRepository tempBomTreeRepo;
 
   @Inject private ProductRepository productRepo;
-
-  private List<Long> processedBom;
 
   @Override
   public List<BillOfMaterial> getBillOfMaterialSet(Product product) {
@@ -120,7 +117,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     if (billOfMaterial != null) {
-      BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, true);
+      BillOfMaterial personalizedBOM = JPA.copy(billOfMaterial, false);
       billOfMaterialRepo.save(personalizedBOM);
       personalizedBOM.setName(
           personalizedBOM.getName()
@@ -130,12 +127,27 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
               + personalizedBOM.getId()
               + ")");
       personalizedBOM.setPersonalized(true);
-      Set<BillOfMaterial> personalizedBOMSet = new HashSet<BillOfMaterial>();
-      for (BillOfMaterial childBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
-        personalizedBOMSet.add(customizeBillOfMaterial(childBillOfMaterial, depth + 1));
-      }
-      personalizedBOM.setBillOfMaterialSet(personalizedBOMSet);
 
+      ArrayList<BillOfMaterialLine> BOMLineList = new ArrayList<>();
+
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
+        BillOfMaterialLine bomLine = new BillOfMaterialLine();
+
+        bomLine.setProduct(billOfMaterialLine.getProduct());
+        bomLine.setPriority(billOfMaterialLine.getPriority());
+        bomLine.setParent(personalizedBOM);
+        bomLine.setQty(billOfMaterialLine.getQty());
+        bomLine.setUnit(billOfMaterialLine.getUnit());
+
+        if (bomLine.getBillOfMaterial() != null && bomLine.getBillOfMaterial().getIsSpecific()) {
+          bomLine.setBillOfMaterial(
+              customizeBillOfMaterial(billOfMaterialLine.getBillOfMaterial(), depth + 1));
+        } else {
+          bomLine.setBillOfMaterial(billOfMaterialLine.getBillOfMaterial());
+        }
+        BOMLineList.add(bomLine);
+      }
+      personalizedBOM.setBillOfMaterialLineList(BOMLineList);
       return personalizedBOM;
     }
 
@@ -215,91 +227,130 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  public TempBomTree generateTree(BillOfMaterial billOfMaterial) {
-
-    processedBom = new ArrayList<>();
-
-    return getBomTree(billOfMaterial, null, null);
-  }
-
   @Transactional
-  public TempBomTree getBomTree(BillOfMaterial bom, BillOfMaterial parentBom, TempBomTree parent) {
+  public TempBomTree generateTree(BillOfMaterial billOfMaterial) throws AxelorException {
 
     TempBomTree bomTree;
-    if (parentBom == null) {
-      bomTree =
-          tempBomTreeRepo.all().filter("self.bom = ?1 and self.parentBom = null", bom).fetchOne();
-    } else {
-      bomTree =
-          tempBomTreeRepo
-              .all()
-              .filter("self.bom = ?1 and self.parentBom = ?2", bom, parentBom)
-              .fetchOne();
-    }
+    bomTree =
+        tempBomTreeRepo
+            .all()
+            .filter("self.bomId = ?1 and self.parent = null", billOfMaterial.getId())
+            .fetchOne();
 
     if (bomTree == null) {
       bomTree = new TempBomTree();
     }
-    bomTree.setProdProcess(bom.getProdProcess());
-    bomTree.setProduct(bom.getProduct());
-    bomTree.setQty(bom.getQty());
-    bomTree.setUnit(bom.getUnit());
-    bomTree.setParentBom(parentBom);
-    bomTree.setParent(parent);
-    bomTree.setBom(bom);
+    bomTree.setProdProcess(billOfMaterial.getProdProcess());
+    bomTree.setProduct(billOfMaterial.getProduct());
+    bomTree.setQty(billOfMaterial.getQty());
+    bomTree.setUnit(billOfMaterial.getUnit());
+    bomTree.setParent(null);
+    bomTree.setBomId(billOfMaterial.getId());
+    bomTree.setBomLineId(null);
     bomTree = tempBomTreeRepo.save(bomTree);
 
-    processedBom.add(bom.getId());
+    List<Long> validBomLineIds = processChildBom(billOfMaterial, bomTree);
 
-    List<Long> validBomIds = processChildBom(bom, bomTree);
+    validBomLineIds.add(0L);
 
-    validBomIds.add(0L);
-
-    removeInvalidTree(validBomIds, bom);
+    removeInvalidTree(validBomLineIds, bomTree);
 
     return bomTree;
   }
 
-  private List<Long> processChildBom(BillOfMaterial bom, TempBomTree bomTree) {
+  @Transactional
+  public TempBomTree getSubBomTree(BillOfMaterialLine bomLine, TempBomTree parent)
+      throws AxelorException {
 
-    List<Long> validBomIds = new ArrayList<Long>();
+    TempBomTree bomTree;
+    bomTree =
+        tempBomTreeRepo
+            .all()
+            .filter("self.bomLineId = ?1 and self.parent = ?2", bomLine.getId(), parent)
+            .fetchOne();
 
-    for (BillOfMaterial childBom : bom.getBillOfMaterialSet()) {
-      if (!processedBom.contains(childBom.getId())) {
-        getBomTree(childBom, bom, bomTree);
-      } else {
-        log.debug("Already processed: {}", childBom.getId());
-      }
-      validBomIds.add(childBom.getId());
+    if (bomTree == null) {
+      bomTree = new TempBomTree();
     }
 
-    return validBomIds;
+    BillOfMaterial bom = bomLine.getBillOfMaterial();
+    bomTree.setBomLineId(bomLine.getId());
+    bomTree.setProduct(bomLine.getProduct());
+    bomTree.setQty(bomLine.getQty());
+    bomTree.setUnit(bomLine.getUnit());
+    bomTree.setPriority(bomLine.getPriority());
+    if (bom != null) {
+      bomTree.setBomId(bom.getId());
+      bomTree.setProdProcess(bom.getProdProcess());
+    } else {
+      bomTree.setBomId(null);
+    }
+    bomTree.setParent(parent);
+
+    bomTree = tempBomTreeRepo.save(bomTree);
+
+    if (bom != null) {
+      List<Long> validBomLineIds = processChildBom(bom, bomTree);
+
+      validBomLineIds.add(0L);
+
+      removeInvalidTree(validBomLineIds, bomTree);
+    }
+
+    return bomTree;
   }
 
-  @Transactional
-  public void removeInvalidTree(List<Long> validBomIds, BillOfMaterial bom) {
+  private List<Long> processChildBom(BillOfMaterial bom, TempBomTree bomTree)
+      throws AxelorException {
+
+    List<Long> validBomLineIds = new ArrayList<Long>();
+
+    for (BillOfMaterialLine bomLine : bom.getBillOfMaterialLineList()) {
+      getSubBomTree(bomLine, bomTree);
+      validBomLineIds.add(bomLine.getId());
+    }
+
+    return validBomLineIds;
+  }
+
+  public void removeInvalidTree(List<Long> validBomLineIds, TempBomTree bomTree)
+      throws AxelorException {
 
     List<TempBomTree> invalidBomTrees =
         tempBomTreeRepo
             .all()
-            .filter("self.bom.id not in (?1) and self.parentBom = ?2", validBomIds, bom)
+            .filter("self.parent = ?1 and self.bomLineId not in (?2)", bomTree, validBomLineIds)
             .fetch();
 
     log.debug("Invalid bom trees: {}", invalidBomTrees);
 
-    if (!invalidBomTrees.isEmpty()) {
-      List<TempBomTree> childBomTrees =
-          tempBomTreeRepo.all().filter("self.parent in (?1)", invalidBomTrees).fetch();
+    for (TempBomTree invalidBomTree : invalidBomTrees) {
+      this.tempBomTreeRecursiveRemove(invalidBomTree, 0);
+    }
+  }
 
+  /**
+   * Removes the tempBomTree from the database along will all its subTrees recursively.
+   *
+   * @param tempBomTree
+   */
+  @Transactional
+  protected void tempBomTreeRecursiveRemove(TempBomTree tempBomTree, int recursionLevel)
+      throws AxelorException {
+    if (recursionLevel >= 100) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TEMP_BOM_TREE_ABORT_RECURSION));
+    }
+    List<TempBomTree> childBomTrees =
+        tempBomTreeRepo.all().filter("self.parent = ?1", tempBomTree).fetch();
+    if (!childBomTrees.isEmpty()) {
       for (TempBomTree childBomTree : childBomTrees) {
-        childBomTree.setParent(null);
-        tempBomTreeRepo.save(childBomTree);
+        this.tempBomTreeRecursiveRemove(childBomTree, recursionLevel + 1);
       }
     }
 
-    for (TempBomTree invalidBomTree : invalidBomTrees) {
-      tempBomTreeRepo.remove(invalidBomTree);
-    }
+    tempBomTreeRepo.remove(tempBomTree);
   }
 
   @Override
@@ -322,51 +373,43 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Override
-  @Transactional
-  public void addRawMaterials(
+  public List<BillOfMaterialLine> addRawMaterials(
       long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {
     if (rawMaterials != null && !rawMaterials.isEmpty()) {
       BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
       int priority = 0;
-      if (billOfMaterial.getBillOfMaterialSet() != null
-          && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+      List<BillOfMaterialLine> bomLineList = billOfMaterial.getBillOfMaterialLineList();
+      if (bomLineList != null && !bomLineList.isEmpty()) {
         priority =
             Collections.max(
-                billOfMaterial
-                    .getBillOfMaterialSet()
-                    .stream()
-                    .map(it -> it.getPriority())
-                    .collect(Collectors.toSet()));
+                bomLineList.stream().map(it -> it.getPriority()).collect(Collectors.toSet()));
       }
 
       for (LinkedHashMap<String, Object> rawMaterial : rawMaterials) {
         priority += 10;
-        BillOfMaterial newComponent =
-            createBomFromRawMaterial(Long.valueOf((int) rawMaterial.get("id")), priority);
-        billOfMaterial.getBillOfMaterialSet().add(newComponent);
+        BillOfMaterialLine newComponent =
+            createBomFromRawMaterial(
+                Long.valueOf((int) rawMaterial.get("id")), billOfMaterial, priority);
+        bomLineList.add(newComponent);
       }
-    } else {
-      return;
+
+      return bomLineList;
     }
+
+    return null;
   }
 
-  @Transactional
-  protected BillOfMaterial createBomFromRawMaterial(long productId, int priority) {
-    BillOfMaterial newBom = new BillOfMaterial();
+  protected BillOfMaterialLine createBomFromRawMaterial(
+      long productId, BillOfMaterial parent, int priority) {
+    BillOfMaterialLine newBomLine = new BillOfMaterialLine();
     Product rawMaterial = productRepo.find(productId);
-    newBom.setDefineSubBillOfMaterial(false);
-    newBom.setPriority(priority);
-    newBom.setProduct(rawMaterial);
-    newBom.setQty(new BigDecimal(1));
-    newBom.setUnit(rawMaterial.getUnit());
-    newBom.setWasteRate(BigDecimal.ZERO);
-    newBom.setHasNoManageStock(false);
+    newBomLine.setPriority(priority);
+    newBomLine.setProduct(rawMaterial);
+    newBomLine.setQty(BigDecimal.ONE);
+    newBomLine.setUnit(rawMaterial.getUnit());
+    newBomLine.setBillOfMaterial(null);
+    newBomLine.setParent(parent);
 
-    billOfMaterialRepo.save(newBom);
-    String name = this.computeName(newBom); // need to save first cuz computeName uses the id.
-    newBom.setName(name);
-    newBom.setFullName(name);
-
-    return newBom;
+    return newBomLine;
   }
 }

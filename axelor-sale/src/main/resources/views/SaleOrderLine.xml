@@ -568,7 +568,7 @@
     </action-attrs>
     
 	<action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true AND self.personalized = false &quot;"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.personalized = false &quot;"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-discountamount-title">

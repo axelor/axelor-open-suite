@@ -10,27 +10,25 @@
 	<string name="name" title="Label"/>
   	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
   	<decimal name="qty" title="Qty" precision="20" scale="10"/>
-  	<integer name="priority" title="Priority"/>
-    <boolean name="defineSubBillOfMaterial" title="Define sub bill of materials"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
-  	<many-to-many name="billOfMaterialSet" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOMs" orderBy="priority"/>
+  	
+  	<one-to-many name="billOfMaterialLineList" ref="com.axelor.apps.production.db.BillOfMaterialLine" mappedBy="parent" title="BOM Lines" orderBy="priority"/>
+  	
   	<one-to-many name="prodResidualProductList" ref="com.axelor.apps.production.db.ProdResidualProduct" title="Residual products"/>
   	<decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>
+    <boolean name="isSpecific" title="Specific" default="false"/>
    	<decimal name="wasteRate" title="Waste rate (%)"/>
     <integer name="statusSelect" title="Status" readonly="true" selection="production.bill.of.material.status.select" default="1"/>
-		<many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
 
   	<one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheets" mappedBy="billOfMaterial"/>
 
 	<string name="fullName" namecolumn="true" title="Label"/>
 	<integer name="versionNumber" title="Version number" default="1"/>
 	<many-to-one name="originalBillOfMaterial" ref="com.axelor.apps.production.db.BillOfMaterial" title="Original bill of materials" />
-	<one-to-many name="bomChildTreeList" ref="TempBomTree" mappedBy="parentBom"/>
-	<one-to-many name="bomTreeList" ref="TempBomTree" mappedBy="bom"/>
      	
     <string name="note" large="true"/>
 
