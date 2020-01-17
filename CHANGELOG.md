@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.3]
 ## Features
 - Invoice : Removal of companyBankDetails comment in invoice form.
+- INVOICING PROJECT : consolidation of invoicing project
 
 ## Improvements
 - BANKSTATEMENT : import multiple records in a single line.
