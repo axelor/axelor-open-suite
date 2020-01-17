@@ -115,7 +115,7 @@ public class AccountController {
     }
   }
 
-  public void analyticDistributionRequiredOnInvoiceLinesBacameTrue(
+  public void analyticDistributionRequiredOnInvoiceLinesBecameTrue(
       ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
@@ -145,7 +145,7 @@ public class AccountController {
     }
   }
 
-  public void analyticDistributionRequiredOnMoveLinesBacameTrue(
+  public void analyticDistributionRequiredOnMoveLinesBecameTrue(
       ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);

@@ -53,9 +53,9 @@
 				<field name="useForPartnerBalance" colSpan="3"/>
 				<field name="reconcileOk" colSpan="3"/>
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
-				<field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4" onChange="action-account-update-analytic-boolean-record,save,action-account-analytic-distribution-authorized-bacame-false-method"/>
-				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized" onChange="save,action-account-analytic-distribution-required-on-invoice-lines-bacame-true-method"/>
-				<field name="analyticDistributionRequiredOnMoveLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized" onChange="save,action-account-analytic-distribution-required-on-move-lines-bacame-true-method"/>
+				<field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4" onChange="action-account-update-analytic-boolean-record,save,action-account-analytic-distribution-authorized-became-false-method"/>
+				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized" onChange="save,action-account-analytic-distribution-required-on-invoice-lines-became-true-method"/>
+				<field name="analyticDistributionRequiredOnMoveLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized" onChange="save,action-account-analytic-distribution-required-on-move-lines-became-true-method"/>
 				<field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
 				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
 			</panel>
@@ -186,16 +186,16 @@
     	<call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
     </action-method>
     
-    <action-method name="action-account-analytic-distribution-authorized-bacame-false-method">
+    <action-method name="action-account-analytic-distribution-authorized-became-false-method">
 		<call class="com.axelor.apps.account.web.AccountController" method="analyticDistributionAuthorizedBecameFalse"/>
 	</action-method>
 	
-	<action-method name="action-account-analytic-distribution-required-on-invoice-lines-bacame-true-method">
-		<call class="com.axelor.apps.account.web.AccountController" method="analyticDistributionRequiredOnInvoiceLinesBacameTrue"/>
+	<action-method name="action-account-analytic-distribution-required-on-invoice-lines-became-true-method">
+		<call class="com.axelor.apps.account.web.AccountController" method="analyticDistributionRequiredOnInvoiceLinesBecameTrue"/>
 	</action-method>
 	
-	<action-method name="action-account-analytic-distribution-required-on-move-lines-bacame-true-method">
-		<call class="com.axelor.apps.account.web.AccountController" method="analyticDistributionRequiredOnMoveLinesBacameTrue"/>
+	<action-method name="action-account-analytic-distribution-required-on-move-lines-became-true-method">
+		<call class="com.axelor.apps.account.web.AccountController" method="analyticDistributionRequiredOnMoveLinesBecameTrue"/>
 	</action-method>
 	
 	<action-method name="action-account-clean-analytic-method">
