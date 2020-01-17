@@ -51,7 +51,7 @@ public class AccountingReportBankPaymentServiceImpl extends AccountingReportServ
   public String getReportFileLink(AccountingReport accountingReport, String name)
       throws AxelorException {
     if (accountingReport.getTypeSelect()
-        >= AccountingReportRepository.REPORT_BANK_RECONCILIATION_STATEMENT) {
+        == AccountingReportRepository.REPORT_BANK_RECONCILIATION_STATEMENT) {
       return ReportFactory.createReport(IReport.BANK_PAYMENT_REPORT_TYPE, name + "-${date}")
           .addParam("AccountingReportId", accountingReport.getId())
           .addParam("Locale", ReportSettings.getPrintingLocale(null))
