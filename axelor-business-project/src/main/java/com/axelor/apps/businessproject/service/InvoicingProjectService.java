@@ -320,6 +320,10 @@ public class InvoicingProjectService {
 
     this.fillLines(invoicingProject, project);
 
+    if (!invoicingProject.getConsolidatePhaseWhenInvoicing()) {
+      return;
+    }
+
     List<Project> projectChildrenList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
