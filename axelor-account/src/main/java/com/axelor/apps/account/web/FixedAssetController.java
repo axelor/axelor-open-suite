@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,5 +67,18 @@ public class FixedAssetController {
     Beans.get(FixedAssetService.class).disposal(disposalDate, disposalAmount, fixedAsset);
 
     response.setCanClose(true);
+  }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+
+      Beans.get(FixedAssetService.class).updateAnalytic(fixedAsset);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

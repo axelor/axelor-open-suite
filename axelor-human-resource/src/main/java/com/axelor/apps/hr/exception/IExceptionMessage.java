@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -74,8 +74,6 @@ public interface IExceptionMessage {
       "Please, enter the number of daily work hours per employee %s" /*)*/;
   static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
-  static final String TIMESHEET_DATE_CONFLICT = /*$$(*/
-      "There is a conflict between the timesheet input dates and the dates of the following lines: %s" /*)*/;
   static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/

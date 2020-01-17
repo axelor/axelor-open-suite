@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -87,7 +87,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 
 /** @author axelor */
@@ -805,7 +804,6 @@ public class TimesheetServiceImpl implements TimesheetService {
           I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
 
     } else {
-      List<Integer> timesheetLineIndexes = new ArrayList<>();
 
       for (TimesheetLine timesheetLine : timesheetLineList) {
         LocalDate timesheetLineDate = timesheetLine.getDate();
@@ -816,17 +814,6 @@ public class TimesheetServiceImpl implements TimesheetService {
               I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
               timesheetLineList.indexOf(timesheetLine) + 1);
         }
-        if (timesheetLineDate.isAfter(toDate) || timesheetLineDate.isBefore(fromDate)) {
-          timesheetLineIndexes.add(timesheetLineList.indexOf(timesheetLine) + 1);
-        }
-      }
-
-      if (!timesheetLineIndexes.isEmpty()) {
-        throw new AxelorException(
-            timesheet,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT),
-            timesheetLineIndexes.stream().map(i -> i.toString()).collect(Collectors.joining(", ")));
       }
     }
   }
@@ -1116,7 +1103,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       } else if (appTimesheet.getCreateLinesForLeaves()) {
         LeaveRequest leave = leaveService.getLeave(user, date);
         if (leave != null) {
-          BigDecimal hours = leaveService.computeDuration(leave);
+          BigDecimal hours = leaveService.computeDuration(leave, date, date);
           if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
               == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             hours = hours.multiply(dayValueInHours);

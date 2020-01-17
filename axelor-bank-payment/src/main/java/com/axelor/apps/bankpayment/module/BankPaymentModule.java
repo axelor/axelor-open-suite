@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.bankpayment.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
+import com.axelor.apps.account.service.AccountingReportServiceImpl;
 import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
@@ -34,6 +35,8 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchBankRepository;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankAccountRepository;
@@ -47,6 +50,8 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerServiceImpl;
+import com.axelor.apps.bankpayment.service.AccountingReportBankPaymentService;
+import com.axelor.apps.bankpayment.service.AccountingReportBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
@@ -136,5 +141,9 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveRemoveService.class).to(MoveRemoveServiceBankPaymentImpl.class);
 
     bind(EbicsUserRepository.class).to(EbicsUserManagementRepository.class);
+
+    bind(AccountingReportBankPaymentService.class).to(AccountingReportBankPaymentServiceImpl.class);
+    bind(AccountingReportServiceImpl.class).to(AccountingReportBankPaymentServiceImpl.class);
+    bind(BankPaymentBatchRepository.class).to(BankPaymentBatchBankRepository.class);
   }
 }

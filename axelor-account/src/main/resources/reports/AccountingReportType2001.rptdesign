@@ -131,7 +131,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/abs_business_suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor_business_suite</property>
         </oda-data-source>
     </data-sources>
     <data-sets>

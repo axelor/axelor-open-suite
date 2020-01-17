@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
@@ -152,7 +151,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     }
 
     String queryStr =
-        " self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
+        "self.invoicingStatusSelect != :stockMoveInvoiced "
+            + "AND self.statusSelect = :stockMoveStatusRealized and self.realDate <= :moveDate "
             + "AND self.typeSelect = :stockMoveType ";
 
     if (company != null) {
@@ -163,7 +163,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         stockMoverepository
             .all()
             .filter(queryStr)
-            .bind("invoiceStatusVentilated", InvoiceRepository.STATUS_VENTILATED)
+            .bind("stockMoveInvoiced", StockMoveRepository.STATUS_INVOICED)
             .bind("stockMoveStatusRealized", StockMoveRepository.STATUS_REALIZED)
             .bind("stockMoveType", stockMoveTypeSelect)
             .bind("moveDate", moveDate);
@@ -365,13 +365,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
   protected boolean checkStockMoveLine(
       StockMoveLine stockMoveLine, Product product, boolean includeNotStockManagedProduct) {
-    if ((stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
+    return (stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0
             || product == null
             || (!includeNotStockManagedProduct && !product.getStockManaged()))
-        || (stockMoveLine.getQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0)) {
-      return true;
-    }
-    return false;
+        || (stockMoveLine.getRealQty().compareTo(stockMoveLine.getQtyInvoiced()) == 0);
   }
 
   protected MoveLine generateProductMoveLine(
@@ -395,16 +392,16 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     boolean isFixedAssets = false;
     BigDecimal amountInCurrency = null;
     BigDecimal totalQty = null;
-    BigDecimal deliveredQty = null;
+    BigDecimal notInvoicedQty = null;
 
     if (isPurchase && purchaseOrderLine != null) {
       totalQty = purchaseOrderLine.getQty();
 
-      deliveredQty =
+      notInvoicedQty =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               purchaseOrderLine.getUnit(),
-              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
               stockMoveLine.getRealQty().scale(),
               purchaseOrderLine.getProduct());
 
@@ -418,11 +415,11 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     if (!isPurchase && saleOrderLine != null) {
       totalQty = saleOrderLine.getQty();
 
-      deliveredQty =
+      notInvoicedQty =
           unitConversionService.convert(
               stockMoveLine.getUnit(),
               saleOrderLine.getUnit(),
-              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()),
               stockMoveLine.getRealQty().scale(),
               saleOrderLine.getProduct());
       if (ati) {
@@ -435,7 +432,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       return null;
     }
 
-    BigDecimal qtyRate = deliveredQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
+    BigDecimal qtyRate = notInvoicedQty.divide(totalQty, 10, RoundingMode.HALF_EVEN);
     amountInCurrency = amountInCurrency.multiply(qtyRate).setScale(2, RoundingMode.HALF_EVEN);
 
     if (amountInCurrency == null || amountInCurrency.compareTo(BigDecimal.ZERO) == 0) {

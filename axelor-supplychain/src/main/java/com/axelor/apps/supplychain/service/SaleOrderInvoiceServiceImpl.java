@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,12 +55,14 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -171,8 +173,43 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    invoice.setNote(saleOrder.getInvoiceComments());
-    invoice.setProformaComments(saleOrder.getProformaComments());
+    if (ObjectUtils.isEmpty(invoice.getNote())) {
+      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setNote(
+            saleOrder.getInvoiceComments()
+                + "\n"
+                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      } else if (Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setNote(saleOrder.getInvoiceComments());
+      } else if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
+          && invoice.getCompanyBankDetails() != null
+          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setNote(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      }
+    }
+
+    if (ObjectUtils.isEmpty(invoice.getProformaComments())) {
+      if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setProformaComments(
+            saleOrder.getProformaComments()
+                + "\n"
+                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      } else if (Strings.isNullOrEmpty(saleOrder.getProformaComments())
+          && invoice.getCompanyBankDetails() != null
+          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setProformaComments(saleOrder.getProformaComments());
+      } else if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
+          && invoice.getCompanyBankDetails() != null
+          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
+        invoice.setProformaComments(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
+      }
+    }
 
     // fill default advance payment invoice
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -601,7 +638,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return new InvoiceGeneratorSupplyChain(saleOrder, isRefund) {
       @Override
       public Invoice generate() throws AxelorException {
-        return super.createInvoiceHeader();
+        Invoice invoice = super.createInvoiceHeader();
+        invoice.setHeadOfficeAddress(saleOrder.getClientPartner().getHeadOfficeAddress());
+        return invoice;
       }
     };
   }
@@ -696,14 +735,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         };
 
     return invoiceLineGenerator.creates();
-  }
-
-  @Override
-  public void updateAndCheckInvoicedAmount(
-      SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
-      throws AxelorException {
-
-    update(saleOrder, currentInvoiceId, excludeCurrentInvoice, true);
   }
 
   @Override
@@ -925,7 +956,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     com.axelor.db.Query<StockMove> stockMoveQuery =
         stockMoveRepository
             .all()
-            .filter("self.invoice.id in (" + getIdListString(invoiceList) + ")");
+            .filter("self.invoiceSet.id in (" + getIdListString(invoiceList) + ")");
     stockMoveQuery
         .fetch()
         .forEach(
@@ -986,9 +1017,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
-                    + "(self.archived = NULL OR self.archived = false)")
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
@@ -997,13 +1026,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
               .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN);
     }
-    BigDecimal sumInvoices =
-        invoices
-            .stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .add(amountToInvoice);
+    BigDecimal sumInvoices = computeSumInvoices(invoices);
+    sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
@@ -1018,23 +1042,31 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
-                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.statusSelect != :invoiceStatus AND "
-                    + "(self.archived = NULL OR self.archived = false)")
+                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect"
+                    + " AND self.statusSelect != :invoiceStatus")
             .bind("saleOrderId", saleOrder.getId())
             .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
-    BigDecimal sumInvoices =
-        invoices
-            .stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce((x, y) -> x.add(y))
-            .orElse(BigDecimal.ZERO);
+    BigDecimal sumInvoices = computeSumInvoices(invoices);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
+  }
+
+  protected BigDecimal computeSumInvoices(List<Invoice> invoices) {
+    BigDecimal sumInvoices = BigDecimal.ZERO;
+    for (Invoice invoice : invoices) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
+      } else {
+        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+      }
+    }
+    return sumInvoices;
   }
 }

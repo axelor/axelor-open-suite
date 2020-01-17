@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<grid model="com.axelor.apps.purchase.db.PurchaseRequestLine" title="Purchase Request Lines" name="purchase-request-line-grid">
+		<field name="product"/>
+		<field name="newProduct"/>
+		<field name="unit"/>
+		<field name="quantity"/>
+	</grid>
+	
+	<form model="com.axelor.apps.purchase.db.PurchaseRequestLine" title="Purchase Request Line" name="purchase-request-line-form" onNew="action-purchase-request-line-record-default">
+		<panel name="mainPanel">
+			<field name="newProduct" widget="boolean-switch" colSpan="2"
+			hideIf="__parent__.statusSelect &gt; 2 &amp;&amp; !newProduct" /><spacer/>
+			<field name="product" colSpan="6" form-view="product-form"
+				grid-view="product-grid" hideIf="newProduct" requiredIf="!newProduct"
+			    canEdit="false" onChange="action-purchase-request-line-product-on-change" onSelect="action-purchase-request-line-attrs-product-doamin"/>
+			<field name="productTitle" colSpan="6" showIf="newProduct" requiredIf="newProduct"/>
+			<field name="unit" colSpan="6"/>
+			<field name="quantity" colSpan="6"/>
+			<field name="purchaseRequest" hideIf="$popup()"/>
+		</panel>
+	</form>
+	
+	<action-record name="action-purchase-request-line-product-on-change" model="com.axelor.apps.purchase.db.PurchaseRequestLine">
+		<field name="unit" expr="eval: product?.purchasesUnit ? product.purchasesUnit : product?.unit"/>
+	</action-record>
+	
+	<action-attrs name="action-purchase-request-line-attrs-product-doamin">
+		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) &quot;"/>
+	</action-attrs>
+	
+	<action-record name="action-purchase-request-line-record-default" model="com.axelor.apps.purchase.db.PurchaseRequestLine">
+  		<field name="quantity" expr="eval:1"/>
+  		<field name="product" expr="eval:_parent?._product"/>
+  		<field name="unit" expr="eval: __repo__(Product).find(_parent?._product?.id)?.getPurchasesUnit() ?: __repo__(Product).find(_parent?._product?.id)?.getUnit()" if="_parent?._product"/>
+	</action-record>
+	
+</object-views>

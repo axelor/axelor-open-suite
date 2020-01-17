@@ -17,6 +17,7 @@
    	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
    	
     <integer name="pfpValidateStatusSelect" title="PFP Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+    <integer name="invoicingStatusSelect" title="Invoicing status" selection="supplychain.stock.move.invoicing.status.select" readonly="true" default="0"/>
 
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
@@ -27,7 +28,12 @@
 		
 		// INVOICE
 	    public static final int INVOICE_ALL = 1;
-	    public static final int INVOICE_PARTILLY = 2;
+	    public static final int INVOICE_PARTIALLY = 2;
+
+	  // INVOICING STATUS
+	  public static final int STATUS_NOT_INVOICED = 0;
+	  public static final int STATUS_PARTIALLY_INVOICED = 1;
+	  public static final int STATUS_INVOICED = 2;
     ]]>
     </extra-code>
 

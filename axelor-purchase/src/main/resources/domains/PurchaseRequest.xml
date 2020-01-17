@@ -8,17 +8,13 @@
   <entity name="PurchaseRequest" lang="java" cacheable="true">
 	
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <boolean name="newProduct" title="New product" />
-    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" />
-    <decimal name="quantity" title="Quantity"/>
     <many-to-one name="supplierUser" ref="com.axelor.apps.base.db.Partner" title="Supplier" />
     <string name="description" title="Description" large="true"/>
     <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase order" />
     <integer name="statusSelect" title="Status" selection="purchase.request.status.select" default="1"/>
   	<many-to-many name="purchaseOrderSet" ref="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchase orders"/>
     <string name="purchaseRequestSeq" title="Ref."/>
-    <string name="productTitle" title="Product"/>
+	<one-to-many ref="com.axelor.apps.purchase.db.PurchaseRequestLine" name="purchaseRequestLineList" title="Purchase Request Lines" mappedBy="purchaseRequest"/>
 
     <unique-constraint columns="purchaseRequestSeq"/>
 
@@ -36,12 +32,9 @@
 		]]>
 	</extra-code>
 
-    <track>
-    	<field name="product"/>
-    	<field name="quantity"/>
-    	<field name="supplierUser"/>
-    	<field name="unit"/>
-    </track>
+	<track>
+		<field name="supplierUser"/>
+	</track>
   	
   </entity>
   

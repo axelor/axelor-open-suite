@@ -18,4 +18,7 @@ dependencies {
 	compile "com.sun.xml.bind:jaxb-impl:2.2.2"
 	compile "org.apache.pdfbox:pdfbox:2.0.9"
 	compile project(":modules:axelor-exception")
+
+  // JSch
+  compile "com.jcraft:jsch:0.1.55"
 }

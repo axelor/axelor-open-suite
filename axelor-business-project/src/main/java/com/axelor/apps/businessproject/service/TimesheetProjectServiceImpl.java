@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,7 +44,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
+public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
+    implements TimesheetProjectService {
 
   @Inject
   public TimesheetProjectServiceImpl(
@@ -91,8 +92,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
       // End date, useful only for consolidation
       tabInformations[3] = timesheetLine.getDate();
       tabInformations[4] =
-          timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
-              ? timesheetLine.getDurationForCustomer()
+          timesheetLine.getDurationForCustomer() != null
+              ? this.computeDurationForCustomer(timesheetLine)
               : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
 
@@ -117,8 +118,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
           tabInformations[4] =
               ((BigDecimal) tabInformations[4])
                   .add(
-                      timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
-                          ? timesheetLine.getDurationForCustomer()
+                      timesheetLine.getDurationForCustomer() != null
+                          ? this.computeDurationForCustomer(timesheetLine)
                           : timesheetLine.getHoursDuration());
         } else {
           timeSheetInformationsMap.put(key, tabInformations);
@@ -157,5 +158,11 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
     }
 
     return invoiceLineList;
+  }
+
+  @Override
+  public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException {
+    return timesheetLineService.computeHoursDuration(
+        timesheetLine.getTimesheet(), timesheetLine.getDurationForCustomer(), true);
   }
 }

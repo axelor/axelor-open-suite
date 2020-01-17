@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -47,6 +48,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -265,22 +267,27 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
 
     teamTask = computeDefaultInformation(teamTask);
 
-    switch (teamTask.getProject().getInvoicingSequenceSelect()) {
-      case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
-        teamTask.setToInvoice(
-            appBusinessProject.getPreTaskStatusSet() != null
-                && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
-        if (teamTask.getToInvoice()
-            && teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-          teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
-        }
-        break;
+    if (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE
+        && !teamTask.getIsTaskRefused()) {
 
-      case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
-        teamTask.setToInvoice(
-            appBusinessProject.getPostTaskStatusSet() != null
-                && appBusinessProject.getPostTaskStatusSet().contains(teamTask.getStatus()));
-        break;
+      switch (teamTask.getProject().getInvoicingSequenceSelect()) {
+        case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
+          teamTask.setToInvoice(
+              !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPreTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
+          break;
+
+        case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
+          teamTask.setToInvoice(
+              !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPostTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
+          break;
+      }
+    } else {
+      teamTask.setToInvoice(
+          teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT);
     }
 
     return teamTaskRepo.save(teamTask);
@@ -292,7 +299,10 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     Product product = teamTask.getProduct();
     if (product != null) {
       teamTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
-
+      if (teamTask.getUnitPrice() == null
+          || teamTask.getUnitPrice().compareTo(BigDecimal.ZERO) == 0) {
+        teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
+      }
     } else {
       TeamTaskCategory teamTaskCategory = teamTask.getTeamTaskCategory();
       if (teamTaskCategory == null) {
@@ -305,9 +315,9 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       if (product == null) {
         return teamTask;
       }
+      teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
     }
     teamTask.setUnit(product.getSalesUnit() == null ? product.getUnit() : product.getSalesUnit());
-    teamTask.setUnitPrice(this.computeUnitPrice(teamTask));
     teamTask.setCurrency(product.getSaleCurrency());
     teamTask.setQuantity(teamTask.getBudgetedTime());
 
@@ -328,18 +338,16 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       return unitPrice;
     }
 
-    PriceListLine priceListLine =
-        this.getPriceListLine(teamTask, priceList, teamTask.getUnitPrice());
+    PriceListLine priceListLine = this.getPriceListLine(teamTask, priceList, unitPrice);
     Map<String, Object> discounts =
-        priceListService.getReplacedPriceAndDiscounts(
-            priceList, priceListLine, teamTask.getProduct().getSalePrice());
+        priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, unitPrice);
 
     if (discounts == null) {
       return unitPrice;
     } else {
       unitPrice =
           priceListService.computeDiscount(
-              product.getSalePrice(),
+              unitPrice,
               (Integer) discounts.get("discountTypeSelect"),
               (BigDecimal) discounts.get("discountAmount"));
     }

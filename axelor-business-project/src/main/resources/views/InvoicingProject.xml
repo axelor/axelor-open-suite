@@ -3,6 +3,11 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="invoicing-project-grid" title="Invoicing business projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
+	<menubar>
+		<menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+			<item name="invoiceAllSelectedBusinessAffairs" action="action-invoicing-project-method-generate-invoice" title="Invoice all selected business affairs" prompt="Are you sure you want to generate invoices for all selected affairs ?"/>
+		</menu>
+	</menubar>
     <field name="invoice" width="120"/>
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
 		<field name="deadlineDate"/>
@@ -23,7 +28,9 @@
 			<field name="attachAnnexToInvoice" widget="boolean-switch"  readonlyIf="invoice"/>
 			<button name="generateInvoiceBtn" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
+			<field name="consolidatePhaseWhenInvoicing" showIf="project.projectTypeSelect == 1"/>
 			<button name="seeLinkedTimesheetLinesBtn" title="See Linked Timesheet Lines" onClick="action-invoicing-project-show-timesheet-lines" hidden="true" showIf="invoice != null"/>
+			<field name="project.projectTypeSelect" hidden="true"/>
 		</panel>
 
         <panel name="commentsPanel">
@@ -123,6 +130,7 @@
 	
 	<action-record name="action-invoicing-project-record-default" model="com.axelor.apps.businessproject.db.InvoicingProject">
 		<field name="project" expr="eval: _project"/>
+		<field name="consolidatePhaseWhenInvoicing" expr="eval: _project?.consolidatePhaseWhenInvoicing"/>
 	</action-record>
 	
 	<action-view name="action-invoicing-project-show-timesheet-lines" title="Timesheet lines" model="com.axelor.apps.hr.db.TimesheetLine">

@@ -145,6 +145,7 @@
 		<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
 		<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
 		<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
+		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
 		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
 		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices" help="Short legal note to be displayed on sale invoices"/>
 
@@ -160,7 +161,8 @@
 		<!-- Account Report -->
 		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of line minimum before long report generation message appear" min="0" help="value 0 is equal to no message"  default="10000"/>
 
-		<finder-method name="findByCompany" using="company"/>
+
+    <finder-method name="findByCompany" using="company"/>
 
 		<extra-code><![CDATA[
 	
@@ -297,6 +299,8 @@
 
 		<field name="invoiceAutomaticMail" on="UPDATE"/>
 		<field name="invoiceMessageTemplate" on="UPDATE"/>
+		
+		<field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
 	</track>
 
 	</entity>

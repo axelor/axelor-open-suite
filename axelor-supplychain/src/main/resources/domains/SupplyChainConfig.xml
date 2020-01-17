@@ -37,6 +37,8 @@
     ]]></extra-code>
 
     <track>
+    	<field name="company" on="UPDATE"/>
+    	
     	<field name="hasOutSmForStorableProduct" on="UPDATE"/>
     	<field name="hasOutSmForNonStorableProduct" on="UPDATE"/>
     	<field name="hasInSmForStorableProduct" on="UPDATE"/>
@@ -45,6 +47,15 @@
     	<field name="autoAllocateOnReceipt" on="UPDATE"/>
     	<field name="autoAllocateOnAllocation" on="UPDATE"/>
     	<field name="autoRequestReservedQty" on="UPDATE"/>
+    	<field name="autoAllocateOnAvailabilityRequest" on="UPDATE"/>
+    	
+    	<field name="defaultEstimatedDate" on="UPDATE"/>
+    
+    	<field name="numberOfDays" on="UPDATE"/>
+
+    	<field name="defaultEstimatedDateForPurchaseOrder" on="UPDATE"/>
+    
+    	<field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
     </track>
     
   </entity>

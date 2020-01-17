@@ -141,6 +141,8 @@
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 
+  <string name="headOfficeAddress" title="Head office address"/>
+
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[
