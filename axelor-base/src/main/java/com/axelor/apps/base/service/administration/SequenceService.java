@@ -136,7 +136,7 @@ public class SequenceService {
       return null;
     }
     if (company == null) {
-      return sequenceRepo.findByCode(code);
+      return sequenceRepo.findByCodeSelect(code);
     }
 
     return sequenceRepo.find(code, company);
@@ -298,7 +298,7 @@ public class SequenceService {
             .filter(
                 "self.select.name = ? AND self.value = ?",
                 "sequence.generic.code.select",
-                sequence.getCode())
+                sequence.getCodeSelect())
             .fetchOne();
 
     return item.getTitle();

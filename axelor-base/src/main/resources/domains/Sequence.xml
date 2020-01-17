@@ -9,7 +9,7 @@
 
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company" required="false"/>
     <string name="name" title="Name" required="true"/>
-    <string name="code" title="Document concerned" required="true" selection="sequence.generic.code.select"/>
+    <string name="codeSelect" title="Document concerned" required="true" selection="sequence.generic.code.select"/>
     <enum name="sequenceTypeSelect" default="NUMBERS" ref="SequenceTypeSelect" title="Sequence type" required="true"/>
     <enum name="sequenceLettersTypeSelect" default="UPPERCASE" ref="SequenceLettersTypeSelect" title="Uppercase / lowercase"/>
     <string name="prefixe" title="Prefix"/>
@@ -24,9 +24,10 @@
 
     <string name="fullName" title="Full name" namecolumn="true"/>
     
-    <unique-constraint columns="company,code,prefixe,suffixe"/>
-    <index columns="code,company" name="idx_sequence_code_company"/>
-    <finder-method name="find" using="code,company"/>
+    <unique-constraint columns="company,codeSelect,prefixe,suffixe"/>
+    <index columns="codeSelect,company" name="idx_sequence_code_company"/>
+    <finder-method name="find" using="codeSelect,company"/>
+    <finder-method name="findByCodeSelect" using="codeSelect"/>
     
      <extra-code><![CDATA[
         

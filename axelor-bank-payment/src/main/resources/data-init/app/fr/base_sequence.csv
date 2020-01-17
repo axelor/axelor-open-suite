@@ -1,4 +1,4 @@
-"importId";"code";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+"importId";"codeSelect";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 163;"bankOrder";"SEPA Credit Transfers";1;4;"SCT%YY%FM";;1;1
 164;"bankOrder";"SEPA Direct Debits";1;4;"SDD%YY%FM";;1;1
 165;"bankOrder";"International Credit Transfers";1;4;"ICT%YY%FM";;1;1
