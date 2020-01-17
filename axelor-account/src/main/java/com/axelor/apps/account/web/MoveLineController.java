@@ -138,8 +138,7 @@ public class MoveLineController {
 
       if (!reconciliableCreditMoveLineList.isEmpty() && !reconciliableDebitMoveLineList.isEmpty()) {
         Beans.get(MoveLineService.class)
-            .reconcileMoveLinesWithCacheManagement(
-                reconciliableCreditMoveLineList, reconciliableDebitMoveLineList);
+            .reconcileMoveLines(reconciliableCreditMoveLineList, reconciliableDebitMoveLineList);
         response.setReload(true);
       }
     } catch (Exception e) {

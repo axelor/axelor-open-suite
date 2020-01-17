@@ -55,6 +55,8 @@ public class PaymentServiceImpl implements PaymentService {
 
   protected AppAccountService appAccountService;
 
+  public static final int FETCH_LIMIT = 20;
+
   @Inject
   public PaymentServiceImpl(
       AppAccountService appAccountService,
@@ -103,26 +105,6 @@ public class PaymentServiceImpl implements PaymentService {
 
   /**
    * Use excess payment between a list of debit move lines and a list of credit move lines. The
-   * lists needs to be ordered by date in order to pay the invoices chronologically. This method
-   * doesn't throw any exception if a reconciliation fails.
-   *
-   * @param debitMoveLines
-   * @param creditMoveLines
-   */
-  @Override
-  public void useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
-      List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
-    try {
-      useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
-          debitMoveLines, creditMoveLines, true);
-    } catch (Exception e) {
-      TraceBackService.trace(e);
-      log.debug(e.getMessage());
-    }
-  }
-
-  /**
-   * Use excess payment between a list of debit move lines and a list of credit move lines. The
    * lists needs to be ordered by date in order to pay the invoices chronologically.
    *
    * @param debitMoveLines
@@ -131,71 +113,6 @@ public class PaymentServiceImpl implements PaymentService {
    * @throws AxelorException
    */
   protected void useExcessPaymentOnMoveLines(
-      List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow)
-      throws AxelorException {
-
-    if (debitMoveLines != null && creditMoveLines != null) {
-
-      log.debug(
-          "Emploie du trop perçu (nombre de lignes en débit : {}, nombre de ligne en crédit : {})",
-          new Object[] {debitMoveLines.size(), creditMoveLines.size()});
-
-      BigDecimal debitTotalRemaining = BigDecimal.ZERO;
-      BigDecimal creditTotalRemaining = BigDecimal.ZERO;
-      for (MoveLine creditMoveLine : creditMoveLines) {
-
-        log.debug("Emploie du trop perçu : ligne en crédit : {})", creditMoveLine);
-
-        log.debug(
-            "Emploie du trop perçu : ligne en crédit (restant à payer): {})",
-            creditMoveLine.getAmountRemaining());
-        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
-      }
-      for (MoveLine debitMoveLine : debitMoveLines) {
-
-        log.debug("Emploie du trop perçu : ligne en débit : {})", debitMoveLine);
-
-        log.debug(
-            "Emploie du trop perçu : ligne en débit (restant à payer): {})",
-            debitMoveLine.getAmountRemaining());
-        debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
-      }
-
-      for (MoveLine creditMoveLine : creditMoveLines) {
-
-        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
-
-          for (MoveLine debitMoveLine : debitMoveLines) {
-            if ((debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
-                && (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)) {
-              try {
-                createReconcile(
-                    debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-              } catch (Exception e) {
-                if (dontThrow) {
-                  TraceBackService.trace(e);
-                  log.debug(e.getMessage());
-                } else {
-                  throw e;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Use excess payment between a list of debit move lines and a list of credit move lines. The
-   * lists needs to be ordered by date in order to pay the invoices chronologically.
-   *
-   * @param debitMoveLines
-   * @param creditMoveLines
-   * @param dontThrow
-   * @throws AxelorException
-   */
-  protected void useExcessPaymentOnMoveLinesDontThrowWithCacheManagement(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow)
       throws AxelorException {
 
@@ -246,7 +163,7 @@ public class PaymentServiceImpl implements PaymentService {
                   throw e;
                 }
               } finally {
-                if (count == 20) {
+                if (count == FETCH_LIMIT) {
                   JPA.clear();
                   count = 0;
                 }
