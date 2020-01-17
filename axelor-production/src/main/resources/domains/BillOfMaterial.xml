@@ -18,7 +18,6 @@
   	<one-to-many name="prodResidualProductList" ref="com.axelor.apps.production.db.ProdResidualProduct" title="Residual products"/>
   	<decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>
     <boolean name="isSpecific" title="Specific" default="false"/>
    	<decimal name="wasteRate" title="Waste rate (%)"/>

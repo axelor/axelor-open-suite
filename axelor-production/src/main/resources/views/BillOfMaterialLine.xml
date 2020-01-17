@@ -8,6 +8,7 @@
 		<field name="priority" />
 		<field name="product" />
 		<field name="qty" x-scale="2"/>
+		<field name="hasNoManageStock"/>
 		<field name="billOfMaterial" />
 	</grid>
 	
@@ -19,6 +20,7 @@
 	    <field name="billOfMaterial" readonlyIf="product == null" canNew="true" canEdit="billOfMaterial.isSpecific" onChange="action-bom-line-record-on-bom-change" onSelect="action-bill-of-material-line-attrs-bom-domain-onselect"/>
 	    <field name="priority"/>
 	    <field name="billOfMaterial.isSpecific"/>
+	    <field name="hasNoManageStock"/>
 	  </panel>
 	</form>
 

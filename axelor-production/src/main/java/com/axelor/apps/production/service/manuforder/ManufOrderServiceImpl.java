@@ -161,8 +161,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       for (BillOfMaterialLine billOfMaterialLine :
           getSortedBillsOfMaterialLines(billOfMaterial.getBillOfMaterialLineList())) {
 
-        if (billOfMaterialLine.getBillOfMaterial() != null
-            && !billOfMaterialLine.getBillOfMaterial().getHasNoManageStock()) {
+        if (!billOfMaterialLine.getHasNoManageStock()) {
 
           Product product =
               productVariantService.getProductVariant(
