@@ -1523,7 +1523,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...5.1.14
+[5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...v5.1.14
 [5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
 [5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
 [5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
