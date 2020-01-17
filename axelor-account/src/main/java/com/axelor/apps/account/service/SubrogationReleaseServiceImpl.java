@@ -132,16 +132,14 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     List<String> invoicesIDList =
         JPA.em()
-            .createNativeQuery(
-                "SELECT invoice.invoice_id "
-                    + " FROM account_subrogation_release subrogationRelease "
-                    + " LEFT JOIN account_subrogation_release_invoice_set as subroInvoiceSet on subrogationRelease.id = subroInvoiceSet.account_subrogation_release "
-                    + " LEFT JOIN account_invoice invoice on subroInvoiceSet.invoice_set = invoice.id "
-                    + " LEFT JOIN account_subrogation_release_invoice_set as subroInvoiceSet2 on invoice.id = subroInvoiceSet2.invoice_set"
-                    + " LEFT JOIN account_subrogation_release subrogationRelease2 on subroInvoiceSet2.account_subrogation_release = subrogationRelease2.id "
-                    + " WHERE subrogationRelease.id = :subroID "
-                    + " AND subrogationRelease2.id != :subroID"
-                    + " AND subrogationRelease2.status_select IN (:statusTransmitted ,:statusAccounted,:statusCleared )")
+            .createQuery(
+                "SELECT Invoice.invoiceId "
+                    + " FROM SubrogationRelease SubrogationRelease "
+                    + " LEFT JOIN Invoice Invoice on  Invoice member of  SubrogationRelease.invoiceSet "
+                    + " LEFT JOIN SubrogationRelease SubrogationRelease2 on Invoice member of  SubrogationRelease2.invoiceSet "
+                    + " WHERE SubrogationRelease.id = :subroID "
+                    + " AND SubrogationRelease2.id != :subroID"
+                    + " AND SubrogationRelease2.statusSelect IN (:statusTransmitted ,:statusAccounted,:statusCleared )")
             .setParameter("subroID", subrogationRelease.getId())
             .setParameter("statusTransmitted", SubrogationReleaseRepository.STATUS_TRANSMITTED)
             .setParameter("statusAccounted", SubrogationReleaseRepository.STATUS_ACCOUNTED)
