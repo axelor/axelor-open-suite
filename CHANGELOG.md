@@ -9,6 +9,7 @@
 - Opportunity : Set sale order defaults on new.
 - Typos on PurchaseRequestLine
 - PurchaseRequestLine : cacheable removed for this entity
+- BANKSTATEMENT : on copy reset statusSelect.
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
