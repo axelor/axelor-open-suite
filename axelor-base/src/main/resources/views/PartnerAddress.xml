@@ -10,14 +10,18 @@
 		<field name="isDefaultAddr" />
 	</grid>
 	
-	<form name="partner-address-form" title="Address" model="com.axelor.apps.base.db.PartnerAddress">
+	<form name="partner-address-form" title="Address" model="com.axelor.apps.base.db.PartnerAddress" onNew="action-partner-address-attrs-set-canselect" onLoad="action-partner-address-attrs-set-canselect">
 		<panel name="mainPanel" >
-			<field name="address" canNew="true" if="!__config__.app.getApp('base').getIsSharedAddress()" canSelect="false"/>
-			<field name="address" canNew="true" if="__config__.app.getApp('base').getIsSharedAddress()" canSelect="true"/>
+			<field name="address" canNew="true" if="!__config__.app.getApp('base').getIsSharedAddress()" canSelect="$canSelect"/>
 			<field name="isInvoicingAddr" widget="toggle" x-icon="fa-exclamation-circle" />
 			<field name="isDeliveryAddr" widget="toggle" x-icon="fa-ban" />
-			<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" />							
+			<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star" />
+			<field name="$canSelect" hidden="true" colSpan="12"/>							
 		</panel>
 	</form>
-		
+	
+	<action-attrs name="action-partner-address-attrs-set-canselect">
+		<attribute name="value" for="$canSelect" expr="eval:__config__.app.getApp('base').getIsSharedAddress()"/>
+	</action-attrs>
+
 </object-views>
