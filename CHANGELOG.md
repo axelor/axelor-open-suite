@@ -8,7 +8,9 @@
 - BANKSTATEMENT : import multiple records in a single line.
 - Opportunity : Set sale order defaults on new.
 - Typos on PurchaseRequestLine
-- STOCK: fromAddress in stock-move supplier arrival should be required.
+- PurchaseRequestLine : cacheable removed for this entity
+- BANKSTATEMENT : on copy reset statusSelect.
+- STOCK: fromAddress in stock-move supplier arrival should be required
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
