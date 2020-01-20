@@ -35,6 +35,8 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchBankRepository;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankAccountRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateAccountRepository;
@@ -128,5 +130,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveServiceImpl.class).to(BankPaymentMoveServiceImpl.class);
 
     bind(BankPaymentBatchRepository.class).to(BankPaymentBatchBankRepository.class);
+    bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
   }
 }

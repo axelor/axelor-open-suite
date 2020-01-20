@@ -2,6 +2,7 @@
 ## [Unreleased 5.1.15]
 ## Improvements
 - PurchaseRequestLine : cacheable removed for this entity
+- BANKSTATEMENT : on copy reset statusSelect
 ## Bug Fixes
 
 ## [5.1.14] - 2020-01-17
