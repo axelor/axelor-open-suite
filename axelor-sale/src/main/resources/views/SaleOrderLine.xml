@@ -78,8 +78,8 @@
 		<panel name="productPanel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
 			<field name="typeSelect" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
-			<field name="isShowTotal"/>
-			<field name="isHideUnitAmounts"/>
+			<field name="isShowTotal" if="__config__.app.getApp('sale')?.enablePackManagement"/>
+			<field name="isHideUnitAmounts" if="__config__.app.getApp('sale')?.enablePackManagement"/>
 		</panel>
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
