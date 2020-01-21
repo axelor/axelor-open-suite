@@ -3,6 +3,7 @@
 ## Features
 - Invoice : Removal of companyBankDetails comment in invoice form.
 - INVOICING PROJECT : consolidation of invoicing project
+- INVOICING BATCH : consolidation of phases
 
 ## Improvements
 - BANKSTATEMENT : import multiple records in a single line.

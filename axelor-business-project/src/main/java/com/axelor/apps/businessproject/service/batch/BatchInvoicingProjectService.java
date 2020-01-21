@@ -70,7 +70,8 @@ public class BatchInvoicingProjectService extends AbstractBatch {
     for (Project project : projectList) {
       try {
         InvoicingProject invoicingProject =
-            invoicingProjectService.generateInvoicingProject(project);
+            invoicingProjectService.generateInvoicingProject(
+                project, batch.getProjectInvoicingAssistantBatch().getConsolidatePhaseSelect());
 
         if (invoicingProject != null && invoicingProject.getId() != null) {
           incrementDone();
