@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -39,6 +40,11 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return super.createOperationOrder(manufOrder, prodProcessLine);
+    }
 
     OperationOrder operationOrder =
         this.createOperationOrder(
@@ -87,6 +93,12 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 
   @Override
   protected ProdHumanResource copyProdHumanResource(ProdHumanResource prodHumanResource) {
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return super.copyProdHumanResource(prodHumanResource);
+    }
 
     ProdHumanResource prodHumanResourceCopy =
         new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration());

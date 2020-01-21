@@ -18,12 +18,14 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -41,7 +43,8 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl {
     TimesheetLine timesheetLine =
         super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 
-    if (project != null
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")
+        && project != null
         && (project.getProjInvTypeSelect() == ProjectRepository.INVOICING_TYPE_TIME_BASED
             || (project.getParentProject() != null
                 && project.getParentProject().getProjInvTypeSelect()

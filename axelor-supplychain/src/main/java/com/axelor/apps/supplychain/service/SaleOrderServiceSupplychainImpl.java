@@ -98,6 +98,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
     boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return checkAvailabiltyRequest;
+    }
+
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(
@@ -143,6 +147,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
       throws AxelorException {
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
+      return;
+    }
+
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
     List<SaleOrderLine> saleOrderViewLineList =
@@ -181,6 +190,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
     super.validateChanges(saleOrder);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
 
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
     saleOrder.setOrderBeingEdited(false);

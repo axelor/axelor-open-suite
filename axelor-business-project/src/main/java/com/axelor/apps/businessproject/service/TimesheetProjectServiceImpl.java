@@ -35,6 +35,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -71,6 +72,10 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl {
   @Override
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException {
+
+    if (!Beans.get(AppHumanResourceService.class).isApp("business-project")) {
+      return super.createInvoiceLines(invoice, timesheetLineList, priority);
+    }
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     int count = 0;
