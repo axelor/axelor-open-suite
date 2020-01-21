@@ -4,6 +4,7 @@
 - Invoice : Removal of companyBankDetails comment in invoice form.
 - INVOICING PROJECT : consolidation of invoicing project
 - INVOICING BATCH : consolidation of phases
+- GEONAME : import city form zip
 
 ## Improvements
 - BANKSTATEMENT : import multiple records in a single line.
