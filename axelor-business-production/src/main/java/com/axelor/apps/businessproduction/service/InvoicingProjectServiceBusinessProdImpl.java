@@ -111,9 +111,10 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
-  public InvoicingProject generateInvoicingProject(Project project) {
+  public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
 
-    InvoicingProject invoicingProject = super.generateInvoicingProject(project);
+    InvoicingProject invoicingProject =
+        super.generateInvoicingProject(project, consolidatePhaseSelect);
 
     if (invoicingProject != null
         && invoicingProject.getId() == null
