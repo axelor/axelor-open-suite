@@ -47,7 +47,7 @@
 	</action-view>
 
 	<menuitem name="admin-root-batch-contract" parent="admin-root-batch"
-			  title="Contract batches" action="admin.root.batch.contract" />
+			  title="Contract batches" action="admin.root.batch.contract" if="__config__.app.isApp('contract')"/>
 
 	<action-view name="admin.root.batch.contract" title="Contract batches"
 				 model="com.axelor.apps.contract.db.ContractBatch" >

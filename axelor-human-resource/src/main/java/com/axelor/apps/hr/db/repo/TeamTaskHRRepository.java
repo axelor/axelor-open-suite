@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 
@@ -30,7 +32,9 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
   @Override
   public TeamTask save(TeamTask teamTask) {
 
-    super.save(teamTask);
+    if (!Beans.get(AppHumanResourceService.class).isApp("employee")) {
+      return super.save(teamTask);
+    }
 
     teamTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(teamTask));
 

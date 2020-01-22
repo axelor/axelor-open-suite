@@ -5,6 +5,7 @@
 - INVOICING PROJECT : consolidation of invoicing project
 - INVOICING BATCH : consolidation of phases
 - GEONAME : import city form zip
+- Modify all service code according to app configuration
 
 ## Improvements
 - BANKSTATEMENT : import multiple records in a single line.
@@ -15,6 +16,7 @@
 - STOCK: fromAddress in stock-move supplier arrival should be required
 - CARD VIEWS : Display images with the right proportions of square images.
 - InvoiceLine : filter on taxLine.
+- BANK PAYMENT : Update code using try-with-resources in IOUtils.
 - ADMIN : Update code using try-with-resources in DataBackupRestoreService.
 
 ## Bug Fixes

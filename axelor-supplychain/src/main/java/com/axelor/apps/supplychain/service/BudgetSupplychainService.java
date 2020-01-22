@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -50,6 +51,10 @@ public class BudgetSupplychainService extends BudgetService {
   @Override
   @Transactional
   public List<BudgetLine> updateLines(Budget budget) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.updateLines(budget);
+    }
+
     if (budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()) {
       for (BudgetLine budgetLine : budget.getBudgetLineList()) {
         budgetLine.setAmountCommitted(BigDecimal.ZERO);
@@ -138,6 +143,10 @@ public class BudgetSupplychainService extends BudgetService {
 
   @Override
   protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getDate(budgetDistribution);
+    }
+
     InvoiceLine invoiceLine = budgetDistribution.getInvoiceLine();
 
     if (invoiceLine == null) {
