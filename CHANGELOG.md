@@ -22,6 +22,9 @@
 - EBICS : Support of ARKEA bank
 Defined the KeyUsage attribute as critical on self-signed certificate .
 Defined the KeyUsage attribute with KeyEncipherment on Encryption certificate.
+- EBICS : Support bank statements of LA BANQUE POSTALE bank
+This bank return the code "EBICS_OK" instead of the correct code "EBICS_DOWNLOAD_POSTPROCESS_DONE" when we fetch a file (HPD, FDL...)
+In this case, the file is correctly get from the bank server, but not saved in database. Now we don't throw an exception when the return code is "EBICS_OK"
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
