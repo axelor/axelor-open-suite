@@ -5,6 +5,7 @@
 - INVOICING PROJECT : consolidation of invoicing project
 - INVOICING BATCH : consolidation of phases
 - GEONAME : import city form zip
+- Modify all service code according to app configuration
 
 ## Improvements
 - BANKSTATEMENT : import multiple records in a single line.

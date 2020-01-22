@@ -239,6 +239,11 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.requestPurchaseOrder(purchaseOrder);
+      return;
+    }
+
     // budget control
     if (appAccountService.isApp("budget")
         && appAccountService.getAppBudget().getCheckAvailableBudget()) {
@@ -339,6 +344,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
+
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
         && !purchaseOrderStockService.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
       purchaseOrderStockService.createStockMoveFromPurchaseOrder(purchaseOrder);
@@ -364,7 +373,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
     super.cancelPurchaseOrder(purchaseOrder);
-    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+
+    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+    }
   }
 
   @SuppressWarnings("unused")
