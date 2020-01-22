@@ -19,6 +19,9 @@
 - BANK PAYMENT : Update code using try-with-resources in IOUtils.
 - ADMIN : Update code using try-with-resources in MetaGroupMenuAssistantService.
 - ADMIN : Update code using try-with-resources in DataBackupRestoreService.
+- EBICS : Support of ARKEA bank
+Defined the KeyUsage attribute as critical on self-signed certificate .
+Defined the KeyUsage attribute with KeyEncipherment on Encryption certificate.
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
@@ -84,7 +87,7 @@
 - SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
 - USER: fix NPE on user creation when active team is null.
 - Purchase Order: Fix NPE on copy of purchaseOrder when it has an empty purchaseOrderLineList.
-- Contract: correct the translation of 'Fiscal positon'.
+- Contract: correct the translation of 'Fiscal position'.
 - MRP: Do not show mrp lines from other MRPs when not displaying products without proposals.
 - LEAVE REQUEST: No longer displays an error message when saving a leave request.
 - EBICSUSER EXPORT: Fix for "Cannot get property 'code' on null object" error.
@@ -110,7 +113,7 @@
 - ACCOUNTING REPORT: add new report, bank reconciliation statement.
 
 ## Improvements
-- INVOICE: new mandatory labelling: Head office address.
+- INVOICE: new mandatory labeling: Head office address.
 - Company: Add tree view for companies.
 - AdvancedExportLine: Add translation for field orderByType.
 - PURCHASE REQUEST: add new columns in purchase request grid view.
