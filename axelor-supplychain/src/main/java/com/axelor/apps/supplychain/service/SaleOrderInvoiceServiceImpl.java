@@ -173,42 +173,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    if (ObjectUtils.isEmpty(invoice.getNote())) {
-      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setNote(
-            saleOrder.getInvoiceComments()
-                + "\n"
-                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else if (Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setNote(saleOrder.getInvoiceComments());
-      } else if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
-          && invoice.getCompanyBankDetails() != null
-          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setNote(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      }
+
+    if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())) {
+      invoice.setNote(saleOrder.getInvoiceComments());
     }
 
-    if (ObjectUtils.isEmpty(invoice.getProformaComments())) {
-      if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setProformaComments(
-            saleOrder.getProformaComments()
-                + "\n"
-                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else if (Strings.isNullOrEmpty(saleOrder.getProformaComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setProformaComments(saleOrder.getProformaComments());
-      } else if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
-          && invoice.getCompanyBankDetails() != null
-          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setProformaComments(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      }
+    if (ObjectUtils.isEmpty(invoice.getProformaComments())
+        && !Strings.isNullOrEmpty(saleOrder.getProformaComments())) {
+      invoice.setProformaComments(saleOrder.getProformaComments());
     }
 
     // fill default advance payment invoice
