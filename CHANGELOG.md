@@ -35,6 +35,7 @@
 - Invoice : Fix wrong attribute name used in grid views.
 - Ebics Partner : set editable for bo services list.
 - INVOICE : Fixed invoice refund ventilation issue.
+- INVOICE : Fixed payment mode on mass invoicing refund.
 
 ## [5.2.2] - 2020-01-09
 ## Features
