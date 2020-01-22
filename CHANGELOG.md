@@ -18,6 +18,7 @@
 - InvoiceLine : filter on taxLine.
 - BANK PAYMENT : Update code using try-with-resources in IOUtils.
 - ADMIN : Update code using try-with-resources in MetaGroupMenuAssistantService.
+- ADMIN : Update code using try-with-resources in DataBackupRestoreService.
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund
