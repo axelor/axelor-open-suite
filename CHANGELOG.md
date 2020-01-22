@@ -17,6 +17,7 @@
 - CARD VIEWS : Display images with the right proportions of square images.
 - InvoiceLine : filter on taxLine.
 - BANK PAYMENT : Update code using try-with-resources in IOUtils.
+- ADMIN : Update code using try-with-resources in MetaGroupMenuAssistantService.
 
 ## Bug Fixes
 - INVOICE PARTIAL: take in consideration refund

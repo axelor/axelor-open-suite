@@ -119,12 +119,13 @@ public class MetaGroupMenuAssistantService {
 
       addGroupAccess(rows);
 
-      CSVWriter csvWriter = new CSVWriter(new FileWriterWithEncoding(groupMenuFile, "utf-8"), ';');
-      csvWriter.writeAll(rows);
-      csvWriter.close();
+      try (CSVWriter csvWriter =
+              new CSVWriter(new FileWriterWithEncoding(groupMenuFile, "utf-8"), ';');
+          FileInputStream fis = new FileInputStream(groupMenuFile)) {
+        csvWriter.writeAll(rows);
 
-      groupMenuAssistant.setMetaFile(
-          metaFiles.upload(new FileInputStream(groupMenuFile), getFileName(groupMenuAssistant)));
+        groupMenuAssistant.setMetaFile(metaFiles.upload(fis, getFileName(groupMenuAssistant)));
+      }
       menuAssistantRepository.save(groupMenuAssistant);
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -296,18 +297,16 @@ public class MetaGroupMenuAssistantService {
 
   public String importGroupMenu(MetaGroupMenuAssistant groupMenuAssistant) {
 
-    try {
+    try (CSVReader csvReader =
+        new CSVReader(
+            new InputStreamReader(
+                new FileInputStream(MetaFiles.getPath(groupMenuAssistant.getMetaFile()).toFile()),
+                StandardCharsets.UTF_8),
+            ';')) {
       setBundle(new Locale(groupMenuAssistant.getLanguage()));
-      MetaFile metaFile = groupMenuAssistant.getMetaFile();
-      File csvFile = MetaFiles.getPath(metaFile).toFile();
-
-      CSVReader csvReader =
-          new CSVReader(
-              new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';');
 
       String[] groupRow = csvReader.readNext();
       if (groupRow == null || groupRow.length < 3) {
-        csvReader.close();
         return I18n.get(IMessage.BAD_FILE);
       }
 
@@ -326,8 +325,6 @@ public class MetaGroupMenuAssistantService {
       for (String[] row : csvReader.readAll()) {
         importMenus(row, groupRow, groupMap, admin);
       }
-
-      csvReader.close();
 
       saveMenus();
 
