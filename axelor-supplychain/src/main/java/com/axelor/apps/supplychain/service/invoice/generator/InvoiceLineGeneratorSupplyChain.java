@@ -199,6 +199,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected InvoiceLine createInvoiceLine() throws AxelorException {
 
     InvoiceLine invoiceLine = super.createInvoiceLine();
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return invoiceLine;
+    }
+
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     this.assignOriginElements(invoiceLine);
@@ -357,6 +362,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
   @Override
   public boolean isAccountRequired() {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.isAccountRequired();
+    }
 
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
 

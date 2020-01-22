@@ -27,10 +27,12 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -74,6 +76,11 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
+
+    if (!Beans.get(AppBankPaymentService.class).isApp("bank-payment")) {
+      super.cancel(invoicePayment);
+      return;
+    }
 
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();
 

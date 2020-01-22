@@ -177,6 +177,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       Partner clientPartner) {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
+
+    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      return project;
+    }
+
     project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
     project.setProjInvTypeSelect(ProjectRepository.INVOICING_TYPE_NONE);

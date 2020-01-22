@@ -17,12 +17,14 @@
  */
 package com.axelor.apps.marketing.service;
 
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -42,7 +44,8 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
   @Override
   protected Integer getMediaTypeSelect(Template template) {
 
-    if (template.getMediaTypeSelect() == TemplateRepository.MEDIA_TYPE_EMAILING) {
+    if (template.getMediaTypeSelect() == TemplateRepository.MEDIA_TYPE_EMAILING
+        && Beans.get(AppService.class).isApp("marketing")) {
       return MessageRepository.MEDIA_TYPE_EMAIL;
     }
 

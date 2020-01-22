@@ -75,6 +75,10 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
             bankDepositDate,
             chequeNumber);
 
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return invoicePaymentList;
+    }
+
     if (invoicePaymentList.isEmpty()) {
       return invoicePaymentList;
     }
@@ -88,6 +92,11 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
   @Override
   public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException {
     List<Long> invoiceToPay = super.getInvoiceIdsToPay(invoiceIdList);
+
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return invoiceToPay;
+    }
+
     for (Long invoiceId : invoiceToPay) {
       Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
       if (invoice.getPaymentMode().getGenerateBankOrder()) {

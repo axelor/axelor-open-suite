@@ -116,6 +116,10 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
 
     Invoice invoice = super.createInvoiceHeader();
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return invoice;
+    }
+
     if (saleOrder != null) {
       invoice.setPrintingSettings(saleOrder.getPrintingSettings());
 

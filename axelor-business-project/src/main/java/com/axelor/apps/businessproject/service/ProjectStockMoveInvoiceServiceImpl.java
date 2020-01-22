@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -31,6 +32,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.List;
 
@@ -60,6 +62,10 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       throws AxelorException {
 
     List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, stockMoveLine);
+    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      return invoiceLines;
+    }
+
     for (InvoiceLine invoiceLine : invoiceLines) {
       SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
       if (saleOrderLine != null) {

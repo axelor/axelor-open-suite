@@ -43,7 +43,12 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       throws AxelorException {
     super.checkIfEnoughStock(stockLocation, product, qty);
 
-    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getManageStockReservation()
+    AppSupplychainService appSupplychainService = Beans.get(AppSupplychainService.class);
+
+    if (!appSupplychainService.isApp("supplychain")) {
+      return;
+    }
+    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
         && product.getStockManaged()) {
       StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
       if (stockLocationLine != null
@@ -64,6 +69,11 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
 
   @Override
   public BigDecimal getAvailableQty(StockLocation stockLocation, Product product) {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getAvailableQty(stockLocation, product);
+    }
+
     StockLocationLine stockLocationLine = getStockLocationLine(stockLocation, product);
     BigDecimal availableQty = BigDecimal.ZERO;
     if (stockLocationLine != null) {
@@ -100,7 +110,11 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
   public StockLocationLine updateLocationFromProduct(
       StockLocationLine stockLocationLine, Product product) throws AxelorException {
     stockLocationLine = super.updateLocationFromProduct(stockLocationLine, product);
-    Beans.get(ReservedQtyService.class).updateRequestedReservedQty(stockLocationLine);
+
+    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      Beans.get(ReservedQtyService.class).updateRequestedReservedQty(stockLocationLine);
+    }
+
     return stockLocationLine;
   }
 }

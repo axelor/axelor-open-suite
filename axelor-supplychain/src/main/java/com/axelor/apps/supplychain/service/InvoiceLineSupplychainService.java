@@ -41,6 +41,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -79,6 +80,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   @Override
   public Unit getUnit(Product product, boolean isPurchase) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getUnit(product, isPurchase);
+    }
+
     if (isPurchase) {
       if (product.getPurchasesUnit() != null) {
         return product.getPurchasesUnit();
@@ -97,6 +102,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getDiscount(invoice, invoiceLine, price);
+    }
 
     Map<String, Object> discounts = new HashMap<>();
 
@@ -130,6 +139,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillPriceAndAccount(
       Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    }
 
     try {
       return super.fillPriceAndAccount(invoice, invoiceLine, isPurchase);
@@ -171,6 +184,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.fillProductInformation(invoice, invoiceLine);
+    }
 
     Map<String, Object> productInformation = new HashMap<>();
 
