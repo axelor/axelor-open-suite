@@ -64,6 +64,12 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
   @SuppressWarnings("unchecked")
   public Long validate(Context context) throws AxelorException {
 
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return super.validate(context);
+    }
+
     Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
     BillOfMaterial billOfMaterial =
         billOfMaterialRepo.find(((Integer) bomContext.get("id")).longValue());
