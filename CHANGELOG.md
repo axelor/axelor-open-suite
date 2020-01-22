@@ -3,9 +3,11 @@
 ## Improvements
 - PurchaseRequestLine : cacheable removed for this entity
 - BANKSTATEMENT : on copy reset statusSelect
+- GEONAME : import city form zip
 - Check and modify all service code according to app configuration
 
 ## Bug Fixes
+- STOCKMOVE : display qty per tracking number and not total available qty for tracking number
 
 ## [5.1.14] - 2020-01-17
 ## Improvements

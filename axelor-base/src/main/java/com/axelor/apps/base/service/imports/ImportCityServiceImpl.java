@@ -29,8 +29,11 @@ import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -46,6 +49,9 @@ public class ImportCityServiceImpl implements ImportCityService {
 
     ImportHistory importHistory = null;
     try {
+      if (dataFile.getFileType().equals("application/zip")) {
+        dataFile = this.extractCityZip(dataFile);
+      }
       File configXmlFile = this.getConfigXmlFile(typeSelect);
       File dataCsvFile = this.getDataCsvFile(dataFile);
 
@@ -152,5 +158,40 @@ public class ImportCityServiceImpl implements ImportCityService {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private MetaFile extractCityZip(MetaFile dataFile) throws Exception {
+
+    ZipEntry entry = null;
+    MetaFile metaFile = null;
+    File txtFile = File.createTempFile("city", ".txt");
+    String requiredFileName = dataFile.getFileName().replace(".zip", ".txt");
+
+    byte[] buffer = new byte[1024];
+    int len;
+
+    try (ZipInputStream zipFileInStream =
+        new ZipInputStream(new FileInputStream(MetaFiles.getPath(dataFile).toFile())); ) {
+
+      while ((entry = zipFileInStream.getNextEntry()) != null) {
+
+        if (entry.getName().equals(requiredFileName)) {
+
+          try (FileOutputStream fos = new FileOutputStream(txtFile); ) {
+
+            while ((len = zipFileInStream.read(buffer)) > 0) {
+              fos.write(buffer, 0, len);
+            }
+          }
+          break;
+        }
+      }
+    }
+
+    metaFile = metaFiles.upload(txtFile);
+
+    FileUtils.forceDelete(txtFile);
+
+    return metaFile;
   }
 }
